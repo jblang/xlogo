@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     9 févr. 08 15:00:15                                                        
+
+     project Xlogo    
+     description Logo Programming Interpreter
+                   
+     loic                                                                
+     ====================================================================== -->
+<project name="project Xlogo" default="deploy">
+    <description>
+            Logo Programming Interpreter
+    </description>
+
+    <!-- ================================= 
+          target: deploy              
+         ================================= -->
+    <target name="deploy">
+        <mkdir dir="deploy/classes"/> 
+    	<copy todir="deploy/classes">
+        		<fileset dir="java3d/">
+        			<exclude name=".*"/>
+    			</fileset>
+    		<fileset dir="src/">
+    	        <include name="windows/**"/>
+    	    	<include name="linux/**"/>
+    			<include name="**.properties"/>
+       			<include name="**/*.png"/>
+    			<include name="**/*.html"/>
+    			<include name="**/genericPrimitive"/>
+    		</fileset>
+        </copy>
+    	<javac srcdir="src" destdir="deploy/classes">
+    	</javac>
+    	<move todir="deploy">
+     		<fileset dir="deploy/classes">
+	        	<include name="*.class"/>
+				<include name="linux/**"/>
+    			<include name="windows/**"/>
+     		</fileset>    		
+    	</move>
+
+ 	<jar destfile="deploy/tmp_xlogo.jar"
+ 		manifest="manifest_xlogo">
+ 		<fileset dir="deploy/classes/"/>
+ 	</jar>
+    <delete>
+		<fileset dir="deploy/">
+    	<include name="classes/**"/>
+	    </fileset>
+    </delete>
+
+ 	<input
+	 	message="Password"
+ 		addproperty="pwd"/>
+	  <signjar keystore="keystore.ks" storepass="${pwd}" alias="myalias">
+    	    	<fileset dir="deploy">
+    	    		<include name="tmp_xlogo.jar"/>
+    			</fileset>
+       </signjar>
+    	
+    	
+    <jar destfile="deploy/xlogo.jar"
+     		manifest="manifest_start">
+     		<fileset dir="deploy/">
+            	<include name="*.class"/>
+    			<include name="linux/**"/>
+    			<include name="windows/**"/>
+     			<include name="tmp_xlogo.jar"/>
+     		</fileset>	
+       	
+       	</jar>
+    	
+    	
+    <signjar keystore="keystore.ks" storepass="${pwd}" alias="myalias">
+    	<fileset dir="deploy">
+    		<include name="xlogo.jar"/>
+		</fileset>
+    </signjar>
+	<delete file="deploy/tmp_xlogo.jar"/>
+    </target>
+
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: depends                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="depends">
+    </target>
+
+</project>

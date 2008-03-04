@@ -1,0 +1,377 @@
+/**
+ * Title :        XLogo
+ * Description :  XLogo is an interpreter for the Logo 
+ * 						programming language
+ * @author Loïc Le Coq
+ */
+package xlogo;
+import java.util.StringTokenizer;
+import java.io.File;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
+import javax.swing.JFrame;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+import org.xml.sax.SAXException;
+
+import java.awt.*;
+import java.io.*;
+import java.awt.image.BufferedImage;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.Calendar;
+
+import xlogo.utils.SimpleContentHandler;
+import xlogo.gui.Selection_Langue;
+import xlogo.utils.Utils;
+import xlogo.kernel.DrawPanel;
+import xlogo.kernel.Affichage;
+/**
+ * This class initializes the main frame, loads startup files and launches startup command
+ * 
+ * @author loic
+ *
+ */
+public class Logo {
+	/**
+	 * The main frame
+	 */
+  private Application frame=null;
+  /**
+   * This ResourceBundle contains all messages for XLogo (menu, errors...)
+   */
+  public static ResourceBundle messages=null;
+  /**
+   * On the first start, XLogo opens a dialog box where the user can select its language.
+   */
+  private Selection_Langue select=null;
+  /**Builds Application with the valid Config*/
+  public Logo() {
+    readConfig();
+    Config.defaultFolder=Utils.rajoute_backslash(Config.defaultFolder);
+    if (null==messages)  generateLanguage(Config.langage); //Au cas où si le fichier de démarrage ne contient rien sur la langue
+    // Initialize frame
+    SwingUtilities.invokeLater(new Runnable(){
+    	public void run(){
+    		DrawPanel.dessin=new BufferedImage(Config.imageWidth,Config.imageHeight,BufferedImage.TYPE_INT_RGB);
+    		frame = new Application();
+
+    		frame.setVisible(true);
+    	    //On vérifie que la taille mémoire est suffisante pour créer l'image de dessin
+    	    // Checking that we have enough memory to create the image
+    		int memoire_necessaire=Config.imageWidth*Config.imageHeight*4/1024/1024;
+    		long free=Runtime.getRuntime().freeMemory()/1024/1024;
+    		long total=Runtime.getRuntime().totalMemory()/1024/1024;
+    		if (total-free+memoire_necessaire>Config.memoire*0.8){
+    			Config.imageHeight=1000;
+    			Config.imageWidth=1000;
+    		}
+    		// init frame
+    	    init(frame);
+    	    frame.setCommandLine(false);    
+    	    //  On génère les primitives et les fichiers de démarrage
+    	    // generate primitives and start up files
+    	    frame.genere_primitive(); 
+    	     
+    	    //On lance le fichier à exécuter au démarrage s'il existe
+    	    // File (if it exists) to execute when XLogo is starting
+    	    if (!Config.a_executer.equals("")) {     
+    		      frame.affichage=new Affichage(frame,Utils.decoupe(Config.a_executer));
+    			   frame.affichage.start(); 
+    	    }
+    	    else {
+    	    	frame.setCommandLine(true);
+    	    	frame.focus_Commande();
+    	    }
+    	   }
+      });
+
+    // On Enregistre le temps auquel la session a commencé
+    // hour when we launch XLogo
+    Config.heure_demarrage=Calendar.getInstance().getTimeInMillis();
+  	}
+  /**
+   * Initializes the main Frame
+   * @param frame The main Frame
+   */
+  private void init(Application frame){
+    // on centre la tortue
+  	// Centering turtle
+	Dimension d=frame.jScrollPane1.getViewport().getViewRect().getSize();
+	Point p=new Point(Math.abs(Config.imageWidth/2-d.width/2),Math.abs(Config.imageHeight/2-d.height/2));
+	frame.jScrollPane1.getViewport().setViewPosition(p);  	
+
+    // on affiche la tortue sur la zone de dessin
+	// Displays turtle
+	// 	System.out.println("Total :"+Runtime.getRuntime().totalMemory()/1024+" max "+Runtime.getRuntime().maxMemory()/1024+" Free "+Runtime.getRuntime().freeMemory()/1024);
+	      MediaTracker tracker=new MediaTracker(frame);
+	      tracker.addImage(DrawPanel.dessin,0);
+	      try{tracker.waitForID(0);}
+	      catch(InterruptedException e){}
+      frame.getArdoise().getGraphics().drawImage(DrawPanel.dessin,0,0,frame);
+      frame.jScrollPane1.validate();//getArdoise().revalidate();
+      
+      /////////////frame.getKernel().initDrawGraphics();
+  }
+  /**
+   * Sets the selected language for all messages
+   * @param id The integer that represents the language
+   */
+  public static void generateLanguage(int id){ // fixe la langue utilisée pour les messages
+    Locale locale=null;
+    locale=generateLocale(id);
+    messages=ResourceBundle.getBundle("langage",locale);
+  }
+  /**
+   * This method returns the Locale corresponding to the language "id"
+   * 
+   * @param id The integer that represents the language
+   * @return The locale that corresponds to the desired language
+   */
+  public static Locale generateLocale(int id){  //rend la locale correspondant à l'entier id
+    Locale locale=null;
+    switch(id){
+      case Config.LANGUAGE_FRENCH: //french
+        locale=new Locale("fr","FR");
+        break;
+      case Config.LANGUAGE_ENGLISH: // english
+        locale=new Locale("en","US");
+        break;
+      case Config.LANGUAGE_ARABIC: // Arabic
+        locale=new Locale("ar","MA");
+        break;
+      case Config.LANGUAGE_SPANISH: // spanish
+      	locale=new Locale("es","ES");
+      	break;
+      case Config.LANGUAGE_PORTUGAL: // portuguese
+        locale=new Locale("pt","BR");
+        break;
+       case Config.LANGUAGE_ESPERANTO: //esperanto
+       	locale=new Locale("eo","EO");
+       	break;
+       case Config.LANGUAGE_GERMAN: // german
+       locale=new Locale("de","DE");
+       break;
+       case Config.LANGUAGE_GALICIAN: // holland
+        locale=new Locale("gl","ES");
+       break;
+    }
+  return locale;
+  }
+  /**
+   * This method initialises all arguments from the file .xlogo
+   */
+  private void readConfig(){
+	Locale locale=null;
+	try{
+		// Try to read XML format (new config file)
+	  FileInputStream fr = new FileInputStream(System.getProperty("user.home")+File.separator+".xlogo");
+      BufferedInputStream bis = new BufferedInputStream(fr);	
+      InputStreamReader isr = new  InputStreamReader(bis,  "UTF8");		
+      try{
+      	XMLReader saxReader = XMLReaderFactory.createXMLReader();
+      	saxReader.setContentHandler(new SimpleContentHandler());
+      	saxReader.parse(new InputSource(isr));
+      }
+      catch (SAXException e){
+      	// Read the old config file format
+  	  String s="";      	
+	  FileReader ifr = new FileReader(System.getProperty("user.home")+File.separator+".xlogo");
+	   while(ifr.ready()){
+		char[] b = new char[64];
+		int i=ifr.read(b);
+		if (i==-1) break;
+		s+=new String(b);
+	  }
+	  StringTokenizer st=new StringTokenizer(s,"\n");
+	  
+	  while(st.hasMoreTokens()){
+		String element=st.nextToken();
+		
+		if (element.equals("# langue")){
+			element=st.nextToken();
+		  	int id=Integer.parseInt(element);
+		  	Config.langage=id;
+		  	generateLanguage(id);
+		}
+		else if (element.equals("# vitesse")){
+		  element=st.nextToken();
+		  Config.turtleSpeed=Integer.parseInt(element);
+		}
+		else if (element.equals("# tortue choisie")) {
+		  element=st.nextToken();
+		  Config.activeTurtle=Integer.parseInt(element);
+		}
+		else if (element.equals("# nb max de tortues")){
+			element=st.nextToken();
+			Config.maxTurtles=Integer.parseInt(element);
+		}
+		else if(element.equals("# forme crayon")){
+			element=st.nextToken();
+			Config.penShape=Integer.parseInt(element);
+		}
+		else if(element.equals("# effacer dessin en quittant editeur")){
+			int id=Integer.parseInt(st.nextToken());
+			if (id==0) Config.eraseImage=false;
+			else Config.eraseImage=true;
+		}
+		else if(element.equals("# epaisseur max crayon")){
+			element=st.nextToken();
+			Config.maxPenWidth=Integer.parseInt(element);
+		}
+		else if(element.equals("# repertoire par defaut")) {
+				Config.defaultFolder=st.nextToken();
+                  File f=new File(Config.defaultFolder);
+                  if (!f.isDirectory()) Config.defaultFolder=System.getProperty("user.home");
+		}
+		else if (element.equals("# a executer au demarrage")){
+			element=st.nextToken();
+			if (!element.equals("# aucun")) Config.a_executer=element;
+		}
+		else if (element.equals("# police")){
+			element=st.nextToken();
+			String nom=element;
+			element=st.nextToken();
+			Config.police=new Font(nom,Font.PLAIN,Integer.parseInt(element));
+		}
+		else if(element.equals("# hauteur")){
+			Config.imageHeight=Integer.parseInt(st.nextToken());
+		}
+		else if(element.equals("# largeur")){
+			Config.imageWidth=Integer.parseInt(st.nextToken());
+		}
+		else if (element.equals("# memoire")){
+			element=st.nextToken();
+			Config.memoire=Integer.parseInt(element);
+			Config.tmp_memoire=Integer.parseInt(element);
+		}
+		else if (element.equals("# qualite")){
+			element=st.nextToken();
+			Config.quality=Integer.parseInt(element);
+		}
+		else if (element.equals("# coloration")){
+			element=st.nextToken();
+			StringTokenizer sti=new StringTokenizer(element);
+			if (sti.countTokens()==9){
+				Config.COLOR_ENABLED=(new Boolean(sti.nextToken())).booleanValue();
+				Config.coloration_commentaire=Integer.parseInt(sti.nextToken());	
+				Config.coloration_operande=Integer.parseInt(sti.nextToken());
+				Config.coloration_parenthese=Integer.parseInt(sti.nextToken());
+				Config.coloration_primitive=Integer.parseInt(sti.nextToken());
+				Config.style_commentaire=Integer.parseInt(sti.nextToken());
+				Config.style_operande=Integer.parseInt(sti.nextToken());
+				Config.style_parenthese=Integer.parseInt(sti.nextToken());
+				Config.style_primitive=Integer.parseInt(sti.nextToken());
+			}
+		}
+		else if (element.equals("# fichiers de demarrage")) {
+		  while (st.hasMoreTokens()){
+			  element=st.nextToken();
+//			  System.out.println(path+" "+element);
+			if (!element.startsWith("#")) Config.path.push(element);
+		  }
+		}
+	  }}
+	}
+	catch(Exception e){
+	  System.out.println(e.toString());
+	  try{
+		  SwingUtilities.invokeAndWait(new Runnable(){
+			  public void run(){
+				  select=new Selection_Langue();	
+			  } 
+		  });
+	  }
+	  catch(Exception e1){}
+	  	while(!select.getSelection_faite()){
+			try{
+				Thread.sleep(50);
+			}
+			catch(InterruptedException e1){}
+		}
+		select.dispose();
+
+		locale=generateLocale(Config.langage);
+		messages=ResourceBundle.getBundle("langage",locale);
+	}
+  }
+
+  
+ 
+/**
+ * The main methods
+ * @param args The file *.lgo to load on startup
+ */
+  public static void main(String[] args)   {
+  /*	JEditorPane jep=new JEditorPane();
+  	jep.setEditable(false);
+  	try{
+  		
+  		java.net.URL url=new java.net.URL("http://xlogo.tuxfamily.org");
+  		jep.setPage(url);
+  	}
+    catch(UnknownHostException e2){System.out.println("non connecté");}
+  	catch(java.io.IOException e1){System.out.println(e1.getStackTrace());
+  System.out.println(e1.toString());
+  }
+
+  	javax.swing.JFrame jf=new javax.swing.JFrame();
+  	jf.getContentPane().add(jep);
+  	jf.setVisible(true);
+  	
+  	Toolkit.getDefaultToolkit().beep();*/
+	  //new Test();
+	  try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+    }
+/*    String tampon="";
+
+    for(int i=0;i<args.length;i++){
+    	if (i!=args.length-1) tampon+=args[i]+" ";
+    	else tampon+=args[i];
+    }
+    StringTokenizer st=new StringTokenizer(tampon, "\u001B");
+    while(st.hasMoreTokens()){
+    	String element=st.nextToken();
+    	Config.path.push(element);
+    }
+    */
+    //Recuperer les fichiers de démarrage correspondant au double clic de souris
+    // ou au lancement en ligne de commande
+    for(int i=0;i<args.length;i++){
+    	Config.path.push(args[i]);
+    }
+    
+     
+    Config.path.add(0,"#####");
+    //try{;
+    	new Logo();
+/*    }
+    catch(Exception e){
+
+    	JFrame jf=new JFrame();
+    	
+
+    	String message=e.toString()+"\n"+e.getMessage();
+    	
+    	System.out.println(message);
+		JTextArea jt=new JTextArea(message);
+		jt.setPreferredSize(new Dimension(400,400));
+		jt.setEditable(false);
+		jt.setBackground(new Color(255,255,177));
+		jt.setFont(Config.police);
+		jf.getContentPane().add(jt);
+		jf.pack();
+    	jf.setVisible(true);
+    }*/
+    }
+}
