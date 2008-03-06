@@ -8,13 +8,8 @@ package xlogo;
 import java.util.StringTokenizer;
 import java.io.File;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
-import javax.swing.JFrame;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;

@@ -924,9 +924,12 @@ public class Application extends JFrame {
 	 * This boolean indicates if the viewer3D is visible
 	 * @return true or false
 	 */
-	public boolean view3DVisible(){
+	public boolean viewer3DVisible(){
 		if (null!=viewer3d)	return viewer3d.isVisible();
 		return false;
+	}
+	public void viewer3DClearScreen(){
+		viewer3d.clearScreen();
 	}
 	/**
 	 *  Enable or disable the command line and the play button
@@ -1066,11 +1069,11 @@ public class Application extends JFrame {
 	  */
 	 public void viewerOpen(){
 			if (null==viewer3d||!viewer3d.isVisible()){
-			    viewer3d=new Viewer3D(ardoise.getWorld3D());
+			    viewer3d=new Viewer3D(ardoise.getWorld3D(),ardoise.getBackgroundColor());
 			    viewer3d.requestFocus();
 			   }
 			   else {
-				   viewer3d.update();
+				   viewer3d.update(ardoise.getBackgroundColor());
 				   viewer3d.setVisible(false);
 				   viewer3d.setVisible(true);
 				    viewer3d.requestFocus();

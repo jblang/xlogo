@@ -1333,6 +1333,11 @@ import xlogo.kernel.perspective.*;
 		// Delete List Polygon in 3D mode
 		DrawPanel.listPoly=new Vector<Shape3D>();
 		DrawPanel.listText=new Vector<TransformGroup>();
+		// Erase the 3d viewer if visible
+		if (cadre.viewer3DVisible()){
+			cadre.viewer3DClearScreen();
+		}
+		
 		
 		g.setPaintMode();
 		couleurfond=Config.screencolor;
@@ -1992,10 +1997,10 @@ import xlogo.kernel.perspective.*;
 	protected void setStroke(Stroke st){
 		g.setStroke(st);
 	}
-	public Color getScreenBackground(){
+	public Color getBackgroundColor(){
 		return couleurfond;
 	}
-	protected void setScreenBackground(Color c){
+	protected void setBackgroundColor(Color c){
 		couleurfond=c;
 	}
 	public void setNumberOfTurtles(int id){

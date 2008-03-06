@@ -84,7 +84,7 @@ public class Affichage extends Thread {
 			}
 		} catch (myException e) {}
 		cadre.setCommandLine(true);
-		if (!cadre.view3DVisible()) cadre.focus_Commande();
+		if (!cadre.viewer3DVisible()) cadre.focus_Commande();
 		execution_lancee = false;
 		cm.setContinuer(false);
 		cadre.error = false;

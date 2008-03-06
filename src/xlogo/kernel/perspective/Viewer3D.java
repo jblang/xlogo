@@ -6,10 +6,12 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.*;
+import java.awt.event.*;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import java.awt.image.BufferedImage;
+import javax.media.j3d.Locale;
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.ImageComponent;
 import javax.media.j3d.PhysicalBody;
@@ -23,8 +25,10 @@ import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.View;
 import javax.media.j3d.ViewPlatform;
+import javax.media.j3d.Background;
 import javax.media.j3d.VirtualUniverse;
 import java.awt.GridBagLayout;
+import java.awt.Color;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -36,21 +40,48 @@ import xlogo.kernel.DrawPanel;
 import xlogo.utils.Utils;
 import xlogo.utils.WriteImage;
 import xlogo.Logo;
+import xlogo.Config;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 public class Viewer3D extends JFrame implements ActionListener{
+	private boolean lock=false; 
 	private ImageIcon iscreenshot=new ImageIcon(Utils.dimensionne_image("screenshot.png",this));
 	private JButton screenshot;
 	private static final long serialVersionUID = 1L;
 	private World3D w3d;
 	private Canvas3D canvas3D;
 	private BranchGroup scene;
-	public Viewer3D(World3D w3d){
+	private SimpleUniverse universe;
+	private Color3f backgroundColor;
+	private Background back;
+	public Viewer3D(World3D w3d,Color c){
 		this.w3d=w3d;
+		this.backgroundColor=new Color3f(c);
+		while(lock){			
+			try{
+				Thread.currentThread().wait(1000);
+			}
+			catch(InterruptedException e){}
+			
+		}
 		initGui();
+	}
+	protected void processWindowEvent(WindowEvent e){
+		super.processWindowEvent(e);		
+		if (e.getID()==WindowEvent.WINDOW_CLOSING){
+			Thread task=new Thread(){
+				public void run(){
+					lock=true;
+					universe.cleanup();
+					lock=false;
+				}
+			};
+			task.start();
+
+		}
 	}
 	public void actionPerformed(ActionEvent e){
 		String cmd=e.getActionCommand();
@@ -72,16 +103,27 @@ public class Viewer3D extends JFrame implements ActionListener{
 			  }
 		}
 	}
-	
 	private void initGui(){
+
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
 		setTitle(Logo.messages.getString("3d.viewer"));
-		// Create my own universe;
+		// Creation d'un composant de classe Canvas3D permettant de visualiser une scène 3D
+		canvas3D = new Canvas3D (SimpleUniverse.getPreferredConfiguration ());
+	    // Création d'un univers 3D rattaché au composant 3D
+	    universe = new SimpleUniverse (canvas3D);
+	    
+
+	 	 
+			
+	/*	// Create my own universe;
+		
+		
 		GraphicsConfiguration config =
 			   SimpleUniverse.getPreferredConfiguration () ;
 		canvas3D = new Canvas3D (config) ;
-		VirtualUniverse universe = new VirtualUniverse () ;
-		javax.media.j3d.Locale locale = new javax.media.j3d.Locale (universe) ;
+		universe = new VirtualUniverse () ;
+//		Locale locale = new javax.media.j3d.Locale (universe) ;
 		ViewPlatform viewPlatform = new ViewPlatform () ;
 		PhysicalBody physicalBody = new PhysicalBody () ;
 		PhysicalEnvironment physicalEnvironment = new PhysicalEnvironment () ;
@@ -90,11 +132,13 @@ public class Viewer3D extends JFrame implements ActionListener{
 		view.setPhysicalBody (physicalBody) ;
 		view.setPhysicalEnvironment (physicalEnvironment) ;
 		view.attachViewPlatform (viewPlatform) ;
+		
 		ViewingPlatform viewingPlatform = new ViewingPlatform () ;
 		viewingPlatform.setViewPlatform (viewPlatform) ;
-		
+		*/
+	    
 		// Install the camera at the valid position with correct orientation
-		TransformGroup tg=viewingPlatform.getViewPlatformTransform();
+		TransformGroup tg=universe.getViewingPlatform().getViewPlatformTransform();
 		Transform3D trans=new Transform3D();			
 		trans.setTranslation(new Vector3d(-w3d.xCamera/1000,-w3d.yCamera/1000,-w3d.zCamera/1000));
 		Transform3D rot=new Transform3D();
@@ -106,13 +150,24 @@ public class Viewer3D extends JFrame implements ActionListener{
 		OrbitBehavior ob=new OrbitBehavior(canvas3D,OrbitBehavior.REVERSE_ALL);
 		ob.setRotationCenter(new Point3d(0,0,0));
 		ob.setSchedulingBounds(new BoundingSphere(new Point3d(0,0,0),2*w3d.r/1000));
-		viewingPlatform.setViewPlatformBehavior(ob);
-		viewingPlatform.compile () ;
+		universe.getViewingPlatform().setViewPlatformBehavior(ob);
+	//universe.getViewingPlatform().compile () ;
+		
+		
+		
 		// Create scene Graph
-		createSceneGraph () ;
-		locale.addBranchGraph (viewingPlatform) ;
-		locale.addBranchGraph (scene) ;
+		createSceneGraph ();
+		
+	    // Rattachement de la scène 3D à l'univers
+	    universe.addBranchGraph (scene);
+		
+	    
+	    
+	    /*		locale.addBranchGraph (viewingPlatform) ;
+		locale.addBranchGraph (scene) ;*/
 
+		
+		
 		Dimension d=Toolkit.getDefaultToolkit().getScreenSize();
 		int width=d.width*9/10;
 		int height=d.height*9/10;
@@ -148,7 +203,7 @@ public class Viewer3D extends JFrame implements ActionListener{
 			s.setAppearance(appear);*/
 				bg.addChild(DrawPanel.listPoly.get(i));
 			}
-//			System.out.println(bg.getParent());
+			//			System.out.println(bg.getParent());
 			if (null==DrawPanel.listText) scene.addChild(bg);
 			DrawPanel.listPoly=new Vector<Shape3D>();
 		}   
@@ -160,13 +215,27 @@ public class Viewer3D extends JFrame implements ActionListener{
 			scene.addChild(bg);
     		DrawPanel.listText=new Vector<TransformGroup>();
     	}
+       	
+
+		if (null==back){
+			back=new Background(backgroundColor);
+			back.setApplicationBounds(new BoundingSphere()) ;
+			back.setCapability(Background.ALLOW_COLOR_WRITE);
+			bg.addChild(back);
+		}
+		else {
+			back.setColor(backgroundColor);
+		}
 	}
-	
+	/**
+	 * Create The initial Scene with java3D 
+	 */
 	private void createSceneGraph() {
 		// Create the root of the branch graph
-		scene= new BranchGroup();
+		scene= new BranchGroup();		
+		scene.setName("Main Branch");
 		scene.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
-
+		scene.setCapability(BranchGroup.ALLOW_DETACH);
 //		TransformGroup mainGroup=new TransformGroup();
 //		scene.addChild(mainGroup);
 		add3DObjects();
@@ -183,7 +252,36 @@ public class Viewer3D extends JFrame implements ActionListener{
 		light2.setInfluencingBounds(new BoundingSphere(new Point3d(-w3d.xCamera/1000,-w3d.yCamera/1000,-w3d.zCamera/1000),Double.MAX_VALUE));
 		scene.addChild(light2);
 	}
-	public void update(){
+	/**
+	 * This methods erase all drawings on the 3D Viewer Drawing Area
+	 */
+	public void clearScreen(){
+		Enumeration<Locale> locales=universe.getAllLocales();
+		while(locales.hasMoreElements()){
+			Locale lo=locales.nextElement();
+			Enumeration<BranchGroup> en=lo.getAllBranchGraphs();
+			while(en.hasMoreElements()){
+				BranchGroup bg=en.nextElement();
+//				System.out.println(bg.getName());
+				if (null!=bg.getName()&&bg.getName().equals("Main Branch")){
+					bg.detach();
+
+					bg.removeAllChildren();
+					back=new Background(backgroundColor);
+					back.setApplicationBounds(new BoundingSphere()) ;
+					back.setCapability(Background.ALLOW_COLOR_WRITE);
+					bg.addChild(back);
+					lo.addBranchGraph(bg);
+				}
+			}				
+		}
+	}
+	/**
+	 * This method update the viewer3D when it's already visible
+	 * @param c: The Bacgkground screen Color
+	 */
+	public void update(Color c){
+		backgroundColor=new Color3f(c);
 		add3DObjects();
 	
 	}

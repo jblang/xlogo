@@ -316,7 +316,7 @@ public class LaunchPrimitive {
 				// if mode penerase isn't active yet
 				if (kernel.getActiveTurtle().couleurmodedessin.equals(kernel.getActiveTurtle().couleurcrayon)){
 					kernel.getActiveTurtle().couleurmodedessin = kernel.getActiveTurtle().couleurcrayon;
-					kernel.getActiveTurtle().couleurcrayon = cadre.getArdoise().getScreenBackground();
+					kernel.getActiveTurtle().couleurcrayon = cadre.getArdoise().getBackgroundColor();
 				}
 				break;
 			case 21: // inversecrayon
@@ -1283,7 +1283,7 @@ public class LaunchPrimitive {
 				break;
 			case 102: //couleurfond
 				Interprete.operande = true;
-				Color color=cadre.getArdoise().getScreenBackground();
+				Color color=cadre.getArdoise().getBackgroundColor();
 				Interprete.calcul.push("[ " + color.getRed() + " "
 						+ color.getGreen() + " "
 						+ color.getBlue() + " ] ");
@@ -2822,10 +2822,11 @@ public class LaunchPrimitive {
            				Config.drawXAxis=false;
            				Config.drawYAxis=false;
            				cadre.getArdoise().origine();
-    					cadre.getArdoise().setScreenBackground(Color.WHITE);
+    					cadre.getArdoise().setBackgroundColor(Color.WHITE);
     					if (kernel.getActiveTurtle().id == 0) {
     						Config.activeTurtle = 0;
     					}
+    					DrawPanel.etat_fenetre=DrawPanel.WINDOW_CLASSIC;
    						String chemin = "tortue0.png";
    						kernel.change_image_tortue(chemin);
     					cadre.getArdoise().fcfg(Color.WHITE);

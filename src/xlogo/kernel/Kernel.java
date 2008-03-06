@@ -66,7 +66,7 @@ public class Kernel {
 			 app.getArdoise().setQuality(id);
 		}
 		 public Color getScreenBackground(){
-			 	return app.getArdoise().getScreenBackground();
+			 	return app.getArdoise().getBackgroundColor();
 			 }
 
 			public void change_image_tortue(String chemin){

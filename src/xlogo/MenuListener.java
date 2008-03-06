@@ -174,7 +174,7 @@ public class MenuListener extends JDialog implements ActionListener{
 			}
     }
     else if(MenuListener.TOOLS_SCREEN_COLOR.equals(cmd)){      //couleur du fond
-    Color color=JColorChooser.showDialog(cadre,Logo.messages.getString("couleur_du_fond"),cadre.getArdoise().getScreenBackground());
+    Color color=JColorChooser.showDialog(cadre,Logo.messages.getString("couleur_du_fond"),cadre.getArdoise().getBackgroundColor());
     if (null!=color){
       Locale locale=Logo.generateLocale(Config.langage);
       java.util.ResourceBundle rs=java.util.ResourceBundle.getBundle("primitives",locale);
