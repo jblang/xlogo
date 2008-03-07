@@ -445,7 +445,7 @@ public class LaunchPrimitive {
 					} catch (myException e) {
 					}
 				}
-				if (!Interprete.nom.isEmpty()){
+				if (!Interprete.nom.isEmpty()&&!Interprete.nom.peek().equals("\n")){
 					try{
 						throw new myException(cadre,Interprete.en_cours.peek()+" "+Logo.messages.getString("ne_renvoie_pas")+" "+Interprete.nom.peek().toString());
 					}
