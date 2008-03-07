@@ -133,14 +133,36 @@ public class Primitive {
 			car=Interprete.tueniveau("\\", cadre);
 		} catch (myException e) {
 		}
+		
 		// A procedure has been stopped
 		if (car.equals("\n")){
-			if (!Interprete.nom.isEmpty()&&!Interprete.nom.equals("\n"))
+			String en_cours=Interprete.en_cours.pop();
+			Interprete.locale = Interprete.stockvariable.pop();
+			// Example: 	to bug
+			//				fd stop
+			//				end 
+			// 				--------
+			//				bug
+			//				stop doesn't output to fd
+			if (!Interprete.nom.isEmpty()&&!Interprete.nom.peek().equals("\n")){
+			//	System.out.println(Interprete.nom);
 				throw new myException(cadre, Utils.primitiveName("controls.stop")
 						+ " " + Logo.messages.getString("ne_renvoie_pas") + " "
-						+ Interprete.nom.peek());
+						+ Interprete.nom.peek());}
 			else if (!Interprete.nom.isEmpty()){
+				// Removing the character "\n"
 				Interprete.nom.pop();
+				// Example: 	to bug		|	to bug2
+				// 				fd bug2		|	stop
+				//				end			|	end
+				//				------------------------
+				// 				bug
+				//				bug2 doesn't output to fd		
+				if (!Interprete.nom.isEmpty()&&!Interprete.nom.peek().equals("\n")){
+					//	System.out.println(Interprete.nom);
+						throw new myException(cadre, en_cours
+								+ " " + Logo.messages.getString("ne_renvoie_pas") + " "
+								+ Interprete.nom.peek());}
 			}
 		}
 	}
@@ -158,6 +180,8 @@ public class Primitive {
 							+ val);
 			cadre.ecris("normal", Utils.SortieTexte(buffer.toString()) + "\n");
 		}
+		Interprete.en_cours.pop();
+		Interprete.locale = Interprete.stockvariable.pop();
 		if ((!Interprete.nom.isEmpty())
 				&& Interprete.nom.peek().equals("\n")) {
 			try {

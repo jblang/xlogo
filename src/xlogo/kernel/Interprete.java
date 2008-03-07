@@ -366,6 +366,8 @@ public class Interprete {
 															.getString("ne_renvoie_pas")
 													+ " "
 													+ nom.peek());
+									
+								
 							}
 						}
 					}
@@ -827,10 +829,13 @@ public class Interprete {
 			instruction = new StringBuffer(" ");// instruction.substring(marqueur,instruction.length());
 		else
 			instruction = instruction.delete(0, marqueur + 2);
-		if (caractere.equals("\n")) {
+/*		if (caractere.equals("\n")) {
 			Interprete.en_cours.pop();
 			Interprete.locale = Interprete.stockvariable.pop();
 		} else {
+			Primitive.stackLoop.pop();
+		}*/
+		if (!caractere.equals("\n")) {
 			Primitive.stackLoop.pop();
 		}
 		return (caractere);

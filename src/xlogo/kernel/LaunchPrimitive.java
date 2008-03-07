@@ -445,12 +445,12 @@ public class LaunchPrimitive {
 					} catch (myException e) {
 					}
 				}
-/*				if (!Interprete.nom.isEmpty()){
+				if (!Interprete.nom.isEmpty()){
 					try{
 						throw new myException(cadre,Interprete.en_cours.peek()+" "+Logo.messages.getString("ne_renvoie_pas")+" "+Interprete.nom.peek().toString());
 					}
 					catch(myException e){}
-				}*/
+				}
 				if (!Interprete.en_cours.isEmpty()) Interprete.en_cours.pop();
 				break;
 			case 40: // opérateur interne \ signalant une fin de boucle
