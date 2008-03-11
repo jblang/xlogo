@@ -48,7 +48,12 @@ public class Logo {
   private Selection_Langue select=null;
   /**Builds Application with the valid Config*/
   public Logo() {
+	  // Read the XML file .xlogo and extract default config
     readConfig();
+    
+    // Overwrite loaded config with command line arguments
+    readCommandLineConfig();
+    
     Config.defaultFolder=Utils.rajoute_backslash(Config.defaultFolder);
     if (null==messages)  generateLanguage(Config.langage); //Au cas où si le fichier de démarrage ne contient rien sur la langue
     // Initialize frame
@@ -74,9 +79,20 @@ public class Logo {
     	    // generate primitives and start up files
     	    frame.genere_primitive(); 
     	     
-    	    //On lance le fichier à exécuter au démarrage s'il existe
-    	    // File (if it exists) to execute when XLogo is starting
-    	    if (!Config.a_executer.equals("")) {     
+    	    // On Enregistre le temps auquel la session a commencé
+    	    // hour when we launch XLogo
+    	    Config.heure_demarrage=Calendar.getInstance().getTimeInMillis();
+    	    
+    	    
+    	    // Command to execute on startup 
+    	    
+    	    // If this command is defined from the command line
+    	    if (Config.autoLaunch){
+    	  	  frame.affichage_Start(Utils.decoupe(Config.mainCommand));
+    		  frame.getHistoryPanel().ecris("normal", Config.mainCommand+"\n");
+    	    }
+    	    // Else if this command is defined from the Start Up Dialog Box   	    
+    	    else if (!Config.a_executer.equals("")) {     
     		      frame.affichage=new Affichage(frame,Utils.decoupe(Config.a_executer));
     			   frame.affichage.start(); 
     	    }
@@ -87,9 +103,6 @@ public class Logo {
     	   }
       });
 
-    // On Enregistre le temps auquel la session a commencé
-    // hour when we launch XLogo
-    Config.heure_demarrage=Calendar.getInstance().getTimeInMillis();
   	}
   /**
    * Initializes the main Frame
@@ -160,7 +173,41 @@ public class Logo {
   return locale;
   }
   /**
-   * This method initialises all arguments from the file .xlogo
+   * This method initializes all XLogo's parameters from Command Line
+   * java -jar xlogo.jar -a -lang fr file1.lgo ... 
+   */
+  private void readCommandLineConfig(){
+	  int i=0;
+	  while(i<Config.path.size()){
+		  String element=Config.path.get(i);
+		  // AutoLaunch main Command on startup
+		  if (element.equals("-a")){
+			  Config.autoLaunch=true;
+			  Config.path.remove(i);
+		  }
+		  // Choosing language
+		  else if (element.equals("-lang")){
+			  Config.path.remove(i);
+			  if (i<Config.path.size()) {
+				  element=Config.path.get(i);
+				  String[] lang={"fr","en","ar","es","pt","eo","de","gl"};
+				  for (int j=0;j<lang.length;j++){
+					  if (lang[j].equals(element)){
+						  Config.langage=j;
+						  Logo.generateLanguage(j);
+						  break;
+					  }
+				  }
+				  Config.path.remove(i);
+			  }
+		  }
+		  // Logo Files
+		  else i++;
+	  }
+  }
+  
+  /**
+   * This method initializes all parameters from the file .xlogo
    */
   private void readConfig(){
 	Locale locale=null;
@@ -342,8 +389,9 @@ public class Logo {
     */
     //Recuperer les fichiers de démarrage correspondant au double clic de souris
     // ou au lancement en ligne de commande
+    
     for(int i=0;i<args.length;i++){
-    	Config.path.push(args[i]);
+    		Config.path.push(args[i]);
     }
     
      

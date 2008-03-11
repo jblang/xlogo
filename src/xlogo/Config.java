@@ -19,7 +19,7 @@ import java.util.Vector;
  */
 public class Config {
 	/** Version number**/
-	static final String version="0.9.92 RC1 build March,7, 2008";
+	static final String version="0.9.92 RC2 build March,11, 2008";
 	/** Drawing Quality **/
 	public static int quality=0;
 	/** Drawing Quality: normal **/
@@ -241,6 +241,11 @@ public class Config {
   public static String[] borderInternalImage={"background.png"};
   /** This String represents the main command accessible with the button play in the toolbar**/
   public static String mainCommand="";
+  /**
+   * This boolean indicates if Xlogo must launch the main Command on XLogo startup
+   * It overrides the String a_executer
+   */
+  public static boolean autoLaunch=false;
   /**
    * Default Constructor
    */

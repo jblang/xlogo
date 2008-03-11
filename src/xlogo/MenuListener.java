@@ -127,7 +127,7 @@ public class MenuListener extends JDialog implements ActionListener{
 				.getString("menu.file.save"));
         if (retval==JFileChooser.APPROVE_OPTION){
           path=jf.getSelectedFile().getPath();
-          String path2=path.toLowerCase();  // on garde la casse du path pour les syst�mes d'exploitation faisant la diff�rence
+          String path2=path.toLowerCase();  // on garde la casse du path pour les systemes d'exploitation faisant la diff�rence
           if (!path2.endsWith(".lgo")) path+=".lgo";
           Application.path=path;
 					cadre.setEnabled_Record(true);
@@ -319,7 +319,7 @@ public class MenuListener extends JDialog implements ActionListener{
     frame.getContentPane().add(editorScrollPane);
     frame.setVisible(true);
   }  
-  else if (MenuListener.TOOLS_START_FILE.equals(cmd)){   // d�finir les fichiers de d�marrage
+  else if (MenuListener.TOOLS_START_FILE.equals(cmd)){   // definir les fichiers de demarrage
   	cadre.demOpen();
   }
     // Tool to translate XLogo
