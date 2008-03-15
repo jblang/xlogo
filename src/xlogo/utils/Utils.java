@@ -95,13 +95,29 @@ public class Utils {
 		}
 		return new String(buffer);
 	}
-	public static StringBuffer decoupe(String st) { //Supprime les enchainements d'espaces inutiles et modifie le caractère \ en \\ 
+	/**
+	 * This method is formatting the String st.<br>
+	 * - Unused white spaces are deleted.<br>
+	 * - The character \ is modified to \\ <br>
+	 * - The sequence "\ " is modified to "\e"<br>
+	 * - The sequence "\ " is modified to "\e"<br>
+ 	 * - The sequence "\ " is modified to "\e"<br>
+ 	 * - The sequence "\ " is modified to "\e"<br>
+	 * @param st The String instruction to format
+	 * @return The formatted instructions
+	 */
+	public static StringBuffer decoupe(String st) {  
 		StringBuffer buffer = new StringBuffer();
+		// If last character is a white space
 		boolean espace=false;
+		// If last character is a backslash
 		boolean backslash=false;
+		// If last character is a word
 		boolean mot=false;
+		
 		int crochet_liste=0;
 //		boolean variable=false;
+		// If XLogo is running a program
 		boolean execution_lancee=Affichage.execution_lancee;
 		for(int i=0;i<st.length();i++){
 			char c=st.charAt(i);
@@ -130,9 +146,9 @@ public class Utils {
 				backslash=false;
 			}
 			else if (c==':'){
-				if (espace&&crochet_liste<=0){
-		//			variable=true;
-				}
+		/*		if (espace&&crochet_liste<=0){
+					variable=true;
+				}*/
 				buffer.append(c);
 				espace=false;
 				backslash=false;
@@ -160,10 +176,20 @@ public class Utils {
 					if (espace) espace=false;
 				}
 				else { 
-					if (espace) buffer.append(c+" ");
+					String op=String.valueOf(c);
+					// Looking for operator <= or >=
+					if (c=='<'||c=='>'){
+						if (i+1<st.length()){
+							if (st.charAt(i+1)=='='){
+								op+="=";
+								i++;
+							}
+						}
+					}
+					if (espace) buffer.append(op+" ");
 					else {
 						espace=true;
-						buffer.append(" "+c+" ");
+						buffer.append(" "+op+" ");
 					}
 				}
 			}
@@ -235,7 +261,7 @@ public class Utils {
            		  txt=new String(sb);
            	  }
            	  catch( java.net.MalformedURLException e){
-           		  System.out.println("Fichier non trouvé");	
+           		  System.out.println("File not found: "+path.toString());	
            	  }
           }
           catch(Exception e){e.printStackTrace();}

@@ -79,6 +79,7 @@ public class Primitive {
 					primitives.put("\\x","212");
 				else {
 					if (cle.length() != 1) {
+						if (!cle.equals(">=")&&!cle.equals("<="))
 						cle = prim.getString(cle);
 					}
 					StringTokenizer st = new StringTokenizer(cle);

@@ -133,7 +133,7 @@ public class Interprete {
 				// exécuter la procédure ou la primitive.
 				Stack<String> param = new Stack<String>();
 				
-				if (29 < i && i < 39) { // Si c'est un opérateur infixé
+				if (isInfixedOperator(i)) { // Si c'est un opérateur infixé
 					deleteLineNumber();
 					operateur = true;
 					operande = false;
@@ -865,5 +865,16 @@ public class Interprete {
 	}
 	private void deleteLineNumber(){
 		lineNumber="";
+	}
+	/**
+	 * This method indicates if a primitive is an infixed operator<br>
+	 * Infixed operators are for example: +,-,*-,/,&,>=.....
+	 * @param id The integer identifiant for the primitive
+	 * @return true or false if it's an infixed operator
+	 */
+	private boolean isInfixedOperator(int id){
+		boolean b1=(29<id)&&(id<39);
+		boolean b2=(id==273)||(id==274);
+		return b1||b2;
 	}
 }

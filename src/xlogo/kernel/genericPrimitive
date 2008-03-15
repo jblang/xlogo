@@ -271,3 +271,5 @@ workspace.plist 1
 3d.pointend 0
 3d.textstart 0
 3d.textend 0
+<= 1
+>= 1

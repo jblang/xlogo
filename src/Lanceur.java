@@ -65,6 +65,7 @@ public class Lanceur {
 			commande[4]=files[0].getAbsolutePath();
 			for (int i=0;i<args.length;i++){
 				commande[i+5]=args[i];
+//				System.out.println("Argument "+i+" "+args[i]);
 			}
 			System.out.println("<----- Starting XLogo ---->");
 			String cmd="";

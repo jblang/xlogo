@@ -19,7 +19,7 @@ import java.util.Vector;
  */
 public class Config {
 	/** Version number**/
-	static final String version="0.9.92 RC2 build March,11, 2008";
+	static final String version="0.9.92 RC3 build March,12, 2008";
 	/** Drawing Quality **/
 	public static int quality=0;
 	/** Drawing Quality: normal **/
