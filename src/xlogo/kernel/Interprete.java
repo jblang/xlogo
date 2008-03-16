@@ -739,19 +739,24 @@ public class Interprete {
 			return (false);
 		return (true);
 	}
-
-	private boolean prioriteinf(String pile, String str) { // teste si le
-															// sommet de la pile
-															// d'analyse
-		/*
-		 * if (parenthesefermante>0) return(false); // est un opérateur de
-		 * priorité strictement else
+	/**
+	 * This method compares the two operators op and str.<br>
+	 * Cette methode teste si l'operateur op (sommet de la pile d'appel) 
+	 * est de priorite strictement inferieur a str 
+	 * @param op The first operator
+	 * @param str The second operator
+	 * @return true if op has a minor priority than str.
+	 */
+	
+	private boolean prioriteinf(String op, String str) { /*
+		 * if (parenthesefermante>0) return(false); //
+		 * else
 		 */
-		if ("*/".indexOf(str) > -1 && "*/".indexOf(pile) == -1)
-			return (true); // inférieure
-		else if ("+-".indexOf(str) > -1 && "=<>|&".indexOf(pile) > -1)
+		if (isTimesDiv(str) && !isTimesDiv(op))
+			return (true); 
+		else if (isPlusMinus(str) &&isLogicOperator(op))
 			return (true);
-		else if ("=><".indexOf(str) > -1 && "|&".indexOf(pile) > -1)
+		else if (">=<=".indexOf(str) > -1 && "|&".indexOf(op) > -1)
 			return (true);
 		return (false);
 	}
@@ -876,5 +881,30 @@ public class Interprete {
 		boolean b1=(29<id)&&(id<39);
 		boolean b2=(id==273)||(id==274);
 		return b1||b2;
+	}
+	/**
+	 * This metods tests if the String op is a logic operator, ie a string like |,&,<,>,=,>=,<=
+	 * @param op The operator to test
+	 * @return true if op is a logic operator
+	 */
+	private boolean isLogicOperator(String op){
+		return ("|&>=<=".indexOf(op)!=-1);
+		
+	}
+	/**
+	 * This metods tests if the String op is + or -
+	 * @param op The operator to test
+	 * @return true if op is + or -
+	 */
+	private boolean isPlusMinus(String op){
+		return (op.equals("+")||op.equals("-"));
+	}
+	/**
+	 * This metods tests if the String op is / or *
+	 * @param op The operator to test
+	 * @return true if op is * or /
+	 */
+	private boolean isTimesDiv(String op){
+		return (op.equals("*")||op.equals("/"));
 	}
 }
