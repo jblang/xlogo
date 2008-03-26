@@ -135,9 +135,9 @@ import xlogo.kernel.perspective.*;
 	protected final static int record3D_POINT=3;
 	protected final static int record3D_TEXT=4;
 	protected static Element3D poly;
-	public static Vector<Shape3D> listPoly=null;
-	public static Vector<TransformGroup> listText=null;
-	
+//	public static Vector<Shape3D> listPoly=null;
+//	public static Vector<TransformGroup> listText=null;
+//	protected final static Shape3D poly;
 	
 	
 	private double[] coords;
@@ -309,7 +309,7 @@ import xlogo.kernel.perspective.*;
 	
 	/**
 	 * This method is used for drawing with primitive "right" or "left"
-	 * @param arg
+	 * @param arg The angle 
 	 */
 	protected void td(double arg) {
 //		System.out.println(tortue.angle);
@@ -449,9 +449,6 @@ import xlogo.kernel.perspective.*;
 		}
 		
 		
-		protected void polyView(){
-			cadre.viewerOpen();			
-		}
 		/**
 		 * Primitive distance
 		 * @param liste The coords 
@@ -886,7 +883,7 @@ import xlogo.kernel.perspective.*;
 		if (indexMax!=angleExtent) indexMax+=2;
 		else indexMax+=1;
 		if (null!=DrawPanel.poly&&DrawPanel.poly.getVertexCount()>1) {
-			try{DrawPanel.poly.addToList();}
+			try{DrawPanel.poly.addToScene();}
 			catch(myException e){}
 		}
 		if (DrawPanel.record3D==DrawPanel.record3D_POLYGON) {
@@ -1330,13 +1327,13 @@ import xlogo.kernel.perspective.*;
 				catch(Exception e){}
 			}
 		}
+		
+		
 		// Delete List Polygon in 3D mode
-		DrawPanel.listPoly=new Vector<Shape3D>();
-		DrawPanel.listText=new Vector<TransformGroup>();
+//		DrawPanel.listPoly=new Vector<Shape3D>();
+//		DrawPanel.listText=new Vector<TransformGroup>();
 		// Erase the 3d viewer if visible
-		if (cadre.viewer3DVisible()){
-			cadre.viewer3DClearScreen();
-		}
+		if (null!=cadre.getViewer3D())	cadre.getViewer3D().clearScreen();
 		
 		
 		g.setPaintMode();
@@ -1641,14 +1638,15 @@ import xlogo.kernel.perspective.*;
 				pa.setBackFaceNormalFlip(true);
 				appear.setPolygonAttributes(pa);
 				text.setAppearance(appear);
-				if (null==DrawPanel.listText) DrawPanel.listText=new Vector<TransformGroup>();
+//				if (null==DrawPanel.listText) DrawPanel.listText=new Vector<TransformGroup>();
 				TransformGroup tg=new TransformGroup();
 				double[][] d=tortue.getRotationMatrix();
 				Matrix3d m=new Matrix3d(d[0][0],d[0][1],d[0][2],d[1][0],d[1][1],d[1][2],d[2][0],d[2][1],d[2][2]);
 				Transform3D t=new Transform3D(m,new Vector3d(tortue.X/1000,tortue.Y/1000,tortue.Z/1000),1);
 				tg.setTransform(t);
 				tg.addChild(text);
-				DrawPanel.listText.add(tg);
+				cadre.getViewer3D().add2DText(tg);
+//				DrawPanel.listText.add(tg);
 			}
 			
 			

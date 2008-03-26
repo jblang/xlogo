@@ -169,6 +169,7 @@ public class MenuListener extends JDialog implements ActionListener{
           if (!cadre.editeur.isVisible()) cadre.editeur.setVisible(true);
          	 cadre.editeur.setEditorStyledText(txt);
          	 cadre.editeur.initMainCommand();
+         	cadre.editeur.discardAllEdits();
         }
        cadre.tmp_path=path;
 			}
@@ -182,15 +183,7 @@ public class MenuListener extends JDialog implements ActionListener{
       fcfg=fcfg.substring(0,fcfg.indexOf(" "));
       cadre.ecris("commentaire",fcfg+" ["+color.getRed()+" "+color.getGreen()+" "+color.getBlue()+"]\n");
       kernel.fcfg(color);
-/*      Graphics g=Ardoise.dessin.getGraphics();
-      g.setColor(color);
-      g.fillRect(0,0,Config.imageWidth,Config.imageHeight);
-      kernel.dg.setScreenBackground(color);
-      kernel.dg.videecran();
-      Graphics graph=cadre.getArdoise().getGraphics();
-      graph.setClip((int)cadre.getActiveTurtle().corX-26,(int)cadre.getActiveTurtle().corY-26,52,52);
-      graph.drawImage(Ardoise.dessin,0,0,cadre.getArdoise());
-      cadre.getArdoise().repaint();*/
+
     }
    }
    else if(MenuListener.TOOLS_PEN_COLOR.equals(cmd)){      //Couleur du crayon

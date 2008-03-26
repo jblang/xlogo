@@ -29,7 +29,7 @@ public class ElementPolygon extends Element3D{
 	/**
 	 * This method calculates all attributes for polygon and add it to the Polygon's list
 	 */
-	public void addToList() throws myException{
+	public void addToScene() throws myException{
 
 		if (vertex.size()<3) throw new myException(app,Logo.messages.getString("error.3d.3vertex"));
 
@@ -105,8 +105,8 @@ public class ElementPolygon extends Element3D{
 		appear.setPolygonAttributes(pa);
 
 		s.setAppearance(appear);
-
-		DrawPanel.listPoly.add(s);
+		app.getViewer3D().add3DObject(s);
+	//	DrawPanel.listPoly.add(s);
 		//DrawPanel.listPoly.add(new Shape3D(tfa2));
 //			System.out.println(DrawPanel.listPoly.size()+" "+vertex.get(i).x+" "+vertex.get(i).y+" "+vertex.get(i).z);
 	}

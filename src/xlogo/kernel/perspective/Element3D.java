@@ -29,9 +29,9 @@ abstract public class Element3D {
 		color.add(c);
 	}
 	/**
-	 * This method calculates all attributes for polygon and add it to the Polygon's list
+	 * This method calculates all attributes for polygon and add it in the 3D Viewer
 	 */
-	abstract public void addToList() throws myException;
+	abstract public void addToScene() throws myException;
 	/**
 	 * This method indicates if the Element3D is a Point.
 	 * @return true if this Element3D is a Point, false otherwise

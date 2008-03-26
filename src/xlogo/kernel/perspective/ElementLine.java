@@ -13,7 +13,7 @@ public class ElementLine extends Element3D {
 	public ElementLine(Application app){
 		super(app);
 	}
-	public void addToList() throws myException {
+	public void addToScene() throws myException {
 //		int[] tab=new int[1];
 	//	tab[0]=vertex.size();		
 		int size=vertex.size();
@@ -39,7 +39,8 @@ public class ElementLine extends Element3D {
 					new Color3f(1f,1.0f,1.0f),new Color3f(1f,1f,1f),64);
 			appear.setMaterial(mat);
 			s.setAppearance(appear);
-			DrawPanel.listPoly.add(s);
+	//		DrawPanel.listPoly.add(s);
+			app.getViewer3D().add3DObject(s);
 		}
 	}
 	public boolean isLine() {

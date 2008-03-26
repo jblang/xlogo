@@ -273,3 +273,4 @@ workspace.plist 1
 3d.textend 0
 <= 1
 >= 1
+workspace.primitives 0

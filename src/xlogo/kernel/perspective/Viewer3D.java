@@ -47,41 +47,21 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 public class Viewer3D extends JFrame implements ActionListener{
-	private boolean lock=false; 
+	//private boolean lock=false; 
 	private ImageIcon iscreenshot=new ImageIcon(Utils.dimensionne_image("screenshot.png",this));
 	private JButton screenshot;
 	private static final long serialVersionUID = 1L;
 	private World3D w3d;
 	private Canvas3D canvas3D;
 	private BranchGroup scene;
+	private BranchManager branchManager;
 	private SimpleUniverse universe;
 	private Color3f backgroundColor;
 	private Background back;
 	public Viewer3D(World3D w3d,Color c){
 		this.w3d=w3d;
 		this.backgroundColor=new Color3f(c);
-		while(lock){			
-			try{
-				Thread.currentThread().wait(1000);
-			}
-			catch(InterruptedException e){}
-			
-		}
 		initGui();
-	}
-	protected void processWindowEvent(WindowEvent e){
-		super.processWindowEvent(e);		
-		if (e.getID()==WindowEvent.WINDOW_CLOSING){
-			Thread task=new Thread(){
-				public void run(){
-					lock=true;
-					universe.cleanup();
-					lock=false;
-				}
-			};
-			task.start();
-
-		}
 	}
 	public void actionPerformed(ActionEvent e){
 		String cmd=e.getActionCommand();
@@ -104,7 +84,6 @@ public class Viewer3D extends JFrame implements ActionListener{
 		}
 	}
 	private void initGui(){
-
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
 		setTitle(Logo.messages.getString("3d.viewer"));
@@ -112,31 +91,7 @@ public class Viewer3D extends JFrame implements ActionListener{
 		canvas3D = new Canvas3D (SimpleUniverse.getPreferredConfiguration ());
 	    // Création d'un univers 3D rattaché au composant 3D
 	    universe = new SimpleUniverse (canvas3D);
-	    
-
-	 	 
 			
-	/*	// Create my own universe;
-		
-		
-		GraphicsConfiguration config =
-			   SimpleUniverse.getPreferredConfiguration () ;
-		canvas3D = new Canvas3D (config) ;
-		universe = new VirtualUniverse () ;
-//		Locale locale = new javax.media.j3d.Locale (universe) ;
-		ViewPlatform viewPlatform = new ViewPlatform () ;
-		PhysicalBody physicalBody = new PhysicalBody () ;
-		PhysicalEnvironment physicalEnvironment = new PhysicalEnvironment () ;
-		View view = new View () ;
-		view.addCanvas3D (canvas3D) ;
-		view.setPhysicalBody (physicalBody) ;
-		view.setPhysicalEnvironment (physicalEnvironment) ;
-		view.attachViewPlatform (viewPlatform) ;
-		
-		ViewingPlatform viewingPlatform = new ViewingPlatform () ;
-		viewingPlatform.setViewPlatform (viewPlatform) ;
-		*/
-	    
 		// Install the camera at the valid position with correct orientation
 		TransformGroup tg=universe.getViewingPlatform().getViewPlatformTransform();
 		Transform3D trans=new Transform3D();			
@@ -151,23 +106,23 @@ public class Viewer3D extends JFrame implements ActionListener{
 		ob.setRotationCenter(new Point3d(0,0,0));
 		ob.setSchedulingBounds(new BoundingSphere(new Point3d(0,0,0),2*w3d.r/1000));
 		universe.getViewingPlatform().setViewPlatformBehavior(ob);
-	//universe.getViewingPlatform().compile () ;
-		
-		
-		
+	
 		// Create scene Graph
-		createSceneGraph ();
+
+		// Create the root of the branch graph
+		scene= new BranchGroup();
+		branchManager=new BranchManager();
+		scene.setName("Main Branch");
+		scene.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
+		scene.setCapability(BranchGroup.ALLOW_DETACH);
 		
+		createBackground(scene);
+		addLights(scene);
+		
+		//createSceneGraph ();
 	    // Rattachement de la scène 3D à l'univers
 	    universe.addBranchGraph (scene);
-		
-	    
-	    
-	    /*		locale.addBranchGraph (viewingPlatform) ;
-		locale.addBranchGraph (scene) ;*/
-
-		
-		
+	    	
 		Dimension d=Toolkit.getDefaultToolkit().getScreenSize();
 		int width=d.width*9/10;
 		int height=d.height*9/10;
@@ -184,76 +139,42 @@ public class Viewer3D extends JFrame implements ActionListener{
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
 						10, 10, 10, 10), 0, 0));		
 		getContentPane().validate();
-		setVisible(true);
-	}
-
-	private void add3DObjects(){
-		BranchGroup bg=new BranchGroup();
-
-		if (null!=DrawPanel.listPoly){
-			for (int i=0;i<DrawPanel.listPoly.size();i++){
-				//Shape3D s=DrawPanel.listPoly.get(i);	
-			
-	/*		Material mat=new Material(new Color3f(1.0f,1.0f,1.0f),new Color3f(0.0f,0f,0f),
-					new Color3f(1f,1.0f,1.0f),new Color3f(1f,1f,1f),64);
-			Appearance appear=new Appearance();
-			appear.setPolygonAttributes(new PolygonAttributes(PolygonAttributes.POLYGON_FILL,
-					PolygonAttributes.CULL_BACK,0));
-			appear.setMaterial(mat);
-			s.setAppearance(appear);*/
-				bg.addChild(DrawPanel.listPoly.get(i));
-			}
-			//			System.out.println(bg.getParent());
-			if (null==DrawPanel.listText) scene.addChild(bg);
-			DrawPanel.listPoly=new Vector<Shape3D>();
-		}   
-
-       	if (null!=DrawPanel.listText){;
-    		for (int i=0;i<DrawPanel.listText.size();i++){
-    			bg.addChild(DrawPanel.listText.get(i));
-    		}
-			scene.addChild(bg);
-    		DrawPanel.listText=new Vector<TransformGroup>();
-    	}
-       	
-
-		if (null==back){
-			back=new Background(backgroundColor);
-			back.setApplicationBounds(new BoundingSphere()) ;
-			back.setCapability(Background.ALLOW_COLOR_WRITE);
-			bg.addChild(back);
-		}
-		else {
-			back.setColor(backgroundColor);
-		}
 	}
 	/**
-	 * Create The initial Scene with java3D 
+	 * This method adds a shape3D to the main scene
+	 * @param s The Shape to add
 	 */
-	private void createSceneGraph() {
-		// Create the root of the branch graph
-		scene= new BranchGroup();		
-		scene.setName("Main Branch");
-		scene.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
-		scene.setCapability(BranchGroup.ALLOW_DETACH);
-//		TransformGroup mainGroup=new TransformGroup();
-//		scene.addChild(mainGroup);
-		add3DObjects();
+	public void add3DObject(Shape3D s){
+		branchManager.add3DObject(s);
+	}
+	public void add2DText(TransformGroup tg){
+		branchManager.add2DText(tg);
+	}
+	
+	public void insertBranch(){
+		branchManager.insertBranch();
+		branchManager=new BranchManager();
+	}
+	
+	/**
+	 * Add two lights for the main 3D scene
+	 */
+	private void addLights(BranchGroup bg){
 		PointLight light=new PointLight();
 		light.setColor(new Color3f(1f,1f,1f));
 		light.setPosition((float)w3d.xCamera/1000,(float)w3d.yCamera/1000,(float)w3d.zCamera/1000);
 		light.setAttenuation(1,0,0);
 		light.setInfluencingBounds(new BoundingSphere(new Point3d(w3d.xCamera/1000,w3d.yCamera/1000,w3d.zCamera/1000),Double.MAX_VALUE));
-		scene.addChild(light);
+		bg.addChild(light);
 		PointLight light2=new PointLight();
 		light2.setColor(new Color3f(1f,1f,1f));
 		light2.setPosition(-(float)w3d.xCamera/1000,-(float)w3d.yCamera/1000,-(float)w3d.zCamera/1000);
 		light2.setAttenuation(1,0,0);
 		light2.setInfluencingBounds(new BoundingSphere(new Point3d(-w3d.xCamera/1000,-w3d.yCamera/1000,-w3d.zCamera/1000),Double.MAX_VALUE));
-		scene.addChild(light2);
+		bg.addChild(light2);
 	}
 	/**
-	 * This methods erase all drawings on the 3D Viewer Drawing Area
+	 * This methods erase all drawings on the 3D Viewer Drwing Area
 	 */
 	public void clearScreen(){
 		Enumeration<Locale> locales=universe.getAllLocales();
@@ -264,25 +185,47 @@ public class Viewer3D extends JFrame implements ActionListener{
 				BranchGroup bg=en.nextElement();
 //				System.out.println(bg.getName());
 				if (null!=bg.getName()&&bg.getName().equals("Main Branch")){
+					// Detach scene
 					bg.detach();
-
+					// Delete all nodes
 					bg.removeAllChildren();
-					back=new Background(backgroundColor);
-					back.setApplicationBounds(new BoundingSphere()) ;
-					back.setCapability(Background.ALLOW_COLOR_WRITE);
-					bg.addChild(back);
+					// create background
+					createBackground(bg);
+					// Add lights
+					addLights(bg);
+					// Attach scene
 					lo.addBranchGraph(bg);
 				}
 			}				
 		}
 	}
 	/**
-	 * This method update the viewer3D when it's already visible
-	 * @param c: The Bacgkground screen Color
+	 * This method creates the Background with the defined color
 	 */
-	public void update(Color c){
-		backgroundColor=new Color3f(c);
-		add3DObjects();
-	
+	public void createBackground(BranchGroup bg){
+		back=new Background(backgroundColor);
+		back.setApplicationBounds(new BoundingSphere()) ;
+		back.setCapability(Background.ALLOW_COLOR_WRITE);
+		bg.addChild(back);
 	}
+	class BranchManager{
+		BranchGroup bg;
+		BranchManager(){
+			bg=new BranchGroup();
+		}
+		/**
+		 * This method adds a shape3D to the main scene
+		 * @param s The Shape to add
+		 */
+		void add3DObject(Shape3D s){
+			bg.addChild(s);
+		}
+		void add2DText(TransformGroup tg){
+			bg.addChild(tg);
+		}
+		void insertBranch(){
+			bg.compile();
+			scene.addChild(bg);
+		}
+	} 
 }

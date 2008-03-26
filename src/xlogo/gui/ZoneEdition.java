@@ -7,10 +7,13 @@ import java.util.Stack;
 import javax.swing.event.*;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.SwingUtilities;
 import xlogo.StyledDocument.DocumentLogo;
 import xlogo.Config;
+import javax.swing.undo.*;
+import xlogo.gui.Editor;
 
 /**
  * Title :        XLogo
@@ -21,12 +24,15 @@ import xlogo.Config;
 class ZoneEdition extends JTextPane implements Printable,CaretListener,Searchable{
 	private static final long serialVersionUID = 1L;
 	private DocumentLogo dsd=null;
+	private Editor editor;
 	protected Stack<String> pages=null;
-// Si la correspondance entre parenthese ou crochets est activée
+	// Si la correspondance entre parenthese ou crochets est activée
 	private boolean active=false;
-// Dernière position allumée
+	// Dernière position allumée
 	private int[] position=new int[2];
-
+	// To remember undoable edits
+	private UndoManager undoManager=new UndoManager();
+	
 	void ecris(String mot){
 		try{
 			int deb=getCaretPosition();
@@ -41,9 +47,11 @@ class ZoneEdition extends JTextPane implements Printable,CaretListener,Searchabl
 	public void setActive(boolean b){
 		active=b;
 	}
-ZoneEdition(){
+ZoneEdition(Editor editor){
+	this.editor=editor;
 	dsd=new DocumentLogo();
 	setDocument(dsd);
+	dsd.addUndoableEditListener(new MyUndoableEditListener());
 	addCaretListener(this);
 }
 
@@ -244,5 +252,23 @@ public void caretUpdate(CaretEvent e){
 	public void removeHighlight(){
 		getHighlighter().removeAllHighlights();
 	}
-	
+	protected UndoManager getUndoManager(){
+		return undoManager;
+	}
+
+	class MyUndoableEditListener implements UndoableEditListener{
+			public void undoableEditHappened(UndoableEditEvent e){
+			     UndoableEdit edit = e.getEdit();
+			      // Include this method to ignore syntax changes
+			      if (edit instanceof AbstractDocument.DefaultDocumentEvent &&
+			         ((AbstractDocument.DefaultDocumentEvent)edit).getType() == 
+			         AbstractDocument.DefaultDocumentEvent.EventType.CHANGE) {
+			         return;
+			      }
+				// Remember the edit
+			     undoManager.addEdit(edit);
+//			     System.out.println(e.getEdit().getPresentationName());
+				editor.updateUndoRedoButtons();
+		}
+	}
 }

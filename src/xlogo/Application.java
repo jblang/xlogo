@@ -920,17 +920,7 @@ public class Application extends JFrame {
 	public HistoryPanel getHistoryPanel(){
 		return panneauHistorique1;
 	}
-	/**
-	 * This boolean indicates if the viewer3D is visible
-	 * @return true or false
-	 */
-	public boolean viewer3DVisible(){
-		if (null!=viewer3d)	return viewer3d.isVisible();
-		return false;
-	}
-	public void viewer3DClearScreen(){
-		viewer3d.clearScreen();
-	}
+
 	/**
 	 *  Enable or disable the command line and the play button
 	 * @param b The boolean true: enable command line, false: disable
@@ -1063,22 +1053,41 @@ public class Application extends JFrame {
 	        dem.setVisible(true);
 	      }
 	      else dem.requestFocus();
-	 }	 
+	 }	
+	 
+	/**
+	 * This boolean indicates if the viewer3D is visible
+	 * @return true or false
+	 */
+	public boolean viewer3DVisible(){
+		if (null!=viewer3d)	return viewer3d.isVisible();
+		return false;
+	}
+	 /**
+	  * Initialize the 3D Viewer
+	  */
+	 public void initViewer3D(){
+		if (null==viewer3d){
+		    viewer3d=new Viewer3D(ardoise.getWorld3D(),ardoise.getBackgroundColor());
+		  }
+		 
+	 }
+	 public Viewer3D getViewer3D(){
+		 return viewer3d;
+	 }  
 	 /**
 	  * Open the Viewer3D Frame
 	  */
 	 public void viewerOpen(){
-			if (null==viewer3d||!viewer3d.isVisible()){
+			if (null==viewer3d){
 			    viewer3d=new Viewer3D(ardoise.getWorld3D(),ardoise.getBackgroundColor());
-			    viewer3d.requestFocus();
 			   }
 			   else {
-				   viewer3d.update(ardoise.getBackgroundColor());
 				   viewer3d.setVisible(false);
-				   viewer3d.setVisible(true);
-				    viewer3d.requestFocus();
 			   }
-		 
+			 viewer3d.insertBranch();
+			viewer3d.setVisible(true);
+			  viewer3d.requestFocus();
 	 }
 	 
 	 /**

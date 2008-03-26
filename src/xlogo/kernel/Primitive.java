@@ -5,7 +5,8 @@
  * @author Loïc Le Coq
  */
 package xlogo.kernel;
-
+import java.util.Vector;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Stack;
@@ -42,7 +43,45 @@ public class Primitive {
 		//build treemap for primitives
 		buildPrimitiveTreemap(Config.langage);
 	}
-
+	/**
+	 * This methods returns a list which contains all the primitive for the current language
+	 * @return The primitives list
+	 */
+	protected String getAllPrimitives(){
+		Vector<String> list=new Vector<String>();
+		Locale locale = Logo.generateLocale(Config.langage);
+		ResourceBundle prim = ResourceBundle.getBundle("primitives", locale);
+		try{
+			BufferedReader bfr=new BufferedReader(
+					new InputStreamReader(Primitive.class.getResourceAsStream("genericPrimitive")));
+			while(bfr.ready()){
+				String line=bfr.readLine();
+				// read the generic keyword for the primitive
+				StringTokenizer cut=new StringTokenizer(line);
+				// read the standard number of arguments for the primitive
+				String cle = cut.nextToken();
+				// Exclude internal primitive \n \x and siwhile
+				if (!cle.equals("\\n")&&!cle.equals("\\siwhile")&&!cle.equals("\\x")) {
+					// Exclude all arithmetic symbols + - / * & |
+					if (cle.length() != 1) {
+						if (!cle.equals(">=")&&!cle.equals("<="))
+						{cle = prim.getString(cle).trim();
+						list.add(cle);}
+					}
+				}
+			}			
+		}
+		catch(IOException e){System.out.println("Impossible de lire le fichier d'initialisation des primitives");}
+		Collections.sort(list);
+		StringBuffer sb=new StringBuffer("[ ");
+		for (int i=0;i<list.size();i++){
+	    		sb.append("[ ");
+	    		sb.append(list.get(i));
+	    		sb.append("] ");
+	    }
+		sb.append("] ");
+		return (sb.toString());
+	}
 	//Exécution des primitives
 	public void buildPrimitiveTreemap(int id) {
 	//	this.exportPrimCSV();

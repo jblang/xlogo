@@ -13,7 +13,7 @@ public class ElementPoint extends Element3D {
 	public ElementPoint(Application app){
 		super(app);
 	}
-	public void addToList() throws myException {
+	public void addToScene() throws myException {
 		int[] tab=new int[1];
 		tab[0]=vertex.size();		
 		PointArray point=new PointArray(vertex.size(),PointArray.COORDINATES|PointArray.COLOR_3);
@@ -21,7 +21,8 @@ public class ElementPoint extends Element3D {
 			point.setCoordinate(i, vertex.get(i));
 			point.setColor(i, new Color3f(color.get(i)));
 		}		
-		DrawPanel.listPoly.add(new Shape3D(point));
+		app.getViewer3D().add3DObject(new Shape3D(point));
+//		DrawPanel.listPoly.add(new Shape3D(point));
 	}
 	public boolean isLine() {
 		return false;

@@ -3312,9 +3312,9 @@ public class LaunchPrimitive {
                     	break;
                     case 256:// setorientation=fixeorientation
                     	try{
+                    		primitive3D("3d.setorientation");
                     		delay();
                     		cadre.getArdoise().setOrientation(getFinalList(param.pop()));
-                    		primitive3D("3d.setorientation");
                     	}
                     	catch(myException e){}
                     	break;
@@ -3395,22 +3395,28 @@ public class LaunchPrimitive {
                     	break;
                     case 264: // polystart=polydef
                     	DrawPanel.record3D=DrawPanel.record3D_POLYGON;
-                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
+                    	cadre.initViewer3D();
+//                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
                     	DrawPanel.poly=new ElementPolygon(cadre);
                     	break;
                     case 265: // polyend=polyfin
                     	DrawPanel.record3D=DrawPanel.record3D_NONE;
                     	try{
-                    	DrawPanel.poly.addToList();
+                    	DrawPanel.poly.addToScene();
                     	}
                     	catch(myException e){}
                     	break;
                     case 266: // polyview=polyaf vue3d
-                    	cadre.getArdoise().polyView();
+                    	try{
+                    		primitive3D("3d.polyview");
+                    		cadre.viewerOpen();
+                    	}
+                    	catch(myException e){}
                     	break;
                     case 267: // linestart=lignedef
                     	DrawPanel.record3D=DrawPanel.record3D_LINE;
-                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
+                    	cadre.initViewer3D();
+//                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
                     	DrawPanel.poly=new ElementLine(cadre);
                     	DrawPanel.poly.addVertex(new Point3d(kernel.getActiveTurtle().X/1000,
                     			kernel.getActiveTurtle().Y/1000,
@@ -3419,25 +3425,27 @@ public class LaunchPrimitive {
                     case 268: // lineend=lignefin
                     	DrawPanel.record3D=DrawPanel.record3D_NONE;
                     	try{
-                    		DrawPanel.poly.addToList();
+                    		DrawPanel.poly.addToScene();
                     	}
                     	catch(myException e){}
                     	break;
                     case 269: // pointstart=pointdef
                     	DrawPanel.record3D=DrawPanel.record3D_POINT;
-                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
+                    	cadre.initViewer3D();
+//                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
                     	DrawPanel.poly=new ElementPoint(cadre);
                     	break;
                     case 270: // pointend=pointfin
                     	DrawPanel.record3D=DrawPanel.record3D_NONE;
                     	try{
-                    		DrawPanel.poly.addToList();
+                    		DrawPanel.poly.addToScene();
                     	}
                     	catch(myException e){}
                     	break;
                     case 271: // textstart=textedef
                     	DrawPanel.record3D=DrawPanel.record3D_TEXT;
-                    	if (null==DrawPanel.listText) DrawPanel.listText=new java.util.Vector<TransformGroup>();
+                    	cadre.initViewer3D();
+//                    	if (null==DrawPanel.listText) DrawPanel.listText=new java.util.Vector<TransformGroup>();
                     	DrawPanel.poly=null;
                     	break;
                     case 272: // textend=textefin
@@ -3467,6 +3475,10 @@ public class LaunchPrimitive {
         				}
         				Interprete.operande = true;
         				break;  
+                    case 275: // primitives
+                    	Interprete.operande=true;
+                    	Interprete.calcul.push(kernel.primitive.getAllPrimitives());
+                    break;
 			}
 		}
 	}

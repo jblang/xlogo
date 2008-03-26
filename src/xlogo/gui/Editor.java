@@ -42,6 +42,8 @@ public class Editor extends JFrame implements ActionListener{
   private ImageIcon iquit=new ImageIcon(Utils.dimensionne_image("quit.png",this));
   private ImageIcon ilire=new ImageIcon(Utils.dimensionne_image("lire.png",this));
   private ImageIcon ichercher=new ImageIcon(Utils.dimensionne_image("chercher.png",this));
+  private ImageIcon iundo=new ImageIcon(Utils.dimensionne_image("undo.png",this));
+  private ImageIcon iredo=new ImageIcon(Utils.dimensionne_image("redo.png",this));
   private ImageIcon iplay=new ImageIcon(Utils.dimensionne_image("play.png",this));
   private JButton copier=new JButton(icopier);
   private JButton coller=new JButton(icoller);
@@ -50,10 +52,11 @@ public class Editor extends JFrame implements ActionListener{
   private JButton quit=new JButton(iquit);
   private JButton lire=new JButton(ilire);
   private JButton chercher=new JButton(ichercher);
-  
+  private JButton undo=new JButton(iundo);
+  private JButton redo=new JButton(iredo);
   private boolean affichable=true;
   private JScrollPane jScrollPane1 = new JScrollPane();
-  private ZoneEdition zonedition = new ZoneEdition();
+  private ZoneEdition zonedition = new ZoneEdition(this);
   private JLabel labelCommand=new JLabel(Logo.messages.getString("mainCommand"),iplay,JLabel.LEFT);
   private JTextField mainCommand=new JTextField();
   private JPanel panelCommand=new JPanel();
@@ -364,7 +367,9 @@ public class Editor extends JFrame implements ActionListener{
     lire.setToolTipText(Logo.messages.getString("lire_editeur"));
     quit.setToolTipText(Logo.messages.getString("quit_editeur"));
     chercher.setToolTipText(Logo.messages.getString("find"));
-
+    undo.setToolTipText(Logo.messages.getString("editor.undo"));
+    redo.setToolTipText(Logo.messages.getString("editor.redo"));
+    
     copier.setActionCommand(Logo.messages.getString("menu.edition.copy"));
     couper.setActionCommand(Logo.messages.getString("menu.edition.cut"));
     coller.setActionCommand(Logo.messages.getString("menu.edition.paste"));
@@ -372,6 +377,12 @@ public class Editor extends JFrame implements ActionListener{
     lire.setActionCommand(Logo.messages.getString("lire_editeur"));
     quit.setActionCommand(Logo.messages.getString("quit_editeur"));
     chercher.setActionCommand(Logo.messages.getString("find"));
+    undo.setActionCommand(Logo.messages.getString("editor.undo"));
+    redo.setActionCommand(Logo.messages.getString("editor.redo"));
+    
+    undo.setEnabled(false);
+    redo.setEnabled(false);
+    
     lire.setMnemonic('Q');
     quit.setMnemonic('C');
 
@@ -388,7 +399,11 @@ public class Editor extends JFrame implements ActionListener{
     menu.add(coller);
     menu.addSeparator();
     menu.add(chercher);
-
+    menu.addSeparator();
+    menu.add(undo);
+    menu.addSeparator();
+    menu.add(redo);
+    
     imprimer.addActionListener(this);
     copier.addActionListener(this);
     couper.addActionListener(this);
@@ -396,6 +411,8 @@ public class Editor extends JFrame implements ActionListener{
     lire.addActionListener(this);
     quit.addActionListener(this);
     chercher.addActionListener(this);
+    undo.addActionListener(this);
+    redo.addActionListener(this);
     
 	MouseListener popupListener = new PopupListener();
     zonedition.addMouseListener(popupListener);
@@ -524,6 +541,16 @@ public class Editor extends JFrame implements ActionListener{
     		sf.setVisible(true);
     	}
     }
+    // Undo Action
+    else if (cmd.equals(Logo.messages.getString("editor.undo"))){
+		zonedition.getUndoManager().undo();
+		updateUndoRedoButtons();
+    }
+    // Redo Action
+    else if (cmd.equals(Logo.messages.getString("editor.redo"))){
+    	zonedition.getUndoManager().redo();
+    	updateUndoRedoButtons();
+    }
   }
   public void initMainCommand(){
 	  mainCommand.setText(Config.mainCommand);
@@ -564,11 +591,21 @@ public class Editor extends JFrame implements ActionListener{
 	      }
 	      initMainCommand();
 	      setTitle(Logo.messages.getString("editeur"));
+	      discardAllEdits();
 	      setVisible(true);
 	      toFront();
 	      focus_zonedition();
-	} 
-  
+	}
+	public void discardAllEdits(){
+		   zonedition.getUndoManager().discardAllEdits();
+		      updateUndoRedoButtons();
+	}
+	protected void updateUndoRedoButtons(){
+		if (zonedition.getUndoManager().canRedo()) redo.setEnabled(true);
+		else redo.setEnabled(false);
+		if (zonedition.getUndoManager().canUndo()) undo.setEnabled(true);
+		else undo.setEnabled(false);
+	}
   
 	class PopupListener extends MouseAdapter {
 
