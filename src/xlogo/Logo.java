@@ -166,9 +166,12 @@ public class Logo {
        case Config.LANGUAGE_GERMAN: // german
        locale=new Locale("de","DE");
        break;
-       case Config.LANGUAGE_GALICIAN: // holland
+       case Config.LANGUAGE_GALICIAN: // galician
         locale=new Locale("gl","ES");
        break;
+       case Config.LANGUAGE_ASTURIAN: // Asturian
+    	  locale=new Locale("as","ES");
+    	break;
     }
   return locale;
   }
@@ -190,7 +193,7 @@ public class Logo {
 			  Config.path.remove(i);
 			  if (i<Config.path.size()) {
 				  element=Config.path.get(i);
-				  String[] lang={"fr","en","ar","es","pt","eo","de","gl"};
+				  String[] lang={"fr","en","ar","es","pt","eo","de","gl","as"};
 				  for (int j=0;j<lang.length;j++){
 					  if (lang[j].equals(element)){
 						  Config.langage=j;

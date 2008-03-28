@@ -26,7 +26,7 @@ public class Traduc extends JFrame implements ActionListener {
 	private JLabel vers=new JLabel(" "+Logo.messages.getString("vers")+" ");
 	private Object[] choix={Logo.messages.getString("pref.general.french"),Logo.messages.getString("pref.general.english"),Logo.messages.getString("pref.general.arabic"),Logo.messages.getString("pref.general.spanish"),
 			Logo.messages.getString("pref.general.portuguese"),Logo.messages.getString("pref.general.esperanto"),Logo.messages.getString("pref.general.german"),
-			Logo.messages.getString("pref.general.galician")};
+			Logo.messages.getString("pref.general.galician"),Logo.messages.getString("pref.general.asturian")};
 	private JComboBox combo_origine=new JComboBox(choix);
 	private JComboBox combo_destination=new JComboBox(choix);
 	private JScrollPane js_source=new JScrollPane();

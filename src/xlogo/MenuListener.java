@@ -289,6 +289,9 @@ public class MenuListener extends JDialog implements ActionListener{
     		case Config.LANGUAGE_GALICIAN: // galician
     			path+="gl";
     		break;
+    		case Config.LANGUAGE_ASTURIAN: //asturian
+    			path+="es";
+    		break;
     	}
     }
      path+=".html";    

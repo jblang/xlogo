@@ -447,6 +447,11 @@ public class LaunchPrimitive {
 					Interprete.lineNumber="";
 				}
 				else {
+					/* Example
+					 * to bug
+					 * av
+					 * end
+					 */
 					try {
 						throw new myException(cadre, Logo.messages
 								.getString("pas_assez_de")
@@ -454,7 +459,11 @@ public class LaunchPrimitive {
 					} catch (myException e) {
 					}
 				}
-				if (!Interprete.nom.isEmpty()&&!Interprete.nom.peek().equals("\n")){
+				/* to bug [:a]	| (bug 10)
+				 * av :a		|  
+				 * end			|
+				 */
+				if (!Interprete.nom.isEmpty()&&!Interprete.nom.peek().equals("\n")&&!Interprete.nom.peek().equals("(")){
 					try{
 						if (!cadre.error)
 						throw new myException(cadre,Interprete.en_cours.peek()+" "+Logo.messages.getString("ne_renvoie_pas")+" "+Interprete.nom.peek().toString());
@@ -725,9 +734,9 @@ public class LaunchPrimitive {
 					else {
 						int i = getInteger(param.get(0));
 						if (i < 1 || i > getWordLength(mot))
-							throw new myException(cadre, "item n'aime pas "
-									+ i + " comme argument pour le mot " + mot
-									+ ".");
+							throw new myException(cadre, Utils.primitiveName("item")+" "+
+									Logo.messages.getString("n_aime_pas")+ i +" "+
+									Logo.messages.getString("comme_parametre")+ ".");
 						else{
 							String st= itemWord(i,mot);
 							try{

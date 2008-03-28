@@ -19,7 +19,7 @@ import java.util.Vector;
  */
 public class Config {
 	/** Version number**/
-	static final String version="0.9.92 RC4 build March,26, 2008";
+	static final String version="0.9.92 RC5 build March,27, 2008";
 	/** Drawing Quality **/
 	public static int quality=0;
 	/** Drawing Quality: normal **/
@@ -58,6 +58,10 @@ public class Config {
 	 * Galician language id
 	*/
 	 public static final int LANGUAGE_GALICIAN=7;
+	/**
+	 * Asturian language id
+	*/
+	 public static final int LANGUAGE_ASTURIAN=8;
 	 /**
 	  * This integer represents the selected language
 	  */
@@ -65,7 +69,7 @@ public class Config {
 	
 	/** This integer represents the selected looknfeel for the appplication**/
 	 
-	public static int looknfeel=0;
+	public static int looknfeel=1;
 	/**Native looknfeel**/
 	public static final int LOOKNFEEL_NATIVE=0;
 	/**Java looknfeel**/
@@ -95,7 +99,7 @@ public class Config {
 	/**
 	 * Integer that represents the active turtle's shape
 	 */
-	public static int activeTurtle=1; // Numéro de la tortue qui dessine
+	public static int activeTurtle=0; // Numéro de la tortue qui dessine
 										// id for the active turtle
 	/**
 	 * Maximum allowed pen size 
