@@ -203,7 +203,24 @@ public class Logo {
 				  }
 				  Config.path.remove(i);
 			  }
-		  }
+		  	}
+		  // Memory Heap Size
+			else if (element.equals("-memory")){
+				  Config.path.remove(i);
+				  if (i<Config.path.size()) {
+					  element=Config.path.get(i);
+						try{
+							int mem=Integer.parseInt(element);
+							Config.memoire=mem;
+							Config.tmp_memoire=mem;
+							 Config.path.remove(i);	
+							
+						}
+						catch(NumberFormatException e){}
+				 }  
+			 }
+
+		  
 		  // Logo Files
 		  else i++;
 	  }

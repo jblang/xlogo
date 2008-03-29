@@ -45,7 +45,13 @@ public class Lanceur {
 	Lanceur(String[] args){
 		// Look for old files from XLogo crash
 		cleanTmp();
+		// Look from file .xlogo for the memory allocated to the JVM heap size 
 		lis_config();
+		// Look from comand line for the memory allocated to the JVM heap size
+		// And overwrite the existing value
+		int mem=readMemoryFromCommandLine(args);
+		if (mem>63) memoire=mem;
+		
 		// extract application in the java.io.tmp directory
 		extrait_application();
 		try{
@@ -268,7 +274,7 @@ public class Lanceur {
 		    	 			memoire=Integer.parseInt(element);
 		    	 		}
 		    	 	}
-		     	}
+		     	}    
 	 		}
 	 		catch(FileNotFoundException e1){System.out.println("No File \".xlogo\". Will create one...");}
 	 		catch(IOException e2){}
@@ -400,5 +406,25 @@ public class Lanceur {
         resultat &= path.delete(); 
         return( resultat ); 
 } 
-	
+	/**
+	 * This method returns the memory passed from the command line <br>
+	 * syntax: java -jar xlogo.jar -memory 128 -lang en file1.lgo
+	 * 
+	 * @param args All arguments
+	 * @return The memory in Mb
+	 */
+	private int readMemoryFromCommandLine(String[] args){
+		int memory=0;
+		for (int i=0;i<args.length;i++){
+			if (args[i].equals("-memory")){
+				try{
+					if (i+1<args.length) {
+						memory=Integer.parseInt(args[i+1]);
+					}
+				}
+				catch(NumberFormatException e){}
+			}
+		}
+		return memory;
+	}	
 }

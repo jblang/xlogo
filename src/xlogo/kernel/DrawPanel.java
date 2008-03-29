@@ -34,7 +34,6 @@ import javax.vecmath.Matrix3d;
 import javax.vecmath.Point3d;
 import java.util.Stack;
 import java.util.Set;
-import java.util.Vector;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.awt.event.*;
@@ -1333,7 +1332,10 @@ import xlogo.kernel.perspective.*;
 //		DrawPanel.listPoly=new Vector<Shape3D>();
 //		DrawPanel.listText=new Vector<TransformGroup>();
 		// Erase the 3d viewer if visible
-		if (null!=cadre.getViewer3D())	cadre.getViewer3D().clearScreen();
+		if (null!=cadre.getViewer3D())	{
+			cadre.getViewer3D().clearScreen();
+			System.gc();
+		}
 		
 		
 		g.setPaintMode();
