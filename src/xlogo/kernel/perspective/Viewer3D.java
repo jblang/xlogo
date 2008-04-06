@@ -94,7 +94,10 @@ public class Viewer3D extends JFrame implements ActionListener{
 			
 		// Install the camera at the valid position with correct orientation
 		TransformGroup tg=universe.getViewingPlatform().getViewPlatformTransform();
-		Transform3D trans=new Transform3D();			
+		Transform3D trans=new Transform3D();
+		if (null==w3d) {
+			w3d=new World3D();
+		}
 		trans.setTranslation(new Vector3d(-w3d.xCamera/1000,-w3d.yCamera/1000,-w3d.zCamera/1000));
 		Transform3D rot=new Transform3D();
 		rot.lookAt(new Point3d(-w3d.xCamera/1000,-w3d.yCamera/1000,-w3d.zCamera/1000),
