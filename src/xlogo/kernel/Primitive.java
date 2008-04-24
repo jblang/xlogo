@@ -22,9 +22,18 @@ import java.io.*;
 import xlogo.Logo;
 import java.util.Enumeration;
 public class Primitive {
+	/**
+	 * This character indicates the end of a procedure in Interprete.instructions
+	 */
+	protected static final String END_PROCEDURE="\n";
+	/**
+	 * This character indicates the end of a loop in Interprete.instructions
+	 */
+	protected static final String END_LOOP="\\";
+	
 	//  float taille_crayon=(float)0;
 	private Application cadre;
-	protected static final int PRIMITIVE_NUMBER = 280;
+	protected static final int PRIMITIVE_NUMBER = 290;
 
 	protected int[] parametres=new int[PRIMITIVE_NUMBER];
 	protected boolean[] generalForm=new boolean[PRIMITIVE_NUMBER];
@@ -140,10 +149,14 @@ public class Primitive {
 		if (i > 0) {
 			st = new String(Utils.decoupe(st));
 			LoopProperties bp = new LoopProperties(BigDecimal.ONE,
-					new BigDecimal(i), BigDecimal.ONE, st, "repete");
+					new BigDecimal(i), BigDecimal.ONE, st, LoopProperties.TYPE_REPEAT);
 			stackLoop.push(bp);
 			Interprete.instruction.insert(0, st + "\\ ");
 		}
+		else try{
+			throw new myException(cadre, Utils.primitiveName("controls.repete")+" "+Logo.messages.getString("attend_positif"));
+		}
+		catch(myException e){}
 	}
 	// primitive if
 	protected void si(boolean b, String li, String li2) {
@@ -160,7 +173,7 @@ public class Primitive {
 					+ Primitive.stackLoop.peek().getInstr());
 		} else {
 			try {
-				Interprete.tueniveau("\\", cadre);
+				eraseLevelStop(cadre);
 			} catch (myException e) {
 			}
 		}
@@ -170,7 +183,7 @@ public class Primitive {
 		Interprete.operande = false;
 		String car="";
 		try {
-			car=Interprete.tueniveau("\\", cadre);
+			car=eraseLevelStop(cadre);
 		} catch (myException e) {
 		}
 		
@@ -225,7 +238,7 @@ public class Primitive {
 		if ((!Interprete.nom.isEmpty())
 				&& Interprete.nom.peek().equals("\n")) {
 			try {
-				Interprete.tueniveau("\n", cadre);
+				eraseLevelReturn(cadre);
 			} catch (myException e) {
 			}
 			Interprete.nom.pop();
@@ -236,6 +249,92 @@ public class Primitive {
 		else
 			throw new myException(cadre, Logo.messages
 					.getString("erreur_retourne"));
+	}
+	
+	/**
+	 * This method deletes all instruction since it encounters the end of a loop or the end of a procedure
+	 * @param app The runnning frame Application
+	 * @return The specific character \n or \ if found
+	 * @throws myException
+	 */
+	private String eraseLevelStop(Application app)
+			throws myException {
+		boolean error=true;
+		String caractere = "";
+		int marqueur = 0;
+		for (int i = 0; i < Interprete.instruction.length(); i++) {
+			caractere = String.valueOf(Interprete.instruction.charAt(i));
+			if (caractere.equals(Primitive.END_LOOP) | caractere.equals(Primitive.END_PROCEDURE)) {
+				marqueur = i;
+				if (caractere.equals(Primitive.END_LOOP) && i != Interprete.instruction.length() - 1) {
+					/*
+					 * On test si le caractère "\" est bien un caractère de fin
+					 * de boucle et non du style "\e" ou "\#"
+					 */
+					if (Interprete.instruction.charAt(i + 1) == ' '){
+						error=false;
+						break;
+					}
+				} else{
+					error=false;
+					break;
+				}
+			}
+		}
+		
+		if (error) {
+				throw new myException(app, Logo.messages
+						.getString("erreur_stop"));
+		}
+		if (marqueur + 2 > Interprete.instruction.length())
+			Interprete.instruction = new StringBuffer(" ");
+		else
+			Interprete.instruction = Interprete.instruction.delete(0, marqueur + 2);
+		if (!caractere.equals("\n")) {
+			Primitive.stackLoop.pop();
+		}
+		return (caractere);
+	}
+	/**
+	 * This method deletes all instruction since it encounters the end of a procedure
+	 * @param app The running frame Application
+	 * @return an integer that indicates the number of loop to delete from Primitive.stackLoop
+	 * @throws myException
+	 */
+	private void eraseLevelReturn(Application app)
+			throws myException {
+		boolean error=true;
+		String caractere="";
+		int loopLevel = 0;
+		int marqueur = 0;
+		for (int i = 0; i < Interprete.instruction.length(); i++) {
+			caractere = String.valueOf(Interprete.instruction.charAt(i));
+			if (caractere.equals(Primitive.END_PROCEDURE)) {
+				marqueur = i;
+				error=false;
+				break;
+			}
+			else if (caractere.equals(Primitive.END_LOOP)){
+				/*
+				 * On test si le caractère "\" est bien un caractère de fin
+				 * de boucle et non du style "\e" ou "\#"
+				 */
+				if (Interprete.instruction.charAt(i + 1) == ' '){
+					loopLevel++;
+				}
+			}
+		}
+		if (error) {
+				throw new myException(app, Logo.messages
+						.getString("erreur_retourne"));
+		}
+		if (marqueur + 2 > Interprete.instruction.length())
+			Interprete.instruction = new StringBuffer(" ");
+		else
+			Interprete.instruction = Interprete.instruction.delete(0, marqueur + 2);
+		for(int i=0;i<loopLevel;i++){
+			Primitive.stackLoop.pop();
+		}
 	}
 	private void exportPrimCSV(){
 		StringBuffer sb=new StringBuffer();

@@ -274,3 +274,8 @@ workspace.plist 1
 <= 1
 >= 1
 workspace.primitives 0
+workspace.propertylists 0
+workspace.content 0
+workspace.erpl 1
+arithmetic.exp 1
+arithmetic.log 1

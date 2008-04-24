@@ -48,9 +48,15 @@ public class Workspace {
 		propList=new HashMap<String,HashMap<String,String>>();
 		gm=new GuiMap(app);
 	}
+	/**
+	 * Delete all Variables from the workspace
+	 */
 	public void deleteAllVariables(){
 		globale = new HashMap<String,String>();
 	}
+	/**
+	 * Delete all procedures from the workspace
+	 */
 	public void deleteAllProcedures(){
 		for (int i = procedureList.size()-1; i > -1; i--) {
 			  Procedure procedure = getProcedure(i);
@@ -58,18 +64,52 @@ public class Workspace {
 				deleteProcedure(i);
 			}
 	}
+	/**
+	 * Delete all property Lists from the workspace
+	 */
+	public void deleteAllPropertyLists(){
+		propList=new HashMap<String,HashMap<String,String>>();
+	}
+	/**
+	 * This method adds in the property List called "name" a value for the corresponding key
+	 * @param name The property List 's name
+	 * @param key The key for the value to add
+	 * @param value The value to add
+	 */
 	protected void addPropList(String name, String key, String value){
 		if (!propList.containsKey(name)){
 			propList.put(name,new HashMap<String,String>());
 		}
 		propList.get(name).put(key, value);
 	}
+	
+	/**
+	 * This method removes a Property List
+	 * @param name The property List 's name
+	 */
+	protected void removePropList(String name){
+		if (propList.containsKey(name)){
+			propList.remove(name);
+		}
+	}
+	
+	
+	/**
+	 * This method removes a couple (key, value) from a Property List
+	 * @param name The property List 's name
+	 * @param key The key to delete
+	 */
 	protected void removePropList(String name, String key){
 		if (propList.containsKey(name)){
 			if (propList.get(name).containsKey(key)) propList.get(name).remove(key);
 			if (propList.get(name).isEmpty()) propList.remove(name);
 		}
 	}
+	/**
+	 * This method returns a list that contains all couple key value 
+	 * @param name The Property List's name
+	 * @return A list with all keys-values
+	 */
 	protected String displayPropList(String name){
 		if (propList.containsKey(name)){
 			StringBuffer sb=new StringBuffer();
@@ -88,6 +128,12 @@ public class Workspace {
 		}
 		else return "[ ] ";
 	}
+	/**
+	 * This method return a value from a Property List
+	 * @param name The Property List's name
+	 * @param key The key for the chosen value
+	 * @return The value for this key
+	 */
 	protected String getPropList(String name, String key){
 		if (!propList.containsKey(name)){
 			return "[ ]";
@@ -95,9 +141,14 @@ public class Workspace {
 		if (!propList.get(name).containsKey(key)) return "[ ]";
 		return propList.get(name).get(key);
 	}
-	
-	
-	
+	/**
+	 * Returns all defined Property List names
+	 * @return A list with all Property List names
+	 */
+	protected Set<String> getPropListKeys(){
+		return propList.keySet();
+	}
+		
 	public Procedure procedureListPeek(){
 		return  procedureList.peek();
 	}

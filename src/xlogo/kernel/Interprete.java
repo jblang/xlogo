@@ -789,63 +789,7 @@ public class Interprete {
 		else
 			instruction = new StringBuffer();
 	}
-
-	protected static String tueniveau(String car, Application app)
-			throws myException {
-		boolean error=true;
-		String caractere = "";
-		String car2 = null;
-		if (car.equals("\\"))
-			car2 = "\n"; // Dans ce cas là on déroule jusqu'à la prochaine
-							// fin de boucle ou procédure
-		int marqueur = 0;
-		for (int i = 0; i < instruction.length(); i++) {
-			// System.out.println("a "+caractere);
-			caractere = String.valueOf(instruction.charAt(i));
-			if (caractere.equals(car) | caractere.equals(car2)) {
-				marqueur = i;
-				if (caractere.equals("\\") && i != instruction.length() - 1) {
-					/*
-					 * On test si le caractère "\" est bien un caractère de fin
-					 * de boucle et non du style "\e" ou "\#"
-					 */
-					if (instruction.charAt(i + 1) == ' ')
-					{
-						error=false;
-						break;
-					}
-				} else{
-					error=false;
-					break;
-				}
-			}
-		}
-		
-		// System.out.println("a "+caractere);
-		if (error) {
-			if (car2.equals("\n"))
-				throw new myException(app, Logo.messages
-						.getString("erreur_stop"));
-			else
-				throw new myException(app, Logo.messages
-						.getString("erreur_retourne"));
-		}
-		if (marqueur + 2 > instruction.length())
-			instruction = new StringBuffer(" ");// instruction.substring(marqueur,instruction.length());
-		else
-			instruction = instruction.delete(0, marqueur + 2);
-/*		if (caractere.equals("\n")) {
-			Interprete.en_cours.pop();
-			Interprete.locale = Interprete.stockvariable.pop();
-		} else {
-			Primitive.stackLoop.pop();
-		}*/
-		if (!caractere.equals("\n")) {
-			Primitive.stackLoop.pop();
-		}
-		return (caractere);
-	}
-
+	
 	protected void setWorkspace(Workspace workspace) {
 		wp = workspace;
 		lanceprim.setWorkspace(workspace);

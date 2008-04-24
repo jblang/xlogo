@@ -22,11 +22,9 @@ import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.Icon;
 import javax.vecmath.Point3d;
-import javax.media.j3d.TransformGroup;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import javax.media.j3d.Shape3D;
 import xlogo.utils.Utils;
 import xlogo.gui.Lis;
 import xlogo.gui.preferences.*;
@@ -175,6 +173,10 @@ public class LaunchPrimitive {
 				try {
 					double p = Math.pow(number(param.get(0)),
 							number(param.get(1)));
+					// Bug pr power -1 0.5
+					Double p1=new Double(p);
+					if (p1.equals(Double.NaN)) throw new myException(cadre,Utils.primitiveName("arithmetic.puissance")+" "+Logo.messages.getString("attend_positif"));
+					// End Bug
 					Interprete.calcul.push(teste_fin_double(p));
 					Interprete.operande = true;
 				} catch (myException e) {
@@ -474,10 +476,10 @@ public class LaunchPrimitive {
 				break;
 			case 40: // opérateur interne \ signalant une fin de boucle
 				LoopProperties bp=Primitive.stackLoop.peek();
-				String idb=bp.getId();
+				int idb=bp.getId();
 				 // Si c'est repete
-				if (idb.equals("repete")){
-					BigDecimal compteur=bp.getCompteur();
+				if (idb==LoopProperties.TYPE_REPEAT){
+					BigDecimal compteur=bp.getCounter();
 					BigDecimal fin=bp.getFin();
 					if (compteur.compareTo(fin) < 0) {
 						bp.incremente();
@@ -489,9 +491,9 @@ public class LaunchPrimitive {
 						Primitive.stackLoop.pop();
 					}
 				} 
-				else if (idb.equals("repetepour")) { // si c'est repetepour
+				else if (idb==LoopProperties.TYPE_FOR) { // si c'est repetepour
 					BigDecimal inc=bp.getIncrement();
-					BigDecimal compteur=bp.getCompteur();
+					BigDecimal compteur=bp.getCounter();
 					BigDecimal fin=bp.getFin();
 					
 					if ((inc.compareTo(BigDecimal.ZERO)==1&& (compteur.add(inc).compareTo(fin) <=0))
@@ -1055,39 +1057,21 @@ public class LaunchPrimitive {
 				} catch (InterruptedException e2) {
 				}
 				break;
-			case 79: // imts
-				for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-					Procedure proc = wp.getProcedure(i);
-					if (proc.affichable)
-						cadre.ecris("commentaire", proc.name
-								+ "\n");
-				}
+			case 79: // procedures
+				Interprete.operande=true;
+				Interprete.calcul.push(new String(getAllProcedures()));
 				break;
-			case 80: // effacenom
-				String nom = getWord(param.get(0));
-				for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-					Procedure procedure = wp.getProcedure(i);
-					if (procedure.name.equals(nom)
-							&& procedure.affichable == true) {
-						wp.deleteProcedure(i);
-						break;
-					}
-				}
+			case 80: // effaceprocedure efp
+				erase(param.get(0), "procedure");
 				break;
+				
 			case 81: // effacevariable
-				mot = getWord(param.get(0));
-				if (!Interprete.locale.isEmpty()) {
-					if (Interprete.locale.containsKey(mot)) {
-						Interprete.locale.remove(mot);
-					}
-				} else {
-						wp.deleteVariable(mot);
-					}
-
+				erase(param.get(0), "variable");
 				break;
-			case 82: // effacenoms,efns
+			case 82: // effacetout erall
 				wp.deleteAllProcedures();
 				wp.deleteAllVariables();
+				wp.deleteAllPropertyLists();
 				cadre.setEnabled_New(false);
 				break;
 			case 83: // mot
@@ -1172,7 +1156,7 @@ public class LaunchPrimitive {
 					String li2 = getList(param.get(1));
 					li2=new String(Utils.decoupe(li2));
 					String instr="\\siwhile "+li1+ "[ " + li2+ "] ";
-					bp=new LoopProperties(BigDecimal.ONE,BigDecimal.ZERO,BigDecimal.ONE,instr,"tantque");
+					bp=new LoopProperties(BigDecimal.ONE,BigDecimal.ZERO,BigDecimal.ONE,instr,LoopProperties.TYPE_WHILE);
 					Primitive.stackLoop.push(bp);
 					Interprete.instruction.insert(0, instr+"\\ ");
 				} catch (myException e) {
@@ -2153,22 +2137,9 @@ public class LaunchPrimitive {
 				else
 					Interprete.calcul.push(Logo.messages.getString("faux"));
 				break;
-			case 162: // listevariables
+			case 162: // variables
 				Interprete.operande = true;
-				liste = "[ ";
-				Iterator<String> it=Interprete.locale.keySet().iterator();
-				while (it.hasNext()) {
-					String name=it.next();
-					liste += name + " ";
-				}
-				it =wp.globale.keySet().iterator();
-				while(it.hasNext()){
-					String key=it.next();
-					if (!Interprete.locale.containsKey(key))
-						liste += key.toString() + " ";
-				}
-				liste += "] ";
-				Interprete.calcul.push(liste);
+				Interprete.calcul.push(new String(getAllVariables()));
 				break;
 			case 163: // chose
 				mot = getWord(param.get(0));
@@ -2367,9 +2338,9 @@ public class LaunchPrimitive {
 				boolean erreur=false;
 				if (!Primitive.stackLoop.isEmpty()){
 					bp=Primitive.stackLoop.peek();
-					if (bp.getId().equals("repete")){
+					if (bp.getId()==LoopProperties.TYPE_REPEAT){
 						Interprete.operande=true;
-						Interprete.calcul.push(bp.getCompteur().toString());
+						Interprete.calcul.push(bp.getCounter().toString());
 					}
 					else erreur=true;
 				}
@@ -2399,7 +2370,7 @@ public class LaunchPrimitive {
 						throw new myException(cadre,Logo.messages.getString("erreur_nom_nombre_variable"));
 					}
 					catch(NumberFormatException e){
-						bp=new LoopProperties(deb,fin,increment,li2,"repetepour",var);
+						bp=new LoopProperties(deb,fin,increment,li2,LoopProperties.TYPE_FOR,var);
 						bp.AffecteVar(true);
 
 						if ((increment.compareTo(BigDecimal.ZERO)==1&&fin.compareTo(deb)>=0)
@@ -3488,6 +3459,44 @@ public class LaunchPrimitive {
                     	Interprete.operande=true;
                     	Interprete.calcul.push(kernel.primitive.getAllPrimitives());
                     break;
+                    case 276: //listesproprietes propertylists
+                    	Interprete.operande=true;
+                    	Interprete.calcul.push(new String(getAllpropertyLists()));
+                    break;
+                    case 277: // contenu
+                      	Interprete.operande=true;
+                      	sb=new StringBuffer("[ ");
+                      	sb.append(this.getAllProcedures());
+                      	sb.append(this.getAllVariables());
+                      	sb.append(this.getAllpropertyLists());
+                      	sb.append("] ");
+                    	Interprete.calcul.push(new String(sb));
+                    break;
+                    case 278: // erpl=eflp effacelistepropriete
+                    	Interprete.operande=false;
+        				this.erase(param.get(0), "propertylist");
+                    break;
+                    case 279: //arithmetic.exp
+            			Interprete.operande = true;
+        				try {
+        					double nombre = number(param.get(0));
+        					Interprete.calcul.push(teste_fin_double(Math.exp(nombre)));
+        				} catch (myException e) {
+        				}
+                    break;
+                    case 280: //arithmetic.log
+            			Interprete.operande = true;
+        				try {
+        					double nombre = number(param.get(0));
+        					if (nombre < 0 || nombre == 0) {
+        						String log=Utils.primitiveName("arithmetic.log");
+        						throw new myException(cadre, log + " "
+        								+ Logo.messages.getString("attend_positif"));
+        					}
+        					Interprete.calcul.push(teste_fin_double(Math.log(nombre)));
+        				} catch (myException e) {
+        				}
+                    	break;
 			}
 		}
 	}
@@ -4340,5 +4349,132 @@ public class LaunchPrimitive {
 				Interprete.calcul.push(Logo.messages.getString("faux"));
 		} catch (myException e) {
 		}
+	}
+	/**
+	 * This methods returns a list that contains all procedures name
+	 * @return A list with all procedure names
+	 */
+	private StringBuffer getAllProcedures(){
+		StringBuffer sb=new StringBuffer("[ ");
+		for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
+			Procedure proc = wp.getProcedure(i);
+			if (proc.affichable) {
+				sb.append(proc.name);
+				sb.append(" ");
+			}
+		}
+		sb.append("] ");
+		return sb;
+	}
+	/**
+	 * This methods returns a list that contains all variables name
+	 * @return A list with all variables names
+	 */
+	
+	private StringBuffer getAllVariables(){
+		StringBuffer sb=new StringBuffer("[ ");
+		Iterator<String> it=Interprete.locale.keySet().iterator();
+		while (it.hasNext()) {
+			String name=it.next();
+			sb.append(name);
+			sb.append(" ");
+		}
+		it =wp.globale.keySet().iterator();
+		while(it.hasNext()){
+			String key=it.next();
+			if (!Interprete.locale.containsKey(key)){
+				sb.append(key.toString());
+				sb.append(" ");
+			}
+		}
+		sb.append("] ");
+		return sb;
+	}
+	/**
+	 * This methods returns a list that contains all Property Lists name
+	 * @return A list with all Property Lists names
+	 */
+	private StringBuffer getAllpropertyLists(){
+		StringBuffer sb=new StringBuffer("[ ");
+		Iterator<String> it=wp.getPropListKeys().iterator();
+		while(it.hasNext()){
+			sb.append(it.next());
+			sb.append(" ");
+		}
+		sb.append("] ");
+		return sb;
+	}
+	/**
+	 * Delete The variable called "name" from the workspace if it exists
+	 * @param name The variable name
+	 */
+	private void deleteVariable(String name){
+		if (!Interprete.locale.isEmpty()) {
+			if (Interprete.locale.containsKey(name)) {
+				Interprete.locale.remove(name);
+			}
+		} else {
+				wp.deleteVariable(name);
+			}
+	}
+	/**
+	 * Delete the procedure called "name" from the workspace
+	 * @param name The procedure name
+	 */
+	private void deleteProcedure(String name){
+		for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
+			Procedure procedure = wp.getProcedure(i);
+			if (procedure.name.equals(name)
+					&& procedure.affichable == true) {
+				wp.deleteProcedure(i);
+				break;
+			}
+		}
+	}
+	/**
+	 * According to the type of the data, erase from workspace the resource called "name"
+	 * @param name The name of the deleted resource, it couls be a list with all resource names
+	 * @param type The type for the data, it could be "variable", "procedure" or "propertylist"
+	 */
+	
+	private void erase(String name, String type){
+		Interprete.operande=false;
+		try{
+			if (LaunchPrimitive.isList(name)){
+				name = getFinalList(name);
+				StringTokenizer st = new StringTokenizer(name);
+				while (st.hasMoreTokens()) {
+					String item = st.nextToken();
+					this.eraseItem(item, type);
+				}
+			}
+			else {
+				name = getWord(name);
+				if (null != name) {
+					this.eraseItem(name,type);
+				} else
+				throw new myException(cadre, name
+						+ Logo.messages.getString("error.word"));
+			
+			}
+		}
+		catch(myException e){}		
+	}
+	/**
+	 * According to the type of the data, erase from workspace the resource called "name"
+	 * @param name The name of the deleted resource
+	 * @param type The type for the data, it could be "variable", "procedure" or "propertylist"
+	 */
+	private void eraseItem(String name, String type){
+		if (type.equals("procedure")){
+			this.deleteProcedure(name);
+		}
+		else if (type.equals("variable")){
+			this.deleteVariable(name);			
+		}
+		else if (type.equals("propertylist")){
+			wp.removePropList(name);
+		}
+		
 	}
 }
