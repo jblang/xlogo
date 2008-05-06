@@ -607,17 +607,28 @@ public class Editor extends JFrame implements ActionListener{
 		  ImageIcon read=new ImageIcon(Utils.dimensionne_image("preview"+Config.activeTurtle+".png",this));
 		    lire.setIcon(read);
 	}
+	/**
+	 * This method displays the editor (if necessary)
+	 * and adds all defined procedures
+	 */
 	public void open(){
-	      for(int i=0;i<wp.getNumberOfProcedure();i++){
-	        Procedure procedure =wp.getProcedure(i);
-	        setEditorStyledText(procedure.toString());
-	      }
-	      initMainCommand();
-	      setTitle(Logo.messages.getString("editeur"));
-	      discardAllEdits();
-	      setVisible(true);
-	      toFront();
-	      focus_zonedition();
+	    if (!cadre.editeur.isVisible()) {
+		      for(int i=0;i<wp.getNumberOfProcedure();i++){
+			        Procedure procedure =wp.getProcedure(i);
+			        setEditorStyledText(procedure.toString());
+			      }
+			      initMainCommand();
+			      setTitle(Logo.messages.getString("editeur"));
+			      discardAllEdits();
+			      setVisible(true);
+			      toFront();
+			      focus_zonedition();
+	    }
+	    else {
+	      cadre.editeur.setVisible(false);
+	      cadre.editeur.setVisible(true);
+	      cadre.editeur.focus_zonedition();
+	    }
 	}
 	public void discardAllEdits(){
 		   zonedition.getUndoManager().discardAllEdits();

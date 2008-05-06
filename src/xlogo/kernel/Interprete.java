@@ -512,13 +512,15 @@ public class Interprete {
 						drapeau_ouvrante = false;
 						deleteFirstWord(element);
 					}
-
 					// Si c'est le mot pour
 					else if (element_minuscule.equals(Logo.messages
 							.getString("pour"))) {
 						deleteFirstWord(element);
 						if (instruction.length() != 0)
-							element = getNextWord().toLowerCase();
+							{
+								element = getNextWord();
+								element_minuscule=element.toLowerCase();
+							}
 						else
 							throw new myException(app, Logo.messages
 									.getString("pas_assez_de")
@@ -551,41 +553,12 @@ public class Interprete {
 										.getString("ferme_editeur"));
 							else {
 								app.editeur.setVisible(true);
-								app.editeur.setEditorText(definition + "\n"
+								app.editeur.setEditorText(definition + "\n\n"
 										+ Logo.messages.getString("fin"));
 							}
 						}
 					}
-					// Si c'est le mot ed
-					else if (element_minuscule.equals("ed")) {
-						deleteFirstWord(element);
-						if (!app.editeur.isVisible()) {
-							Stack<String> a_editer = null;
-							if (instruction.length() != 0
-									&& getNextWord().equals("[")) {
-								a_editer = new Stack<String>();
-								deleteFirstWord("[");
-								while (instruction.length() != 0) {
-									String el = getNextWord().toLowerCase();
-									a_editer.push(el);
-									deleteFirstWord(el);
-								}
-							}
-							for (int ij = 0; ij < wp.getNumberOfProcedure(); ij++) {
-								Procedure procedure = wp.getProcedure(ij);
-								if ((null == a_editer || a_editer
-										.search(procedure.name) != -1)
-										&& procedure.affichable) {
-									app.editeur.setEditorStyledText(procedure.toString());
-								}
-							}
-							app.editeur.setTitle(Logo.messages
-									.getString("editeur"));
-							app.editeur.setVisible(true);
-							app.editeur.toFront();
-						}
-
-					} else {
+					else {
 						deleteLineNumber();
 						throw new myException(app, Logo.messages
 								.getString("je_ne_sais_pas")

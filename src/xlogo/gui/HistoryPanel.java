@@ -111,14 +111,7 @@ public void vide_texte(){
   }
 
   void bediteur_actionPerformed(ActionEvent e) {
-    if (!cadre.editeur.isVisible()) {
     	cadre.editeur.open();
-    }
-    else {
-      cadre.editeur.setVisible(false);
-      cadre.editeur.setVisible(true);
-      cadre.editeur.focus_zonedition();
-    }
   }
   public void active_animation(){
   	add(label_animation,BorderLayout.WEST);

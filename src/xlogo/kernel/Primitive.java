@@ -144,12 +144,17 @@ public class Primitive {
 		}
 		catch(IOException e){System.out.println("Impossible de lire le fichier d'initialisation des primitives");}
 	}
-	// primitive repeat
+	
+	/**
+	 * This method creates the loop "repeat"
+	 * @param i The number of iteration
+	 * @param st The instruction to execute
+	 */
 	protected void repete(int i, String st) {
 		if (i > 0) {
 			st = new String(Utils.decoupe(st));
-			LoopProperties bp = new LoopProperties(BigDecimal.ONE,
-					new BigDecimal(i), BigDecimal.ONE, st, LoopProperties.TYPE_REPEAT);
+			LoopProperties bp = new LoopRepeat(BigDecimal.ONE,
+					new BigDecimal(i), BigDecimal.ONE, st);
 			stackLoop.push(bp);
 			Interprete.instruction.insert(0, st + "\\ ");
 		}
@@ -158,15 +163,11 @@ public class Primitive {
 		}
 		catch(myException e){}
 	}
-	// primitive if
-	protected void si(boolean b, String li, String li2) {
-		if (b) {
-			Interprete.instruction.insert(0, li);
-		} else if (null != li2) {
-			Interprete.instruction.insert(0, li2);
-		}
-	}
-	// internal primitive for loop while.
+	/**
+	 * This method is an internal primitive for the primitive "while"
+	 * @param b Do we still execute the loop body?
+	 * @param li The loop body instructions
+	 */
 	protected void whilesi(boolean b, String li) {
 		if (b) {
 			Interprete.instruction.insert(0, li
@@ -178,6 +179,17 @@ public class Primitive {
 			}
 		}
 	}
+	
+	
+	// primitive if
+	protected void si(boolean b, String li, String li2) {
+		if (b) {
+			Interprete.instruction.insert(0, li);
+		} else if (null != li2) {
+			Interprete.instruction.insert(0, li2);
+		}
+	}
+
 	// primitive stop
 	protected void stop() throws myException{
 		Interprete.operande = false;

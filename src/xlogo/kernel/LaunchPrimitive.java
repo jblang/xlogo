@@ -7,6 +7,7 @@
 package xlogo.kernel;
 
 import java.util.Stack;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -182,7 +183,7 @@ public class LaunchPrimitive {
 				} catch (myException e) {
 				}
 				break;
-			case 5: // repete
+			case 5: // repete controls.repeat
 				try {
 					String liste = getList(param.get(1));
 					kernel.primitive.repete(getInteger(param.get(0)), liste);
@@ -475,37 +476,37 @@ public class LaunchPrimitive {
 				if (!Interprete.en_cours.isEmpty()) Interprete.en_cours.pop();
 				break;
 			case 40: // opérateur interne \ signalant une fin de boucle
-				LoopProperties bp=Primitive.stackLoop.peek();
-				int idb=bp.getId();
-				 // Si c'est repete
-				if (idb==LoopProperties.TYPE_REPEAT){
-					BigDecimal compteur=bp.getCounter();
-					BigDecimal fin=bp.getFin();
+				
+				LoopProperties loop=Primitive.stackLoop.peek();
+				 // LOOP REPEAT
+				if (loop.isRepeat()){
+					BigDecimal compteur=loop.getCounter();
+					BigDecimal fin=loop.getEnd();
 					if (compteur.compareTo(fin) < 0) {
-						bp.incremente();
+						loop.incremente();
 						Primitive.stackLoop.pop();
-						Primitive.stackLoop.push(bp);
-						Interprete.instruction.insert(0, bp.getInstr()+ "\\ ");	
+						Primitive.stackLoop.push(loop);
+						Interprete.instruction.insert(0, loop.getInstr()+ "\\ ");	
 					}
 					else if (compteur.compareTo(fin)==0){
 						Primitive.stackLoop.pop();
 					}
 				} 
-				else if (idb==LoopProperties.TYPE_FOR) { // si c'est repetepour
-					BigDecimal inc=bp.getIncrement();
-					BigDecimal compteur=bp.getCounter();
-					BigDecimal fin=bp.getFin();
-					
+				// LOOP FOR or LOOP FOREACH
+				else if (loop.isFor()||loop.isForEach()) { 
+					BigDecimal inc=loop.getIncrement();
+					BigDecimal compteur=loop.getCounter();
+					BigDecimal fin=loop.getEnd();
 					if ((inc.compareTo(BigDecimal.ZERO)==1&& (compteur.add(inc).compareTo(fin) <=0))
 							||(inc.compareTo(BigDecimal.ZERO)==-1&&(compteur.add(inc).compareTo(fin)>=0))){
-						bp.incremente();
-						bp.AffecteVar(false);
+						loop.incremente();
+						((LoopFor)loop).AffecteVar(false);
 						Primitive.stackLoop.pop();
-						Primitive.stackLoop.push(bp);
-						Interprete.instruction.insert(0, bp.getInstr()+ "\\ ");			
+						Primitive.stackLoop.push(loop);
+						Interprete.instruction.insert(0, loop.getInstr()+ "\\ ");			
 					}
 					else {
-						bp.DeleteVar();
+						((LoopFor)loop).DeleteVar();
 						Primitive.stackLoop.pop();
 					}
 				}
@@ -1156,7 +1157,7 @@ public class LaunchPrimitive {
 					String li2 = getList(param.get(1));
 					li2=new String(Utils.decoupe(li2));
 					String instr="\\siwhile "+li1+ "[ " + li2+ "] ";
-					bp=new LoopProperties(BigDecimal.ONE,BigDecimal.ZERO,BigDecimal.ONE,instr,LoopProperties.TYPE_WHILE);
+					LoopWhile bp=new LoopWhile(BigDecimal.ONE,BigDecimal.ZERO,BigDecimal.ONE,instr);
 					Primitive.stackLoop.push(bp);
 					Interprete.instruction.insert(0, instr+"\\ ");
 				} catch (myException e) {
@@ -2337,8 +2338,8 @@ public class LaunchPrimitive {
 			case 182: // compteur
 				boolean erreur=false;
 				if (!Primitive.stackLoop.isEmpty()){
-					bp=Primitive.stackLoop.peek();
-					if (bp.getId()==LoopProperties.TYPE_REPEAT){
+					LoopProperties bp=Primitive.stackLoop.peek();
+					if (bp.isRepeat()){
 						Interprete.operande=true;
 						Interprete.calcul.push(bp.getCounter().toString());
 					}
@@ -2352,7 +2353,7 @@ public class LaunchPrimitive {
 					catch(myException e){}
 				}
 			break;
-			case 183: // repetepour
+			case 183: // controls.for repetepour
 				try{
 					String li2 = getList(param.get(1));
 					li2=new String(Utils.decoupe(li2));
@@ -2370,7 +2371,7 @@ public class LaunchPrimitive {
 						throw new myException(cadre,Logo.messages.getString("erreur_nom_nombre_variable"));
 					}
 					catch(NumberFormatException e){
-						bp=new LoopProperties(deb,fin,increment,li2,LoopProperties.TYPE_FOR,var);
+						LoopFor bp=new LoopFor(deb,fin,increment,li2,var);
 						bp.AffecteVar(true);
 
 						if ((increment.compareTo(BigDecimal.ZERO)==1&&fin.compareTo(deb)>=0)
@@ -3497,6 +3498,103 @@ public class LaunchPrimitive {
         				} catch (myException e) {
         				}
                     	break;
+                    case 281: // controls.ifelse
+        				try {
+        					liste = getList(param.get(1));
+        					liste=new String(Utils.decoupe(liste));
+        					boolean predicat = predicat(param.get(0));
+        					String liste2 = getList(param.get(2));
+        					liste=new String(Utils.decoupe(liste));
+        					kernel.primitive.si(predicat, liste, liste2);
+        					Interprete.renvoi_instruction=true;
+        				} catch (myException e) {
+        				}
+                    break;
+                    case 282: // workspace.ed
+                    	try{
+    					mot=this.getWord(param.get(0));
+    					if (null==mot) mot=this.getFinalList(param.get(0));
+    					StringTokenizer st=new StringTokenizer(mot);
+    					System.out.println(mot);
+    					// Write all procedures names in a Vector
+    					java.util.Vector<String> names=new java.util.Vector<String>();
+    					while (st.hasMoreTokens()){
+    						names.add(st.nextToken());    						
+    					}
+						for (int i= 0; i< wp.getNumberOfProcedure(); i++) {
+							Procedure procedure = wp.getProcedure(i);			
+							if ( names.contains(procedure.name)&& procedure.affichable) {
+								cadre.editeur.setEditorStyledText(procedure.toString());
+							}
+						}
+						cadre.editeur.setTitle(Logo.messages
+								.getString("editeur"));
+
+						cadre.editeur.initMainCommand();
+						cadre.editeur.setTitle(Logo.messages.getString("editeur"));
+						cadre.editeur.discardAllEdits();
+						cadre.editeur.setVisible(true);
+						cadre.editeur.toFront();
+						cadre.editeur.focus_zonedition();
+                    	}
+                    	catch(myException e){}
+                    break;
+                    case 283: // workspace.edall
+                    	cadre.editeur.open();
+                    break;
+                    case 284: // controls.foreach
+        				try{
+        					// Variable name
+        					String var=getWord(param.get(0));
+        					// If it isn't a word
+        					if (null==var) throw new myException(cadre, param.get(0).toString()+" "+
+        							Logo.messages.getString("error.word"));
+        					// If it's a number
+        					else {
+        						try{
+        							Double.parseDouble(var);
+        							throw new myException(cadre,Logo.messages.getString("erreur_nom_nombre_variable"));
+        						}
+        						catch(NumberFormatException e1){}
+        					}
+        					String li2 = getList(param.get(2));
+        					li2=new String(Utils.decoupe(li2));
+        					String li1=getWord(param.get(1));
+        					boolean list=false;
+        					if (null==li1) {
+        						list=true;
+        						li1= getFinalList(param.get(1));        						
+        					}
+        					Vector<String> elements=new Vector<String>();
+        					while (!li1.equals("")){
+        						String character="";
+        						// If it's a list
+        						if (list) {
+        							for(int i=0;i<li1.length();i++){
+        								char car=li1.charAt(i);
+        								if (car==' ') {
+        									li1=li1.substring(i+1);
+        									break;
+        								}
+        								else character+=car;
+        							}
+        						}
+        						// If it's a word
+        						else {
+        							character=this.itemWord(1, li1);
+            						li1=li1.substring(character.length());
+        						}
+        						elements.add(character);
+        					}
+    						LoopForEach bp=new LoopForEach(BigDecimal.ZERO,new BigDecimal(elements.size()-1)
+    						,BigDecimal.ONE,li2,var,elements);			
+    						bp.AffecteVar(true);
+							Interprete.instruction.insert(0, li2 + "\\ ");
+							Primitive.stackLoop.push(bp);
+        				}
+        				catch(myException e){}
+                    	
+                    break;
 			}
 		}
 	}
