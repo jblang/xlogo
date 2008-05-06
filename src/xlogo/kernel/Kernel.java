@@ -71,6 +71,7 @@ public class Kernel {
 
 			public void change_image_tortue(String chemin){
 				app.getArdoise().change_image_tortue(app,chemin);
+				app.editeur.generateTurtleImage();
 			}
 			 public void initGraphics(){
 				 app.getArdoise().initGraphics();

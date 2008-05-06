@@ -35,35 +35,17 @@ import xlogo.Logo;
 public class Editor extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
   private JToolBar menu=new JToolBar(JToolBar.HORIZONTAL);
-  private ImageIcon icopier=new ImageIcon(Utils.dimensionne_image("editcopy.png",this));
-  private ImageIcon icoller=new ImageIcon(Utils.dimensionne_image("editpaste.png",this));
-  private ImageIcon icouper=new ImageIcon(Utils.dimensionne_image("editcut.png",this));
-  private ImageIcon iimprimer=new ImageIcon(Utils.dimensionne_image("fileprint.png",this));
-  private ImageIcon iquit=new ImageIcon(Utils.dimensionne_image("quit.png",this));
-  private ImageIcon ilire=new ImageIcon(Utils.dimensionne_image("lire.png",this));
-  private ImageIcon ichercher=new ImageIcon(Utils.dimensionne_image("chercher.png",this));
-  private ImageIcon iundo=new ImageIcon(Utils.dimensionne_image("undo.png",this));
-  private ImageIcon iredo=new ImageIcon(Utils.dimensionne_image("redo.png",this));
-  private ImageIcon iplay=new ImageIcon(Utils.dimensionne_image("play.png",this));
-  private JButton copier=new JButton(icopier);
-  private JButton coller=new JButton(icoller);
-  private JButton couper=new JButton(icouper);
-  private JButton imprimer=new JButton(iimprimer);
-  private JButton quit=new JButton(iquit);
-  private JButton lire=new JButton(ilire);
-  private JButton chercher=new JButton(ichercher);
-  private JButton undo=new JButton(iundo);
-  private JButton redo=new JButton(iredo);
+  private JButton copier,coller,couper,imprimer,quit,lire,chercher,undo,redo;
   private boolean affichable=true;
-  private JScrollPane jScrollPane1 = new JScrollPane();
-  private ZoneEdition zonedition = new ZoneEdition(this);
-  private JLabel labelCommand=new JLabel(Logo.messages.getString("mainCommand"),iplay,JLabel.LEFT);
-  private JTextField mainCommand=new JTextField();
-  private JPanel panelCommand=new JPanel();
-  private Popup jpop=new Popup(this,zonedition);
+  private JScrollPane jScrollPane1;
+  private ZoneEdition zonedition;
+  private JLabel labelCommand;
+  private JTextField mainCommand;
+  private JPanel panelCommand;
+  private Popup jpop;
   private Application cadre;
   private Workspace wp;
-  private ReplaceFrame sf=new ReplaceFrame(this,zonedition);
+  private ReplaceFrame sf;
   public Editor(Application cadre){
     this.cadre=cadre;
     this.wp=cadre.getKernel().getWorkspace();
@@ -360,6 +342,40 @@ public class Editor extends JFrame implements ActionListener{
   }
   private void initGui() throws Exception {
     this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    
+    // Init Toolbar button
+    ImageIcon icopier,icoller,icouper,iimprimer,iquit,ilire,ichercher,iundo,iredo,iplay;
+    icopier=new ImageIcon(Utils.dimensionne_image("editcopy.png",this));
+    icoller=new ImageIcon(Utils.dimensionne_image("editpaste.png",this));
+    icouper=new ImageIcon(Utils.dimensionne_image("editcut.png",this));
+    iimprimer=new ImageIcon(Utils.dimensionne_image("fileprint.png",this));
+    iquit=new ImageIcon(Utils.dimensionne_image("quit.png",this));
+    ilire=new ImageIcon(Utils.dimensionne_image("preview"+Config.activeTurtle+".png",this));
+    ichercher=new ImageIcon(Utils.dimensionne_image("chercher.png",this));
+    iundo=new ImageIcon(Utils.dimensionne_image("undo.png",this));
+    iredo=new ImageIcon(Utils.dimensionne_image("redo.png",this));
+    iplay=new ImageIcon(Utils.dimensionne_image("play.png",this));
+    lire=new JButton();
+    generateTurtleImage();
+    copier=new JButton(icopier);
+    coller=new JButton(icoller);
+    couper=new JButton(icouper);
+    imprimer=new JButton(iimprimer);
+    quit=new JButton(iquit);
+    chercher=new JButton(ichercher);
+    undo=new JButton(iundo);
+    redo=new JButton(iredo);
+    
+    // Init All other components
+    labelCommand=new JLabel(Logo.messages.getString("mainCommand"),iplay,JLabel.LEFT);
+    jScrollPane1 = new JScrollPane();
+    zonedition = new ZoneEdition(this);
+    mainCommand=new JTextField();
+    panelCommand=new JPanel();
+    jpop=new Popup(this,zonedition);
+    sf=new ReplaceFrame(this,zonedition);
+    
+
     copier.setToolTipText(Logo.messages.getString("menu.edition.copy"));
     couper.setToolTipText(Logo.messages.getString("menu.edition.cut"));
     coller.setToolTipText(Logo.messages.getString("menu.edition.paste"));
@@ -583,6 +599,13 @@ public class Editor extends JFrame implements ActionListener{
 	}
 	public void focus_zonedition(){
 		zonedition.requestFocus();
+	}
+	/**
+	 * Create the Turtle Image for the Button "save change"
+	 */
+	public void generateTurtleImage(){
+		  ImageIcon read=new ImageIcon(Utils.dimensionne_image("preview"+Config.activeTurtle+".png",this));
+		    lire.setIcon(read);
 	}
 	public void open(){
 	      for(int i=0;i<wp.getNumberOfProcedure();i++){
