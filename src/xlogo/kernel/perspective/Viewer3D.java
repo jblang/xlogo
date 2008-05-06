@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.*;
+import javax.media.j3d.Light;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
@@ -12,32 +13,53 @@ import java.awt.image.BufferedImage;
 import javax.media.j3d.Locale;
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.ImageComponent;
-import javax.media.j3d.PointLight;
 import javax.media.j3d.GraphicsContext3D ;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Raster;
 import javax.vecmath.Point3f;
+
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.Background;
 import java.awt.GridBagLayout;
 import java.awt.Color;
+
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
+
+import java.awt.GridLayout;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 import xlogo.utils.Utils;
 import xlogo.utils.WriteImage;
+import xlogo.Config;
 import xlogo.Logo;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 public class Viewer3D extends JFrame implements ActionListener{
-	//private boolean lock=false; 
+	private final static String ACTION_SCREENSHOT="screenshot";
+	private final static String ACTION_LIGHT0="light0";
+	private final static String ACTION_LIGHT1="light1";
+	private final static String ACTION_LIGHT2="light2";
+	private final static String ACTION_LIGHT3="light3";
+	private final static String ACTION_FOG="fog";
+	
+	
+	// To store the Light attributes
+	private LightConfig[] lightConfigs;
+	private Light[] lights=new Light[4];
+	
+	// To store the Fog attributes
+	
+	// Gui Components
 	private ImageIcon iscreenshot=new ImageIcon(Utils.dimensionne_image("screenshot.png",this));
 	private JButton screenshot;
 	private static final long serialVersionUID = 1L;
@@ -48,6 +70,11 @@ public class Viewer3D extends JFrame implements ActionListener{
 	private SimpleUniverse universe;
 	private Color3f backgroundColor;
 	private Background back;
+	private PanelLight panelLight;
+	private PanelFog panelFog;
+	
+	
+	
 	public Viewer3D(World3D w3d,Color c){
 		this.w3d=w3d;
 		this.backgroundColor=new Color3f(c);
@@ -55,7 +82,8 @@ public class Viewer3D extends JFrame implements ActionListener{
 	}
 	public void actionPerformed(ActionEvent e){
 		String cmd=e.getActionCommand();
-		if (cmd.equals("screenshot")){
+		// Take a screenshot
+		if (cmd.equals(Viewer3D.ACTION_SCREENSHOT)){
 			  WriteImage wi=new WriteImage(this,null);
 			  int id =wi.chooseFile();
 			  if (id==JFileChooser.APPROVE_OPTION){
@@ -71,6 +99,27 @@ public class Viewer3D extends JFrame implements ActionListener{
 		    		  wi.setImage(img);
 				      wi.start();	    		  
 			  }
+		}
+		// Click on Button Light1
+		else if (cmd.equals(Viewer3D.ACTION_LIGHT0)){
+			new LightDialog(this,lightConfigs[0]);
+		}
+		// Click on Button Light2
+		else if (cmd.equals(Viewer3D.ACTION_LIGHT1)){
+			new LightDialog(this,lightConfigs[1]);
+		}
+		// Click on Button Light3
+		else if (cmd.equals(Viewer3D.ACTION_LIGHT2)){
+			new LightDialog(this,lightConfigs[2]);
+		}
+		// Click on Button Light4
+		else if (cmd.equals(Viewer3D.ACTION_LIGHT3)){
+			new LightDialog(this,lightConfigs[3]);
+		}
+		// Click on the Fog Button
+		else if (cmd.equals(Viewer3D.ACTION_FOG)){
+			System.out.println("fog");
+			
 		}
 	}
 	private void initGui(){
@@ -110,9 +159,12 @@ public class Viewer3D extends JFrame implements ActionListener{
 		scene.setCapability(BranchGroup.ALLOW_DETACH);
 		
 		createBackground(scene);
+
+		// Configure Lights
+		lightConfigs=new LightConfig[4];
+		initLights();
 		addLights(scene);
 		
-		//createSceneGraph ();
 	    // Rattachement de la scène 3D à l'univers
 	    universe.addBranchGraph (scene);
 	    	
@@ -124,13 +176,23 @@ public class Viewer3D extends JFrame implements ActionListener{
 		screenshot=new JButton(iscreenshot);
 		screenshot.addActionListener(this);
 		screenshot.setMaximumSize(new Dimension(100,100));
-		screenshot.setActionCommand("screenshot");
-		getContentPane().add(canvas3D, new GridBagConstraints(0, 0, 1, 1, 2.0, 1.0,
+		screenshot.setActionCommand(Viewer3D.ACTION_SCREENSHOT);
+		
+		panelLight=new PanelLight(this);
+		panelFog=new PanelFog(this);
+		
+		getContentPane().add(canvas3D, new GridBagConstraints(0, 0, 1, 3, 2.0, 1.0,
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
 						0, 0, 0, 0), 0, 0));		
-		getContentPane().add(screenshot, new GridBagConstraints(1, 0, 1, 1, 0.1, 1.0,
+		getContentPane().add(screenshot, new GridBagConstraints(1, 0, 1, 1, 0.1, 0.8,
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
-						10, 10, 10, 10), 0, 0));		
+						10, 10, 10, 10), 0, 0));
+		getContentPane().add(panelLight, new GridBagConstraints(1, 1, 1, 1, 0.1, 0.1,
+				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
+						10, 10, 10, 10), 0, 0));
+		getContentPane().add(panelFog, new GridBagConstraints(1, 2, 1, 1, 0.1, 0.1,
+				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
+						10, 10, 10, 10), 0, 0));
 		getContentPane().validate();
 	}
 	/**
@@ -148,26 +210,36 @@ public class Viewer3D extends JFrame implements ActionListener{
 		branchManager.insertBranch();
 		branchManager=new BranchManager();
 	}
-	
+	/**
+	 * This methods adds two default PointLight int the 3d Scene
+	 */
+	private void initLights(){
+		// First Default Point Light
+		Color3f color=new Color3f(1f,1f,1f);
+		Point3f pos=new Point3f((float)w3d.xCamera/1000,(float)w3d.yCamera/1000,(float)w3d.zCamera/1000);
+		lightConfigs[0]=new LightConfig(LightConfig.LIGHT_POINT,color, pos);
+
+		// Second default Point Light
+		pos=new Point3f(-(float)w3d.xCamera/1000,-(float)w3d.yCamera/1000,-(float)w3d.zCamera/1000);
+		lightConfigs[1]=new LightConfig(LightConfig.LIGHT_POINT,color, pos);
+		lightConfigs[2]=new LightConfig(LightConfig.LIGHT_OFF);
+		lightConfigs[3]=new LightConfig(LightConfig.LIGHT_OFF);
+	}
 	/**
 	 * Add two lights for the main 3D scene
 	 */
 	private void addLights(BranchGroup bg){
-		PointLight light=new PointLight();
-		light.setColor(new Color3f(1f,1f,1f));
-		light.setPosition((float)w3d.xCamera/1000,(float)w3d.yCamera/1000,(float)w3d.zCamera/1000);
-		light.setAttenuation(1,0,0);
-		light.setInfluencingBounds(new BoundingSphere(new Point3d(w3d.xCamera/1000,w3d.yCamera/1000,w3d.zCamera/1000),Double.MAX_VALUE));
-		bg.addChild(light);
-		PointLight light2=new PointLight();
-		light2.setColor(new Color3f(1f,1f,1f));
-		light2.setPosition(-(float)w3d.xCamera/1000,-(float)w3d.yCamera/1000,-(float)w3d.zCamera/1000);
-		light2.setAttenuation(1,0,0);
-		light2.setInfluencingBounds(new BoundingSphere(new Point3d(-w3d.xCamera/1000,-w3d.yCamera/1000,-w3d.zCamera/1000),Double.MAX_VALUE));
-		bg.addChild(light2);
+		for(int i=0;i<4;i++){
+			LightConfig config=lightConfigs[i];
+			if (null!=config) {
+				lights[i]=config.getLight();
+				bg.addChild(lights[i]);	
+			}
+			else lights[i]=null;
+		}
 	}
 	/**
-	 * This methods erase all drawings on the 3D Viewer Drwing Area
+	 * This methods erase all drawings on the 3D Viewer Drawing Area
 	 */
 	public void clearScreen(){
 		Enumeration<Locale> locales=universe.getAllLocales();
@@ -221,4 +293,48 @@ public class Viewer3D extends JFrame implements ActionListener{
 			scene.addChild(bg);
 		}
 	} 
+	class PanelLight extends JPanel{
+		private static final long serialVersionUID = 1L;
+		private JButton[] buttonLights;
+		private Viewer3D viewer3d;
+		PanelLight(Viewer3D viewer3d){
+			this.viewer3d=viewer3d;
+			initGui();
+		}
+		private void initGui(){
+			buttonLights=new JButton[4];
+			setLayout(new GridLayout(2,2,10,10));
+			for(int i=0;i<4;i++){
+				ImageIcon ilight=new ImageIcon(Utils.dimensionne_image("light"+i+".png",viewer3d));
+				buttonLights[i]=new	JButton(ilight);
+				add(buttonLights[i]);
+				buttonLights[i].addActionListener(viewer3d);
+				buttonLights[i].setActionCommand("light"+i);
+			}
+			TitledBorder tb=BorderFactory.createTitledBorder(Logo.messages.getString("3d.lights"));
+			tb.setTitleFont(Config.police);
+			setBorder(tb);
+		}
+	}
+	class PanelFog extends JPanel{
+
+		private static final long serialVersionUID = 1L;
+		private JButton buttonFog;
+		private Viewer3D viewer3d;
+		PanelFog(Viewer3D viewer3d){
+			this.viewer3d=viewer3d;
+			initGui();
+		}
+		private void initGui(){
+			ImageIcon ifog=new ImageIcon(Utils.dimensionne_image("fog.png",viewer3d));
+			buttonFog=new JButton(ifog);
+			buttonFog.setActionCommand(Viewer3D.ACTION_FOG);
+			buttonFog.addActionListener(viewer3d);
+			add(buttonFog);
+			TitledBorder tb=BorderFactory.createTitledBorder(Logo.messages.getString("3d.fog"));
+			tb.setTitleFont(Config.police);
+			setBorder(tb);
+		}	
+	}	
+	
 }

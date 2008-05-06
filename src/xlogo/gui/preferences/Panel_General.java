@@ -46,7 +46,8 @@ public class Panel_General extends JPanel {
 			Logo.messages.getString("pref.general.esperanto"),
 			Logo.messages.getString("pref.general.german"),
 			Logo.messages.getString("pref.general.galician"),
-			Logo.messages.getString("pref.general.asturian")
+			Logo.messages.getString("pref.general.asturian"),
+			Logo.messages.getString("pref.general.greek")
 	};
 	private JList jl_langues = new JList(lang); //Pour les différentes langues
 	private JScrollPane js_langues = new JScrollPane(jl_langues);

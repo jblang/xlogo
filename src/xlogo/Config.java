@@ -19,7 +19,7 @@ import java.util.Vector;
  */
 public class Config {
 	/** Version number**/
-	static final String version="0.9.92 final";
+	static final String version="0.9.93 beta";
 	/** Drawing Quality **/
 	public static int quality=0;
 	/** Drawing Quality: normal **/
@@ -62,6 +62,10 @@ public class Config {
 	 * Asturian language id
 	*/
 	 public static final int LANGUAGE_ASTURIAN=8;
+	/**
+	 * Greek language id
+	*/
+	 public static final int LANGUAGE_GREEK=9;
 	 /**
 	  * This integer represents the selected language
 	  */

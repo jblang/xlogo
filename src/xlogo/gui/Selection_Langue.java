@@ -5,7 +5,6 @@ import javax.swing.*;
 import java.awt.*;
 import xlogo.utils.Utils;
 import xlogo.Config;
-import xlogo.Logo;
 
 /**
  * Title :        XLogo
@@ -23,7 +22,7 @@ public class Selection_Langue extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 
   private final String language[] = { "French","English","Arabic","Spanish","Portuguese","Esperanto","German",
-			"Galician","Asturian"};
+			"Galician","Asturian","Greek"};
   private final int NUMBER_OF_LANGUAGE=language.length;
   private boolean selection_faite=false;
   private JPanel central=new JPanel();

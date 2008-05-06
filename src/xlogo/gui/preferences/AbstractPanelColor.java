@@ -19,7 +19,7 @@ import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.DrawPanel;
 
-abstract class AbstractPanelColor extends JPanel implements ActionListener{
+public abstract class AbstractPanelColor extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 1L;
 //	private ImageIcon[] images=new ImageIcon[17];
 	private Integer[] intArray=new Integer[17];

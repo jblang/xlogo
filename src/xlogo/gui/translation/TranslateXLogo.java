@@ -18,7 +18,7 @@ public class TranslateXLogo extends JFrame implements ActionListener {
 	private String id="";
 	private String action;
 	private Application app;
-	  private String lang[] = { Logo.messages.getString("pref.general.french"),
+   private final String lang[] = { Logo.messages.getString("pref.general.french"),
 				Logo.messages.getString("pref.general.english"),
 				Logo.messages.getString("pref.general.arabic"),
 				Logo.messages.getString("pref.general.spanish"),
@@ -26,7 +26,8 @@ public class TranslateXLogo extends JFrame implements ActionListener {
 				Logo.messages.getString("pref.general.esperanto"),
 				Logo.messages.getString("pref.general.german"),
 				Logo.messages.getString("pref.general.galician"),
-				Logo.messages.getString("pref.general.asturian")
+				Logo.messages.getString("pref.general.asturian"),
+				Logo.messages.getString("pref.general.greek"),
 		};
 	protected static final String OK="ok";
 	protected static final String SEND="send";
