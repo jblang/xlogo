@@ -51,7 +51,7 @@ import xlogo.kernel.perspective.*;
  * 						programming language
  * @author Loïc Le Coq
  */
- public class DrawPanel extends JPanel {
+ public class DrawPanel extends JPanel implements MouseMotionListener,MouseListener {
 
 	private static final long serialVersionUID = 1L;
 	public Turtle tortue;
@@ -134,10 +134,6 @@ import xlogo.kernel.perspective.*;
 	protected final static int record3D_POINT=3;
 	protected final static int record3D_TEXT=4;
 	protected static Element3D poly;
-//	public static Vector<Shape3D> listPoly=null;
-//	public static Vector<TransformGroup> listText=null;
-//	protected final static Shape3D poly;
-	
 	
 	private double[] coords;
 	private double oldx, oldy,x1,y1,x2,y2;
@@ -150,19 +146,34 @@ import xlogo.kernel.perspective.*;
 	private int bouton_souris=0;  	// Numéro du bouton de souris appuyé sur la zone de dessin
 	/** Last coords for last mouse event*/
 	private String possouris="[ 0 0 ] ";	// Coordonnées du point du dernier événement souris
-	
-	
-	private	Click_Souris cs=new Click_Souris();
-	private Bouge_Souris bs=new Bouge_Souris();
-	
+		
 	/** Notify if a mouse event has occured*/	
 	private boolean lissouris=false; //Indique si un événement souris est intervenu depuis le debut du programme
+	/**
+	 * During a pogram execution, the user can't select or zoom with the mouse
+	 */
+	private boolean allowSelection=true;
+	/**
+	 * The rectangular selection zone
+	 */
+	private Rectangle selection;
+	/**
+	 * Color for the rectangular selection
+	 */
+	private Color colorSelection;
+	/**
+	 * The First clicked point when the rectangular selection is created
+	 */
+	Point origine;
+	private Rectangle zoomSelection; 
 	public DrawPanel(Application cadre){
 		this.gm=cadre.getKernel().getWorkspace().getGuiMap();
 		 setLayout(null);
 		 this.setPreferredSize(new Dimension(
 				 (int)(Config.imageWidth*zoom),(int)( Config.imageHeight*zoom)));
 		 this.cadre=cadre;
+    	addMouseListener(this);
+    	addMouseMotionListener(this);
 		initGraphics();
 	}
 	/**
@@ -1366,6 +1377,8 @@ import xlogo.kernel.perspective.*;
 		tortue.setVisible(true);
 		g.setStroke(new BasicStroke(1));
 		montrecacheTortue(true);
+		// Update the selection frame
+		updateColorSelection();
 	}
 	/**
 	 * Primitive wash
@@ -1756,6 +1769,7 @@ import xlogo.kernel.perspective.*;
 	 */
 	protected void fcfg(Color color) {
 		couleurfond=color;
+		updateColorSelection();
 		nettoie();
 	}
 	/**
@@ -2003,6 +2017,12 @@ import xlogo.kernel.perspective.*;
 	protected void setBackgroundColor(Color c){
 		couleurfond=c;
 	}
+	protected void updateColorSelection(){
+    	float r=(255-couleurfond.getRed())/255;
+    	float v=(255-couleurfond.getGreen())/255;
+		float b=(255-couleurfond.getBlue())/255;
+		colorSelection=new Color(r,v,b,0.2f);
+	}
 	public void setNumberOfTurtles(int id){
 		Config.maxTurtles = id;
 		Turtle[] tampon = (Turtle[]) tortues.clone();
@@ -2058,8 +2078,7 @@ import xlogo.kernel.perspective.*;
 	    		if (tracker.checkID(0))  g.drawImage(tortue.tort, Config.imageWidth/2 - tortue.largeur / 2,
 	                    Config.imageHeight/2 - tortue.hauteur/2, cadre.getArdoise());
 	    		}
-	    
-	    ////////  clip(); ici
+	    	updateColorSelection();
 	}
 	public void zoom(double d){
 		// Resize all GuiComponent
@@ -2183,17 +2202,14 @@ import xlogo.kernel.perspective.*;
 	   g2d.scale(DrawPanel.zoom,DrawPanel.zoom);
 	  g2d.drawImage(dessin,0,0,this);
 	  g2d.scale(1/DrawPanel.zoom,1/DrawPanel.zoom);
+	  if (allowSelection&&null!=selection){
+		  g2d.setColor(colorSelection);
+		  g2d.fillRect(selection.x, selection.y, selection.width, selection.height);
+	  }
 	  notify();
   }
-  
 	 public void active_souris(){
 		 lissouris=false;
-		 addMouseListener(cs);
-		 addMouseMotionListener(bs);
-	 }
-	 public void stop_souris(){
-		 removeMouseListener(cs);
-		 removeMouseMotionListener(bs);
 	 }
 	 public boolean get_lissouris(){
 		 return lissouris;
@@ -2206,22 +2222,41 @@ import xlogo.kernel.perspective.*;
 		 lissouris=false;
 		 return possouris;
 	 }
-	 class Click_Souris extends MouseAdapter{
-		 public void mouseClicked(MouseEvent ev){
+	  public void mousePressed(MouseEvent e){
+		 if (allowSelection) {			 
+			 selection=new Rectangle();
+			 origine=new Point(e.getPoint());
+			 selection.setSize(0, 0);
+		 }
+	 }
+	 public void mouseReleased(MouseEvent e){}
+	 public void mouseClicked(MouseEvent ev){
+		 if (allowSelection){
+			 selection=null;
+			 origine=null;
+			 repaint();
+		 }
+		 else{
 			 lissouris=true;
 			 bouton_souris=ev.getButton();
 			 Point point=ev.getPoint();
 			 possouris="[ "+(point.x-Config.imageWidth/2)+" "+(Config.imageHeight/2-point.y)+" ] ";
 		 }
-   }
-   class Bouge_Souris extends MouseMotionAdapter{
-		 public void mouseMoved(MouseEvent ev){
-			 lissouris=true;
-			 bouton_souris=0;
-			 Point point=ev.getPoint();
-			 possouris="[ "+(point.x-Config.imageWidth/2)+" "+(Config.imageHeight/2-point.y)+" ] ";
+	 }
+	 public void mouseExited(MouseEvent e){}
+	 public void mouseEntered(MouseEvent e){}
+	 public void mouseDragged(MouseEvent e){
+		 if (allowSelection&&null!=selection){
+			 selection.setFrameFromDiagonal(origine, e.getPoint());
+			 repaint();
 		 }
 	 }
+	 public void mouseMoved(MouseEvent ev){
+		 lissouris=true;
+		 bouton_souris=0;
+		 Point point=ev.getPoint();
+		 possouris="[ "+(point.x-Config.imageWidth/2)+" "+(Config.imageHeight/2-point.y)+" ] ";
+	   }
    protected void addToGuiMap(GuiComponent gc) throws xlogo.utils.myException{
 	   gm.put(gc);
    }

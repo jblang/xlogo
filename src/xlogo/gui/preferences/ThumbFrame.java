@@ -24,6 +24,7 @@ import java.io.File;
 import java.awt.Color;
 import xlogo.Config;
 import xlogo.Logo;
+import xlogo.gui.MyTextAreaDialog;
 import xlogo.utils.ExtensionFichier;
 import xlogo.utils.Utils;
 import java.awt.event.*;
@@ -200,10 +201,7 @@ public class ThumbFrame extends JDialog implements ActionListener{
 		    	    		 	try{
 		    	    				File f=new File(path);
 		    	    				if ( f.length()>102400) {
-		    	    					JTextArea jt=new JTextArea(Logo.messages.getString("file_100K"));
-		    	    					jt.setEditable(false);
-		    	    					jt.setBackground(new Color(255,255,177));
-		    	    					jt.setFont(Config.police);
+		    	    					MyTextAreaDialog jt=new MyTextAreaDialog(Logo.messages.getString("file_100K"));
 		    	    					JOptionPane.showMessageDialog(this,jt,Logo.messages.getString("erreur"),JOptionPane.ERROR_MESSAGE);					
 		    	    					return;
 		    	    				}

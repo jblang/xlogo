@@ -490,10 +490,7 @@ public class Application extends JFrame {
 	public void closeWindow(){
     	setVisible(true);
     	String message=Logo.messages.getString("quitter?");
-		JTextArea jt=new JTextArea(message);
-		jt.setEditable(false);
-		jt.setBackground(new Color(255,255,177));
-		jt.setFont(Config.police);
+		MyTextAreaDialog jt=new MyTextAreaDialog(message);
 		ImageIcon icone=new ImageIcon(Utils.class.getResource("icone.png"));
 		String[] choix={Logo.messages.getString("pref.ok"),Logo.messages.getString("pref.cancel")};
 		int retval=JOptionPane.showOptionDialog(this,

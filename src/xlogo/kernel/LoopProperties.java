@@ -12,26 +12,6 @@ import java.math.BigDecimal;
  */
 public class LoopProperties {
 	/**
-	 * REPEAT loop id
-	 */
-	protected static final int TYPE_REPEAT=0;
-	/**
-	 * WHILE loop id
-	 */
-	protected static final int TYPE_WHILE=1;
-	/**
-	 * FOR loop id
-	 */
-	protected static final int TYPE_FOR=2;
-	/**
-	 * FOREACH loop id
-	 */
-	protected static final int TYPE_FOREACH=3;
-	
-	
-	private boolean conserver=false;
-
-	/**
 	 * Counter: The counter value for the current loop
 	 * End: The end value for the loop
 	 * Increment the increment between two values

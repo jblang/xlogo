@@ -26,10 +26,6 @@ public class LoopForEach extends LoopFor{
 	 * @param first boolean that indicates if it is the first affectation
 	 */
 	protected void AffecteVar(boolean first){
-		System.out.println(getCounter().intValue());
-		for(int i=0;i<vec.size();i++){
-			System.out.println(vec.get(i));
-		}
 		String element=vec.get(getCounter().intValue());
 		if (Interprete.locale.containsKey(var)){
 			if (first) conserver=true;

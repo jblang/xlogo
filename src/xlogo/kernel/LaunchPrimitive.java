@@ -28,6 +28,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import xlogo.utils.Utils;
 import xlogo.gui.Lis;
+import xlogo.gui.MyTextAreaDialog;
 import xlogo.gui.preferences.*;
 import xlogo.utils.myException;
 import xlogo.kernel.DrawPanel;
@@ -2955,10 +2956,7 @@ public class LaunchPrimitive {
        								if (total-free+memoire_necessaire-memoire_image>0.8*conseil) conseil+=64;
        								if (conseil==Config.memoire) conseil+=64;
        								String message=Logo.messages.getString("erreur_memoire")+" "+conseil+"\n"+Logo.messages.getString("relancer");
-       								JTextArea jt=new JTextArea(message);
-       								jt.setEditable(false);
-       								jt.setBackground(new Color(255,255,177));
-       								jt.setFont(Config.police);
+       								MyTextAreaDialog jt=new MyTextAreaDialog(message);
        								JOptionPane.showMessageDialog(cadre,jt,Logo.messages.getString("erreur"),JOptionPane.ERROR_MESSAGE);
            						}
            					}

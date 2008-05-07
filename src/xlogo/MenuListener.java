@@ -22,6 +22,7 @@ import xlogo.utils.WebPage;
 import java.util.Locale;
 import xlogo.utils.Utils;
 import xlogo.utils.ExtensionFichier;
+import xlogo.gui.MyTextAreaDialog;
 import xlogo.kernel.Workspace;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.Kernel;
@@ -101,9 +102,10 @@ public class MenuListener extends JDialog implements ActionListener{
     }
     else if(MenuListener.FILE_NEW.equals(cmd)){ //nouveau
 		String[] choix={Logo.messages.getString("pref.ok"),Logo.messages.getString("pref.cancel")};
-		Object message=Logo.messages.getString("enregistrer_espace");
 		ImageIcon icone=new ImageIcon(Utils.class.getResource("icone.png"));
-		int retval=JOptionPane.showOptionDialog(cadre,message,Logo.messages.getString("enregistrer_espace"),JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,icone,choix,choix[0]);	
+		MyTextAreaDialog jt=new MyTextAreaDialog(Logo.messages.getString("enregistrer_espace"));
+		int retval=JOptionPane.showOptionDialog(cadre,jt,Logo.messages.getString("enregistrer_espace"),JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,icone,choix,choix[0]);	
+		
 		if (retval==JOptionPane.OK_OPTION){
 			wp.deleteAllProcedures();
 			wp.deleteAllVariables();
@@ -239,10 +241,7 @@ public class MenuListener extends JDialog implements ActionListener{
   else if (MenuListener.HELP_ABOUT.equals(cmd)){   //Boite de dialogue A propos
   	String message=Logo.messages.getString("message_a_propos1")+Config.version+"\n\n"
 		+Logo.messages.getString("message_a_propos2")+" "+MenuListener.WEB_SITE+"\n\n"+Logo.messages.getString("message_a_propos3")+"\n     "+MenuListener.MAIL;
-		JTextArea jt=new JTextArea(message);
-		jt.setEditable(false);
-		jt.setBackground(new Color(255,255,177));
-		jt.setFont(Config.police);
+	MyTextAreaDialog jt=new MyTextAreaDialog(message);
 		ImageIcon icone=new ImageIcon(Utils.class.getResource("icone.png"));
 		JOptionPane.showMessageDialog(null,jt,Logo.messages.getString("menu.help.about"),JOptionPane.INFORMATION_MESSAGE,(Icon)icone);
 		

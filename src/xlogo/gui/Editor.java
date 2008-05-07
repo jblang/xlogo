@@ -324,10 +324,7 @@ public class Editor extends JFrame implements ActionListener{
 	EditeurException(){}                      // des pour ... fin
     EditeurException(Editor editeur,String message){        // et des variables
     	this.editeur=editeur;
-		JTextArea jt=new JTextArea(message);
-		jt.setEditable(false);
-		jt.setBackground(new Color(255,255,177));
-		jt.setFont(Config.police);
+		MyTextAreaDialog jt=new MyTextAreaDialog(message);
 		JOptionPane.showMessageDialog(this.editeur,jt,Logo.messages.getString("erreur"),JOptionPane.ERROR_MESSAGE);					
 			for(int i=0;i<wp.getNumberOfProcedure();i++){ // On remémorise les anciennes définitions de procédures
 				Procedure pr=wp.getProcedure(i);

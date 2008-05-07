@@ -10,6 +10,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import xlogo.Config;
+import xlogo.gui.MyTextAreaDialog;
 import xlogo.Application;
 import java.awt.Color;
 import javax.swing.JOptionPane;
@@ -215,11 +216,7 @@ public class Panel_Options extends JPanel {
 					if (total-free+memoire_necessaire-memoire_image>0.8*conseil) conseil+=64;
 					if (conseil==Config.memoire) conseil+=64;
 					String message=Logo.messages.getString("erreur_memoire")+" "+conseil+"\n"+Logo.messages.getString("relancer");
-					JTextArea jt=new JTextArea(message);
-					jt.setEditable(false);
-					jt.setBackground(new Color(255,255,177));
-					jt.setFont(Config.police);
-
+					MyTextAreaDialog jt=new MyTextAreaDialog(message); 
 			      JOptionPane.showMessageDialog(this,jt,Logo.messages.getString("erreur"),JOptionPane.ERROR_MESSAGE);
 				}
 			}

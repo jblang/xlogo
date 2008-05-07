@@ -53,7 +53,8 @@ public class Affichage extends Thread {
 			}
 		});
 		execution_lancee = true;
-		cadre.getArdoise().active_souris(); // On active les événements osuris sur
+		
+		cadre.getArdoise().active_souris(); // On active les événements souris sur
 										// la zone de dessin
 		cadre.jScrollPane1.getVerticalScrollBar().addMouseListener(souris);
 		cadre.jScrollPane1.getHorizontalScrollBar().addMouseListener(souris);
@@ -91,8 +92,6 @@ public class Affichage extends Thread {
 		myException.lance = false;
 		cadre.jScrollPane1.getVerticalScrollBar().removeMouseListener(souris);
 		cadre.jScrollPane1.getHorizontalScrollBar().removeMouseListener(souris);
-		cadre.getArdoise().stop_souris(); //On arrête les listeners souris sur la
-									  // zone de dessin
 	}
 
 	protected boolean isOnPause() {

@@ -11,6 +11,8 @@ import java.awt.Color;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
+import xlogo.gui.MyTextAreaDialog;
+
 
 /**
  * This class is a thread that prevents from memory Overflow <br>
@@ -62,10 +64,7 @@ public class MemoryChecker extends Thread{
 			cadre.error=true;
 			alive=false;
 			String message=Logo.messages.getString("depassement_memoire");
-			JTextArea jt=new JTextArea(message);
-			jt.setEditable(false);
-			jt.setBackground(new Color(255,255,177));
-			jt.setFont(Config.police);
+			MyTextAreaDialog jt=new MyTextAreaDialog(message);
 	      JOptionPane.showMessageDialog(cadre,jt,Logo.messages.getString("erreur"),JOptionPane.ERROR_MESSAGE);
 
 		}
