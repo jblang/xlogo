@@ -341,13 +341,12 @@ public class Editor extends JFrame implements ActionListener{
     this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     
     // Init Toolbar button
-    ImageIcon icopier,icoller,icouper,iimprimer,iquit,ilire,ichercher,iundo,iredo,iplay;
+    ImageIcon icopier,icoller,icouper,iimprimer,iquit,ichercher,iundo,iredo,iplay;
     icopier=new ImageIcon(Utils.dimensionne_image("editcopy.png",this));
     icoller=new ImageIcon(Utils.dimensionne_image("editpaste.png",this));
     icouper=new ImageIcon(Utils.dimensionne_image("editcut.png",this));
     iimprimer=new ImageIcon(Utils.dimensionne_image("fileprint.png",this));
     iquit=new ImageIcon(Utils.dimensionne_image("quit.png",this));
-    ilire=new ImageIcon(Utils.dimensionne_image("preview"+Config.activeTurtle+".png",this));
     ichercher=new ImageIcon(Utils.dimensionne_image("chercher.png",this));
     iundo=new ImageIcon(Utils.dimensionne_image("undo.png",this));
     iredo=new ImageIcon(Utils.dimensionne_image("redo.png",this));

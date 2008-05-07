@@ -12,7 +12,15 @@ import java.io.*;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.image.BufferedImage;
 import java.awt.event.*;
+import java.awt.image.CropImageFilter;
+import java.awt.image.FilteredImageSource;
+
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
@@ -22,6 +30,8 @@ import xlogo.utils.WebPage;
 import java.util.Locale;
 import xlogo.utils.Utils;
 import xlogo.utils.ExtensionFichier;
+import xlogo.utils.WriteImage;
+import xlogo.gui.AImprimer;
 import xlogo.gui.MyTextAreaDialog;
 import xlogo.kernel.Workspace;
 import xlogo.kernel.Procedure;
@@ -207,13 +217,20 @@ public class MenuListener extends JDialog implements ActionListener{
 		cadre.traducOpen();
 	}
 	else if (MenuListener.FILE_COPY_IMAGE.equals(cmd)){  // Copier l'image au presse-papier
-		cadre.diagOpen(Logo.messages.getString("menu.file.captureimage.clipboard"));
+		Thread copie=new CopyImage();
+		copie.start();
   }
   else if (MenuListener.FILE_SAVE_IMAGE.equals(cmd)){  //Enregistrer l'image au format png ou jpg
-  	cadre.diagOpen(Logo.messages.getString("menu.file.saveas")+"...");
+	  WriteImage writeImage=new WriteImage(cadre,cadre.getArdoise().getSelectionImage());
+	  int value=writeImage.chooseFile();
+  		if (value==JFileChooser.APPROVE_OPTION){
+  	        writeImage.start();
+  		} 
   }
   else if (MenuListener.FILE_PRINT_IMAGE.equals(cmd)){    //imprimer l'image
-  	cadre.diagOpen(Logo.messages.getString("menu.file.captureimage.print"));
+	    AImprimer can=new AImprimer(cadre.getArdoise().getSelectionImage());
+	    Thread imprime=new Thread(can);
+	    imprime.start();
   }
   else if (MenuListener.FILE_SAVE_TEXT.equals(cmd)){
   	RTFEditorKit myRTFEditorKit = new RTFEditorKit();
@@ -333,4 +350,33 @@ public class MenuListener extends JDialog implements ActionListener{
 	  cadre.getHistoryPanel().ecris("normal", Config.mainCommand+"\n");
   }
   }
+  
+  /**
+   * This class is a thread that copy the Image selection into the clipboard
+   */
+  class CopyImage extends Thread implements Transferable{
+		private BufferedImage image=null;
+		Clipboard clip=Toolkit.getDefaultToolkit().getSystemClipboard();
+		CopyImage(){
+			image=cadre.getArdoise().getSelectionImage();
+		}
+		public void run(){
+	        	clip.setContents(this,null);
+		}
+		public DataFlavor[] getTransferDataFlavors() {
+			return new DataFlavor[] {DataFlavor.imageFlavor };
+		}
+
+		public boolean isDataFlavorSupported(DataFlavor flavor) {
+			return DataFlavor.imageFlavor.equals(flavor);
+		}
+		public Object getTransferData(DataFlavor flavor)throws UnsupportedFlavorException {
+			if (!isDataFlavorSupported(flavor)) {
+				throw new UnsupportedFlavorException(flavor);
+			}
+			return image;
+		}
+	 }
+  
+  
 }

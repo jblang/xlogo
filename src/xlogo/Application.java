@@ -102,8 +102,6 @@ public class Application extends JFrame {
 	// Dialog boxes available in menu
 	// pref Box
 	private Preference pf=null;
-	// To save image in the clipboard or in a file
-	private Dialogueimage diag=null;
 	// To define startup files
 	private Demarrage dem=null;
 	// To erase procedure
@@ -748,9 +746,6 @@ public class Application extends JFrame {
 	public void close_Preference(){
 		pf=null;
 	}
-	public void close_DialogueImage(){
-		diag=null;
-	}
 	public void close_TranslateXLogo(){
 		tx=null;	
 	}
@@ -1122,17 +1117,6 @@ public class Application extends JFrame {
   			eraser.setVisible(true);
 	 	}
 	}
-	 /**
-	  * Open the DefineFrame Dialog box
-	  */
-	 protected void diagOpen(String st){
-	    if (null==diag){
-	        diag = new Dialogueimage(this, st);
-	        diag.setBounds(getX(), getY(), getWidth() / 2, getHeight() / 4);
-	        diag.setVisible(true);
-	      }
-	    else diag.requestFocus();
-	 }
 	 /**
 	  * Returns the current kernel
 	  * @return The Kernel Object associated to main frame

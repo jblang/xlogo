@@ -5,12 +5,17 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Transparency;
 import java.awt.geom.*;
 import javax.vecmath.Color3f;
 import java.awt.FontMetrics;
@@ -24,7 +29,12 @@ import java.awt.Dimension;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.CropImageFilter;
+import java.awt.image.FilteredImageSource;
+
 import com.sun.j3d.utils.geometry.Text2D;
+
+import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import java.math.BigDecimal;
 import javax.swing.JPanel;
@@ -1176,7 +1186,7 @@ import xlogo.kernel.perspective.*;
 			if (coords.length!=2) coords=new double[2];
 		}
 	}
-	private boolean  enabled3D(){
+	public boolean  enabled3D(){
 		return (DrawPanel.etat_fenetre==DrawPanel.WINDOW_3D);
 	}
 
@@ -2260,5 +2270,57 @@ import xlogo.kernel.perspective.*;
    protected void addToGuiMap(GuiComponent gc) throws xlogo.utils.myException{
 	   gm.put(gc);
    }
-	
+   public BufferedImage getSelectionImage(){
+	if (null!=selection){
+		 int x=(int)selection.getBounds().getX();
+		 int y=(int)selection.getBounds().getY();
+		 int width=(int)selection.getBounds().getWidth();
+		 int height=(int)selection.getBounds().getHeight();		
+		 return toBufferedImage(
+				 createImage(new FilteredImageSource(dessin.getSource(),
+						 new CropImageFilter(x,y,width,height))));
+	}
+	return DrawPanel.dessin;
+   }
+//	 This method returns a buffered image with the contents of an image
+   private BufferedImage toBufferedImage(Image image) {
+       if (image instanceof BufferedImage)
+			return (BufferedImage)image;
+   
+       // This code ensures that all the pixels in the image are loaded
+       image = new ImageIcon(image).getImage();
+   
+  
+       // Create a buffered image with a format that's compatible with the screen
+       BufferedImage bimage = null;
+       GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+       try {
+           // Determine the type of transparency of the new buffered image
+           int transparency = Transparency.OPAQUE;
+   
+           // Create the buffered image
+           GraphicsDevice gs = ge.getDefaultScreenDevice();
+           GraphicsConfiguration gc = gs.getDefaultConfiguration();
+           bimage = gc.createCompatibleImage(
+               image.getWidth(null), image.getHeight(null), transparency);
+       } catch (HeadlessException e) {
+           // The system does not have a screen
+       }
+   
+       if (bimage == null) {
+           // Create a buffered image using the default color model
+           int type = BufferedImage.TYPE_INT_RGB;
+           bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
+       }
+   
+       // Copy image to buffered image
+       Graphics g = bimage.createGraphics();
+   
+       // Paint the image onto the buffered image
+       g.drawImage(image, 0, 0, null);
+       g.dispose();
+   
+       return bimage;
+   }
+   
 }
