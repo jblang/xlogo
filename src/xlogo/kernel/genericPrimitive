@@ -283,3 +283,4 @@ controls.ifelse 3
 workspace.ed 1
 workspace.edall 0
 controls.foreach 3
+controls.forever 1

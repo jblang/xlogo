@@ -23,6 +23,7 @@ public class LightConfig{
 	private Point3f position;
 	private Vector3f direction;
 	private float angle=DEFAULT_ANGLE;
+	private Light light;
 	LightConfig(int type){
 		this.type=type;
 	}
@@ -31,21 +32,46 @@ public class LightConfig{
 		this.color=color;
 		this.position=position;
 	}
-	Light getLight(){
+	/**
+	 * This method creates a light according to each parameter:<br>
+	 * type, color, position, direction and angle
+	 */
+	void createLight(){
 		switch(type){
+			case LIGHT_OFF:
+				light=null;
+				break;
 			case LIGHT_AMBIENT:
-				return new AmbientLight(color);
-			case LIGHT_DIRECTIONAL:
-				return new DirectionalLight(color,direction);
-			case LIGHT_POINT:
-				Light light=new PointLight(color,position,new Point3f(1,0,0));
+				System.out.println("coucou");
+				light= new AmbientLight(color);
 				light.setInfluencingBounds(new BoundingSphere(new Point3d(position), Double.MAX_VALUE));
-				return light;
+				break;
+			case LIGHT_DIRECTIONAL:
+				light= new DirectionalLight(color,direction);
+				light.setInfluencingBounds(new BoundingSphere(new Point3d(position), Double.MAX_VALUE));
+				break;
+			case LIGHT_POINT:
+				light=new PointLight(color,position,new Point3f(1,0,0));
+				light.setInfluencingBounds(new BoundingSphere(new Point3d(position), Double.MAX_VALUE));
+				break;
 			case LIGHT_SPOT:
-				return new SpotLight(color,position,new Point3f(1,0,0),direction,angle,64);
+				light=new SpotLight(color,position,new Point3f(1,0,0),direction,angle,64);
+				light.setInfluencingBounds(new BoundingSphere(new Point3d(position), Double.MAX_VALUE));
+				break;
 		}
-		return null;
 	}
+	/**
+	 * This method returns the light.
+	 * @return an object light that represents this configuration
+	 */
+	Light getLight(){
+		return light;
+	}
+	
+	/**
+	 * This method returns the light type
+	 * @return an integer which represents the light type
+	 */
 	int getType(){
 		return type;
 	}

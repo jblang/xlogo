@@ -98,4 +98,7 @@ public class LoopProperties {
 	protected boolean isRepeat(){
 		return false;
 	}
+	protected boolean isForEver(){
+		return true;
+	}
 }

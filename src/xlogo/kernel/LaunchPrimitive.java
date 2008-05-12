@@ -487,7 +487,7 @@ public class LaunchPrimitive {
 						loop.incremente();
 						Primitive.stackLoop.pop();
 						Primitive.stackLoop.push(loop);
-						Interprete.instruction.insert(0, loop.getInstr()+ "\\ ");	
+						Interprete.instruction.insert(0, loop.getInstr()+ Primitive.END_LOOP+" ");	
 					}
 					else if (compteur.compareTo(fin)==0){
 						Primitive.stackLoop.pop();
@@ -504,13 +504,18 @@ public class LaunchPrimitive {
 						((LoopFor)loop).AffecteVar(false);
 						Primitive.stackLoop.pop();
 						Primitive.stackLoop.push(loop);
-						Interprete.instruction.insert(0, loop.getInstr()+ "\\ ");			
+						Interprete.instruction.insert(0, loop.getInstr()+ Primitive.END_LOOP+" ");			
 					}
 					else {
 						((LoopFor)loop).DeleteVar();
 						Primitive.stackLoop.pop();
 					}
 				}
+				// LOOP FOREVER
+				else if (loop.isForEver()){
+					Interprete.instruction.insert(0, loop.getInstr()+ Primitive.END_LOOP+" ");
+					
+				} 
 				break;
 			case 41: // pos
 				Interprete.operande = true;
@@ -1160,7 +1165,7 @@ public class LaunchPrimitive {
 					String instr="\\siwhile "+li1+ "[ " + li2+ "] ";
 					LoopWhile bp=new LoopWhile(BigDecimal.ONE,BigDecimal.ZERO,BigDecimal.ONE,instr);
 					Primitive.stackLoop.push(bp);
-					Interprete.instruction.insert(0, instr+"\\ ");
+					Interprete.instruction.insert(0, instr+Primitive.END_LOOP+" ");
 				} catch (myException e) {
 				}
 
@@ -2377,7 +2382,7 @@ public class LaunchPrimitive {
 
 						if ((increment.compareTo(BigDecimal.ZERO)==1&&fin.compareTo(deb)>=0)
 								||(increment.compareTo(BigDecimal.ZERO)==-1&&fin.compareTo(deb)<=0)){
-							Interprete.instruction.insert(0, li2 + "\\ ");
+							Interprete.instruction.insert(0, li2 + Primitive.END_LOOP+" ");
 							Primitive.stackLoop.push(bp);
 						}
 					}
@@ -3513,7 +3518,6 @@ public class LaunchPrimitive {
     					mot=this.getWord(param.get(0));
     					if (null==mot) mot=this.getFinalList(param.get(0));
     					StringTokenizer st=new StringTokenizer(mot);
-    					System.out.println(mot);
     					// Write all procedures names in a Vector
     					java.util.Vector<String> names=new java.util.Vector<String>();
     					while (st.hasMoreTokens()){
@@ -3568,14 +3572,8 @@ public class LaunchPrimitive {
         						String character="";
         						// If it's a list
         						if (list) {
-        							for(int i=0;i<li1.length();i++){
-        								char car=li1.charAt(i);
-        								if (car==' ') {
-        									li1=li1.substring(i+1);
-        									break;
-        								}
-        								else character+=car;
-        							}
+        							character=this.item(li1, 1);
+									li1=li1.substring(character.length());
         						}
         						// If it's a word
         						else {
@@ -3587,11 +3585,20 @@ public class LaunchPrimitive {
     						LoopForEach bp=new LoopForEach(BigDecimal.ZERO,new BigDecimal(elements.size()-1)
     						,BigDecimal.ONE,li2,var,elements);			
     						bp.AffecteVar(true);
-							Interprete.instruction.insert(0, li2 + "\\ ");
+							Interprete.instruction.insert(0, li2 + Primitive.END_LOOP +" ");
 							Primitive.stackLoop.push(bp);
         				}
         				catch(myException e){}
-                    	
+                    break;
+                    case 285: // controls.forever repetetoujours
+                    	try{
+        					String li2= getList(param.get(0));
+    						LoopProperties bp=new LoopProperties(BigDecimal.ONE,BigDecimal.ZERO
+    						,BigDecimal.ONE,li2);			
+							Interprete.instruction.insert(0, li2 + Primitive.END_LOOP+" ");
+							Primitive.stackLoop.push(bp);
+                    	}
+                    	catch(myException e){}
                     break;
 			}
 		}

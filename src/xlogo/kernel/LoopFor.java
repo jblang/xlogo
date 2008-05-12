@@ -29,6 +29,9 @@ public class LoopFor extends LoopProperties{
 	protected boolean isFor(){
 		return true;
 	}
+	protected boolean isForEver(){
+		return false;
+	}
 	/**
 	 * This method affects the variable counter the correct value 
 	 * @param first boolean that indicates if it is the first affectation

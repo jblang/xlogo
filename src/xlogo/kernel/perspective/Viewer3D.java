@@ -55,9 +55,9 @@ public class Viewer3D extends JFrame implements ActionListener{
 	
 	// To store the Light attributes
 	private LightConfig[] lightConfigs;
-	private Light[] lights=new Light[4];
 	
 	// To store the Fog attributes
+//	private FogConfig fogConfig;
 	
 	// Gui Components
 	private ImageIcon iscreenshot=new ImageIcon(Utils.dimensionne_image("screenshot.png",this));
@@ -65,7 +65,14 @@ public class Viewer3D extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private World3D w3d;
 	private Canvas3D canvas3D;
+	/**
+	 * Main scene's Branchgroup 
+	 */
 	private BranchGroup scene;
+	/**
+	 * Light's branchgroup
+	 */
+	private BranchGroup lightBranchgroup;
 	private BranchManager branchManager;
 	private SimpleUniverse universe;
 	private Color3f backgroundColor;
@@ -149,21 +156,22 @@ public class Viewer3D extends JFrame implements ActionListener{
 		ob.setSchedulingBounds(new BoundingSphere(new Point3d(0,0,0),2*w3d.r/1000));
 		universe.getViewingPlatform().setViewPlatformBehavior(ob);
 	
-		// Create scene Graph
-
 		// Create the root of the branch graph
 		scene= new BranchGroup();
 		branchManager=new BranchManager();
 		scene.setName("Main Branch");
+		// We can add New Branchgroup dynamically in the main scene
 		scene.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
-		scene.setCapability(BranchGroup.ALLOW_DETACH);
+		// We can remove Branchgroup dynamically in the main scene
+		scene.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+		
+//		scene.setCapability(BranchGroup.ALLOW_DETACH);
 		
 		createBackground(scene);
 
 		// Configure Lights
 		lightConfigs=new LightConfig[4];
 		initLights();
-		addLights(scene);
 		
 	    // Rattachement de la scène 3D à l'univers
 	    universe.addBranchGraph (scene);
@@ -222,22 +230,53 @@ public class Viewer3D extends JFrame implements ActionListener{
 		// Second default Point Light
 		pos=new Point3f(-(float)w3d.xCamera/1000,-(float)w3d.yCamera/1000,-(float)w3d.zCamera/1000);
 		lightConfigs[1]=new LightConfig(LightConfig.LIGHT_POINT,color, pos);
+
 		lightConfigs[2]=new LightConfig(LightConfig.LIGHT_OFF);
 		lightConfigs[3]=new LightConfig(LightConfig.LIGHT_OFF);
+		for (int i=0;i<4;i++){
+			lightConfigs[i].createLight();
+		}
+		addAllLights(scene);
 	}
 	/**
-	 * Add two lights for the main 3D scene
+	 * Add all lights in the main 3D scene
 	 */
-	private void addLights(BranchGroup bg){
+	private void addAllLights(BranchGroup bg){
+		lightBranchgroup=new BranchGroup();
+		lightBranchgroup.setCapability(BranchGroup.ALLOW_DETACH);
+		lightBranchgroup.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+		lightBranchgroup.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 		for(int i=0;i<4;i++){
-			LightConfig config=lightConfigs[i];
-			if (null!=config) {
-				lights[i]=config.getLight();
-				bg.addChild(lights[i]);	
+			Light l=lightConfigs[i].getLight();
+			if (null!=l) {
+				l.setCapability(BranchGroup.ALLOW_DETACH);
+				lightBranchgroup.addChild(l);	
 			}
-			else lights[i]=null;
+		}
+		bg.addChild(lightBranchgroup);
+	}
+	/**
+	 * Remove a specific Light
+	 */
+	protected void removeLight(Light l){
+		if (null!=l){
+			lightBranchgroup.detach();
+			lightBranchgroup.removeChild(l);
+			scene.addChild(lightBranchgroup);
 		}
 	}
+	/**
+	 * add a light in the main scene
+	 */
+	protected void addLight(Light l){
+		if (null!=l){
+			lightBranchgroup.detach();
+			lightBranchgroup.addChild(l);
+			scene.addChild(lightBranchgroup);
+		}
+	}
+	
+	
 	/**
 	 * This methods erase all drawings on the 3D Viewer Drawing Area
 	 */
@@ -257,7 +296,7 @@ public class Viewer3D extends JFrame implements ActionListener{
 					// create background
 					createBackground(bg);
 					// Add lights
-					addLights(bg);
+					addAllLights(bg);
 					// Attach scene
 					lo.addBranchGraph(bg);
 				}

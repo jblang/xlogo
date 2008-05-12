@@ -9,4 +9,7 @@ public class LoopRepeat extends LoopProperties{
 	protected boolean isRepeat(){
 		return true;
 	}
+	protected boolean isForEver(){
+		return false;
+	}
 }

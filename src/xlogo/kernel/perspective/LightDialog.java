@@ -107,7 +107,6 @@ public class LightDialog extends JDialog implements ActionListener{
 		// Button Ok pressed
 		else if (cmd.equals("ok")){
 			updateLight();
-			viewer3d.
 			dispose();
 		}
 		// Button Apply pressed
@@ -126,6 +125,10 @@ public class LightDialog extends JDialog implements ActionListener{
 		lc.setPosition(p);
 		lc.setDirection(d);
 		lc.setAngle(a);
+		viewer3d.removeLight(lc.getLight());
+		lc.createLight();
+		viewer3d.addLight(lc.getLight());
+		
 	}
 	private void selectComponents(){
 		int id=comboType.getSelectedIndex();
