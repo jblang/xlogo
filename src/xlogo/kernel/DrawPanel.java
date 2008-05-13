@@ -30,6 +30,7 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.CropImageFilter;
+import java.awt.image.ReplicateScaleFilter;
 import java.awt.image.FilteredImageSource;
 
 import com.sun.j3d.utils.geometry.Text2D;
@@ -1780,6 +1781,11 @@ import xlogo.kernel.perspective.*;
 	protected void fcfg(Color color) {
 		couleurfond=color;
 		updateColorSelection();
+		if (enabled3D()){
+			if (cadre.getViewer3D().isVisible()){
+				cadre.getViewer3D().updateBackGround(couleurfond);
+			}
+		}
 		nettoie();
 	}
 	/**
@@ -2110,7 +2116,7 @@ import xlogo.kernel.perspective.*;
 	
 		double oldZoom=zoom;
 		zoom=d;
-		javax.swing.JViewport jv=cadre.jScrollPane1.getViewport();
+		javax.swing.JViewport jv=cadre.scrollArea.getViewport();
 		Point p=jv.getViewPosition();
 		Rectangle r=jv.getVisibleRect();
 		/* 
@@ -2188,7 +2194,7 @@ import xlogo.kernel.perspective.*;
 				g.drawLine(0,i, Config.imageWidth, i);
 		}
 	}
-	// In animation mode, we have to wait for the drawing o be finished before modifying graphics.
+	// In animation mode, we have to wait for the drawing to be finished before modifying graphics.
 	// Thread must be synchronized.
 	protected synchronized void refresh(){
 		repaint();
@@ -2203,7 +2209,7 @@ import xlogo.kernel.perspective.*;
 	  super.paintComponent(graph);
 	  Graphics2D g2d=(Graphics2D)graph;
 	  if (null==shape){
-		  g2d.setClip(cadre.jScrollPane1.getViewport().getViewRect());
+		  g2d.setClip(cadre.scrollArea.getViewport().getViewRect());
 	  }
 	  else {
 		  g2d.setClip(shape);
@@ -2253,10 +2259,36 @@ import xlogo.kernel.perspective.*;
 			 possouris="[ "+(point.x-Config.imageWidth/2)+" "+(Config.imageHeight/2-point.y)+" ] ";
 		 }
 	 }
-	 public void mouseExited(MouseEvent e){}
-	 public void mouseEntered(MouseEvent e){}
+
+	 public void mouseExited(MouseEvent e){
+	 }
+	 public void mouseEntered(MouseEvent e){
+	 }
+	 // Select an export area
 	 public void mouseDragged(MouseEvent e){
 		 if (allowSelection&&null!=selection){
+			 // First, we test if we need to move the scrollbars
+			 	Point pos=e.getPoint();
+				javax.swing.JViewport jv=cadre.scrollArea.getViewport();
+				Point viewPosition=jv.getViewPosition();
+				Rectangle r=jv.getVisibleRect();
+				r.setLocation(viewPosition);
+				// Is the point visible on screen?
+				boolean b=r.contains(pos); 
+				// Move the scroolPane if necessary
+				if (!b){
+					int x,y;
+					if (pos.x<viewPosition.x) x=Math.max(0,pos.x);
+					else if (pos.x>viewPosition.x+r.width) x=Math.min(pos.x-r.width,(int)(Config.imageWidth*zoom-r.width));
+					else x=viewPosition.x;
+					if (pos.y<viewPosition.y) y=Math.max(0,pos.y);
+					else if (pos.y>viewPosition.y+r.height) y=Math.min(pos.y-r.height,(int)(Config.imageHeight*zoom-r.height));
+					else y=viewPosition.y;
+					jv.setViewPosition(new Point(x,y));
+				}
+				
+			 // Then , drawing the selection area
+			 
 			 selection.setFrameFromDiagonal(origine, e.getPoint());
 			 repaint();
 		 }
@@ -2271,16 +2303,20 @@ import xlogo.kernel.perspective.*;
 	   gm.put(gc);
    }
    public BufferedImage getSelectionImage(){
-	if (null!=selection){
-		 int x=(int)selection.getBounds().getX();
-		 int y=(int)selection.getBounds().getY();
-		 int width=(int)selection.getBounds().getWidth();
-		 int height=(int)selection.getBounds().getHeight();		
-		 return toBufferedImage(
-				 createImage(new FilteredImageSource(dessin.getSource(),
-						 new CropImageFilter(x,y,width,height))));
+	   Image pic=DrawPanel.dessin;
+	   if (zoom!=1){
+		  pic=createImage(new FilteredImageSource(pic.getSource(),
+				 new ReplicateScaleFilter((int)(dessin.getWidth()*zoom),(int)(dessin.getHeight()*zoom))));
+	   }
+	   if (null!=selection){
+		 int x=(int)(selection.getBounds().getX());
+		 int y=(int)(selection.getBounds().getY());
+		 int width=(int)(selection.getBounds().getWidth());
+		 int height=(int)(selection.getBounds().getHeight());
+		 pic=createImage(new FilteredImageSource(pic.getSource(),
+				 new CropImageFilter(x,y,width,height)));
 	}
-	return DrawPanel.dessin;
+		 return toBufferedImage(pic);
    }
 //	 This method returns a buffered image with the contents of an image
    private BufferedImage toBufferedImage(Image image) {

@@ -2685,13 +2685,13 @@ public class LaunchPrimitive {
                 break;
                 case 207: // listaillefenetre
                 		Interprete.operande=true;
-                		java.awt.Point p=cadre.jScrollPane1.getViewport().getViewPosition();
-                		Rectangle rec=cadre.jScrollPane1.getVisibleRect();
+                		java.awt.Point p=cadre.scrollArea.getViewport().getViewPosition();
+                		Rectangle rec=cadre.scrollArea.getVisibleRect();
                 		sb=new StringBuffer();
                 		int x1=p.x-Config.imageWidth/2;
                 		int y1=Config.imageHeight/2-p.y;
-                		int x2=x1+rec.width-cadre.jScrollPane1.getVerticalScrollBar().getWidth();
-                		int y2=y1-rec.height+cadre.jScrollPane1.getHorizontalScrollBar().getHeight();
+                		int x2=x1+rec.width-cadre.scrollArea.getVerticalScrollBar().getWidth();
+                		int y2=y1-rec.height+cadre.scrollArea.getHorizontalScrollBar().getHeight();
                 		sb.append("[ ");
                 		sb.append(x1);
                 		sb.append(" ");

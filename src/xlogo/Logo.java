@@ -111,9 +111,9 @@ public class Logo {
   private void init(Application frame){
     // on centre la tortue
   	// Centering turtle
-	Dimension d=frame.jScrollPane1.getViewport().getViewRect().getSize();
+	Dimension d=frame.scrollArea.getViewport().getViewRect().getSize();
 	Point p=new Point(Math.abs(Config.imageWidth/2-d.width/2),Math.abs(Config.imageHeight/2-d.height/2));
-	frame.jScrollPane1.getViewport().setViewPosition(p);  	
+	frame.scrollArea.getViewport().setViewPosition(p);  	
 
     // on affiche la tortue sur la zone de dessin
 	// Displays turtle
@@ -123,7 +123,7 @@ public class Logo {
 	      try{tracker.waitForID(0);}
 	      catch(InterruptedException e){}
       frame.getArdoise().getGraphics().drawImage(DrawPanel.dessin,0,0,frame);
-      frame.jScrollPane1.validate();//getArdoise().revalidate();
+      frame.scrollArea.validate();//getArdoise().revalidate();
       
       /////////////frame.getKernel().initDrawGraphics();
   }

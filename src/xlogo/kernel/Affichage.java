@@ -56,8 +56,8 @@ public class Affichage extends Thread {
 		
 		cadre.getArdoise().active_souris(); // On active les événements souris sur
 										// la zone de dessin
-		cadre.jScrollPane1.getVerticalScrollBar().addMouseListener(souris);
-		cadre.jScrollPane1.getHorizontalScrollBar().addMouseListener(souris);
+		cadre.scrollArea.getVerticalScrollBar().addMouseListener(souris);
+		cadre.scrollArea.getHorizontalScrollBar().addMouseListener(souris);
 		try {
 			cadre.setCar(-1);
 			cadre.error = false;
@@ -90,8 +90,8 @@ public class Affichage extends Thread {
 		cm.setContinuer(false);
 		cadre.error = false;
 		myException.lance = false;
-		cadre.jScrollPane1.getVerticalScrollBar().removeMouseListener(souris);
-		cadre.jScrollPane1.getHorizontalScrollBar().removeMouseListener(souris);
+		cadre.scrollArea.getVerticalScrollBar().removeMouseListener(souris);
+		cadre.scrollArea.getHorizontalScrollBar().removeMouseListener(souris);
 	}
 
 	protected boolean isOnPause() {

@@ -4,13 +4,10 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.util.*;
-import javax.media.j3d.Light;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import java.awt.image.BufferedImage;
-import javax.media.j3d.Locale;
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.ImageComponent;
 import javax.media.j3d.GraphicsContext3D ;
@@ -20,6 +17,7 @@ import javax.vecmath.Point3f;
 
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.media.j3d.Node;
 import javax.media.j3d.Background;
 import java.awt.GridBagLayout;
 import java.awt.Color;
@@ -44,6 +42,20 @@ import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
+
+/**
+ * This Frame displays the 3D main Scene
+ * 
+ *                    BG scene
+ *                    
+ *		BG backBranchGroup | BG Mylight (4) |          BG 
+ *			Background 		Light 1,2,3,4		Other objects
+ */
+
+
+
+
 public class Viewer3D extends JFrame implements ActionListener{
 	private final static String ACTION_SCREENSHOT="screenshot";
 	private final static String ACTION_LIGHT0="light0";
@@ -54,10 +66,10 @@ public class Viewer3D extends JFrame implements ActionListener{
 	
 	
 	// To store the Light attributes
-	private LightConfig[] lightConfigs;
+	private MyLight[] myLights;
 	
 	// To store the Fog attributes
-//	private FogConfig fogConfig;
+	private MyFog myFog;
 	
 	// Gui Components
 	private ImageIcon iscreenshot=new ImageIcon(Utils.dimensionne_image("screenshot.png",this));
@@ -69,13 +81,12 @@ public class Viewer3D extends JFrame implements ActionListener{
 	 * Main scene's Branchgroup 
 	 */
 	private BranchGroup scene;
-	/**
-	 * Light's branchgroup
-	 */
-	private BranchGroup lightBranchgroup;
+
 	private BranchManager branchManager;
 	private SimpleUniverse universe;
 	private Color3f backgroundColor;
+	
+	private BranchGroup backBranchgroup;
 	private Background back;
 	private PanelLight panelLight;
 	private PanelFog panelFog;
@@ -109,23 +120,23 @@ public class Viewer3D extends JFrame implements ActionListener{
 		}
 		// Click on Button Light1
 		else if (cmd.equals(Viewer3D.ACTION_LIGHT0)){
-			new LightDialog(this,lightConfigs[0]);
+			new LightDialog(this,myLights[0],Logo.messages.getString("3d.light")+" 1");
 		}
 		// Click on Button Light2
 		else if (cmd.equals(Viewer3D.ACTION_LIGHT1)){
-			new LightDialog(this,lightConfigs[1]);
+			new LightDialog(this,myLights[1],Logo.messages.getString("3d.light")+" 2");
 		}
 		// Click on Button Light3
 		else if (cmd.equals(Viewer3D.ACTION_LIGHT2)){
-			new LightDialog(this,lightConfigs[2]);
+			new LightDialog(this,myLights[2],Logo.messages.getString("3d.light")+" 3");
 		}
 		// Click on Button Light4
 		else if (cmd.equals(Viewer3D.ACTION_LIGHT3)){
-			new LightDialog(this,lightConfigs[3]);
+			new LightDialog(this,myLights[3],Logo.messages.getString("3d.light")+" 4");
 		}
 		// Click on the Fog Button
 		else if (cmd.equals(Viewer3D.ACTION_FOG)){
-			System.out.println("fog");
+			new FogDialog(this,myFog);
 			
 		}
 	}
@@ -165,13 +176,16 @@ public class Viewer3D extends JFrame implements ActionListener{
 		// We can remove Branchgroup dynamically in the main scene
 		scene.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 		
-//		scene.setCapability(BranchGroup.ALLOW_DETACH);
 		
-		createBackground(scene);
+		// Configure and create background
+		createBackground();
 
 		// Configure Lights
-		lightConfigs=new LightConfig[4];
 		initLights();
+
+		// Configure Fog
+		myFog=new MyFog(MyFog.FOG_OFF);
+		scene.addChild(myFog);
 		
 	    // Rattachement de la scène 3D à l'univers
 	    universe.addBranchGraph (scene);
@@ -222,19 +236,20 @@ public class Viewer3D extends JFrame implements ActionListener{
 	 * This methods adds two default PointLight int the 3d Scene
 	 */
 	private void initLights(){
+		myLights=new MyLight[4];
 		// First Default Point Light
 		Color3f color=new Color3f(1f,1f,1f);
 		Point3f pos=new Point3f((float)w3d.xCamera/1000,(float)w3d.yCamera/1000,(float)w3d.zCamera/1000);
-		lightConfigs[0]=new LightConfig(LightConfig.LIGHT_POINT,color, pos);
+		myLights[0]=new MyLight(MyLight.LIGHT_POINT,color, pos);
 
 		// Second default Point Light
 		pos=new Point3f(-(float)w3d.xCamera/1000,-(float)w3d.yCamera/1000,-(float)w3d.zCamera/1000);
-		lightConfigs[1]=new LightConfig(LightConfig.LIGHT_POINT,color, pos);
+		myLights[1]=new MyLight(MyLight.LIGHT_POINT,color, pos);
 
-		lightConfigs[2]=new LightConfig(LightConfig.LIGHT_OFF);
-		lightConfigs[3]=new LightConfig(LightConfig.LIGHT_OFF);
+		myLights[2]=new MyLight(MyLight.LIGHT_OFF);
+		myLights[3]=new MyLight(MyLight.LIGHT_OFF);
 		for (int i=0;i<4;i++){
-			lightConfigs[i].createLight();
+			myLights[i].createLight();
 		}
 		addAllLights(scene);
 	}
@@ -242,46 +257,24 @@ public class Viewer3D extends JFrame implements ActionListener{
 	 * Add all lights in the main 3D scene
 	 */
 	private void addAllLights(BranchGroup bg){
-		lightBranchgroup=new BranchGroup();
-		lightBranchgroup.setCapability(BranchGroup.ALLOW_DETACH);
-		lightBranchgroup.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
-		lightBranchgroup.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 		for(int i=0;i<4;i++){
-			Light l=lightConfigs[i].getLight();
-			if (null!=l) {
-				l.setCapability(BranchGroup.ALLOW_DETACH);
-				lightBranchgroup.addChild(l);	
-			}
-		}
-		bg.addChild(lightBranchgroup);
-	}
-	/**
-	 * Remove a specific Light
-	 */
-	protected void removeLight(Light l){
-		if (null!=l){
-			lightBranchgroup.detach();
-			lightBranchgroup.removeChild(l);
-			scene.addChild(lightBranchgroup);
+			bg.addChild(myLights[i]);
 		}
 	}
 	/**
 	 * add a light in the main scene
 	 */
-	protected void addLight(Light l){
-		if (null!=l){
-			lightBranchgroup.detach();
-			lightBranchgroup.addChild(l);
-			scene.addChild(lightBranchgroup);
-		}
+	protected void addNode(Node l){
+			scene.addChild(l);
 	}
-	
-	
 	/**
 	 * This methods erase all drawings on the 3D Viewer Drawing Area
 	 */
 	public void clearScreen(){
-		Enumeration<Locale> locales=universe.getAllLocales();
+		scene.removeAllChildren();
+		createBackground();
+		initLights();
+/*		Enumeration<Locale> locales=universe.getAllLocales();
 		while(locales.hasMoreElements()){
 			Locale lo=locales.nextElement();
 			Enumeration<BranchGroup> en=lo.getAllBranchGraphs();
@@ -301,21 +294,36 @@ public class Viewer3D extends JFrame implements ActionListener{
 					lo.addBranchGraph(bg);
 				}
 			}				
-		}
+		}*/
+		
 	}
+	public void updateBackGround(Color c){
+		backgroundColor=new Color3f(c);		
+		backBranchgroup.detach();
+		createBackground();
+	}
+	
+	
 	/**
 	 * This method creates the Background with the defined color
 	 */
-	public void createBackground(BranchGroup bg){
+	public void createBackground(){
+		backBranchgroup=new BranchGroup();
+		backBranchgroup.setCapability(BranchGroup.ALLOW_DETACH);
+		backBranchgroup.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+		
 		back=new Background(backgroundColor);
 		back.setApplicationBounds(new BoundingSphere()) ;
 		back.setCapability(Background.ALLOW_COLOR_WRITE);
-		bg.addChild(back);
+		backBranchgroup.addChild(back);
+		scene.addChild(backBranchgroup);
 	}
+	
 	class BranchManager{
 		BranchGroup bg;
 		BranchManager(){
 			bg=new BranchGroup();
+			bg.setCapability(BranchGroup.ALLOW_DETACH);
 		}
 		/**
 		 * This method adds a shape3D to the main scene
@@ -350,7 +358,7 @@ public class Viewer3D extends JFrame implements ActionListener{
 				buttonLights[i].addActionListener(viewer3d);
 				buttonLights[i].setActionCommand("light"+i);
 			}
-			TitledBorder tb=BorderFactory.createTitledBorder(Logo.messages.getString("3d.lights"));
+			TitledBorder tb=BorderFactory.createTitledBorder(Logo.messages.getString("3d.light"));
 			tb.setTitleFont(Config.police);
 			setBorder(tb);
 		}

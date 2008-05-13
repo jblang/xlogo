@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Color;
+import java.awt.Toolkit;
 
 import xlogo.Config;
 import xlogo.Logo;
@@ -22,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
 import java.awt.event.*;
 import xlogo.gui.preferences.PanelColor;
+import xlogo.utils.Utils;
 public class LightDialog extends JDialog implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private String[] type={Logo.messages.getString("3d.light.none"),Logo.messages.getString("3d.light.ambient"),
@@ -36,28 +38,28 @@ public class LightDialog extends JDialog implements ActionListener{
 	private JButton ok;
 	private JButton refresh;
 	private Viewer3D viewer3d;
-	private LightConfig lc;
-	LightDialog(Viewer3D viewer3d,LightConfig lc){
-		super(viewer3d);
+	private MyLight light;
+	LightDialog(Viewer3D viewer3d, MyLight light,String title){
+		super(viewer3d,title,true);
 		this.viewer3d=viewer3d;
-		this.lc=lc;
+		this.light=light;
 		initGui();
 	}
 	private void initGui(){
 		getContentPane().setLayout(new GridBagLayout());
-		setSize(400,200);
+		setSize(500,200);
 		labelType=new JLabel(Logo.messages.getString("3d.light.type"));
 		comboType=new JComboBox(type);
-		comboType.setSelectedIndex(lc.getType());
+		comboType.setSelectedIndex(light.getType());
 
-		Color3f col=lc.getColor();
+		Color3f col=light.getColor();
 		if (null!=col)	panelColor=new PanelColor(col.get());
 		else panelColor=new PanelColor(Color.white);
 		panelColor.setBackground(comboType.getBackground());
 		
-		panelPosition=new PanelPosition(Logo.messages.getString("3d.light.position"),lc.getPosition());
-		panelDirection=new PanelPosition(Logo.messages.getString("3d.light.direction"),lc.getDirection());
-		panelAngle=new PanelAngle(lc.getAngle());
+		panelPosition=new PanelPosition(Logo.messages.getString("3d.light.position"),light.getPosition());
+		panelDirection=new PanelPosition(Logo.messages.getString("3d.light.direction"),light.getDirection());
+		panelAngle=new PanelAngle(light.getAngle());
 		ok=new JButton(Logo.messages.getString("pref.ok"));
 		refresh=new JButton(Logo.messages.getString("3d.light.apply"));
 		labelType.setFont(Config.police);
@@ -120,48 +122,50 @@ public class LightDialog extends JDialog implements ActionListener{
 		Point3f p=(Point3f)panelPosition.getPosition();
 		Vector3f d=(Vector3f)panelDirection.getDirection();
 		float a=panelAngle.getAngleValue();
-		lc.setType(t);
-		lc.setColor(c);
-		lc.setPosition(p);
-		lc.setDirection(d);
-		lc.setAngle(a);
-		viewer3d.removeLight(lc.getLight());
-		lc.createLight();
-		viewer3d.addLight(lc.getLight());
+		light.setType(t);
+		light.setColor(c);
+		light.setPosition(p);
+		light.setDirection(d);
+		light.setAngle(a);
+		light.detach();
+		light.removeAllChildren();
+		light.createLight();
+//		System.out.println(c+" "+" "+p+" "+d);
+		viewer3d.addNode(light);
 		
 	}
 	private void selectComponents(){
 		int id=comboType.getSelectedIndex();
 		// None
-		if (id==LightConfig.LIGHT_OFF){
+		if (id==MyLight.LIGHT_OFF){
 			panelColor.setEnabled(false);
 			panelPosition.setEnabled(false);
 			panelDirection.setEnabled(false);
 			panelAngle.setEnabled(false);
 		}
 		// Ambient
-		else if (id==LightConfig.LIGHT_AMBIENT){
+		else if (id==MyLight.LIGHT_AMBIENT){
 			panelColor.setEnabled(true);
 			panelPosition.setEnabled(false);
 			panelDirection.setEnabled(false);
 			panelAngle.setEnabled(false);
 		}
 		// Directional
-		else if (id==LightConfig.LIGHT_DIRECTIONAL){
+		else if (id==MyLight.LIGHT_DIRECTIONAL){
 			panelColor.setEnabled(true);
 			panelPosition.setEnabled(false);
 			panelDirection.setEnabled(true);
 			panelAngle.setEnabled(false);
 		}
 		// PointLight
-		else if (id==LightConfig.LIGHT_POINT){
+		else if (id==MyLight.LIGHT_POINT){
 			panelColor.setEnabled(true);
 			panelPosition.setEnabled(true);
-			panelDirection.setEnabled(true);
+			panelDirection.setEnabled(false);
 			panelAngle.setEnabled(false);
 		}
 		// Spot
-		else if (id==LightConfig.LIGHT_SPOT){
+		else if (id==MyLight.LIGHT_SPOT){
 			panelColor.setEnabled(true);
 			panelPosition.setEnabled(true);
 			panelDirection.setEnabled(true);
@@ -198,7 +202,7 @@ public class LightDialog extends JDialog implements ActionListener{
 			}
 			catch(NumberFormatException e){
 			}
-			return LightConfig.DEFAULT_ANGLE;
+			return MyLight.DEFAULT_ANGLE;
 		}
 	}
 	
@@ -222,18 +226,13 @@ public class LightDialog extends JDialog implements ActionListener{
 			setBorder(tb);
 			sep1=new JLabel("x");
 			sep2=new JLabel("x");
-			Xpos=new JTextField();
-			Ypos=new JTextField();
-			Zpos=new JTextField();
+			Xpos=new JTextField(4);
+			Ypos=new JTextField(4);
+			Zpos=new JTextField(4);
 			if (null!=tuple){
 				Xpos.setText(String.valueOf((int)(tuple.x*1000)));
 				Ypos.setText(String.valueOf((int)(tuple.y*1000)));
 				Zpos.setText(String.valueOf((int)(tuple.z*1000)));
-			}
-			else {
-				Xpos.setText("         ");
-				Ypos.setText("         ");
-				Zpos.setText("         ");
 			}
 			add(Xpos);
 			add(sep1);
@@ -248,7 +247,7 @@ public class LightDialog extends JDialog implements ActionListener{
 				float x=Float.parseFloat(Xpos.getText());
 				float y=Float.parseFloat(Ypos.getText());
 				float z=Float.parseFloat(Zpos.getText());
-				return new Point3f(x,y,z);
+				return new Point3f(x/1000,y/1000,z/1000);
 			}
 			catch(NumberFormatException e){}
 			return(new Point3f(0,0,0));
@@ -258,7 +257,7 @@ public class LightDialog extends JDialog implements ActionListener{
 				float x=Float.parseFloat(Xpos.getText());
 				float y=Float.parseFloat(Ypos.getText());
 				float z=Float.parseFloat(Zpos.getText());
-				return new Vector3f(x,y,z);
+				return new Vector3f(x/1000,y/1000,z/1000);
 			}
 			catch(NumberFormatException e){}
 			return(new Vector3f(0,0,0));

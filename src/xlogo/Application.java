@@ -47,7 +47,7 @@ public class Application extends JFrame {
 	private JLabel jLabel1 = new JLabel();
 	private BorderLayout borderLayout2 = new BorderLayout();
 	public JSplitPane jSplitPane1 = new JSplitPane();
-	public JScrollPane jScrollPane1;
+	public JScrollPane scrollArea;
 	private DrawPanel ardoise; 
 	private HistoryPanel panneauHistorique1 = new HistoryPanel(this);
 
@@ -119,7 +119,7 @@ public class Application extends JFrame {
 	/** Builds the main frame */
 	public Application() {
 		kernel=new Kernel(this);
-		jScrollPane1= new JScrollPane();
+		scrollArea= new JScrollPane();
 		ardoise= new DrawPanel(this);
 		kernel.initInterprete();
 	
@@ -257,13 +257,13 @@ public class Application extends JFrame {
 		
 		
 		contentPane.add(jSplitPane1, BorderLayout.CENTER);
-		jSplitPane1.add(jScrollPane1, JSplitPane.LEFT);
+		jSplitPane1.add(scrollArea, JSplitPane.LEFT);
 		ardoise.setSize(new java.awt.Dimension(
 				(int)(Config.imageWidth*DrawPanel.zoom)
 				,(int)(Config.imageHeight*DrawPanel.zoom)));
-		jScrollPane1.getViewport().add(ardoise);
-		jScrollPane1.getHorizontalScrollBar().setBlockIncrement(5);
-		jScrollPane1.getVerticalScrollBar().setBlockIncrement(5);
+		scrollArea.getViewport().add(ardoise);
+		scrollArea.getHorizontalScrollBar().setBlockIncrement(5);
+		scrollArea.getVerticalScrollBar().setBlockIncrement(5);
 		jSplitPane1.add(panneauHistorique1, JSplitPane.RIGHT);
 		jMenuEdition.add(jMenuEditionCouper);
 		jMenuEdition.add(jMenuEditionCopier);
@@ -795,9 +795,9 @@ public class Application extends JFrame {
 		calculateMargin();
 
 		
-	    Dimension d=jScrollPane1.getViewport().getViewRect().getSize();
+	    Dimension d=scrollArea.getViewport().getViewRect().getSize();
 	    Point p=new Point(Math.abs(Config.imageWidth/2-d.width/2),Math.abs(Config.imageHeight/2-d.height/2));
-	    jScrollPane1.getViewport().setViewPosition(p);  	
+	    scrollArea.getViewport().setViewPosition(p);  	
 	}
 	/**
 	 * Modify the Look&Feel for the Application
@@ -1151,7 +1151,7 @@ public class Application extends JFrame {
 	//			 verticalMargin=(height-panelHeight)/2-vscroll/2;
 		 }
 		 if (null!=Config.borderColor){
-			 jScrollPane1.setBorder(
+			 scrollArea.setBorder(
 					 BorderFactory.createMatteBorder(verticalMargin, horizontalMargin, 
 							 verticalMargin, horizontalMargin, Config.borderColor));
 		 }
@@ -1166,7 +1166,7 @@ public class Application extends JFrame {
 					 icon=new ImageIcon(Utils.dimensionne_image("background.png",this));
 				 }
 			 }
-			 jScrollPane1.setBorder(
+			 scrollArea.setBorder(
 		 				 BorderFactory.createMatteBorder(verticalMargin,horizontalMargin,verticalMargin,horizontalMargin,icon));
 			 }
 	 }
