@@ -4,7 +4,17 @@ public class MyFlow {
 	private String path;
 	private int id;
 	private boolean finished;
-	MyFlow(){}
+	MyFlow(int id,String path,boolean finished){
+		this.id=id;
+		this.path=path;
+		this.finished=finished;
+	}
+	MyFlow(MyFlow flow){
+		this.id=flow.getId();
+		this.path=flow.getPath();
+		this.finished=flow.isFinished();
+	}
+	
 	String getPath(){
 		return path;
 	}
@@ -28,5 +38,6 @@ public class MyFlow {
 	}
 	boolean isWriter(){
 		return false;
-	}
+	}	
+
 }

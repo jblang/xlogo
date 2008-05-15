@@ -117,7 +117,7 @@ public class Demarrage extends JDialog implements ActionListener{
 			if (!Config.path.isEmpty()){
 				int index=Config.path.indexOf(jList1.getSelectedValue());
 				if (index!=-1){
-					Config.path.remove(Config.path.size()-index);
+					Config.path.remove(index);
 					jList1.setListData(Config.path.toArray());
 				}
 			}

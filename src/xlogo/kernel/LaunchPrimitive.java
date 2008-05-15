@@ -1869,7 +1869,7 @@ public class LaunchPrimitive {
 				break;
 			case 153: // listeflux
 				liste = "[ ";
-				for (MyFlow flow:Kernel.flows){
+				for (MyFlow flow:kernel.flows){
 					liste += "[ " + flow.getId()
 					+ " " + flow.getPath() + " ] ";
 				}
@@ -1885,35 +1885,31 @@ public class LaunchPrimitive {
 						throw new myException(cadre, Logo.messages
 								.getString("flux_non_disponible")
 								+ " " + ident);
-					else {
-
-						BufferedReader bfr;
-						int index_pile = Kernel.flux.size() - index;
-						if (null == Kernel.flux.get(index_pile))
-							bfr = new BufferedReader(
-									new FileReader(Kernel.chemin_flux.get(index_pile)));
-						else if (Kernel.flux.get(index_pile) instanceof BufferedReader)
-							bfr = (BufferedReader) (Kernel.flux.get(index_pile));
-						else
-							throw new myException(cadre, Logo.messages
-									.getString("flux_lecture"));
-						if (Kernel.fin_flux.get(index_pile).equals("1")) {
-							throw new myException(cadre, Logo.messages
-									.getString("fin_flux")
-									+ " " + ident);
-						} else {
-							String ligne = bfr.readLine();
-							if (null == ligne) {
-								Kernel.fin_flux.set(index_pile, "1");
-								throw new myException(cadre, Logo.messages
-										.getString("fin_flux")
-										+ " " + ident);
-							}
-							Kernel.flux.set(index_pile, bfr);
-							Interprete.operande = true;
-							Interprete.calcul.push("[ " + Utils.rajoute_backslash(ligne.trim()) + " ] ");
-						}
+					MyFlow flow=kernel.flows.get(index);
+					MyFlowReader flowReader;
+					// If the flow is a writable flow, throw error
+					if (flow.isWriter())
+						throw new myException(cadre, Logo.messages
+								.getString("flux_lecture"));
+					// else if the flow is a readable flow, convert to MyFlowReader
+					else if (flow.isReader()){
+						flowReader=((MyFlowReader)flow);
 					}
+					// else the flow isn't yet defined, initialize
+					else flowReader=new MyFlowReader(flow);
+
+					if (flowReader.isFinished()) 
+						throw new myException(cadre, Logo.messages.getString("fin_flux")+ " " + ident);								
+					// Reading line
+					String line =flowReader.readLine();
+					if (null == line) {
+						flow.setFinished(true);
+						throw new myException(cadre, Logo.messages.getString("fin_flux")
+									+ " " + ident);
+					}
+					Interprete.operande = true;
+					Interprete.calcul.push("[ " + Utils.rajoute_backslash(line.trim()) + " ] ");
+					kernel.flows.set(index, flowReader);
 				} catch (FileNotFoundException e1) {
 					try {
 						throw new myException(cadre, Logo.messages
@@ -1927,77 +1923,72 @@ public class LaunchPrimitive {
 			case 155: // liscaractereflux
 				try {
 					int ident = getInteger(param.get(0));
-					int index = Kernel.description_flux.search(String
-							.valueOf(ident));
+					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
 								.getString("flux_non_disponible")
 								+ " " + ident);
-					else {
-						BufferedReader bfr;
-						int index_pile = Kernel.flux.size() - index;
-						if (null == Kernel.flux.get(index_pile))
-							bfr = new BufferedReader(
-									new FileReader(Kernel.chemin_flux.get(index_pile)));
-						else if (Kernel.flux.get(index_pile) instanceof BufferedReader)
-							bfr = (BufferedReader) (Kernel.flux.get(index_pile));
-						else
+					MyFlow flow=kernel.flows.get(index);
+					MyFlowReader flowReader;
+					// If the flow is a writable flow, throw error
+					if (flow.isWriter())
+						throw new myException(cadre, Logo.messages
+								.getString("flux_lecture"));
+					// else if the flow is reader, convert to MyFlowReader
+					else if (flow.isReader()){
+						flowReader=((MyFlowReader)flow);
+					}
+					// else the flow isn't yet defined, initialize
+					else flowReader=new MyFlowReader(flow);
+
+					if (flowReader.isFinished()) 
+						throw new myException(cadre, Logo.messages.getString("fin_flux")+ " " + ident);
+				
+					int character =((MyFlowReader)flow).readChar();
+					if (character == -1) {
+							flow.setFinished(true);
 							throw new myException(cadre, Logo.messages
-									.getString("flux_lecture"));
-						if (Kernel.fin_flux.get(index_pile).equals("1")) {
-							throw new myException(cadre, Logo.messages
-									.getString("fin_flux")
-									+ " " + ident);
-						} else {
-							int ligne = bfr.read();
-							if (ligne == -1) {
-								Kernel.fin_flux.set(index_pile, "1");
-								throw new myException(cadre, Logo.messages
 										.getString("fin_flux")
 										+ " " + ident);
-							}
-							Kernel.flux.set(index_pile, bfr);
-							Interprete.operande = true;
-							String car=String.valueOf(ligne);
-							if (car.equals("\\")) car="\\\\";
-							Interprete.calcul.push(car);
-						}
 					}
-				} catch (FileNotFoundException e1) {
-					try {
-						throw new myException(cadre, Logo.messages
-								.getString("error.iolecture"));
-					} catch (myException e5) {
-					}
-				} catch (IOException e2) {
-				} catch (myException e) {
+					Interprete.operande = true;
+					String car=String.valueOf(character);
+					if (car.equals("\\")) car="\\\\";
+					Interprete.calcul.push(car);
+					kernel.flows.set(index, flowReader);
 				}
+				catch (FileNotFoundException e1) {
+						try {
+							throw new myException(cadre, Logo.messages
+									.getString("error.iolecture"));
+						} catch (myException e5) {
+						}
+					} catch (IOException e2) {
+					} catch (myException e) {
+					}
 				break;
 			case 156: // ecrisligneflux
 				try {
 					int ident = getInteger(param.get(0));
-					int index = Kernel.description_flux.search(String
-							.valueOf(ident));
+					int index = kernel.flows.search(ident);
 					liste = getFinalList(param.get(1));
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
 								.getString("flux_non_disponible")
 								+ " " + ident);
-					else {
-						BufferedWriter bfw;
-						int index_pile = Kernel.flux.size() - index;
-						if (null == Kernel.flux.get(index_pile))
-							bfw = new BufferedWriter(
-									new FileWriter(Kernel.chemin_flux.get(index_pile)));
-						else if (Kernel.flux.get(index_pile) instanceof BufferedWriter)
-							bfw = (BufferedWriter) (Kernel.flux.get(index_pile));
-						else
-							throw new myException(cadre, Logo.messages
-									.getString("flux_ecriture"));
-						PrintWriter pw = new PrintWriter(bfw);
-						pw.println(Utils.SortieTexte(liste));
-						Kernel.flux.set(index_pile, bfw);
-					}
+					MyFlow flow=kernel.flows.get(index);
+					MyFlowWriter flowWriter;
+					// If the flow is a readable flow, throw an error
+					if (flow.isReader()) throw new myException(cadre, Logo.messages.getString("flux_ecriture"));
+					// Else if the flow is a writable flow , convert to MrFlowWriter
+					else if (flow.isWriter()) flowWriter=(MyFlowWriter)flow;
+					// Else the flow isn't defined yet, initialize
+					else flowWriter=new MyFlowWriter(flow);
+
+//					System.out.println(flow.isReader()+" "+flow.isWriter());
+					// Write the line
+					flowWriter.write(Utils.SortieTexte(liste));
+					kernel.flows.set(index, flowWriter);
 				} catch (FileNotFoundException e1) {
 				} catch (IOException e2) {
 				} catch (myException e) {
@@ -2006,42 +1997,42 @@ public class LaunchPrimitive {
 			case 157: // finficher?
 				try {
 					int ident = getInteger(param.get(0));
-					int index = Kernel.description_flux.search(String
-							.valueOf(ident));
+					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
 								.getString("flux_non_disponible")
 								+ " " + ident);
 					else {
-						BufferedReader bfr;
-						int index_pile = Kernel.flux.size() - index;
-						if (null == Kernel.flux.get(index_pile))
-							bfr = new BufferedReader(
-									new FileReader(Kernel.chemin_flux.get(index_pile)));
-						else if (Kernel.flux.get(index_pile) instanceof BufferedReader)
-							bfr = (BufferedReader) (Kernel.flux.get(index_pile));
-						else
-							throw new myException(cadre, Logo.messages
-									.getString("flux_lecture"));
-						if (Kernel.fin_flux.get(index_pile).equals("1")) {
-							Interprete.operande = true;
-							Interprete.calcul.push(Logo.messages
-									.getString("vrai"));
-						} else {
-							bfr.mark(2);
-							int ligne = bfr.read();
-							if (ligne == -1) {
+						MyFlow flow=kernel.flows.get(index);
+						MyFlowReader flowReader=null;
+						// If the flow isn't defined yet, initialize
+						if (!flow.isWriter()&&!flow.isReader()){
+							flowReader=new MyFlowReader(flow);
+						}
+						else if (flow.isReader())
+							flowReader=(MyFlowReader)flow;
+						if (null!=flowReader){
+							if (flow.isFinished()) {
 								Interprete.operande = true;
 								Interprete.calcul.push(Logo.messages
 										.getString("vrai"));
-								Kernel.fin_flux.set(index_pile, "1");
-							} else {
-								Interprete.operande = true;
-								Interprete.calcul.push(Logo.messages
-										.getString("faux"));
+							}	
+							else{
+								int read=flowReader.isReadable();
+								if (read == -1) {
+									Interprete.operande = true;
+									Interprete.calcul.push(Logo.messages
+											.getString("vrai"));
+									flow.setFinished(true);
+								} else {
+									Interprete.operande = true;
+									Interprete.calcul.push(Logo.messages
+											.getString("faux"));
+								}	
 							}
-							bfr.reset();
 						}
+						else throw new myException(cadre, Logo.messages
+								.getString("flux_lecture")); 
 					}
 				} catch (FileNotFoundException e1) {
 				} catch (IOException e2) {
@@ -2050,57 +2041,34 @@ public class LaunchPrimitive {
 				break;
 			case 158: // ouvreflux
 				try {
-	
 					mot = getWord(param.get(1));
 					if (null == mot)
 						throw new myException(cadre, param.get(0) + " "
 								+ Logo.messages.getString("error.word"));
 					liste = Utils.SortieTexte(Config.defaultFolder + File.separator + mot);
-					String ident = String.valueOf(getInteger(param.get(0)));
-					if (Kernel.description_flux.search(ident) == -1)
-						Kernel.description_flux.push(ident);
+					int ident = getInteger(param.get(0));
+					if (kernel.flows.search(ident) == -1)
+						kernel.flows.add(new MyFlow(ident,liste,false));
 					else
 						throw new myException(cadre, ident + " "
 								+ Logo.messages.getString("flux_existant"));
-					Kernel.chemin_flux.push(liste);
-					Kernel.fin_flux.push("0");
-					Kernel.flux.push(null);
 				} catch (myException e) {
 				}
 				break;
 			case 159: // fermeflux
 				try {
 					int ident = getInteger(param.get(0));
-					int index = Kernel.description_flux.search(String
-							.valueOf(ident));
+					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
 								.getString("flux_non_disponible")
 								+ " " + ident);
-					else {
-						int index_pile = Kernel.flux.size() - index;
-						if (Kernel.flux.get(index_pile) instanceof BufferedReader) { // Le
-																				   // flux
-																				   // est
-																				   // un
-																				   // BufferedReader
-							BufferedReader bfr = (BufferedReader) (Kernel.flux
-									.get(index_pile));
-							bfr.close();
-						} else if (Kernel.flux.get(index_pile) instanceof BufferedWriter) { // Le
-																						  // flux
-																						  // est
-																						  // un
-																						  // BufferedWriter
-							BufferedWriter bfw = (BufferedWriter) (Kernel.flux
-									.get(index_pile));
-							bfw.close();
-						}
-						Kernel.flux.remove(index_pile);
-						Kernel.chemin_flux.remove(index_pile);
-						Kernel.description_flux.remove(index_pile);
-						Kernel.fin_flux.remove(index_pile);
-					}
+					MyFlow flow=kernel.flows.get(index);
+					// If the flow is a readable flow
+					if (flow.isReader()) ((MyFlowReader)flow).close();
+					// Else if it's a writable flow
+					else if (flow.isWriter()) ((MyFlowWriter)flow).close();
+					kernel.flows.remove(index);
 				} catch (IOException e2) {
 				} catch (myException e) {
 				}
@@ -2108,34 +2076,28 @@ public class LaunchPrimitive {
 			case 160: // ajouteligneflux
 				try {
 					int ident = getInteger(param.get(0));
-					int index = Kernel.description_flux.search(String
-							.valueOf(ident));
+					int index = kernel.flows.search(ident);
 					liste = getFinalList(param.get(1));
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
 								.getString("flux_non_disponible")
 								+ " " + ident);
-					else {
-						BufferedWriter bfw;
-						int index_pile = Kernel.flux.size() - index;
-						if (null == Kernel.flux.get(index_pile))
-							bfw = new BufferedWriter(
-									new FileWriter(Kernel.chemin_flux.get(
-											index_pile), true));
-						else if (Kernel.flux.get(index_pile) instanceof BufferedWriter)
-							bfw = (BufferedWriter) (Kernel.flux.get(index_pile));
-						else
-							throw new myException(cadre, Logo.messages
-									.getString("flux_ecriture"));
-						PrintWriter pw = new PrintWriter(bfw);
-						pw.println(Utils.SortieTexte(liste));
-						Kernel.flux.set(index_pile, bfw);
-					}
+					MyFlow flow=kernel.flows.get(index);
+					MyFlowWriter flowWriter;
+					// If the flow is a readable flow, throw an error
+					if (flow.isReader()) throw new myException(cadre, Logo.messages.getString("flux_ecriture"));
+					// Else if the flow is a writable flow , convert to MrFlowWriter
+					else if (flow.isWriter()) flowWriter=(MyFlowWriter)flow;
+					// Else the flow isn't defined yet, initialize
+					else flowWriter=new MyFlowWriter(flow);
+
+					// Write the line
+					flowWriter.append(Utils.SortieTexte(liste));
+					kernel.flows.set(index, flowWriter);
 				} catch (FileNotFoundException e1) {
 				} catch (IOException e2) {
 				} catch (myException e) {
 				}
-
 				break;
 			case 161: // souris?
 				Interprete.operande = true;
