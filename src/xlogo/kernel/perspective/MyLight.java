@@ -9,7 +9,6 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 
 public class MyLight extends BranchGroup{

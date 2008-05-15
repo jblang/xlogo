@@ -176,7 +176,6 @@ import xlogo.kernel.perspective.*;
 	 * The First clicked point when the rectangular selection is created
 	 */
 	Point origine;
-	private Rectangle zoomSelection; 
 	public DrawPanel(Application cadre){
 		this.gm=cadre.getKernel().getWorkspace().getGuiMap();
 		 setLayout(null);
@@ -1782,7 +1781,7 @@ import xlogo.kernel.perspective.*;
 		couleurfond=color;
 		updateColorSelection();
 		if (enabled3D()){
-			if (cadre.getViewer3D().isVisible()){
+			if (cadre.getViewer3D()!=null&&cadre.getViewer3D().isVisible()){
 				cadre.getViewer3D().updateBackGround(couleurfond);
 			}
 		}

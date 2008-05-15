@@ -6,11 +6,7 @@
 **/
 package xlogo;
 
-import java.awt.Color;
-
 import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-
 import xlogo.gui.MyTextAreaDialog;
 
 

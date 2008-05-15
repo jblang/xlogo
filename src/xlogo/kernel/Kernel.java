@@ -1,6 +1,6 @@
 package xlogo.kernel;
 
-import java.util.Stack;
+import java.util.ArrayList;
 import java.awt.Color;
 import xlogo.gui.Editor;
 
@@ -14,10 +14,11 @@ import xlogo.gui.Editor;
 import xlogo.Application;
 public class Kernel {
 	protected static long chrono = 0;
-	protected static Stack flux=new Stack(); // Contient les flux de lecture ou d'écriture
-	protected static Stack<String> chemin_flux=new Stack<String>(); // Contient le chemin absolu vers chacun des fichiers
-	protected static Stack<String> description_flux=new Stack<String>(); // Contient les identifiants de chacun des fluxs
+	protected ArrayFlow flows=new ArrayFlow(); // Contient les flux de lecture ou d'écriture
+/*	protected static Stack<String> chemin_flux=new Stack<String>(); // Contient le chemin absolu vers chacun des fichiers
+	protected static Stack<String> description_flux=new Stack<String>(); // Contient les identifiants de chacun des flux
 	protected static Stack<String> fin_flux=new Stack<String>(); // Contient 1 si la fin du flux est atteinte rien sinon
+	*/
 	protected static boolean mode_trace=false; // true si le mode trace est enclenchée (permet de suivre les procédures)
 	
 	// interprete the user command and launch primitive and procedure
@@ -32,8 +33,7 @@ public class Kernel {
 	
 	public Kernel(Application app){
 		this.app=app;
-		this.wp=new Workspace(app);
-
+		this.wp=new Workspace(app);		
 	}
 	 public Workspace getWorkspace(){
 	 	return wp;	
@@ -89,5 +89,18 @@ public class Kernel {
 	 public void initInterprete(){
 		interprete=new Interprete(app);
 	 }
-
+	 class ArrayFlow extends ArrayList<MyFlow>{
+		ArrayFlow(){
+			super(); 
+		}
+		private static final long serialVersionUID = 1L;
+		protected int search(int id){
+			for(int i=0;i<size();i++){
+				if (get(i).getId()==id) return i;
+			}
+			return -1;
+		}
+		
+		 
+	 }
 }

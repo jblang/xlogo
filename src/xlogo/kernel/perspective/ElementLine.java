@@ -7,7 +7,6 @@ import javax.media.j3d.Shape3D;
 import javax.vecmath.Color3f;
 
 import xlogo.Application;
-import xlogo.kernel.DrawPanel;
 import xlogo.utils.myException;
 public class ElementLine extends Element3D {
 	public ElementLine(Application app){

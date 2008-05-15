@@ -17,8 +17,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.io.File;
 import java.awt.Color;
@@ -41,7 +41,7 @@ public class ThumbFrame extends JDialog implements ActionListener{
 	private int columns;
 	private PanelColorThumb pc;
 	JPanel mainPanel;
-	private Vector<String> externalImages;
+	private ArrayList<String> externalImages;
 	BorderImagePanel bip;
 	ThumbFrame(BorderImagePanel bip){
 		super((JDialog)(bip.getTopLevelAncestor()));

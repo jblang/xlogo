@@ -1,38 +1,27 @@
 package xlogo.kernel.perspective;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
-import javax.vecmath.Color3f;
-import javax.vecmath.Point3f;
-import javax.vecmath.Tuple3f;
-import javax.vecmath.Vector3f;
-
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.gui.preferences.PanelColor;
-import xlogo.kernel.perspective.LightDialog.PanelAngle;
-import xlogo.kernel.perspective.LightDialog.PanelPosition;
 
 public class FogDialog extends JDialog implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private String[] type={Logo.messages.getString("3d.fog.none"),Logo.messages.getString("3d.fog.linear"),
 			Logo.messages.getString("3d.fog.exponential")};
 	private JComboBox comboType;
-	PanelColor panelColor;
-	private PanelDensity panelDensity;
+	private PanelValue panelDensity;
+	private PanelValue panelFront;
+	private PanelValue panelBack;
 	private JLabel labelType;
 	private JButton ok;
 	private JButton refresh;
@@ -51,12 +40,10 @@ public class FogDialog extends JDialog implements ActionListener{
 		comboType=new JComboBox(type);
 		comboType.setSelectedIndex(fog.getType());
 
-		Color3f col=fog.getColor();
-		if (null!=col)	panelColor=new PanelColor(col.get());
-		else panelColor=new PanelColor(Color.white);
-		panelColor.setBackground(comboType.getBackground());
+		panelDensity=new PanelValue(fog.getDensity(),Logo.messages.getString("3d.fog.density"));
+		panelFront=new PanelValue((int)(fog.getFront()*1000),Logo.messages.getString("3d.fog.frontdistance"));
+		panelBack=new PanelValue((int)(fog.getBack()*1000),Logo.messages.getString("3d.fog.backdistance"));
 		
-		panelDensity=new PanelDensity(fog.getDensity());
 		ok=new JButton(Logo.messages.getString("pref.ok"));
 		refresh=new JButton(Logo.messages.getString("3d.light.apply"));
 		labelType.setFont(Config.police);
@@ -77,16 +64,19 @@ public class FogDialog extends JDialog implements ActionListener{
 		getContentPane().add(comboType, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0,
 				GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(
 						0, 0, 0, 0), 0, 0));
-		getContentPane().add(panelColor, new GridBagConstraints(0, 1, 2, 1, 1.0, 1.0,
+		getContentPane().add(panelFront, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0,
+				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(
+						0, 0, 0, 0), 0, 0));
+		getContentPane().add(panelBack, new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(
 						0, 0, 0, 0), 0, 0));
 		getContentPane().add(panelDensity, new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0,
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(
 						0, 0, 0, 0), 0, 0));
-		getContentPane().add(refresh, new GridBagConstraints(0, 3, 1, 1, 1.0, 1.0,
+		getContentPane().add(refresh, new GridBagConstraints(0, 4, 1, 1, 1.0, 1.0,
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
 						0, 0, 0, 0), 0, 0));
-		getContentPane().add(ok, new GridBagConstraints(1, 3, 1, 1, 1.0, 1.0,
+		getContentPane().add(ok, new GridBagConstraints(1, 4, 1, 1, 1.0, 1.0,
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
 						0, 0, 0, 0), 0, 0));
 		selectComponents();
@@ -109,11 +99,13 @@ public class FogDialog extends JDialog implements ActionListener{
 	}
 	private void updateFog(){
 		int t=comboType.getSelectedIndex();
-		Color3f c=new Color3f(panelColor.getValue());
-		float d=panelDensity.getAngleValue();
+		float d=panelDensity.getTextValue();
+		float back=panelBack.getTextValue();
+		float front=panelFront.getTextValue();
 		fog.setType(t);
-		fog.setColor(c);
 		fog.setDensity(d);
+		fog.setBack(back/1000);
+		fog.setFront(front/1000);
 		fog.detach();
 		fog.removeAllChildren();
 		fog.createFog();
@@ -123,51 +115,63 @@ public class FogDialog extends JDialog implements ActionListener{
 		int id=comboType.getSelectedIndex();
 		// None
 		if (id==MyFog.FOG_OFF){
-			panelColor.setEnabled(false);
 			panelDensity.setEnabled(false);
+			panelBack.setEnabled(false);
+			panelFront.setEnabled(false);
 		}
 		// Linear Fog
 		else if (id==MyFog.FOG_LINEAR){
-			panelColor.setEnabled(true);
 			panelDensity.setEnabled(false);
+			panelBack.setEnabled(true);
+			panelFront.setEnabled(true);
 		}
 		// Exponential Fog
 		else if (id==MyFog.FOG_EXPONENTIAL){
-			panelColor.setEnabled(true);
+			panelBack.setEnabled(false);
+			panelFront.setEnabled(false);
 			panelDensity.setEnabled(true);
 		}
 	}
-	class PanelDensity extends JPanel{
+	
+	
+	class PanelValue extends JPanel{
 		private static final long serialVersionUID = 1L;
 		private JLabel label;
-		private JTextField density;
-		private float densityValue;
-		PanelDensity(float densityValue){
-			this.densityValue=densityValue;
-			
+		private JTextField text;
+		private String title;
+		private float textValue;
+		PanelValue(float textValue,String title){
+			this.textValue=textValue;
+			this.title=title;
 			initGui();
 		}
 		private void initGui(){
-			label=new JLabel(Logo.messages.getString("3d.fog.density"));
+			label=new JLabel(title);
 			label.setFont(Config.police);
-			density=new JTextField(String.valueOf(densityValue));
-			density.setSize(30, Config.police.getSize()+10);
+			String st;
+			int i=(int)textValue;
+			if (i==textValue) {
+				st=String.valueOf(i);
+				
+			}
+			else st=String.valueOf(textValue);
+			text=new JTextField(st,4);
 			add(label);
-			add(density);
+			add(text);
 		}
 		public void setEnabled(boolean b){
 			super.setEnabled(b);
 			label.setEnabled(b);
-			density.setEnabled(b);	
+			text.setEnabled(b);	
 		}
-		float getAngleValue(){
+		float getTextValue(){
 			try{
-				float f=Float.parseFloat(density.getText());
+				float f=Float.parseFloat(text.getText());
 				return f;
 			}
 			catch(NumberFormatException e){
 			}
-			return MyFog.DEFAULT_DENSITY;
+			return 0;
 		}
 	}
 	

@@ -4,7 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Color;
-import java.awt.Toolkit;
+
 
 import xlogo.Config;
 import xlogo.Logo;
@@ -23,7 +23,6 @@ import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
 import java.awt.event.*;
 import xlogo.gui.preferences.PanelColor;
-import xlogo.utils.Utils;
 public class LightDialog extends JDialog implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private String[] type={Logo.messages.getString("3d.light.none"),Logo.messages.getString("3d.light.ambient"),

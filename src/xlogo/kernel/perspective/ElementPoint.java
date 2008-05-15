@@ -4,7 +4,6 @@ import javax.media.j3d.PointArray;
 import javax.vecmath.Color3f;
 
 import xlogo.Application;
-import xlogo.kernel.DrawPanel;
 import xlogo.utils.myException;
 import javax.media.j3d.Shape3D;
 

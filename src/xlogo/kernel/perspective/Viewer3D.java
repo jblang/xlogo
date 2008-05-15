@@ -184,7 +184,7 @@ public class Viewer3D extends JFrame implements ActionListener{
 		initLights();
 
 		// Configure Fog
-		myFog=new MyFog(MyFog.FOG_OFF);
+		myFog=new MyFog(MyFog.FOG_OFF,backgroundColor);
 		scene.addChild(myFog);
 		
 	    // Rattachement de la scène 3D à l'univers

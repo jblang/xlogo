@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 
 import java.util.Stack;
+import java.util.ArrayList;
 import java.io.*;
 
 import xlogo.kernel.DrawPanel;
@@ -626,7 +627,7 @@ public class Application extends JFrame {
 			while (!Config.path.isEmpty()) {
 				String att="\t\tfile"+i+"=\"";
 				sb.append(att);
-				sb.append(Config.path.pop());
+				sb.append(Config.path.remove(Config.path.size()-1));
 				sb.append("\"\n");
 				i++;
 			}
@@ -995,7 +996,8 @@ public class Application extends JFrame {
 			editeur.setVisible(false);
 		    }
 	    }
-	  Config.path=(Stack<String>)tampon.clone(); //On ne garde dans le path que les fichiers de démarrage
+	  
+	  Config.path=new ArrayList<String>(tampon); //On ne garde dans le path que les fichiers de démarrage
 	  editeur.setAffichable(true);
 	  editeur.setEditorText("");
 	 }	

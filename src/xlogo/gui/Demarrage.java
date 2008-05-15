@@ -20,7 +20,7 @@ import xlogo.Logo;
 public class Demarrage extends JDialog implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private BorderLayout borderLayout1 = new BorderLayout();
-	private JList jList1 = new JList(Config.path);
+	private JList jList1 = new JList(Config.path.toArray());
 	private JScrollPane scroll=new JScrollPane(jList1);
 	private JPanel jPanel1 = new JPanel();
 	private JLabel jLabel1 = new JLabel();
@@ -115,10 +115,10 @@ public class Demarrage extends JDialog implements ActionListener{
 		}
 		else if (e.getActionCommand().equals(Logo.messages.getString("enlever"))){    //Enlever
 			if (!Config.path.isEmpty()){
-				int index=Config.path.search(jList1.getSelectedValue());
+				int index=Config.path.indexOf(jList1.getSelectedValue());
 				if (index!=-1){
-					Config.path.removeElementAt(Config.path.size()-index);
-					jList1.setListData(Config.path);
+					Config.path.remove(Config.path.size()-index);
+					jList1.setListData(Config.path.toArray());
 				}
 			}
 		}
@@ -131,8 +131,8 @@ public class Demarrage extends JDialog implements ActionListener{
     else {  // Si on valide ou si on appuie sur le bouton ajouter
 
       String text=jTextField1.getText().trim();
-      if (Config.path.search(text)==-1&&!text.equals("")) Config.path.push(text);
-      jList1.setListData(Config.path);
+      if (Config.path.indexOf(text)==-1&&!text.equals("")) Config.path.add(text);
+      jList1.setListData(Config.path.toArray());
       jTextField1.setText("");
     }
   }

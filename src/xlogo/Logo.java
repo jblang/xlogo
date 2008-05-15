@@ -339,7 +339,7 @@ public class Logo {
 		  while (st.hasMoreTokens()){
 			  element=st.nextToken();
 //			  System.out.println(path+" "+element);
-			if (!element.startsWith("#")) Config.path.push(element);
+			if (!element.startsWith("#")) Config.path.add(element);
 		  }
 		}
 	  }}
@@ -414,7 +414,7 @@ public class Logo {
     // ou au lancement en ligne de commande
     
     for(int i=0;i<args.length;i++){
-    		Config.path.push(args[i]);
+    		Config.path.add(args[i]);
     }
     
      

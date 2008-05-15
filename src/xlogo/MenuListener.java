@@ -18,9 +18,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
-import java.awt.image.CropImageFilter;
-import java.awt.image.FilteredImageSource;
-
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;

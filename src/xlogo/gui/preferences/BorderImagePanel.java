@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Color;
-import java.util.Vector;
+import java.util.ArrayList;
 import javax.swing.*;
 import java.io.File;
 import java.awt.Graphics;
@@ -21,17 +21,17 @@ import java.awt.GridBagLayout;
 public class BorderImagePanel extends JPanel implements ActionListener{
 	private Color borderColor=Config.borderColor;
 	private String path=Config.borderImageSelected; 
-	private Vector<String> externalImages;
+	private ArrayList<String> externalImages;
 	private static final long serialVersionUID = 1L;
 	private JLabel labelBorderMotif=new JLabel(Logo.messages.getString("bordermotif"));
 	private JButton button=new JButton(Logo.messages.getString("pref.highlight.other"));
 	private Thumbnail previewPanel;
 	private ThumbFrame frame=null;
 	BorderImagePanel(){
-		externalImages=(Vector<String>)Config.borderExternalImage.clone();
+		externalImages=new ArrayList<String>(Config.borderExternalImage);
 		initGui();
 	}
-	protected Vector<String> getExternalImages(){
+	protected ArrayList<String> getExternalImages(){
 		return externalImages;
 	}
 	protected void setPath(String st){

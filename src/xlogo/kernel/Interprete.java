@@ -220,17 +220,21 @@ public class Interprete {
 					nom.push(element);
 					int j = 0;
 					while (true) {
+						/* This line fixed the bug for primitive or procedure without arguments
+						 * eg: pr (pi+2) 
+						 */
+						if (constantNumber==0) break;
 						try {
 							operande = operateur = drapeau_ouvrante = false;
 							if (getNextWord().equals(")")) {
 								if (constantNumber != -1) {
 									// If the primitive or the procedure doesn't
 									// accept optional parameters
-									if (j > constantNumber)
+									if (j > constantNumber){
 										throw new myException(
 												app,
 												Logo.messages
-														.getString("too_much_arguments"));
+														.getString("too_much_arguments"));}
 									else if (j < constantNumber)
 										throw new myException(
 												app,

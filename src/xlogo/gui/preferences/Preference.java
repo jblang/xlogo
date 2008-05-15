@@ -3,7 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import xlogo.Config;
-import xlogo.kernel.DrawPanel;
 import xlogo.Application;
 import xlogo.Logo;
 /**

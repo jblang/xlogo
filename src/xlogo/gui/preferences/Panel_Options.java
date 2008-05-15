@@ -8,11 +8,9 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-import javax.swing.JTextArea;
 import xlogo.Config;
 import xlogo.gui.MyTextAreaDialog;
 import xlogo.Application;
-import java.awt.Color;
 import javax.swing.JOptionPane;
 import xlogo.Logo;
 /**

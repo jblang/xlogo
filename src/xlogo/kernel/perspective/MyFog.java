@@ -4,7 +4,6 @@ import javax.media.j3d.BranchGroup;
 import javax.media.j3d.LinearFog;
 import javax.media.j3d.ExponentialFog;
 import javax.media.j3d.Fog;
-import javax.vecmath.Point3d;
 import javax.media.j3d.BoundingSphere;
 
 import javax.vecmath.Color3f;
@@ -15,15 +14,17 @@ public class MyFog extends BranchGroup{
 	protected final static int FOG_EXPONENTIAL=2;
 
 	private int type=FOG_OFF;
-	private Color3f color;
 	private float density=1;
-	protected final static float DEFAULT_DENSITY=1;
+	private float backDistance=3.5f;
+	private float frontDistance=0.5f;
 	private Fog fog;
-	MyFog(int type){
+	Color3f color;
+	MyFog(int type,Color3f color){
 		super();
 		setCapability(BranchGroup.ALLOW_DETACH);
 		setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 		this.type=type;
+		this.color=color;
 	}
 	/**
 	 * This method creates a light according to each parameter:<br>
@@ -38,12 +39,13 @@ public class MyFog extends BranchGroup{
 				break;
 			case FOG_LINEAR:
 				fog= new LinearFog(color);
-				fog.setInfluencingBounds(new BoundingSphere(new Point3d(0,0,0), Double.MAX_VALUE));
+				((LinearFog)fog).setBackDistance(backDistance);
+				((LinearFog)fog).setFrontDistance(frontDistance);
+				fog.setInfluencingBounds(new BoundingSphere());
 				break;
 			case FOG_EXPONENTIAL:
 				fog= new ExponentialFog(color,density);
-				
-				fog.setInfluencingBounds(new BoundingSphere(new Point3d(0,0,0), Double.MAX_VALUE));
+				fog.setInfluencingBounds(new BoundingSphere());
 				break;
 		}
 		if (null!=fog) addChild(fog);
@@ -59,38 +61,23 @@ public class MyFog extends BranchGroup{
 	void setType(int t){
 		type=t;
 	}
-	Color3f getColor(){
-		return color;
-	}
-	void setColor(Color3f c){
-		color=c;
-	}
-
 	float getDensity(){
 		return density;
 	}
 	void  setDensity(float f){
 		density=f;
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	float getBack(){
+		return backDistance;
+	}
+	void  setBack(float f){
+		backDistance=f;
+	}
+	float getFront(){
+		return frontDistance;
+	}
+	void  setFront(float f){
+		frontDistance=f;
+	}
 	
 }

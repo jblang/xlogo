@@ -1869,9 +1869,9 @@ public class LaunchPrimitive {
 				break;
 			case 153: // listeflux
 				liste = "[ ";
-				for (int i = 0; i < Kernel.chemin_flux.size(); i++) {
-					liste += "[ " + Kernel.description_flux.get(i)
-							+ " " + Kernel.chemin_flux.get(i) + " ] ";
+				for (MyFlow flow:Kernel.flows){
+					liste += "[ " + flow.getId()
+					+ " " + flow.getPath() + " ] ";
 				}
 				liste += "] ";
 				Interprete.operande = true;
@@ -1880,13 +1880,13 @@ public class LaunchPrimitive {
 			case 154: // lisligneflux
 				try {
 					int ident = getInteger(param.get(0));
-					int index = Kernel.description_flux.search(String
-							.valueOf(ident));
+					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
 								.getString("flux_non_disponible")
 								+ " " + ident);
 					else {
+
 						BufferedReader bfr;
 						int index_pile = Kernel.flux.size() - index;
 						if (null == Kernel.flux.get(index_pile))

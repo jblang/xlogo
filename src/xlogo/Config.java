@@ -8,8 +8,7 @@ package xlogo;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.ArrayList;
 /**
  * This class contains all parameters for XLogo
  * Thos arguments are stored in the file .xlogo
@@ -160,7 +159,7 @@ public class Config {
   /**
    * This Stack contains all startup files
    */
-  public static Stack<String> path=new Stack<String>(); // Fichiers de démarrage
+  public static ArrayList<String> path=new ArrayList<String>(); // Fichiers de démarrage
 
 /**
  *  syntax Highlighting: Color for primitives
@@ -244,7 +243,7 @@ public class Config {
   public static String borderImageSelected="background.png";
  
   /** This Vector contains all images added by the user for image Border**/
-  public static Vector<String> borderExternalImage=new Vector<String>();
+  public static ArrayList<String> borderExternalImage=new ArrayList<String>();
   /** The default image defined by default that are included in XLogo**/
   public static String[] borderInternalImage={"background.png"};
   /** This String represents the main command accessible with the button play in the toolbar**/

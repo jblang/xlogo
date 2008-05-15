@@ -16,7 +16,7 @@ import javax.vecmath.Color3f;
 import xlogo.Application;
 import xlogo.Logo;
 import xlogo.utils.myException;
-import xlogo.kernel.DrawPanel;
+
 /**
  * This class represent A polygon surface in 3D mode
  * @author loic

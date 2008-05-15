@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.util.StringTokenizer;
+import java.util.ArrayList;
 import java.util.Stack;
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -82,7 +83,7 @@ public class Editor extends JFrame implements ActionListener{
 			  String line="";
 			  String name="";
 			  String body="";
-			  Stack<String> variables=new Stack<String>();
+			  ArrayList<String> variables=new ArrayList<String>();
 			  Stack<String> optVariables=new Stack<String>();
 			  Stack<StringBuffer> optVariablesExp=new Stack<StringBuffer>();
 			  // Read and save the comments that appears before the procedure
@@ -113,7 +114,7 @@ public class Editor extends JFrame implements ActionListener{
 					  token=st.nextToken();
 					  if (token.startsWith(":")){
 						  String var=ValidVariable(token);
-						  variables.push(var);
+						  variables.add(var);
 					  }
 					  // And finally, optional variables if there are some.
 					  // [:a 100] [:b 20] [:c 234] ...........
@@ -184,9 +185,9 @@ public class Editor extends JFrame implements ActionListener{
 					pr.decoupe();
 					pr.instruction_sauve=pr.instruction;
 					pr.instr_sauve=pr.instr;
-					pr.variable_sauve=new Stack<String>();
+					pr.variable_sauve=new ArrayList<String>();
 					for (int k=0;k<pr.variable.size();k++){
-						pr.variable_sauve.push(pr.variable.get(k));
+						pr.variable_sauve.add(pr.variable.get(k));
 					}
 //					System.out.println(pr.toString());
 		    }
@@ -328,7 +329,7 @@ public class Editor extends JFrame implements ActionListener{
 		JOptionPane.showMessageDialog(this.editeur,jt,Logo.messages.getString("erreur"),JOptionPane.ERROR_MESSAGE);					
 			for(int i=0;i<wp.getNumberOfProcedure();i++){ // On remémorise les anciennes définitions de procédures
 				Procedure pr=wp.getProcedure(i);
-				pr.variable=(Stack<String>)pr.variable_sauve.clone();
+				pr.variable=new ArrayList<String>(pr.variable_sauve);
 				pr.instr=pr.instr_sauve;
 				pr.instruction=pr.instruction_sauve;
 				pr.nbparametre=pr.variable.size();

@@ -6,6 +6,7 @@
  */
 package xlogo.kernel;
 import java.util.Stack;
+import java.util.ArrayList;
 import java.io.*;
 import xlogo.Logo;
 import xlogo.utils.Utils;
@@ -15,17 +16,17 @@ public class Procedure {
   public String comment; // Line of comment introducing the procedure
   public int nbparametre;
   public String name;
-  public Stack<String> variable=new Stack<String>();
+  public ArrayList<String> variable=new ArrayList<String>();
   public Stack<String> optVariables=new Stack<String>();
   public Stack<StringBuffer> optVariablesExp=new Stack<StringBuffer>();
   public String instruction="";
   public String instr=null;
   public String instruction_sauve="";  // En cas de mauvaise écriture dans l'éditeur
 public 	String instr_sauve=null;		  // Permet de revenir aux valeurs antérieures d'une 
-public 	Stack<String> variable_sauve=new Stack<String>(); // procédure avant modification
+public 	ArrayList<String> variable_sauve=new ArrayList<String>(); // procédure avant modification
 public Procedure() {
   }
-  public Procedure(String name,int nbparametre,Stack<String> variable,Stack<String> optVariables,Stack<StringBuffer> optVariablesExp,boolean affichable){
+  public Procedure(String name,int nbparametre,ArrayList<String> variable,Stack<String> optVariables,Stack<StringBuffer> optVariablesExp,boolean affichable){
     this.name=name;
     this.nbparametre=nbparametre;
     this.variable=variable;
