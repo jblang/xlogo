@@ -136,7 +136,7 @@ public class Viewer3D extends JFrame implements ActionListener{
 		}
 		// Click on the Fog Button
 		else if (cmd.equals(Viewer3D.ACTION_FOG)){
-			new FogDialog(this,myFog);
+			new FogDialog(this,myFog,Logo.messages.getString("3d.fog"));
 			
 		}
 	}

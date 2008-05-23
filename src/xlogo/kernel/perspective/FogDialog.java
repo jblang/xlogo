@@ -27,8 +27,8 @@ public class FogDialog extends JDialog implements ActionListener{
 	private JButton refresh;
 	private Viewer3D viewer3d;
 	private MyFog fog;
-	FogDialog(Viewer3D viewer3d, MyFog fog){
-		super(viewer3d,true);
+	FogDialog(Viewer3D viewer3d, MyFog fog,String title){
+		super(viewer3d,title,true);
 		this.viewer3d=viewer3d;
 		this.fog=fog;
 		initGui();

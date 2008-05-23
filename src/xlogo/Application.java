@@ -765,7 +765,7 @@ public class Application extends JFrame {
 		kernel.buildPrimitiveTreemap(id);
 		editeur = new Editor(this);
 		panneauHistorique1.changeLanguage();
-		if (viewer3d.isVisible()) viewer3d.setText();
+		if (null!=viewer3d) viewer3d.setText();
 	}
 	// Change font for the interface
 	// Change la police de l'interface
