@@ -190,6 +190,9 @@ public class Panel_General extends JPanel {
 	
 	
 	}
+	/**
+	 * Apply any modification, if some application parameter have been modified with this panel.
+	 */
 	protected void update(){
 		// Language has changed?
 		int indicateur = jl_langues.getSelectedIndex();

@@ -117,6 +117,7 @@ public class Application extends JFrame {
 	// Interpreter and drawer
 	private Kernel kernel;
 	
+	
 	/** Builds the main frame */
 	public Application() {
 		kernel=new Kernel(this);
@@ -764,6 +765,7 @@ public class Application extends JFrame {
 		kernel.buildPrimitiveTreemap(id);
 		editeur = new Editor(this);
 		panneauHistorique1.changeLanguage();
+		if (viewer3d.isVisible()) viewer3d.setText();
 	}
 	// Change font for the interface
 	// Change la police de l'interface
@@ -1126,52 +1128,60 @@ public class Application extends JFrame {
 	 public Kernel getKernel(){
 	 	return kernel;
 	 }
+	 int horizontalMargin=15;
+	 int verticalMargin=15;
 	 /**
 	  * This method  calculate the margin for the jScrollPane
 	 	* and the border motif
 	  */
 	 public void calculateMargin(){
-		 int horizontalMargin=15;
-		 int verticalMargin=15;
+		 horizontalMargin=15;
+		 verticalMargin=15;
 		 Component top=jSplitPane1.getTopComponent();
 		 int width=top.getWidth();
 		 int height=top.getHeight();
 		 int panelWidth=(int)(Config.imageWidth*DrawPanel.zoom);
 		 int panelHeight=(int)(Config.imageHeight*DrawPanel.zoom);
-//		 System.out.println(panelWidth+" "+panelHeight);
-
+	//	 System.out.println("imagePanel "+panelWidth+" "+panelHeight);
+	//	 System.out.println("Swing component "+width+" "+height);
 		 if (width>panelWidth+30){
-	//		 if (height>panelHeight+30)
-				 horizontalMargin=(width-panelWidth)/2;
-	//		 else 
-	//			 horizontalMargin=(width-panelWidth)/2-hscroll;
+					 horizontalMargin=(width-panelWidth)/2;
 		 }
 		 if (height>panelHeight+30){
-	//		 if (width>panelWidth+30)
 				 verticalMargin=(height-panelHeight)/2;
-	//		 else
-	//			 verticalMargin=(height-panelHeight)/2-vscroll/2;
 		 }
 		 if (null!=Config.borderColor){
-			 scrollArea.setBorder(
-					 BorderFactory.createMatteBorder(verticalMargin, horizontalMargin, 
-							 verticalMargin, horizontalMargin, Config.borderColor));
+			 SwingUtilities.invokeLater(new Runnable(){
+				 public void run(){
+					 scrollArea.setBorder(
+							 BorderFactory.createMatteBorder(verticalMargin, horizontalMargin, 
+									 verticalMargin, horizontalMargin, Config.borderColor));					 
+				 }
+			 });
+
 		 }
 		 else {
-			 String name=Config.borderImageSelected;
-			 ImageIcon icon=null;
-			 if (Config.searchInternalImage(name)!=-1) icon=new ImageIcon(Utils.dimensionne_image(name,this));
-			 else if (Config.borderExternalImage.contains(name)) {
-				 if (Utils.fileExists(name)) icon=new ImageIcon(name); 
-				 else {
-					 Config.borderImageSelected="background.png";
-					 icon=new ImageIcon(Utils.dimensionne_image("background.png",this));
+			 SwingUtilities.invokeLater(new Runnable(){
+				 public void run(){
+					 String name=Config.borderImageSelected;
+					 ImageIcon icon=null;
+					 if (Config.searchInternalImage(name)!=-1) icon=new ImageIcon(Utils.dimensionne_image(name,ardoise));
+					 else if (Config.borderExternalImage.contains(name)) {
+						 if (Utils.fileExists(name)) icon=new ImageIcon(name); 
+						 else {
+							 Config.borderImageSelected="background.png";
+							 icon=new ImageIcon(Utils.dimensionne_image("background.png",ardoise));
+						 }					 
 				 }
+				scrollArea.setBorder(
+			 				 BorderFactory.createMatteBorder(verticalMargin,horizontalMargin,verticalMargin,horizontalMargin,icon));
+
+				 }
+			 
 			 }
-			 scrollArea.setBorder(
-		 				 BorderFactory.createMatteBorder(verticalMargin,horizontalMargin,verticalMargin,horizontalMargin,icon));
-			 }
+			 );
 	 }
+		 }
 /**
  * 
  * @author loic
@@ -1216,6 +1226,13 @@ public class Application extends JFrame {
 				else car=-code;
 			}
 		}
+	}
+	 /**
+	  * Enables or disables the zoom buttons
+	  * @param b The boolean  
+	  */
+	public void setZoomEnabled(boolean b){
+		toolbar.setZoomEnabled(b);
 	}
 	 /**
 	  * The Mouse popup Menu

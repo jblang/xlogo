@@ -86,4 +86,13 @@ public class MyToolBar extends JToolBar {
 	public void enabledPlay(boolean b){
 		play.setEnabled(b);
 	}
+	 /**
+	  * Enables or disables the zoom buttons
+	  * @param b The boolean  
+	  */
+	public void setZoomEnabled(boolean b){
+		zoomin.setEnabled(b);
+		zoomout.setEnabled(b);
+//		repaint();
+	}
 }

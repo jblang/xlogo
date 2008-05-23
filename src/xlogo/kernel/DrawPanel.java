@@ -12,6 +12,7 @@ import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Point;
+import javax.swing.JViewport;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -1132,7 +1133,7 @@ import xlogo.kernel.perspective.*;
 	 * @param id The window Mode
 	 */
 	protected void setWindowMode(int id){
-		if (enabled3D()) {
+		if (DrawPanel.etat_fenetre!=id) {
     		montrecacheTortue(false);
     		DrawPanel.etat_fenetre=id;
         	w3d=null;
@@ -1215,7 +1216,7 @@ import xlogo.kernel.perspective.*;
 					* Math.cos(angle));
 			g.rotate(angle);
 			g.drawImage(tortue.tort, (int) x - tortue.largeur / 2,
-					(int) y - tortue.hauteur / 2, cadre.getArdoise());
+					(int) y - tortue.hauteur / 2, this);
 			g.rotate(-angle);
 		}
 /*		if (null==rec) rec=new Rectangle2D.Double();
@@ -1262,7 +1263,7 @@ import xlogo.kernel.perspective.*;
 					g.rotate(angle);
 					g.drawImage(tortues[id].tort, (int) x
 							- tortues[id].largeur / 2, (int) y
-							- tortues[id].hauteur / 2, cadre.getArdoise());
+							- tortues[id].hauteur / 2, this);
 					g.rotate(-angle);
 				}
 				/*if (null==rec) rec=new Rectangle2D.Double();
@@ -1677,7 +1678,7 @@ import xlogo.kernel.perspective.*;
 			
 		}
 		montrecacheTortue(true);
-		if (classicMode) cadre.getArdoise().repaint();
+		if (classicMode) repaint();
 	}
 	/**
 	 * This method transform a plane 2D shape in the shape corresponding to the turtle plane 
@@ -2091,11 +2092,12 @@ import xlogo.kernel.perspective.*;
 	    		try{tracker.waitForID(0);}
 	    		catch(InterruptedException e){}
 	    		if (tracker.checkID(0))  g.drawImage(tortue.tort, Config.imageWidth/2 - tortue.largeur / 2,
-	                    Config.imageHeight/2 - tortue.hauteur/2, cadre.getArdoise());
+	                    Config.imageHeight/2 - tortue.hauteur/2, this);
 	    		}
 	    	updateColorSelection();
 	}
-	public void zoom(double d){
+	
+	private void resizeAllGuiComponents(double d){
 		// Resize all GuiComponent
 		Set<String> set=gm.keySet();
 		Iterator<String> it=set.iterator();
@@ -2112,36 +2114,66 @@ import xlogo.kernel.perspective.*;
 			
 		}
 		
+	}
 	
-		double oldZoom=zoom;
-		zoom=d;
+	/**
+	 * Make a zoom on the drawing area
+	 * @param d The absolute factor
+	 */
+	public void zoom(double d){
+		// Disable zoom buttons
+		cadre.setZoomEnabled(false);
+		
 		javax.swing.JViewport jv=cadre.scrollArea.getViewport();
 		Point p=jv.getViewPosition();
 		Rectangle r=jv.getVisibleRect();
+
+	
+	// If a selection rectangle is displaying on the drawing area
+	// Zooming on the rectangular selection 
+		if (null!=selection&&cadre.commande_isEditable()){
+			int originalWidth=jv.getWidth();
+			double width=selection.getWidth();
+			d=zoom*originalWidth/width;
+			p=selection.getLocation();
+			r.width=selection.width;
+			// adjust height in the same ratio as width
+			r.height=r.height*(int)width/originalWidth;
+			// erase selection
+			selection=null;
+		}
+		// Resize all Gui Components on the drawing area
+		resizeAllGuiComponents(d);
+	
+		double oldZoom=zoom;
+		zoom=d;
+
 		/* 
 		 * 		-------------------------------------
 		 * 		|									|
 		 *      |  	-------------------------		|
 		 * 		|	|						|		|
 		 * 		|	|						|		|
-		 * 		|	|			x			|  --> CenterView Point of the rectangle
-		 * 		|	|						|		|
-		 * 		|	|						|		|
+		 * 		|	|			x--	dx-----	|  --> CenterView Point of the rectangle
+		 * 		|	|			|			|		|
+		 * 		|	|			dy			|		|
 		 * 		|	-------------------------		|
 		 * 		-------------------------------------
 		 * */
-		Point centerView=new Point(p.x+Math.min(r.width,(int)(Config.imageWidth*oldZoom))/2
-				,p.y+Math.min(r.height,(int)(Config.imageHeight*oldZoom))/2);
-		cadre.calculateMargin();
-		cadre.getArdoise().setPreferredSize(new java.awt.Dimension(
+		
+		double dx=Math.min(r.width,Config.imageWidth*oldZoom)/2;
+		double dy=Math.min(r.height,Config.imageHeight*oldZoom)/2;
+		Point centerView=new Point((int)(p.x+dx),(int)(p.y+dy));
+
+		// Dynamically modify the drawing Area size
+		setPreferredSize(new java.awt.Dimension(
 				(int)(Config.imageWidth*zoom)
 				,(int)(Config.imageHeight*zoom)));
-		cadre.getArdoise().revalidate();
-		cadre.getArdoise().repaint();
-		jv.setViewPosition(new Point(
-				(int)(centerView.x/oldZoom*zoom-r.width/2),
-				(int)(centerView.y/oldZoom*zoom-r.height/2)));
-		
+
+		SwingUtilities.invokeLater(new PositionJViewport(jv, 
+				new Point((int)(centerView.x/oldZoom*zoom-dx),
+						(int)(centerView.y/oldZoom*zoom-dy))));	
+
 	}
 	private Color getTransparencyColor(int color,int trans){
 		Color c=new Color(color);
@@ -2217,7 +2249,7 @@ import xlogo.kernel.perspective.*;
 	   g2d.scale(DrawPanel.zoom,DrawPanel.zoom);
 	  g2d.drawImage(dessin,0,0,this);
 	  g2d.scale(1/DrawPanel.zoom,1/DrawPanel.zoom);
-	  if (allowSelection&&null!=selection){
+	  if (allowSelection&&null!=selection&&cadre.commande_isEditable()){
 		  g2d.setColor(colorSelection);
 		  g2d.fillRect(selection.x, selection.y, selection.width, selection.height);
 	  }
@@ -2357,5 +2389,28 @@ import xlogo.kernel.perspective.*;
    
        return bimage;
    }
-   
+   class PositionJViewport implements Runnable{
+	   JViewport jv;
+	   Point p;
+	   PositionJViewport(JViewport jv, Point p){
+		   this.jv=jv;
+		   this.p=p;
+	   }
+	   public void run(){
+			revalidate();			
+			cadre.calculateMargin();
+		   //  I have to add those two lines because of a bug I don't understand
+		   	// zoom 8 zoom 1 zoom 8
+		   // Sometimes after the method revalidate(), the left upper corner position 
+		   // wasn't correct 
+			cadre.scrollArea.invalidate();
+			cadre.scrollArea.validate();
+		// End Bug 
+			
+			jv.setViewPosition(p);
+			repaint();
+			
+			cadre.setZoomEnabled(true);
+	   }
+   }
 }

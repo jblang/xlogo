@@ -2992,7 +2992,7 @@ public class LaunchPrimitive {
            				Interprete.operande = false;
            				try{
            					d=number(param.get(0));
-           					if (d < 0) {
+           					if (d <=0) {
         						String name=Utils.primitiveName("zoom");
         						throw new myException(cadre, name + " "
         								+ Logo.messages.getString("attend_positif"));

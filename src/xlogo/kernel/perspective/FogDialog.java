@@ -35,7 +35,7 @@ public class FogDialog extends JDialog implements ActionListener{
 	}
 	private void initGui(){
 		getContentPane().setLayout(new GridBagLayout());
-		setSize(400,200);
+		setSize(450,200);
 		labelType=new JLabel(Logo.messages.getString("3d.fog.type"));
 		comboType=new JComboBox(type);
 		comboType.setSelectedIndex(fog.getType());

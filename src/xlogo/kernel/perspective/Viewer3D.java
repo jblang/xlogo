@@ -140,10 +140,16 @@ public class Viewer3D extends JFrame implements ActionListener{
 			
 		}
 	}
+	public void setText(){
+		setTitle(Logo.messages.getString("3d.viewer"));	
+		panelFog.setText();
+		panelLight.setText();
+		
+	}
 	private void initGui(){
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
-		setTitle(Logo.messages.getString("3d.viewer"));
+
 		// Creation d'un composant de classe Canvas3D permettant de visualiser une scène 3D
 		canvas3D = new Canvas3D (SimpleUniverse.getPreferredConfiguration ());
 	    // Création d'un univers 3D rattaché au composant 3D
@@ -215,6 +221,7 @@ public class Viewer3D extends JFrame implements ActionListener{
 		getContentPane().add(panelFog, new GridBagConstraints(1, 2, 1, 1, 0.1, 0.1,
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
 						10, 10, 10, 10), 0, 0));
+		setText();
 		getContentPane().validate();
 	}
 	/**
@@ -358,9 +365,12 @@ public class Viewer3D extends JFrame implements ActionListener{
 				buttonLights[i].addActionListener(viewer3d);
 				buttonLights[i].setActionCommand("light"+i);
 			}
+			setText();
+		}
+		void setText(){
 			TitledBorder tb=BorderFactory.createTitledBorder(Logo.messages.getString("3d.light"));
 			tb.setTitleFont(Config.police);
-			setBorder(tb);
+			setBorder(tb);			
 		}
 	}
 	class PanelFog extends JPanel{
@@ -378,10 +388,13 @@ public class Viewer3D extends JFrame implements ActionListener{
 			buttonFog.setActionCommand(Viewer3D.ACTION_FOG);
 			buttonFog.addActionListener(viewer3d);
 			add(buttonFog);
+			setText();
+		}
+		void setText(){
 			TitledBorder tb=BorderFactory.createTitledBorder(Logo.messages.getString("3d.fog"));
 			tb.setTitleFont(Config.police);
 			setBorder(tb);
-		}	
+		}
 	}	
 	
 }

@@ -15,8 +15,11 @@ import xlogo.utils.myException;
 import xlogo.MemoryChecker;
 import xlogo.Logo;
 //Ce thread gère l'animation de la tortue pendant l'exécution 
-
-
+/**
+ * This Thread is responsible of the turtle animation.
+ * This animation has to be executed in a separated thread, else it will block
+ * the event dispatcher thread 
+ */
 public class Affichage extends Thread {
 	public static boolean execution_lancee = false;
 	private boolean pause = false;
@@ -44,6 +47,7 @@ public class Affichage extends Thread {
 		}
 	}
 
+	
 	public void run() {
 	//	currentThread().setPriority(Thread.MIN_PRIORITY);
 		SwingUtilities.invokeLater(new Runnable() {
@@ -53,7 +57,6 @@ public class Affichage extends Thread {
 			}
 		});
 		execution_lancee = true;
-		
 		cadre.getArdoise().active_souris(); // On active les événements souris sur
 										// la zone de dessin
 		cadre.scrollArea.getVerticalScrollBar().addMouseListener(souris);

@@ -11,14 +11,14 @@ import java.awt.Font;
 import java.util.ArrayList;
 /**
  * This class contains all parameters for XLogo
- * Thos arguments are stored in the file .xlogo
+ * Those arguments are stored in the file .xlogo
  * 
  * @author loic
  * 
  */
 public class Config {
 	/** Version number**/
-	static final String version="0.9.93 beta";
+	static final String version="0.9.93 RC1, May 23 2008";
 	/** Drawing Quality **/
 	public static int quality=0;
 	/** Drawing Quality: normal **/
