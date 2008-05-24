@@ -1782,7 +1782,7 @@ import xlogo.kernel.perspective.*;
 		couleurfond=color;
 		updateColorSelection();
 		if (enabled3D()){
-			if (cadre.getViewer3D()!=null&&cadre.getViewer3D().isVisible()){
+			if (cadre.getViewer3D()!=null){
 				cadre.getViewer3D().updateBackGround(couleurfond);
 			}
 		}

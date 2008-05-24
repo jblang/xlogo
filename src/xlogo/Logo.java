@@ -343,6 +343,7 @@ public class Logo {
 		  }
 		}
 	  }}
+      
 	}
 	catch(Exception e){
 	  System.out.println(e.toString());
@@ -365,6 +366,10 @@ public class Logo {
 		locale=generateLocale(Config.langage);
 		messages=ResourceBundle.getBundle("langage",locale);
 	}
+	// Verify that all values are in valid range
+	
+	
+	
   }
 
   
@@ -374,7 +379,7 @@ public class Logo {
  * @param args The file *.lgo to load on startup
  */
   public static void main(String[] args)   {
-  /*	JEditorPane jep=new JEditorPane();
+/*	JEditorPane jep=new JEditorPane();
   	jep.setEditable(false);
   	try{
   		

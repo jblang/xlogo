@@ -2,6 +2,7 @@
 package xlogo.utils;
 
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.io.File;
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -68,34 +69,78 @@ public class SimpleContentHandler implements ContentHandler {
            }
            private void analyseBalise(String tag,Attributes attributs){
            	if (tag.equals("lang")){
-                int id=Integer.parseInt(attributs.getValue(0));
+           		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           		}
+           		catch(NumberFormatException e){id=Config.LANGUAGE_ENGLISH;}
            		Config.langage=id;
            		Logo.generateLanguage(id);
            	}
            	else if (tag.equals("speed")){
-           		Config.turtleSpeed=Integer.parseInt(attributs.getValue(0));
+           		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+            		// Check if the turtle speed is valid
+               		if (id<0||id>100) id=0;
+           		}
+           		catch(NumberFormatException e){id=0;}
+           		Config.turtleSpeed=id;
            	}
            	else if (tag.equals("turtle_shape")){
-           		Config.activeTurtle=Integer.parseInt(attributs.getValue(0));
+           		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+               		String chemin="tortue"+id+".png";
+               		// Check if the turtle image exists
+               		java.net.URL url=Utils.class.getResource(chemin);
+               		if (null==url) id=0;
+           		}
+           		catch(NumberFormatException e){id=0;}
+
+           		Config.activeTurtle=id;
            	}
            	else if (tag.equals("max_number_turtle")){
-           		Config.maxTurtles=Integer.parseInt(attributs.getValue(0));
+           		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           		}
+           		catch(NumberFormatException e){id=16;}
+           		Config.maxTurtles=id;
            	}
            	else if (tag.equals("pen_shape")){
-           		Config.penShape=Integer.parseInt(attributs.getValue(0));
+           		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           			// Check if this integer is valid
+           			if (id!=Config.PEN_SHAPE_OVAL&&id!=Config.PEN_SHAPE_SQUARE) id=0;
+           		}
+           		catch(NumberFormatException e){id=Config.PEN_SHAPE_SQUARE;}
+           		
+           		Config.penShape=id;
            	}
            	else if (tag.equals("cleanscreen_leaving_editor")){
-    			int id=Integer.parseInt(attributs.getValue(0));
+           		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           		}
+           		catch(NumberFormatException e){id=0;}
+
     			if (id==0) Config.eraseImage=false;
     			else Config.eraseImage=true;
            	}
            	else if (tag.equals("pen_width_max")){
-           		Config.maxPenWidth=Integer.parseInt(attributs.getValue(0));
+           		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           		}
+           		catch(NumberFormatException e){id=-1;}
+           		Config.maxPenWidth=id;
            	}
            	else if (tag.equals("default_directory")){
                 Config.defaultFolder=attributs.getValue(0);
                 File f=new File(Config.defaultFolder);
-                if (!f.isDirectory()) Config.defaultFolder=System.getProperty("user.home");
+                if (null==f||!f.isDirectory()) Config.defaultFolder=System.getProperty("user.home");
            	}
            	else if (tag.equals("start_command")){
            		if (attributs.getLength()!=0)
@@ -108,44 +153,106 @@ public class SimpleContentHandler implements ContentHandler {
            			if (attributs.getLocalName(index).equals("name"))  
            				name=attributs.getValue(index);
            			else if (attributs.getLocalName(index).equals("size"))
-           				size=Integer.parseInt(attributs.getValue(index));
-           		}
+           				try{
+           					size=Integer.parseInt(attributs.getValue(index));
+           				}
+           				catch(NumberFormatException e){size=14;}
+           			}
+           		
            		Config.police=new Font(name,Font.PLAIN,size);
            	}
         	else if (tag.equals("width")){
-           		Config.imageWidth=Integer.parseInt(attributs.getValue(0));
+        		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           			// check if valid
+           			if (id<=0) id=1000;
+           		}
+           		catch(NumberFormatException e){id=1000;}
+        		
+           		Config.imageWidth=id;
            	}
         	else if (tag.equals("pen_color")){
-        		Config.pencolor=new Color(Integer.parseInt(attributs.getValue(0)));
+        		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           		}
+           		catch(NumberFormatException e){id=Color.BLACK.getRGB();}
+        		
+        		Config.pencolor=new Color(id);
         	}
         	else if (tag.equals("screen_color")){
-        		Config.screencolor=new Color(Integer.parseInt(attributs.getValue(0)));
+        		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           		}
+           		catch(NumberFormatException e){id=Color.WHITE.getRGB();}
+        		Config.screencolor=new Color(id);
         	}
         	else if (tag.equals("height")){
-           		Config.imageHeight=Integer.parseInt(attributs.getValue(0));
+        		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           			// check valid
+           			if (id<=0) id=1000;
+           		}
+           		catch(NumberFormatException e){id=1000;}
+        		
+           		Config.imageHeight=id;
            	}
         	else if (tag.equals("memory")){
-           		Config.memoire=Integer.parseInt(attributs.getValue(0));
-           		Config.tmp_memoire=Integer.parseInt(attributs.getValue(0));
+          		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           			// check valid
+           			if (id<=0) id=64;
+           		}
+           		catch(NumberFormatException e){id=64;}
+           		Config.memoire=id;
+           		Config.tmp_memoire=id;
            	}
         	else if (tag.equals("quality")){
-           		Config.quality=Integer.parseInt(attributs.getValue(0));
+          		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           			// check valid
+           			if (id!=Config.QUALITY_HIGH&&id!=Config.QUALITY_LOW&&id!=Config.QUALITY_NORMAL) id=Config.QUALITY_NORMAL;
+           		}
+           		catch(NumberFormatException e){id=Config.QUALITY_NORMAL;}
+        		Config.quality=id;
            	}
         	else if (tag.equals("grid")){
-          		for (int index = 0; index < attributs.getLength(); index++) { // on parcourt la liste des attributs
+        		
+        		for (int index = 0; index < attributs.getLength(); index++) { // on parcourt la liste des attributs
           			String att=attributs.getLocalName(index);
            			if (att.equals("boolean"))  {
            				Boolean b=new Boolean(attributs.getValue(index));
            				Config.drawGrid=b.booleanValue();
            			}
            			else if (att.equals("xgrid")){
-           				Config.XGrid=Integer.parseInt(attributs.getValue(index));
+           				try{
+           					Config.XGrid=Integer.parseInt(attributs.getValue(index));
+           				}
+           				catch(NumberFormatException e){
+           					Config.XGrid=30;
+           				}
            			}
            			else if (att.equals("ygrid")){
-           				Config.YGrid=Integer.parseInt(attributs.getValue(index));
+           				try{
+           					Config.YGrid=Integer.parseInt(attributs.getValue(index));
+           				}
+           				catch(NumberFormatException e){
+           					Config.YGrid=30;
+           				}
+           				
            			}
            			else if (att.equals("gridcolor")){
-           				Config.gridColor=Integer.parseInt(attributs.getValue(index));
+           				try{
+           					Config.gridColor=Integer.parseInt(attributs.getValue(index));
+           				}
+           				catch(NumberFormatException e){
+           					Config.gridColor=Color.LIGHT_GRAY.getRGB();
+           				}
            			}
            		}
         	}
@@ -161,13 +268,28 @@ public class SimpleContentHandler implements ContentHandler {
            				Config.drawYAxis=b.booleanValue();
            			}
            			else if (att.equals("xaxis")){
-           				Config.XAxis=Integer.parseInt(attributs.getValue(index));
+           				try{
+           					Config.XAxis=Integer.parseInt(attributs.getValue(index));
+           				}
+           				catch(NumberFormatException e){
+           					Config.XAxis=50;
+           				}
            			}
            			else if (att.equals("yaxis")){
-           				Config.YAxis=Integer.parseInt(attributs.getValue(index));
+           				try{
+           					Config.YAxis=Integer.parseInt(attributs.getValue(index));
+           				}
+           				catch(NumberFormatException e){
+           					Config.YAxis=50;
+           				}
            			}
            			else if (att.equals("axiscolor")){
-           				Config.axisColor=Integer.parseInt(attributs.getValue(index));
+           				try{
+           					Config.axisColor=Integer.parseInt(attributs.getValue(index));
+           				}
+           				catch(NumberFormatException e){
+           					Config.axisColor=Color.BLACK.getRGB();
+           				}
            			}
            		}
         	}
@@ -178,13 +300,22 @@ public class SimpleContentHandler implements ContentHandler {
       			}
         	}
         	else if (tag.equals("border_color")){
-        		Config.borderColor=new Color(Integer.parseInt(attributs.getValue(0)));
+        		try{
+            		Config.borderColor=new Color(Integer.parseInt(attributs.getValue(0)));        			
+        		}
+   				catch(NumberFormatException e){
+   					Config.borderColor=new java.awt.Color(218,176,130);
+   				}
+
         	}
         	else if (tag.equals("border_image_selected")){
         		Config.borderImageSelected=attributs.getValue(0);	
         	}
         	else if (tag.equals("looknfeel")){
-        		Config.looknfeel=Integer.parseInt(attributs.getValue(0));
+        		try{
+        			Config.looknfeel=Integer.parseInt(attributs.getValue(0));
+        		}
+        		catch(NumberFormatException e){Config.looknfeel=Config.LOOKNFEEL_JAVA;}
         		try{
         		switch(Config.looknfeel){
         			case Config.LOOKNFEEL_NATIVE:
@@ -198,6 +329,9 @@ public class SimpleContentHandler implements ContentHandler {
 					UIManager
 							.setLookAndFeel(new com.sun.java.swing.plaf.motif.MotifLookAndFeel());
         			break;
+        			default:
+        				UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
+        			break;	
         		} 
         		
         		}catch (Exception exc) {
@@ -212,22 +346,54 @@ public class SimpleContentHandler implements ContentHandler {
            				Config.COLOR_ENABLED=b.booleanValue();
 //           				Config.COLOR_ENABLED=Boolean.parseBoolean(attributs.getValue(index));
            				}
-           			else if (att.equals("color_commentaire"))
-           				Config.coloration_commentaire=Integer.parseInt(attributs.getValue(index));
-           			else if (att.equals("color_operand"))
-           				Config.coloration_operande=Integer.parseInt(attributs.getValue(index));
-           			else if (att.equals("color_parenthesis"))
-       					Config.coloration_parenthese=Integer.parseInt(attributs.getValue(index));
-           			else if (att.equals("color_primitive"))
-           				Config.coloration_primitive=Integer.parseInt(attributs.getValue(index));
-           			else if (att.equals("style_commentaire"))
-           				Config.style_commentaire=Integer.parseInt(attributs.getValue(index));
-       				else if (att.equals("style_operand"))
-           				Config.style_operande=Integer.parseInt(attributs.getValue(index));
-       				else if (att.equals("style_parenthesis"))
-           				Config.style_parenthese=Integer.parseInt(attributs.getValue(index));
-       				else if (att.equals("style_primitive"))
-           				Config.style_primitive=Integer.parseInt(attributs.getValue(index));
+           			else if (att.equals("color_commentaire")){
+           				try{
+           					Config.coloration_commentaire=Integer.parseInt(attributs.getValue(index));
+           				}
+           				catch(NumberFormatException e){}
+          		}
+           			else if (att.equals("color_operand")) {
+           				try{
+              				Config.coloration_operande=Integer.parseInt(attributs.getValue(index));          					
+           				}
+           				catch(NumberFormatException e){}
+           			}
+           			else if (att.equals("color_parenthesis")){
+           				try{
+           					Config.coloration_parenthese=Integer.parseInt(attributs.getValue(index));		
+           				}
+           				catch(NumberFormatException e){}
+           			}
+           			else if (att.equals("color_primitive")){
+           				try{
+               				Config.coloration_primitive=Integer.parseInt(attributs.getValue(index));		
+           				}
+           				catch(NumberFormatException e){}
+           			}
+           			else if (att.equals("style_commentaire")){
+           				try{
+               				Config.style_commentaire=Integer.parseInt(attributs.getValue(index));		
+           				}
+           				catch(NumberFormatException e){}
+           			}
+       				else if (att.equals("style_operand")){
+           				try{
+               				Config.style_operande=Integer.parseInt(attributs.getValue(index));           					
+           				}
+           				catch(NumberFormatException e){}
+           			}
+       				else if (att.equals("style_parenthesis")){
+           				try{
+               				Config.style_parenthese=Integer.parseInt(attributs.getValue(index));           					
+           				}
+           				catch(NumberFormatException e){}
+           			}
+       				else if (att.equals("style_primitive")){
+           				try{
+               				Config.style_primitive=Integer.parseInt(attributs.getValue(index));		
+           				}
+           				catch(NumberFormatException e){}
+           			}
           		}
         	}
       		else if (tag.equals("startup_files")){
