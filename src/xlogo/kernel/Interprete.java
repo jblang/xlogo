@@ -749,6 +749,8 @@ public class Interprete {
 	protected static String getNextWord() {
 		String mot = "";
 		char caractere;
+		
+		
 		for (int i = 0; i < instruction.length(); i++) {
 			caractere = instruction.charAt(i);
 			if (caractere == ' ') {

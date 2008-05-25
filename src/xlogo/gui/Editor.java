@@ -71,7 +71,6 @@ public class Editor extends JFrame implements ActionListener{
     }
   }
   public void analyseprocedure() throws EditeurException{
-	  
 	  String text=zonedition.getText();
 	  text.replaceAll("\t", "  ");
 	  StringReader sr=new StringReader(text);
@@ -82,7 +81,7 @@ public class Editor extends JFrame implements ActionListener{
 			  String comment="";
 			  String line="";
 			  String name="";
-			  String body="";
+			  StringBuffer body=new StringBuffer();
 			  ArrayList<String> variables=new ArrayList<String>();
 			  Stack<String> optVariables=new Stack<String>();
 			  Stack<StringBuffer> optVariablesExp=new Stack<StringBuffer>();
@@ -145,13 +144,13 @@ public class Editor extends JFrame implements ActionListener{
 			  boolean fin=false;
 			  while(br.ready()){
 				 line=br.readLine();
-				  if (null==line) break;
+				 if (null==line) break;
 				 if (line.trim().toLowerCase().equals(Logo.messages.getString("fin").toLowerCase())){
 					 fin=true;
 					 break;
 				 }
 				 else {
-					 body+=line+"\n";
+					 body.append(line+"\n");
 				 }
 			 }
 			 if (!fin) structureException();
@@ -161,20 +160,20 @@ public class Editor extends JFrame implements ActionListener{
 		     Procedure proc;
 		     if (id==-1){
 		    	 proc=new Procedure(name,variables.size(),variables,optVariables,optVariablesExp,affichable);
-		    	 proc.instruction=body;
+		    	 proc.instruction=body.toString();
 		    	 proc.comment=comment;
 		    	 wp.procedureListPush(proc);
 		     }
 		     else {          // Si on redéfinit une procédure existante
 		 		proc=wp.getProcedure(id);
-		        proc.instruction=body;
+		        proc.instruction=body.toString();
 		        proc.instr=null;
-		    	 proc.comment=comment;
+		    	proc.comment=comment;
 		        proc.variable=variables;
 		        proc.optVariables=optVariables;
 		        proc.optVariablesExp=optVariablesExp;
 		        proc.nbparametre=variables.size();
-		         wp.setProcedureList(id,proc);
+		        wp.setProcedureList(id,proc);
 
 		      }
 		 	//	System.out.println(proc.toString());		     

@@ -20,9 +20,9 @@ public class Procedure {
   public Stack<String> optVariables=new Stack<String>();
   public Stack<StringBuffer> optVariablesExp=new Stack<StringBuffer>();
   public String instruction="";
-  public String instr=null;
+  public StringBuffer instr=null;
   public String instruction_sauve="";  // En cas de mauvaise écriture dans l'éditeur
-public 	String instr_sauve=null;		  // Permet de revenir aux valeurs antérieures d'une 
+public 	StringBuffer instr_sauve=null;		  // Permet de revenir aux valeurs antérieures d'une 
 public 	ArrayList<String> variable_sauve=new ArrayList<String>(); // procédure avant modification
 public Procedure() {
   }
@@ -35,44 +35,40 @@ public Procedure() {
     this.affichable=affichable;
   }
   public void decoupe(){
-  	if (null==instr){
-  		StringBuffer sb=new StringBuffer();
-        try{
-        	String line="";
-        	StringReader sr=new StringReader(instruction);
-        	BufferedReader bfr=new BufferedReader(sr);
-        	int lineNumber=0;
-			// Append the number of the line
-			sb.append("\\l");
-			sb.append(lineNumber);
-			sb.append(" ");
-        	while (bfr.ready()){
-        		lineNumber++;
-        		// read the line
-        		try{
-        			line=bfr.readLine().trim();
-        		}
-        		catch(NullPointerException e1){
-        			break;
-        		}
-        		// delete comments
-        		line=deleteComments(line);
-        		line=Utils.decoupe(line).toString().trim();
-        		sb.append(line);
-        		if (!line.equals("")) {
-        			sb.append(" ");
-        			// Append the number of the line
-        			sb.append("\\l");
-        			sb.append(lineNumber);
-        			sb.append(" ");
-        		}
-        	}  			
+  	instr=new StringBuffer();
+     try{
+       	String line="";
+       	StringReader sr=new StringReader(instruction);
+       	BufferedReader bfr=new BufferedReader(sr);
+       	int lineNumber=0;
+		// Append the number of the line
+		instr.append("\\l");
+		instr.append(lineNumber);
+		instr.append(" ");
+        while (bfr.ready()){
+        	lineNumber++;
+        	// read the line
+        	try{
+        		line=bfr.readLine().trim();
+        	}
+        	catch(NullPointerException e1){
+        		break;
+        	}
+        	// delete comments
+        	line=deleteComments(line);
+        	line=Utils.decoupe(line).toString().trim();
+        	instr.append(line);
+        	if (!line.equals("")) {
+        		instr.append(" ");
+        		// Append the number of the line
+        		instr.append("\\l");
+        		instr.append(lineNumber);
+        		instr.append(" ");
+        	}
+        }  			
         }
         catch(IOException e){}
-        instr=sb.toString();
   //  System.out.println("****************************"+name+"\n"+instr+"\n\n");
-    }
-
   }
   private String deleteComments(String line){
 	  int index=line.indexOf("#");

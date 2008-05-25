@@ -1908,7 +1908,7 @@ public class LaunchPrimitive {
 									+ " " + ident);
 					}
 					Interprete.operande = true;
-					Interprete.calcul.push("[ " + Utils.rajoute_backslash(line.trim()) + " ] ");
+					Interprete.calcul.push("[ " + Utils.decoupe(line.trim()) + " ] ");
 					kernel.flows.set(index, flowReader);
 				} catch (FileNotFoundException e1) {
 					try {
