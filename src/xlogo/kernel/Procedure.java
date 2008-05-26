@@ -35,6 +35,8 @@ public Procedure() {
     this.affichable=affichable;
   }
   public void decoupe(){
+	  // Only cut procedures which are visible in the editor
+	  if (null==instr){
   	instr=new StringBuffer();
      try{
        	String line="";
@@ -69,6 +71,7 @@ public Procedure() {
         }
         catch(IOException e){}
   //  System.out.println("****************************"+name+"\n"+instr+"\n\n");
+        }
   }
   private String deleteComments(String line){
 	  int index=line.indexOf("#");

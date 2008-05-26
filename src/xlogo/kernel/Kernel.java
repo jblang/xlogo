@@ -15,10 +15,7 @@ import xlogo.Application;
 public class Kernel {
 	protected static long chrono = 0;
 	protected ArrayFlow flows=new ArrayFlow(); // Contient les flux de lecture ou d'écriture
-/*	protected static Stack<String> chemin_flux=new Stack<String>(); // Contient le chemin absolu vers chacun des fichiers
-	protected static Stack<String> description_flux=new Stack<String>(); // Contient les identifiants de chacun des flux
-	protected static Stack<String> fin_flux=new Stack<String>(); // Contient 1 si la fin du flux est atteinte rien sinon
-	*/
+
 	protected static boolean mode_trace=false; // true si le mode trace est enclenchée (permet de suivre les procédures)
 	
 	// interprete the user command and launch primitive and procedure
@@ -89,6 +86,13 @@ public class Kernel {
 	 public void initInterprete(){
 		interprete=new Interprete(app);
 	 }
+	 /**
+	  * Returns the InstructionBuffer containing all commands to execute 
+	  */
+	  public InstructionBuffer getInstructionBuffer(){
+		  return interprete.getInstructionBuffer();
+	  }
+
 	 class ArrayFlow extends ArrayList<MyFlow>{
 		ArrayFlow(){
 			super(); 

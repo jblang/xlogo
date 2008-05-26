@@ -20,7 +20,7 @@ public class myException extends Exception {
 	
   public myException() {
   }
-  // Thread permettant l'affichage dans le dispacth event queue
+  // Thread permettant l'affichage dans le dispatch event queue
   class Affiche implements Runnable{
   	String msg;
   	Affiche(String msg){
@@ -43,13 +43,13 @@ public class myException extends Exception {
     cadre.focus_Commande();
     cadre.error=true;
     Interprete.calcul=new Stack<String>();
-    Interprete.instruction=new StringBuffer();
+    cadre.getKernel().getInstructionBuffer().clear();
     Primitive.stackLoop=new Stack<LoopProperties>();
   }
   private int getLineNumber(){
 	  String string=Interprete.lineNumber;
 //	  System.out.println("bb"+string+"bb");
-	  if (string.equals("")) string=Interprete.instruction.toString();
+	  if (string.equals("")) string=cadre.getKernel().getInstructionBuffer().toString();
 //	  System.out.println("cc"+string+"cc");
 	  int id=string.indexOf("\\l");
 	  if (id!=-1) {

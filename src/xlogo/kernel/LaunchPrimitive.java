@@ -133,11 +133,12 @@ public class LaunchPrimitive {
 				cadre.ecris("normal", msg);
 			}
 			Interprete.en_cours.push(procedure.name);
-			if (Interprete.instruction.length()==0)
-				Interprete.instruction.append(procedure.instr + "\n ");
-			else {
-				Interprete.instruction.insert(0, procedure.instr + "\n ");
-			}
+			
+			// Add Procedure code in Interprete.instruction
+			kernel.getInstructionBuffer().insert("\n ");
+			kernel.getInstructionBuffer().insertCode(procedure.instr);
+//			System.out.println("instr " +Interprete.instruction);
+	//		System.out.println("stock "+Interprete.stockInstruction);
 // System.out.println("a"+Interprete.instruction+"a");
 			Interprete.nom.push("\n");
 		} else {
@@ -231,16 +232,17 @@ public class LaunchPrimitive {
 					liste=new String(Utils.decoupe(liste));
 					String liste2 = null;
 					boolean predicat = predicat(param.get(0));
-					if (Interprete.instruction.length()!=0) {
+					InstructionBuffer instruction=cadre.getKernel().getInstructionBuffer();
+					if (instruction.getLength()!=0) {
 						try {
-							String element = Interprete.getNextWord();
+							String element = instruction.getNextWord();
 							// System.out.println("a"+element+"a");
 							if (element.startsWith("\\l")){
-								Interprete.deleteFirstWord(element);
+								instruction.deleteFirstWord(element);
 								Interprete.lineNumber=element+" ";
 							}
-							if (Interprete.instruction.charAt(0)=='[') {
-								Interprete.deleteFirstWord("[");
+							if (instruction.charAt(0)=='[') {
+								instruction.deleteFirstWord("[");
 								liste2 = getFinalList(kernel.listSearch());
 								liste2=new String(Utils.decoupe(liste2));
 							}
@@ -487,7 +489,7 @@ public class LaunchPrimitive {
 						loop.incremente();
 						Primitive.stackLoop.pop();
 						Primitive.stackLoop.push(loop);
-						Interprete.instruction.insert(0, loop.getInstr()+ Primitive.END_LOOP+" ");	
+						cadre.getKernel().getInstructionBuffer().insert(loop.getInstr()+ Primitive.END_LOOP+" ");	
 					}
 					else if (compteur.compareTo(fin)==0){
 						Primitive.stackLoop.pop();
@@ -504,7 +506,7 @@ public class LaunchPrimitive {
 						((LoopFor)loop).AffecteVar(false);
 						Primitive.stackLoop.pop();
 						Primitive.stackLoop.push(loop);
-						Interprete.instruction.insert(0, loop.getInstr()+ Primitive.END_LOOP+" ");			
+						cadre.getKernel().getInstructionBuffer().insert(loop.getInstr()+ Primitive.END_LOOP+" ");			
 					}
 					else {
 						((LoopFor)loop).DeleteVar();
@@ -513,8 +515,7 @@ public class LaunchPrimitive {
 				}
 				// LOOP FOREVER
 				else if (loop.isForEver()){
-					Interprete.instruction.insert(0, loop.getInstr()+ Primitive.END_LOOP+" ");
-					
+					cadre.getKernel().getInstructionBuffer().insert(loop.getInstr()+ Primitive.END_LOOP+" ");
 				} 
 				break;
 			case 41: // pos
@@ -1165,7 +1166,7 @@ public class LaunchPrimitive {
 					String instr="\\siwhile "+li1+ "[ " + li2+ "] ";
 					LoopWhile bp=new LoopWhile(BigDecimal.ONE,BigDecimal.ZERO,BigDecimal.ONE,instr);
 					Primitive.stackLoop.push(bp);
-					Interprete.instruction.insert(0, instr+Primitive.END_LOOP+" ");
+					cadre.getKernel().getInstructionBuffer().insert(instr+Primitive.END_LOOP+" ");
 				} catch (myException e) {
 				}
 
@@ -1347,7 +1348,7 @@ public class LaunchPrimitive {
 						mot=new String(Utils.decoupe(mot));
 					}
 					else mot=mot+" ";
-					Interprete.instruction.insert(0,mot);
+					cadre.getKernel().getInstructionBuffer().insert(mot);
 					Interprete.renvoi_instruction=true;
 				} catch (myException e) {
 				}
@@ -1431,7 +1432,7 @@ public class LaunchPrimitive {
 				} catch (myException e) {
 				}
 				break;
-			case 113: // ramene
+			case 113: // ramene load
 				try {
 					mot = getWord(param.get(0));
 					if (null == mot)
@@ -2344,7 +2345,7 @@ public class LaunchPrimitive {
 
 						if ((increment.compareTo(BigDecimal.ZERO)==1&&fin.compareTo(deb)>=0)
 								||(increment.compareTo(BigDecimal.ZERO)==-1&&fin.compareTo(deb)<=0)){
-							Interprete.instruction.insert(0, li2 + Primitive.END_LOOP+" ");
+							cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP+" ");
 							Primitive.stackLoop.push(bp);
 						}
 					}
@@ -2546,7 +2547,7 @@ public class LaunchPrimitive {
 // System.out.println(Primitive.primitives.containsKey("puissance")+"
 // "+est_procedure);
 				if (est_procedure) {
-					Interprete.instruction.insert(0,") ");
+					cadre.getKernel().getInstructionBuffer().insert(") ");
 				}
 				// Sinon on les enleve avec leurs imbrications eventuelles
 					else {
@@ -2567,9 +2568,10 @@ public class LaunchPrimitive {
 								Interprete.nom.removeElementAt(pos);
 								// S'il y a imbrication de parentheses (((20)))
 								pos--;
-								while (Interprete.getNextWord().equals(")")&&(pos>-1)){
+								InstructionBuffer instruction=cadre.getKernel().getInstructionBuffer();
+								while (instruction.getNextWord().equals(")")&&(pos>-1)){
 									if (!Interprete.nom.isEmpty()&&Interprete.nom.get(pos).equals("(")){
-										Interprete.deleteFirstWord(")");
+										instruction.deleteFirstWord(")");
 										Interprete.nom.removeElementAt(pos);
 										pos--;
 									}
@@ -3547,7 +3549,7 @@ public class LaunchPrimitive {
     						LoopForEach bp=new LoopForEach(BigDecimal.ZERO,new BigDecimal(elements.size()-1)
     						,BigDecimal.ONE,li2,var,elements);			
     						bp.AffecteVar(true);
-							Interprete.instruction.insert(0, li2 + Primitive.END_LOOP +" ");
+    						cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP +" ");
 							Primitive.stackLoop.push(bp);
         				}
         				catch(myException e){}
@@ -3557,7 +3559,7 @@ public class LaunchPrimitive {
         					String li2= getList(param.get(0));
     						LoopProperties bp=new LoopProperties(BigDecimal.ONE,BigDecimal.ZERO
     						,BigDecimal.ONE,li2);			
-							Interprete.instruction.insert(0, li2 + Primitive.END_LOOP+" ");
+    						cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP+" ");
 							Primitive.stackLoop.push(bp);
                     	}
                     	catch(myException e){}

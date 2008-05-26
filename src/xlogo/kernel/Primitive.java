@@ -32,7 +32,7 @@ public class Primitive {
 	protected static final String END_LOOP="\\";
 	
 	//  float taille_crayon=(float)0;
-	private Application cadre;
+	private Application app;
 	protected static final int PRIMITIVE_NUMBER = 290;
 
 	protected int[] parametres=new int[PRIMITIVE_NUMBER];
@@ -47,8 +47,8 @@ public class Primitive {
 	public Primitive() {
 	}
 
-	public Primitive(Application cadre) {
-		this.cadre = cadre;
+	public Primitive(Application app) {
+		this.app = app;
 		//build treemap for primitives
 		buildPrimitiveTreemap(Config.langage);
 	}
@@ -156,10 +156,10 @@ public class Primitive {
 			LoopProperties bp = new LoopRepeat(BigDecimal.ONE,
 					new BigDecimal(i), BigDecimal.ONE, st);
 			stackLoop.push(bp);
-			Interprete.instruction.insert(0, st + "\\ ");
+			app.getKernel().getInstructionBuffer().insert(st + "\\ ");
 		}
 		else try{
-			throw new myException(cadre, Utils.primitiveName("controls.repete")+" "+Logo.messages.getString("attend_positif"));
+			throw new myException(app, Utils.primitiveName("controls.repete")+" "+Logo.messages.getString("attend_positif"));
 		}
 		catch(myException e){}
 	}
@@ -170,11 +170,11 @@ public class Primitive {
 	 */
 	protected void whilesi(boolean b, String li) {
 		if (b) {
-			Interprete.instruction.insert(0, li
+			app.getKernel().getInstructionBuffer().insert( li
 					+ Primitive.stackLoop.peek().getInstr());
 		} else {
 			try {
-				eraseLevelStop(cadre);
+				eraseLevelStop(app);
 			} catch (myException e) {
 			}
 		}
@@ -184,9 +184,9 @@ public class Primitive {
 	// primitive if
 	protected void si(boolean b, String li, String li2) {
 		if (b) {
-			Interprete.instruction.insert(0, li);
+			app.getKernel().getInstructionBuffer().insert(li);
 		} else if (null != li2) {
-			Interprete.instruction.insert(0, li2);
+			app.getKernel().getInstructionBuffer().insert(li2);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class Primitive {
 		Interprete.operande = false;
 		String car="";
 		try {
-			car=eraseLevelStop(cadre);
+			car=eraseLevelStop(app);
 		} catch (myException e) {
 		}
 		
@@ -211,7 +211,7 @@ public class Primitive {
 			//				stop doesn't output to fd
 			if (!Interprete.nom.isEmpty()&&!Interprete.nom.peek().equals("\n")){
 			//	System.out.println(Interprete.nom);
-				throw new myException(cadre, Utils.primitiveName("controls.stop")
+				throw new myException(app, Utils.primitiveName("controls.stop")
 						+ " " + Logo.messages.getString("ne_renvoie_pas") + " "
 						+ Interprete.nom.peek());}
 			else if (!Interprete.nom.isEmpty()){
@@ -225,7 +225,7 @@ public class Primitive {
 				//				bug2 doesn't output to fd		
 				if (!Interprete.nom.isEmpty()&&!Interprete.nom.peek().equals("\n")){
 					//	System.out.println(Interprete.nom);
-						throw new myException(cadre, en_cours
+						throw new myException(app, en_cours
 								+ " " + Logo.messages.getString("ne_renvoie_pas") + " "
 								+ Interprete.nom.peek());}
 			}
@@ -243,23 +243,23 @@ public class Primitive {
 			buffer
 					.append(" " + Utils.primitiveName("ret") + " "
 							+ val);
-			cadre.ecris("normal", Utils.SortieTexte(buffer.toString()) + "\n");
+			app.ecris("normal", Utils.SortieTexte(buffer.toString()) + "\n");
 		}
 		Interprete.en_cours.pop();
 		Interprete.locale = Interprete.stockvariable.pop();
 		if ((!Interprete.nom.isEmpty())
 				&& Interprete.nom.peek().equals("\n")) {
 			try {
-				eraseLevelReturn(cadre);
+				eraseLevelReturn(app);
 			} catch (myException e) {
 			}
 			Interprete.nom.pop();
 		} else if (!Interprete.nom.isEmpty())
-			throw new myException(cadre, Utils.primitiveName("ret")
+			throw new myException(app, Utils.primitiveName("ret")
 					+ " " + Logo.messages.getString("ne_renvoie_pas") + " "
 					+ Interprete.nom.peek());
 		else
-			throw new myException(cadre, Logo.messages
+			throw new myException(app, Logo.messages
 					.getString("erreur_retourne"));
 	}
 	
@@ -274,16 +274,17 @@ public class Primitive {
 		boolean error=true;
 		String caractere = "";
 		int marqueur = 0;
-		for (int i = 0; i < Interprete.instruction.length(); i++) {
-			caractere = String.valueOf(Interprete.instruction.charAt(i));
+		InstructionBuffer instruction=app.getKernel().getInstructionBuffer();
+		for (int i = 0; i < instruction.getLength(); i++) {
+			caractere = String.valueOf(instruction.charAt(i));
 			if (caractere.equals(Primitive.END_LOOP) | caractere.equals(Primitive.END_PROCEDURE)) {
 				marqueur = i;
-				if (caractere.equals(Primitive.END_LOOP) && i != Interprete.instruction.length() - 1) {
+				if (caractere.equals(Primitive.END_LOOP) && i != instruction.getLength()- 1) {
 					/*
 					 * On test si le caractère "\" est bien un caractère de fin
 					 * de boucle et non du style "\e" ou "\#"
 					 */
-					if (Interprete.instruction.charAt(i + 1) == ' '){
+					if (instruction.charAt(i + 1) == ' '){
 						error=false;
 						break;
 					}
@@ -298,10 +299,10 @@ public class Primitive {
 				throw new myException(app, Logo.messages
 						.getString("erreur_stop"));
 		}
-		if (marqueur + 2 > Interprete.instruction.length())
-			Interprete.instruction = new StringBuffer(" ");
+		if (marqueur + 2 > instruction.getLength())
+			instruction = new InstructionBuffer(" ");
 		else
-			Interprete.instruction = Interprete.instruction.delete(0, marqueur + 2);
+			instruction.delete(0, marqueur + 2);
 		if (!caractere.equals("\n")) {
 			Primitive.stackLoop.pop();
 		}
@@ -319,8 +320,9 @@ public class Primitive {
 		String caractere="";
 		int loopLevel = 0;
 		int marqueur = 0;
-		for (int i = 0; i < Interprete.instruction.length(); i++) {
-			caractere = String.valueOf(Interprete.instruction.charAt(i));
+		InstructionBuffer instruction=app.getKernel().getInstructionBuffer();
+		for (int i = 0; i < instruction.getLength(); i++) {
+			caractere = String.valueOf(instruction.charAt(i));
 			if (caractere.equals(Primitive.END_PROCEDURE)) {
 				marqueur = i;
 				error=false;
@@ -331,7 +333,7 @@ public class Primitive {
 				 * On test si le caractère "\" est bien un caractère de fin
 				 * de boucle et non du style "\e" ou "\#"
 				 */
-				if (Interprete.instruction.charAt(i + 1) == ' '){
+				if (instruction.charAt(i + 1) == ' '){
 					loopLevel++;
 				}
 			}
@@ -340,10 +342,10 @@ public class Primitive {
 				throw new myException(app, Logo.messages
 						.getString("erreur_retourne"));
 		}
-		if (marqueur + 2 > Interprete.instruction.length())
-			Interprete.instruction = new StringBuffer(" ");
+		if (marqueur + 2 > instruction.getLength())
+			instruction = new InstructionBuffer(" ");
 		else
-			Interprete.instruction = Interprete.instruction.delete(0, marqueur + 2);
+			instruction.delete(0, marqueur + 2);
 		for(int i=0;i<loopLevel;i++){
 			Primitive.stackLoop.pop();
 		}

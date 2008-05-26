@@ -66,7 +66,7 @@ public class Affichage extends Thread {
 			cadre.error = false;
 			myException.lance = false;
 			Interprete.operande = Interprete.operateur = Interprete.drapeau_ouvrante = false;
-			Interprete.instruction = new StringBuffer();
+			cadre.getKernel().getInstructionBuffer().clear();
 			Interprete.calcul = new Stack<String>();
 			Interprete.nom = new Stack<String>();
 			Interprete.locale = new HashMap<String,String>();

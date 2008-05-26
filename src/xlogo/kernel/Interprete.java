@@ -32,13 +32,12 @@ public class Interprete {
 	public static Stack<String> en_cours = new Stack<String>(); // contient les procédures
 												// actuellement en cours
 												// d'exécution
-	public static StringBuffer instruction = new StringBuffer(); // String
-																	// contenant
-																	// les
-																	// chaînes
-																	// représentant
-																	// les
-																	// instructions
+	/**
+	 * This buffer contains all instructions to execute
+	 */
+	private InstructionBuffer instructionBuffer=new InstructionBuffer();
+	
+
 	public static StringBuffer actionInstruction=new StringBuffer();
 	
 	protected static HashMap<String,String> locale = new HashMap<String,String>(); // Pile contenant les
@@ -74,14 +73,11 @@ public class Interprete {
 
 	String execute(StringBuffer instructions) throws myException { 
 		if (!instructions.equals("")) {
-			if (instruction.length() == 0)
-				instruction.append(instructions);
-			else
-				instruction.insert(0, instructions);
+			instructionBuffer.insertCode(instructions);
 		}
 
 		// Object obca1,obca2,oban;
-		while (instruction.length() != 0) {
+		while (instructionBuffer.getLength()!= 0) {
 			if (app.error && myException.lance)
 				throw new myException(app, Logo.messages.getString("stop"));
 			while (app.affichage.isOnPause()) { // Si l'on touche aux scrollbars
@@ -91,29 +87,33 @@ public class Interprete {
 				}
 			}
 			// System.out.println("en_cours d'execution "+"\n"+ en_cours+"\n\n");
-		//	System.out.print("debut\n"+instruction+"\nfin\n\n");
-			// System.out.println("nom "+nom);
+//			System.out.println("nom "+nom);
 			// System.out.println("calcul \n"+calcul+"\n\n");
 			// System.out.println("nom "+nom.toString()+" locale "+locale+ "
 			// "+valeur+" stockvariable "+stockvariable);
 			// System.out.println("operande "+calcul+" "+operande+"debut
 			// "+instruction);
 
-			if (instruction.length() == 0)
+			
+			
+			// Is this line really interesting??
+			if (instructionBuffer.getLength() == 0)
 				break;
-			String element = getNextWord();
-		//	System.out.println("a"+element+"a");
-
+//			System.out.print("debut\n"+instructionBuffer+"\nfin\n------------------\n");
+			String element = instructionBuffer.getNextWord();
+//			System.out.println("a"+element+"a");
 			if (element.startsWith("\\l")){
 				if (operande) {
 					break;	
 				}
-				deleteFirstWord(element);
+				instructionBuffer.deleteFirstWord(element);
 				lineNumber=element+" ";
-				element=getNextWord();
+				element=instructionBuffer.getNextWord();
+		
 			}
-			if (element == "")
-				break;
+
+//			if (element=="")
+//				break;
 			// si c'est une primitive ou une procedure
 			String element_minuscule = element.toLowerCase();
 			int i = isProcedure(element_minuscule);
@@ -160,11 +160,11 @@ public class Interprete {
 							else if ("*/".indexOf(st) > -1) { // Si le signe -
 																// ou + suit un
 																// * ou /
-								deleteFirstWord(element);
+								instructionBuffer.deleteFirstWord(element);
 								if (st.equals("*"))
-									instruction.insert(0, "* ");
+									instructionBuffer.insert("* ");
 								else
-									instruction.insert(0, "/ ");
+									instructionBuffer.insert("/ ");
 								if (i == 32)
 									return ("1"); // Si c'est un plus
 								else
@@ -199,7 +199,7 @@ public class Interprete {
 				 * end		|		sure the rt has noproblem
 				 * */
 				if (!element.equals("\n")) deleteLineNumber();
-				deleteFirstWord(element);
+				instructionBuffer.deleteFirstWord(element);
 
 				// Case with parenthensis
 				// eg (sum 3 4 5)
@@ -226,7 +226,7 @@ public class Interprete {
 						if (constantNumber==0) break;
 						try {
 							operande = operateur = drapeau_ouvrante = false;
-							if (getNextWord().equals(")")) {
+							if (instructionBuffer.getNextWord().equals(")")) {
 								if (constantNumber != -1) {
 									// If the primitive or the procedure doesn't
 									// accept optional parameters
@@ -352,8 +352,8 @@ public class Interprete {
 								if (element.equals("\\")) {
 									// The loop had been executed, we have to remove
 									// the loop instruction
-									int offset=Interprete.instruction.indexOf(" \\ ");
-									Interprete.instruction=Interprete.instruction.delete(0, offset+1);
+									int offset=instructionBuffer.indexOf(" \\ ");
+									instructionBuffer.delete(0, offset+1);
 									
 									throw new myException(app, Logo.messages
 											.getString("pas_assez_de")
@@ -421,7 +421,7 @@ public class Interprete {
 				operande = true;
 				operateur = false;
 				drapeau_ouvrante = false;
-				deleteFirstWord(element);
+				instructionBuffer.deleteFirstWord(element);
 			} else {
 				/* *****************************
 				 * IF element IS A NUMBER ******
@@ -446,7 +446,7 @@ public class Interprete {
 					operande = true;
 					operateur = false;
 					drapeau_ouvrante = false;
-					deleteFirstWord(element + fin_entier);
+					instructionBuffer.deleteFirstWord(element + fin_entier);
 				} catch (NumberFormatException e) {
 					/* *********************************
 					 * IF element IS A SQUARE BRACKET [
@@ -464,7 +464,7 @@ public class Interprete {
 						operande = true;
 						operateur = false;
 						drapeau_ouvrante = false;
-						deleteFirstWord(element);
+						instructionBuffer.deleteFirstWord(element);
 						String a = chercheListe();
 						calcul.push(a);
 					}
@@ -489,7 +489,7 @@ public class Interprete {
 							} catch (myException e1) {
 							}
 						}
-						deleteFirstWord(element);
+						instructionBuffer.deleteFirstWord(element);
 						// System.out.println("&&"+instruction);
 						Interprete.nom.push("(");
 					}
@@ -514,15 +514,15 @@ public class Interprete {
 						operande = true;
 						operateur = false;
 						drapeau_ouvrante = false;
-						deleteFirstWord(element);
+						instructionBuffer.deleteFirstWord(element);
 					}
 					// Si c'est le mot pour
 					else if (element_minuscule.equals(Logo.messages
 							.getString("pour"))) {
-						deleteFirstWord(element);
-						if (instruction.length() != 0)
+						instructionBuffer.deleteFirstWord(element);
+						if (instructionBuffer.getLength()!= 0)
 							{
-								element = getNextWord();
+								element = instructionBuffer.getNextWord();
 								element_minuscule=element.toLowerCase();
 							}
 						else
@@ -538,9 +538,9 @@ public class Interprete {
 						else {
 							String definition = Logo.messages.getString("pour")
 									+ " " + element + " ";
-							deleteFirstWord(element);
-							while (instruction.length() != 0) {
-								element = getNextWord().toLowerCase();
+							instructionBuffer.deleteFirstWord(element);
+							while (instructionBuffer.getLength() != 0) {
+								element = instructionBuffer.getNextWord().toLowerCase();
 								if (null == element)
 									break;
 								if (!element.substring(0, 1).equals(":")
@@ -550,7 +550,7 @@ public class Interprete {
 											+ Logo.messages
 													.getString("pas_argument"));
 								definition += element + " ";
-								deleteFirstWord(element);
+								instructionBuffer.deleteFirstWord(element);
 							}
 							if (app.editeur.isVisible())
 								throw new myException(app, Logo.messages
@@ -658,8 +658,8 @@ public class Interprete {
 		int from_index_ouvrant = 1;
 		int from_index_fermant = 1;
 		while (continuer) {
-			of_ouvrant = instruction.indexOf("(", from_index_ouvrant);
-			of_fermant = instruction.indexOf(")", from_index_fermant);
+			of_ouvrant = instructionBuffer.indexOf("(", from_index_ouvrant);
+			of_fermant = instructionBuffer.indexOf(")", from_index_fermant);
 			if (of_fermant == -1)
 				break;
 			if (of_ouvrant != -1 && of_ouvrant < of_fermant) {
@@ -675,17 +675,17 @@ public class Interprete {
 	protected String chercheListe() throws myException {
 		String liste = "[ ";
 		String element = "";
-		while (instruction.length() != 0) {
-			element = getNextWord();
+		while (instructionBuffer.getLength() != 0) {
+			element = instructionBuffer.getNextWord();
 			// SI crochet ouvrant, on l'empile dans la pile de calcul
 			if (element.equals("[")) {
 				calcul.push("[");
-				deleteFirstWord(element);
+				instructionBuffer.deleteFirstWord(element);
 				liste += "[ ";
 			}
 
 			else if (element.equals("]")) { // Si on atteint un crochet fermant
-				deleteFirstWord(element);
+				instructionBuffer.deleteFirstWord(element);
 				// if (((Stack)instruction.peek()).isEmpty()) instruction.pop();
 				liste += "] ";
 				if (calcul.empty()) {
@@ -699,7 +699,7 @@ public class Interprete {
 									// la pile, on l'enleve
 			} 
 			else {
-				deleteFirstWord(element);
+				instructionBuffer.deleteFirstWord(element);
 				liste += element + " ";
 			}
 		}
@@ -746,28 +746,6 @@ public class Interprete {
 		return (-1);
 	}
 
-	protected static String getNextWord() {
-		String mot = "";
-		char caractere;
-		
-		
-		for (int i = 0; i < instruction.length(); i++) {
-			caractere = instruction.charAt(i);
-			if (caractere == ' ') {
-				return mot;
-			} else
-				mot += caractere;
-		}
-		// System.out.println("mot: "+mot);
-		return mot;
-	}
-
-	protected static void deleteFirstWord(String mot) {
-		if (instruction.length() > mot.length())
-			instruction = instruction.delete(0, mot.length() + 1);
-		else
-			instruction = new StringBuffer();
-	}
 	
 	protected void setWorkspace(Workspace workspace) {
 		wp = workspace;
@@ -829,5 +807,9 @@ public class Interprete {
 	 */
 	private boolean isTimesDiv(String op){
 		return (op.equals("*")||op.equals("/"));
+	}
+
+	protected InstructionBuffer getInstructionBuffer(){
+		return instructionBuffer;
 	}
 }
