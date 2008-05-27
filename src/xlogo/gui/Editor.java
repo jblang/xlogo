@@ -591,7 +591,7 @@ public class Editor extends JFrame implements ActionListener{
 		zonedition.setText(txt);
 	}
 	public void setEditorStyledText(String txt){
-		zonedition.ecris(txt);
+				zonedition.ecris(txt);				
 	}
 	public void focus_zonedition(){
 		zonedition.requestFocus();
@@ -609,22 +609,23 @@ public class Editor extends JFrame implements ActionListener{
 	 */
 	public void open(){
 	    if (!cadre.editeur.isVisible()) {
+		      setVisible(true);
+		      toFront();
+		      setTitle(Logo.messages.getString("editeur"));
 		      for(int i=0;i<wp.getNumberOfProcedure();i++){
-			        Procedure procedure =wp.getProcedure(i);
-			        setEditorStyledText(procedure.toString());
-			      }
-			      initMainCommand();
-			      setTitle(Logo.messages.getString("editeur"));
-			      discardAllEdits();
-			      setVisible(true);
-			      toFront();
-			      focus_zonedition();
-	    }
-	    else {
-	      cadre.editeur.setVisible(false);
-	      cadre.editeur.setVisible(true);
-	      cadre.editeur.focus_zonedition();
-	    }
+							   Procedure procedure =wp.getProcedure(i);
+							   setEditorStyledText(procedure.toString());
+				}
+		      initMainCommand();
+		      discardAllEdits();
+		      focus_zonedition();
+			    }
+			    else {
+			      cadre.editeur.setVisible(false);
+			      cadre.editeur.setVisible(true);
+			      cadre.editeur.focus_zonedition();
+			    }	
+
 	}
 	public void discardAllEdits(){
 		   zonedition.getUndoManager().discardAllEdits();

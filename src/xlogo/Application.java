@@ -1018,7 +1018,7 @@ public class Application extends JFrame {
 	 	return touche.getCar();
 	 }
 	 /**
-	  * Open the Prefernces Dialog box
+	  * Open the Preferences Dialog box
 	  */
 	 protected void prefOpen(){
 	 	if (null==pf) {

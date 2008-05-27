@@ -23,11 +23,11 @@ import xlogo.Logo;
 import java.util.Enumeration;
 public class Primitive {
 	/**
-	 * This character indicates the end of a procedure in Interprete.instructions
+	 * This character indicates the end of a procedure in instructionBuffer
 	 */
 	protected static final String END_PROCEDURE="\n";
 	/**
-	 * This character indicates the end of a loop in Interprete.instructions
+	 * This character indicates the end of a loop in instructionBuffer
 	 */
 	protected static final String END_LOOP="\\";
 	
