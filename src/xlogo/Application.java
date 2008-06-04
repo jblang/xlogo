@@ -836,7 +836,6 @@ public class Application extends JFrame {
 	 * Enable or disable Syntax Highlighting
 	 */
 	public void setColoration(boolean b){
-		editeur.setColoration(b);
 		panneauHistorique1.setColoration(b);
 		commande.setColoration(b);
 	}
@@ -988,20 +987,21 @@ public class Application extends JFrame {
 			  }
 			  catch(IOException e2){System.out.println("Problème de lecture du fichier");}
 			  catch(Exception e3){}
-			editeur.setEditorText(txt);
+			editeur.setEditorStyledText(txt);
 			try {
 			  editeur.analyseprocedure();
 			}
 			catch(Exception e3){
 				System.out.println(e3.toString());
 			}
+			editeur.clearText();
 			editeur.setVisible(false);
 		    }
 	    }
 	  
 	  Config.path=new ArrayList<String>(tampon); //On ne garde dans le path que les fichiers de démarrage
 	  editeur.setAffichable(true);
-	  editeur.setEditorText("");
+	  editeur.clearText();
 	 }	
 	 /**
 	  * Set the last key pressed to the key corresponding to integer i

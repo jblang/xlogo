@@ -261,10 +261,10 @@ public class MenuListener extends JDialog implements ActionListener{
 		
   }
   else if (MenuListener.ZOOMIN.equals(cmd)){
-	  cadre.getArdoise().zoom(zoomfactor*DrawPanel.zoom);
+	  cadre.getArdoise().zoom(zoomfactor*DrawPanel.zoom,true);
   }
   else if (MenuListener.ZOOMOUT.equals(cmd)){
-	  cadre.getArdoise().zoom(1/zoomfactor*DrawPanel.zoom);
+	  cadre.getArdoise().zoom(1/zoomfactor*DrawPanel.zoom,false);
   } 
   else if (MenuListener.HELP_LICENCE.equals(cmd)|MenuListener.HELP_TRANSLATED_LICENCE.equals(cmd)){     // Affichage de la licence
    JFrame frame=new JFrame(Logo.messages.getString("menu.help.licence"));

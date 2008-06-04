@@ -82,8 +82,12 @@ public class Panel_Highlighter extends JPanel implements ActionListener {
         bdefaut.setActionCommand("bouton");
 	}
 	protected void update(){
-		Config.COLOR_ENABLED=active_coloration.isSelected();
-		if (Config.COLOR_ENABLED) {
+
+		if (active_coloration.isSelected()) {
+			if (!Config.COLOR_ENABLED){	
+				Config.COLOR_ENABLED=true;
+				cadre.editeur.toTextPane();
+			}
 			Config.coloration_commentaire=p_comment.color();
 			Config.coloration_operande=p_operande.color();
 			Config.coloration_primitive=p_primitive.color();
@@ -97,9 +101,15 @@ public class Panel_Highlighter extends JPanel implements ActionListener {
 		cadre.changeSyntaxHighlightingStyle(Config.coloration_commentaire,Config.style_commentaire,Config.coloration_primitive,Config.style_primitive,
 				Config.coloration_parenthese,Config.style_parenthese,Config.coloration_operande,Config.style_operande);
 		}
+		else {
+			if (Config.COLOR_ENABLED) {
+				cadre.editeur.toTextArea();
+				Config.COLOR_ENABLED=false;
+			}
+		}
 		cadre.setColoration(Config.COLOR_ENABLED);
 		cadre.resizeCommande();
-		cadre.validate();	
+		cadre.validate();
 	}
 		
 	public void actionPerformed(ActionEvent e){

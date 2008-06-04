@@ -1441,7 +1441,7 @@ public class LaunchPrimitive {
 					String path=Utils.SortieTexte(Config.defaultFolder) + File.separator + mot;
 					try{
 						String txt=Utils.readLogoFile(path);
-						cadre.editeur.setEditorText(txt);
+						cadre.editeur.setEditorStyledText(txt);
 					}
 					catch(IOException e1){
 						throw new myException(cadre, 
@@ -1453,7 +1453,7 @@ public class LaunchPrimitive {
 					} catch (Exception e3) {
 						System.out.println(e3.toString());
 					}
-					cadre.editeur.setEditorText("");
+					cadre.editeur.clearText();
 				} catch (myException e) {
 				}
 
@@ -1540,12 +1540,12 @@ public class LaunchPrimitive {
 					}
 					definition += "\n" + liste2 + "\n"
 							+ Logo.messages.getString("fin");
-					cadre.editeur.setEditorText(definition);
+					cadre.editeur.setEditorStyledText(definition);
 				} catch (myException e) {
 				}
 				try {
 					cadre.editeur.analyseprocedure();
-					cadre.editeur.setEditorText("");
+					cadre.editeur.clearText();
 				} catch (Exception e2) {
 				}
 
@@ -2768,7 +2768,7 @@ public class LaunchPrimitive {
            				}
            				catch(myException e){}
            			break;
-           			case 214: // init
+           			case 214: // init resetall
            				Interprete.operande=false;
            				// resize drawing zone if necessary
            				if (Config.imageHeight!=1000||Config.imageWidth!=1000){
@@ -2804,6 +2804,7 @@ public class LaunchPrimitive {
 						Config.turtleSpeed=0;
 						Kernel.mode_trace=false;
 						DrawPanel.etat_fenetre=DrawPanel.WINDOW_CLASSIC;
+						cadre.getArdoise().zoom(1,false);
            			break;
            			case 215: // tc taillecrayon
            				Interprete.operande=true;
@@ -2820,6 +2821,7 @@ public class LaunchPrimitive {
            						throw new myException(cadre,st);
            					}
            					Config.penShape=i;
+           					cadre.getArdoise().updateAllTurtleShape();
            				}
            				catch(myException e){}
            			break;
@@ -2999,7 +3001,7 @@ public class LaunchPrimitive {
         						throw new myException(cadre, name + " "
         								+ Logo.messages.getString("attend_positif"));
         					}
-           					cadre.getArdoise().zoom(d);
+           					cadre.getArdoise().zoom(d,false);
            				}
            				catch(myException e){}
            			break;
@@ -3487,12 +3489,6 @@ public class LaunchPrimitive {
     					while (st.hasMoreTokens()){
     						names.add(st.nextToken());    						
     					}
-						for (int i= 0; i< wp.getNumberOfProcedure(); i++) {
-							Procedure procedure = wp.getProcedure(i);			
-							if ( names.contains(procedure.name)&& procedure.affichable) {
-								cadre.editeur.setEditorStyledText(procedure.toString());
-							}
-						}
 						cadre.editeur.setTitle(Logo.messages
 								.getString("editeur"));
 
@@ -3501,7 +3497,15 @@ public class LaunchPrimitive {
 						cadre.editeur.discardAllEdits();
 						cadre.editeur.setVisible(true);
 						cadre.editeur.toFront();
-						cadre.editeur.focus_zonedition();
+						cadre.editeur.requestFocus();
+    					
+						for (int i= 0; i< wp.getNumberOfProcedure(); i++) {
+							Procedure procedure = wp.getProcedure(i);			
+//							System.out.println(procedure.toString().length());
+							if ( names.contains(procedure.name)&& procedure.affichable) {
+								cadre.editeur.setEditorStyledText(procedure.toString());
+							}
+						}
                     	}
                     	catch(myException e){}
                     break;
@@ -3542,7 +3546,15 @@ public class LaunchPrimitive {
         						// If it's a word
         						else {
         							character=this.itemWord(1, li1);
-            						li1=li1.substring(character.length());
+           							li1=li1.substring(character.length());
+        							// If it isn't a number, adding a quote
+            						try {
+            							Double.parseDouble(character);
+            						}
+            						catch(NumberFormatException e){
+            							character="\""+character;
+            						}
+
         						}
         						elements.add(character);
         					}

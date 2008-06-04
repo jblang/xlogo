@@ -8,7 +8,6 @@ import javax.swing.event.*;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.AbstractDocument;
-import javax.swing.text.DefaultHighlighter;
 import javax.swing.SwingUtilities;
 import xlogo.StyledDocument.DocumentLogo;
 import xlogo.Config;
@@ -21,50 +20,25 @@ import xlogo.gui.Editor;
  * 						programming language
  * @author Loïc Le Coq
  */
-class ZoneEdition extends JTextPane implements Printable,CaretListener,Searchable{
+class ZoneEdition extends JTextPane implements CaretListener{
 	private static final long serialVersionUID = 1L;
 	private DocumentLogo dsd=null;
-	private Editor editor;
-	protected Stack<String> pages=null;
 	// Si la correspondance entre parenthese ou crochets est activée
 	private boolean active=false;
 	// Dernière position allumée
 	private int[] position=new int[2];
-	// To remember undoable edits
-	private UndoManager undoManager=new UndoManager();
 	
-	void ecris(String mot){
-		try{
-			int deb=getCaretPosition();
-			dsd.insertString(deb,mot,null);
-			setCaretPosition(deb+mot.length());
-		}
-	catch(BadLocationException e){}
-}
-	public DocumentLogo getDsd(){
-		return dsd;
-	}
+
+//	public DocumentLogo getDsd(){
+//		return dsd;
+//	}
 	public void setActive(boolean b){
 		active=b;
 	}
-ZoneEdition(Editor editor){
-	this.editor=editor;
-	dsd=new DocumentLogo();
-	setDocument(dsd);
-	dsd.addUndoableEditListener(new MyUndoableEditListener());
+	ZoneEdition(EditorTextPane etp){
+	dsd=etp.getDsd();
 	addCaretListener(this);
 }
-
-
-public int print(Graphics g,PageFormat pf, int pi) throws PrinterException{
-		if(pi<pages.size()){
-    		setText(pages.get(pi));
-    		g.translate((int)pf.getImageableX(),(int)pf.getImageableY());
-        	paint(g);
-  			return(Printable.PAGE_EXISTS);
-		}
-		else  return Printable.NO_SUCH_PAGE;
-	}
 
 // Teste si le caractère précédent est un backslash
 private boolean TesteBackslash(String content,int pos){
@@ -196,79 +170,5 @@ public void caretUpdate(CaretEvent e){
 	
 	
 	}
-	private StringBuffer text;
-	private int startOffset,endOffset;
-	
-	public boolean find(String element,boolean forward){
-		try{	
-			int index;
-			text=new StringBuffer(getText());
-			// Find forward
-			if (forward)
-				index=text.indexOf(element, getCaretPosition());
-			else index=text.lastIndexOf(element, getCaretPosition());
-			if (index==-1){
-				startOffset=0;
-				endOffset=0;
-				return false;
-			}
-			else {
-				getHighlighter().removeAllHighlights();
-				startOffset=index;
-				endOffset=index+element.length();
-				getHighlighter().addHighlight(startOffset, endOffset,
-						DefaultHighlighter.DefaultPainter );
-				if (forward) setCaretPosition(index+element.length());
-				else if (index>1) setCaretPosition(index-1); 
-				return true;
-			}
-		}
-		catch(NullPointerException e){} // If the combo is empty	
-		catch(BadLocationException e){}
-		return false;
-	}
-	public void replace(String element, boolean forward){
-		text.delete(startOffset, endOffset);
-		try{	
-			text.insert(startOffset,element );
-	
-		}
-		catch(NullPointerException err){}
-		setText(text.toString());
-		if (forward) setCaretPosition(endOffset);
-		else if (startOffset>1) setCaretPosition(startOffset-1);
 
-	}
-	public void replaceAll(String element, String substitute){
-
-		try {
-			String string=getText().toString();
-			string=string.replaceAll(element, substitute);
-			setText(string);
-		}
-		catch(NullPointerException e2){}
-
-	}
-	public void removeHighlight(){
-		getHighlighter().removeAllHighlights();
-	}
-	protected UndoManager getUndoManager(){
-		return undoManager;
-	}
-
-	class MyUndoableEditListener implements UndoableEditListener{
-			public void undoableEditHappened(UndoableEditEvent e){
-			     UndoableEdit edit = e.getEdit();
-			      // Include this method to ignore syntax changes
-			      if (edit instanceof AbstractDocument.DefaultDocumentEvent &&
-			         ((AbstractDocument.DefaultDocumentEvent)edit).getType() == 
-			         AbstractDocument.DefaultDocumentEvent.EventType.CHANGE) {
-			         return;
-			      }
-				// Remember the edit
-			     undoManager.addEdit(edit);
-//			     System.out.println(e.getEdit().getPresentationName());
-				editor.updateUndoRedoButtons();
-		}
-	}
 }

@@ -1,9 +1,6 @@
 package xlogo.gui;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.util.StringTokenizer;
 import java.util.ArrayList;
@@ -11,13 +8,11 @@ import java.util.Stack;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.io.IOException;
-import java.awt.print.*;
 import java.awt.event.*;
 import java.io.File;
 import xlogo.utils.Utils;
 import xlogo.utils.myException;
 import xlogo.Application;
-import xlogo.Popup;
 import xlogo.Config;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.Primitive;
@@ -38,12 +33,13 @@ public class Editor extends JFrame implements ActionListener{
   private JToolBar menu=new JToolBar(JToolBar.HORIZONTAL);
   private JButton copier,coller,couper,imprimer,quit,lire,chercher,undo,redo;
   private boolean affichable=true;
-  private JScrollPane jScrollPane1;
-  private ZoneEdition zonedition;
+  private JScrollPane scroll;
+  private EditorTextZone textZone;
+//  private ZoneEdition zonedition;
   private JLabel labelCommand;
   private JTextField mainCommand;
   private JPanel panelCommand;
-  private Popup jpop;
+
   private Application cadre;
   private Workspace wp;
   private ReplaceFrame sf;
@@ -66,12 +62,12 @@ public class Editor extends JFrame implements ActionListener{
       this.toFront();
     }
     else if (e.getID()==WindowEvent.WINDOW_ACTIVATED){
-    	zonedition.requestFocus();
+    	textZone.requestFocus();
       
     }
   }
   public void analyseprocedure() throws EditeurException{
-	  String text=zonedition.getText();
+	  String text=textZone.getText();
 	  text.replaceAll("\t", "  ");
 	  StringReader sr=new StringReader(text);
 	  BufferedReader br=new BufferedReader(sr);
@@ -334,7 +330,7 @@ public class Editor extends JFrame implements ActionListener{
 				pr.nbparametre=pr.variable.size();
 			}
       editeur.toFront();
-      editeur.zonedition.requestFocus();
+      editeur.textZone.requestFocus();
     }
   }
   private void initGui() throws Exception {
@@ -364,12 +360,16 @@ public class Editor extends JFrame implements ActionListener{
     
     // Init All other components
     labelCommand=new JLabel(Logo.messages.getString("mainCommand"),iplay,JLabel.LEFT);
-    jScrollPane1 = new JScrollPane();
-    zonedition = new ZoneEdition(this);
+    scroll = new JScrollPane();
+    if (Config.COLOR_ENABLED){
+    	textZone=new EditorTextPane(this);
+    }
+    else textZone=new EditorTextArea(this);
+    
     mainCommand=new JTextField();
     panelCommand=new JPanel();
-    jpop=new Popup(this,zonedition);
-    sf=new ReplaceFrame(this,zonedition);
+
+    sf=new ReplaceFrame(this,textZone);
     
 
     copier.setToolTipText(Logo.messages.getString("menu.edition.copy"));
@@ -425,10 +425,7 @@ public class Editor extends JFrame implements ActionListener{
     chercher.addActionListener(this);
     undo.addActionListener(this);
     redo.addActionListener(this);
-    
-	MouseListener popupListener = new PopupListener();
-    zonedition.addMouseListener(popupListener);
-  
+      
     labelCommand.setFont(Config.police);
     mainCommand.setFont(Config.police);
     initMainCommand();
@@ -438,64 +435,31 @@ public class Editor extends JFrame implements ActionListener{
     
     setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
     
-    jScrollPane1.setPreferredSize(new Dimension(500, 500));
+    scroll.setPreferredSize(new Dimension(500, 500));
     this.setTitle(Logo.messages.getString("editeur"));
     this.getContentPane().add(menu, BorderLayout.NORTH);
-    this.getContentPane().add(jScrollPane1, BorderLayout.CENTER);
+    this.getContentPane().add(scroll, BorderLayout.CENTER);
     this.getContentPane().add(panelCommand,BorderLayout.SOUTH);
-    jScrollPane1.getViewport().add(zonedition, null);
-    sf=new ReplaceFrame(this,zonedition);
+    scroll.getViewport().add(textZone.getTextComponent(), null);
+    sf=new ReplaceFrame(this,textZone);
     pack();
   }
 
   public void actionPerformed(ActionEvent e){
+	  
 	  String cmd=e.getActionCommand();
     if (cmd.equals(Logo.messages.getString("imprimer_editeur"))){
-      Font font=zonedition.getFont();
-      String txt=zonedition.getText();
-      zonedition.setFont(new Font(font.getFontName(),Font.PLAIN,10));
-      zonedition.setText(txt);
-      PrinterJob job = PrinterJob.getPrinterJob();
-      job.setPrintable(zonedition,job.defaultPage());
-      double h_imp=job.defaultPage().getImageableHeight();
-       java.awt.FontMetrics fm = zonedition.getFontMetrics(zonedition.getFont());
-      zonedition.pages=new Stack<String>();
-      StringTokenizer st = new StringTokenizer(txt, "\n");
-      String page="";
-   //   System.out.println("hauteur "+fm.getHeight()+" "+h_imp);
-      int compteur=0;
-      while (st.hasMoreTokens()) {
-        String element = st.nextToken();
-        compteur+=fm.getHeight();
-        if (compteur>h_imp) {
-          zonedition.pages.push(page);
-	      page = element;
-          compteur=fm.getHeight();
-        }
-        else page+= element+"\n";
-      }
-      if (!page.equals("")) zonedition.pages.push(page);
-      if (job.printDialog()) {
-        try {
-          job.print();
-        }
-        catch (PrinterException ex) {
-          System.out.println(ex.getMessage());
-        }
-      }
-      font=zonedition.getFont();
-      zonedition.setFont(new Font(font.getFontName(),Font.PLAIN,12));
-      zonedition.setText(txt);
+    	textZone.actionPrint();
     }
-    else if (cmd.equals(Logo.messages.getString("menu.edition.copy"))){zonedition.copy();}
-    else if (cmd.equals(Logo.messages.getString("menu.edition.cut"))){zonedition.cut();}
-    else if (cmd.equals(Logo.messages.getString("menu.edition.paste"))){zonedition.paste();}
+    else if (cmd.equals(Logo.messages.getString("menu.edition.copy"))){textZone.copy();}
+    else if (cmd.equals(Logo.messages.getString("menu.edition.cut"))){textZone.cut();}
+    else if (cmd.equals(Logo.messages.getString("menu.edition.paste"))){textZone.paste();}
     else if(cmd.equals(Logo.messages.getString("lire_editeur"))){
-    	zonedition.setActive(false);
+    	textZone.setActive(false);
     	boolean visible=false;
       try{
       	analyseprocedure();
-        this.zonedition.setText("");
+        this.textZone.setText("");
 		if (null!=cadre.tmp_path){
 			Application.path=cadre.tmp_path;
 			cadre.setTitle("XLOGO        "+Application.path);
@@ -528,8 +492,8 @@ public class Editor extends JFrame implements ActionListener{
     }
 		// Si on quitte sans enregistrer
     else if (cmd.equals(Logo.messages.getString("quit_editeur"))){
-    	zonedition.setActive(false);
-      zonedition.setText("");
+    	textZone.setActive(false);
+      textZone.setText("");
       setVisible(false);
 	  if (Config.eraseImage){ //Effacer la zone de dessin    
 		myException.lance=true;
@@ -555,46 +519,127 @@ public class Editor extends JFrame implements ActionListener{
     }
     // Undo Action
     else if (cmd.equals(Logo.messages.getString("editor.undo"))){
-		zonedition.getUndoManager().undo();
+		textZone.getUndoManager().undo();
 		updateUndoRedoButtons();
     }
     // Redo Action
     else if (cmd.equals(Logo.messages.getString("editor.redo"))){
-    	zonedition.getUndoManager().redo();
+    	textZone.getUndoManager().redo();
     	updateUndoRedoButtons();
     }
   }
   public void initMainCommand(){
 	  mainCommand.setText(Config.mainCommand);
   } 
+
+  
   // Change Syntax Highlighting for the editor
   public void initStyles(int c_comment,int sty_comment,int c_primitive,int sty_primitive,
 		int c_parenthese, int sty_parenthese, int c_operande, int sty_operande){
-  	zonedition.getDsd().initStyles(Config.coloration_commentaire,Config.style_commentaire,Config.coloration_primitive,Config.style_primitive,
+	  if (textZone.supportHighlighting()){ 
+  	((EditorTextPane)textZone).getDsd().initStyles(Config.coloration_commentaire,Config.style_commentaire,Config.coloration_primitive,Config.style_primitive,
 			Config.coloration_parenthese,Config.style_parenthese,Config.coloration_operande,Config.style_operande);	
-  }
+	  }
+	 }
   // Enable or disable Syntax Highlighting 
-	public void setColoration(boolean b){
-		zonedition.getDsd().setColoration(b);
+/*	public void setColoration(boolean b){
+		if (textZone.supportHighlighting())
+		((EditorTextPane)textZone).getDsd().setColoration(b);
 	}
-	
+	*/
 	public void setEditorFont(Font f){
-		zonedition.setFont(f);
+		textZone.setFont(f);
 	}
 	public void setAffichable(boolean b){
 		affichable=b;
 	}
 	public boolean getAffichable(){
 		return affichable;
+	};
+	public void clearText(){
+		textZone.clearText();
 	}
-	public void setEditorText(String txt){
-		zonedition.setText(txt);
+	/**
+	 * Convert the textZone from a JTextArea to a JTextPane
+	 * To allow Syntax Highlighting
+	 */
+	public void toTextPane(){
+/*		if (SwingUtilities.isEventDispatchThread()){
+			
+		}
+		
+		
+		try{
+		SwingUtilities.invokeAndWait(new Runnable(){
+			public void run(){*/
+				scroll.getViewport().removeAll();//.remove(textZone.getTextComponent());
+				String s=textZone.getText();
+				textZone=new EditorTextPane(this);
+				sf=new ReplaceFrame(this,textZone);
+				textZone.ecris(s);
+				scroll.getViewport().add(textZone.getTextComponent());
+				scroll.revalidate();				
+/*			}
+		});
+		}
+		catch(Exception e1){}
+	//	catch(InvocationTargetException e2){}
+*/
 	}
+	/**
+	 * Convert the textZone from a JTextPane to a JTextArea
+	 * Cause could be that:
+	 * - Syntax Highlighting is disabled 
+	 * - Large text to display in the editor
+	 */
+	public void toTextArea(){
+	/*	try{
+		SwingUtilities.invokeAndWait(new Runnable(){
+			public void run(){*/
+				String s=textZone.getText();
+				scroll.getViewport().removeAll();//.remove(textZone.getTextComponent());
+				textZone=new EditorTextArea(this);
+				sf=new ReplaceFrame(this,textZone);
+				textZone.ecris(s);
+				scroll.getViewport().add(textZone.getTextComponent());
+				scroll.revalidate();
+/*			}
+		});}
+		catch(Exception e){}
+	*/}
 	public void setEditorStyledText(String txt){
-				zonedition.ecris(txt);				
+		if (txt.length()<100000){
+			textZone.ecris(txt);			
+		}
+		else {
+			if (textZone instanceof EditorTextPane){
+				Config.COLOR_ENABLED=false;
+				toTextArea();
+				textZone.ecris(txt);
+			}
+			else textZone.ecris(txt);
+		}
+
+/*		try{
+		textZone.read(new StringReader(txt), null);
+		}
+		catch(IOException e){}
+		while(null!=txt){
+			if (txt.length()>10000){
+				textZone.ecris(txt.substring(0,10000));
+				txt=txt.substring(10000);
+				
+			}
+			else {
+							
+				txt=null;
+			}
+
+		}		
+	*/			
 	}
-	public void focus_zonedition(){
-		zonedition.requestFocus();
+	public void focus_textZone(){
+		textZone.requestFocus();
 	}
 	/**
 	 * Create the Turtle Image for the Button "save change"
@@ -618,45 +663,34 @@ public class Editor extends JFrame implements ActionListener{
 				}
 		      initMainCommand();
 		      discardAllEdits();
-		      focus_zonedition();
+		      textZone.requestFocus();
 			    }
 			    else {
 			      cadre.editeur.setVisible(false);
 			      cadre.editeur.setVisible(true);
-			      cadre.editeur.focus_zonedition();
-			    }	
-
+			      textZone.requestFocus();			  
+			   }
 	}
+	    
 	public void discardAllEdits(){
-		   zonedition.getUndoManager().discardAllEdits();
+		   textZone.getUndoManager().discardAllEdits();
 		      updateUndoRedoButtons();
 	}
 	protected void updateUndoRedoButtons(){
-		if (zonedition.getUndoManager().canRedo()) redo.setEnabled(true);
+		if (textZone.getUndoManager().canRedo()) redo.setEnabled(true);
 		else redo.setEnabled(false);
-		if (zonedition.getUndoManager().canUndo()) undo.setEnabled(true);
+		if (textZone.getUndoManager().canUndo()) undo.setEnabled(true);
 		else undo.setEnabled(false);
 	}
-  
-	class PopupListener extends MouseAdapter {
-
-		public void mousePressed(MouseEvent e) {
-			maybeShowPopup(e);
+/*	class WriteLongText implements Runnable{
+		String s;
+		WriteLongText(String s){
+			this.s=s;
 		}
-
-		public void mouseReleased(MouseEvent e) {
-			maybeShowPopup(e);
-		}
-
-		private void maybeShowPopup(MouseEvent e) {
-			if (e.isPopupTrigger()) {
-				jpop.show(e.getComponent(), e.getX(), e.getY());
-			}
+		public void run(){
+			textZone.ecris(s);
 		}
 	}
-
-	
-}
 
 /*
     public int print(Graphics g,PageFormat pf, int pi) throws PrinterException{
@@ -690,126 +724,5 @@ public class Editor extends JFrame implements ActionListener{
 *
 *
 *
-*
-public void analyseprocedure()throws EditeurException{ 
-//    pile_sauvegarde=new Object[cadre.primitive.procedure.size()];
-  //  for(int i=0;i<pile_sauvegarde.length;i++){
-    //  pile_sauvegarde[i]=cadre.primitive.procedure.get(i);
-    //}
-	
-    String commentaire="";
-    curseur=0;
-    String texte=zonedition.getText();
-    int i=0;
-    int id=-1;
-    String ligne="";
-    String mot="";
-    StringTokenizer st=new StringTokenizer(ligne);
-    Procedure proc=null;
-
-    while(curseur<texte.length()){
-      boolean end=false;
-      while (!st.hasMoreTokens()&&curseur<texte.length()){
-        ligne=ligne(texte);
-        st=new StringTokenizer(ligne); //virer les espaces inutiles
-        if (st.hasMoreTokens()) {mot=st.nextToken();break;}
-        else mot="";
-      }
-      if (mot=="") break;
-      if (i==0){          //si c'est la ligne de définition
-        if (!mot.toLowerCase().equals(Logo.messages.getString("pour"))) throw new EditeurException(this,Logo.messages.getString("erreur_editeur1")+"\n"+Logo.messages.getString("erreur_editeur2")+"\n"+Logo.messages.getString("erreur_editeur3"));
-        if (st.hasMoreTokens()) mot=st.nextToken().toLowerCase();
-        else throw new EditeurException(this,Logo.messages.getString("erreur_editeur1")+"\n"+Logo.messages.getString("erreur_editeur2")+"\n"+Logo.messages.getString("erreur_editeur3"));
-        Stack variable=new Stack();
-       	id=isProcedure(mot);
-        if (id==-1){      // Si c'est une procédure nouvelle
-          String nomproc=mot;
-          int nbparam=0;
-          while(st.hasMoreTokens()){ 
-            nbparam++;
-            mot=st.nextToken().toLowerCase();
-            if (mot.substring(0,1).equals(":")&&mot.length()!=1) {
-              String var=mot.substring(1,mot.length());
-              try{	
-              	Double.parseDouble(var);
-  				throw new EditeurException(this,Logo.messages.getString("erreur_editeur1")+"\n"+Logo.messages.getString("erreur_editeur2")+"\n"+Logo.messages.getString("erreur_editeur3"));
-              }
-              catch(NumberFormatException e2){}
-              StringTokenizer verif=new StringTokenizer(var, ":+-/(*) []=<>&|", true);
-              String mess=Logo.messages.getString("caractere_special_variable")+"\n"+Logo.messages.getString("caractere_special2")+"\n"+Logo.messages.getString("caractere_special3")+" :"+var;
-              if (verif.countTokens()>1) throw new EditeurException(this,mess);
-              if (":+*-/() []=<>&|".indexOf(verif.nextToken())>-1) throw new EditeurException(this,mess);
-              if (variable.search(var)==-1) variable.push(var);
-            }
-            else {throw new EditeurException(this,Logo.messages.getString("erreur_editeur1")+"\n"+Logo.messages.getString("erreur_editeur2")+"\n"+Logo.messages.getString("erreur_editeur3"));}
-          }
-       //   wp.procedureListPush(new Procedure(nomproc,nbparam,variable,wp.getNumberOfProcedure(),affichable));
-        }
-        else {          // Si on redéfinit une procédure existante
-			    proc=wp.getProcedure(id);
-          proc.variable.removeAllElements();
-          proc.instruction="";
-          proc.instr=null;
-          int param=0;
-					
-					while(st.hasMoreTokens()){
-            param++;
-            mot=st.nextToken().toLowerCase();
-            if (mot.substring(0,1).equals(":")&&mot.length()!=1) {
-              String var=mot.substring(1,mot.length());
-              if (proc.variable.search(var)==-1) proc.variable.push(var);
-            }
-            else {throw new EditeurException(this,Logo.messages.getString("erreur_editeur1")+"\n"+Logo.messages.getString("erreur_editeur2")+"\n"+Logo.messages.getString("erreur_editeur3"));}
-          }
-        proc.nbparametre=param;
-        wp.setProcedureList(id,proc);
-        }
-      }
-      else{ //si on est pas à la première ligne de définition.
-        if (st.countTokens()!=0||!mot.toLowerCase().equals(Logo.messages.getString("fin"))){
-          if (id==-1){      //Procédure nouvelle
-            (wp.getProcedure(wp.getNumberOfProcedure()-1)).instruction+=ligne+"\n";
-          }
-          else{             // Procédure à redéfinir
-            proc.instruction+=ligne+"\n";
-          }
-        }
-        else end=true;      // Fin de définition
-      }
-      if (end) {
-        i=0;
-        end=false;
-        if (id==-1) commentaire+=wp.procedureListPeek().name+", ";
-        else {
-          commentaire+=wp.getProcedure(id).name+", ";
-          wp.setProcedureList(id,proc);
-        }
-      }
-      else i++;
-      while (st.hasMoreTokens()){st.nextToken();} // On vide st
-    }
-    if (i!=0) {     // On teste si erreur dans l'écriture des procédures
-      if (id==-1) {
-        wp.procedureListPop();
-      }
-//      else  cadre.primitive.procedure.remove(id);
-      
-      throw new EditeurException(this,Logo.messages.getString("erreur_editeur1")+"\n"+Logo.messages.getString("erreur_editeur2")+"\n"+Logo.messages.getString("erreur_editeur3"));
-    }
-//    On crée les chaînes d'instruction formatées pour chaque procédure et les sauvegardes
-    for (int j=0;j<wp.getNumberOfProcedure();j++){
-			Procedure pr=wp.getProcedure(j);
-			pr.decoupe();
-			pr.instruction_sauve=pr.instruction;
-			pr.instr_sauve=pr.instr;
-			pr.variable_sauve=new Stack();
-			for (int k=0;k<pr.variable.size();k++){
-				pr.variable_sauve.push(pr.variable.get(k));
-			}
-//			System.out.println(pr.toString());
-    }
-    if (!commentaire.equals("")&&affichable){
-      cadre.ecris("commentaire",Logo.messages.getString("definir")+" "+commentaire.substring(0,commentaire.length()-2)+".\n");
-      cadre.eraserUpdate();
-    }
-  }*/
+*/
+}

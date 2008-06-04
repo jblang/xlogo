@@ -68,6 +68,11 @@ import xlogo.kernel.perspective.*;
 	private static final long serialVersionUID = 1L;
 	public Turtle tortue;
 	public Turtle[] tortues; 
+	
+	/**
+	 * When a turtle is active on screen, its number is added to this stack 
+	 * 
+	 */
 	public Stack<String> tortues_visibles;
 
 	/**
@@ -2116,11 +2121,12 @@ import xlogo.kernel.perspective.*;
 		
 	}
 	
+	
 	/**
 	 * Make a zoom on the drawing area
 	 * @param d The absolute factor
 	 */
-	public void zoom(double d){
+	public void zoom(double d, boolean zoomIn){
 		// Disable zoom buttons
 		cadre.setZoomEnabled(false);
 		
@@ -2130,8 +2136,9 @@ import xlogo.kernel.perspective.*;
 
 	
 	// If a selection rectangle is displaying on the drawing area
+	// And If zoomout has been pressed
 	// Zooming on the rectangular selection 
-		if (null!=selection&&cadre.commande_isEditable()){
+		if (null!=selection&&cadre.commande_isEditable()&&zoomIn){
 			int originalWidth=jv.getWidth();
 			double width=selection.getWidth();
 			d=zoom*originalWidth/width;
@@ -2333,6 +2340,13 @@ import xlogo.kernel.perspective.*;
    protected void addToGuiMap(GuiComponent gc) throws xlogo.utils.myException{
 	   gm.put(gc);
    }
+   // This method modifies all Shape for any turtle on screen
+   protected void updateAllTurtleShape(){
+	   for (int i=0;i<tortues.length;i++){
+		   if (null!=tortues[i]) tortues[i].fixe_taille_crayon(2*tortues[i].getPenWidth());
+	   }
+   }
+   
    public BufferedImage getSelectionImage(){
 	   Image pic=DrawPanel.dessin;
 	   if (zoom!=1){

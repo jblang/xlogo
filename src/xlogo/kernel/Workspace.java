@@ -229,7 +229,7 @@ public class Workspace {
 			sr.close();
 			try{
 				app.editeur.setAffichable(false);
-				app.editeur.setEditorText(new String(sb));
+				app.editeur.setEditorStyledText(new String(sb));
 				app.editeur.analyseprocedure();
 			}
 			catch(Exception e){
