@@ -1,6 +1,7 @@
 package xlogo.gui;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.event.WindowEvent;
 import java.util.StringTokenizer;
 import java.util.ArrayList;
@@ -453,7 +454,25 @@ public class Editor extends JFrame implements ActionListener{
     }
     else if (cmd.equals(Logo.messages.getString("menu.edition.copy"))){textZone.copy();}
     else if (cmd.equals(Logo.messages.getString("menu.edition.cut"))){textZone.cut();}
-    else if (cmd.equals(Logo.messages.getString("menu.edition.paste"))){textZone.paste();}
+    else if (cmd.equals(Logo.messages.getString("menu.edition.paste"))){
+    	// Test if there are too many characters to paste
+    	Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+        String text=null;
+        try {
+        	if (t != null && t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+        		text = (String)t.getTransferData(DataFlavor.stringFlavor);
+        	}
+        } 
+        catch (UnsupportedFlavorException e1) {} 
+        catch (IOException e2) {}
+        if (null!=text&& text.length()>100000){
+    	 if (textZone instanceof EditorTextPane){
+    		 Config.COLOR_ENABLED=false;
+    		 toTextArea();
+    	 }
+     }
+        textZone.paste();
+    	}
     else if(cmd.equals(Logo.messages.getString("lire_editeur"))){
     	textZone.setActive(false);
     	boolean visible=false;

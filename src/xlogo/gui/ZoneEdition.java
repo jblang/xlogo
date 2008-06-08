@@ -1,18 +1,11 @@
 package xlogo.gui;
-import java.awt.Graphics;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.util.Stack;
+
 import javax.swing.event.*;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.AbstractDocument;
 import javax.swing.SwingUtilities;
 import xlogo.StyledDocument.DocumentLogo;
 import xlogo.Config;
-import javax.swing.undo.*;
-import xlogo.gui.Editor;
 
 /**
  * Title :        XLogo

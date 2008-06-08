@@ -2,7 +2,6 @@
 package xlogo.utils;
 
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.io.File;
 import javax.swing.UIManager;
 import java.awt.Color;
