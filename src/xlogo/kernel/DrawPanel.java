@@ -504,6 +504,7 @@ import xlogo.kernel.perspective.*;
 			tmp[1]=coords[1]-tortue.Y;
 			tmp[2]=coords[2]-tortue.Z;
 			double length=Math.sqrt(Math.pow(tmp[0],2)+Math.pow(tmp[1],2)+Math.pow(tmp[2],2));
+			if (length==0) return tmp;
 			tmp[0]=tmp[0]/length;
 			tmp[1]=tmp[1]/length;
 			tmp[2]=tmp[2]/length;

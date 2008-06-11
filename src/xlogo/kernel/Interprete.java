@@ -102,6 +102,7 @@ public class Interprete {
 //			System.out.print("debut\n"+instructionBuffer+"\nfin\n------------------\n");
 			String element = instructionBuffer.getNextWord();
 //			System.out.println("a"+element+"a");
+//			System.out.println(Primitive.primitives.containsKey((element)));
 			if (element.startsWith("\\l")){
 				if (operande) {
 					break;	
@@ -119,6 +120,7 @@ public class Interprete {
 			int i = isProcedure(element_minuscule);
 			
 			if (Primitive.primitives.containsKey(element_minuscule) || i > -1) {
+
 				// identifiant de la primitive
 				if (i == -1)
 					i = Integer.valueOf(

@@ -1151,9 +1151,20 @@ public class LaunchPrimitive {
 					double nombre = number(param.get(0));
 					if (nombre < 0)
 						nombre = Math.abs(nombre);
-
+					if (DrawPanel.record3D==DrawPanel.record3D_LINE||DrawPanel.record3D==DrawPanel.record3D_POINT){
+						if (kernel.getActiveTurtle().getPenWidth()!=(float) nombre) DrawPanel.poly.addToScene();
+					}
 					kernel.getActiveTurtle().fixe_taille_crayon((float) nombre);
 					cadre.getArdoise().setStroke(kernel.getActiveTurtle().crayon);
+					if (DrawPanel.record3D==DrawPanel.record3D_LINE){
+	                  	DrawPanel.poly=new ElementLine(cadre);
+                    	DrawPanel.poly.addVertex(new Point3d(kernel.getActiveTurtle().X/1000,
+                    			kernel.getActiveTurtle().Y/1000,
+                    			kernel.getActiveTurtle().Z/1000),kernel.getActiveTurtle().couleurcrayon);
+					}
+					else if (DrawPanel.record3D==DrawPanel.record3D_POINT){
+					 	DrawPanel.poly=new ElementPoint(cadre);
+					}
 				} catch (myException e) {
 				}
 				break;

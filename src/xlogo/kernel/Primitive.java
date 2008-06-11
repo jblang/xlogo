@@ -130,7 +130,7 @@ public class Primitive {
 						if (!cle.equals(">=")&&!cle.equals("<="))
 						cle = prim.getString(cle);
 					}
-					StringTokenizer st = new StringTokenizer(cle);
+					StringTokenizer st = new StringTokenizer(cle.toLowerCase());
 					int compteur = 0;
 					while (st.hasMoreTokens()) {
 						primitives.put(st.nextToken(), String.valueOf(i
@@ -140,7 +140,13 @@ public class Primitive {
 				}
 				i++;
 			}
-//			System.out.println(i+ " primitives");
+/*			System.out.println(i+ " primitives");
+			java.util.Iterator it=primitives.keySet().iterator();
+			while(it.hasNext()){
+				String next=it.next().toString();
+				System.out.println(next+" "+primitives.get(next));				
+			}
+*/
 		}
 		catch(IOException e){System.out.println("Impossible de lire le fichier d'initialisation des primitives");}
 	}
