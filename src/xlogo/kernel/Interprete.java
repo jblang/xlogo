@@ -103,18 +103,10 @@ public class Interprete {
 			String element = instructionBuffer.getNextWord();
 //			System.out.println("a"+element+"a");
 //			System.out.println(Primitive.primitives.containsKey((element)));
-			if (element.startsWith("\\l")){
-				if (operande) {
-					break;	
-				}
-				instructionBuffer.deleteFirstWord(element);
-				lineNumber=element+" ";
-				element=instructionBuffer.getNextWord();
-		
-			}
 
 //			if (element=="")
-//				break;
+
+	//				break;
 			// si c'est une primitive ou une procedure
 			String element_minuscule = element.toLowerCase();
 			int i = isProcedure(element_minuscule);
@@ -563,6 +555,15 @@ public class Interprete {
 										+ Logo.messages.getString("fin"));
 							}
 						}
+					}
+					else if (element.startsWith("\\l")){
+						if (operande) {
+							break;	
+						}
+						instructionBuffer.deleteFirstWord(element);
+						lineNumber=element+" ";
+						element=instructionBuffer.getNextWord();
+				
 					}
 					else {
 						deleteLineNumber();

@@ -16,11 +16,18 @@
           target: deploy              
          ================================= -->
     <target name="deploy">
-        <mkdir dir="deploy/classes"/> 
+    <!-- deploy has 3 folders
+    	* "classes" contains all binaries
+    	* "linux" and "windows" contain java3d native libraries
+    	deploy has a jar file "jh.jar" the library for javahelp
+    	-->
+    	<mkdir dir="deploy/classes"/> 
     	<copy todir="deploy/classes">
         		<fileset dir="java3d/">
         			<exclude name=".*"/>
     			</fileset>
+    		<fileset file="jh.jar">
+   			</fileset>
     		<fileset dir="src/">
     	        <include name="windows/**"/>
     	    	<include name="linux/**"/>
@@ -31,13 +38,16 @@
     		</fileset>
         </copy>
     	<javac srcdir="src" destdir="deploy/classes">
+    		 <classpath>
+    		        <pathelement location="deploy/classes/jh.jar"/>
+   		      </classpath>
     	</javac>
     	<move todir="deploy">
-     		<fileset dir="deploy/classes">
+     		<fileset file="deploy/classes/jh.jar" dir="deploy/classes">
 	        	<include name="*.class"/>
 				<include name="linux/**"/>
     			<include name="windows/**"/>
-     		</fileset>    		
+     		</fileset>
     	</move>
 
  	<jar destfile="deploy/tmp_xlogo.jar"
@@ -58,11 +68,11 @@
     	    		<include name="tmp_xlogo.jar"/>
     			</fileset>
        </signjar>
-    	
+  	
     	
     <jar destfile="deploy/xlogo.jar"
      		manifest="manifest_start">
-     		<fileset dir="deploy/">
+     		<fileset file="deploy/jh.jar" dir="deploy/">
             	<include name="*.class"/>
     			<include name="linux/**"/>
     			<include name="windows/**"/>

@@ -1,25 +1,21 @@
 Developper's corner
 
-
 1) To add a language
+- class Language
+   Update translationLanguage
+   Update englishLanguage
+   Update locales
+   Update getLocale()
 
 - Config.java public static LANGUAGE_.... 
-- Logo.java 	generateLocale()
-		readCommandLineConfig() 
+
 - Image Flag: 
 	size:150x100 
 	destination xlogo/Utils/
-- SelectionLangue.java
-	Add Language description in array "language"
+
 - GPL licence
-- MenuListener.java LICENCE
-- PanelGeneral.java
-	String lang[]
-	update language properties files
-- Traduc.java
-	Object choix
-- TranslateXLogo.java
-	lang[]
+
+- Update language properties files
 
 2) To add a new primitives
 - xlogo/kernel/genericPrimitive

@@ -7,7 +7,6 @@
 package xlogo;
 import java.util.StringTokenizer;
 import java.io.File;
-
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import org.xml.sax.InputSource;
@@ -34,18 +33,28 @@ import xlogo.kernel.Affichage;
  *
  */
 public class Logo {
+	  /**
+	   * This ResourceBundle contains all messages for XLogo (menu, errors...)
+	   */
+	  public static ResourceBundle messages=null;
+	  
+	  
+	public static String translationLanguage[]=new String[10];
+  public static final String englishLanguage[] = { "French","English","Arabic","Spanish","Portuguese","Esperanto","German",
+			"Galician","Asturian","Greek"};
+  public static final String[] locales={"fr","en","ar","es","pt,eo","de","gl","as","el"};
 	/**
 	 * The main frame
 	 */
   private Application frame=null;
-  /**
-   * This ResourceBundle contains all messages for XLogo (menu, errors...)
-   */
-  public static ResourceBundle messages=null;
+
   /**
    * On the first start, XLogo opens a dialog box where the user can select its language.
    */
   private Selection_Langue select=null;
+  
+//  private Language language;
+  
   /**Builds Application with the valid Config*/
   public Logo() {
 	  // Read the XML file .xlogo and extract default config
@@ -133,51 +142,20 @@ public class Logo {
    */
   public static void generateLanguage(int id){ // fixe la langue utilisée pour les messages
     Locale locale=null;
-    locale=generateLocale(id);
+    locale=Logo.getLocale(id);
     messages=ResourceBundle.getBundle("langage",locale);
+    translationLanguage[0]=Logo.messages.getString("pref.general.french");
+  	translationLanguage[1]=Logo.messages.getString("pref.general.english");
+    translationLanguage[2]=Logo.messages.getString("pref.general.arabic");
+    translationLanguage[3]=Logo.messages.getString("pref.general.spanish");
+    translationLanguage[4]=Logo.messages.getString("pref.general.portuguese");
+  	translationLanguage[5]=Logo.messages.getString("pref.general.esperanto");
+    translationLanguage[6]=Logo.messages.getString("pref.general.german");
+    translationLanguage[7]=Logo.messages.getString("pref.general.galician");
+    translationLanguage[8]=Logo.messages.getString("pref.general.asturian");
+    translationLanguage[9]=Logo.messages.getString("pref.general.greek");
   }
-  /**
-   * This method returns the Locale corresponding to the language "id"
-   * 
-   * @param id The integer that represents the language
-   * @return The locale that corresponds to the desired language
-   */
-  public static Locale generateLocale(int id){  //rend la locale correspondant à l'entier id
-    Locale locale=null;
-    switch(id){
-      case Config.LANGUAGE_FRENCH: //french
-        locale=new Locale("fr","FR");
-        break;
-      case Config.LANGUAGE_ENGLISH: // english
-        locale=new Locale("en","US");
-        break;
-      case Config.LANGUAGE_ARABIC: // Arabic
-        locale=new Locale("ar","MA");
-        break;
-      case Config.LANGUAGE_SPANISH: // spanish
-      	locale=new Locale("es","ES");
-      	break;
-      case Config.LANGUAGE_PORTUGAL: // portuguese
-        locale=new Locale("pt","BR");
-        break;
-       case Config.LANGUAGE_ESPERANTO: //esperanto
-       	locale=new Locale("eo","EO");
-       	break;
-       case Config.LANGUAGE_GERMAN: // german
-       locale=new Locale("de","DE");
-       break;
-       case Config.LANGUAGE_GALICIAN: // galician
-        locale=new Locale("gl","ES");
-       break;
-       case Config.LANGUAGE_ASTURIAN: // Asturian
-    	  locale=new Locale("as","ES");
-    	break;
-       case Config.LANGUAGE_GREEK: // Greek
-    	   locale=new Locale("el","GR");
-    	break;
-    }
-  return locale;
-  }
+
   /**
    * This method initializes all XLogo's parameters from Command Line
    * java -jar xlogo.jar -a -lang fr file1.lgo ... 
@@ -196,9 +174,8 @@ public class Logo {
 			  Config.path.remove(i);
 			  if (i<Config.path.size()) {
 				  element=Config.path.get(i);
-				  String[] lang={"fr","en","ar","es","pt","eo","de","gl","as","el"};
-				  for (int j=0;j<lang.length;j++){
-					  if (lang[j].equals(element)){
+				  for (int j=0;j<Logo.locales.length;j++){
+					  if (Logo.locales[j].equals(element)){
 						  Config.langage=j;
 						  Logo.generateLanguage(j);
 						  break;
@@ -347,6 +324,7 @@ public class Logo {
 	}
 	catch(Exception e){
 	  System.out.println(e.toString());
+	  //e.printStackTrace();
 	  try{
 		  SwingUtilities.invokeAndWait(new Runnable(){
 			  public void run(){
@@ -363,7 +341,7 @@ public class Logo {
 		}
 		select.dispose();
 
-		locale=generateLocale(Config.langage);
+		locale=Logo.getLocale(Config.langage);
 		messages=ResourceBundle.getBundle("langage",locale);
 	}
 	// Verify that all values are in valid range
@@ -379,23 +357,6 @@ public class Logo {
  * @param args The file *.lgo to load on startup
  */
   public static void main(String[] args)   {
-/*	JEditorPane jep=new JEditorPane();
-  	jep.setEditable(false);
-  	try{
-  		
-  		java.net.URL url=new java.net.URL("http://xlogo.tuxfamily.org");
-  		jep.setPage(url);
-  	}
-    catch(UnknownHostException e2){System.out.println("non connecté");}
-  	catch(java.io.IOException e1){System.out.println(e1.getStackTrace());
-  System.out.println(e1.toString());
-  }
-
-  	javax.swing.JFrame jf=new javax.swing.JFrame();
-  	jf.getContentPane().add(jep);
-  	jf.setVisible(true);
-  	
-  	Toolkit.getDefaultToolkit().beep();*/
 	  //new Test();
 	  try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -445,4 +406,58 @@ public class Logo {
     	jf.setVisible(true);
     }*/
     }
+ /* public Language getLanguage(){
+	  return language;
+  }*/
+  /**
+	 * This method returns the Locale corresponding to the language "id"
+	 * 
+	 * @param id
+	 *            The integer that represents the language
+	 * @return The locale that corresponds to the desired language
+	 */
+public static Locale getLocale(int id){  // rend la locale
+												// correspondant à l'entier
+												// id
+  Locale locale=null;
+  switch(id){
+    case Config.LANGUAGE_FRENCH: // french
+      locale=new Locale("fr","FR");
+      break;
+    case Config.LANGUAGE_ENGLISH: // english
+      locale=new Locale("en","US");
+      break;
+    case Config.LANGUAGE_ARABIC: // Arabic
+      locale=new Locale("ar","MA");
+      break;
+    case Config.LANGUAGE_SPANISH: // spanish
+    	locale=new Locale("es","ES");
+    	break;
+    case Config.LANGUAGE_PORTUGAL: // portuguese
+      locale=new Locale("pt","BR");
+      break;
+     case Config.LANGUAGE_ESPERANTO: // esperanto
+     	locale=new Locale("eo","EO");
+     	break;
+     case Config.LANGUAGE_GERMAN: // german
+     locale=new Locale("de","DE");
+     break;
+     case Config.LANGUAGE_GALICIAN: // galician
+      locale=new Locale("gl","ES");
+     break;
+     case Config.LANGUAGE_ASTURIAN: // Asturian
+  	  locale=new Locale("as","ES");
+  	break;
+     case Config.LANGUAGE_GREEK: // Greek
+  	   locale=new Locale("el","GR");
+  	break;
+  }
+return locale;
+}
+public static String getLocaleTwoLetters(){
+	  if (Config.langage>-1&& Config.langage<locales.length)
+	  return locales[Config.langage];
+	  else return "en";
+}
+  
 }

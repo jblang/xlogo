@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import xlogo.utils.Utils;
 import xlogo.Config;
+import xlogo.Logo;
 
 /**
  * Title :        XLogo
@@ -21,9 +22,8 @@ import xlogo.Config;
 public class Selection_Langue extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 
-  private final String language[] = { "French","English","Arabic","Spanish","Portuguese","Esperanto","German",
-			"Galician","Asturian","Greek"};
-  private final int NUMBER_OF_LANGUAGE=language.length;
+
+  private final int NUMBER_OF_LANGUAGE=Logo.englishLanguage.length;
   private boolean selection_faite=false;
   private JPanel central=new JPanel();
   private JScrollPane js=null;
@@ -40,7 +40,7 @@ public class Selection_Langue extends JFrame implements ActionListener{
     for (int i=0;i<boutons.length;i++){
     	ic=new ImageIcon(Utils.dimensionne_image("drapeau"+i+".png",this));
       boutons[i]=new JToggleButton(ic);
-      boutons[i].setToolTipText(language[i]);
+      boutons[i].setToolTipText(Logo.englishLanguage[i]);
       groupe.add(boutons[i]);
       central.add(boutons[i],new GridBagConstraints(i%3, i/3, 1, 1 , 1.0, 1.0
       		,GridBagConstraints.CENTER, GridBagConstraints.VERTICAL, new Insets(10, 10, 0, 10), 0, 0));

@@ -7,5 +7,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="java3d"/>
+	<classpathentry kind="lib" path="jh.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

@@ -9,6 +9,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
+import javax.help.CSH;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
 import javax.swing.*;
 
 import java.util.Stack;
@@ -91,6 +94,7 @@ public class Application extends JFrame {
 	private Popup jpop;
 
 	private JMenu jMenuHelp = new JMenu();
+	private JMenuItem jMenuHelpOnLine;
 	private JMenuItem jMenuHelpTranslateXLogo=new JMenuItem();
 	private JMenuItem jMenuHelpAbout = new JMenuItem();
 	private JMenuItem jMenuHelpLicence = new JMenuItem();
@@ -396,6 +400,12 @@ public class Application extends JFrame {
 		jMenuHelp.setFont(Config.police);
 		jMenuHelpLicence.setFont(Config.police);
 		jMenuHelpAbout.setFont(Config.police);
+		if (null==jMenuHelpOnLine) jMenuHelpOnLine=new JMenuItem();
+		else {
+			jMenuHelp.remove(jMenuHelpOnLine);
+			jMenuHelpOnLine=new JMenuItem();
+		}
+		jMenuHelpOnLine.setFont(Config.police);
 		jMenuHelpTranslateXLogo.setFont(Config.police);
 		jMenuHelplicencefrancais.setFont(Config.police);
 		jLabel1.setFont(Config.police);
@@ -431,6 +441,7 @@ public class Application extends JFrame {
 		jMenuHelp.setText(Logo.messages.getString("menu.help"));
 		jMenuHelpLicence.setText(Logo.messages.getString("menu.help.licence"));
 		jMenuHelpAbout.setText(Logo.messages.getString("menu.help.about"));
+		jMenuHelpOnLine.setText(Logo.messages.getString("menu.help.online"));
 		jMenuHelpTranslateXLogo.setText(Logo.messages.getString("menu.help.translatexlogo"));
 		jMenuHelplicencefrancais.setText(Logo.messages
 				.getString("menu.help.translatedlicence"));
@@ -464,6 +475,29 @@ public class Application extends JFrame {
 		panneauHistorique1.updateText();
 		
 		jpop.setText();
+		
+		// Find the HelpSet file and create the HelpSet object:
+		  HelpSet hs=null;
+		   try {
+			   String url="http://downloads.tuxfamily.org/xlogo/downloads-";
+			   url+=Logo.getLocaleTwoLetters();
+			   url+="/javahelp/manual-";
+			   url+=Logo.getLocaleTwoLetters();
+			   url+=".hs";
+		      java.net.URL hsURL = new java.net.URL(url);
+			   hs = new HelpSet(null, hsURL);
+				// Create a HelpBroker object:
+			   HelpBroker hb = hs.createHelpBroker();
+			// Create a "Help" menu item to trigger the help viewer:
+			   jMenuHelpOnLine.addActionListener(new CSH.DisplayHelpFromSource( hb ));
+		   } catch (Exception ee) {
+		      // Say what the exception really is
+		      System.out.println( "HelpSet " + ee.getMessage());
+		      if (null!=hs)  System.out.println("HelpSet "+ hs.getHelpSetURL()+" not found");
+		   }
+			jMenuHelp.insert(jMenuHelpOnLine,0);
+		
+		
 		
 		//		JColorChooser jc=new JColorChooser();
 		//		affiche_nom(jc);

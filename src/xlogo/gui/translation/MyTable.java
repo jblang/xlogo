@@ -16,8 +16,8 @@ import javax.swing.JTable;
 import javax.swing.event.*;
 import javax.swing.JScrollPane;
 import java.awt.event.*;
-import xlogo.Logo;
 import xlogo.gui.Searchable;
+import xlogo.Logo;
 public class MyTable extends JPanel implements Searchable{
 	private static final long serialVersionUID = 1L;
 	private JTable table;
@@ -178,14 +178,14 @@ public class MyTable extends JPanel implements Searchable{
 			
 			if (action.equals(TranslateXLogo.CREATE)){
 				// Initilaize all Column Names
-				String[] tmp=tx.availableLang();
+				String[] tmp=Logo.translationLanguage;
 				columnNames=new String[tmp.length+1];
 				columnNames[0]=id;
 				for (int i=1;i<columnNames.length;i++){
 					columnNames[i]=tmp[i-1];
 				}
 			}
-			else columnNames=tx.availableLang();
+			else columnNames=Logo.translationLanguage;
 			buildRowData(bundle, action,id);
 		}
 		public String getColumnName(int col) {
@@ -229,7 +229,7 @@ public class MyTable extends JPanel implements Searchable{
 	    	ResourceBundle[] rb=new ResourceBundle[getColumnCount()];
 	    	// initialize all ResourceBundle
 	    	for(int i=0;i<getColumnCount();i++){
-	       		Locale locale = Logo.generateLocale(i);
+	       		Locale locale = Logo.getLocale(i);
 	       		// In CREATE Mode, when i=getColumnCount(), the last locale is null
 	       		if (null==locale) break;
 	       		rb[i] = ResourceBundle.getBundle(bundle, locale);

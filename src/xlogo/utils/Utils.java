@@ -296,7 +296,7 @@ public class Utils {
 		return f.exists();
 	}
   public static String primitiveName(String generic){
-			Locale locale = Logo.generateLocale(Config.langage);
+			Locale locale = Logo.getLocale(Config.langage);
 			ResourceBundle prim = ResourceBundle.getBundle(
 					"primitives", locale);
 			String st = prim.getString(generic);

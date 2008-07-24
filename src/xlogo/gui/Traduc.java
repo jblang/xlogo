@@ -24,12 +24,9 @@ public class Traduc extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JLabel traduire_de=new JLabel(Logo.messages.getString("traduire_de")+" ");
 	private JLabel vers=new JLabel(" "+Logo.messages.getString("vers")+" ");
-	private Object[] choix={Logo.messages.getString("pref.general.french"),Logo.messages.getString("pref.general.english"),Logo.messages.getString("pref.general.arabic"),Logo.messages.getString("pref.general.spanish"),
-			Logo.messages.getString("pref.general.portuguese"),Logo.messages.getString("pref.general.esperanto"),Logo.messages.getString("pref.general.german"),
-			Logo.messages.getString("pref.general.galician"),Logo.messages.getString("pref.general.asturian"),
-			Logo.messages.getString("pref.general.greek")};
-	private JComboBox combo_origine=new JComboBox(choix);
-	private JComboBox combo_destination=new JComboBox(choix);
+
+	private JComboBox combo_origine=new JComboBox(Logo.translationLanguage);
+	private JComboBox combo_destination=new JComboBox(Logo.translationLanguage);
 	private JScrollPane js_source=new JScrollPane();
 	private JScrollPane js_destination=new JScrollPane();
 	private JTextArea origine=new JTextArea();
@@ -139,10 +136,10 @@ public class Traduc extends JFrame implements ActionListener {
 			}
 			// ajout des mots clés pour et fin
 			int id=combo_origine.getSelectedIndex();
-			Locale locale=Logo.generateLocale(id);
+			Locale locale=Logo.getLocale(id);
 			ResourceBundle res1=ResourceBundle.getBundle("langage",locale);
 			id=combo_destination.getSelectedIndex();
-			locale=Logo.generateLocale(id);
+			locale=Logo.getLocale(id);
 			ResourceBundle res2=ResourceBundle.getBundle("langage",locale);
 			tre.put(res1.getString("pour"),res2.getString("pour"));
 			tre.put(res1.getString("fin"),res2.getString("fin"));
@@ -177,7 +174,7 @@ public class Traduc extends JFrame implements ActionListener {
  private ResourceBundle genere_langue(JComboBox jc){ // fixe la langue utilisée pour les messages
 	  Locale locale=null;
 	  int id=jc.getSelectedIndex();
-		locale=Logo.generateLocale(id);
+		locale=Logo.getLocale(id);
 		return ResourceBundle.getBundle("primitives",locale);
 	}
 }

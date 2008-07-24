@@ -1,2 +1,4 @@
 Main-Class: xlogo.Logo
+Class-Path: jh.jar
+
 

@@ -38,18 +38,8 @@ import xlogo.Logo;
 public class Panel_General extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Application cadre;
-	private String lang[] = { Logo.messages.getString("pref.general.french"),
-			Logo.messages.getString("pref.general.english"),
-			Logo.messages.getString("pref.general.arabic"),
-			Logo.messages.getString("pref.general.spanish"),
-			Logo.messages.getString("pref.general.portuguese"),
-			Logo.messages.getString("pref.general.esperanto"),
-			Logo.messages.getString("pref.general.german"),
-			Logo.messages.getString("pref.general.galician"),
-			Logo.messages.getString("pref.general.asturian"),
-			Logo.messages.getString("pref.general.greek")
-	};
-	private JList jl_langues = new JList(lang); //Pour les différentes langues
+
+	private JList jl_langues = new JList(Logo.translationLanguage); //Pour les différentes langues
 	private JScrollPane js_langues = new JScrollPane(jl_langues);
 	private ButtonGroup buttonGroup2 = new ButtonGroup();
 	private JCheckBox java = new JCheckBox();
@@ -229,11 +219,11 @@ public class Panel_General extends JPanel {
 	  	private ImageIcon[] drapeau;
 	  	Contenu(){
 	  		setFont(Config.police);
-	  		drapeau=new ImageIcon[lang.length];
+	  		drapeau=new ImageIcon[Logo.translationLanguage.length];
 	  		cree_icone();	
 	  	}
 	  	void cree_icone(){
-	  		for (int i=0;i<lang.length;i++){
+	  		for (int i=0;i<Logo.translationLanguage.length;i++){
 	  		Image image=null;
   			image= Toolkit.getDefaultToolkit().getImage(Utils.class.getResource("drapeau"+i+".png"));
   			MediaTracker tracker=new MediaTracker(this);

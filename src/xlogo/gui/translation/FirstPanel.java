@@ -39,7 +39,7 @@ public class FirstPanel extends JPanel implements ActionListener{
 	private TranslateXLogo tx;
 	protected FirstPanel(TranslateXLogo tx){
 		this.tx=tx;
-		int n=tx.availableLang().length;
+		int n=Logo.translationLanguage.length;
 		intArray=new Integer[n];
   		for(int i=0;i<n;i++){
         	intArray[i]=new Integer(i);
@@ -178,7 +178,7 @@ public class FirstPanel extends JPanel implements ActionListener{
 		  	private ImageIcon[] drapeau;
 		
 		  	Contenu(){
-		  		drapeau=new ImageIcon[tx.availableLang().length];
+		  		drapeau=new ImageIcon[Logo.translationLanguage.length];
 		  		cree_icone();	
 		  	}
 		  	void cree_icone(){
@@ -207,7 +207,7 @@ public class FirstPanel extends JPanel implements ActionListener{
 		  index, boolean isSelected,boolean cellHasFocus){ 
 		  		setOpaque(true);
 		  		int selectedIndex = ((Integer)value).intValue();
-		  		setText(tx.availableLang()[selectedIndex]); 
+		  		setText(Logo.translationLanguage[selectedIndex]); 
 		  		setIcon(drapeau[selectedIndex]);
 		  		if (isSelected) {
 		  			setBackground(list.getSelectionBackground());

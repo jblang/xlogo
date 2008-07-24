@@ -1806,8 +1806,7 @@ public class LaunchPrimitive {
 				break;
 			case 144: // date
 				Interprete.operande = true;
-				Calendar cal = Calendar.getInstance(Logo
-						.generateLocale(Config.langage));
+				Calendar cal = Calendar.getInstance(Logo.getLocale(Config.langage));
 				int jour = cal.get(Calendar.DAY_OF_MONTH);
 				int mois = cal.get(Calendar.MONTH) + 1;
 				int annee = cal.get(Calendar.YEAR);
@@ -1816,7 +1815,7 @@ public class LaunchPrimitive {
 				break;
 			case 145: // heure
 				Interprete.operande = true;
-				cal = Calendar.getInstance(Logo.generateLocale(Config.langage));
+				cal = Calendar.getInstance(Logo.getLocale(Config.langage));
 				int heure = cal.get(Calendar.HOUR);
 				int minute = cal.get(Calendar.MINUTE);
 				int seconde = cal.get(Calendar.SECOND);
@@ -3523,7 +3522,7 @@ public class LaunchPrimitive {
                     case 283: // workspace.edall
                     	cadre.editeur.open();
                     break;
-                    case 284: // controls.foreach
+                    case 284: // controls.foreach pourchaque
         				try{
         					// Variable name
         					String var=getWord(param.get(0));
@@ -3552,7 +3551,18 @@ public class LaunchPrimitive {
         						// If it's a list
         						if (list) {
         							character=this.item(li1, 1);
-									li1=li1.substring(character.length());
+        							// If it's a number
+        							try{
+        								// Fix Bug: foreach "i [1 2 3][pr :i]
+        								// character=1 , 2 , 3 (without quote)
+        								Double.parseDouble(character);
+    									li1=li1.substring(character.length()+1);
+        							}
+        							catch(NumberFormatException e){
+        								// Fix Bug: foreach "i [r s t][pr :i]
+        								// character="r ,  "s  or  "t
+    									li1=li1.substring(character.length());        								
+        							}
         						}
         						// If it's a word
         						else {
@@ -3565,8 +3575,8 @@ public class LaunchPrimitive {
             						catch(NumberFormatException e){
             							character="\""+character;
             						}
-
         						}
+
         						elements.add(character);
         					}
     						LoopForEach bp=new LoopForEach(BigDecimal.ZERO,new BigDecimal(elements.size()-1)

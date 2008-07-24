@@ -185,7 +185,7 @@ public class Editor extends JFrame implements ActionListener{
 					for (int k=0;k<pr.variable.size();k++){
 						pr.variable_sauve.add(pr.variable.get(k));
 					}
-//					System.out.println(pr.toString());
+//					System.out.println(pr.instr);
 		    }
 
 	    if (!defineSentence.equals("")&&affichable){

@@ -23,7 +23,7 @@ import java.util.Calendar;
  * in the temporary file's directory
  * and then launch the command:
  * <br>
- * java -D-jar -Xmx64m -Djava.library.path=path_to_tmp tmp_xlogo.jar<br>
+ * java -D-jar -Xmx64m -Djava.library.path=path_to_tmp -cp path_to_tmp tmp_xlogo.jar<br>
  * <br>
  * XLogo executes with a predefined heap size for the Virtual Machine (in the example 64M)
  */
@@ -35,8 +35,8 @@ public class Lanceur {
 	/**
 	 * The temporary folder which contains all files to start XLogo
 	 */
-	private File folder=null;
-	private File[] files=new File[5];
+	private File tmpFolder=null;
+	private File[] files=new File[6];
 	private int memoire=64;
 	/**
 	 * Constructs Lanceur with arguments args<br>
@@ -56,19 +56,20 @@ public class Lanceur {
 		extrait_application();
 		try{
 			// Add the tmp to the path
-			String newPath=folder.getAbsolutePath();
+			String newPath=tmpFolder.getAbsolutePath();
 			
 			String javaLibraryPath = System.getProperty("java.library.path")+File.pathSeparatorChar + newPath;
 			// Bug when launching under Windows with java webstart
 			javaLibraryPath=javaLibraryPath.replaceAll("\"", "");
 			System.out.println("Path: "+javaLibraryPath+"\n");
-			
-			String[] commande=new String[5+args.length];
+			String[] commande=new String[7+args.length];
 			commande[0]=System.getProperty("java.home")+File.separator+"bin"+File.separator+"java";
 			commande[1]="-jar";
 			commande[2]="-Xmx"+memoire+"m";
 			commande[3]="-Djava.library.path="+javaLibraryPath;
-			commande[4]=files[0].getAbsolutePath();
+			commande[4]="-classpath";
+			commande[5]=System.getProperty("java.class.path")+";"+tmpFolder.getAbsolutePath()+File.separator+"jh.jar";
+			commande[6]=files[0].getAbsolutePath();
 			for (int i=0;i<args.length;i++){
 				commande[i+5]=args[i];
 //				System.out.println("Argument "+i+" "+args[i]);
@@ -124,7 +125,7 @@ public class Lanceur {
 		catch(IOException e1){System.out.println(e1);}
 		catch(SecurityException e2){System.out.println(e2);}
 		// Restore path
-		String pathToFolder=folder.getAbsolutePath();
+		String pathToFolder=tmpFolder.getAbsolutePath();
 		String path=System.getProperty("java.library.path");
 		StringTokenizer st=new StringTokenizer(path,File.pathSeparator);
 		String newPath="";
@@ -138,7 +139,7 @@ public class Lanceur {
 		for (int i=0;i<files.length;i++){
 			if (null!=files[i]) files[i].delete();
 		}
-		folder.delete();
+		tmpFolder.delete();
 		System.out.println("Closing XLogo. Cleaning tmp file");
 	}
 	/**
@@ -175,62 +176,70 @@ public class Lanceur {
 			int i=0;
 			String tmpPath=System.getProperty("java.io.tmpdir")+File.separator+"tmp_xlogo";
 			while (true){
-				folder=new File(tmpPath+i);
-				if (!folder.exists()) break;
+				tmpFolder=new File(tmpPath+i);
+				if (!tmpFolder.exists()) break;
 				else i++;
 			}
-			boolean b=folder.mkdir();
+			boolean b=tmpFolder.mkdir();
 			System.out.println("Creating tmp_xlogo directory - success: "+b);
 			// extract the file tmp_xlogo.jar in this folder
             InputStream src= Lanceur.class.getResourceAsStream("tmp_xlogo.jar");
-            files[0]=new File(folder.getAbsolutePath()+File.separator+"tmp_xlogo.jar");
+            files[0]=new File(tmpFolder.getAbsolutePath()+File.separator+"tmp_xlogo.jar");
 			b=copier(src,files[0]);
 			System.out.println("Copying tmp_xlogo.jar - success: "+b);
+
+			// extract the file jh.jar in this folder
+            src= Lanceur.class.getResourceAsStream("jh.jar");
+            files[1]=new File(tmpFolder.getAbsolutePath()+File.separator+"jh.jar");
+			b=copier(src,files[1]);
+			System.out.println("Copying jh.jar - success: "+b);
+
 			// extract the native driver for java 3d in this folder
 			String os=System.getProperty("os.name").toLowerCase();
 			String arch=System.getProperty("os.arch");
 			System .out.println("Operating system: "+os);
 			System .out.println("Architecture: "+arch);
+			
 			// Linux 
 			if (os.indexOf("linux")!=-1){
 				if (arch.indexOf("86")!=-1){
 		            InputStream lib= Lanceur.class.getResourceAsStream("linux/x86/libj3dcore-ogl.so");
-		            files[1]=new File(folder.getAbsolutePath()+File.separator+"libj3dcore-ogl.so");
-					copier(lib,files[1]);
-		            lib= Lanceur.class.getResourceAsStream("linux/x86/libj3dcore-ogl-cg.so");
-		            files[2]=new File(folder.getAbsolutePath()+File.separator+"libj3dcore-ogl-cg.so");
+		            files[2]=new File(tmpFolder.getAbsolutePath()+File.separator+"libj3dcore-ogl.so");
 					copier(lib,files[2]);
+		            lib= Lanceur.class.getResourceAsStream("linux/x86/libj3dcore-ogl-cg.so");
+		            files[3]=new File(tmpFolder.getAbsolutePath()+File.separator+"libj3dcore-ogl-cg.so");
+					copier(lib,files[3]);
 				}
 				else{
 				      InputStream lib= Lanceur.class.getResourceAsStream("linux/amd64/libj3dcore-ogl.so");
-			            files[1]=new File(folder.getAbsolutePath()+File.separator+"libj3dcore-ogl.so");
-						copier(lib,files[1]);
+			            files[2]=new File(tmpFolder.getAbsolutePath()+File.separator+"libj3dcore-ogl.so");
+						copier(lib,files[2]);
 				}
 			}
 			// windows
 			else if (os.indexOf("windows")!=-1){
 				if (arch.indexOf("86")!=-1){
 					InputStream lib= Lanceur.class.getResourceAsStream("windows/x86/j3dcore-d3d.dll");
-					files[1]=new File(folder.getAbsolutePath()+File.separator+"j3dcore-d3d.dll");
-					b=copier(lib,files[1]);
+					files[2]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-d3d.dll");
+					b=copier(lib,files[2]);
 					System.out.println("Copying library 1 - success: "+b);
 					lib= Lanceur.class.getResourceAsStream("windows/x86/j3dcore-ogl.dll");
-					files[2]=new File(folder.getAbsolutePath()+File.separator+"j3dcore-ogl.dll");
-					b=copier(lib,files[2]);
+					files[3]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl.dll");
+					b=copier(lib,files[3]);
 					System.out.println("Copying library 2 - success: "+b);
 					lib= Lanceur.class.getResourceAsStream("windows/x86/j3dcore-ogl-cg.dll");
-					files[3]=new File(folder.getAbsolutePath()+File.separator+"j3dcore-ogl-cg.dll");
-					b=copier(lib,files[3]);
+					files[4]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl-cg.dll");
+					b=copier(lib,files[4]);
 					System.out.println("Copying library 3 - success: "+b);
 					lib= Lanceur.class.getResourceAsStream("windows/x86/j3dcore-ogl-chk.dll");
-					files[4]=new File(folder.getAbsolutePath()+File.separator+"j3dcore-ogl-chk.dll");
-					b=copier(lib,files[4]);
+					files[5]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl-chk.dll");
+					b=copier(lib,files[5]);
 					System.out.println("Copying library 4 - success: "+b);
 				}	
 				else{
 					InputStream lib= Lanceur.class.getResourceAsStream("windows/amd64/j3dcore-ogl.dll");
-					files[1]=new File(folder.getAbsolutePath()+File.separator+"j3dcore-ogl.dll");
-					copier(lib,files[1]);
+					files[2]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl.dll");
+					copier(lib,files[2]);
 				}
 			}
 			// Mac os

@@ -58,7 +58,7 @@ public class Primitive {
 	 */
 	protected String getAllPrimitives(){
 		Vector<String> list=new Vector<String>();
-		Locale locale = Logo.generateLocale(Config.langage);
+		Locale locale = Logo.getLocale(Config.langage);
 		ResourceBundle prim = ResourceBundle.getBundle("primitives", locale);
 		try{
 			BufferedReader bfr=new BufferedReader(
@@ -95,7 +95,7 @@ public class Primitive {
 	public void buildPrimitiveTreemap(int id) {
 	//	this.exportPrimCSV();
 		primitives = new TreeMap<String,String>();
-		Locale locale = Logo.generateLocale(Config.langage);
+		Locale locale = Logo.getLocale(Config.langage);
 		ResourceBundle prim = ResourceBundle.getBundle("primitives", locale);
 		try{
 			BufferedReader bfr=new BufferedReader(

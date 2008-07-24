@@ -186,7 +186,7 @@ public class MenuListener extends JDialog implements ActionListener{
     else if(MenuListener.TOOLS_SCREEN_COLOR.equals(cmd)){      //couleur du fond
     Color color=JColorChooser.showDialog(cadre,Logo.messages.getString("couleur_du_fond"),cadre.getArdoise().getBackgroundColor());
     if (null!=color){
-      Locale locale=Logo.generateLocale(Config.langage);
+      Locale locale=Logo.getLocale(Config.langage);
       java.util.ResourceBundle rs=java.util.ResourceBundle.getBundle("primitives",locale);
       String fcfg=rs.getString("fcfg");
       fcfg=fcfg.substring(0,fcfg.indexOf(" "));
@@ -198,7 +198,7 @@ public class MenuListener extends JDialog implements ActionListener{
    else if(MenuListener.TOOLS_PEN_COLOR.equals(cmd)){      //Couleur du crayon
     Color color=JColorChooser.showDialog(cadre,Logo.messages.getString("couleur_du_crayon"),kernel.getActiveTurtle().couleurcrayon);
     if (null!=color){
-      Locale locale=Logo.generateLocale(Config.langage);
+      Locale locale=Logo.getLocale(Config.langage);
       java.util.ResourceBundle rs=java.util.ResourceBundle.getBundle("primitives",locale);
       String fcc=rs.getString("fcc");
       fcc=fcc.substring(0,fcc.indexOf(" "));
@@ -277,38 +277,7 @@ public class MenuListener extends JDialog implements ActionListener{
     String path="gpl/gpl-";
     if (MenuListener.HELP_LICENCE.equals(cmd))  path+="en";
     else {
-    	switch(Config.langage){
-    		case Config.LANGUAGE_FRENCH: //french
-    			path+="fr";
-    		break;
-    		case Config.LANGUAGE_ENGLISH: // english
-    			path+="en";
-    		break;
-    		case Config.LANGUAGE_ARABIC: // Arabic
-    			path+="ar";
-    		break;
-    		case Config.LANGUAGE_SPANISH: // spanish
-    			path+="es";
-    		break;
-    		case Config.LANGUAGE_PORTUGAL: // portuguese
-    			path+="pt";	
-    		break;
-    		case Config.LANGUAGE_ESPERANTO: //esperanto
-    			path+="eo";
-    		break;
-    		case Config.LANGUAGE_GERMAN: // german
-    			path+="de";
-    		break;
-    		case Config.LANGUAGE_GALICIAN: // galician
-    			path+="gl";
-    		break;
-    		case Config.LANGUAGE_ASTURIAN: //asturian
-    			path+="es";
-    		break;
-    		case Config.LANGUAGE_GREEK: // greek
-    			path+="el";
-    		break;
-    	}
+		path+=Logo.getLocaleTwoLetters();
     }
      path+=".html";    
     java.net.URL helpURL = MenuListener.class.getResource(path);
@@ -346,6 +315,7 @@ public class MenuListener extends JDialog implements ActionListener{
 	  cadre.affichage_Start(Utils.decoupe(Config.mainCommand));
 	  cadre.getHistoryPanel().ecris("normal", Config.mainCommand+"\n");
   }
+
   }
   
   /**

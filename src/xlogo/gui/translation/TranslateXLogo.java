@@ -18,17 +18,7 @@ public class TranslateXLogo extends JFrame implements ActionListener {
 	private String id="";
 	private String action;
 	private Application app;
-   private final String lang[] = { Logo.messages.getString("pref.general.french"),
-				Logo.messages.getString("pref.general.english"),
-				Logo.messages.getString("pref.general.arabic"),
-				Logo.messages.getString("pref.general.spanish"),
-				Logo.messages.getString("pref.general.portuguese"),
-				Logo.messages.getString("pref.general.esperanto"),
-				Logo.messages.getString("pref.general.german"),
-				Logo.messages.getString("pref.general.galician"),
-				Logo.messages.getString("pref.general.asturian"),
-				Logo.messages.getString("pref.general.greek"),
-		};
+
 	protected static final String OK="ok";
 	protected static final String SEND="send";
 	protected static final String SEARCH="search";
@@ -46,9 +36,6 @@ public class TranslateXLogo extends JFrame implements ActionListener {
 	public TranslateXLogo(Application app){
 		this.app=app;
 		initGui();
-	}
-	protected String[] availableLang(){
-		return lang;
 	}
 	private void initGui(){
 		setIconImage(Toolkit.getDefaultToolkit().createImage(
@@ -90,10 +77,10 @@ public class TranslateXLogo extends JFrame implements ActionListener {
 		          try {
 		        	  Locale locale=null;
 		        	  if (action.equals(TranslateXLogo.CREATE)){
-		        		  locale = Logo.generateLocale(0);
+		        		  locale = Logo.getLocale(0);
 		        		}
 		    			else if (!action.equals(TranslateXLogo.CONSULT)){
-		    				  locale = Logo.generateLocale(Integer.parseInt(id));
+		    				  locale = Logo.getLocale(Integer.parseInt(id));
 		    			}
 		        	java.util.Vector<String> v=bottom.getPrimTable().getKeys();
 		        	ResourceBundle rb = ResourceBundle.getBundle("primitives", locale);
