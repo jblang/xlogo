@@ -1,4 +1,3 @@
 Main-Class: xlogo.Logo
-Class-Path: jh.jar
-
+Class-Path: jh.jar vecmath.jar j3dcore.jar j3dutils.jar
 

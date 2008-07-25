@@ -1,8 +1,11 @@
 Developper's corner
 
 1) To add a language
-- class Language
-   Update translationLanguage
+- class Logo
+   Update translationLanguage 
+   			new String[10]
+   			generateLanguage()
+   			
    Update englishLanguage
    Update locales
    Update getLocale()
