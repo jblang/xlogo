@@ -40,15 +40,37 @@
 		</condition>		
 		<antcall target="sign.xlogo">
 		</antcall>
-    </target>
-	
 
-	
+    <antcall target="create.src.tarball">
+    </antcall>
+    
+    </target>
 	
 
     <!-- - - - - - - - - - - - - - - - - - 
           target: depends                      
          - - - - - - - - - - - - - - - - - -->
+	
+	<!-- Creates the source tarball -->
+	
+	<target name="create.src.tarball">
+		<tar destfile="xlogo-src.tar.gz">
+			<fileset dir="." >
+		    	<include name="src/**"/>
+		    	<include name="windows/**"/>
+		    	<include name="linux/**"/>
+		    	<include name="solaris/**"/>
+		    	<include name="jh.jar"/>
+		    	<include name="j3dcore.jar"/>
+    			<include name="vecmath.jar"/>
+    			<include name="j3dutils.jar"/>
+				<include name="manifest_xlogo"/>
+				<include name="manifest_start"/>
+				<include name="build.xml"/>
+				<include name="README"/>
+			</fileset>
+		</tar>
+	</target>
 	
 	<!-- Sign the XLogo (Java Web Start) -->
 	
@@ -105,7 +127,9 @@
 	<!-- Compile all Files -->
 
 	<target name="compile" depends="copy.static.files">
-    	<javac srcdir="src" destdir="deploy/">
+    	<javac 
+    		source="1.5" encoding="utf8"
+    		srcdir="src" destdir="deploy/">
     		 <classpath>
 		        <pathelement location="vecmath.jar"/>
 		        <pathelement location="j3dcore.jar"/>
