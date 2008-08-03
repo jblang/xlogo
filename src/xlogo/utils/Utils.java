@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
-
+import xlogo.kernel.MyCalculator;
 import xlogo.kernel.Affichage;
 import xlogo.Config;
 import xlogo.Logo;
@@ -93,7 +93,7 @@ public class Utils {
 				else if (c==' ') ignore=false;
 			}
 		}
-		return new String(buffer);
+		return MyCalculator.getOutputNumber(new String(buffer));
 	}
 	/**
 	 * This method is formatting the String st.<br>

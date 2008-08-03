@@ -27,11 +27,15 @@ public class Kernel {
 	private Workspace wp;
 	private Application app;
 
+	private MyCalculator myCalculator;
 	
 	public Kernel(Application app){
 		this.app=app;
-		this.wp=new Workspace(app);		
+		this.wp=new Workspace(app);
+		initCalculator(-1);
 	}
+	
+	
 	 public Workspace getWorkspace(){
 	 	return wp;	
 	 }
@@ -49,7 +53,11 @@ public class Kernel {
 	public Turtle getActiveTurtle(){
 		return app.getArdoise().tortue;
 	}
-	 public void fcc(Color color){
+	public MyCalculator getCalculator(){
+		return myCalculator;
+	}
+	
+	public void fcc(Color color){
 		 	app.getArdoise().fcc(color);
 		 }
 		public void vide_ecran(){
@@ -80,9 +88,16 @@ public class Kernel {
 	 public String execute(StringBuffer st) throws xlogo.utils.myException{
 		 	return interprete.execute(st);
 	 } 
+	 
+	 protected void initCalculator(int s){
+		 myCalculator=new MyCalculator(s,app);
+		 
+	 }
 	public void initPrimitive(){
 	 	primitive=new Primitive(app);	
 	 }
+	
+	
 	 public void initInterprete(){
 		interprete=new Interprete(app);
 	 }

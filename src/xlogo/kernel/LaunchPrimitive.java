@@ -24,8 +24,6 @@ import javax.swing.ImageIcon;
 import javax.swing.Icon;
 import javax.vecmath.Point3d;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import xlogo.utils.Utils;
 import xlogo.gui.Lis;
 import xlogo.gui.MyTextAreaDialog;
@@ -146,49 +144,43 @@ public class LaunchPrimitive {
 			case 0: // av
 				delay();
 				try {
-					cadre.getArdoise().av(number(param.pop()));
+					cadre.getArdoise().av(kernel.getCalculator().numberDouble(param.pop()));
 				} catch (myException e) {
 				}
 				break;
 			case 1: // re
 				delay();
 				try {
-					cadre.getArdoise().av(-number(param.pop()));
+					cadre.getArdoise().av(-kernel.getCalculator().numberDouble(param.pop()));
 				} catch (myException e) {
 				}
 				break;
 			case 2: // td
 				delay();
 				try {
-					cadre.getArdoise().td(number(param.pop()));
+					cadre.getArdoise().td(kernel.getCalculator().numberDouble(param.pop()));
 				} catch (myException e) {
 				}
 				break;
 			case 3: // tg
 				delay();
 				try {
-					cadre.getArdoise().td(-number(param.pop()));
+					cadre.getArdoise().td(-kernel.getCalculator().numberDouble(param.pop()));
 
 				} catch (myException e) {
 				}
 				break;
-			case 4: // puissance
+			case 4: // arithmetic.power puissance
 				try {
-					double p = Math.pow(number(param.get(0)),
-							number(param.get(1)));
-					// Bug pr power -1 0.5
-					Double p1=new Double(p);
-					if (p1.equals(Double.NaN)) throw new myException(cadre,Utils.primitiveName("arithmetic.puissance")+" "+Logo.messages.getString("attend_positif"));
-					// End Bug
-					Interprete.calcul.push(teste_fin_double(p));
-					Interprete.operande = true;
+					Interprete.operande = true;			
+					Interprete.calcul.push(kernel.getCalculator().power(param.get(0),param.get(1)));
 				} catch (myException e) {
 				}
 				break;
 			case 5: // repete controls.repeat
 				try {
 					String liste = getList(param.get(1));
-					kernel.primitive.repete(getInteger(param.get(0)), liste);
+					kernel.primitive.repete(kernel.getCalculator().getInteger(param.get(0)), liste);
 				} catch (myException e) {
 				}
 				break;
@@ -276,11 +268,11 @@ public class LaunchPrimitive {
 				delay();
 				try {
 					if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
-						double x = number(param.get(0));
+						double x = kernel.getCalculator().numberDouble(param.get(0));
 						double y = Config.imageHeight/2 - kernel.getActiveTurtle().corY;
 						cadre.getArdoise().fpos(x + " " + y);
 					}
-					else cadre.getArdoise().fpos(number(param.get(0))+" "+kernel.getActiveTurtle().Y+" "
+					else cadre.getArdoise().fpos(kernel.getCalculator().numberDouble(param.get(0))+" "+kernel.getActiveTurtle().Y+" "
 							+kernel.getActiveTurtle().Z);
 				} catch (myException e) {
 				}
@@ -289,11 +281,11 @@ public class LaunchPrimitive {
 				delay();
 				try {
 					if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
-						double y = number(param.get(0));
+						double y = kernel.getCalculator().numberDouble(param.get(0));
 						double x = kernel.getActiveTurtle().corX - Config.imageWidth/2;
 						cadre.getArdoise().fpos(x + " " + y);
 					}
-					else cadre.getArdoise().fpos(kernel.getActiveTurtle().X+" "+number(param.get(0))
+					else cadre.getArdoise().fpos(kernel.getActiveTurtle().X+" "+kernel.getCalculator().numberDouble(param.get(0))
 							+" "+kernel.getActiveTurtle().Z);
 						
 				} catch (myException e) {
@@ -303,8 +295,8 @@ public class LaunchPrimitive {
 				delay();
 				try {
 					primitive2D("drawing.fixexy");
-					cadre.getArdoise().fpos(number(param.get(0)) + " "
-							+ number(param.get(1)));
+					cadre.getArdoise().fpos(kernel.getCalculator().numberDouble(param.get(0)) + " "
+							+ kernel.getCalculator().numberDouble(param.get(1)));
 				} catch (myException e) {
 				}
 				break;
@@ -313,9 +305,9 @@ public class LaunchPrimitive {
 				try {
 					if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D)
 					cadre.getArdoise().td(360 - kernel.getActiveTurtle().heading
-							+ number(param.pop()));
+							+ kernel.getCalculator().numberDouble(param.pop()));
 					else{
-        					cadre.getArdoise().setHeading(number(param.pop()));						
+        					cadre.getArdoise().setHeading(kernel.getCalculator().numberDouble(param.pop()));						
 					}
 				} catch (myException e) {
 				}
@@ -344,36 +336,40 @@ public class LaunchPrimitive {
 				kernel.getActiveTurtle().couleurcrayon = kernel.getActiveTurtle().couleurmodedessin;
 				break;
 			case 23: // somme
-				add(param);
+				Interprete.operande=true;
+				Interprete.calcul.push(kernel.getCalculator().add(param));
 				break;
+
 			case 24: // difference
-				substract(param);
+				Interprete.operande=true;
+				try{
+					Interprete.calcul.push(kernel.getCalculator().substract(param));
+				} catch (myException e) {}
 				break;
-			case 25: // moins (opposé)
-				try {
-					BigDecimal a = numberDecimal(param.get(0));
-					Interprete.calcul.push(a.negate().toString());
-					Interprete.operande = true;
-				} catch (myException e) {
+			case 25: // arithmetic.minus moins (opposé)
+				try{
+					Interprete.calcul.push(kernel.getCalculator().minus(param.get(0)));
+					Interprete.operande = true;				
 				}
+				catch(myException e){}
+
 				break;
 			case 26: // produit
-				multiply(param);
-			break;
+				Interprete.calcul.push(kernel.getCalculator().multiply(param));
+				Interprete.operande = true;
+				break;
 			case 27: // div
-				divide(param);
-			break;
-			case 28: // reste
-				try {
-					int a = getInteger(param.get(0));
-					int b = getInteger(param.get(1));
-					if (b == 0)
-						throw new myException(cadre, Logo.messages
-								.getString("division_par_zero"));
-					Interprete.calcul.push(teste_fin_double(a % b));
-					Interprete.operande = true;
-				} catch (myException e) {
+				Interprete.operande=true;
+				try{
+					Interprete.calcul.push(kernel.getCalculator().divide(param));
 				}
+				catch(myException e){}
+				break;
+			case 28: // reste
+				Interprete.operande = true;
+				try{
+					Interprete.calcul.push(kernel.getCalculator().remainder(param.get(0),param.get(1)));
+				} catch (myException e) {}
 				break;
 			case 29: // retourne
 				try {
@@ -382,24 +378,33 @@ public class LaunchPrimitive {
 				}
 				break;
 			case 30: // *
-				multiply(param);
+				Interprete.operande=true;
+				Interprete.calcul.push(kernel.getCalculator().multiply(param));
 				break;
 			case 31: // diviser /
-				divide(param);
+				Interprete.operande=true;
+				try{
+				Interprete.calcul.push(kernel.getCalculator().divide(param));
+			}
+			catch(myException e){}
 				break;
 			case 32: // +
-				add(param);
+				Interprete.operande=true;
+				Interprete.calcul.push(kernel.getCalculator().add(param));
 			break;
 			case 33: // -
-				substract(param);
+				Interprete.operande=true;
+					try{
+						Interprete.calcul.push(kernel.getCalculator().substract(param));
+				} catch (myException e) {}
 			break;
 			case 34: // =
 				equal(param);
 				break;
 			case 35: // <
 				try {
-					double a = number(param.get(0));
-					double b = number(param.get(1));
+					double a = kernel.getCalculator().numberDouble(param.get(0));
+					double b = kernel.getCalculator().numberDouble(param.get(1));
 					if (a < b)
 						Interprete.calcul.push(Logo.messages.getString("vrai"));
 					else
@@ -410,8 +415,8 @@ public class LaunchPrimitive {
 				break;
 			case 36: // >
 				try {
-					double a = number(param.get(0));
-					double b = number(param.get(1));
+					double a = kernel.getCalculator().numberDouble(param.get(0));
+					double b = kernel.getCalculator().numberDouble(param.get(1));
 					if (a > b)
 						Interprete.calcul.push(Logo.messages.getString("vrai"));
 					else
@@ -533,45 +538,37 @@ public class LaunchPrimitive {
 				break;
 			case 42: // cap
 				Interprete.operande = true;
-				Interprete.calcul.push(teste_fin_double(kernel.getActiveTurtle().heading));
+				Interprete.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().heading));
 				break;
 			case 43: // arrondi
 				Interprete.operande = true;
 				try {
 					Interprete.calcul.push(String.valueOf(Math
-							.round(number(param.get(0)))));
+							.round(kernel.getCalculator().numberDouble(param.get(0)))));
 				} catch (myException e) {
 				}
 				break;
 			case 44: // log10
 				Interprete.operande = true;
 				try {
-					double nombre = number(param.get(0));
-					if (nombre < 0 || nombre == 0) {
-						String log=Utils.primitiveName("arithmetic.log10");
-						throw new myException(cadre, log + " "
-								+ Logo.messages.getString("attend_positif"));
-					}
-					Interprete.calcul.push(teste_fin_double(Math.log(nombre)
-							/ Math.log(10)));
-				} catch (myException e) {
-				}
+					Interprete.calcul.push(kernel.getCalculator().log10(param.get(0)));
+				} catch (myException e) {}
 				break;
-			case 45: // sin
+			case 45: // arithmetic.sin
+				Interprete.operande = true;
 				try {
-					Interprete.calcul.push(teste_fin_double(Math.sin(Math
-							.toRadians(number(param.get(0))))));
+					Interprete.calcul.push(kernel.getCalculator().sin(param.get(0)));
 				} catch (myException e) {
 				}
-				Interprete.operande = true;
+
 				break;
-			case 46: // cos
+			case 46: // arithmetic.cos
+				Interprete.operande = true;
 				try {
-					Interprete.calcul.push(teste_fin_double(Math.cos(Math
-							.toRadians(number(param.get(0))))));
+					Interprete.calcul.push(kernel.getCalculator().cos(param.get(0)));
 				} catch (myException e) {
 				}
-				Interprete.operande = true;
+
 				break;
 			case 47: // ou
 				ou(param);
@@ -740,9 +737,9 @@ public class LaunchPrimitive {
 					mot = getWord(param.get(1));
 					if (null == mot)
 						Interprete.calcul.push(item(getFinalList(param.get(1)
-								), getInteger(param.get(0))));
+								), kernel.getCalculator().getInteger(param.get(0))));
 					else {
-						int i = getInteger(param.get(0));
+						int i = kernel.getCalculator().getInteger(param.get(0));
 						if (i < 1 || i > getWordLength(mot))
 							throw new myException(cadre, Utils.primitiveName("item")+" "+
 									Logo.messages.getString("n_aime_pas")+ i +" "+
@@ -956,16 +953,11 @@ public class LaunchPrimitive {
 				} catch (myException e) {
 				} 
 				break;
-			case 70: // racine
+			case 70: // racine arithmetic.sqrt
 				Interprete.operande = true;
 				try {
-					double nombre = number(param.get(0));
-					if (nombre < 0) {
-						String racine=Utils.primitiveName("arithmetic.racine");
-						throw new myException(cadre, racine + " "
-								+ Logo.messages.getString("attend_positif"));
-					}
-					Interprete.calcul.push(teste_fin_double(Math.sqrt(nombre)));
+					Interprete.calcul.push(kernel.getCalculator().sqrt(param.get(0)));
+
 				} catch (myException e) {
 				}
 				break;
@@ -1007,7 +999,7 @@ public class LaunchPrimitive {
 							} catch (myException e) {
 						}
 					} else {
-						int coul=getInteger(param.get(0)) % DrawPanel.defaultColors.length;
+						int coul=kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
 						if (coul<0) coul+=DrawPanel.defaultColors.length;
 						color=DrawPanel.defaultColors[coul];
 					}
@@ -1024,7 +1016,7 @@ public class LaunchPrimitive {
 						} catch (myException e) {
 						}
 					} else {
-						int coul=getInteger(param.get(0)) % DrawPanel.defaultColors.length;
+						int coul=kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
 						if (coul<0) coul+=DrawPanel.defaultColors.length;
 						color = DrawPanel.defaultColors[coul];
 					}
@@ -1035,7 +1027,7 @@ public class LaunchPrimitive {
 			case 77: // hasard
 				Interprete.operande = true;
 				try {
-					int i = getInteger(param.get(0));
+					int i = kernel.getCalculator().getInteger(param.get(0));
 					i = (int) Math.floor(Math.random() * i);
 					Interprete.calcul.push(String.valueOf(i));
 				} catch (myException e) {
@@ -1043,7 +1035,7 @@ public class LaunchPrimitive {
 				break;
 			case 78: // attends
 				try {
-					int temps = getInteger(param.get(0));
+					int temps = kernel.getCalculator().getInteger(param.get(0));
 					if (temps < 0) {
 						String attends = Utils.primitiveName("attends");
 						throw new myException(cadre, attends + " "
@@ -1148,7 +1140,7 @@ public class LaunchPrimitive {
 				break;
 			case 91: // ftc, fixetaillecrayon
 				try {
-					double nombre = number(param.get(0));
+					double nombre = kernel.getCalculator().numberDouble(param.get(0));
 					if (nombre < 0)
 						nombre = Math.abs(nombre);
 					if (DrawPanel.record3D==DrawPanel.record3D_LINE||DrawPanel.record3D==DrawPanel.record3D_POINT){
@@ -1279,7 +1271,7 @@ public class LaunchPrimitive {
 					Interprete.operande=true;
 					if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
 						double angle = cadre.getArdoise().vers2D(getFinalList(param.get(0)));
-						Interprete.calcul.push(teste_fin_double(angle));
+						Interprete.calcul.push(MyCalculator.teste_fin_double(angle));
 					}
 					else{
 						double[] orientation=cadre.getArdoise().vers3D(getFinalList(param.get(0)));
@@ -1292,7 +1284,7 @@ public class LaunchPrimitive {
 				try {
 					Interprete.operande=true;
 					double distance = cadre.getArdoise().distance(getFinalList(param.get(0)));
-					Interprete.calcul.push(teste_fin_double(distance));
+					Interprete.calcul.push(MyCalculator.teste_fin_double(distance));
 				} catch (myException e) {
 				}
 				break;
@@ -1471,41 +1463,38 @@ public class LaunchPrimitive {
 				break;
 			case 114: // pi
 				Interprete.operande = true;
-				Interprete.calcul.push(String.valueOf(Math.PI));
+				Interprete.calcul.push(kernel.getCalculator().pi());
 				break;
-			case 115: // tangente
+			case 115: // tangente arithmetic.tan
+				Interprete.operande = true;
 				try {
-					Interprete.calcul.push(teste_fin_double(Math.tan(Math
-							.toRadians(number(param.get(0))))));
+					Interprete.calcul.push(kernel.getCalculator().tan(param.get(0)));
 				} catch (myException e) {
 				}
-				Interprete.operande = true;
+
 				break;
 			case 116: // acos
 				try {
-					Interprete.calcul.push(teste_fin_double(Math.toDegrees(Math
-							.acos(number(param.get(0))))));
+					Interprete.calcul.push(kernel.getCalculator().acos(param.get(0)));
+					Interprete.operande = true;					
 				} catch (myException e) {
 				}
-				Interprete.operande = true;
 				break;
 			case 117: // asin
 				try {
-					Interprete.calcul.push(teste_fin_double(Math.toDegrees(Math
-							.asin(number(param.get(0))))));
+					Interprete.calcul.push(kernel.getCalculator().asin(param.get(0)));
+					Interprete.operande = true;
 				} catch (myException e) {
 				}
-				Interprete.operande = true;
+
 
 				break;
 			case 118: // atan
 				try {
-					Interprete.calcul.push(teste_fin_double(Math.toDegrees(Math
-							.atan(number(param.get(0))))));
+					Interprete.calcul.push(kernel.getCalculator().atan(param.get(0)));
+					Interprete.operande = true;
 				} catch (myException e) {
 				}
-				Interprete.operande = true;
-
 				break;
 			case 119: // vrai
 				Interprete.operande = true;
@@ -1526,7 +1515,7 @@ public class LaunchPrimitive {
 			case 122: // fixeforme setshape
 				try {
 					primitive2D("turtle.fforme");
-					int i = getInteger(param.get(0));
+					int i = kernel.getCalculator().getInteger(param.get(0));
 					if (kernel.getActiveTurtle().id == 0) {
 						Config.activeTurtle = i;
 					}
@@ -1602,7 +1591,7 @@ public class LaunchPrimitive {
 					}
 				} catch (NumberFormatException e) {
 					try {
-						getInteger(param.get(0));
+						kernel.getCalculator().getInteger(param.get(0));
 					} catch (myException e1) {
 					}
 				}
@@ -1613,7 +1602,7 @@ public class LaunchPrimitive {
 				break;
 			case 128: // fixetaillepolice
 				try {
-					int taille = getInteger(param.get(0));
+					int taille = kernel.getCalculator().getInteger(param.get(0));
 					kernel.getActiveTurtle().police = taille;
 					Font police = Config.police;
 					cadre.getArdoise().setGraphicsFont(police
@@ -1676,7 +1665,7 @@ public class LaunchPrimitive {
 					}
 				} catch (NumberFormatException e) {
 					try {
-						getInteger(param.get(0));
+						kernel.getCalculator().getInteger(param.get(0));
 					} catch (myException e1) {
 					}
 				}
@@ -1696,7 +1685,7 @@ public class LaunchPrimitive {
 				break;
 			case 132: // fixeinstrument
 				try {
-					int i = getInteger(param.get(0));
+					int i = kernel.getCalculator().getInteger(param.get(0));
 					cadre.getSon().setInstrument(i);
 				} catch (myException e) {
 				}
@@ -1711,19 +1700,19 @@ public class LaunchPrimitive {
 			case 135: // indexsequence
 				Interprete.operande = true;
 				double d = (double) cadre.getSon().getTicks() / 64;
-				Interprete.calcul.push(teste_fin_double(d));
+				Interprete.calcul.push(MyCalculator.teste_fin_double(d));
 
 				break;
 			case 136: // fixeindexsequence
 				try {
-					int i =  getInteger(param.get(0));
+					int i =  kernel.getCalculator().getInteger(param.get(0));
 					cadre.getSon().setTicks(i * 64);
 				} catch (myException e) {
 				}
 				break;
 			case 137:// fpt
 				try {
-					int i =  getInteger(param.get(0));
+					int i =  kernel.getCalculator().getInteger(param.get(0));
 					cadre.getHistoryPanel().getDsd().fixepolice(i);
 				} catch (myException e) {
 				}
@@ -1738,7 +1727,7 @@ public class LaunchPrimitive {
 					if (isList(param.get(0))) {
 						cadre.getHistoryPanel().getDsd().fixecouleur(rgb(param.get(0),Utils.primitiveName("fct")));
 					} else {
-						int coul=getInteger(param.get(0)) % DrawPanel.defaultColors.length;
+						int coul=kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
 						if (coul<0) coul+=DrawPanel.defaultColors.length;
 						cadre.getHistoryPanel().getDsd().fixecouleur(DrawPanel.defaultColors[coul]);
 					}
@@ -1751,7 +1740,7 @@ public class LaunchPrimitive {
 				Interprete.calcul.push("[ " + c.getRed() + " " + c.getGreen()
 						+ " " + c.getBlue() + " ] ");
 				break;
-			case 141: // lissouris
+			case 141: // lissouris readmouse
 				while (!cadre.getArdoise().get_lissouris()) {
 					try {
 						Thread.sleep(100);
@@ -1831,7 +1820,7 @@ public class LaunchPrimitive {
 				break;
 			case 147: // debuttemps
 				try {
-					int temps = getInteger(param.get(0));
+					int temps = kernel.getCalculator().getInteger(param.get(0));
 					Kernel.chrono = Calendar.getInstance().getTimeInMillis()
 							+ 1000 * temps;
 				} catch (myException e) {
@@ -1846,7 +1835,7 @@ public class LaunchPrimitive {
 				break;
 			case 149: // fnp fixenompolice
 				try {
-					int int_police = getInteger(param.get(0));
+					int int_police = kernel.getCalculator().getInteger(param.get(0));
 					cadre.getArdoise().police_etiquette = int_police
 							% Panel_Font.fontes.length;
 				} catch (myException e) {
@@ -1862,7 +1851,7 @@ public class LaunchPrimitive {
 				break;
 			case 151: // fnpt fixenompolicetexte
 				try {
-					int int_police = getInteger(param.get(0));
+					int int_police = kernel.getCalculator().getInteger(param.get(0));
 					HistoryPanel.fontPrint = int_police
 							% Panel_Font.fontes.length;
 					cadre.getHistoryPanel().getDsd().fixenompolice(int_police);
@@ -1890,7 +1879,7 @@ public class LaunchPrimitive {
 				break;
 			case 154: // lisligneflux
 				try {
-					int ident = getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0));
 					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
@@ -1933,7 +1922,7 @@ public class LaunchPrimitive {
 				break;
 			case 155: // liscaractereflux
 				try {
-					int ident = getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0));
 					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
@@ -1980,7 +1969,7 @@ public class LaunchPrimitive {
 				break;
 			case 156: // ecrisligneflux
 				try {
-					int ident = getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0));
 					int index = kernel.flows.search(ident);
 					liste = getFinalList(param.get(1));
 					if (index == -1)
@@ -2007,7 +1996,7 @@ public class LaunchPrimitive {
 				break;
 			case 157: // finficher?
 				try {
-					int ident = getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0));
 					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
@@ -2057,7 +2046,7 @@ public class LaunchPrimitive {
 						throw new myException(cadre, param.get(0) + " "
 								+ Logo.messages.getString("error.word"));
 					liste = Utils.SortieTexte(Config.defaultFolder + File.separator + mot);
-					int ident = getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0));
 					if (kernel.flows.search(ident) == -1)
 						kernel.flows.add(new MyFlow(ident,liste,false));
 					else
@@ -2068,7 +2057,7 @@ public class LaunchPrimitive {
 				break;
 			case 159: // fermeflux
 				try {
-					int ident = getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0));
 					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
@@ -2086,7 +2075,7 @@ public class LaunchPrimitive {
 				break;
 			case 160: // ajouteligneflux
 				try {
-					int ident = getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0));
 					int index = kernel.flows.search(ident);
 					liste = getFinalList(param.get(1));
 					if (index == -1)
@@ -2168,13 +2157,13 @@ public class LaunchPrimitive {
 				break;
 			case 166: // cercle
 				try {
-					cadre.getArdoise().circle((number(param.pop())));
+					cadre.getArdoise().circle((kernel.getCalculator().numberDouble(param.pop())));
 				} catch (myException e) {
 				}
 				break;
 			case 167: // arc
 				try{
-				cadre.getArdoise().arc(number(param.get(0)),number(param.get(1)),number(param.get(2)));
+				cadre.getArdoise().arc(kernel.getCalculator().numberDouble(param.get(0)),kernel.getCalculator().numberDouble(param.get(1)),kernel.getCalculator().numberDouble(param.get(2)));
 				}
 				catch(myException e){}
 			break;
@@ -2204,9 +2193,7 @@ public class LaunchPrimitive {
 			case 172: // quotient
 				try{
 					Interprete.operande=true;
-					double aa = number(param.get(0));
-					double bb = number(param.get(1));
-					Interprete.calcul.push(String.valueOf((int)(aa/bb)));
+					Interprete.calcul.push(kernel.getCalculator().quotient(param.get(0),param.get(1)));
 				}
 				catch(myException e){}
 				
@@ -2215,7 +2202,7 @@ public class LaunchPrimitive {
 			case 173: // entier?
 				Interprete.operande=true;
 				try {
-					double ent = number(param.get(0));
+					double ent = kernel.getCalculator().numberDouble(param.get(0));
 					if ((int)ent==ent) Interprete.calcul.push(Logo.messages.getString("vrai"));
 					else Interprete.calcul.push(Logo.messages.getString("faux"));
 					} 
@@ -2223,7 +2210,7 @@ public class LaunchPrimitive {
 			break;
 			case 174: // fixeseparation
 				try {
-					double nombre = number(param.get(0));
+					double nombre = kernel.getCalculator().numberDouble(param.get(0));
 					if (nombre < 0||nombre>1) throw new myException(cadre,nombre+" "+Logo.messages.getString("entre_zero_un"));
 					cadre.jSplitPane1.setResizeWeight(nombre);
 					cadre.jSplitPane1.setDividerLocation(nombre);
@@ -2231,13 +2218,12 @@ public class LaunchPrimitive {
 			break;
 			case 175: // separation
 				Interprete.operande=true;
-				Interprete.calcul.push(teste_fin_double(cadre.jSplitPane1.getResizeWeight()));
+				Interprete.calcul.push(MyCalculator.teste_fin_double(cadre.jSplitPane1.getResizeWeight()));
 			break;
 			case 176: // tronque
 				Interprete.operande=true;
 				try {
-					BigDecimal ent = numberDecimal(param.get(0));
-					Interprete.calcul.push(ent.toBigInteger().toString());
+					Interprete.calcul.push(kernel.getCalculator().truncate(param.get(0)));
 					} 
 				catch (myException e) {}
 			break;
@@ -2289,7 +2275,7 @@ public class LaunchPrimitive {
 			break;
 			case 180:// caractere
 				try{
-					int i=getInteger(param.get(0));
+					int i=kernel.getCalculator().getInteger(param.get(0));
 					if (i<0||i>65535) throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("nombre_unicode"));
 					else {
 						String st="";
@@ -2341,10 +2327,10 @@ public class LaunchPrimitive {
 					if (nb<3||nb>4) throw new myException(cadre,Logo.messages.getString("erreur_repetepour"));
 					StringTokenizer st=new StringTokenizer(li1);
 					String var=st.nextToken().toLowerCase();
-					BigDecimal deb=numberDecimal(st.nextToken());
-					BigDecimal fin=numberDecimal(st.nextToken());
+					BigDecimal deb=kernel.getCalculator().numberDecimal(st.nextToken());
+					BigDecimal fin=kernel.getCalculator().numberDecimal(st.nextToken());
 					BigDecimal increment=BigDecimal.ONE;
-					if (nb==4) increment=numberDecimal(st.nextToken());
+					if (nb==4) increment=kernel.getCalculator().numberDecimal(st.nextToken());
 					if (var.equals("")) throw new myException(cadre,Logo.messages.getString("variable_vide"));
 					try{Double.parseDouble(var);
 						throw new myException(cadre,Logo.messages.getString("erreur_nom_nombre_variable"));
@@ -2364,9 +2350,8 @@ public class LaunchPrimitive {
 			break;	
 			case 184: // absolue
 				try {
-					BigDecimal e=numberDecimal(param.get(0));
-					Interprete.calcul.push(e.abs().toString());
 					Interprete.operande = true;
+					Interprete.calcul.push(kernel.getCalculator().abs(param.get(0)));
 				} catch (myException e) {
 			}
 			break;
@@ -2374,7 +2359,7 @@ public class LaunchPrimitive {
 				try{
 					String reponse="";
 					liste=getFinalList(param.get(0));
-					int entier=getInteger(param.get(1));
+					int entier=kernel.getCalculator().getInteger(param.get(1));
 					mot=getWord(param.get(2));
 					if (null!=mot&& mot.equals("")) mot="\\v";
 					if (null==mot) mot="[ "+getFinalList(param.get(2))+"]";
@@ -2427,7 +2412,7 @@ public class LaunchPrimitive {
 				try{
 					String reponse="";
 					liste=getFinalList(param.get(0));
-					int entier=getInteger(param.get(1));
+					int entier=kernel.getCalculator().getInteger(param.get(1));
 					mot=getWord(param.get(2));
 					if (null!=mot&& mot.equals("")) mot="\\v";
 					if (null==mot) mot="[ "+getFinalList(param.get(2))+"]";
@@ -2819,12 +2804,12 @@ public class LaunchPrimitive {
            			case 215: // tc taillecrayon
            				Interprete.operande=true;
            				double penwidth=2*kernel.getActiveTurtle().getPenWidth();
-           				Interprete.calcul.push(String.valueOf(teste_fin_double(penwidth)));
+           				Interprete.calcul.push(String.valueOf(MyCalculator.teste_fin_double(penwidth)));
            			break;
            			case 216: // setpenshape=ffc fixeformecrayon
            				Interprete.operande=false;
            				try{
-           					int i=getInteger(param.get(0));
+           					int i=kernel.getCalculator().getInteger(param.get(0));
            					if (i!=Config.PEN_SHAPE_OVAL&&i!=Config.PEN_SHAPE_SQUARE){
            						String st=Utils.primitiveName("setpenshape")+" "+Logo.messages.getString("error_bad_values");
            						st+=" "+Config.PEN_SHAPE_SQUARE+" "+Config.PEN_SHAPE_OVAL;
@@ -2842,7 +2827,7 @@ public class LaunchPrimitive {
            			case 218: // setdrawingquality=fqd fixequalitedessin
            				Interprete.operande=false;
            				try{
-           					int i=getInteger(param.get(0));
+           					int i=kernel.getCalculator().getInteger(param.get(0));
            					if (i!=Config.QUALITY_NORMAL&&i!=Config.QUALITY_HIGH&&i!=Config.QUALITY_LOW){
            						String st=Utils.primitiveName("setdrawingquality")+" "+Logo.messages.getString("error_bad_values")+" 0 1 2";
            						throw new myException(cadre,st);
@@ -2859,7 +2844,7 @@ public class LaunchPrimitive {
            			case 220: // setturtlesnumber=fmt fixemaxtortues
            				Interprete.operande=false;
            				try{
-           					int i=getInteger(param.get(0));
+           					int i=kernel.getCalculator().getInteger(param.get(0));
            					if (i<0){
         						String fmt = Utils.primitiveName("setturtlesnumber");
         						throw new myException(cadre, fmt + " "
@@ -3005,7 +2990,7 @@ public class LaunchPrimitive {
            			case 228: // zoom
            				Interprete.operande = false;
            				try{
-           					d=number(param.get(0));
+           					d=kernel.getCalculator().numberDouble(param.get(0));
            					if (d <=0) {
         						String name=Utils.primitiveName("zoom");
         						throw new myException(cadre, name + " "
@@ -3021,7 +3006,7 @@ public class LaunchPrimitive {
         					primitive2D("grille");
         					int[] args=new int[2];
         					for (int i=0;i<2;i++){
-        						args[i] = getInteger(param.get(i));
+        						args[i] = kernel.getCalculator().getInteger(param.get(i));
         						if (args[i] < 0) {
         							String grille=Utils.primitiveName("grille");
         							throw new myException(cadre, grille + " "
@@ -3069,7 +3054,7 @@ public class LaunchPrimitive {
         				Interprete.operande = false;
         				try {
         					primitive2D("axis");
-        					int nombre = getInteger(param.get(0));
+        					int nombre = kernel.getCalculator().getInteger(param.get(0));
         					if (nombre < 0) {
         						String name=Utils.primitiveName("axis");
         						throw new myException(cadre, name + " "
@@ -3088,7 +3073,7 @@ public class LaunchPrimitive {
         				Interprete.operande = false;
         				try {
         					primitive2D("xaxis");
-        					int nombre = getInteger(param.get(0));
+        					int nombre = kernel.getCalculator().getInteger(param.get(0));
         					if (nombre < 0) {
         						String name=Utils.primitiveName("xaxis");
         						throw new myException(cadre, name + " "
@@ -3105,7 +3090,7 @@ public class LaunchPrimitive {
         				Interprete.operande = false;
         				try {
         					primitive2D("yaxis");
-        					int nombre = getInteger(param.get(0));
+        					int nombre = kernel.getCalculator().getInteger(param.get(0));
         					if (nombre < 0) {
         						String name=Utils.primitiveName("yaxis");
         						throw new myException(cadre, name + " "
@@ -3181,7 +3166,7 @@ public class LaunchPrimitive {
         					if (isList(param.get(0))) {
         						Config.gridColor=rgb(param.get(0),Utils.primitiveName("setgridcolor")).getRGB();
         					} else {
-        						int coul=getInteger(param.get(0)) % DrawPanel.defaultColors.length;
+        						int coul=kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
         						if (coul<0) coul+=DrawPanel.defaultColors.length;
         						Config.gridColor=DrawPanel.defaultColors[coul].getRGB();
         					}
@@ -3194,7 +3179,7 @@ public class LaunchPrimitive {
         					if (isList(param.get(0))) {
         						Config.axisColor=rgb(param.get(0),Utils.primitiveName("setaxiscolor")).getRGB();
         					} else {
-        						int coul=getInteger(param.get(0)) % DrawPanel.defaultColors.length;
+        						int coul=kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
         						if (coul<0) coul+=DrawPanel.defaultColors.length;
         						Config.axisColor=DrawPanel.defaultColors[coul].getRGB();
         					}
@@ -3210,7 +3195,7 @@ public class LaunchPrimitive {
         				delay();
         				try {
         					primitive3D("3d.rightroll");
-        					cadre.getArdoise().rightroll(number(param.pop()));
+        					cadre.getArdoise().rightroll(kernel.getCalculator().numberDouble(param.pop()));
         				} catch (myException e) {
         				}
                     break;
@@ -3218,7 +3203,7 @@ public class LaunchPrimitive {
         				delay();
         				try {
         					primitive3D("3d.uppitch");
-        					cadre.getArdoise().uppitch(number(param.pop()));
+        					cadre.getArdoise().uppitch(kernel.getCalculator().numberDouble(param.pop()));
         				} catch (myException e) {
         				}
                     	break;
@@ -3226,7 +3211,7 @@ public class LaunchPrimitive {
         				delay();
         				try {
         					primitive3D("3d.leftroll");
-        					cadre.getArdoise().rightroll(-number(param.pop()));
+        					cadre.getArdoise().rightroll(-kernel.getCalculator().numberDouble(param.pop()));
         				} catch (myException e) {
         				}
                     	break;
@@ -3234,7 +3219,7 @@ public class LaunchPrimitive {
         				delay();
         				try {
         					primitive3D("3d.downpitch");
-        					cadre.getArdoise().uppitch(-number(param.pop()));
+        					cadre.getArdoise().uppitch(-kernel.getCalculator().numberDouble(param.pop()));
         				} catch (myException e) {
         				}
                     	break;
@@ -3242,7 +3227,7 @@ public class LaunchPrimitive {
                     	try{
                     		primitive3D("3d.roll");
             				Interprete.operande = true;
-            				Interprete.calcul.push(teste_fin_double(kernel.getActiveTurtle().roll));
+            				Interprete.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().roll));
                     	}
                     	catch(myException e){}
                         break;
@@ -3250,7 +3235,7 @@ public class LaunchPrimitive {
                     	try{
                     		primitive3D("3d.pitch");
                     		Interprete.operande = true;
-                    		Interprete.calcul.push(teste_fin_double(kernel.getActiveTurtle().pitch));
+                    		Interprete.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().pitch));
                     	}
                     	catch(myException e){}
                     		break;
@@ -3258,7 +3243,7 @@ public class LaunchPrimitive {
                     	try{
                     		primitive3D("3d.setroll");
             				delay();
-            					cadre.getArdoise().setRoll(number(param.pop()));
+            					cadre.getArdoise().setRoll(kernel.getCalculator().numberDouble(param.pop()));
             					}
                     	catch(myException e){}
                         break;
@@ -3266,7 +3251,7 @@ public class LaunchPrimitive {
                     	try{
                     		primitive3D("3d.setpitch");
             				delay();
-        					cadre.getArdoise().setPitch(number(param.pop()));
+        					cadre.getArdoise().setPitch(kernel.getCalculator().numberDouble(param.pop()));
                     	}
                     	catch(myException e){}
                     	break;
@@ -3282,9 +3267,9 @@ public class LaunchPrimitive {
                     	try{
                     		primitive3D("3d.orientation");
                     		Interprete.operande = true;
-                    		String pitch=teste_fin_double(kernel.getActiveTurtle().pitch);
-                    		String roll=teste_fin_double(kernel.getActiveTurtle().roll);
-                    		String heading=teste_fin_double(kernel.getActiveTurtle().heading);
+                    		String pitch=MyCalculator.teste_fin_double(kernel.getActiveTurtle().pitch);
+                    		String roll=MyCalculator.teste_fin_double(kernel.getActiveTurtle().roll);
+                    		String heading=MyCalculator.teste_fin_double(kernel.getActiveTurtle().heading);
                     		Interprete.calcul.push("[ "+roll+" "+pitch+" "+heading+" ] ");            	
                     	}
                     	catch(myException e){}
@@ -3292,9 +3277,9 @@ public class LaunchPrimitive {
                     case 258: // setxyz=fposxyz
                     	try{
                     		primitive3D("3d.setxyz");
-        					cadre.getArdoise().fpos(number(param.get(0)) + " "
-        							+ number(param.get(1))+" "+
-        							number(param.get(2)));
+        					cadre.getArdoise().fpos(kernel.getCalculator().numberDouble(param.get(0)) + " "
+        							+ kernel.getCalculator().numberDouble(param.get(1))+" "+
+        							kernel.getCalculator().numberDouble(param.get(2)));
                     	}
                     	catch(myException e){}
                     	break;
@@ -3303,7 +3288,7 @@ public class LaunchPrimitive {
         				try {
         					primitive3D("3d.setz");
         					cadre.getArdoise().fpos(kernel.getActiveTurtle().X+" "+kernel.getActiveTurtle().Y
-        							+" "+number(param.get(0)));
+        							+" "+kernel.getCalculator().numberDouble(param.get(0)));
         						
         				} catch (myException e) {
         				}
@@ -3413,8 +3398,8 @@ public class LaunchPrimitive {
                     	break;
                     case 273: // operator <=
         				try {
-        					double a = number(param.get(0));
-        					double b = number(param.get(1));
+        					double a = kernel.getCalculator().numberDouble(param.get(0));
+        					double b = kernel.getCalculator().numberDouble(param.get(1));
         					if (a <= b)
         						Interprete.calcul.push(Logo.messages.getString("vrai"));
         					else
@@ -3425,8 +3410,8 @@ public class LaunchPrimitive {
                     break;
                     case 274: // operator >=
         				try {
-        					double a = number(param.get(0));
-        					double b = number(param.get(1));
+        					double a = kernel.getCalculator().numberDouble(param.get(0));
+        					double b = kernel.getCalculator().numberDouble(param.get(1));
         					if (a >= b)
         						Interprete.calcul.push(Logo.messages.getString("vrai"));
         					else
@@ -3459,21 +3444,15 @@ public class LaunchPrimitive {
                     case 279: //arithmetic.exp
             			Interprete.operande = true;
         				try {
-        					double nombre = number(param.get(0));
-        					Interprete.calcul.push(teste_fin_double(Math.exp(nombre)));
+        					Interprete.calcul.push(kernel.getCalculator().exp(param.get(0)));
+        					
         				} catch (myException e) {
         				}
                     break;
                     case 280: //arithmetic.log
             			Interprete.operande = true;
         				try {
-        					double nombre = number(param.get(0));
-        					if (nombre < 0 || nombre == 0) {
-        						String log=Utils.primitiveName("arithmetic.log");
-        						throw new myException(cadre, log + " "
-        								+ Logo.messages.getString("attend_positif"));
-        					}
-        					Interprete.calcul.push(teste_fin_double(Math.log(nombre)));
+        					Interprete.calcul.push(kernel.getCalculator().log(param.get(0)));
         				} catch (myException e) {
         				}
                     	break;
@@ -3596,6 +3575,17 @@ public class LaunchPrimitive {
 							Primitive.stackLoop.push(bp);
                     	}
                     	catch(myException e){}
+                    break;
+                    case 286: // arithmetic.setdigits
+                    	Interprete.operande=false;
+                    	try{
+                    		kernel.initCalculator(kernel.getCalculator().getInteger(param.get(0)));
+                    	}
+                    	catch(myException e){}
+                    break;
+                    case 287: // arithmetic.digits
+                    	Interprete.operande=true;
+                    	Interprete.calcul.push(String.valueOf(kernel.getCalculator().getDigits()));
                     break;
 			}
 		}
@@ -3953,69 +3943,10 @@ public class LaunchPrimitive {
 
 	}
 
-	/**
-	 * This method converts st to double
-	 * 
-	 * @param st
-	 *            The String
-	 * @return The double corresponding to st
-	 * @throws myException
-	 *             If st can't be convert
-	 */
 
-	private double number(String st) throws myException { // Si un nombre est
-															// un double
-		try {
-			return (Double.parseDouble(st));
-		} catch (NumberFormatException e) {
-			throw new myException(cadre, st + " "
-					+ Logo.messages.getString("pas_nombre"));
-		}
-	}
 
-	/**
-	 * Erase unused Zeros in decimal Format
-	 * 
-	 * @param bd
-	 *            The decimal number
-	 * @return The formatted number
-	 */
-	static protected String eraseZero(BigDecimal bd) {
-		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
-		dfs.setDecimalSeparator('.');
-		DecimalFormat df = new DecimalFormat("#####.################", dfs);
-		String st = df.format(bd);
-		return st;
 
-	}
 
-	/**
-	 * Converts st to BigDecimal number
-	 * 
-	 * @param st
-	 *            The String to convert
-	 * @return The BigDecimal Number
-	 * @throws myException
-	 *             if st isn't a number
-	 */
-
-	private BigDecimal numberDecimal(String st) throws myException { // Si un
-																		// nombre
-		// est un double
-		// To improved with MathContext for JRE>1.5
-		try {
-			// BigDecimal bd=new BigDecimal(st.toString());
-			// return(bd.round(mc));
-
-			BigDecimal bd = new BigDecimal(st).setScale(16,
-					BigDecimal.ROUND_HALF_EVEN);
-			return (new BigDecimal(eraseZero(bd)));
-
-		} catch (NumberFormatException e) {
-			throw new myException(cadre, st + " "
-					+ Logo.messages.getString("pas_nombre"));
-		}
-	}
 
 	/**
 	 * Returns the word contained in st. If it isn't a word, returns null
@@ -4043,31 +3974,6 @@ public class LaunchPrimitive {
 		return (null);
 	}
 
-	/**
-	 * Test if the number contained in st is an integer
-	 * 
-	 * @param st
-	 *            The Object to convert
-	 * @return The integer corresponding to st
-	 * @throws myException
-	 *             If it isn't an integer
-	 */
-
-	private int getInteger(String st) throws myException { // Si c'est un
-															// entier
-		try {
-			/*
-			 * double ent = Double.parseDouble(st.toString()); if (ent == 0)
-			 * return 0; long enti = Math.round(ent); if (ent / enti == 1)
-			 * return ((long) enti); else
-			 */
-
-			return Integer.parseInt(st);
-		} catch (NumberFormatException e) {
-			throw new myException(cadre, st + " "
-					+ Logo.messages.getString("pas_entier"));
-		}
-	}
 
 	/**
 	 * Returns the list contained in the string li without any lineNumber
@@ -4308,12 +4214,7 @@ public class LaunchPrimitive {
 		}
 	}
 
-	private String teste_fin_double(double d) {
-		String st = String.valueOf(d);
-		if (st.endsWith(".0"))
-			st = st.substring(0, st.length() - 2);
-		return st;
-	}
+
 
 	// How many characters in the word "mot"
 	private int getWordLength(String mot) {// retourne le nombre de caractères
@@ -4362,58 +4263,7 @@ public class LaunchPrimitive {
 		wp = workspace;
 	}
 
-	private void multiply(Stack<String> param) {
-		int size = param.size();
-		BigDecimal product = new BigDecimal(1);
-		BigDecimal a;
-		try {
-			for (int i = 0; i < size; i++) {
-				a = numberDecimal(param.get(i));
-				product = product.multiply(a);
-			}
-			Interprete.calcul.push(eraseZero(product));
-			Interprete.operande = true;
-		} catch (myException e) {
-		}
-	}
 
-	private void divide(Stack<String> param) {
-		try {
-			double a = number(param.get(0));
-			double b = number(param.get(1));
-			if (b == 0)
-				throw new myException(cadre, Logo.messages
-						.getString("division_par_zero"));
-			Interprete.calcul.push(teste_fin_double(a / b));
-			Interprete.operande = true;
-		} catch (myException e) {
-		}
-	}
-
-	private void add(Stack<String> param) {
-		int size = param.size();
-		try {
-			BigDecimal a;
-			BigDecimal sum = BigDecimal.ZERO;
-			for (int i = 0; i < size; i++) {
-				a = numberDecimal(param.get(i));
-				sum = sum.add(a);
-			}
-			Interprete.calcul.push(eraseZero(sum));
-			Interprete.operande = true;
-		} catch (myException e) {
-		}
-	}
-
-	private void substract(Stack<String> param) {
-		try {
-			BigDecimal a = numberDecimal(param.get(0));
-			BigDecimal b = numberDecimal(param.get(1));
-			Interprete.calcul.push(eraseZero(a.subtract(b)));
-			Interprete.operande = true;
-		} catch (myException e) {
-		}
-	}
 
 	private void ou(Stack<String> param) {
 		int size = param.size();

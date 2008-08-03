@@ -101,13 +101,15 @@ public class Interprete {
 				break;
 //			System.out.print("debut\n"+instructionBuffer+"\nfin\n------------------\n");
 			String element = instructionBuffer.getNextWord();
-//			System.out.println("a"+element+"a");
-//			System.out.println(Primitive.primitives.containsKey((element)));
+//			System.out.println("/"+instructionBuffer+"/");
 
-//			if (element=="")
+/*			if (element=="")
 
-	//				break;
-			// si c'est une primitive ou une procedure
+					break;
+*/			/* ***********************************************
+			// si c'est une primitive ou une procedure *******
+			 * ***********************************************
+			 */
 			String element_minuscule = element.toLowerCase();
 			int i = isProcedure(element_minuscule);
 			
@@ -422,13 +424,16 @@ public class Interprete {
 				 * ***************************/
 				try {
 					Double.parseDouble(element);
-					String fin_entier = "";
+					boolean deleteEndZero=false;
 					if (element.endsWith(".0")) {
-						fin_entier = ".0";
+						deleteEndZero=true;
 						element = element.substring(0, element.length() - 2);
 					}
-					if (element.startsWith(".") || element.equals(""))
+					boolean addStartZero=false;
+					if (element.startsWith(".") || element.equals("")){
 						element = "0" + element;
+						addStartZero=true;
+					}
 					calcul.push(element);
 					if (operande) {
 						checkParenthesis();
@@ -440,7 +445,10 @@ public class Interprete {
 					operande = true;
 					operateur = false;
 					drapeau_ouvrante = false;
-					instructionBuffer.deleteFirstWord(element + fin_entier);
+					if (addStartZero) instructionBuffer.deleteFirstWord(element.substring(1));
+					else if (deleteEndZero) instructionBuffer.deleteFirstWord(element + ".0");
+					else instructionBuffer.deleteFirstWord(element);
+					
 				} catch (NumberFormatException e) {
 					/* *********************************
 					 * IF element IS A SQUARE BRACKET [

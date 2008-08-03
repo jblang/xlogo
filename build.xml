@@ -29,7 +29,14 @@
 	===============================================-->
 	<property name="platform" value="all" />
 	
+	<!-- Build source tarball -->
 	
+	<property name="buildSrc" value="true"/>
+
+	<!-- Version for this Build -->
+	
+	<property name="version" value="0.9.94beta-2008-08-02"/>
+
 	
     <!-- ================================= 
          default target: deploy              
@@ -40,7 +47,9 @@
 		</condition>		
 		<antcall target="sign.xlogo">
 		</antcall>
-
+		<condition property="build.source.tarball">
+			<equals arg1="true" arg2="${buildSrc}" />
+		</condition>
     <antcall target="create.src.tarball">
     </antcall>
     
@@ -53,8 +62,9 @@
 	
 	<!-- Creates the source tarball -->
 	
-	<target name="create.src.tarball">
-		<tar destfile="xlogo-src.tar.gz">
+	<target name="create.src.tarball" if="build.source.tarball">
+		<mkdir dir="deploy/xlogo-${version}"/>
+		<copy todir="deploy/xlogo-${version}">
 			<fileset dir="." >
 		    	<include name="src/**"/>
 		    	<include name="windows/**"/>
@@ -68,8 +78,16 @@
 				<include name="manifest_start"/>
 				<include name="build.xml"/>
 				<include name="README"/>
+			</fileset>		
+		</copy>
+			
+		<tar destfile="deploy/xlogo-${version}-source.tar.bz2" compression="bzip2">
+			<fileset dir="deploy/">
+				<include name="xlogo-${version}/**"/>
 			</fileset>
+		
 		</tar>
+		<delete dir="deploy/xlogo-${version}"/>
 	</target>
 	
 	<!-- Sign the XLogo (Java Web Start) -->
@@ -127,6 +145,7 @@
 	<!-- Compile all Files -->
 
 	<target name="compile" depends="copy.static.files">
+<!--		<echo> ${ant.java.version}</echo> -->
     	<javac 
     		source="1.5" encoding="utf8"
     		srcdir="src" destdir="deploy/">

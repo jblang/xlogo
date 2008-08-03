@@ -7,6 +7,8 @@
 package xlogo;
 import java.util.StringTokenizer;
 import java.io.File;
+
+import javax.media.j3d.VirtualUniverse;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import org.xml.sax.InputSource;
@@ -357,6 +359,16 @@ public class Logo {
  * @param args The file *.lgo to load on startup
  */
   public static void main(String[] args)   {
+	  try{
+		  // Display the java3d version
+		  java.util.Map<String,String> map=VirtualUniverse.getProperties();
+		  System.out.println("Java3d :"+map.get("j3d.version"));
+	  }
+	  catch(Exception e){
+		  System.out.println("Java3d problem");
+		  e.printStackTrace();
+	  }
+	  
 	  //new Test();
 	  try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

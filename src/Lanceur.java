@@ -58,7 +58,7 @@ public class Lanceur {
 			// Add the tmp to the path
 			String newPath=tmpFolder.getAbsolutePath();
 			
-			String javaLibraryPath = System.getProperty("java.library.path")+File.pathSeparatorChar + newPath;
+			String javaLibraryPath = newPath+File.pathSeparatorChar +System.getProperty("java.library.path") ;
 			// Bug when launching under Windows with java webstart
 			javaLibraryPath=javaLibraryPath.replaceAll("\"", "");
 			System.out.println("Path: "+javaLibraryPath+"\n");
@@ -134,10 +134,10 @@ public class Lanceur {
 		}
 		System.setProperty("java.library.path", newPath);
 		// Delete tmp files
-		/*for (int i=0;i<files.length;i++){
+		for (int i=0;i<files.length;i++){
 			if (null!=files[i]) files[i].delete();
 		}
-		tmpFolder.delete();*/
+		tmpFolder.delete();
 		System.out.println("Closing XLogo. Cleaning tmp file");
 	}
 	/**

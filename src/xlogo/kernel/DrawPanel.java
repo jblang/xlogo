@@ -167,10 +167,6 @@ import xlogo.kernel.perspective.*;
 	/** Notify if a mouse event has occured*/	
 	private boolean lissouris=false; //Indique si un événement souris est intervenu depuis le debut du programme
 	/**
-	 * During a pogram execution, the user can't select or zoom with the mouse
-	 */
-	private boolean allowSelection=true;
-	/**
 	 * The rectangular selection zone
 	 */
 	private Rectangle selection;
@@ -1129,9 +1125,7 @@ import xlogo.kernel.perspective.*;
         	montrecacheTortue(false);
     		DrawPanel.etat_fenetre=DrawPanel.WINDOW_3D;
         	w3d=new World3D();
-           	montrecacheTortue(true);
-
-        	
+        	montrecacheTortue(true);        	
     	}
 	}
 	/**
@@ -2257,7 +2251,7 @@ import xlogo.kernel.perspective.*;
 	   g2d.scale(DrawPanel.zoom,DrawPanel.zoom);
 	  g2d.drawImage(dessin,0,0,this);
 	  g2d.scale(1/DrawPanel.zoom,1/DrawPanel.zoom);
-	  if (allowSelection&&null!=selection&&cadre.commande_isEditable()){
+	  if (!Affichage.execution_lancee&&null!=selection&&cadre.commande_isEditable()){
 		  g2d.setColor(colorSelection);
 		  g2d.fillRect(selection.x, selection.y, selection.width, selection.height);
 	  }
@@ -2278,7 +2272,7 @@ import xlogo.kernel.perspective.*;
 		 return possouris;
 	 }
 	  public void mousePressed(MouseEvent e){
-		 if (allowSelection) {			 
+		 if (!Affichage.execution_lancee) {			 
 			 selection=new Rectangle();
 			 origine=new Point(e.getPoint());
 			 selection.setSize(0, 0);
@@ -2286,7 +2280,7 @@ import xlogo.kernel.perspective.*;
 	 }
 	 public void mouseReleased(MouseEvent e){}
 	 public void mouseClicked(MouseEvent ev){
-		 if (allowSelection){
+		 if (!Affichage.execution_lancee){
 			 selection=null;
 			 origine=null;
 			 repaint();
@@ -2305,7 +2299,7 @@ import xlogo.kernel.perspective.*;
 	 }
 	 // Select an export area
 	 public void mouseDragged(MouseEvent e){
-		 if (allowSelection&&null!=selection){
+		 if (!Affichage.execution_lancee&&null!=selection){
 			 // First, we test if we need to move the scrollbars
 			 	Point pos=e.getPoint();
 				javax.swing.JViewport jv=cadre.scrollArea.getViewport();
