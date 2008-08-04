@@ -11,7 +11,7 @@ import java.awt.Font;
 import java.util.ArrayList;
 /**
  * This class contains all parameters for XLogo
- * Those arguments are stored in the file .xlogo
+ * Those arguments are stored in the file .xlogo 
  * 
  * @author loic
  * 

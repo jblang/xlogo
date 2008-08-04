@@ -44,7 +44,7 @@ public class Logo {
 	public static String translationLanguage[]=new String[10];
   public static final String englishLanguage[] = { "French","English","Arabic","Spanish","Portuguese","Esperanto","German",
 			"Galician","Asturian","Greek"};
-  public static final String[] locales={"fr","en","ar","es","pt,eo","de","gl","as","el"};
+  public static final String[] locales={"fr","en","ar","es","pt","eo","de","gl","as","el"};
 	/**
 	 * The main frame
 	 */
