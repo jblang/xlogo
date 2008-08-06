@@ -176,10 +176,10 @@ public class Viewer3D extends JFrame implements ActionListener{
 		// Create the root of the branch graph
 		scene= new BranchGroup();
 		branchManager=new BranchManager();
-		scene.setName("Main Branch");
-		// We can add New Branchgroup dynamically in the main scene
+//		scene.setName("Main Branch");
+		// We can add New BranchGroup dynamically in the main scene
 		scene.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
-		// We can remove Branchgroup dynamically in the main scene
+		// We can remove BranchGroup dynamically in the main scene
 		scene.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 		
 		
