@@ -943,8 +943,12 @@ import xlogo.kernel.perspective.*;
 		if (tortue.isVisible())
 			montrecacheTortue(false);
 		g.setPaintMode();
-		g.drawImage(image, null, (int) tortue.corX,
-				(int) tortue.corY);
+		g.translate(tortue.corX, tortue.corY);
+		g.rotate(-tortue.angle);
+		g.drawImage(image, null, 0,0);
+		g.rotate(tortue.angle);
+		g.translate(-tortue.corX, -tortue.corY);
+
 		clip();
 //		repaint();
 /*		if (null==rec) rec=new Rectangle2D.Double();

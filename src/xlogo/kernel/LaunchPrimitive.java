@@ -1132,6 +1132,7 @@ public class LaunchPrimitive {
 			case 90: // chargeimage
 				BufferedImage image = null;
 				try {
+					primitive2D("ci");
 					image = getImage(param.get(0));
 				} catch (myException e) {
 				}
@@ -3682,17 +3683,19 @@ public class LaunchPrimitive {
 	 * @throws myException
 	 *             If Image format isn't valid(jpg or png)
 	 */
-	private BufferedImage getImage(String chemin) throws myException {
+	private BufferedImage getImage(String path) throws myException {
 		BufferedImage image = null;
-		chemin = getWord(chemin);
-		if (!(chemin.endsWith(".png") || chemin.endsWith(".jpg")))
+		String pathWord = getWord(path);
+		if (null==pathWord) throw new myException(cadre, path + " "
+				+ Logo.messages.getString("error.word"));
+		if (!(pathWord.endsWith(".png") || pathWord.endsWith(".jpg")))
 			throw new myException(cadre, Logo.messages
 					.getString("erreur_format_image"));
 		else {
 			try {
-				chemin = Utils.SortieTexte(chemin);
+				pathWord = Utils.SortieTexte(pathWord);
 				File f = new File(Utils.SortieTexte(Config.defaultFolder)
-						+ File.separator + chemin);
+						+ File.separator + pathWord);
 				image = ImageIO.read(f);
 			} catch (Exception e1) {
 				throw new myException(cadre, Logo.messages
