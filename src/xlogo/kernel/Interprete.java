@@ -91,8 +91,7 @@ public class Interprete {
 			// System.out.println("calcul \n"+calcul+"\n\n");
 			// System.out.println("nom "+nom.toString()+" locale "+locale+ "
 			// "+valeur+" stockvariable "+stockvariable);
-			// System.out.println("operande "+calcul+" "+operande+"debut
-			// "+instruction);
+			// System.out.println("operande "+calcul+" "+operande+"debut"+instructionBuffer);
 
 			
 			

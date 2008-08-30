@@ -129,8 +129,17 @@ public class Editor extends JFrame implements ActionListener{
 								  String[] arg=new String[2];
 								  extractList(sb,arg);
 								  optVariables.push(arg[0].toLowerCase());
-							//	  System.out.println(Utils.decoupe(arg[1]));
-								  optVariablesExp.push(Utils.decoupe(arg[1]).append(" "));
+								  /* Bug Fixed: list as Optionnal arguments
+								  ** Eg: 
+								  ** to a [:var [a b c]]
+								  * end 
+								  * when the string is formatted, we check that a white space 
+								  * is needed at the end of the argument
+								  */
+						
+								  StringBuffer exp=Utils.decoupe(arg[1]);
+								  if (exp.charAt(exp.length()-1)!=' ') exp.append(" ");
+								  optVariablesExp.push(exp);
 							  }
 						  }	 
 					  }		 
