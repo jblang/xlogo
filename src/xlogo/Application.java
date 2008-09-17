@@ -561,6 +561,9 @@ public class Application extends JFrame {
 			sb.append("\t<speed value=\"");
 			sb.append(Config.turtleSpeed);
 			sb.append("\"/>\n");
+			sb.append("\t<tcp_port value=\"");
+			sb.append(Config.TCP_PORT);
+			sb.append("\"/>\n");
 			sb.append("\t<turtle_shape value=\"");
 			sb.append(Config.activeTurtle);
 			sb.append("\"/>\n");

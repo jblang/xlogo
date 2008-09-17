@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import xlogo.utils.myException;
 import xlogo.Application;
 import xlogo.Logo;
+import xlogo.Config;
 import xlogo.kernel.Workspace;
 import xlogo.kernel.Kernel;
 public class NetworkServer {
@@ -26,7 +27,7 @@ public class NetworkServer {
 	private PrintWriter out;
 	private BufferedReader in;
 	private ChatFrame cf;
-	protected static final int PORT=1948;
+
 	protected static final String EXECUTETCP="executetcp"+"\u001B";
 	protected static final String CHATTCP="chattcp"+"\u001B";
 	protected static final String END_OF_FILE="*/EOF\\*"+"\u001B";
@@ -43,10 +44,10 @@ public class NetworkServer {
 	}
 	private void init()throws myException{
 		try {
-			serverSocket=new ServerSocket(NetworkServer.PORT);
+			serverSocket=new ServerSocket(Config.TCP_PORT);
 		}
 		catch(IOException e){
-			throw(new myException(app,Logo.messages.getString("pb_port")+NetworkServer.PORT));
+			throw(new myException(app,Logo.messages.getString("pb_port")+Config.TCP_PORT));
 		}
 		Socket clientSocket = null;
         try {
@@ -123,7 +124,7 @@ public class NetworkServer {
 	public static void stopServer(){ 
 		String st=NetworkServer.EXECUTETCP+"\n"+NetworkServer.END_OF_FILE+"\n\n";
 		try{
-			Socket socket=new Socket("127.0.0.1",NetworkServer.PORT);
+			Socket socket=new Socket("127.0.0.1",Config.TCP_PORT);
 			PrintWriter out=new PrintWriter(socket.getOutputStream(),true);
 			out.println(st);
 		}

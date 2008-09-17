@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import xlogo.Application;
+import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.myException;
 
@@ -41,7 +42,7 @@ public class NetworkClientChat {
 	}
 	private void init() throws myException{
 		try{
-			socket=new Socket(ip,NetworkServer.PORT);
+			socket=new Socket(ip,Config.TCP_PORT);
 			java.io.OutputStream os =socket.getOutputStream();
 			BufferedOutputStream b = new BufferedOutputStream(os);	
 			OutputStreamWriter osw = new  OutputStreamWriter(b,  "UTF8");

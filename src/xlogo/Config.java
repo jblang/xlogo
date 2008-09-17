@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class Config {
 	/** Version number**/
-	static final String version="0.9.94 beta, September, the 1st";
+	static final String version="0.9.94 beta, September, the 17th";
 	/** Drawing Quality **/
 	public static int quality=0;
 	/** Drawing Quality: normal **/
@@ -253,6 +253,13 @@ public class Config {
    * It overrides the String a_executer
    */
   public static boolean autoLaunch=false;
+  
+  
+  /**
+   * TCP Port for robotics and network flows
+   */
+	public static int TCP_PORT=1948;
+  
   /**
    * Default Constructor
    */

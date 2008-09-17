@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import xlogo.Config;
+import xlogo.kernel.network.NetworkServer;
 import xlogo.gui.MyTextAreaDialog;
 import xlogo.Application;
 import javax.swing.JOptionPane;
@@ -52,7 +53,8 @@ public class Panel_Options extends JPanel {
 	private PanelGrid panelGrid=new PanelGrid();
 	private PanelAxis panelAxis=new PanelAxis();
 	private BorderImagePanel borderPanel=new BorderImagePanel();
-
+	private JLabel labelTcp = new JLabel(Logo.messages.getString("pref.options.tcp"));
+	private JTextField textTcp = new JTextField(String.valueOf(Config.TCP_PORT));
 	protected Panel_Options(Application cadre){
 		this.cadre=cadre;
 		epaisseur_crayon.setFont(Config.police);
@@ -71,7 +73,9 @@ public class Panel_Options extends JPanel {
 		label_pencolor.setFont(Config.police);
 		label_screencolor.setFont(Config.police);
 		nb_tortues.setFont(Config.police);
-
+		labelTcp.setFont(Config.police);
+		textTcp.setFont(Config.police);
+		
 		jc.setSelectedIndex(Config.penShape);
 		if (Config.eraseImage)
 			effacer_editeur.setSelected(true);
@@ -147,9 +151,23 @@ public class Panel_Options extends JPanel {
 		add(memoire, new GridBagConstraints(1, 11, 1, 1,
 				1.0, 1.0, GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 0, 0, 0), 0, 0));
-
+		add(labelTcp, new GridBagConstraints(0, 12, 1,
+				1, 1.0, 1.0, GridBagConstraints.CENTER,
+			GridBagConstraints.BOTH, new Insets(10, 10, 0, 10), 0, 0));
+		add(textTcp, new GridBagConstraints(1, 12, 1, 1,
+				1.0, 1.0, GridBagConstraints.CENTER,
+				GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
 	}
 	protected void update(){
+		// TCP Port
+		try {
+			int p=Integer.parseInt(textTcp.getText());
+			if (p<=0) p=1948;
+			Config.TCP_PORT=p;
+		}
+		catch(NumberFormatException e){
+			Config.TCP_PORT=1948;
+		}
 		//pen color
 		Config.pencolor=b_pencolor.getValue();
 		// screencolor

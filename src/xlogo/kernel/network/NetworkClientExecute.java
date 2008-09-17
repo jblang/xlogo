@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import xlogo.utils.myException;
 import java.net.InetAddress;
 import xlogo.Application;
+import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.Kernel;
 public class NetworkClientExecute {
@@ -41,7 +42,7 @@ public class NetworkClientExecute {
 	}
 	private void init() throws myException{
 		try{
-			socket=new Socket(ip,NetworkServer.PORT);
+			socket=new Socket(ip,Config.TCP_PORT);
 			java.io.OutputStream os =socket.getOutputStream();
 			BufferedOutputStream b = new BufferedOutputStream(os);	
 			OutputStreamWriter osw = new  OutputStreamWriter(b,  "UTF8");

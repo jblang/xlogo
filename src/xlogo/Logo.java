@@ -201,7 +201,23 @@ public class Logo {
 						catch(NumberFormatException e){}
 				 }  
 			 }
-
+		  // TCP port
+			else if (element.equals("-tcp_port")){
+				  Config.path.remove(i);
+				  if (i<Config.path.size()) {
+					  element=Config.path.get(i);
+						try{
+							int port=Integer.parseInt(element);
+							if (port <=0) port=1948;
+							Config.TCP_PORT=port;
+							 Config.path.remove(i);	
+							
+						}
+						catch(NumberFormatException e){
+							Config.TCP_PORT=1948;
+						}
+				 }  
+			 }
 		  
 		  // Logo Files
 		  else i++;

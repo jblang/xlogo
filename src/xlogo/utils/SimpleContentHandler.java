@@ -86,6 +86,16 @@ public class SimpleContentHandler implements ContentHandler {
            		catch(NumberFormatException e){id=0;}
            		Config.turtleSpeed=id;
            	}
+           	else if (tag.equals("tcp_port")){
+           		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+            		// Check if the turtle speed is valid
+               		if (id<=0) id=1948;
+           		}
+           		catch(NumberFormatException e){id=1948;}
+           		Config.TCP_PORT=id;
+           	}
            	else if (tag.equals("turtle_shape")){
            		int id;
            		try{
