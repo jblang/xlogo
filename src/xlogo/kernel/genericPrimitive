@@ -121,7 +121,7 @@ vrai 0
 faux 0
 turtle.forme 0
 turtle.fforme 1
-workspace.def 3
+workspace.def 2
 tortue 0
 tortues 0
 ftortue 1
@@ -286,3 +286,4 @@ controls.foreach 3
 controls.forever 1
 arithmetic.setdigits 1
 arithmetic.digits 0
+workspace.text 1

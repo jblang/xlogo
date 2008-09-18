@@ -1525,23 +1525,59 @@ public class LaunchPrimitive {
 				} catch (myException e) {
 				}
 				break;
-			case 123: // definis
+			case 123: // definis workspace.define
 				try {
 					mot = getWord(param.get(0));
 					if (null == mot)
 						throw new myException(cadre, param.get(0)+ " " + Logo.messages.getString("error.word"));
 					if (mot.equals("")) new myException(cadre, Logo.messages.getString("procedure_vide"));
-					String liste1 = getFinalList(param.get(1));
-					String liste2 = getFinalList(param.get(2));
-					StringTokenizer st = new StringTokenizer(liste1);
-					String definition = Logo.messages.getString("pour") + " "
-							+ mot + " ";
-					while (st.hasMoreTokens()) {
-						definition += ":" + st.nextToken() + " ";
+					String list = getFinalList(param.get(1));
+					StringBuffer sb=new StringBuffer();
+					for(int i=1;i<=numberOfElements(list);i++){
+						String liste1=item(list, i);						
+						liste1=getFinalList(liste1);						
+						
+						// First line
+						if (i==1){
+							StringTokenizer st = new StringTokenizer(liste1);
+							sb.append(Logo.messages.getString("pour"));
+							sb.append(" ");
+							sb.append(mot);
+							sb.append(" ");
+					
+							while (st.hasMoreTokens()) {
+								// Optional variables
+								String token=st.nextToken();
+								if (token.equals("[")){
+									sb.append("[ :");
+									while(st.hasMoreTokens()){
+										token=st.nextToken();
+										if (token.equals("]")) {
+											sb.append("] ");
+											break;
+										}
+										else {
+											sb.append(token);
+											sb.append(" ");
+										}
+									}
+								}
+								else {
+									sb.append(":");
+									sb.append(token);
+									sb.append(" ");
+								}
+							}							
+						}
+						// Body of the procedure
+						else if(i>1){
+							sb.append("\n");
+							sb.append(liste1);
+						}
 					}
-					definition += "\n" + liste2 + "\n"
-							+ Logo.messages.getString("fin");
-					cadre.editeur.setEditorStyledText(definition);
+					sb.append("\n");
+					sb.append(Logo.messages.getString("fin"));
+					cadre.editeur.setEditorStyledText(new String(sb));												
 				} catch (myException e) {
 				}
 				try {
@@ -3587,6 +3623,45 @@ public class LaunchPrimitive {
                     case 287: // arithmetic.digits
                     	Interprete.operande=true;
                     	Interprete.calcul.push(String.valueOf(kernel.getCalculator().getDigits()));
+                    break;
+                    case 288: //workspace.text
+                       	try{
+                       		String var=getWord(param.get(0));
+        					if (null == var)
+        						throw new myException(cadre, param.get(0)+ " " + Logo.messages.getString("error.word"));
+                       		int index=-1;
+                       		for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
+                        		if (wp.getProcedure(i).name.equals(var)) {
+                        			index=i; break;
+                        		}
+                        	}
+                       		if (index!=-1) {
+                                Procedure proc=wp.getProcedure(index);
+                                sb=new StringBuffer();
+                                sb.append("[ [ ");
+                                
+                                for (int j = 0; j < proc.nbparametre; j++) {
+                                    sb.append(proc.variable.get(j));
+                                    sb.append(" ");
+                                  }
+                                  for (int j=0;j<proc.optVariables.size();j++){
+                                  	sb.append("[ ");
+                                  	sb.append(proc.optVariables.get(j));
+                                  	sb.append(" ");
+                                  	sb.append(proc.optVariablesExp.get(j).toString());
+                                  	sb.append(" ] ");    	  
+                          	     } 
+                                  sb.append("] ");
+                                  sb.append(proc.cutInList());
+                                  sb.append("] ");
+                                  Interprete.operande=true;
+                                  Interprete.calcul.push(sb.toString());
+                       		}
+                       		else throw new myException(cadre,var+" "+Logo.messages.getString("error.procedure.must.be"));
+                    	}
+                    	catch(myException e){}
+                    	
+
                     break;
 			}
 		}

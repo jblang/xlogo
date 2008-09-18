@@ -92,13 +92,13 @@ public Procedure() {
         sb.append(Logo.messages.getString("pour") + " " + name);
         for (int j = 0; j < nbparametre; j++) {
           sb.append(" :");
-          sb.append(variable.get(j).toString());
+          sb.append(variable.get(j));
         }
         for (int j=0;j<optVariables.size();j++){
         	sb.append(" [ :");
         	sb.append(optVariables.get(j));
         	sb.append(" ");
-        	sb.append(optVariablesExp.get(j).toString());
+        	sb.append(optVariablesExp.get(j));
         	sb.append(" ]");    	  
 	     }
         sb.append("\n");
@@ -112,4 +112,31 @@ public Procedure() {
   public String getName(){
   	return (name);
   }
+  
+  public StringBuffer cutInList(){
+	  // Only cut procedures which are visible in the editor
+	 StringBuffer sb=new StringBuffer();
+     try{
+       	String line="";
+       	StringReader sr=new StringReader(instruction);
+       	BufferedReader bfr=new BufferedReader(sr);
+        while (bfr.ready()){
+        	try{
+        		line=bfr.readLine().trim();
+        	}
+        	catch(NullPointerException e1){
+        		break;
+        	}
+        	// delete comments
+        	line=deleteComments(line);
+        	line=Utils.decoupe(line).toString().trim();
+        	sb.append("[ ");
+        	sb.append(line);
+        	sb.append(" ] ");
+        }  			
+        }
+        catch(IOException e){}
+  return sb;
+	}
+
 }
