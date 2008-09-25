@@ -3660,9 +3660,33 @@ public class LaunchPrimitive {
                        		else throw new myException(cadre,var+" "+Logo.messages.getString("error.procedure.must.be"));
                     	}
                     	catch(myException e){}
-                    	
-
                     break;
+                    case 289: //workspace.externalcommand
+                    	Interprete.operande=false;
+                    	try{
+        					String list = getFinalList(param.get(0));
+        					int index=numberOfElements(list);
+        					String[] cmd=new String[index];
+        					for(int i=0;i<index;i++){
+        						String liste1=item(list, i+1);						
+        						cmd[i]=Utils.SortieTexte(getFinalList(liste1).trim());	
+        					}
+                       		try{
+/*                       			String com="";
+                       			for(int i=0;i<cmd.length;i++){
+                       				com+=cmd[i]+" ";
+                       			}
+                       			System.out.println(com);*/
+                    			Runtime.getRuntime().exec(cmd);
+                    		}
+                    		catch(IOException e2){
+                    			//System.out.println("a");
+                    		}
+
+                    	} catch (myException e) {
+        				//System.out.println("coucou");
+                    	}
+                   		break;
 			}
 		}
 	}

@@ -287,3 +287,4 @@ controls.forever 1
 arithmetic.setdigits 1
 arithmetic.digits 0
 workspace.text 1
+workspace.externalcommand 1
