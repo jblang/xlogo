@@ -3596,7 +3596,7 @@ public class LaunchPrimitive {
         						elements.add(character);
         					}
     						LoopForEach bp=new LoopForEach(BigDecimal.ZERO,new BigDecimal(elements.size()-1)
-    						,BigDecimal.ONE,li2,var,elements);			
+    						,BigDecimal.ONE,li2,var.toLowerCase(),elements);			
     						bp.AffecteVar(true);
     						cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP +" ");
 							Primitive.stackLoop.push(bp);

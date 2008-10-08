@@ -28,8 +28,8 @@ import xlogo.utils.myException;
  */
 public class Sound_Player {
 	private Application cadre;
-	static final int[  ] offsets = {0,2,3,5,7,8,10};//{ -4, -2, 0, 1, 3, 5, 7};
-	private String[] notes={Logo.messages.getString("note.la"),Logo.messages.getString("note.si"),Logo.messages.getString("note.do"),Logo.messages.getString("note.re"),Logo.messages.getString("note.mi"),Logo.messages.getString("note.fa"),Logo.messages.getString("note.sol")};
+	static final int[  ] offsets = { 0, 2, 4, 5, 7,9,11};
+	private String[] notes={Logo.messages.getString("note.do"),Logo.messages.getString("note.re"),Logo.messages.getString("note.mi"),Logo.messages.getString("note.fa"),Logo.messages.getString("note.sol"),Logo.messages.getString("note.la"),Logo.messages.getString("note.si")};
 	private Track track=null;
 	private int instrument=0; //instrument selectionne
 	private int ticks=0; // Temps écoulé depuis le début de la piste
