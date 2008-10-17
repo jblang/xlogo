@@ -1402,7 +1402,6 @@ import xlogo.kernel.perspective.*;
 		g.setPaintMode();
 		g.setColor(couleurfond);
 		g.fillRect(0, 0, Config.imageWidth,Config.imageHeight);
-		g.setStroke(new BasicStroke(1));
 		drawGrid();
 		/* Réinitialiser les tortues
 		if (null == tortues[0])
@@ -2223,6 +2222,7 @@ import xlogo.kernel.perspective.*;
 	}
 	private void drawGrid(){
 		if (Config.drawGrid){
+			g.setStroke(new BasicStroke(1));
 			g.setColor(getTransparencyColor(Config.gridColor,100));
 						for (int i=Config.imageWidth/2%Config.XGrid;i<Config.imageWidth;i=i+Config.XGrid)
 				g.drawLine(i, 0, i, Config.imageHeight);
