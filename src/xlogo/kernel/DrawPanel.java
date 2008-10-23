@@ -756,8 +756,8 @@ import xlogo.kernel.perspective.*;
 		initCoords();
 		extractCoords(liste,Utils.primitiveName("drawing.point"));
 		coords=toScreenCoord(coords,true);
-		
-		if (coords[0]>0 && coords[1]>0 && coords[0]<Config.imageHeight && coords[1] < Config.imageWidth) {
+//		System.out.println(coords[0]+" "+coords[1]+" "+Config.imageHeight+" "+Config.imageWidth);
+		if (coords[0]>0 && coords[1]>0 && coords[0]<Config.imageWidth && coords[1] < Config.imageHeight) {
 			if (tortue.isPenReverse()) {
 				g.setColor(couleurfond);
 				g.setXORMode(tortue.couleurcrayon);
