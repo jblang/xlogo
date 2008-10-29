@@ -358,9 +358,7 @@ public class Logo {
 			catch(InterruptedException e1){}
 		}
 		select.dispose();
-
-		locale=Logo.getLocale(Config.langage);
-		messages=ResourceBundle.getBundle("langage",locale);
+		generateLanguage(Config.langage);
 	}
 	// Verify that all values are in valid range
 	

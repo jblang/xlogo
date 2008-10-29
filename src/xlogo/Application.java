@@ -1054,15 +1054,22 @@ public class Application extends JFrame {
 	 public int getCar(){
 	 	return touche.getCar();
 	 }
+	 private Application getApp(){
+		 return(this);
+	 }
 	 /**
 	  * Open the Preferences Dialog box
 	  */
 	 protected void prefOpen(){
 	 	if (null==pf) {
-			pf=new Preference(this);
-			pf.setBounds(100,100,600,580);
-			pf.setVisible(true);
-		}
+			  SwingUtilities.invokeLater(new Runnable(){
+				  public void run(){
+						pf=new Preference(getApp());
+						pf.setBounds(100,100,600,580);
+						pf.setVisible(true);
+				  } 
+			  });
+			}
 		else pf.requestFocus();
 	 } 
 	 /**

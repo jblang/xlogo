@@ -11,6 +11,7 @@ import java.io.*;
 
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -30,6 +31,7 @@ import xlogo.utils.ExtensionFichier;
 import xlogo.utils.WriteImage;
 import xlogo.gui.AImprimer;
 import xlogo.gui.MyTextAreaDialog;
+import xlogo.gui.Selection_Langue;
 import xlogo.kernel.Workspace;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.Kernel;
