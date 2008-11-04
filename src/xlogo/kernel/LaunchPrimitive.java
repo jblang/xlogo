@@ -45,6 +45,8 @@ import xlogo.kernel.perspective.ElementPoint;
  * the appropriate code.
  ******************************************************************************/
 public class LaunchPrimitive {
+	private static LogoWord wordTrue=new LogoWord(Logo.messages.getString("vrai"));
+	private static LogoWord wordFalse=new LogoWord(Logo.messages.getString("faux"));
 	/**
 	 * Default Application frame
 	 */
@@ -59,15 +61,7 @@ public class LaunchPrimitive {
 	private Workspace wp;
 	private Procedure procedure;
 	// private MathContext mc=MathContext.DECIMAL64;
-	/**
-	 * This is the start for the String returned by primitive or procedure.<br>
-	 * It is "\"" for words and "" for numbers. <br>
-	 * <br>
-	 * 
-	 * Ceci est le début de la chaine générique renvoyé par les primitives<br>
-	 * Elle vaut "\"" pour les mots et "" pour les nombres<br>
-	 */
-	private String debut_chaine = "";
+
 	/***************************************************************************
 	 * When we launch the primitive "listentcp", we have to save workspaces
 	 **************************************************************************/
@@ -84,7 +78,10 @@ public class LaunchPrimitive {
 		this.cadre = cadre;
 		this.kernel = cadre.getKernel();
 	}
-
+	private LogoWord word;
+	private LogoList list,sublist;
+	private StringBuffer sb;
+	
 	/**
 	 * Execute the primitive number "id" with the arguments contained in "param"<br>
 	 * <ul>
@@ -98,12 +95,12 @@ public class LaunchPrimitive {
 	 * @param param
 	 *            The Stack that contains all arguments
 	 */
-	protected void execute(int id, Stack<String> param) {
+	protected void execute(int id, Stack<LogoArgument> param) {
 		// identifiant procédure ou primitive, valeur des paramètres
 		if (id < 0) {
 			procedure = wp.getProcedure(-id - 2);
 			Interprete.stockvariable.push(Interprete.locale);
-			Interprete.locale=new HashMap<String,String>();
+			Interprete.locale=new HashMap<String,LogoArgument>();
 			// Read local Variable
 			int optSize=procedure.optVariables.size();
 			int normSize=procedure.variable.size();
@@ -114,9 +111,11 @@ public class LaunchPrimitive {
 						Interprete.locale.put(procedure.variable.get(j), param.get(j));
 					}	// add optional variables
 				else {
-					String value="";
-					if (j<param.size()) value=param.get(j);
-					else value=procedure.optVariablesExp.get(j-param.size()).toString();
+					LogoArgument value;
+///////////////////// WARNING
+					//					if (j<param.size()) value=param.get(j);
+//					else value=procedure.optVariablesExp.get(j-param.size()).toString();
+					value=param.get(j);
 					Interprete.locale.put(procedure.optVariables.get(j-normSize), value);
 					
 				}
@@ -126,7 +125,7 @@ public class LaunchPrimitive {
 				StringBuffer buffer=new StringBuffer();
 				for(int i=0;i<Interprete.en_cours.size();i++) buffer.append("  ");
 				buffer.append(procedure.name);
-				for (int i=0;i<param.size();i++) buffer.append(" "+Utils.SortieTexte(param.get(i)));
+				for (int i=0;i<param.size();i++) buffer.append(" "+param.get(i));
 				String msg=buffer + "\n";
 				cadre.ecris("normal", msg);
 			}
@@ -179,8 +178,8 @@ public class LaunchPrimitive {
 				break;
 			case 5: // repete controls.repeat
 				try {
-					String liste = getList(param.get(1));
-					kernel.primitive.repete(kernel.getCalculator().getInteger(param.get(0)), liste);
+					list = getList(param.get(1),false);
+					kernel.primitive.repete(kernel.getCalculator().getInteger(param.get(0).getValue()), list);
 				} catch (myException e) {
 				}
 				break;
@@ -204,44 +203,34 @@ public class LaunchPrimitive {
 				break;
 			case 9: // ecris, ec
 				int size=param.size();
-				String result="";
-				String mot;
+				sb=new StringBuffer();
 				for(int i=0;i<size;i++){
-					String par = param.get(i).trim();
-					if (isList(par))
-						par = formatList(par.substring(1, par.length() - 1));
-					mot = getWord(param.get(i));
-					if (null == mot)
-						result+=Utils.SortieTexte(par)+" ";
-					else
-						result+=Utils.SortieTexte(mot)+" ";	
+					sb.append(param.get(i).getValue());
+					if (i!=size-1) sb.append(" ");
 				}
-				cadre.ecris("perso", result + "\n");
+				cadre.ecris("perso", sb.toString() + "\n");
 				break;
 			case 10: // si // if
 				try {
-					String liste = getList(param.get(1));
-					liste=new String(Utils.decoupe(liste));
-					String liste2 = null;
+					list = getList(param.get(1),false);
+					LogoList list2 = null;
 					boolean predicat = predicat(param.get(0));
 					InstructionBuffer instruction=cadre.getKernel().getInstructionBuffer();
 					if (instruction.getLength()!=0) {
 						try {
 							String element = instruction.getNextWord();
-							// System.out.println("a"+element+"a");
 							if (element.startsWith("\\l")){
 								instruction.deleteFirstWord(element);
 								Interprete.lineNumber=element+" ";
 							}
 							if (instruction.charAt(0)=='[') {
 								instruction.deleteFirstWord("[");
-								liste2 = getFinalList(kernel.listSearch());
-								liste2=new String(Utils.decoupe(liste2));
+								list2 = getFinalList(kernel.listSearch());
 							}
 						} catch (Exception e) {
 						}
 					}
-					kernel.primitive.si(predicat, liste, liste2);
+					kernel.primitive.si(predicat, Utils.decoupe(list.getValue()).toString(), Utils.decoupe(list2.getValue()).toString());
 					Interprete.renvoi_instruction=true;
 				} catch (myException e) {
 				}
@@ -259,7 +248,7 @@ public class LaunchPrimitive {
 			case 13: // fpos
 				delay();
 				try {
-					String list=getFinalList(param.get(0));
+					LogoList list=getFinalList(param.get(0));
 					cadre.getArdoise().fpos(list);
 				} catch (myException e) {
 				}
@@ -270,10 +259,18 @@ public class LaunchPrimitive {
 					if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
 						double x = kernel.getCalculator().numberDouble(param.get(0));
 						double y = Config.imageHeight/2 - kernel.getActiveTurtle().corY;
-						cadre.getArdoise().fpos(x + " " + y);
+						list=new LogoList();
+						list.addElement(new LogoWord(String.valueOf(x),true));
+						list.addElement(new LogoWord(String.valueOf(y),true));
+						cadre.getArdoise().fpos(list);
 					}
-					else cadre.getArdoise().fpos(kernel.getCalculator().numberDouble(param.get(0))+" "+kernel.getActiveTurtle().Y+" "
-							+kernel.getActiveTurtle().Z);
+					else {
+						list=new LogoList();
+						list.addElement(new LogoWord(String.valueOf(kernel.getCalculator().numberDouble(param.get(0))),true));
+						list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().Y),true));
+						list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().Z),true));
+						cadre.getArdoise().fpos(list);	
+					}
 				} catch (myException e) {
 				}
 				break;
@@ -283,11 +280,18 @@ public class LaunchPrimitive {
 					if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
 						double y = kernel.getCalculator().numberDouble(param.get(0));
 						double x = kernel.getActiveTurtle().corX - Config.imageWidth/2;
-						cadre.getArdoise().fpos(x + " " + y);
+						list=new LogoList();
+						list.addElement(new LogoWord(String.valueOf(x),true));
+						list.addElement(new LogoWord(String.valueOf(y),true));
+						cadre.getArdoise().fpos(list);
 					}
-					else cadre.getArdoise().fpos(kernel.getActiveTurtle().X+" "+kernel.getCalculator().numberDouble(param.get(0))
-							+" "+kernel.getActiveTurtle().Z);
-						
+					else {
+						list=new LogoList();
+						list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().X),true));
+						list.addElement(new LogoWord(String.valueOf(kernel.getCalculator().numberDouble(param.get(0))),true));
+						list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().Z),true));
+						cadre.getArdoise().fpos(list);	
+					}				
 				} catch (myException e) {
 				}
 				break;
@@ -295,8 +299,10 @@ public class LaunchPrimitive {
 				delay();
 				try {
 					primitive2D("drawing.fixexy");
-					cadre.getArdoise().fpos(kernel.getCalculator().numberDouble(param.get(0)) + " "
-							+ kernel.getCalculator().numberDouble(param.get(1)));
+					list=new LogoList();
+					list.addElement(new LogoWord(String.valueOf(kernel.getCalculator().numberDouble(param.get(0))),true));
+					list.addElement(new LogoWord(String.valueOf(kernel.getCalculator().numberDouble(param.get(1))),true));
+					cadre.getArdoise().fpos(list);
 				} catch (myException e) {
 				}
 				break;
@@ -406,9 +412,9 @@ public class LaunchPrimitive {
 					double a = kernel.getCalculator().numberDouble(param.get(0));
 					double b = kernel.getCalculator().numberDouble(param.get(1));
 					if (a < b)
-						Interprete.calcul.push(Logo.messages.getString("vrai"));
+						Interprete.calcul.push(wordTrue);
 					else
-						Interprete.calcul.push(Logo.messages.getString("faux"));
+						Interprete.calcul.push(wordFalse);
 				} catch (myException e) {
 				}
 				Interprete.operande = true;
@@ -418,9 +424,9 @@ public class LaunchPrimitive {
 					double a = kernel.getCalculator().numberDouble(param.get(0));
 					double b = kernel.getCalculator().numberDouble(param.get(1));
 					if (a > b)
-						Interprete.calcul.push(Logo.messages.getString("vrai"));
+						Interprete.calcul.push(wordTrue);
 					else
-						Interprete.calcul.push(Logo.messages.getString("faux"));
+						Interprete.calcul.push(wordFalse);
 				} catch (myException e) {
 				}
 				Interprete.operande = true;
@@ -431,9 +437,9 @@ public class LaunchPrimitive {
 					boolean b2 = predicat(param.get(1));
 					b1 = b1 | b2;
 					if (b1)
-						Interprete.calcul.push(Logo.messages.getString("vrai"));
+						Interprete.calcul.push(wordTrue);
 					else
-						Interprete.calcul.push(Logo.messages.getString("faux"));
+						Interprete.calcul.push(wordFalse);
 				} catch (myException e) {
 				}
 				Interprete.operande = true;
@@ -444,9 +450,9 @@ public class LaunchPrimitive {
 					boolean b2 = predicat(param.get(1));
 					b1 = b1 & b2;
 					if (b1)
-						Interprete.calcul.push(Logo.messages.getString("vrai"));
+						Interprete.calcul.push(wordTrue);
 					else
-						Interprete.calcul.push(Logo.messages.getString("faux"));
+						Interprete.calcul.push(wordFalse);
 				} catch (myException e) {
 				}
 				Interprete.operande = true;
@@ -528,12 +534,17 @@ public class LaunchPrimitive {
 				if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
 					long a = Math.round(kernel.getActiveTurtle().corX - Config.imageWidth/2);
 					long b = Math.round(Config.imageHeight/2 - kernel.getActiveTurtle().corY);
-					Interprete.calcul.push("[ " + a + " " + b + " ] ");
+					LogoList list=new LogoList();
+					list.addElement(new LogoWord(String.valueOf(a),true));
+					list.addElement(new LogoWord(String.valueOf(b),true));
+					Interprete.calcul.push(list);
 				}
 				else {
-					Interprete.calcul.push("[ "+kernel.getActiveTurtle().X+" "
-							+kernel.getActiveTurtle().Y+" "+kernel.getActiveTurtle().Z+" ] ");
-					
+					LogoList list=new LogoList();
+					list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().X),true));
+					list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().Y),true));
+					list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().Z),true));
+					Interprete.calcul.push(list);					
 				}
 				break;
 			case 42: // cap
@@ -543,8 +554,8 @@ public class LaunchPrimitive {
 			case 43: // arrondi
 				Interprete.operande = true;
 				try {
-					Interprete.calcul.push(String.valueOf(Math
-							.round(kernel.getCalculator().numberDouble(param.get(0)))));
+					Interprete.calcul.push(new LogoWord(String.valueOf(Math
+							.round(kernel.getCalculator().numberDouble(param.get(0)))),true));
 				} catch (myException e) {
 				}
 				break;
@@ -581,362 +592,263 @@ public class LaunchPrimitive {
 					Interprete.operande = true;
 					boolean b1 = predicat(param.get(0));
 					if (b1)
-						Interprete.calcul.push(Logo.messages.getString("faux"));
+						Interprete.calcul.push(wordFalse);
 					else
-						Interprete.calcul.push(Logo.messages.getString("vrai"));
+						Interprete.calcul.push(wordTrue);
 				} catch (myException e) {
 				}
 				break;
 			case 50: // liste
-				String liste = "[ ";
 				Interprete.operande = true;
-				String mot2;
+				LogoList liste = new LogoList();
 				for(int i=0;i<param.size();i++){
-					mot2 = param.get(i);	
-					mot = getWord(param.get(i));
-					if (null == mot){
-						liste += mot2;
-					// System.out.println("a"+mot2+"a");
-						}
-					else {
-						if (mot.equals("")) mot="\\v";
-						liste += mot + " ";
-					}
+					liste.addElement(param.get(i));	
 				}
-				Interprete.calcul.push(liste + "] ");
+				Interprete.calcul.push(liste);
 				break;
 			case 51: // phrase
-				liste = "[ ";
 				Interprete.operande = true;
+				liste=new LogoList();
 				for (int i = 0; i < param.size(); i++) {
-					mot = getWord(param.get(i));
-					mot2 = param.get(i).trim();
-					if (null == mot) {
-						if (isList(mot2))
-							liste += mot2.substring(1, mot2.length() - 1)
-									.trim()
-									+ " ";
-						else
-							liste += mot2 + " ";
-					} else
-						{	if (mot.equals("")) mot="\\v"; 
-							liste += mot + " ";
-						}
+					LogoArgument arg=param.get(i);
+					if (arg.isWord()) {
+						liste.addElement(arg);
+					}
+					else if (arg.isList()){
+						LogoList argList=new LogoList();
+						for (int j=0;j<argList.getSize();j++){
+							liste.addElement(argList.getElement(j));
+						}						
+					}
 				}
-				Interprete.calcul.push(liste + "] ");
+				Interprete.calcul.push(liste);
 				break;
 			case 52: // metspremier
 				try {
-					liste = getFinalList(param.get(1));
 					Interprete.operande = true;
-					mot = getWord(param.get(0));
-					if (null!=mot&& mot.equals("")) mot="\\v";
-					if (null == mot){
-						if (!liste.equals(""))
-						Interprete.calcul.push("[ "
-								+ param.get(0).trim() + " "
-								+ liste.trim() + " ] ");
-						else 
-							Interprete.calcul.push("[ "
-									+ param.get(0).trim() + " ] ");
-						}
-					else{
-						if (!liste.equals(""))
-						Interprete.calcul.push("[ " + mot + " " + liste.trim()
-								+ " ] ");
-						else Interprete.calcul.push("[ " + mot	+ " ] ");
-					}
+					liste = getFinalList(param.get(1));
+					liste.insertElement(param.get(0), 0);
+					Interprete.calcul.push(liste);
 				} catch (myException e) {
 				}
 				break;
 			case 53: // metsdernier
 				try {
-					liste = getFinalList(param.get(1)).trim();
 					Interprete.operande = true;
-					mot = getWord(param.get(0));
-					if (null!=mot && mot.equals("")) mot="\\v";
-					if (null == mot){ // Si c'est une liste
-							Interprete.calcul.push(("[ " + liste).trim() + " "
-								+ param.get(0).trim() + " ] ");
-						
-					} 
-					else
-						Interprete.calcul.push(("[ " + liste).trim() +" "+mot+" ] ");
+					liste = getFinalList(param.get(1));
+					liste.addElement(param.get(0));
+					Interprete.calcul.push(liste);
 				} catch (myException e) {
 				}
 				break;
 			case 54: // inverse liste
 				try {
-					liste = getFinalList(param.get(0)).trim();
 					Interprete.operande = true;
-					StringTokenizer st = new StringTokenizer(liste);
-					liste = " ] ";
-					String element = "";
-					while (st.hasMoreTokens()) {
-						element = st.nextToken();
-						if (element.equals("["))
-							element = extractList(st);
-						liste = " " + element + liste;
+					liste = getFinalList(param.get(0));
+					LogoList output=new LogoList();
+					for (int i=0;i<liste.getSize();i++){
+						int j=liste.getSize()-i;
+						output.addElement(liste.getElement(j));
 					}
-					Interprete.calcul.push("[" + liste);
+					Interprete.calcul.push(output);
 				} catch (myException e) {
 				}
 				break;
 			case 55: // choix
 				Interprete.operande = true;
-				mot = getWord(param.get(0));
-				if (null == mot) {
-					try {
-						liste = getFinalList(param.get(0));
-						int nombre = (int) Math.floor(numberOfElements(liste)
-								* Math.random()) + 1;
-						String tmp=item(liste, nombre);
-						if (tmp.equals("\"\\v")) tmp="\"";
-						Interprete.calcul.push(tmp);
-					} catch (myException e) {
-					}
+				try{
+				if (param.get(0).isList()) {
+					LogoList list = getFinalList(param.get(0));
+					int nombre = (int) Math.floor(list.getNumberOfElements()
+								* Math.random())+1;
+					LogoArgument tmp=item(list, nombre);
+					Interprete.calcul.push(tmp);
 				} else {
-					int nombre = (int) Math.floor(Math.random() * getWordLength(mot))+1;
-					String st="";
-					try{
-						st=itemWord(nombre,mot);
-						Double.parseDouble(st);
-						Interprete.calcul.push(st);
+					LogoWord word=(LogoWord)param.get(0);
+					int number = (int) Math.floor(Math.random() * word.getLength())+1;
+					Interprete.calcul.push(word.itemWord(number));
 					}
-					catch(NumberFormatException e1){
-						Interprete.calcul.push(debut_chaine+ st);}
-					catch(myException e2){}
-					} 
+				}
+				catch(myException e){}
 				break;
 			case 56: // enleve
 				Interprete.operande = true;
-				try {
-					liste = getFinalList(param.get(1));
-					StringTokenizer st = new StringTokenizer(liste);
-					liste = "[ ";
-					mot = getWord(param.get(0));
-					String str;
-					if(null!=mot&&mot.equals("")) mot="\\v";
-					if (null == mot)
-						mot = param.get(0).trim();
-					
-					while (st.hasMoreTokens()) {
-						str = st.nextToken();
-						if (str.equals("["))
-							str = extractList(st);
-						if (!str.equals(mot))
-							liste += str + " ";
+				try {					
+					LogoList list = getFinalList(param.get(1));
+					LogoList output=new LogoList();
+					for(int i=0;i<list.getSize();i++){
+						LogoArgument arg=list.getElement(i);
+						if (!arg.equals(param.get(0))) output.addElement(arg); 
 					}
-					Interprete.calcul.push(liste.trim() + " ] ");
+					Interprete.calcul.push(output);
 				} catch (myException e) {
 				}
 				break;
 			case 57: // item
 				Interprete.operande = true;
 				try {
-					mot = getWord(param.get(1));
-					if (null == mot)
-						Interprete.calcul.push(item(getFinalList(param.get(1)
-								), kernel.getCalculator().getInteger(param.get(0))));
-					else {
-						int i = kernel.getCalculator().getInteger(param.get(0));
-						if (i < 1 || i > getWordLength(mot))
+					if (param.get(1).isList()){
+						LogoList list=(LogoList)param.get(1);
+						Interprete.calcul.push(item(list,
+								kernel.getCalculator().getInteger(param.get(0).getValue())));
+					}
+					else if (param.get(1).isWord()){
+						LogoWord word=(LogoWord)param.get(1);
+						int i=kernel.getCalculator().getInteger(param.get(0).getValue());
+						if (i < 1 || i >word.getLength())
 							throw new myException(cadre, Utils.primitiveName("item")+" "+
 									Logo.messages.getString("n_aime_pas")+ i +" "+
 									Logo.messages.getString("comme_parametre")+ ".");
 						else{
-							String st= itemWord(i,mot);
-							try{
-								Double.parseDouble(st);
-								Interprete.calcul.push(st);
-							}
-							catch(NumberFormatException e1){
-								Interprete.calcul.push(debut_chaine+st);
-							}
-						}
+							Interprete.calcul.push(word.itemWord(i));							
+						}						
 					}
 				} catch (myException e) {
 				}
 				break;
 			case 58: // saufdernier
 				Interprete.operande = true;
-				mot = getWord(param.get(0));
-				if (null == mot) {
-					try {
-						liste = getFinalList(param.get(0)).trim();
-						String element = item(liste, numberOfElements(liste));
-						int longueur = element.length();
-
-						if (element.startsWith("\"")||element.startsWith("["))
-							longueur--;
-						Interprete.calcul.push("[ "
-								+ liste.substring(0, liste.length() - longueur)
-								+ "] ");
-					} catch (myException e) {
+				try{
+					if (param.get(0).isList()){
+						LogoList list = getFinalList(param.get(0));
+						if (list.getSize()-1>0){
+							list.removeElement(list.getSize()-1);
+							Interprete.calcul.push(list);
+						}
+						else throw new myException(cadre,Logo.messages.getString("liste_vide"));
 					}
-				} 
-				else if(mot.equals("")) {
-					try{
-					throw new myException(cadre,Logo.messages.getString("mot_vide"));}
-				catch(myException e1){}	
-				} 
-				else if (getWordLength(mot) == 1)
-					Interprete.calcul.push("\"");
-				else {
-					String tmp=mot.substring(0, mot.length() - 1);
-					if (tmp.endsWith("\\")) tmp=tmp.substring(0, tmp.length() - 1);
-					try{
-						Double.parseDouble(tmp);
-						Interprete.calcul.push(tmp );						
-					}
-					catch(NumberFormatException e){
-						Interprete.calcul.push(debut_chaine+tmp );
+					else if (param.get(0).isWord()){
+						LogoWord word=(LogoWord)param.get(0);
+						if (word.getValue().equals(""))	throw new myException(cadre,Logo.messages.getString("mot_vide"));
+						String output=word.getValue().substring(0,word.getValue().length()-1);
+						try{
+							Double.parseDouble(output);
+							Interprete.calcul.push(new LogoWord(output,true));
+						}
+						catch(NumberFormatException e){
+							Interprete.calcul.push(new LogoWord(output));
+						}
 					}
 				}
+				catch(myException e){}
 				break;
 			case 59: // saufpremier
 				Interprete.operande = true;
-				mot = getWord(param.get(0));
-				if (null == mot) {
-					try {
-						liste = getFinalList(param.get(0)).trim();
-						String element = item(liste, 1);
-						int longueur = element.length();
-						if (element.startsWith("\"")||element.startsWith("["))
-							longueur--;
-						Interprete.calcul.push("["
-								+ liste.substring(longueur, liste.length())
-								+ " ] ");
-					} catch (myException e) {
+				try{
+					if (param.get(0).isList()){
+						LogoList list = getFinalList(param.get(0));
+						if (list.getSize()>0){
+							list.removeElement(0);
+							Interprete.calcul.push(list);
+						}
+						else throw new myException(cadre,Logo.messages.getString("liste_vide"));
 					}
-				} 
-				else if(mot.equals("")) {
-					try{
-					throw new myException(cadre,Logo.messages.getString("mot_vide"));}
-				catch(myException e1){}	
-				} 
-				else if (getWordLength(mot) == 1)
-					Interprete.calcul.push("\"");
-				else {
-					if (!mot.startsWith("\\")) mot=mot.substring(1);
-					else mot=mot.substring(2);
-					try{ 
-						Double.parseDouble(mot);
-						Interprete.calcul.push(mot);}
-					catch(NumberFormatException e){
-						Interprete.calcul.push(debut_chaine + mot);
+					else if (param.get(0).isWord()){
+						LogoWord word=(LogoWord)param.get(0);
+						if (word.getValue().equals(""))	throw new myException(cadre,Logo.messages.getString("mot_vide"));
+						String output=word.getValue().substring(1);
+						try{
+							Double.parseDouble(output);
+							Interprete.calcul.push(new LogoWord(output,true));
+						}
+						catch(NumberFormatException e){
+							Interprete.calcul.push(new LogoWord(output));
+						}
 					}
 				}
+				catch(myException e){}				
 				break;
 			case 60: // dernier
 				Interprete.operande = true;
-				mot = getWord(param.get(0));
-				if (null == mot) { // Si c'est une liste
-					try {
-						liste = getFinalList(param.get(0));
-						Interprete.calcul
-								.push(item(liste, numberOfElements(liste)));
-					} catch (myException e) {
+				try{
+					if (param.get(0).isList()){
+						LogoList list = getFinalList(param.get(0));
+						if (list.getSize()>0){
+							Interprete.calcul.push(list.getElement(list.getSize()));
+						}
+						else throw new myException(cadre,Logo.messages.getString("liste_vide"));
 					}
-				} else if (getWordLength(mot) == 1)
-					Interprete.calcul.push(debut_chaine + mot);
-				else {
-					String st="";
-					try{
-						st=itemWord(getWordLength(mot),mot);
-						Double.parseDouble(st);
-						Interprete.calcul.push(st);
+					else if (param.get(0).isWord()){
+						LogoWord word=(LogoWord)param.get(0);
+						if (word.getValue().equals(""))	throw new myException(cadre,Logo.messages.getString("mot_vide"));
+						LogoWord output=word.itemWord(word.getLength());
+						Interprete.calcul.push(output);
 					}
-					catch(NumberFormatException e1){
-						Interprete.calcul.push(debut_chaine + st);
-					}
-					catch(myException e2){}
-				} 
+				}
+				catch(myException e){}
 				break;
 			case 61: // premier
 				Interprete.operande = true;
-				mot = getWord(param.get(0));
-				if (null == mot) { // SI c'est une liste
-					try {
-						liste = getFinalList(param.get(0));
-			// System.out.println("b"+item(liste, 1)+"b");
-						Interprete.calcul.push(item(liste, 1));
-					} catch (myException e) {
+				try{
+					if (param.get(0).isList()){
+						LogoList list = getFinalList(param.get(0));
+						if (list.getSize()>0){
+							Interprete.calcul.push(list.getElement(0));
+						}
+						else throw new myException(cadre,Logo.messages.getString("liste_vide"));
 					}
-				} else if (getWordLength(mot) == 1)
-					Interprete.calcul.push(debut_chaine + mot);	
-				else{
-					String st="";
-					try{
-						st=itemWord(1,mot);
-						Double.parseDouble(st);
-						Interprete.calcul.push(st);
-					}
-					catch(myException e1){}
-					catch(NumberFormatException e2){
-						Interprete.calcul.push(debut_chaine + st);	
+					else if (param.get(0).isWord()){
+						LogoWord word=(LogoWord)param.get(0);
+						if (word.getValue().equals(""))	throw new myException(cadre,Logo.messages.getString("mot_vide"));
+						LogoWord output=word.itemWord(1);
+						Interprete.calcul.push(output);
 					}
 				}
+				catch(myException e){}
 				break;
 			case 62: // compte
 				Interprete.operande = true;
-				mot = getWord(param.get(0));
-				if (null == mot) {
+				if (param.get(0).isList()) {
 					try {
-						liste = getFinalList(param.get(0));
-						Interprete.calcul.push(String
-								.valueOf(numberOfElements(liste)));
+						LogoList list = getFinalList(param.get(0));
+						Interprete.calcul.push(new LogoWord(String.valueOf(list.getSize()),true));
 					} catch (myException e) {
 					}
-				} else
-					Interprete.calcul.push(String.valueOf(getWordLength(mot)));
+				} else{
+					LogoWord word=(LogoWord)param.get(0);
+					Interprete.calcul.push(new LogoWord(String.valueOf(word.getLength()),true));
+				}
 				break;
 			case 63: // mot?
-				mot = getWord(param.get(0));
-				if (null == mot)
-					Interprete.calcul.push(Logo.messages.getString("faux"));
-				else
-					Interprete.calcul.push(Logo.messages.getString("vrai"));
 				Interprete.operande = true;
+				if (param.get(0).isWord())
+					Interprete.calcul.push(wordTrue);
+				else
+					Interprete.calcul.push(wordFalse);
+
 				break;
 			case 64: // nombre?
-				try {
-					Double.parseDouble(param.get(0));
-					Interprete.calcul.push(Logo.messages.getString("vrai"));
-				} catch (NumberFormatException e) {
-					Interprete.calcul.push(Logo.messages.getString("faux"));
-				}
 				Interprete.operande = true;
+				if (param.get(0).isNumber())
+					Interprete.calcul.push(wordTrue);
+				else Interprete.calcul.push(wordFalse);
 				break;
 			case 65: // liste?
-				liste = param.get(0).trim();
-				if (isList(liste))
-					Interprete.calcul.push(Logo.messages.getString("vrai"));
-				else
-					Interprete.calcul.push(Logo.messages.getString("faux"));
 				Interprete.operande = true;
+				if (param.get(0).isList())
+					Interprete.calcul.push(wordTrue);
+				else
+					Interprete.calcul.push(wordFalse);
 				break;
 			case 66: // vide?
-				liste = param.get(0).trim();
-				mot = getWord(param.get(0));
-				if (null == mot) { // si c'est une liste ou un nombre
+				Interprete.operande = true;
+				if (param.get(0).isList()) { // si c'est une liste ou un nombre
+					LogoList list=(LogoList)param.get(0);
 					try {
-						liste = getFinalList(liste).trim();
-						if (liste.equals(""))
-							Interprete.calcul.push(Logo.messages
-									.getString("vrai"));
+						list = getFinalList(list);
+						if (list.getSize()==0)
+							Interprete.calcul.push(wordTrue);
 						else
-							Interprete.calcul.push(Logo.messages
-									.getString("faux"));
+							Interprete.calcul.push(wordFalse);
 					} catch (myException e) {
 					}
 				} else { // Si c'est un mot
-					if (mot.equals(""))
-						Interprete.calcul.push(Logo.messages.getString("vrai"));
+					LogoWord word=(LogoWord)param.get(0);
+					if (word.getLength()==0)
+						Interprete.calcul.push(wordTrue);
 					else
-						Interprete.calcul.push(Logo.messages.getString("faux"));
+						Interprete.calcul.push(wordFalse);
 				}
-				Interprete.operande = true;
 				break;
 			case 67: // egal?
 				equal(param);
@@ -949,7 +861,7 @@ public class LaunchPrimitive {
 				break;
 			case 69: // membre ?
 				try {
-					membre(param, id);
+					isMember(param);
 				} catch (myException e) {
 				} 
 				break;
@@ -963,7 +875,7 @@ public class LaunchPrimitive {
 				break;
 			case 71: // membre
 				try {
-					membre(param, id);
+					member(param);
 				} catch (myException e) {
 				}
 				break;
@@ -993,13 +905,14 @@ public class LaunchPrimitive {
 			case 75: // fcc
 				try {
 					Color color=null;
-					if (isList(param.get(0))) {
+					if (param.get(0).isList()) {
+						LogoList list=(LogoList)param.get(0);
 						try {
-							color=rgb(param.get(0),Utils.primitiveName("fcc"));
+							color=rgb(list,Utils.primitiveName("fcc"));
 							} catch (myException e) {
 						}
 					} else {
-						int coul=kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
+						int coul=kernel.getCalculator().getInteger(param.get(0).getValue()) % DrawPanel.defaultColors.length;
 						if (coul<0) coul+=DrawPanel.defaultColors.length;
 						color=DrawPanel.defaultColors[coul];
 					}
@@ -1010,13 +923,14 @@ public class LaunchPrimitive {
 			case 76: // fcfg
 				try {
 					Color color = null;
-					if (isList(param.get(0))) {
+					if (param.get(0).isList()) {
+						LogoList list=(LogoList)param.get(0);
 						try {
-							color = rgb(param.get(0),Utils.primitiveName("fcfg"));
+							color = rgb(list,Utils.primitiveName("fcfg"));
 						} catch (myException e) {
 						}
 					} else {
-						int coul=kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
+						int coul=kernel.getCalculator().getInteger(param.get(0).getValue()) % DrawPanel.defaultColors.length;
 						if (coul<0) coul+=DrawPanel.defaultColors.length;
 						color = DrawPanel.defaultColors[coul];
 					}
@@ -1027,15 +941,15 @@ public class LaunchPrimitive {
 			case 77: // hasard
 				Interprete.operande = true;
 				try {
-					int i = kernel.getCalculator().getInteger(param.get(0));
+					int i = kernel.getCalculator().getInteger(param.get(0).getValue());
 					i = (int) Math.floor(Math.random() * i);
-					Interprete.calcul.push(String.valueOf(i));
+					Interprete.calcul.push(new LogoWord(String.valueOf(i),true));
 				} catch (myException e) {
 				}
 				break;
 			case 78: // attends
 				try {
-					int temps = kernel.getCalculator().getInteger(param.get(0));
+					int temps = kernel.getCalculator().getInteger(param.get(0).getValue());
 					if (temps < 0) {
 						String attends = Utils.primitiveName("attends");
 						throw new myException(cadre, attends + " "
@@ -1059,7 +973,7 @@ public class LaunchPrimitive {
 				break;
 			case 79: // procedures
 				Interprete.operande=true;
-				Interprete.calcul.push(new String(getAllProcedures()));
+				Interprete.calcul.push(getAllProcedures());
 				break;
 			case 80: // effaceprocedure efp
 				erase(param.get(0), "procedure");
@@ -1076,42 +990,44 @@ public class LaunchPrimitive {
 				break;
 			case 83: // mot
 				Interprete.operande = true;
-				result="";
+				StringBuffer sb=new StringBuffer();
 				for(int i=0;i<param.size();i++){
-					mot = getWord(param.get(i));
-					if (null == mot) 						
+					if (param.get(i).isWord()){
+						sb.append(param.get(i).getValue());
+					}
+					else {				
 						try {
 							throw new myException(cadre, param.get(i) + " "
 									+ Logo.messages.getString("error.word"));
 						} catch (myException e) {
 						}
-					result+=mot;
+					}
 				}
-				try{Double.parseDouble(result);}
+				String output=sb.toString();
+				try{
+					Double.parseDouble(output);
+					Interprete.calcul.push(new LogoWord(output,true));
+				}
 				catch(NumberFormatException e){
-					result="\""+result;
+					Interprete.calcul.push(new LogoWord(output));
 				}
-				Interprete.calcul.push(result);
 				break;
 			case 84: // etiquette
-				String par = param.get(0).trim();
-				if (isList(par))
-					par = formatList(par.substring(1, par.length() - 1));
-				mot = getWord(param.get(0));
-				if (null == mot)
-					cadre.getArdoise().etiquette(Utils.SortieTexte(par));
-				else
-					cadre.getArdoise().etiquette(Utils.SortieTexte(mot));
+				Interprete.operande=false;
+				cadre.getArdoise().etiquette(param.get(0).getValue());
 				break;
 			case 85: // /trouvecouleur
 				if (kernel.getActiveTurtle().isVisible())
 					cadre.getArdoise().montrecacheTortue(false);
 				try {
-					liste = getFinalList(param.get(0));
-					Color r=cadre.getArdoise().guessColorPoint(liste);
+					LogoList list = getFinalList(param.get(0));
+					Color r=cadre.getArdoise().guessColorPoint(list);
 					Interprete.operande = true;
-					Interprete.calcul.push("[ " + r.getRed() + " "
-							+ r.getGreen() + " " + r.getBlue() + " ] ");
+					list=new LogoList();
+					list.addElement(new LogoWord(String.valueOf(r.getRed()),true));
+					list.addElement(new LogoWord(String.valueOf(r.getGreen()),true));
+					list.addElement(new LogoWord(String.valueOf(r.getBlue()),true));
+					Interprete.calcul.push(list);
 				} catch (myException e) {
 				}
 				if (kernel.getActiveTurtle().isVisible())
@@ -1163,11 +1079,9 @@ public class LaunchPrimitive {
 				break;
 			case 92: // tantque
 				try {
-					String li1 = getList(param.get(0));
-					li1=new String(Utils.decoupe(li1));
-					String li2 = getList(param.get(1));
-					li2=new String(Utils.decoupe(li2));
-					String instr="\\siwhile "+li1+ "[ " + li2+ "] ";
+					LogoList li1 = getList(param.get(0),false);
+					LogoList li2 = getList(param.get(1),false);
+					String instr="\\siwhile "+li1.getValue()+ " [ " + li2.getValue()+ " ] ";
 					LoopWhile bp=new LoopWhile(BigDecimal.ONE,BigDecimal.ZERO,BigDecimal.ONE,instr);
 					Primitive.stackLoop.push(bp);
 					cadre.getKernel().getInstructionBuffer().insert(instr+Primitive.END_LOOP+" ");
@@ -1177,49 +1091,52 @@ public class LaunchPrimitive {
 				break;
 			case 93: // lis
 				try {
-					liste = getFinalList(param.get(0));
-					mot = getWord(param.get(1));
-					if (null == mot)
+					LogoList list = getFinalList(param.get(0));
+					if (!param.get(1).isWord())
 						throw new myException(cadre, Logo.messages
 								.getString("error.word"));
+					LogoWord word=(LogoWord)param.get(1);
 					java.awt.FontMetrics fm = cadre.getGraphics()
 							.getFontMetrics(Config.police);
-					int longueur = fm.stringWidth(liste) + 100;
-					Lis lis = new Lis(liste, longueur);
+					int longueur = fm.stringWidth(list.getValue()) + 100;
+					Lis lis = new Lis(list.getValue(), longueur);
 					while (lis.isVisible()) {
 						try {
 							Thread.sleep(50);
 						} catch (InterruptedException e) {
 						}
 					}
-					param = new Stack<String>();
-					param.push("\"" + mot);
-					String phrase=lis.getText();
-					// phrase="[ "+Logo.rajoute_backslash(phrase)+" ] ";
-					StringBuffer tampon=new StringBuffer();
-					for(int j=0;j<phrase.length();j++){
-						char c=phrase.charAt(j);
-						if (c=='\\') tampon.append("\\\\");
-						else tampon.append(c);
-					}
-					int offset=tampon.indexOf(" ");
+					param = new Stack<LogoArgument>();
+					param.push(word);
+					String txt=lis.getText();
+
+					int offset=txt.indexOf(" ");
 					if(offset!=-1){
-						tampon.insert(0,"[ ");
-						tampon.append(" ] ");
+						StringTokenizer st=new StringTokenizer(txt);
+						list=new LogoList();
+						while(st.hasMoreTokens()){
+							String token=st.nextToken();
+							try{
+								Double.parseDouble(token);
+								list.addElement(new LogoWord(token,true));
+							}
+							catch(NumberFormatException e3){
+								list.addElement(new LogoWord(token));
+							}
+						}
 					}
 					else {
 						try {
-							Double.parseDouble(phrase);
+							Double.parseDouble(txt);
+							param.push(new LogoWord(txt,true));
 						}
 						catch(NumberFormatException e){
-							tampon.insert(0,"\"");
+							param.push(new LogoWord(txt));
 						}
 					}
-					phrase=new String(tampon);
-					param.push(phrase);
 					donne(param);
-					String texte = liste + "\n" + phrase;
-					cadre.ecris("commentaire", Utils.SortieTexte(texte) + "\n");
+					String texte = list + "\n" + txt;
+					cadre.ecris("commentaire", texte + "\n");
 					cadre.focus_Commande();
 					lis.dispose();
 					cadre.focus_Commande();
@@ -1229,9 +1146,9 @@ public class LaunchPrimitive {
 			case 94: // touche?
 				Interprete.operande = true;
 				if (cadre.getCar() != -1)
-					Interprete.calcul.push(Logo.messages.getString("vrai"));
+					Interprete.calcul.push(wordTrue);
 				else
-					Interprete.calcul.push(Logo.messages.getString("faux"));
+					Interprete.calcul.push(wordFalse);
 				break;
 			case 95: // siwhile --> Evalue l'expression test du while
 				try {
@@ -1250,7 +1167,7 @@ public class LaunchPrimitive {
 					if (myException.lance)
 						break;
 				}
-				Interprete.calcul.push(String.valueOf(cadre.getCar()));
+				Interprete.calcul.push(new LogoWord(String.valueOf(cadre.getCar()),true));
 				Interprete.operande = true;
 				cadre.setCar(-1);
 				break;
@@ -1276,7 +1193,11 @@ public class LaunchPrimitive {
 					}
 					else{
 						double[] orientation=cadre.getArdoise().vers3D(getFinalList(param.get(0)));
-						Interprete.calcul.push("[ "+orientation[0]+" "+orientation[1]+" "+orientation[2]+" ] ");
+						LogoList list=new LogoList();
+						list.addElement(new LogoWord(String.valueOf(orientation[0]),true));
+						list.addElement(new LogoWord(String.valueOf(orientation[1]),true));
+						list.addElement(new LogoWord(String.valueOf(orientation[2]),true));
+						Interprete.calcul.push(list);
 					}
 				} catch (myException e) {
 				}
@@ -1291,74 +1212,75 @@ public class LaunchPrimitive {
 				break;
 			case 101: // couleurcrayon
 				Interprete.operande = true;
-				Interprete.calcul.push("[ "
-						+ kernel.getActiveTurtle().couleurcrayon.getRed() + " "
-						+ kernel.getActiveTurtle().couleurcrayon.getGreen() + " "
-						+ kernel.getActiveTurtle().couleurcrayon.getBlue() + " ] ");
+				LogoList list=new LogoList();
+				list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().couleurcrayon.getRed()),true));
+				list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().couleurcrayon.getGreen()),true));
+				list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().couleurcrayon.getBlue()),true));
+				Interprete.calcul.push(list);
 				break;
 			case 102: // couleurfond
 				Interprete.operande = true;
 				Color color=cadre.getArdoise().getBackgroundColor();
-				Interprete.calcul.push("[ " + color.getRed() + " "
-						+ color.getGreen() + " "
-						+ color.getBlue() + " ] ");
+				list=new LogoList();
+				list.addElement(new LogoWord(String.valueOf(color.getRed()),true));
+				list.addElement(new LogoWord(String.valueOf(color.getGreen()),true));
+				list.addElement(new LogoWord(String.valueOf(color.getBlue()),true));
+				Interprete.calcul.push(list);
 				break;
 			case 103: // bc?
 				Interprete.operande = true;
 				if (kernel.getActiveTurtle().isPenDown())
-					Interprete.calcul.push(Logo.messages.getString("vrai"));
+					Interprete.calcul.push(wordTrue);
 				else
-					Interprete.calcul.push(Logo.messages.getString("faux"));
+					Interprete.calcul.push(wordFalse);
 				break;
 			case 104: // visible?
 				Interprete.operande = true;
 				if (kernel.getActiveTurtle().isVisible())
-					Interprete.calcul.push(Logo.messages.getString("vrai"));
+					Interprete.calcul.push(wordTrue);
 				else
-					Interprete.calcul.push(Logo.messages.getString("faux"));
+					Interprete.calcul.push(wordFalse);
 				break;
 			case 105: // prim?
 				try{
 					Interprete.operande = true;
-					mot = getWord(param.get(0));
-					if (null == mot)
-						throw new myException(cadre, param.get(0) + " "
+					if (!param.get(0).isWord())
+						throw new myException(cadre, param.get(0).toString() + " "
 							+ Logo.messages.getString("error.word"));
-					if (Primitive.primitives.containsKey(mot))
-					Interprete.calcul.push(Logo.messages.getString("vrai"));
+					LogoWord word=(LogoWord)param.get(0);
+					if (Primitive.primitives.containsKey(word.getValue()))
+					Interprete.calcul.push(wordTrue);
 					else
-						Interprete.calcul.push(Logo.messages.getString("faux"));
+						Interprete.calcul.push(wordFalse);
 				}
 				catch(myException e){}
 				break;
 			case 106: // proc?
 				Interprete.operande = true;
+				try{
+				if (!param.get(0).isWord())
+					throw new myException(cadre, param.get(0).toString() + " "
+						+ Logo.messages.getString("error.word"));
+				LogoWord word=(LogoWord)param.get(0);
 				boolean test = false;
-				mot = getWord(param.get(0));
 				for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-					if (wp.getProcedure(i).name.equals(mot))
+					if (wp.getProcedure(i).name.equals(word.getValue()))
 						test = true;
 				}
 				if (test)
-					Interprete.calcul.push(Logo.messages.getString("vrai"));
+					Interprete.calcul.push(wordTrue);
 				else
-					Interprete.calcul.push(Logo.messages.getString("faux"));
+					Interprete.calcul.push(wordFalse);
+				}
+				catch(myException e){}
 				break;
 			case 107: // exec
-				try {
-					mot = getWord(param.get(0));
-					if (null == mot){
-						mot = getList(param.get(0).trim());						
-						mot=new String(Utils.decoupe(mot));
-					}
-					else mot=mot+" ";
-					cadre.getKernel().getInstructionBuffer().insert(mot);
-					Interprete.renvoi_instruction=true;
-				} catch (myException e) {
-				}
+				cadre.getKernel().getInstructionBuffer().insert(" ");
+				cadre.getKernel().getInstructionBuffer().insert(param.get(0).getValue());					
+				Interprete.renvoi_instruction=true;
 				break;
 			case 108: // catalogue
-				String str=Utils.SortieTexte(Config.defaultFolder);
+				String str=Config.defaultFolder;
 				File f = new File(str);
 				String fichier = "";
 				String dossier = "";
@@ -1392,57 +1314,56 @@ public class LaunchPrimitive {
 				break;
 			case 109: // frepertoire
 				try {
-					liste = getWord(param.get(0));
-					if (null == liste)
+					if (!param.get(0).isWord())
 						throw new myException(cadre, param.get(0) + " "
 								+ Logo.messages.getString("error.word"));
-					String chemin = Utils.SortieTexte(liste);
-                   			if ((new File(chemin)).isDirectory()&&!chemin.startsWith("..")){
-						Config.defaultFolder = Utils.rajoute_backslash(chemin);
+					else {
+						word=(LogoWord)param.get(0);
+						String path = word.getValue();
+               			if ((new File(path)).isDirectory()&&!path.startsWith("..")){
+               				Config.defaultFolder = path;
+               			}
+               			else throw new myException(cadre, path
+							+ " "
+							+ Logo.messages
+									.getString("erreur_pas_repertoire"));
 					}
-					else throw new myException(cadre, liste
-								+ " "
-								+ Logo.messages
-										.getString("erreur_pas_repertoire"));
 				} catch (myException e) {
-				}
-				break;
+			}
+			break;
 			case 110: // repertoire
 				Interprete.operande = true;
-				Interprete.calcul.push("\"" + Config.defaultFolder );
+				Interprete.calcul.push(new LogoWord(Config.defaultFolder));
 				break;
 			case 111: // sauve
 				try {
-					mot = getWord(param.get(0));
-					if (null == mot)
-						throw new myException(cadre, Logo.messages
+					if (!param.get(0).isWord())
+						throw new myException(cadre, param.get(0).toString() +" "+Logo.messages
 								.getString("error.word"));
-					liste = getFinalList(param.get(1));
-					StringTokenizer st = new StringTokenizer(liste);
+					list=getFinalList(param.get(1));
 					Stack<String> pile = new Stack<String>();
-					while (st.hasMoreTokens())
-						pile.push(st.nextToken());
-					saveProcedures(mot, pile);
+					for (int i=0;i<list.getSize();i++){
+						pile.push(list.getElement(i).getValue());						
+					}
+					saveProcedures(param.get(0).getValue(), pile);
 				} catch (myException e) {
 				}
 				break;
 			case 112: // sauved
 				try {
-					mot = getWord(param.get(0));
-					if (null == mot)
-						throw new myException(cadre, param.get(0) + " "
-								+ Logo.messages.getString("error.word"));
-					saveProcedures(mot, null);
+					if (!param.get(0).isWord())
+						throw new myException(cadre, param.get(0).toString() +" "+Logo.messages
+								.getString("error.word"));
+					saveProcedures(param.get(0).getValue(), null);
 				} catch (myException e) {
 				}
 				break;
 			case 113: // ramene load
 				try {
-					mot = getWord(param.get(0));
-					if (null == mot)
-						throw new myException(cadre, param.get(0) + " "
-								+ Logo.messages.getString("error.word"));
-					String path=Utils.SortieTexte(Config.defaultFolder) + File.separator + mot;
+					if (!param.get(0).isWord())
+						throw new myException(cadre, param.get(0).toString() +" "+Logo.messages
+								.getString("error.word"));
+					String path=Config.defaultFolder + File.separator + param.get(0).getValue();
 					try{
 						String txt=Utils.readLogoFile(path);
 						cadre.editeur.setEditorStyledText(txt);
@@ -1499,24 +1420,24 @@ public class LaunchPrimitive {
 				break;
 			case 119: // vrai
 				Interprete.operande = true;
-				Interprete.calcul.push(Logo.messages.getString("vrai"));
+				Interprete.calcul.push(wordTrue);
 				break;
 			case 120: // faux
 				Interprete.operande = true;
-				Interprete.calcul.push(Logo.messages.getString("faux"));
+				Interprete.calcul.push(wordFalse);
 				break;
 			case 121: // forme
 				try{
 					primitive2D("turtle.forme");
 					Interprete.operande = true;
-					Interprete.calcul.push(String.valueOf(kernel.getActiveTurtle().getShape()));
+					Interprete.calcul.push(new LogoWord(String.valueOf(kernel.getActiveTurtle().getShape()),true));
 				}
 				catch(myException e){}
 				break;
 			case 122: // fixeforme setshape
 				try {
 					primitive2D("turtle.fforme");
-					int i = kernel.getCalculator().getInteger(param.get(0));
+					int i = kernel.getCalculator().getInteger(param.get(0).getValue());
 					if (kernel.getActiveTurtle().id == 0) {
 						Config.activeTurtle = i;
 					}
@@ -1527,24 +1448,22 @@ public class LaunchPrimitive {
 				break;
 			case 123: // definis workspace.define
 				try {
-					mot = getWord(param.get(0));
-					if (null == mot)
-						throw new myException(cadre, param.get(0)+ " " + Logo.messages.getString("error.word"));
-					if (mot.equals("")) new myException(cadre, Logo.messages.getString("procedure_vide"));
-					String list = getFinalList(param.get(1));
-					StringBuffer sb=new StringBuffer();
-					for(int i=1;i<=numberOfElements(list);i++){
-						String liste1=item(list, i);						
-						liste1=getFinalList(liste1);						
-						
+					if (!param.get(0).isWord())
+						throw new myException(cadre, param.get(0).toString()+ " " + Logo.messages.getString("error.word"));
+					String procName=param.get(0).getValue();
+					if (procName.equals("")) new myException(cadre, Logo.messages.getString("procedure_vide"));
+					list = getFinalList(param.get(1));
+					sb=new StringBuffer();
+					for(int i=0;i<list.getSize();i++){
+						LogoArgument list1=item(list, i+1);			
+						list1=getFinalList(list1);				
 						// First line
-						if (i==1){
-							StringTokenizer st = new StringTokenizer(liste1);
+						if (i==0){
+							StringTokenizer st = new StringTokenizer(list1.getValue());
 							sb.append(Logo.messages.getString("pour"));
 							sb.append(" ");
-							sb.append(mot);
+							sb.append(procName);
 							sb.append(" ");
-					
 							while (st.hasMoreTokens()) {
 								// Optional variables
 								String token=st.nextToken();
@@ -1570,9 +1489,9 @@ public class LaunchPrimitive {
 							}							
 						}
 						// Body of the procedure
-						else if(i>1){
+						else if(i>0){
 							sb.append("\n");
-							sb.append(liste1);
+							sb.append(list1.getValue());
 						}
 					}
 					sb.append("\n");
@@ -1590,21 +1509,21 @@ public class LaunchPrimitive {
 
 			case 124: // tortue
 				Interprete.operande = true;
-				Interprete.calcul.push(String.valueOf(kernel.getActiveTurtle().id));
+				Interprete.calcul.push(
+						new LogoWord(String.valueOf(kernel.getActiveTurtle().id),true));
 				break;
 			case 125: // tortues
 				Interprete.operande = true;
-				String li = "[ ";
+				list=new LogoList();
 				for (int i = 0; i < cadre.getArdoise().tortues.length; i++) {
 					if (null != cadre.getArdoise().tortues[i])
-						li += String.valueOf(i) + " ";
+						list.addElement(new LogoWord(String.valueOf(i),true));
 				}
-				li += "]";
-				Interprete.calcul.push(li);
+				Interprete.calcul.push(list);
 				break;
 			case 126: // fixetortue
 				try {
-					int i = Integer.parseInt(param.get(0));
+					int i=kernel.getCalculator().getInteger(param.get(0).getValue());
 					if (i > -1 && i < Config.maxTurtles) {
 						if (null == cadre.getArdoise().tortues[i]) {
 							cadre.getArdoise().tortues[i] = new Turtle(cadre);
@@ -1626,20 +1545,16 @@ public class LaunchPrimitive {
 						} catch (myException e) {
 						}
 					}
-				} catch (NumberFormatException e) {
-					try {
-						kernel.getCalculator().getInteger(param.get(0));
-					} catch (myException e1) {
-					}
+				}  catch (myException e1) {
 				}
 				break;
 			case 127: // police
 				Interprete.operande = true;
-				Interprete.calcul.push(String.valueOf(kernel.getActiveTurtle().police));
+				Interprete.calcul.push(new LogoWord(String.valueOf(kernel.getActiveTurtle().police),true));
 				break;
 			case 128: // fixetaillepolice
 				try {
-					int taille = kernel.getCalculator().getInteger(param.get(0));
+					int taille = kernel.getCalculator().getInteger(param.get(0).getValue());
 					kernel.getActiveTurtle().police = taille;
 					Font police = Config.police;
 					cadre.getArdoise().setGraphicsFont(police
@@ -1650,7 +1565,7 @@ public class LaunchPrimitive {
 				break;
 			case 129: // tuetortue
 				try {
-					id = Integer.parseInt(param.get(0));
+					id = kernel.getCalculator().getInteger(param.get(0).getValue());
 					if (id > -1 && id < Config.maxTurtles) {
 						// On compte le nombre de tortues à l'écran
 						int compteur = 0;
@@ -1692,37 +1607,30 @@ public class LaunchPrimitive {
 
 								}
 							} else {
-								try {
 									throw new myException(cadre, Logo.messages
 											.getString("seule_tortue_dispo"));
-								} catch (myException e) {
-								}
 							}
 						}
 					}
-				} catch (NumberFormatException e) {
-					try {
-						kernel.getCalculator().getInteger(param.get(0));
-					} catch (myException e1) {
-					}
+				} catch (myException e) {
 				}
 				break;
 			case 130: // sequence
 				try {
 					liste = getFinalList(param.get(0));
-					cadre.getSon().cree_sequence(Utils.decoupe(liste).toString());
+					cadre.getSon().cree_sequence(Utils.decoupe(liste.getValue()).toString());
 				} catch (myException e) {
 				}
 
 				break;
 			case 131: // instrument
 				Interprete.operande = true;
-				Interprete.calcul.push(String
-						.valueOf(cadre.getSon().getInstrument()));
+				Interprete.calcul.push(new LogoWord(String
+						.valueOf(cadre.getSon().getInstrument()),true));
 				break;
 			case 132: // fixeinstrument
 				try {
-					int i = kernel.getCalculator().getInteger(param.get(0));
+					int i = kernel.getCalculator().getInteger(param.get(0).getValue());
 					cadre.getSon().setInstrument(i);
 				} catch (myException e) {
 				}
@@ -1742,29 +1650,29 @@ public class LaunchPrimitive {
 				break;
 			case 136: // fixeindexsequence
 				try {
-					int i =  kernel.getCalculator().getInteger(param.get(0));
+					int i =  kernel.getCalculator().getInteger(param.get(0).getValue());
 					cadre.getSon().setTicks(i * 64);
 				} catch (myException e) {
 				}
 				break;
 			case 137:// fpt
 				try {
-					int i =  kernel.getCalculator().getInteger(param.get(0));
+					int i =  kernel.getCalculator().getInteger(param.get(0).getValue());
 					cadre.getHistoryPanel().getDsd().fixepolice(i);
 				} catch (myException e) {
 				}
 				break;
 			case 138: // ptexte
 				Interprete.operande = true;
-				Interprete.calcul.push(String.valueOf(cadre.getHistoryPanel()
-						.police()));
+				Interprete.calcul.push(new LogoWord(String.valueOf(cadre.getHistoryPanel()
+						.police()),true));
 				break;
 			case 139: // fct,fixecouleurtexte
 				try {
-					if (isList(param.get(0))) {
-						cadre.getHistoryPanel().getDsd().fixecouleur(rgb(param.get(0),Utils.primitiveName("fct")));
+					if (param.get(0).isList()) {
+						cadre.getHistoryPanel().getDsd().fixecouleur(rgb((LogoList)param.get(0),Utils.primitiveName("fct")));
 					} else {
-						int coul=kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
+						int coul=kernel.getCalculator().getInteger(param.get(0).getValue()) % DrawPanel.defaultColors.length;
 						if (coul<0) coul+=DrawPanel.defaultColors.length;
 						cadre.getHistoryPanel().getDsd().fixecouleur(DrawPanel.defaultColors[coul]);
 					}
@@ -1774,8 +1682,11 @@ public class LaunchPrimitive {
 			case 140: // couleurtexte
 				Interprete.operande = true;
 				Color c = cadre.getHistoryPanel().getCouleurtexte();
-				Interprete.calcul.push("[ " + c.getRed() + " " + c.getGreen()
-						+ " " + c.getBlue() + " ] ");
+				list=new LogoList();
+				list.addElement(new LogoWord(String.valueOf(c.getRed()),true));
+				list.addElement(new LogoWord(String.valueOf(c.getGreen()),true));
+				list.addElement(new LogoWord(String.valueOf(c.getBlue()),true));
+				Interprete.calcul.push(list);
 				break;
 			case 141: // lissouris readmouse
 				while (!cadre.getArdoise().get_lissouris()) {
@@ -1786,18 +1697,18 @@ public class LaunchPrimitive {
 					if (myException.lance)
 						break;
 				}
-				Interprete.calcul.push(String.valueOf(cadre.getArdoise()
-						.get_bouton_souris()));
+				Interprete.calcul.push(new LogoWord(String.valueOf(cadre.getArdoise()
+						.get_bouton_souris()),true));
 				Interprete.operande = true;
 				break;
 			case 142: // possouris
-				Interprete.calcul.push(cadre.getArdoise().get_possouris());
+				Interprete.calcul.push(new LogoWord(String.valueOf(cadre.getArdoise().get_possouris()),true));
 				Interprete.operande = true;
 				break;
 			case 143: // msg message
 				try {
-					liste = getFinalList(param.get(0));
-					StringTokenizer st = new StringTokenizer(liste); // On
+					list = getFinalList(param.get(0));
+					StringTokenizer st = new StringTokenizer(list.getValue()); // On
 																	 // découpe
 																	 // le
 																	 // message
@@ -1808,18 +1719,18 @@ public class LaunchPrimitive {
 																	 // acceptables
 					java.awt.FontMetrics fm = cadre.getGraphics()
 							.getFontMetrics(Config.police);
-					liste = "";
+					sb=new StringBuffer();
 					String tampon = "";
 					while (st.hasMoreTokens()) {
 						tampon += st.nextToken() + " ";
 						if (fm.stringWidth(tampon) > 200) {
-							liste += tampon + "\n";
+							sb.append(tampon + "\n");
 							tampon = "";
 						}
 					}
-					liste += tampon;
-					liste=Utils.SortieTexte(liste);
-					JTextArea jt = new JTextArea(liste);
+					sb.append(tampon);
+
+					JTextArea jt = new JTextArea(sb.toString());
 					jt.setEditable(false);
 					jt.setBackground(new Color(255, 255, 177));
 					jt.setFont(Config.police);
@@ -1836,28 +1747,34 @@ public class LaunchPrimitive {
 				int jour = cal.get(Calendar.DAY_OF_MONTH);
 				int mois = cal.get(Calendar.MONTH) + 1;
 				int annee = cal.get(Calendar.YEAR);
-				Interprete.calcul.push("[ " + jour + " " + mois + " " + annee
-						+ " ] ");
+				list=new LogoList();
+				list.addElement(new LogoWord(String.valueOf(jour),true));
+				list.addElement(new LogoWord(String.valueOf(mois),true));
+				list.addElement(new LogoWord(String.valueOf(annee),true));
+				Interprete.calcul.push(list);
 				break;
 			case 145: // heure
 				Interprete.operande = true;
 				cal = Calendar.getInstance(Logo.getLocale(Config.langage));
-				int heure = cal.get(Calendar.HOUR);
+				int hour = cal.get(Calendar.HOUR);
 				int minute = cal.get(Calendar.MINUTE);
-				int seconde = cal.get(Calendar.SECOND);
-				Interprete.calcul.push("[ " + heure + " " + minute + " "
-						+ seconde + " ] ");
+				int second = cal.get(Calendar.SECOND);
+				list=new LogoList();
+				list.addElement(new LogoWord(String.valueOf(hour),true));
+				list.addElement(new LogoWord(String.valueOf(minute),true));
+				list.addElement(new LogoWord(String.valueOf(second),true));
+				Interprete.calcul.push(list);
 				break;
 			case 146: // temps
 				Interprete.operande = true;
 				long heure_actuelle = Calendar.getInstance().getTimeInMillis();
 				Interprete.calcul
-						.push(String
-								.valueOf((heure_actuelle - Config.heure_demarrage) / 1000));
+						.push(new LogoWord(String
+								.valueOf((heure_actuelle - Config.heure_demarrage) / 1000),true));
 				break;
 			case 147: // debuttemps
 				try {
-					int temps = kernel.getCalculator().getInteger(param.get(0));
+					int temps = kernel.getCalculator().getInteger(param.get(0).getValue());
 					Kernel.chrono = Calendar.getInstance().getTimeInMillis()
 							+ 1000 * temps;
 				} catch (myException e) {
@@ -1866,13 +1783,13 @@ public class LaunchPrimitive {
 			case 148: // fintemps?
 				Interprete.operande = true;
 				if (Calendar.getInstance().getTimeInMillis() > Kernel.chrono)
-					Interprete.calcul.push(Logo.messages.getString("vrai"));
+					Interprete.calcul.push(wordTrue);
 				else
-					Interprete.calcul.push(Logo.messages.getString("faux"));
+					Interprete.calcul.push(wordFalse);
 				break;
 			case 149: // fnp fixenompolice
 				try {
-					int int_police = kernel.getCalculator().getInteger(param.get(0));
+					int int_police = kernel.getCalculator().getInteger(param.get(0).getValue());
 					cadre.getArdoise().police_etiquette = int_police
 							% Panel_Font.fontes.length;
 				} catch (myException e) {
@@ -1880,15 +1797,16 @@ public class LaunchPrimitive {
 				break;
 			case 150: // np nompolice
 				Interprete.operande = true;
-				Interprete.calcul.push("[ "
-						+ cadre.getArdoise().police_etiquette
-						+ " [ "
-						+ Panel_Font.fontes[cadre.getArdoise().police_etiquette]
-								.getFontName() + " ] ] ");
+				list=new LogoList();
+				sublist=new LogoList();
+				list.addElement(new LogoWord(String.valueOf(cadre.getArdoise().police_etiquette),true));
+				sublist.addElement(new LogoWord(Panel_Font.fontes[cadre.getArdoise().police_etiquette].getFontName()));
+				list.addElement(sublist);
+				Interprete.calcul.push(list);
 				break;
 			case 151: // fnpt fixenompolicetexte
 				try {
-					int int_police = kernel.getCalculator().getInteger(param.get(0));
+					int int_police = kernel.getCalculator().getInteger(param.get(0).getValue());
 					HistoryPanel.fontPrint = int_police
 							% Panel_Font.fontes.length;
 					cadre.getHistoryPanel().getDsd().fixenompolice(int_police);
@@ -1898,25 +1816,26 @@ public class LaunchPrimitive {
 				break;
 			case 152: // npt nompolicetexte
 				Interprete.operande = true;
-				Interprete.calcul.push("[ "
-						+ HistoryPanel.fontPrint
-						+ " [ "
-						+ Panel_Font.fontes[HistoryPanel.fontPrint]
-								.getFontName() + " ] ] ");
+				list=new LogoList();
+				list.addElement(new LogoWord(String.valueOf(HistoryPanel.fontPrint),true));
+				LogoList sublist=new LogoList();
+				sublist.addElement(new LogoWord(Panel_Font.fontes[HistoryPanel.fontPrint].getFontName()));
+				list.addElement(sublist);
 				break;
 			case 153: // listeflux
-				liste = "[ ";
+				list =new LogoList();
 				for (MyFlow flow:kernel.flows){
-					liste += "[ " + flow.getId()
-					+ " " + flow.getPath() + " ] ";
+					sublist=new LogoList();
+					sublist.addElement(new LogoWord(String.valueOf(flow.getId()),true));
+					sublist.addElement(new LogoWord(flow.getPath()));
+					list.addElement(sublist);
 				}
-				liste += "] ";
 				Interprete.operande = true;
-				Interprete.calcul.push(liste);
+				Interprete.calcul.push(list);
 				break;
 			case 154: // lisligneflux
 				try {
-					int ident = kernel.getCalculator().getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0).getValue());
 					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
@@ -1945,7 +1864,10 @@ public class LaunchPrimitive {
 									+ " " + ident);
 					}
 					Interprete.operande = true;
-					Interprete.calcul.push("[ " + Utils.decoupe(line.trim()) + " ] ");
+					list=new LogoList();
+					sb=Utils.decoupe(line.trim());
+					list.addElement(new LogoWord(sb.toString()));
+					Interprete.calcul.push(list);
 					kernel.flows.set(index, flowReader);
 				} catch (FileNotFoundException e1) {
 					try {
@@ -1959,7 +1881,7 @@ public class LaunchPrimitive {
 				break;
 			case 155: // liscaractereflux
 				try {
-					int ident = kernel.getCalculator().getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0).getValue());
 					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
@@ -1990,8 +1912,13 @@ public class LaunchPrimitive {
 					}
 					Interprete.operande = true;
 					String car=String.valueOf(character);
-					if (car.equals("\\")) car="\\\\";
-					Interprete.calcul.push(car);
+					try{
+						Double.parseDouble(car);
+						Interprete.calcul.push(new LogoWord(car,true));
+					}
+					catch(NumberFormatException e){
+						Interprete.calcul.push(new LogoWord(car));
+					}
 					kernel.flows.set(index, flowReader);
 				}
 				catch (FileNotFoundException e1) {
@@ -2006,7 +1933,7 @@ public class LaunchPrimitive {
 				break;
 			case 156: // ecrisligneflux
 				try {
-					int ident = kernel.getCalculator().getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0).getValue());
 					int index = kernel.flows.search(ident);
 					liste = getFinalList(param.get(1));
 					if (index == -1)
@@ -2024,7 +1951,7 @@ public class LaunchPrimitive {
 
 //					System.out.println(flow.isReader()+" "+flow.isWriter());
 					// Write the line
-					flowWriter.write(Utils.SortieTexte(liste));
+					flowWriter.write(liste.getValue());
 					kernel.flows.set(index, flowWriter);
 				} catch (FileNotFoundException e1) {
 				} catch (IOException e2) {
@@ -2033,7 +1960,7 @@ public class LaunchPrimitive {
 				break;
 			case 157: // finficher?
 				try {
-					int ident = kernel.getCalculator().getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0).getValue());
 					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
@@ -2051,20 +1978,17 @@ public class LaunchPrimitive {
 						if (null!=flowReader){
 							if (flow.isFinished()) {
 								Interprete.operande = true;
-								Interprete.calcul.push(Logo.messages
-										.getString("vrai"));
+								Interprete.calcul.push(wordTrue);
 							}	
 							else{
 								int read=flowReader.isReadable();
 								if (read == -1) {
 									Interprete.operande = true;
-									Interprete.calcul.push(Logo.messages
-											.getString("vrai"));
+									Interprete.calcul.push(wordTrue);
 									flow.setFinished(true);
 								} else {
 									Interprete.operande = true;
-									Interprete.calcul.push(Logo.messages
-											.getString("faux"));
+									Interprete.calcul.push(wordFalse);
 								}	
 							}
 						}
@@ -2078,14 +2002,13 @@ public class LaunchPrimitive {
 				break;
 			case 158: // ouvreflux
 				try {
-					mot = getWord(param.get(1));
-					if (null == mot)
-						throw new myException(cadre, param.get(0) + " "
+					if (!param.get(1).isWord())
+						throw new myException(cadre, param.get(1) + " "
 								+ Logo.messages.getString("error.word"));
-					liste = Utils.SortieTexte(Config.defaultFolder + File.separator + mot);
-					int ident = kernel.getCalculator().getInteger(param.get(0));
+					String path=Config.defaultFolder + File.separator + param.get(1).getValue();
+					int ident = kernel.getCalculator().getInteger(param.get(0).getValue());
 					if (kernel.flows.search(ident) == -1)
-						kernel.flows.add(new MyFlow(ident,liste,false));
+						kernel.flows.add(new MyFlow(ident,path,false));
 					else
 						throw new myException(cadre, ident + " "
 								+ Logo.messages.getString("flux_existant"));
@@ -2094,7 +2017,7 @@ public class LaunchPrimitive {
 				break;
 			case 159: // fermeflux
 				try {
-					int ident = kernel.getCalculator().getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0).getValue());
 					int index = kernel.flows.search(ident);
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
@@ -2112,9 +2035,9 @@ public class LaunchPrimitive {
 				break;
 			case 160: // ajouteligneflux
 				try {
-					int ident = kernel.getCalculator().getInteger(param.get(0));
+					int ident = kernel.getCalculator().getInteger(param.get(0).getValue());
 					int index = kernel.flows.search(ident);
-					liste = getFinalList(param.get(1));
+					list = getFinalList(param.get(1));
 					if (index == -1)
 						throw new myException(cadre, Logo.messages
 								.getString("flux_non_disponible")
@@ -2129,7 +2052,7 @@ public class LaunchPrimitive {
 					else flowWriter=new MyFlowWriter(flow);
 
 					// Write the line
-					flowWriter.append(Utils.SortieTexte(liste));
+					flowWriter.append(list.getValue());
 					kernel.flows.set(index, flowWriter);
 				} catch (FileNotFoundException e1) {
 				} catch (IOException e2) {
@@ -2139,41 +2062,41 @@ public class LaunchPrimitive {
 			case 161: // souris?
 				Interprete.operande = true;
 				if (cadre.getArdoise().get_lissouris())
-					Interprete.calcul.push(Logo.messages.getString("vrai"));
+					Interprete.calcul.push(wordTrue);
 				else
-					Interprete.calcul.push(Logo.messages.getString("faux"));
+					Interprete.calcul.push(wordFalse);
 				break;
 			case 162: // variables
 				Interprete.operande = true;
-				Interprete.calcul.push(new String(getAllVariables()));
+				Interprete.calcul.push(getAllVariables());
 				break;
 			case 163: // chose
-				mot = getWord(param.get(0));
 				try {
-					if (null == mot) {
+					if (!param.get(0).isWord())
 						throw new myException(cadre, Logo.messages
 								.getString("error.word"));
-					} // si c'est une liste
-					else if (debut_chaine.equals("")) {
+					 // si c'est une liste
+					else if (param.get(0).isNumber()) {
 						throw new myException(cadre, Logo.messages
 								.getString("erreur_variable"));
 					} // si c'est un nombre
 					Interprete.operande = true;
-					String value;
-					mot = mot.toLowerCase();
-					if(!Interprete.locale.containsKey(mot)) {
-						if (!wp.globale.containsKey(mot))
-							throw new myException(cadre, mot
+					LogoArgument value;
+					word=(LogoWord)param.get(0);
+					String variable = word.getValue().toLowerCase();
+					if(!Interprete.locale.containsKey(variable)) {
+						if (!wp.globale.containsKey(variable))
+							throw new myException(cadre, variable
 									+ " "
 									+ Logo.messages
 											.getString("erreur_variable"));
 						else
-							value = wp.globale.get(mot);
+							value = wp.globale.get(new LogoWord(variable));
 					} else {
-						value = Interprete.locale.get(mot);
+						value = Interprete.locale.get(new LogoWord(variable));
 					}
 					if (null == value)
-						throw new myException(cadre, mot + "  "
+						throw new myException(cadre, param.get(0) + "  "
 								+ Logo.messages.getString("erreur_variable"));
 					Interprete.calcul.push(value);
 				} catch (myException e) {
@@ -2183,14 +2106,13 @@ public class LaunchPrimitive {
 				cadre.getArdoise().nettoie();
 				break;
 			case 165: // tape
-				par = param.get(0).trim();
-				if (isList(par))
-					par = formatList(par.substring(1, par.length() - 1));
-				mot = getWord(param.get(0));
-				if (null == mot)
-					cadre.ecris("perso", Utils.SortieTexte(par));
-				else
-					cadre.ecris("perso", Utils.SortieTexte(mot));
+				size=param.size();
+				sb=new StringBuffer();
+				for(int i=0;i<size;i++){
+					sb.append(param.get(i).getValue());
+					if (i!=size-1) sb.append(" ");
+				}
+				cadre.ecris("perso", sb.toString());
 				break;
 			case 166: // cercle
 				try {
@@ -2219,13 +2141,10 @@ public class LaunchPrimitive {
 			
 			case 171: // tailledessin
    				Interprete.operande=true;
-   				StringBuffer sb=new StringBuffer();
-   				sb.append("[ ");
-   				sb.append(Config.imageWidth);
-   				sb.append(" ");
-   				sb.append(Config.imageHeight);
-   				sb.append(" ] ");
-   				Interprete.calcul.push(new String(sb));
+   				list=new LogoList();
+   				list.addElement(new LogoWord(String.valueOf(Config.imageWidth),true));
+   				list.addElement(new LogoWord(String.valueOf(Config.imageHeight),true));
+   				Interprete.calcul.push(list);
 				break;
 			case 172: // quotient
 				try{
@@ -2240,8 +2159,8 @@ public class LaunchPrimitive {
 				Interprete.operande=true;
 				try {
 					double ent = kernel.getCalculator().numberDouble(param.get(0));
-					if ((int)ent==ent) Interprete.calcul.push(Logo.messages.getString("vrai"));
-					else Interprete.calcul.push(Logo.messages.getString("faux"));
+					if ((int)ent==ent) Interprete.calcul.push(wordTrue);
+					else Interprete.calcul.push(wordFalse);
 					} 
 				catch (myException e) {}		
 			break;
@@ -2271,24 +2190,21 @@ public class LaunchPrimitive {
 			case 178:// changedossier
 				Interprete.operande=false;
 				try {
-					mot = getWord(param.get(0));
-					if (null == mot)
+					if (!param.get(0).isWord())
 						throw new myException(cadre, param.get(0) + " "
 								+ Logo.messages.getString("error.word"));
 					String chemin="";
-					if (Config.defaultFolder.endsWith(File.separator)) chemin=Utils.SortieTexte(Config.defaultFolder+mot);
-					else chemin = Utils.SortieTexte(Config.defaultFolder+Utils.rajoute_backslash(File.separator)+mot); 
+					if (Config.defaultFolder.endsWith(File.separator)) chemin=Config.defaultFolder+param.get(0).getValue();
+					else chemin = Config.defaultFolder+File.separator+param.get(0).getValue(); 
  					if ((new File(chemin)).isDirectory()){
 						try{
-							Config.defaultFolder=Utils.rajoute_backslash((new File(chemin)).getCanonicalPath());		
+							Config.defaultFolder=(new File(chemin)).getCanonicalPath();		
 						}
 						catch(NullPointerException e1){}
 						catch(IOException e2){}
 					}
 					else
-						throw new myException(cadre, Utils.rajoute_backslash(chemin)
-								+ " "
-								+ Logo.messages
+						throw new myException(cadre, chemin	+ " "+ Logo.messages
 										.getString("erreur_pas_repertoire"));
 				} catch (myException e) {
 				}
@@ -2296,40 +2212,34 @@ public class LaunchPrimitive {
 			break;
 			case 179:// unicode
 				try{
-					mot=getWord(param.get(0));
-					if (null == mot)
+					if (!param.get(0).isWord())
 						throw new myException(cadre, param.get(0) + " "
 								+ Logo.messages.getString("error.word"));
-					else if (getWordLength(mot)!=1) throw new myException(cadre, param.get(0) + " "
+					else if (((LogoWord)param.get(0)).getLength()!=1) throw new myException(cadre, param.get(0) + " "
 							+ Logo.messages.getString("un_caractere"));
 					else {
 						Interprete.operande=true;
-						String st=String.valueOf((int)Utils.SortieTexte(itemWord(1,mot)).charAt(0));
-						Interprete.calcul.push(st);
+						String st=String.valueOf((int)param.get(0).getValue().charAt(0));
+						Interprete.calcul.push(new LogoWord(st,true));
 					}
 				}
 				catch(myException e){}
 			break;
 			case 180:// caractere
 				try{
-					int i=kernel.getCalculator().getInteger(param.get(0));
+					int i=kernel.getCalculator().getInteger(param.get(0).getValue());
 					if (i<0||i>65535) throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("nombre_unicode"));
 					else {
 						String st="";
 						Interprete.operande=true;
-						if (i==92) st="\"\\\\";
-						else if (i==10) st="\"\\n";
-						else if (i==32) st="\"\\e";
-						else {
 						 st=String.valueOf((char)i);
 						 try{
 						 	Double.parseDouble(st);
+							Interprete.calcul.push(new LogoWord(st,true));
 						 }
 						 catch(NumberFormatException e){
-						 	st="\""+st;
+								Interprete.calcul.push(new LogoWord(st));
 						 }
-						}
-						Interprete.calcul.push(st);
 					}
 				}
 				catch(myException e){}
@@ -2343,7 +2253,7 @@ public class LaunchPrimitive {
 					LoopProperties bp=Primitive.stackLoop.peek();
 					if (bp.isRepeat()){
 						Interprete.operande=true;
-						Interprete.calcul.push(bp.getCounter().toString());
+						Interprete.calcul.push(new LogoWord(bp.getCounter().toString(),true));
 					}
 					else erreur=true;
 				}
@@ -2357,17 +2267,18 @@ public class LaunchPrimitive {
 			break;
 			case 183: // controls.for repetepour
 				try{
-					String li2 = getList(param.get(1));
-					li2=new String(Utils.decoupe(li2));
-					String li1 = getFinalList(param.get(0));
-					int nb=numberOfElements(li1);
+					LogoList list2 = getList(param.get(1),false);
+					String li2=new String(Utils.decoupe(list2.getValue()));
+					list = getFinalList(param.get(0));
+					
+					int nb=list.getSize();
 					if (nb<3||nb>4) throw new myException(cadre,Logo.messages.getString("erreur_repetepour"));
-					StringTokenizer st=new StringTokenizer(li1);
+					StringTokenizer st=new StringTokenizer(list.getValue());
 					String var=st.nextToken().toLowerCase();
-					BigDecimal deb=kernel.getCalculator().numberDecimal(st.nextToken());
-					BigDecimal fin=kernel.getCalculator().numberDecimal(st.nextToken());
+					BigDecimal deb=kernel.getCalculator().numberDecimal(new LogoWord(st.nextToken(),true));
+					BigDecimal fin=kernel.getCalculator().numberDecimal(new LogoWord(st.nextToken(),true));
 					BigDecimal increment=BigDecimal.ONE;
-					if (nb==4) increment=kernel.getCalculator().numberDecimal(st.nextToken());
+					if (nb==4) increment=kernel.getCalculator().numberDecimal(new LogoWord(st.nextToken(),true));
 					if (var.equals("")) throw new myException(cadre,Logo.messages.getString("variable_vide"));
 					try{Double.parseDouble(var);
 						throw new myException(cadre,Logo.messages.getString("erreur_nom_nombre_variable"));
@@ -2394,99 +2305,40 @@ public class LaunchPrimitive {
 			break;
 			case 185: // remplace
 				try{
-					String reponse="";
-					liste=getFinalList(param.get(0));
-					int entier=kernel.getCalculator().getInteger(param.get(1));
-					mot=getWord(param.get(2));
-					if (null!=mot&& mot.equals("")) mot="\\v";
-					if (null==mot) mot="[ "+getFinalList(param.get(2))+"]";
-					char element;
-					int compteur = 1;
-					boolean espace=true;
-					boolean crochet=false;
-					boolean error=true;
-					for (int j=0;j<liste.length();j++){
-						if (compteur==entier) {error=false;compteur=j;break;}
-						element=liste.charAt(j);
-						if (element=='['){
-							if (espace) crochet=true;
-							espace=false;
-						}
-						if (element==' ') {
-							espace=true;
-							if (crochet) {
-								crochet=false;
-								j=extractList(liste,j);
-								// System.out.println(j);
-							}
-							compteur++;
-						}
-					}
-					if (error)
+					LogoList answer=new LogoList();
+					list=getFinalList(param.get(0));
+					int entier=kernel.getCalculator().getInteger(param.get(1).getValue());					
+					if (entier>list.getSize())
 						throw new myException(cadre, Logo.messages.getString("y_a_pas")
 								+ " " + entier + " "
-								+ Logo.messages.getString("element_dans_liste") + liste
-								+ "]");
-					reponse="[ "+liste.substring(0,compteur)+mot;
-					// On extrait le mot suivant
-					if (compteur<liste.length()&&liste.charAt(compteur)=='['&&liste.charAt(compteur+1)==' '){
-							compteur=extractList(liste,compteur+2);
-							reponse+=liste.substring(compteur)+"] ";
-						}
-					
-					else {
-						for (int i=compteur+1;i<liste.length();i++){
-							if (liste.charAt(i)==' ') {compteur=i;break;}
-						}
-						reponse+=liste.substring(compteur)+"] ";
-					}				
+								+ Logo.messages.getString("element_dans_liste") + list);
+					for (int j=0;j<list.getSize();j++){
+						if (j==entier-1) answer.addElement(param.get(2));
+						else answer.addElement(list.getElement(j));
+					}
 					Interprete.operande=true;
-					Interprete.calcul.push(reponse);
+					Interprete.calcul.push(answer);
 				}
 				catch(myException e){}
 			break;
 			case 186: // ajoute
 				try{
-					String reponse="";
-					liste=getFinalList(param.get(0));
-					int entier=kernel.getCalculator().getInteger(param.get(1));
-					mot=getWord(param.get(2));
-					if (null!=mot&& mot.equals("")) mot="\\v";
-					if (null==mot) mot="[ "+getFinalList(param.get(2))+"]";
-					char element;
-					int compteur = 1;
-					boolean espace=true;
-					boolean crochet=false;
-					boolean error=true;
-					for (int j=0;j<liste.length();j++){
-						if (compteur==entier) {error=false;compteur=j;break;}
-						element=liste.charAt(j);
-						if (element=='['){
-							if (espace) crochet=true;
-							espace=false;
+						LogoList answer=new LogoList();
+						list=getFinalList(param.get(0));
+						int entier=kernel.getCalculator().getInteger(param.get(1).getValue());					
+						if (entier>list.getSize())
+							throw new myException(cadre, Logo.messages.getString("y_a_pas")
+									+ " " + entier + " "
+									+ Logo.messages.getString("element_dans_liste") + list);
+						for (int j=0;j<list.getSize();j++){
+							if (j==entier-1) answer.addElement(param.get(2));
+							answer.addElement(list.getElement(j));
 						}
-						if (element==' ') {
-							espace=true;
-							if (crochet) {
-								crochet=false;
-								j=extractList(liste,j);
-							}
-							compteur++;
-							if (j==liste.length()-1&&compteur==entier) {error=false;compteur=liste.length();}
-						}
+						Interprete.operande=true;
+						Interprete.calcul.push(answer);
 					}
-					if (error && entier!=compteur)
-						throw new myException(cadre, Logo.messages.getString("y_a_pas")
-								+ " " + entier + " "
-								+ Logo.messages.getString("element_dans_liste") + liste
-								+ "]");
-					if (!liste.trim().equals("")) reponse="[ "+liste.substring(0,compteur)+mot+" "+liste.substring(compteur)+"] ";
-					else reponse="[ "+mot+" ] ";
-					Interprete.operande=true;
-					Interprete.calcul.push(reponse);
-				}
-				catch(myException e){}
-			break;
+					catch(myException e){}
+				break;
 			case 187: // gris
 				colorCode(8);
 			break;	
@@ -2628,11 +2480,11 @@ public class LaunchPrimitive {
 						boolean exposant=false;
 						boolean indice=false;
 						boolean barre=false;
-						mot = getWord(param.get(0));
-						if (null == mot) liste = getFinalList(param.get(0));
-                		else liste=mot;
-						if (liste.trim().equals("")) liste=Logo.messages.getString("style.none");
-                		StringTokenizer st=new StringTokenizer(liste);
+						String style;
+						if (param.get(0).isList())  style=getFinalList(param.get(0)).getValue();
+                		else style=param.get(0).getValue();
+						if (style.trim().equals("")) style=Logo.messages.getString("style.none");
+                		StringTokenizer st=new StringTokenizer(style);
                 		while (st.hasMoreTokens()){
                 			String element=st.nextToken().toLowerCase();
                 			if (element.equals(Logo.messages.getString("style.underline").toLowerCase())){
@@ -2666,18 +2518,21 @@ public class LaunchPrimitive {
                 	catch(myException e){}
                 break;
                 case 206: // style
-                	StringBuffer buffer=new StringBuffer();
+                	list=new LogoList();
                 	int compteur=0;
-                	if (cadre.getHistoryPanel().getDsd().estgras()) {buffer.append(Logo.messages.getString("style.bold").toLowerCase()+" "); compteur++;}
-                	if (cadre.getHistoryPanel().getDsd().estitalique()) {buffer.append(Logo.messages.getString("style.italic").toLowerCase()+" "); compteur++;}
-                	if (cadre.getHistoryPanel().getDsd().estsouligne()) {buffer.append(Logo.messages.getString("style.underline").toLowerCase()+" "); compteur++;}
-                	if (cadre.getHistoryPanel().getDsd().estexposant()) {buffer.append(Logo.messages.getString("style.exposant").toLowerCase()+" "); compteur++;}
-                	if (cadre.getHistoryPanel().getDsd().estindice()) {buffer.append(Logo.messages.getString("style.subscript").toLowerCase()+" "); compteur++;}
-                	if (cadre.getHistoryPanel().getDsd().estbarre()) {buffer.append(Logo.messages.getString("style.strike").toLowerCase()+" "); compteur++;}
+                	if (cadre.getHistoryPanel().getDsd().estgras()) {list.addElement(new LogoWord(Logo.messages.getString("style.bold").toLowerCase())); compteur++;}
+                	if (cadre.getHistoryPanel().getDsd().estitalique()) {list.addElement(new LogoWord(Logo.messages.getString("style.italic").toLowerCase())); compteur++;}
+                	if (cadre.getHistoryPanel().getDsd().estsouligne()) {list.addElement(new LogoWord(Logo.messages.getString("style.underline").toLowerCase())); compteur++;}
+                	if (cadre.getHistoryPanel().getDsd().estexposant()) {list.addElement(new LogoWord(Logo.messages.getString("style.exposant").toLowerCase())); compteur++;}
+                	if (cadre.getHistoryPanel().getDsd().estindice()) {list.addElement(new LogoWord(Logo.messages.getString("style.subscript").toLowerCase())); compteur++;}
+                	if (cadre.getHistoryPanel().getDsd().estbarre()) {list.addElement(new LogoWord(Logo.messages.getString("style.strike").toLowerCase())); compteur++;}
                 	Interprete.operande=true;
-                	if (compteur==0) Interprete.calcul.push("\""+Logo.messages.getString("style.none").toLowerCase());
-                	else if (compteur==1) Interprete.calcul.push("\""+new String(buffer).trim());
-                	else if (compteur>1)  Interprete.calcul.push("[ "+new String(buffer)+"]");
+                	
+                	if (compteur==0) Interprete.calcul.push(new LogoWord(Logo.messages.getString("style.none").toLowerCase()));
+                	else if (compteur==1) Interprete.calcul.push(new LogoWord(new String(list.getValue()).trim()));
+                	else if (compteur>1)  {
+                		Interprete.calcul.push(list);
+                	}
                 break;
                 case 207: // listaillefenetre
                 		Interprete.operande=true;
@@ -2688,67 +2543,37 @@ public class LaunchPrimitive {
                 		int y1=Config.imageHeight/2-p.y;
                 		int x2=x1+rec.width-cadre.scrollArea.getVerticalScrollBar().getWidth();
                 		int y2=y1-rec.height+cadre.scrollArea.getHorizontalScrollBar().getHeight();
-                		sb.append("[ ");
-                		sb.append(x1);
-                		sb.append(" ");
-                		sb.append(y1);
-                		sb.append(" ");
-                		sb.append(x2);
-                		sb.append(" ");
-                		sb.append(y2);
-                		sb.append(" ] ");
-                		Interprete.calcul.push(new String(sb));
+                		list=new LogoList();
+                		list.addElement(new LogoWord(String.valueOf(x1),true));
+                		list.addElement(new LogoWord(String.valueOf(y1),true));
+                		list.addElement(new LogoWord(String.valueOf(x2),true));
+                		list.addElement(new LogoWord(String.valueOf(y2),true));
+                		Interprete.calcul.push(list);
                 	break;
                		case 208: // LongueurEtiquette
-        				try {
-        					mot=getWord(param.get(0));
-        					if (null!=mot) mot=Utils.SortieTexte(mot); 
-        					else mot=getFinalList(param.get(0)).trim();
+        					String sword=param.get(0).getValue();
         					Interprete.operande = true;
         					java.awt.FontMetrics fm = cadre.getArdoise().getGraphics()
 							.getFontMetrics(cadre.getArdoise().getGraphicsFont());
-        					int longueur = fm.stringWidth(mot);
-        					Interprete.calcul.push(String.valueOf(longueur));
-        				} catch (myException e) {
-        				}
+        					int longueur = fm.stringWidth(sword);
+        					Interprete.calcul.push(new LogoWord(String.valueOf(longueur),true));
                		break;
                		case 209: // envoietcp // enviatcp etcp
                			Interprete.operande=true;
-           				mot = getWord(param.get(0));
-           				if (null == mot){
+               			if (!param.get(0).isWord()){
            					try{
                					throw new myException(cadre, param.get(0) + " "
                							+ Logo.messages.getString("error.word"));		
            					}
            					catch(myException e){}
            				}
-           				mot = mot.toLowerCase();
-           				liste="";
+           				String wordValue=param.get(0).getValue();
            				try{
-           					liste=getFinalList(param.get(1));
-               				NetworkClientSend ncs=new NetworkClientSend(cadre,mot,liste);
-               				Interprete.calcul.push("[ "+ncs.getAnswer() +" ] ");
+           					list=getFinalList(param.get(1));
+               				NetworkClientSend ncs=new NetworkClientSend(cadre,wordValue,list.getValue());
+               				Interprete.calcul.push(list);
            				}
            				catch(myException e){}
-/*
- * try{
- * 
- * liste = "[ "; mot2 = getFinalList(param.get(0).toString()); liste += mot2 + "
- * ]"; String rip = liste.substring(2,17); // cadre.ecris("perso", rip + "\n");
- * //para debug String rdat = "_" + liste.substring(18,23) + "*\n\r"; //
- * cadre.ecris("perso", rdat + "\n"); //para debug Socket echoSocket = null;
- * DataOutputStream tcpout = null; BufferedReader tcpin = null; String resp =
- * null; try { echoSocket = new Socket(rip, 1948); tcpout = new
- * DataOutputStream(echoSocket.getOutputStream()); tcpin= new BufferedReader(new
- * InputStreamReader(echoSocket.getInputStream())); tcpout.writeBytes(rdat);
- * resp = tcpin.readLine(); // readLine detiene el programa hasta que recibe una
- * respuesta del robot. Que hacer si no recibe nada? tcpout.close();
- * tcpin.close(); echoSocket.close(); } catch (UnknownHostException e) { throw
- * new myException(cadre, Logo.messages.getString("erreur_tcp")); } catch
- * (IOException e) { throw new myException(cadre,
- * Logo.messages.getString("erreur_tcp")); } Interprete.calcul.push("[ " + resp + "
- * ]"); } catch(myException e){}
- */
            				break;
            			case 210: // ecoutetcp
            				Interprete.operande=false;
@@ -2759,19 +2584,17 @@ public class LaunchPrimitive {
          				
            			break;
            			case 211: // executetcp
-           				mot = getWord(param.get(0));
-           				if (null == mot){
+           				if (!param.get(0).isWord()){
            					try{
                					throw new myException(cadre, param.get(0) + " "
                							+ Logo.messages.getString("error.word"));		
            					}
            					catch(myException e){}
            				}
-           				mot = mot.toLowerCase();
-           				liste="";
+           				wordValue = param.get(0).getValue().toLowerCase();
            				try{
-           					liste=getFinalList(param.get(1));
-               				new NetworkClientExecute(cadre,mot,liste);
+           					list=getFinalList(param.get(1));
+               				new NetworkClientExecute(cadre,wordValue,list.getValue());
            				}
            				catch(myException e){}
            			break;
@@ -2784,19 +2607,17 @@ public class LaunchPrimitive {
            			break;
            			case 213: // chattcp
            				Interprete.operande=false;
-           				mot = getWord(param.get(0));
-           				if (null == mot){
+           				if (!param.get(0).isWord()){
            					try{
                					throw new myException(cadre, param.get(0) + " "
                							+ Logo.messages.getString("error.word"));		
            					}
            					catch(myException e){}
            				}
-           				mot = mot.toLowerCase();
-           				liste="";
+           				wordValue= param.get(0).getValue().toLowerCase();
            				try{
-           					liste=getFinalList(param.get(1));
-               				new NetworkClientChat(cadre,mot,liste);
+           					list=getFinalList(param.get(1));
+               				new NetworkClientChat(cadre,wordValue,list.getValue());
            				}
            				catch(myException e){}
            			break;
@@ -2841,12 +2662,12 @@ public class LaunchPrimitive {
            			case 215: // tc taillecrayon
            				Interprete.operande=true;
            				double penwidth=2*kernel.getActiveTurtle().getPenWidth();
-           				Interprete.calcul.push(String.valueOf(MyCalculator.teste_fin_double(penwidth)));
+           				Interprete.calcul.push(MyCalculator.teste_fin_double(penwidth));
            			break;
            			case 216: // setpenshape=ffc fixeformecrayon
            				Interprete.operande=false;
            				try{
-           					int i=kernel.getCalculator().getInteger(param.get(0));
+           					int i=kernel.getCalculator().getInteger(param.get(0).getValue());
            					if (i!=Config.PEN_SHAPE_OVAL&&i!=Config.PEN_SHAPE_SQUARE){
            						String st=Utils.primitiveName("setpenshape")+" "+Logo.messages.getString("error_bad_values");
            						st+=" "+Config.PEN_SHAPE_SQUARE+" "+Config.PEN_SHAPE_OVAL;
@@ -2859,12 +2680,12 @@ public class LaunchPrimitive {
            			break;
            			case 217: // penshape=fc formecrayon
            				Interprete.operande=true;
-           				Interprete.calcul.push(String.valueOf(Config.penShape));
+           				Interprete.calcul.push(new LogoWord(String.valueOf(Config.penShape),true));
            			break;
            			case 218: // setdrawingquality=fqd fixequalitedessin
            				Interprete.operande=false;
            				try{
-           					int i=kernel.getCalculator().getInteger(param.get(0));
+           					int i=kernel.getCalculator().getInteger(param.get(0).getValue());
            					if (i!=Config.QUALITY_NORMAL&&i!=Config.QUALITY_HIGH&&i!=Config.QUALITY_LOW){
            						String st=Utils.primitiveName("setdrawingquality")+" "+Logo.messages.getString("error_bad_values")+" 0 1 2";
            						throw new myException(cadre,st);
@@ -2876,12 +2697,12 @@ public class LaunchPrimitive {
            				break;
            			case 219: // drawingquality=qd qualitedessin
            				Interprete.operande=true;
-           				Interprete.calcul.push(String.valueOf(Config.quality));
+           				Interprete.calcul.push(new LogoWord(String.valueOf(Config.quality),true));
            				break;
            			case 220: // setturtlesnumber=fmt fixemaxtortues
            				Interprete.operande=false;
            				try{
-           					int i=kernel.getCalculator().getInteger(param.get(0));
+           					int i=kernel.getCalculator().getInteger(param.get(0).getValue());
            					if (i<0){
         						String fmt = Utils.primitiveName("setturtlesnumber");
         						throw new myException(cadre, fmt + " "
@@ -2894,35 +2715,35 @@ public class LaunchPrimitive {
            			break;
            			case 221: // turtlesnumber=maxtortues
            				Interprete.operande=true;
-           				Interprete.calcul.push(String.valueOf(Config.maxTurtles));
+           				Interprete.calcul.push(new LogoWord(String.valueOf(Config.maxTurtles),true));
 
            				break;
            			case 222: // setscreensize=ftd fixetailledessin
            				Interprete.operande=false;
            				try{
            					String prim=Utils.primitiveName("setscreensize");
-           					liste=getFinalList(param.get(0));
+           					list=getFinalList(param.get(0));
            					int width,height;
-           					StringTokenizer st = new StringTokenizer(liste);
+           					StringTokenizer st = new StringTokenizer(list.getValue());
            					try {
            						if (!st.hasMoreTokens())
            							throw new myException(cadre, prim
-           									+ " " + Logo.messages.getString("n_aime_pas") + liste
+           									+ " " + Logo.messages.getString("n_aime_pas") + list
            									+ Logo.messages.getString("comme_parametre"));
            						width = Integer.parseInt(st.nextToken().toString());
            						if (!st.hasMoreTokens())
            							throw new myException(cadre, prim
-           									+ " " + Logo.messages.getString("n_aime_pas") + liste
+           									+ " " + Logo.messages.getString("n_aime_pas") + list
            									+ Logo.messages.getString("comme_parametre"));
            						height = Integer.parseInt(st.nextToken().toString());
            					} catch (NumberFormatException e) {
            						throw new myException(cadre, prim
-           								+ " " + Logo.messages.getString("n_aime_pas") + liste
+           								+ " " + Logo.messages.getString("n_aime_pas") + list
            								+ Logo.messages.getString("comme_parametre"));
            					}
            					if (st.hasMoreTokens())
            						throw new myException(cadre, prim
-           								+ " " + Logo.messages.getString("n_aime_pas") + liste
+           								+ " " + Logo.messages.getString("n_aime_pas") + list
            								+ Logo.messages.getString("comme_parametre"));
            					boolean changement=false;
        						if (height!=Config.imageHeight) changement=true;
@@ -2968,59 +2789,52 @@ public class LaunchPrimitive {
            			break;
            			case 223: // guibutton guibouton
            				try{
-           					String ident=getWord(param.get(0));
-           					if (null==ident)
+           					if (!param.get(0).isWord())
         						throw new myException(cadre, param.get(0) + " "
         								+ Logo.messages.getString("error.word"));
-        					mot=getWord(param.get(1));	
-           					if (null==mot)
+        					if (!param.get(1).isWord())	
         						throw new myException(cadre, param.get(1) + " "
         								+ Logo.messages.getString("error.word"));
-           					GuiButton gb=new GuiButton(ident.toLowerCase(),mot,cadre);
+           					GuiButton gb=new GuiButton(param.get(0).getValue().toLowerCase(),param.get(1).getValue(),cadre);
            					cadre.getArdoise().addToGuiMap(gb);
            				}
            				catch(myException e){}
            			break;
            			case 224: // guiaction
            				try{
-           					String ident=getWord(param.get(0));
-           					if (null==ident)
-           						throw new myException(cadre, param.get(0) + " "
-    								+ Logo.messages.getString("error.word"));
-           					liste=getFinalList(param.get(1));
-           					cadre.getArdoise().guiAction(ident,liste);
+           					if (!param.get(0).isWord())
+        						throw new myException(cadre, param.get(0) + " "
+        								+ Logo.messages.getString("error.word"));
+           					list=getFinalList(param.get(1));
+           					cadre.getArdoise().guiAction(param.get(0).getValue(),list.getValue());
            				}
            				catch(myException e){}
            			break;
            			case 225: // guiremove
            				try{
-           					String ident=getWord(param.get(0));
-           					if (null==ident)
-           						throw new myException(cadre, param.get(0) + " "
-    								+ Logo.messages.getString("error.word"));
-           					cadre.getArdoise().guiRemove(ident);
+           					if (!param.get(0).isWord())
+        						throw new myException(cadre, param.get(0) + " "
+        								+ Logo.messages.getString("error.word"));
+           					cadre.getArdoise().guiRemove(param.get(0).getValue());
            				}
            				catch(myException e){}
-           				
            			break;
            			case 226: // guiposition
            				try{
-           					String ident=getWord(param.get(0));
-           					if (null==ident)
+           					if (!param.get(0).isWord())
         						throw new myException(cadre, param.get(0) + " "
         								+ Logo.messages.getString("error.word"));
-        					liste=getFinalList(param.get(1));
-        					cadre.getArdoise().guiposition(ident,liste,Utils.primitiveName("guiposition"));
+           					list=getFinalList(param.get(1));
+        					cadre.getArdoise().guiposition(param.get(0).getValue(),list,Utils.primitiveName("guiposition"));
            				}
            				catch(myException e){}
            			break;
            			case 227: // guidraw
            				try{
-           					String ident=getWord(param.get(0));
-           					if (null==ident)
+           					if (!param.get(0).isWord())
         						throw new myException(cadre, param.get(0) + " "
         								+ Logo.messages.getString("error.word"));
-           					cadre.getArdoise().guiDraw(ident);
+           					cadre.getArdoise().guiDraw(param.get(0).getValue());
            				}
            				catch(myException e){}
            			break;
@@ -3043,7 +2857,7 @@ public class LaunchPrimitive {
         					primitive2D("grille");
         					int[] args=new int[2];
         					for (int i=0;i<2;i++){
-        						args[i] = kernel.getCalculator().getInteger(param.get(i));
+        						args[i] = kernel.getCalculator().getInteger(param.get(i).getValue());
         						if (args[i] < 0) {
         							String grille=Utils.primitiveName("grille");
         							throw new myException(cadre, grille + " "
@@ -3076,12 +2890,11 @@ public class LaunchPrimitive {
            			break;
            			case 233: // guimenu
            				try{
-           					String ident=getWord(param.get(0));
-           					if (null==ident)
+           					if (!param.get(0).isWord())
         						throw new myException(cadre, param.get(0) + " "
-        								+ Logo.messages.getString("error.word"));
-        					liste=getFinalList(param.get(1));	
-           					GuiMenu gm=new GuiMenu(ident.toLowerCase(),liste,cadre);
+        								+ Logo.messages.getString("error.word"));           					
+        					list=getFinalList(param.get(1));	
+           					GuiMenu gm=new GuiMenu(param.get(0).getValue().toLowerCase(),list.getValue(),cadre);
         					cadre.getArdoise().addToGuiMap(gm);
            				}
            				catch(myException e){}
@@ -3091,7 +2904,7 @@ public class LaunchPrimitive {
         				Interprete.operande = false;
         				try {
         					primitive2D("axis");
-        					int nombre = kernel.getCalculator().getInteger(param.get(0));
+        					int nombre = kernel.getCalculator().getInteger(param.get(0).getValue());
         					if (nombre < 0) {
         						String name=Utils.primitiveName("axis");
         						throw new myException(cadre, name + " "
@@ -3110,7 +2923,7 @@ public class LaunchPrimitive {
         				Interprete.operande = false;
         				try {
         					primitive2D("xaxis");
-        					int nombre = kernel.getCalculator().getInteger(param.get(0));
+        					int nombre = kernel.getCalculator().getInteger(param.get(0).getValue());
         					if (nombre < 0) {
         						String name=Utils.primitiveName("xaxis");
         						throw new myException(cadre, name + " "
@@ -3127,7 +2940,7 @@ public class LaunchPrimitive {
         				Interprete.operande = false;
         				try {
         					primitive2D("yaxis");
-        					int nombre = kernel.getCalculator().getInteger(param.get(0));
+        					int nombre = kernel.getCalculator().getInteger(param.get(0).getValue());
         					if (nombre < 0) {
         						String name=Utils.primitiveName("yaxis");
         						throw new myException(cadre, name + " "
@@ -3152,58 +2965,62 @@ public class LaunchPrimitive {
                     case 239: // var? variable?
         				try{
         					Interprete.operande = true;
-        					mot = getWord(param.get(0));
-        					if (null == mot)
+        					if (!param.get(0).isWord())
         						throw new myException(cadre, param.get(0) + " "
         							+ Logo.messages.getString("error.word"));
-        					if (wp.globale.containsKey(mot)||Interprete.locale.containsKey(mot))
-        					Interprete.calcul.push(Logo.messages.getString("vrai"));
+        					if (wp.globale.containsKey(param.get(0).getValue())||Interprete.locale.containsKey(param.get(0).getValue()))
+        					Interprete.calcul.push(wordTrue);
         					else
-        						Interprete.calcul.push(Logo.messages.getString("faux"));
+        						Interprete.calcul.push(wordFalse);
         				}
         				catch(myException e){}
                      break;
                     case 240: // axiscolor= couleuraxes
         				Interprete.operande = true;
         				c=new Color(Config.axisColor);
-        				Interprete.calcul.push("[ " + c.getRed() + " " + c.getGreen()
-        						+ " " + c.getBlue() + " ] ");
-                  
+        				list=new LogoList();
+        				list.addElement(new LogoWord(String.valueOf(c.getRed()),true));
+        				list.addElement(new LogoWord(String.valueOf(c.getGreen()),true));
+        				list.addElement(new LogoWord(String.valueOf(c.getBlue()),true));
+        				Interprete.calcul.push(list);
                        break;
                     case 241: // gridcolor=couleurgrille
         				Interprete.operande = true;
         				c=new Color(Config.gridColor);
-        				Interprete.calcul.push("[ " + c.getRed() + " " + c.getGreen()
-        						+ " " + c.getBlue() + " ] ");
+        				list=new LogoList();
+        				list.addElement(new LogoWord(String.valueOf(c.getRed()),true));
+        				list.addElement(new LogoWord(String.valueOf(c.getGreen()),true));
+        				list.addElement(new LogoWord(String.valueOf(c.getBlue()),true));
+        				Interprete.calcul.push(list);
                         break;
                     case 242: // grid?=grille?
          					Interprete.operande = true;
         					if (Config.drawGrid)
-        					Interprete.calcul.push(Logo.messages.getString("vrai"));
+        					Interprete.calcul.push(wordTrue);
         					else
-        						Interprete.calcul.push(Logo.messages.getString("faux"));
+        						Interprete.calcul.push(wordFalse);
         				break;
                     case 243: // xaxis?=axex?
        					Interprete.operande = true;
     					if (Config.drawXAxis)
-    					Interprete.calcul.push(Logo.messages.getString("vrai"));
+    					Interprete.calcul.push(wordTrue);
     					else
-    						Interprete.calcul.push(Logo.messages.getString("faux"));
+    						Interprete.calcul.push(wordFalse);
                         break;
                     case 244: // yaxis?=axey?
        					Interprete.operande = true;
     					if (Config.drawYAxis)
-    					Interprete.calcul.push(Logo.messages.getString("vrai"));
+    					Interprete.calcul.push(wordTrue);
     					else
-    						Interprete.calcul.push(Logo.messages.getString("faux"));
+    						Interprete.calcul.push(wordFalse);
                         break;
                     case 245: // setgridcolor=fcg fixecouleurgrille
         				Interprete.operande = false;
                     	try {
-        					if (isList(param.get(0))) {
-        						Config.gridColor=rgb(param.get(0),Utils.primitiveName("setgridcolor")).getRGB();
+        					if (param.get(0).isList()) {
+        						Config.gridColor=rgb((LogoList)param.get(0),Utils.primitiveName("setgridcolor")).getRGB();
         					} else {
-        						int coul=kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
+        						int coul=kernel.getCalculator().getInteger(param.get(0).getValue()) % DrawPanel.defaultColors.length;
         						if (coul<0) coul+=DrawPanel.defaultColors.length;
         						Config.gridColor=DrawPanel.defaultColors[coul].getRGB();
         					}
@@ -3213,10 +3030,10 @@ public class LaunchPrimitive {
                     case 246: // setaxiscolor=fca fixecouleuraxes
                     	Interprete.operande = false;
                     	try {
-        					if (isList(param.get(0))) {
-        						Config.axisColor=rgb(param.get(0),Utils.primitiveName("setaxiscolor")).getRGB();
+        					if (param.get(0).isList()) {
+        						Config.axisColor=rgb((LogoList)param.get(0),Utils.primitiveName("setaxiscolor")).getRGB();
         					} else {
-        						int coul=kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
+        						int coul=kernel.getCalculator().getInteger(param.get(0).getValue()) % DrawPanel.defaultColors.length;
         						if (coul<0) coul+=DrawPanel.defaultColors.length;
         						Config.axisColor=DrawPanel.defaultColors[coul].getRGB();
         					}
@@ -3304,19 +3121,22 @@ public class LaunchPrimitive {
                     	try{
                     		primitive3D("3d.orientation");
                     		Interprete.operande = true;
-                    		String pitch=MyCalculator.teste_fin_double(kernel.getActiveTurtle().pitch);
-                    		String roll=MyCalculator.teste_fin_double(kernel.getActiveTurtle().roll);
-                    		String heading=MyCalculator.teste_fin_double(kernel.getActiveTurtle().heading);
-                    		Interprete.calcul.push("[ "+roll+" "+pitch+" "+heading+" ] ");            	
+                    		list=new LogoList();
+                    		list.addElement(MyCalculator.teste_fin_double(kernel.getActiveTurtle().pitch));
+                    		list.addElement(MyCalculator.teste_fin_double(kernel.getActiveTurtle().roll));
+                    		list.addElement(MyCalculator.teste_fin_double(kernel.getActiveTurtle().heading));
+                    		Interprete.calcul.push(list);            	
                     	}
                     	catch(myException e){}
                     	break;
                     case 258: // setxyz=fposxyz
                     	try{
                     		primitive3D("3d.setxyz");
-        					cadre.getArdoise().fpos(kernel.getCalculator().numberDouble(param.get(0)) + " "
-        							+ kernel.getCalculator().numberDouble(param.get(1))+" "+
-        							kernel.getCalculator().numberDouble(param.get(2)));
+                     		list=new LogoList();
+                    		list.addElement(new LogoWord(String.valueOf(kernel.getCalculator().numberDouble(param.get(0))),true));
+               		 		list.addElement(new LogoWord(String.valueOf(kernel.getCalculator().numberDouble(param.get(1))),true));
+       		 		 		list.addElement(new LogoWord(String.valueOf(kernel.getCalculator().numberDouble(param.get(2))),true));
+        					cadre.getArdoise().fpos(list);
                     	}
                     	catch(myException e){}
                     	break;
@@ -3324,8 +3144,11 @@ public class LaunchPrimitive {
            				delay();
         				try {
         					primitive3D("3d.setz");
-        					cadre.getArdoise().fpos(kernel.getActiveTurtle().X+" "+kernel.getActiveTurtle().Y
-        							+" "+kernel.getCalculator().numberDouble(param.get(0)));
+                     		list=new LogoList();
+                    		list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().X),true));
+                    		list.addElement(new LogoWord(String.valueOf(kernel.getActiveTurtle().Y),true));
+                    		list.addElement(new LogoWord(String.valueOf(kernel.getCalculator().numberDouble(param.get(0))),true));
+        					cadre.getArdoise().fpos(list);
         						
         				} catch (myException e) {
         				}
@@ -3333,23 +3156,22 @@ public class LaunchPrimitive {
                     case 260: // pprop=dprop
                     	Interprete.operande=false;
                     	try{
-                    		mot=getWord(param.get(0));
-                    		if (null==mot) throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("error.word"));
-                    		mot2=getWord(param.get(1));
-                    		if (null==mot2) throw new myException(cadre,param.get(1)+" "+Logo.messages.getString("error.word"));
-                    		wp.addPropList(mot, mot2, param.get(2));
+                    		if (!param.get(0).isWord())
+                    			throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("error.word"));
+                    		if (!param.get(1).isWord())
+                    			throw new myException(cadre,param.get(1)+" "+Logo.messages.getString("error.word"));
+                    		wp.addPropList(param.get(0).getValue(),param.get(1).getValue() , param.get(2));
                     	}
                 		catch(myException e){}
                     	break;
                     case 261: // gprop=rprop
                     	try{
                     	Interprete.operande=true;
-                    	mot=getWord(param.get(0));
-                		if (null==mot) throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("error.word"));
-                		mot2=getWord(param.get(1));
-                		if (null==mot2) throw new myException(cadre,param.get(1)+" "+Logo.messages.getString("error.word"));
-                		String value=wp.getPropList(mot, mot2);
-                		if (value.startsWith("[")) value+=" ";
+                    	if (!param.get(0).isWord())
+                    		throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("error.word"));
+                    	if (!param.get(1).isWord())
+                    		throw new myException(cadre,param.get(1)+" "+Logo.messages.getString("error.word"));
+                		LogoArgument value=wp.getPropList(param.get(0).getValue(), param.get(1).getValue());
                 		Interprete.calcul.push(value);
                     	}
                     	catch(myException e){}
@@ -3357,20 +3179,20 @@ public class LaunchPrimitive {
                     case 262: // remprop=efprop
                       	try{
                         	Interprete.operande=false;
-                        	mot=getWord(param.get(0));
-                    		if (null==mot) throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("error.word"));
-                    		mot2=getWord(param.get(1));
-                    		if (null==mot2) throw new myException(cadre,param.get(1)+" "+Logo.messages.getString("error.word"));
-                    		wp.removePropList(mot, mot2);
+                        	if (!param.get(0).isWord())
+                        		throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("error.word"));
+                        	if (!param.get(1).isWord())
+                        		throw new myException(cadre,param.get(1)+" "+Logo.messages.getString("error.word"));
+                    		wp.removePropList(param.get(0).getValue(), param.get(1).getValue());
                     		}
                         	catch(myException e){}
                     	break;
                     case 263: // plist=lprop
                     	try{
                         	Interprete.operande=true;
-                        	mot=getWord(param.get(0));
-                    		if (null==mot) throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("error.word"));
-                    		Interprete.calcul.push(wp.displayPropList(mot));
+                        	if (!param.get(0).isWord())
+                        		throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("error.word"));
+                    		Interprete.calcul.push(wp.displayPropList(param.get(0).getValue()));
                     		}
                         	catch(myException e){}
                     	
@@ -3438,9 +3260,9 @@ public class LaunchPrimitive {
         					double a = kernel.getCalculator().numberDouble(param.get(0));
         					double b = kernel.getCalculator().numberDouble(param.get(1));
         					if (a <= b)
-        						Interprete.calcul.push(Logo.messages.getString("vrai"));
+        						Interprete.calcul.push(wordTrue);
         					else
-        						Interprete.calcul.push(Logo.messages.getString("faux"));
+        						Interprete.calcul.push(wordFalse);
         				} catch (myException e) {
         				}
         				Interprete.operande = true;
@@ -3450,9 +3272,9 @@ public class LaunchPrimitive {
         					double a = kernel.getCalculator().numberDouble(param.get(0));
         					double b = kernel.getCalculator().numberDouble(param.get(1));
         					if (a >= b)
-        						Interprete.calcul.push(Logo.messages.getString("vrai"));
+        						Interprete.calcul.push(wordTrue);
         					else
-        						Interprete.calcul.push(Logo.messages.getString("faux"));
+        						Interprete.calcul.push(wordFalse);
         				} catch (myException e) {
         				}
         				Interprete.operande = true;
@@ -3463,16 +3285,15 @@ public class LaunchPrimitive {
                     break;
                     case 276: //listesproprietes propertylists
                     	Interprete.operande=true;
-                    	Interprete.calcul.push(new String(getAllpropertyLists()));
+                    	Interprete.calcul.push(getAllpropertyLists());
                     break;
                     case 277: // contenu
                       	Interprete.operande=true;
-                      	sb=new StringBuffer("[ ");
-                      	sb.append(this.getAllProcedures());
-                      	sb.append(this.getAllVariables());
-                      	sb.append(this.getAllpropertyLists());
-                      	sb.append("] ");
-                    	Interprete.calcul.push(new String(sb));
+                      	list=new LogoList();
+                      	list.addElement(getAllProcedures());
+                      	list.addElement(getAllVariables());
+                      	list.addElement(getAllpropertyLists());
+                    	Interprete.calcul.push(list);
                     break;
                     case 278: // erpl=eflp effacelistepropriete
                     	Interprete.operande=false;
@@ -3495,21 +3316,16 @@ public class LaunchPrimitive {
                     	break;
                     case 281: // controls.ifelse
         				try {
-        					liste = getList(param.get(1));
-        					liste=new String(Utils.decoupe(liste));
-        					boolean predicat = predicat(param.get(0));
-        					String liste2 = getList(param.get(2));
-        					liste=new String(Utils.decoupe(liste));
-        					kernel.primitive.si(predicat, liste, liste2);
+        					list = getList(param.get(1),false);
+           					boolean predicat = predicat(param.get(0));
+        					LogoList list2 = getList(param.get(2),false);
+        					kernel.primitive.si(predicat, list.getValue(), list2.getValue());
         					Interprete.renvoi_instruction=true;
         				} catch (myException e) {
         				}
                     break;
                     case 282: // workspace.ed
-                    	try{
-    					mot=this.getWord(param.get(0));
-    					if (null==mot) mot=this.getFinalList(param.get(0));
-    					StringTokenizer st=new StringTokenizer(mot);
+               		StringTokenizer st=new StringTokenizer(param.get(0).getValue());
     					// Write all procedures names in a Vector
     					java.util.Vector<String> names=new java.util.Vector<String>();
     					while (st.hasMoreTokens()){
@@ -3532,8 +3348,6 @@ public class LaunchPrimitive {
 								cadre.editeur.setEditorStyledText(procedure.toString());
 							}
 						}
-                    	}
-                    	catch(myException e){}
                     break;
                     case 283: // workspace.edall
                     	cadre.editeur.open();
@@ -3541,37 +3355,37 @@ public class LaunchPrimitive {
                     case 284: // controls.foreach pourchaque
         				try{
         					// Variable name
-        					String var=getWord(param.get(0));
+        					if (!param.get(0).isWord())
         					// If it isn't a word
-        					if (null==var) throw new myException(cadre, param.get(0).toString()+" "+
+        					 throw new myException(cadre, param.get(0).toString()+" "+
         							Logo.messages.getString("error.word"));
         					// If it's a number
         					else {
         						try{
-        							Double.parseDouble(var);
+        							if (!param.get(0).isNumber())
         							throw new myException(cadre,Logo.messages.getString("erreur_nom_nombre_variable"));
         						}
         						catch(NumberFormatException e1){}
         					}
-        					String li2 = getList(param.get(2));
-        					li2=new String(Utils.decoupe(li2));
-        					String li1=getWord(param.get(1));
-        					boolean list=false;
+        					LogoList li2 = getList(param.get(2),false);
+        					String list2=new String(Utils.decoupe(li2.getValue()));
+        					LogoList li1=(LogoList)param.get(1);
+        					boolean isList=false;
         					if (null==li1) {
-        						list=true;
+        						isList=true;
         						li1= getFinalList(param.get(1));        						
         					}
         					Vector<String> elements=new Vector<String>();
-        					while (!li1.equals("")){
-        						String character="";
+        		/*			while (!li1.equals("")){
+        						LogoArgument character;
         						// If it's a list
-        						if (list) {
-        							character=this.item(li1, 1);
+        						if (isList) {
+        							character=this.item((LogoList)li1, 1);
         							// If it's a number
         							try{
         								// Fix Bug: foreach "i [1 2 3][pr :i]
         								// character=1 , 2 , 3 (without quote)
-        								Double.parseDouble(character);
+        								Double.parseDouble(character.getValue());
     									li1=li1.substring(character.length()+1);
         							}
         							catch(NumberFormatException e){
@@ -3597,17 +3411,17 @@ public class LaunchPrimitive {
         					}
     						LoopForEach bp=new LoopForEach(BigDecimal.ZERO,new BigDecimal(elements.size()-1)
     						,BigDecimal.ONE,li2,var.toLowerCase(),elements);			
-    						bp.AffecteVar(true);
+   						bp.AffecteVar(true);
     						cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP +" ");
-							Primitive.stackLoop.push(bp);
+							Primitive.stackLoop.push(bp);*/
         				}
         				catch(myException e){}
                     break;
                     case 285: // controls.forever repetetoujours
                     	try{
-        					String li2= getList(param.get(0));
+        					LogoList li2= getList(param.get(0),false);
     						LoopProperties bp=new LoopProperties(BigDecimal.ONE,BigDecimal.ZERO
-    						,BigDecimal.ONE,li2);			
+    						,BigDecimal.ONE,Utils.decoupe(li2.getValue()).toString());			
     						cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP+" ");
 							Primitive.stackLoop.push(bp);
                     	}
@@ -3616,60 +3430,57 @@ public class LaunchPrimitive {
                     case 286: // arithmetic.setdigits
                     	Interprete.operande=false;
                     	try{
-                    		kernel.initCalculator(kernel.getCalculator().getInteger(param.get(0)));
+                    		kernel.initCalculator(kernel.getCalculator().getInteger(param.get(0).getValue()));
                     	}
                     	catch(myException e){}
                     break;
                     case 287: // arithmetic.digits
                     	Interprete.operande=true;
-                    	Interprete.calcul.push(String.valueOf(kernel.getCalculator().getDigits()));
+                    	Interprete.calcul.push(new LogoWord(String.valueOf(kernel.getCalculator().getDigits()),true));
                     break;
                     case 288: //workspace.text
                        	try{
-                       		String var=getWord(param.get(0));
-        					if (null == var)
+                       		if (!param.get(0).isWord())
         						throw new myException(cadre, param.get(0)+ " " + Logo.messages.getString("error.word"));
                        		int index=-1;
                        		for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-                        		if (wp.getProcedure(i).name.equals(var)) {
+                        		if (wp.getProcedure(i).name.equals(param.get(0).getValue())) {
                         			index=i; break;
                         		}
                         	}
                        		if (index!=-1) {
                                 Procedure proc=wp.getProcedure(index);
-                                sb=new StringBuffer();
-                                sb.append("[ [ ");
-                                
+                                list=new LogoList();
+                                sublist=new LogoList();
+                                LogoList subList2=new LogoList();         
                                 for (int j = 0; j < proc.nbparametre; j++) {
-                                    sb.append(proc.variable.get(j));
-                                    sb.append(" ");
+                                    sublist.addElement(new LogoWord(proc.variable.get(j)));
                                   }
                                   for (int j=0;j<proc.optVariables.size();j++){
-                                  	sb.append("[ ");
-                                  	sb.append(proc.optVariables.get(j));
-                                  	sb.append(" ");
-                                  	sb.append(proc.optVariablesExp.get(j).toString());
-                                  	sb.append(" ] ");    	  
-                          	     } 
-                                  sb.append("] ");
-                                  sb.append(proc.cutInList());
-                                  sb.append("] ");
+                                  	subList2.addElement(new LogoWord(proc.optVariables.get(j)));
+                                  	subList2.addElement(new LogoWord(proc.optVariablesExp.get(j).toString()));
+                          	     }
+                                  sublist.addElement(subList2);
+                                  list.addElement(sublist);
+//                                  sb.append(proc.cutInList());
+  //                                sb.append("] ");
+                                  
                                   Interprete.operande=true;
-                                  Interprete.calcul.push(sb.toString());
+   //                               Interprete.calcul.push(sb.toString());
                        		}
-                       		else throw new myException(cadre,var+" "+Logo.messages.getString("error.procedure.must.be"));
+    //                   		else throw new myException(cadre,var+" "+Logo.messages.getString("error.procedure.must.be"));
                     	}
                     	catch(myException e){}
                     break;
                     case 289: //workspace.externalcommand
                     	Interprete.operande=false;
                     	try{
-        					String list = getFinalList(param.get(0));
-        					int index=numberOfElements(list);
+        					list = getFinalList(param.get(0));
+        					int index=list.getSize();
         					String[] cmd=new String[index];
         					for(int i=0;i<index;i++){
-        						String liste1=item(list, i+1);						
-        						cmd[i]=Utils.SortieTexte(getFinalList(liste1).trim());	
+        						LogoArgument liste1=item(list, i+1);						
+        						cmd[i]=getFinalList(liste1).getValue();	
         					}
                        		try{
 /*                       			String com="";
@@ -3695,7 +3506,10 @@ public class LaunchPrimitive {
 	 * This method tests if the primitive name exist in 2D mode
 	 * 
 	 * @param name
-	 *            The primitive name
+	 *            The primitive name					
+					
+					
+
 	 * @throws myException
 	 */
 	private void primitive2D(String name) throws myException {
@@ -3726,8 +3540,11 @@ public class LaunchPrimitive {
 	private void colorCode(int i) {
 		Interprete.operande = true;
 		Color co = DrawPanel.defaultColors[i];
-		Interprete.calcul.push("[ " + co.getRed() + " " + co.getGreen() + " "
-				+ co.getBlue() + " ]");
+		LogoList list=new LogoList();
+		list.addElement(new LogoWord(String.valueOf(co.getRed()),true));
+		list.addElement(new LogoWord(String.valueOf(co.getGreen()),true));
+		list.addElement(new LogoWord(String.valueOf(co.getBlue()),true));
+		Interprete.calcul.push(list);
 	}
 
 	/**
@@ -3746,8 +3563,7 @@ public class LaunchPrimitive {
 			boolean bool = true;
 			if (!fichier.endsWith(".lgo"))
 				fichier += ".lgo";
-			String path = Utils.SortieTexte(Config.defaultFolder)
-					+ File.separator + fichier;
+			String path = Config.defaultFolder+ File.separator + fichier;
 			try {
 				for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
 					Procedure procedure = wp.getProcedure(i);
@@ -3782,18 +3598,18 @@ public class LaunchPrimitive {
 	 * @throws myException
 	 *             If Image format isn't valid(jpg or png)
 	 */
-	private BufferedImage getImage(String path) throws myException {
+	private BufferedImage getImage(LogoArgument path) throws myException {
 		BufferedImage image = null;
-		String pathWord = getWord(path);
-		if (null==pathWord) throw new myException(cadre, path + " "
+		if (!path.isWord())  throw new myException(cadre, path.toString() + " "
 				+ Logo.messages.getString("error.word"));
+		String pathWord = path.getValue();
+	
 		if (!(pathWord.endsWith(".png") || pathWord.endsWith(".jpg")))
 			throw new myException(cadre, Logo.messages
 					.getString("erreur_format_image"));
 		else {
 			try {
-				pathWord = Utils.SortieTexte(pathWord);
-				File f = new File(Utils.SortieTexte(Config.defaultFolder)
+				File f = new File(Config.defaultFolder
 						+ File.separator + pathWord);
 				image = ImageIO.read(f);
 			} catch (Exception e1) {
@@ -3827,23 +3643,23 @@ public class LaunchPrimitive {
 	 *             word
 	 */
 
-	private void locale(Stack<String> param) throws myException {
-		String li = param.get(0);
-		if (LaunchPrimitive.isList(li)) {
-			li = getFinalList(li);
-			StringTokenizer st = new StringTokenizer(li);
-			while (st.hasMoreTokens()) {
-				String item = st.nextToken();
-				isVariableName(item);
-				createLocaleName(item);
-			}
+	private void locale(Stack<LogoArgument> param) throws myException {
+		LogoArgument li = param.get(0);
+		if (li.isList()) {
+			LogoList li2 = getFinalList(li);
+			for (int i=0;i<li2.getSize();i++){
+				LogoArgument arg=li2.getElement(i);
+				if (arg.isWord()) {
+					isVariableName(arg.getValue());
+					createLocaleName(arg.getValue());									
+				}
+				else throw new myException(cadre, param.get(0)
+						+ Logo.messages.getString("error.word"));				
+			}	
 		} else {
-			String mot = getWord(param.get(0));
-			if (null != mot) {
-				createLocaleName(mot);
-			} else
-				throw new myException(cadre, param.get(0)
-						+ Logo.messages.getString("error.word"));
+			if (!li.isNumber()){
+				createLocaleName(li.getValue());				
+			}
 		}
 	}
 
@@ -3859,25 +3675,25 @@ public class LaunchPrimitive {
 	 *             If the list doesn't contain 3 numbers
 	 */
 
-	private Color rgb(String obj, String name) throws myException {
-		String liste = getFinalList(obj);
-		StringTokenizer st = new StringTokenizer(liste);
-		if (st.countTokens() != 3)
+	private Color rgb(LogoList obj, String name) throws myException {
+		LogoList list = getFinalList(obj);
+		if (list.getSize() != 3)
 			throw new myException(cadre, name + " "
 					+ Logo.messages.getString("color_3_arguments"));
-		int[] entier = new int[3];
+		int[] integers = new int[3];
 		for (int i = 0; i < 3; i++) {
-			String element = st.nextToken();
-			try {
-				entier[i] = (int) (Double.parseDouble(element) + 0.5) % 256;
-			} catch (NumberFormatException e) {
-				throw new myException(cadre, element + " "
-						+ Logo.messages.getString("pas_nombre"));
+			LogoArgument arg=list.getElement(i);
+			if (!arg.isNumber()){
+				throw new myException(cadre, arg + " "
+						+ Logo.messages.getString("pas_nombre"));				
 			}
-			if (entier[i] < 0)
-				entier[i] += 256;
+			else {
+				integers[i] = (int) (Double.parseDouble(arg.getValue()) + 0.5) % 256;
+				if (integers[i] < 0)
+					integers[i] += 256;
+			}
 		}
-		return (new Color(entier[0], entier[1], entier[2]));
+		return (new Color(integers[0], integers[1], integers[2]));
 	}
 
 	/**
@@ -3890,85 +3706,63 @@ public class LaunchPrimitive {
 	 * @throws myException
 	 *             Incorrect arguments
 	 */
-	private void membre(Stack<String> param, int id) throws myException {
+	private void member(Stack<LogoArgument> param) throws myException {
 		Interprete.operande = true;
-		String mot_retourne = null;
 		boolean b = false;
-		String mot = getWord(param.get(1));
-		String liste = "[ ";
-		if (null == mot) { // on travaille sur une liste
+		if (param.get(1).isList()) { // on travaille sur une liste
 			try {
-				liste = getFinalList(param.get(1));
-				StringTokenizer st = new StringTokenizer(liste);
-				liste = "[ ";
-				mot = getWord(param.get(0));
-				String str;
-				if (null != mot && mot.equals(""))
-					mot = "\\v";
-				if (null == mot)
-					mot = param.get(0).trim();
-				while (st.hasMoreTokens()) {
-					str = st.nextToken();
-					if (str.equals("["))
-						str = extractList(st);
-					if (!liste.equals("[ "))
-						liste += str + " ";
-					if (str.equals(mot) && liste.equals("[ ")) {
-						if (id == 69) {
-							b = true;
-							break;
-						} else
-							liste += str + " ";
-					}
+				LogoList list = getFinalList(param.get(1));
+				LogoList output=new LogoList();
+				for (int i=0;i<list.getSize();i++){
+					LogoArgument arg=list.getElement(i);
+					if (arg.equals(param.get(0))) b=true;
+					if (b) output.addElement(arg);
 				}
+				if (b) Interprete.calcul.push(output);
+				else Interprete.calcul.push(wordFalse);
 			} catch (myException ex) {
 			}
-		} else { // on travaille sur un mot
-			String mot2 = getWord(param.get(0));
-			if (null != mot2) {
-				boolean backslash = false;
-				for (int i = 0; i < mot.length(); i++) {
-					char c = mot.charAt(i);
-					if (!backslash && c == '\\')
-						backslash = true;
-					else {
-						String tmp = Character.toString(c);
-						if (backslash)
-							tmp = "\\" + tmp;
-						if (tmp.equals(mot2)) {
-							if (id == 69) {
-								b = true;
-								break;
-							} else {
-								if (!backslash)
-									mot_retourne = mot.substring(i, mot
-											.length());
-								else
-									mot_retourne = mot.substring(i - 1, mot
-											.length());
-								break;
-							}
+		} else if (param.get(1).isWord()){ // on travaille sur un mot
+			LogoWord word=(LogoWord)param.get(1);
+			StringBuffer sb=new StringBuffer();
+			for (int i=0;i<word.getLength();i++){
+				LogoWord character=word.itemWord(i);
+				if (character.equals(param.get(0))) b=true;
+				if (b) sb.append(character);
+			}
+			if (b) Interprete.calcul.push(new LogoWord(sb.toString()));
+			else Interprete.calcul.push(wordFalse);
+		}
+	}
+	private void isMember(Stack<LogoArgument> param) throws myException {
+			Interprete.operande = true;
+			boolean b = false;
+			if (param.get(1).isList()) { // on travaille sur une liste
+				try {
+					LogoList list = getFinalList(param.get(1));
+					for (int i=0;i<list.getSize();i++){
+						LogoArgument arg=list.getElement(i);
+						if (arg.equals(param.get(0))) {
+							b=true;
+							break;
 						}
-						backslash = false;
+					}
+				} catch (myException ex) {
+				}
+			} else if (param.get(1).isWord()){ // on travaille sur un mot
+				LogoWord word=(LogoWord)param.get(1);
+				for (int i=0;i<word.getLength();i++){
+					LogoWord character=word.itemWord(i);
+					if (character.equals(param.get(0))) {
+						b=true;
+						break;
 					}
 				}
 			}
-		}
-		if (!liste.equals("[ "))
-			Interprete.calcul.push(liste + "] ");
-		else if (null != mot_retourne) {
-			try {
-				Double.parseDouble(mot_retourne);
-				Interprete.calcul.push(mot_retourne);
-			} catch (NumberFormatException e) {
-				Interprete.calcul.push(debut_chaine + mot_retourne);
-			}
-		} else if (b)
-			Interprete.calcul.push(Logo.messages.getString("vrai"));
-		else
-			Interprete.calcul.push(Logo.messages.getString("faux"));
+		if (b) Interprete.calcul.push(wordTrue);
+		else Interprete.calcul.push(wordFalse);
 	}
-
+		
 	/**
 	 * Primitive before?
 	 * 
@@ -3978,50 +3772,53 @@ public class LaunchPrimitive {
 	 *             Bad argument type
 	 */
 
-	private void precede(Stack<String> param) throws myException {
+	private void precede(Stack<LogoArgument> param) throws myException {
 		Interprete.operande = true;
 		boolean b = false;
 		String ope[] = { "", "" };
 		String mot = "";
 		for (int i = 0; i < 2; i++) {
-			mot = getWord(param.get(i));
-			if (null == mot)
-				throw new myException(cadre, param.get(i) + " "
-						+ Logo.messages.getString("pas_mot"));
-			else
-				ope[i] = mot;
+			if (!param.get(i).isWord()) throw new myException(cadre, param.get(i) + " "
+					+ Logo.messages.getString("pas_mot"));
+			else ope[i] = param.get(i).getValue();
 		}
 		if (ope[1].compareTo(ope[0]) > 0)
 			b = true;
 		if (b)
-			mot = Logo.messages.getString("vrai");
+			Interprete.calcul.push(wordTrue);
 		else
-			mot = Logo.messages.getString("faux");
-		Interprete.calcul.push(mot);
+			Interprete.calcul.push(wordFalse);
+		
 	}
 
+	
+	
 	/**
 	 * / Primitive equal?
 	 * 
 	 * @param param
 	 *            Stack that contains all arguments
 	 */
-	private void equal(Stack<String> param) {
+	private void equal(Stack<LogoArgument> param) {
 		try {
 			double ope1, ope2 = 0;
-			ope1 = Double.parseDouble(param.get(0));
-			ope2 = Double.parseDouble(param.get(1));
-			if (ope2 == ope1)
-				Interprete.calcul.push(Logo.messages.getString("vrai"));
-			else
-				Interprete.calcul.push(Logo.messages.getString("faux"));
+			if (param.get(0).isNumber()&&param.get(1).isNumber()){
+				ope1 = Double.parseDouble(param.get(0).getValue());
+				ope2 = Double.parseDouble(param.get(1).getValue());
+				if (ope2 == ope1)
+					Interprete.calcul.push(wordTrue);
+				else
+					Interprete.calcul.push(wordFalse);				
+			}
+			else{
+				if (param.get(0).toString().equals(param.get(1).toString()))
+					Interprete.calcul.push(wordTrue);
+				else
+					Interprete.calcul.push(wordFalse);
+			}
+			Interprete.operande = true;
 		} catch (NumberFormatException e) {
-			if (param.get(0).toString().equals(param.get(1).toString()))
-				Interprete.calcul.push(Logo.messages.getString("vrai"));
-			else
-				Interprete.calcul.push(Logo.messages.getString("faux"));
 		}
-		Interprete.operande = true;
 	}
 
 	/**
@@ -4034,48 +3831,16 @@ public class LaunchPrimitive {
 	 *             If st isn't equal to true or false
 	 */
 
-	private boolean predicat(String st) throws myException {
-		if (st.toLowerCase().equals(Logo.messages.getString("vrai")))
+	private boolean predicat(LogoArgument st) throws myException {
+		if (st.getValue().toLowerCase().equals(wordTrue.getValue()))
 			return true;
-		else if (st.toLowerCase().equals(Logo.messages.getString("faux")))
+		else if (st.getValue().toLowerCase().equals(wordFalse.getValue()))
 			return false;
 		else
 			throw new myException(cadre, st + " "
 					+ Logo.messages.getString("pas_predicat"));
 
 	}
-
-
-
-
-
-
-	/**
-	 * Returns the word contained in st. If it isn't a word, returns null
-	 * 
-	 * @param st
-	 *            The Object to convert
-	 * @return The word corresponding to st
-	 */
-	private String getWord(Object st) { // Si c'est un mot
-		String liste = st.toString();
-		if (liste.equals("\"")) {
-			debut_chaine = "";
-			return "";
-		}
-		if (liste.length() > 0 && liste.substring(0, 1).equals("\"")) {
-			debut_chaine = "\"";
-			return (liste.substring(1, liste.length()));
-		} else
-			try {
-				Double.parseDouble(liste);
-				debut_chaine = "";
-				return liste;
-			} catch (NumberFormatException e) {
-			}
-		return (null);
-	}
-
 
 	/**
 	 * Returns the list contained in the string li without any lineNumber
@@ -4087,11 +3852,8 @@ public class LaunchPrimitive {
 	 *             List bad format
 	 */
 
-	private String getFinalList(String li) throws myException {
-		// remove line number
-		li = li.replaceAll("\\\\l([0-9])+ ", "");
-		// return list
-		return getList(li);
+	private LogoList getFinalList(LogoArgument li) throws myException {
+		return getList(li, true);
 	}
 
 	/**
@@ -4103,18 +3865,14 @@ public class LaunchPrimitive {
 	 * @throws myException
 	 *             List bad format
 	 */
-	private String getList(String li) throws myException {
-		li = li.trim();
-		// Retourne la liste sans crochets;
-		if (li.substring(0, 1).equals("[")
-				&& li.substring(li.length() - 1, li.length()).equals("]")) {
-			li = li.substring(1, li.length() - 1).trim() + " ";
-			if (!li.equals(" "))
-				return li;
-			else
-				return ("");
-		} else
-			throw new myException(cadre, li + " "
+	private LogoList getList(LogoArgument arg, boolean removeLineNumber) throws myException {
+		if (arg.isList()){
+			LogoList li=(LogoList)arg;
+			if (removeLineNumber) li.removeLineNumber();
+			return li;
+		}
+		else
+			throw new myException(cadre, arg.toString() + " "
 					+ Logo.messages.getString("pas_liste"));
 	}
 
@@ -4126,14 +3884,14 @@ public class LaunchPrimitive {
 	 * @return true if it is a list, else false
 	 */
 	// 
-	protected static boolean isList(String li) {
+/*	protected static boolean isList(String li) {
 		li = li.trim();
 		if (li.length() > 0 && li.substring(0, 1).equals("[")
 				&& li.substring(li.length() - 1, li.length()).equals("]"))
 			return (true);
 		return false;
 	}
-
+*/
 	// Format the List (only one space between two elements)
 	private String formatList(String li) {
 		String tampon = "";
@@ -4238,39 +3996,24 @@ public class LaunchPrimitive {
 	}
 
 	// returns the item "i" from the list "liste"
-	private String item(String liste, int i) throws myException { // retourne
-		// l'élément i d'une
-		// liste
-		StringTokenizer st = new StringTokenizer(liste);
-		String element = "";
-		int j = 0;
-		while (st.hasMoreTokens()) {
-			j++;
-			element = st.nextToken();
-			if (element.equals("["))
-				element = extractList(st);
-			if (j == i)
-				break;
+	private LogoArgument item(LogoList list, int id) throws myException { 
+		int count=0;
+		LogoArgument arg;
+		for (int i=0;i<list.getSize();i++){
+			arg=list.getElement(i);
+			if (!arg.isLineNumber()){
+				count++;
+				if (count==id) return arg;
+			}
 		}
-		if (j != i)
+		if (count != id)
 			throw new myException(cadre, Logo.messages.getString("y_a_pas")
-					+ " " + i + " "
-					+ Logo.messages.getString("element_dans_liste") + liste
+					+ " " + id + " "
+					+ Logo.messages.getString("element_dans_liste") + list
 					+ "]");
-		else if (i == 0 && j == 0)
+		else if (id == 0 && count == 0)
 			throw new myException(cadre, Logo.messages.getString("liste_vide"));
-		try {
-			Double.parseDouble(element);
-			return element;
-		} // Si c'est un nombre, on le renvoie.
-		catch (Exception e) {
-		}
-		if (element.startsWith("["))
-			return element + " "; // C'est une liste, on la renvoie telle
-									// quelle.
-		if (element.equals("\\v"))
-			element = "";
-		return "\"" + element; // C'est forcément un mot, on le renvoie.
+		return list.getElement(list.getSize()-1);
 	}
 
 	// Test if the name of the variable is valid
@@ -4293,17 +4036,15 @@ public class LaunchPrimitive {
 	}
 
 	// primitve make
-	private void donne(Stack<String> param) throws myException {
-		String mot = getWord(param.get(0));
-		if (null == mot)
-			throw new myException(cadre, param.get(0) + " "
+	private void donne(Stack<LogoArgument> param) throws myException {
+		if (!param.get(0).isWord())	throw new myException(cadre, param.get(0) + " "
 					+ Logo.messages.getString("error.word"));
-		mot = mot.toLowerCase();
-		isVariableName(mot);
-		if (Interprete.locale.containsKey(mot)) {
-			Interprete.locale.put(mot, param.get(1));
+		String word=param.get(0).getValue().toLowerCase();
+		isVariableName(word);
+		if (Interprete.locale.containsKey(word)) {
+			Interprete.locale.put(word, param.get(1));
 		} else {
-			wp.globale.put(mot, param.get(1));
+			wp.globale.put(word, param.get(1));
 		}
 	}
 
@@ -4318,7 +4059,7 @@ public class LaunchPrimitive {
 
 
 
-	// How many characters in the word "mot"
+	/* How many characters in the word "mot"
 	private int getWordLength(String mot) {// retourne le nombre de caractères
 											// d'un mot
 		int compteur = 0;
@@ -4360,45 +4101,45 @@ public class LaunchPrimitive {
 		}
 		return reponse;
 	}
-
+*/
 	protected void setWorkspace(Workspace workspace) {
 		wp = workspace;
 	}
 
 
 
-	private void ou(Stack<String> param) {
+	private void ou(Stack<LogoArgument> param) {
 		int size = param.size();
 		boolean result = false;
 		boolean b;
 		try {
 			for (int i = 0; i < size; i++) {
-				b = predicat(param.get(i).toString());
+				b = predicat(param.get(i));
 				result = result | b;
 			}
 			if (result)
-				Interprete.calcul.push(Logo.messages.getString("vrai"));
+				Interprete.calcul.push(wordTrue);
 			else
-				Interprete.calcul.push(Logo.messages.getString("faux"));
+				Interprete.calcul.push(wordFalse);
 			Interprete.operande = true;
 		} catch (myException e) {
 		}
 	}
 
-	private void et(Stack<String> param) {
+	private void et(Stack<LogoArgument> param) {
 		int size = param.size();
 		boolean result = true;
 		boolean b;
 		try {
 			for (int i = 0; i < size; i++) {
-				b = predicat(param.get(i).toString());
+				b = predicat(param.get(i));
 				result = result & b;
 			}
 			Interprete.operande = true;
 			if (result)
-				Interprete.calcul.push(Logo.messages.getString("vrai"));
+				Interprete.calcul.push(wordTrue);
 			else
-				Interprete.calcul.push(Logo.messages.getString("faux"));
+				Interprete.calcul.push(wordFalse);
 		} catch (myException e) {
 		}
 	}
@@ -4406,55 +4147,48 @@ public class LaunchPrimitive {
 	 * This methods returns a list that contains all procedures name
 	 * @return A list with all procedure names
 	 */
-	private StringBuffer getAllProcedures(){
-		StringBuffer sb=new StringBuffer("[ ");
+	private LogoList getAllProcedures(){
+		LogoList list=new LogoList();
 		for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
 			Procedure proc = wp.getProcedure(i);
 			if (proc.affichable) {
-				sb.append(proc.name);
-				sb.append(" ");
+				list.addElement(new LogoWord(proc.name));
 			}
 		}
-		sb.append("] ");
-		return sb;
+		return list;
 	}
 	/**
 	 * This methods returns a list that contains all variables name
 	 * @return A list with all variables names
 	 */
 	
-	private StringBuffer getAllVariables(){
-		StringBuffer sb=new StringBuffer("[ ");
+	private LogoList getAllVariables(){
+		LogoList list=new LogoList();		
 		Iterator<String> it=Interprete.locale.keySet().iterator();
 		while (it.hasNext()) {
 			String name=it.next();
-			sb.append(name);
-			sb.append(" ");
+			list.addElement(new LogoWord(name));
 		}
 		it =wp.globale.keySet().iterator();
 		while(it.hasNext()){
 			String key=it.next();
 			if (!Interprete.locale.containsKey(key)){
-				sb.append(key.toString());
-				sb.append(" ");
+				list.addElement(new LogoWord(key.toString()));
 			}
 		}
-		sb.append("] ");
-		return sb;
+		return list;
 	}
 	/**
 	 * This methods returns a list that contains all Property Lists name
 	 * @return A list with all Property Lists names
 	 */
-	private StringBuffer getAllpropertyLists(){
-		StringBuffer sb=new StringBuffer("[ ");
+	private LogoList getAllpropertyLists(){
+		list=new LogoList();
 		Iterator<String> it=wp.getPropListKeys().iterator();
 		while(it.hasNext()){
-			sb.append(it.next());
-			sb.append(" ");
+			list.addElement(new LogoWord((it.next())));
 		}
-		sb.append("] ");
-		return sb;
+		return list;
 	}
 	/**
 	 * Delete The variable called "name" from the workspace if it exists
@@ -4489,25 +4223,18 @@ public class LaunchPrimitive {
 	 * @param type The type for the data, it could be "variable", "procedure" or "propertylist"
 	 */
 	
-	private void erase(String name, String type){
+	private void erase(LogoArgument name, String type){
 		Interprete.operande=false;
 		try{
-			if (LaunchPrimitive.isList(name)){
-				name = getFinalList(name);
-				StringTokenizer st = new StringTokenizer(name);
-				while (st.hasMoreTokens()) {
-					String item = st.nextToken();
-					this.eraseItem(item, type);
+			if (name.isList()){
+				LogoList list = getFinalList((LogoList)name);
+				for (int i=0;i<list.getSize();i++){
+					LogoArgument arg=list.getElement(i);
+					eraseItem(arg, type);
 				}
 			}
 			else {
-				name = getWord(name);
-				if (null != name) {
-					this.eraseItem(name,type);
-				} else
-				throw new myException(cadre, name
-						+ Logo.messages.getString("error.word"));
-			
+					eraseItem(name,type);
 			}
 		}
 		catch(myException e){}		
@@ -4517,15 +4244,15 @@ public class LaunchPrimitive {
 	 * @param name The name of the deleted resource
 	 * @param type The type for the data, it could be "variable", "procedure" or "propertylist"
 	 */
-	private void eraseItem(String name, String type){
+	private void eraseItem(LogoArgument name, String type){
 		if (type.equals("procedure")){
-			this.deleteProcedure(name);
+			this.deleteProcedure(name.getValue());
 		}
 		else if (type.equals("variable")){
-			this.deleteVariable(name);			
+			this.deleteVariable(name.getValue());			
 		}
 		else if (type.equals("propertylist")){
-			wp.removePropList(name);
+			wp.removePropList(name.getValue());
 		}
 		
 	}

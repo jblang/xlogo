@@ -70,14 +70,14 @@ public class MyCalculator {
 	 * @throws myException if s isn't a number
 	 */
 	
-	protected String exp(String s) throws myException{
+	protected LogoWord exp(LogoArgument s) throws myException{
 		if (lowPrecision){
 			double nombre = numberDouble(s);
 			return teste_fin_double(Math.exp(nombre));
 		}
 		else {
 			BigDecimal bd=numberDecimal(s);
-			return expBD(bd).toPlainString();
+			return new LogoWord(expBD(bd).toPlainString(),true);
 		}
 	}
 	/**
@@ -87,7 +87,7 @@ public class MyCalculator {
 	 * @throws myException if s isn't a number or negative
 	 */
 	
-	protected String log(String s) throws myException{
+	protected LogoWord log(LogoArgument s) throws myException{
 		if (lowPrecision){
 			double nombre = numberDouble(s);
 			if (nombre < 0 || nombre == 0) {
@@ -104,7 +104,7 @@ public class MyCalculator {
 				throw new myException(app, log + " "
 						+ Logo.messages.getString("attend_positif"));
 			}
-			return logBD(bd).toPlainString();
+			return new LogoWord(logBD(bd).toPlainString(),true);
 		}
 	}
 	/**
@@ -114,7 +114,7 @@ public class MyCalculator {
 	 * @throws myException if s isn't a number or negative
 	 */
 	
-	protected String sqrt(String s) throws myException{
+	protected LogoWord sqrt(LogoArgument s) throws myException{
 		if (lowPrecision){
 			double number = numberDouble(s);
 			if (number < 0) {
@@ -131,7 +131,7 @@ public class MyCalculator {
 				throw new myException(app, sqrt + " "
 						+ Logo.messages.getString("attend_positif"));
 			}
-			return sqrtBD(bd).toPlainString();
+			return new LogoWord(sqrtBD(bd).toPlainString(),true);
 		}
 	}
 	/**
@@ -139,7 +139,7 @@ public class MyCalculator {
 	 * @param param The stack of operands
 	 * @return The product
 	 */
-	protected String multiply(Stack<String> param) {
+	protected LogoWord multiply(Stack<LogoArgument> param) {
 		int size = param.size();
 		BigDecimal product = BigDecimal.ONE;
 		BigDecimal a;
@@ -151,24 +151,24 @@ public class MyCalculator {
 
 		} catch (myException e) {
 		}
-		return product.stripTrailingZeros().toPlainString();
+		return new LogoWord(product.stripTrailingZeros().toPlainString(),true);
 	}
 
-	protected String divide(Stack<String> param) throws myException{
+	protected LogoWord divide(Stack<LogoArgument> param) throws myException{
 			if (lowPrecision){
 				double a = numberDouble(param.get(0));
 				double b = numberDouble(param.get(1));
 				if (b == 0)
 				throw new myException(app, Logo.messages
 						.getString("division_par_zero"));
-				return(teste_fin_double(a / b));
+				return teste_fin_double(a / b);
 		} 
 			else{
-				BigDecimal a=new BigDecimal(param.get(0),mc);
-				BigDecimal b=new BigDecimal(param.get(1),mc);
+				BigDecimal a=new BigDecimal(param.get(0).getValue(),mc);
+				BigDecimal b=new BigDecimal(param.get(1).getValue(),mc);
 				if (b.signum()==0)				throw new myException(app, Logo.messages
 						.getString("division_par_zero"));
-				return (a.divide(b, mc).stripTrailingZeros().toPlainString());
+				return new LogoWord(a.divide(b, mc).stripTrailingZeros().toPlainString(),true);
 			}			
 	}
 	/**
@@ -176,7 +176,7 @@ public class MyCalculator {
 	 * @param param The stack of operands
 	 * @return The sum
 	 */
-	protected String add(Stack<String> param) {
+	protected LogoWord add(Stack<LogoArgument> param) {
 		int size = param.size();
 		BigDecimal sum = BigDecimal.ZERO;		
 		try {
@@ -187,13 +187,13 @@ public class MyCalculator {
 			}
 		} catch (myException e) {
 		}
-		return sum.stripTrailingZeros().toPlainString();
+		return new LogoWord(sum.stripTrailingZeros().toPlainString(),true);
 	}
 
-	protected String substract(Stack<String> param) throws myException{
+	protected LogoWord substract(Stack<LogoArgument> param) throws myException{
 			BigDecimal a = numberDecimal(param.get(0));
 			BigDecimal b = numberDecimal(param.get(1));
-			return a.subtract(b,mc).stripTrailingZeros().toPlainString();
+			return new LogoWord(a.subtract(b,mc).stripTrailingZeros().toPlainString(),true);
 	}
 	
 	/**
@@ -201,38 +201,38 @@ public class MyCalculator {
 	 * @param s 
 	 * @return
 	 */
-	protected String minus(String s) throws myException{
+	protected LogoWord minus(LogoArgument s) throws myException{
 			BigDecimal a = numberDecimal(s);
-			return a.negate(mc).stripTrailingZeros().toPlainString();
+			return new LogoWord(a.negate(mc).stripTrailingZeros().toPlainString(),true);
 	}
-	protected String remainder(String a , String b) throws myException{
+	protected LogoWord remainder(LogoArgument a , LogoArgument b) throws myException{
 		if (lowPrecision){
-			int aa = getInteger(a);
-			int bb = getInteger(b);
+			int aa = getInteger(a.getValue());
+			int bb = getInteger(b.getValue());
 			if (bb == 0)
 			throw new myException(app, Logo.messages
 					.getString("division_par_zero"));
 			return teste_fin_double(aa % bb);			
 		}
 		else {
-			BigDecimal aa = getBigInteger(a);
-			BigDecimal bb = getBigInteger(b);
+			BigDecimal aa = getBigInteger(a.getValue());
+			BigDecimal bb = getBigInteger(b.getValue());
 			if (bb.signum() == 0)
 			throw new myException(app, Logo.messages
 					.getString("division_par_zero"));
-			return aa.remainder(bb, mc).stripTrailingZeros().toPlainString();
+			return new LogoWord(aa.remainder(bb, mc).stripTrailingZeros().toPlainString(),true);
 			
 		}
 	}
 
-	protected String quotient(String a , String b) throws myException{
+	protected LogoWord quotient(LogoArgument a ,LogoArgument b) throws myException{
 		if (lowPrecision){
 			double aa = numberDouble(a);
 			double bb = numberDouble(b);
 			if (bb == 0)
 				throw new myException(app, Logo.messages
 						.getString("division_par_zero"));
-			return String.valueOf((int)(aa/bb));
+			return new LogoWord(String.valueOf((int)(aa/bb)),true);
 		}
 		else{
 			BigDecimal aa = numberDecimal(a);
@@ -240,20 +240,20 @@ public class MyCalculator {
 			if (bb.signum() == 0)
 			throw new myException(app, Logo.messages
 					.getString("division_par_zero"));
-			return aa.divideToIntegralValue(bb, mc).stripTrailingZeros().toPlainString();			
+			return new LogoWord(aa.divideToIntegralValue(bb, mc).stripTrailingZeros().toPlainString(),true);			
 			
 		}
 	}
-	protected String truncate(String a) throws myException{
+	protected LogoWord truncate(LogoArgument a) throws myException{
 		BigDecimal ent = numberDecimal(a);
-		return ent.toBigInteger().toString();
+		return new LogoWord(ent.toBigInteger().toString(),true);
 	}
-	protected String abs(String a) throws myException{
+	protected LogoWord abs(LogoArgument a) throws myException{
 		BigDecimal e=numberDecimal(a);
-		return e.abs().stripTrailingZeros().toPlainString();
+		return new LogoWord(e.abs().stripTrailingZeros().toPlainString(),true);
 	}
 	
-	protected String power(String a,String b) throws myException{
+	protected LogoWord power(LogoArgument a,LogoArgument b) throws myException{
 		if (lowPrecision){
 			double p = Math.pow(numberDouble(a),numberDouble(b));
 		// Bug pr power -1 0.5
@@ -263,97 +263,99 @@ public class MyCalculator {
 			return teste_fin_double(p);
 		}
 		else{
+			String va=a.getValue();
+			String vb=b.getValue();
 			// if the exposant is an integer
 			try {
-				int n=Integer.parseInt(b);			
+				int n=Integer.parseInt(vb);			
 				BigDecimal aa=numberDecimal(a);
-				return aa.pow(n, mc).toPlainString();			
+				return new LogoWord(aa.pow(n, mc).toPlainString(),true);			
 			}
 			catch(NumberFormatException e){
 				BigDecimal aa=numberDecimal(a);
 				BigDecimal bb=numberDecimal(b);
 				if (aa.signum()==1){
-					return expBD(bb.multiply(logBD(aa), mc)).toPlainString();
+					return new LogoWord(expBD(bb.multiply(logBD(aa), mc)).toPlainString(),true);
 				}
 				else if (aa.signum()==0)
-					return "0";	
-				else return String.valueOf(getInteger(b));
+					return new LogoWord("0",true);	
+				else return new LogoWord(String.valueOf(getInteger(vb)),true);
 			}
 		}
 	}
-	protected String log10(String s) throws myException{
-		Stack<String> tmp=new Stack<String>();
+	protected LogoWord log10(LogoArgument s) throws myException{
+		Stack<LogoArgument> tmp=new Stack<LogoArgument>();
 		tmp.push(log(s));
-		tmp.push(log("10"));
+		tmp.push(log(new LogoWord("10",true)));
 		return divide(tmp);
 	}
-	protected String pi() {
+	protected LogoWord pi() {
 		if (lowPrecision){
-			return 	String.valueOf(Math.PI);
+			return 	new LogoWord(String.valueOf(Math.PI),true);
 		}
 		else {
-			return piBD().toPlainString();
+			return new LogoWord(piBD().toPlainString(),true);
 		} 
 	}
 	
-	protected String sin(String s) throws myException{
+	protected LogoWord sin(LogoArgument s) throws myException{
 		if (lowPrecision){
 			return teste_fin_double(Math.sin(Math
 					.toRadians(numberDouble(s))));
 		}
 		else {
 			BigDecimal bd=numberDecimal(s);
-			return sinBD(bd).toPlainString();
+			return new LogoWord(sinBD(bd).toPlainString(),true);
 			
 		}
 	}
-	protected String cos(String s)throws myException{
+	protected LogoWord cos(LogoArgument s)throws myException{
 		if (lowPrecision){
 			return teste_fin_double(Math.cos(Math
 					.toRadians(numberDouble(s))));
 		}
 		else {
 			BigDecimal bd=numberDecimal(s);
-			return cosBD(bd).toPlainString();
+			return new LogoWord(cosBD(bd).toPlainString(),true);
 			
 		}
 	}
-	protected String tan(String s)throws myException{
+	protected LogoWord tan(LogoArgument s)throws myException{
 		if (lowPrecision){
 			return teste_fin_double(Math.tan(Math
 					.toRadians(numberDouble(s))));
 		}
 		else {
 			BigDecimal bd=numberDecimal(s);
-			return tanBD(bd).toPlainString();			
+			return new LogoWord(tanBD(bd).toPlainString(),true);			
 		}
 	}
-	protected String atan(String s)throws myException{
+	protected LogoWord atan(LogoArgument s)throws myException{
 		if (lowPrecision){
 			return teste_fin_double(Math.toDegrees(Math
 					.atan(numberDouble(s))));
 		}
 		else {
 			BigDecimal bd=numberDecimal(s);
-			return toDegree(atanBD(bd)).toPlainString();			
+			return new LogoWord(toDegree(atanBD(bd)).toPlainString(),true);			
 		}
 	}
-	protected String acos(String s)throws myException{
+	protected LogoWord acos(LogoArgument s)throws myException{
 		if (lowPrecision){
 			return teste_fin_double(Math.toDegrees(Math.acos(numberDouble(s))));
 		}
 		else {
 			BigDecimal bd=numberDecimal(s);
-			return toDegree(acosBD(bd)).toPlainString();			
+			return new LogoWord(toDegree(acosBD(bd)).toPlainString(),true);			
 		}
 	}
-	protected String asin(String s)throws myException{
+	protected LogoWord asin(LogoArgument s)throws myException{
 		if (lowPrecision){
 			return teste_fin_double(Math.toDegrees(Math.asin(numberDouble(s))));
 		}
 		else {
 			BigDecimal bd=numberDecimal(s);
-			return toDegree(asinBD(bd)).toPlainString();			
+			return new LogoWord(toDegree(asinBD(bd)).toPlainString(),true);			
 		}
 	}
 	/**
@@ -753,14 +755,12 @@ public class MyCalculator {
 	 *             If st can't be convert
 	 */
 
-	protected double numberDouble(String st) throws myException { // Si un nombre est
-															// un double
-		try {
-			return (Double.parseDouble(st));
-		} catch (NumberFormatException e) {
-			throw new myException(app, st + " "
-					+ Logo.messages.getString("pas_nombre"));
-		}
+	protected double numberDouble(LogoArgument arg) throws myException { // Si un nombre est
+		// un double
+		
+		if (arg.isNumber()) return Double.parseDouble(arg.getValue());
+		else throw new myException(app, arg + " "
+				+ Logo.messages.getString("pas_nombre"));			
 	}
 	/**
 	 * If a double ends with the suffix ".0", remove it
@@ -768,11 +768,11 @@ public class MyCalculator {
 	 * @return
 	 */
 	
-	static protected String teste_fin_double(double d) {
+	static protected LogoWord teste_fin_double(double d) {
 		String st = String.valueOf(d);
 		if (st.endsWith(".0"))
 			st = st.substring(0, st.length() - 2);
-		return st;
+		return new LogoWord(st,true);
 	}
 
 	/**
@@ -785,7 +785,7 @@ public class MyCalculator {
 	 *             if st isn't a number
 	 */
 
-	protected BigDecimal numberDecimal(String st) throws myException {
+	protected BigDecimal numberDecimal(LogoArgument st) throws myException {
 		/*if (null==mc){
 			try {
 				BigDecimal bd = new BigDecimal(st).setScale(16,
@@ -798,8 +798,9 @@ public class MyCalculator {
 			}
 		}
 		else {*/
+		
 		try{
-				return new BigDecimal(st,mc);
+				return new BigDecimal(st.getValue(),mc);
 		} 
 		catch (NumberFormatException e) {
 				throw new myException(app, st + " "

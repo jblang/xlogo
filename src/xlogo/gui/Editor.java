@@ -493,7 +493,7 @@ public class Editor extends JFrame implements ActionListener{
 			cadre.setTitle("XLOGO        "+Application.path);
 			try {
 				File f=new File(cadre.tmp_path);
-				Config.defaultFolder= Utils.rajoute_backslash(f.getParent());
+				Config.defaultFolder= f.getParent();
 			}
 			catch(NullPointerException e2){}
 			cadre.tmp_path=null;

@@ -67,16 +67,16 @@ public class Affichage extends Thread {
 			myException.lance = false;
 			Interprete.operande = Interprete.operateur = Interprete.drapeau_ouvrante = false;
 			cadre.getKernel().getInstructionBuffer().clear();
-			Interprete.calcul = new Stack<String>();
+			Interprete.calcul = new Stack<LogoArgument>();
 			Interprete.nom = new Stack<String>();
-			Interprete.locale = new HashMap<String,String>();
+			Interprete.locale = new HashMap<String,LogoArgument>();
 			Interprete.en_cours = new Stack<String>();
 			cm = new MemoryChecker(cadre);
 			cm.start();
 			boolean b=true;
 			while (b){
-				String st = cadre.getKernel().execute(instruction);
-				if (!st.equals(""))
+				LogoArgument st = cadre.getKernel().execute(instruction);
+				if (!st.getValue().equals(""))
 					throw new myException(cadre, Logo.messages
 							.getString("error.whattodo")
 							+ " " + st + " ?");

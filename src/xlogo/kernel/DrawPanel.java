@@ -435,7 +435,7 @@ import xlogo.kernel.perspective.*;
 	 * @param arg The new orientation
 	 * @throws myException If the list doesn't contain three numbers
 	 */
-	protected void setOrientation(String arg) throws myException{
+	protected void setOrientation(LogoList arg) throws myException{
 		initCoords();
 		if (tortue.isVisible())
 			montrecacheTortue(false);
@@ -453,9 +453,19 @@ import xlogo.kernel.perspective.*;
 	 */
 		protected void origine(){ // primitive origine
 			try {
-				if (!enabled3D())
-					fpos("0 0");
-				else fpos("0 0 0");
+				if (!enabled3D()){
+					LogoList list=new LogoList();
+					list.addElement(new LogoWord("0",true));
+					list.addElement(new LogoWord("0",true));
+					fpos(list);					
+				}
+				else {
+					LogoList list=new LogoList();
+					list.addElement(new LogoWord("0",true));
+					list.addElement(new LogoWord("0",true));
+					list.addElement(new LogoWord("0",true));
+					fpos(list);
+				}
 			} catch (myException e) {
 			}
 			if (tortue.isVisible())
@@ -478,8 +488,8 @@ import xlogo.kernel.perspective.*;
 		 * @return The distance from the turtle position to this point
 		 * @throws myException If bad format list
 		 */
-		protected double distance(String liste) throws myException {
-	
+		protected double distance(LogoList liste) throws myException {
+
 			initCoords();
 			extractCoords(liste,Utils.primitiveName("distance"));			
 			double distance;
@@ -492,7 +502,7 @@ import xlogo.kernel.perspective.*;
 						+ Math.pow(tortue.Y - coords[1], 2)+Math.pow(tortue.Z - coords[2], 2));
 			return distance;
 		}
-		protected double[] vers3D(String liste) throws myException{
+		protected double[] vers3D(LogoList liste) throws myException{
 			double[] tmp=new double [3];
 			initCoords();
 			extractCoords(liste,Utils.primitiveName("vers"));
@@ -524,7 +534,7 @@ import xlogo.kernel.perspective.*;
 		 * @return the rotation angle 
 		 * @throws myException if Bad format List
 		 */
-		protected double vers2D(String liste) throws myException{
+		protected double vers2D(LogoList liste) throws myException{
 			initCoords();
 			extractCoords(liste,Utils.primitiveName("vers"));		
 			double angle;
@@ -562,7 +572,7 @@ import xlogo.kernel.perspective.*;
 		 * @param liste The list with the coordinates to move
 		 * @throws myException If the coordinates are invalid
 		 */
-			protected void fpos(String liste) throws myException {
+			protected void fpos(LogoList liste) throws myException {
 				initCoords();
 				oldx = tortue.corX;
 				oldy = tortue.corY;
@@ -707,9 +717,9 @@ import xlogo.kernel.perspective.*;
 	 * @return Color of this pixel
 	 * @throws myException If the list doesn't contain coordinates 
 	 */
-		protected Color guessColorPoint(String liste) throws myException {
+		protected Color guessColorPoint(LogoList list) throws myException {
 			initCoords();
-			extractCoords(liste,Utils.primitiveName("tc"));
+			extractCoords(list,Utils.primitiveName("tc"));
 			coords=toScreenCoord(coords,false);
 			int couleur = -1;
 			int x=(int)coords[0];
@@ -752,7 +762,7 @@ import xlogo.kernel.perspective.*;
 	 * @param liste The list with the dot coordinates
 	 * @throws myException If the list is invalid coordinates
 	 */
-	protected void point(String liste) throws myException {
+	protected void point(LogoList liste) throws myException {
 		initCoords();
 		extractCoords(liste,Utils.primitiveName("drawing.point"));
 		coords=toScreenCoord(coords,true);
@@ -1088,33 +1098,19 @@ import xlogo.kernel.perspective.*;
 	 * @throws myException If List isn't a list coordinate
 	 */
 	
-	private void extractCoords(String liste,String prim)throws myException{
-		StringTokenizer st = new StringTokenizer(liste);
-		try {
+	private void extractCoords(LogoList list,String prim)throws myException{
+		if (list.getSize()!=coords.length) 	throw new myException(cadre, prim
+					+ " " + Logo.messages.getString("n_aime_pas") + list
+					+ Logo.messages.getString("comme_parametre"));
 			for(int i=0;i<coords.length;i++){
-			coords[i]=1;
-			if (!st.hasMoreTokens())
-				throw new myException(cadre, prim
-						+ " " + Logo.messages.getString("n_aime_pas") + liste
+				LogoArgument arg=list.getElement(i);
+				if (!arg.isNumber())
+					throw new myException(cadre, prim
+						+ " " + Logo.messages.getString("n_aime_pas") + list
 						+ Logo.messages.getString("comme_parametre"));
-			String element = st.nextToken();
-			if (element.equals("-")) {
-				if (st.hasMoreTokens())
-					element = st.nextToken();
-				coords[i] = -1;
-			}
-			coords[i] = coords[i] * Double.parseDouble(element);
+				coords[i]=Double.parseDouble(arg.getValue());
 			}
 		
-			} catch (NumberFormatException e) {
-			throw new myException(cadre, prim
-					+ " " + Logo.messages.getString("n_aime_pas") + liste
-					+ Logo.messages.getString("comme_parametre"));
-		}
-		if (st.hasMoreTokens())
-			throw new myException(cadre, prim
-					+ " " + Logo.messages.getString("n_aime_pas") + liste
-					+ Logo.messages.getString("comme_parametre"));
 	}
 	/**
 	 * This method sets the drawing area to perspective mode 
@@ -1809,7 +1805,7 @@ import xlogo.kernel.perspective.*;
 		 * @param name The translated name for the primitive "guiposition"
 		 * @throws myException If coordinates list is invalid
 		 */
-	protected void guiposition(String id, String liste,String name) throws myException{
+	protected void guiposition(String id, LogoList liste,String name) throws myException{
 		if (guiExist(id)){
 			initCoords();
 			extractCoords(liste,name);

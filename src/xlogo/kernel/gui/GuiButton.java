@@ -16,7 +16,7 @@ public class GuiButton extends GuiComponent {
 	
 	public GuiButton(String id, String text,Application app){
 		super.setId(id);
-		guiObject=new JButton(Utils.SortieTexte(text));
+		guiObject=new JButton(text);
 		this.app=app;
 		java.awt.FontMetrics fm = app.getGraphics()
 		.getFontMetrics(Config.police);

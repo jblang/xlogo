@@ -40,13 +40,14 @@ public class LoopFor extends LoopProperties{
 		String element=String.valueOf(super.getCounter());
 		if (element.endsWith(".0")) element=element.substring(0,element.length()-2) ;
         if (element.startsWith(".")||element.equals("")) element="0"+element;
-
+        LogoWord word=new LogoWord(element,true);
+        
 		if (Interprete.locale.containsKey(var)){
 			if (first) conserver=true;
-			Interprete.locale.put(var, element);
+			Interprete.locale.put(var, word);
 		} 
 		else {
-			Interprete.locale.put(var,element);
+			Interprete.locale.put(var,word);
 		}
 	}
 	/**

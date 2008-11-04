@@ -129,7 +129,7 @@ public class MenuListener extends JDialog implements ActionListener{
     else if(MenuListener.FILE_SAVE.equals(cmd)|MenuListener.FILE_SAVE_AS.equals(cmd)){   //Enregistrer
       String path=Application.path;
       if (MenuListener.FILE_SAVE_AS.equals(cmd)||null==path) {
-        JFileChooser jf=new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
+        JFileChooser jf=new JFileChooser(Config.defaultFolder);
         String[] ext={".lgo"};
         jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_logo"),ext));
 				Utils.recursivelySetFonts(jf,Config.police);
@@ -145,7 +145,7 @@ public class MenuListener extends JDialog implements ActionListener{
 					cadre.setTitle("XLOGO"+"          "+path);
 					try {
 						File f=new File(path);
-						Config.defaultFolder=Utils.rajoute_backslash(f.getParent());
+						Config.defaultFolder=f.getParent();
 					}
 					catch(NullPointerException e2){}
         }
@@ -164,7 +164,7 @@ public class MenuListener extends JDialog implements ActionListener{
       catch(IOException e2){cadre.ecris("erreur",Logo.messages.getString("error.ioecriture"));}
 		}
     else if(MenuListener.FILE_OPEN.equals(cmd)){              //Ouvrir
-      JFileChooser jf=new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
+      JFileChooser jf=new JFileChooser(Config.defaultFolder);
       String[] ext={".lgo"};
       jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_logo"),ext));
 			Utils.recursivelySetFonts(jf,Config.police);
@@ -235,7 +235,7 @@ public class MenuListener extends JDialog implements ActionListener{
   	RTFEditorKit myRTFEditorKit = new RTFEditorKit();
    	StyledDocument myStyledDocument =cadre.getHistoryPanel().sd_Historique();
    	try{
-   		JFileChooser jf=new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
+   		JFileChooser jf=new JFileChooser(Config.defaultFolder);
    		String[] ext={".rtf"};
   	    jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_rtf"),ext));
   	    Utils.recursivelySetFonts(jf,Config.police);

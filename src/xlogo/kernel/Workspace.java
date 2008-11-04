@@ -30,7 +30,7 @@ import java.io.IOException;
 public class Workspace {
 	
 	
-	protected  HashMap<String,String> globale;  // HashMap with the name of all defined variables
+	protected  HashMap<String,LogoArgument> globale;  // HashMap with the name of all defined variables
 								// and their values
 	private Stack<Procedure> procedureList; // stack with all procedures defined by the user
 
@@ -40,19 +40,19 @@ public class Workspace {
 	/**
 	 *  For all Property Lists
 	 */
-	private HashMap<String,HashMap<String,String>> propList;
+	private HashMap<String,HashMap<String,LogoArgument>> propList;
 	
 	public Workspace(Application app) {
-		globale= new HashMap<String,String>();
+		globale= new HashMap<String,LogoArgument>();
 		procedureList=new Stack<Procedure>();
-		propList=new HashMap<String,HashMap<String,String>>();
+		propList=new HashMap<String,HashMap<String,LogoArgument>>();
 		gm=new GuiMap(app);
 	}
 	/**
 	 * Delete all Variables from the workspace
 	 */
 	public void deleteAllVariables(){
-		globale = new HashMap<String,String>();
+		globale = new HashMap<String,LogoArgument>();
 	}
 	/**
 	 * Delete all procedures from the workspace
@@ -68,7 +68,7 @@ public class Workspace {
 	 * Delete all property Lists from the workspace
 	 */
 	public void deleteAllPropertyLists(){
-		propList=new HashMap<String,HashMap<String,String>>();
+		propList=new HashMap<String,HashMap<String,LogoArgument>>();
 	}
 	/**
 	 * This method adds in the property List called "name" a value for the corresponding key
@@ -76,9 +76,9 @@ public class Workspace {
 	 * @param key The key for the value to add
 	 * @param value The value to add
 	 */
-	protected void addPropList(String name, String key, String value){
+	protected void addPropList(String name, String key, LogoArgument value){
 		if (!propList.containsKey(name)){
-			propList.put(name,new HashMap<String,String>());
+			propList.put(name,new HashMap<String,LogoArgument>());
 		}
 		propList.get(name).put(key, value);
 	}
@@ -110,23 +110,19 @@ public class Workspace {
 	 * @param name The Property List's name
 	 * @return A list with all keys-values
 	 */
-	protected String displayPropList(String name){
+	protected LogoList displayPropList(String name){
+		LogoList list=new LogoList();
 		if (propList.containsKey(name)){
-			StringBuffer sb=new StringBuffer();
-			sb.append("[ ");
 			Set<String> set=propList.get(name).keySet();
 			for (String key:set){
-				sb.append(key);
-				sb.append(" ");
-				String value=propList.get(name).get(key);
-				if (value.startsWith("\"")) value=value.substring(1);
-				sb.append(value);
-				sb.append(" ");
+				LogoList sublist=new LogoList();
+				sublist.addElement(new LogoWord(key));
+				LogoArgument value=propList.get(name).get(key);
+				sublist.addElement(value);
+				list.addElement(sublist);
 			}
-			sb.append("] ");
-			return sb.toString();
 		}
-		else return "[ ] ";
+		return list;
 	}
 	/**
 	 * This method return a value from a Property List
@@ -134,11 +130,11 @@ public class Workspace {
 	 * @param key The key for the chosen value
 	 * @return The value for this key
 	 */
-	protected String getPropList(String name, String key){
+	protected LogoArgument getPropList(String name, String key){
 		if (!propList.containsKey(name)){
-			return "[ ]";
+			return new LogoList();
 		}
-		if (!propList.get(name).containsKey(key)) return "[ ]";
+		if (!propList.get(name).containsKey(key)) return new LogoList();;
 		return propList.get(name).get(key);
 	}
 	/**
@@ -203,7 +199,7 @@ public class Workspace {
 		return (new String(sb));
 	}
 	public void setWorkspace(Application app,String wp){
-		globale= new HashMap<String,String>();
+		globale= new HashMap<String,LogoArgument>();
 		procedureList=new Stack<Procedure>();
 
 		StringReader sr=new StringReader(wp);
@@ -212,7 +208,7 @@ public class Workspace {
 			String input="";
 			while((input=bfr.readLine())!=null){
 				if (!input.startsWith(Logo.messages.getString("pour"))){
-						globale.put(input.substring(1),bfr.readLine());
+						globale.put(input.substring(1),new LogoWord(bfr.readLine()));
 					}
 				else break;
 			}

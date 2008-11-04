@@ -38,11 +38,11 @@ public class myException extends Exception {
     	cadre.ecris("erreur",Logo.messages.getString("dans")+" "+Interprete.en_cours.pop()+", "
     			+Logo.messages.getString("line")+" "+getLineNumber()+":\n");
     }
-    if (!cadre.error) cadre.ecris("erreur",Utils.SortieTexte(st) + "\n");
+    if (!cadre.error) cadre.ecris("erreur",st + "\n");
 
     cadre.focus_Commande();
     cadre.error=true;
-    Interprete.calcul=new Stack<String>();
+    Interprete.calcul=new Stack<xlogo.kernel.LogoArgument>();
     cadre.getKernel().getInstructionBuffer().clear();
     Primitive.stackLoop=new Stack<LoopProperties>();
   }
