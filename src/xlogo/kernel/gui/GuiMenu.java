@@ -19,7 +19,7 @@ public class GuiMenu extends GuiComponent{
 		int i=0;
 		originalWidth=0;
 		while (st.hasMoreTokens()){
-			item[i]=st.nextToken();
+			item[i]=Utils.SortieTexte(st.nextToken());
 			java.awt.FontMetrics fm = app.getGraphics()
 			.getFontMetrics(Config.police);
 			originalWidth = Math.max(originalWidth,fm.stringWidth(item[i]));			

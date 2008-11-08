@@ -30,20 +30,12 @@ public class LoopForEach extends LoopFor{
 	 */
 	protected void AffecteVar(boolean first){
 		String element=vec.get(getCounter().intValue());
-		LogoWord word;
-		try{
-			Double.parseDouble(element);
-			word=new LogoWord(element,true);
-		}
-		catch(NumberFormatException e){
-			word=new LogoWord(element);
-		}
 		if (Interprete.locale.containsKey(var)){
 			if (first) conserver=true;
-			Interprete.locale.put(var, word);
+			Interprete.locale.put(var, element);
 		} 
 		else {
-			Interprete.locale.put(var,word);
+			Interprete.locale.put(var,element);
 		}
 	}
 }

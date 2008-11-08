@@ -16,13 +16,13 @@ public class MyFlowWriter extends MyFlow {
 	void append(String line) throws FileNotFoundException,IOException{
 		if (null == bfw) bfw = new BufferedWriter(new FileWriter(getPath(),true));
 		PrintWriter pw = new PrintWriter(bfw);
-		pw.println(line);
+		pw.println(Utils.SortieTexte(line));
 	}
 
 	void write(String line) throws FileNotFoundException,IOException{
 		if (null == bfw) bfw = new BufferedWriter(new FileWriter(getPath()));
 		PrintWriter pw = new PrintWriter(bfw);
-		pw.println(line);
+		pw.println(Utils.SortieTexte(line));
 	}
 	boolean isWriter(){
 		return true;

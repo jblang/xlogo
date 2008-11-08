@@ -7,8 +7,6 @@
 package xlogo.kernel;
 
 import java.util.Stack;
-
-import java.util.Vector;
 import java.util.HashMap;
 import xlogo.utils.myException;
 import xlogo.Application;
@@ -25,8 +23,8 @@ public class Interprete {
 															// d'instruction à
 															// évaluer (si,
 															// exec).
-	public static Stack<LogoArgument> calcul = new Stack<LogoArgument>(); // Pile contenant les nombres
-	protected static Stack<HashMap<String,LogoArgument>> stockvariable = new Stack<HashMap<String,LogoArgument>>();
+	public static Stack<String> calcul = new Stack<String>(); // Pile contenant les nombres
+	protected static Stack<HashMap<String,String>> stockvariable = new Stack<HashMap<String,String>>();
 	protected static boolean stop = false;
 	protected static Stack<String> nom = new Stack<String>(); // contient les noms des
 												// procédures attendant
@@ -37,12 +35,12 @@ public class Interprete {
 	/**
 	 * This buffer contains all instructions to execute
 	 */
-	//private InstructionBuffer instructionBuffer=new InstructionBuffer();
+	private InstructionBuffer instructionBuffer=new InstructionBuffer();
 	
-	private LexemBuffer instructionBuffer=new LexemBuffer();
+
 	public static StringBuffer actionInstruction=new StringBuffer();
 	
-	protected static HashMap<String,LogoArgument> locale = new HashMap<String,LogoArgument>(); // Pile contenant les
+	protected static HashMap<String,String> locale = new HashMap<String,String>(); // Pile contenant les
 														// noms des variables
 														// locales
 	// protected static Stack valeur = new Stack(); // Pile contenant les
@@ -73,13 +71,13 @@ public class Interprete {
 		app.error = false;
 	}
 
-	LogoArgument execute(StringBuffer instructions) throws myException { 
+	String execute(StringBuffer instructions) throws myException { 
 		if (!instructions.equals("")) {
 			instructionBuffer.insertCode(instructions);
 		}
 
 		// Object obca1,obca2,oban;
-		while (instructionBuffer.size()!= 0) {
+		while (instructionBuffer.getLength()!= 0) {
 			if (app.error && myException.lance)
 				throw new myException(app, Logo.messages.getString("stop"));
 			while (app.affichage.isOnPause()) { // Si l'on touche aux scrollbars
@@ -98,10 +96,10 @@ public class Interprete {
 			
 			
 			// Is this line really interesting??
-			if (instructionBuffer.size() == 0)
+			if (instructionBuffer.getLength() == 0)
 				break;
 //			System.out.print("debut\n"+instructionBuffer+"\nfin\n------------------\n");
-			LogoLexem element = instructionBuffer.getNextWord();
+			String element = instructionBuffer.getNextWord();
 //			System.out.println("/"+instructionBuffer+"/");
 
 /*			if (element=="")
@@ -111,13 +109,6 @@ public class Interprete {
 			// si c'est une primitive ou une procedure *******
 			 * ***********************************************
 			 */
-			if (element.isCommand()){
-				
-				
-				
-			}
-			
-			
 			String element_minuscule = element.toLowerCase();
 			int i = isProcedure(element_minuscule);
 			
@@ -135,7 +126,7 @@ public class Interprete {
 				// monException(cadre,Logo.messages.getString("que_faire")+"
 				// "+calcul.pop() +" gdfdsf");
 				// exécuter la procédure ou la primitive.
-				Stack<LogoArgument> param = new Stack<LogoArgument>();
+				Stack<String> param = new Stack<String>();
 				
 				if (isInfixedOperator(i)) { // Si c'est un opérateur infixé
 					deleteLineNumber();
@@ -156,11 +147,11 @@ public class Interprete {
 									+ Logo.messages.getString("error.ne_peut_etre")); // d'un
 																				// nombre
 						if (nom.isEmpty())
-							param.push(new LogoWord("0",true));
+							param.push("0");
 						else {
 							String st = nom.peek();
 							if (!testoperateur(st))
-								param.push(new LogoWord("0",true));
+								param.push("0");
 							else if ("*/".indexOf(st) > -1) { // Si le signe -
 																// ou + suit un
 																// * ou /
@@ -170,11 +161,11 @@ public class Interprete {
 								else
 									instructionBuffer.insert("/ ");
 								if (i == 32)
-									return (new LogoWord("1",true)); // Si c'est un plus
+									return ("1"); // Si c'est un plus
 								else
-									return (new LogoWord("-1",true)); // Si c'est un moins
+									return ("-1"); // Si c'est un moins
 							} else
-								param.push(new LogoWord("0",true));
+								param.push("0");
 						}
 					} else if (nom.isEmpty()) {
 						param.push(calcul.pop());
@@ -203,7 +194,7 @@ public class Interprete {
 				 * end		|		sure the rt has noproblem
 				 * */
 				if (!element.equals("\n")) deleteLineNumber();
-				instructionBuffer.deleteFirstWord();
+				instructionBuffer.deleteFirstWord(element);
 
 				// Case with parenthensis
 				// eg (sum 3 4 5)
@@ -248,7 +239,7 @@ public class Interprete {
 								}
 								break;
 							}
-							LogoArgument a = execute(new StringBuffer());
+							String a = execute(new StringBuffer());
 							param.push(a);
 						} catch (myException e) {
 							throw e;
@@ -273,7 +264,7 @@ public class Interprete {
 							for (int c = j; c < proc.optVariables.size(); c++) {
 								try {
 									operande = operateur = drapeau_ouvrante = false;
-									LogoArgument a = execute( proc.optVariablesExp
+									String a = execute( proc.optVariablesExp
 											.get(c));
 									param.push(a);
 								} catch (myException e) {
@@ -302,7 +293,7 @@ public class Interprete {
 						try {
 							operande = operateur = drapeau_ouvrante = false;
 
-							LogoArgument a = execute(new StringBuffer());
+							String a = execute(new StringBuffer());
 							param.push(a);
 							j++;
 						} catch (myException e) {
@@ -316,7 +307,7 @@ public class Interprete {
 						for (j = 0; j < nbparametre; j++) {
 							try {
 								operande = operateur = drapeau_ouvrante = false;
-								LogoArgument a = execute(proc.optVariablesExp
+								String a = execute(proc.optVariablesExp
 										.get(j));
 								param.push(a);
 							} catch (myException e) {
@@ -392,7 +383,8 @@ public class Interprete {
 			/* ********************************
 			/ IF element IS A VARIABLE
 			********************************* */
-			else if (element.isVariable()){
+			else if (element.substring(0, 1).equals(":")
+					&& element.length() > 1) {
 				// System.out.println(operande);
 				if (operande) {
 					checkParenthesis();
@@ -400,7 +392,7 @@ public class Interprete {
 					break;
 				}
 				else deleteLineNumber();
-				LogoArgument value;
+				String value;
 				String variableName = element_minuscule.substring(1,
 						element_minuscule.length());
 				// If the variable isn't local
@@ -410,7 +402,7 @@ public class Interprete {
 						throw new myException(app, variableName + " "
 								+ Logo.messages.getString("error.novalue"));
 					else
-						value = wp.globale.get(variableName);
+						value = wp.globale.get(variableName).toString();
 				}
 				// If the variable is local
 				else {
@@ -420,17 +412,17 @@ public class Interprete {
 				if (null == value)
 					throw new myException(app, variableName + "  "
 							+ Logo.messages.getString("error.novalue"));
-				calcul.push(value.clone());
+				calcul.push(value);
 				operande = true;
 				operateur = false;
 				drapeau_ouvrante = false;
-				instructionBuffer.deleteFirstWord();
-			} else if (element.isNumber()){
+				instructionBuffer.deleteFirstWord(element);
+			} else {
 				/* *****************************
 				 * IF element IS A NUMBER ******
 				 * ***************************/
-				try{
-				Double.parseDouble(element);
+				try {
+					Double.parseDouble(element);
 					boolean deleteEndZero=false;
 					if (element.endsWith(".0")) {
 						deleteEndZero=true;
@@ -441,7 +433,7 @@ public class Interprete {
 						element = "0" + element;
 						addStartZero=true;
 					}
-					calcul.push(new LogoWord(element,true));
+					calcul.push(element);
 					if (operande) {
 						checkParenthesis();
 						calcul.pop();
@@ -461,7 +453,7 @@ public class Interprete {
 					 * IF element IS A SQUARE BRACKET [
 					 * 			OPEN
 					*********************************** */
-					if (element.isStartBracket()) {
+					if (element.equals("[")) {
 
 						// Utilité de cette ligne?
 						// if (!calcul.isEmpty()&&operateur==false) break;
@@ -474,14 +466,14 @@ public class Interprete {
 						operateur = false;
 						drapeau_ouvrante = false;
 						instructionBuffer.deleteFirstWord(element);
-						LogoList a = chercheListe();
+						String a = chercheListe();
 						calcul.push(a);
 					}
 					/* ***************************
 					 * IF element IS A PARENTHESIS
 					 * 				OPEN			
 					 * *********************** */
-					else if (element.isStartParenthesis()) {
+					else if (element.equals("(")) {
 						if (operande) {
 							checkParenthesis();
 							break;
@@ -505,13 +497,13 @@ public class Interprete {
 					/* **********************************
 					 * IF element IS A WORD 
 					 * ************************** */
-					else if (element.isWord()) {
-						String el = element.substring(1);
+					else if (element.substring(0, 1).equals("\"")) {
 						try {
+							String el = element.substring(1);
 							Double.parseDouble(el);
-							calcul.push(new LogoWord(el,true));
+							calcul.push(el);
 						} catch (NumberFormatException e1) {
-							calcul.push(new LogoWord(el));
+							calcul.push(element);
 						}
 						if (operande) {
 							checkParenthesis();
@@ -571,7 +563,7 @@ public class Interprete {
 							}
 						}
 					}
-					else if (element.isLineNumber()){
+					else if (element.startsWith("\\l")){
 						if (operande) {
 							break;	
 						}
@@ -665,7 +657,7 @@ public class Interprete {
 				return (calcul.pop());
 			}
 		}
-		return (new LogoWord(""));
+		return ("");
 	}
 
 	private int chercheParenthese() { // position ou s'arrete la prochaine
@@ -690,6 +682,42 @@ public class Interprete {
 		return of_fermant;
 	}
 
+	protected String chercheListe() throws myException {
+		String liste = "[ ";
+		String element = "";
+		while (instructionBuffer.getLength() != 0) {
+			element = instructionBuffer.getNextWord();
+			// SI crochet ouvrant, on l'empile dans la pile de calcul
+			if (element.equals("[")) {
+				calcul.push("[");
+				instructionBuffer.deleteFirstWord(element);
+				liste += "[ ";
+			}
+
+			else if (element.equals("]")) { // Si on atteint un crochet fermant
+				instructionBuffer.deleteFirstWord(element);
+				// if (((Stack)instruction.peek()).isEmpty()) instruction.pop();
+				liste += "] ";
+				if (calcul.empty()) {
+					return (liste);
+				} // 1er cas: rien dans la pile de calcul, on renvoie la liste
+				else if (!calcul.peek().toString().equals("[")) {
+					return (liste);
+				} // 2eme cas: pas de crochet ouvrant en haut de la pile, idem
+				else
+					calcul.pop(); // 3eme cas: un crochet ouvrant en haut de
+									// la pile, on l'enleve
+			} 
+			else {
+				instructionBuffer.deleteFirstWord(element);
+				liste += element + " ";
+			}
+		}
+		if (true)
+			throw new myException(app, Logo.messages
+					.getString("erreur_crochet"));
+		return (null);
+	}
 
 	private boolean testoperateur(String st) { // l'élément trouvé est-il un
 												// opérateur
@@ -791,7 +819,7 @@ public class Interprete {
 		return (op.equals("*")||op.equals("/"));
 	}
 
-	protected Vector<LogoLexem> getInstructionBuffer(){
+	protected InstructionBuffer getInstructionBuffer(){
 		return instructionBuffer;
 	}
 }

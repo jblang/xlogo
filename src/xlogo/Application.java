@@ -586,7 +586,7 @@ public class Application extends JFrame {
 			sb.append(Config.screencolor.getRGB());
 			sb.append("\"/>\n");
 			sb.append("\t<default_directory value=\"");
-			sb.append(Config.defaultFolder);
+			sb.append(Utils.SortieTexte(Config.defaultFolder));
 			sb.append("\"/>\n");
 			sb.append("\t<start_command value=\"");
 			sb.append(Utils.specialCharacterXML(Config.a_executer));

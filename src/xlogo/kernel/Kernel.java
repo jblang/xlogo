@@ -44,7 +44,7 @@ public class Kernel {
 		 	app.editeur=new Editor(app);
 		 	interprete.setWorkspace(wp);
 		 }
-	 protected LogoList listSearch() throws xlogo.utils.myException{
+	 protected String listSearch() throws xlogo.utils.myException{
 	 	return interprete.chercheListe();
 	 }
 	public void fcfg(Color color){
@@ -85,7 +85,7 @@ public class Kernel {
 	 public void buildPrimitiveTreemap(int id){
 		 	primitive.buildPrimitiveTreemap(id);
 		 }
-	 public LogoArgument execute(StringBuffer st) throws xlogo.utils.myException{
+	 public String execute(StringBuffer st) throws xlogo.utils.myException{
 		 	return interprete.execute(st);
 	 } 
 	 

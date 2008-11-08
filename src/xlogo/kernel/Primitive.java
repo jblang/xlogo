@@ -56,7 +56,7 @@ public class Primitive {
 	 * This methods returns a list which contains all the primitive for the current language
 	 * @return The primitives list
 	 */
-	protected LogoList getAllPrimitives(){
+	protected String getAllPrimitives(){
 		Vector<String> list=new Vector<String>();
 		Locale locale = Logo.getLocale(Config.langage);
 		ResourceBundle prim = ResourceBundle.getBundle("primitives", locale);
@@ -82,11 +82,14 @@ public class Primitive {
 		}
 		catch(IOException e){System.out.println("Impossible de lire le fichier d'initialisation des primitives");}
 		Collections.sort(list);
-		LogoList output=new LogoList();
+		StringBuffer sb=new StringBuffer("[ ");
 		for (int i=0;i<list.size();i++){
-			output.addElement(new LogoWord(list.get(i)));
+	    		sb.append("[ ");
+	    		sb.append(list.get(i));
+	    		sb.append("] ");
 	    }
-		return output;
+		sb.append("] ");
+		return (sb.toString());
 	}
 	//Exécution des primitives
 	public void buildPrimitiveTreemap(int id) {
@@ -153,13 +156,13 @@ public class Primitive {
 	 * @param i The number of iteration
 	 * @param st The instruction to execute
 	 */
-	protected void repete(int i, LogoList st) {
+	protected void repete(int i, String st) {
 		if (i > 0) {
-			String stValue = new String(Utils.decoupe(st.getValue()))+" ";
+			st = new String(Utils.decoupe(st));
 			LoopProperties bp = new LoopRepeat(BigDecimal.ONE,
-					new BigDecimal(i), BigDecimal.ONE, stValue);
+					new BigDecimal(i), BigDecimal.ONE, st);
 			stackLoop.push(bp);
-			app.getKernel().getInstructionBuffer().insert(stValue + "\\ ");
+			app.getKernel().getInstructionBuffer().insert(st + "\\ ");
 		}
 		else try{
 			throw new myException(app, Utils.primitiveName("controls.repete")+" "+Logo.messages.getString("attend_positif"));
@@ -171,10 +174,10 @@ public class Primitive {
 	 * @param b Do we still execute the loop body?
 	 * @param li The loop body instructions
 	 */
-	protected void whilesi(boolean b, LogoList li) {
+	protected void whilesi(boolean b, String li) {
 		if (b) {
-			app.getKernel().getInstructionBuffer().insert( li.getValue()
-					+" "+Primitive.stackLoop.peek().getInstr());
+			app.getKernel().getInstructionBuffer().insert( li
+					+ Primitive.stackLoop.peek().getInstr());
 		} else {
 			try {
 				eraseLevelStop(app);
@@ -235,7 +238,7 @@ public class Primitive {
 		}
 	}
 	// primitive output
-	protected void retourne(LogoArgument val) throws myException {
+	protected void retourne(String val) throws myException {
 		Interprete.calcul.push(val);
 		Interprete.operande = true;
 		if (Kernel.mode_trace) {
@@ -246,7 +249,7 @@ public class Primitive {
 			buffer
 					.append(" " + Utils.primitiveName("ret") + " "
 							+ val);
-			app.ecris("normal", buffer.toString() + "\n");
+			app.ecris("normal", Utils.SortieTexte(buffer.toString()) + "\n");
 		}
 		Interprete.en_cours.pop();
 		Interprete.locale = Interprete.stockvariable.pop();

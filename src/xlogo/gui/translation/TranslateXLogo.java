@@ -68,7 +68,7 @@ public class TranslateXLogo extends JFrame implements ActionListener {
 		}
 		else if (cmd.equals(TranslateXLogo.SEND)){
 			String path="";
-			JFileChooser jf=new JFileChooser(Config.defaultFolder);
+			JFileChooser jf=new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
 		    int retval=jf.showDialog(this,Logo.messages
 						.getString("menu.file.save"));
 		        if (retval==JFileChooser.APPROVE_OPTION){

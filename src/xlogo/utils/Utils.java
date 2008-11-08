@@ -59,7 +59,7 @@ public class Utils {
 			recursivelySetFonts(cont.getComponent(j), font);
 	    }
 	}
-/*	public static String rajoute_backslash(String st){
+	public static String rajoute_backslash(String st){
 		StringBuffer tampon=new StringBuffer();
 		for(int j=0;j<st.length();j++){
 			char c=st.charAt(j);
@@ -94,7 +94,7 @@ public class Utils {
 			}
 		}
 		return MyCalculator.getOutputNumber(new String(buffer));
-	}*/
+	}
 	/**
 	 * This method is formatting the String st.<br>
 	 * - Unused white spaces are deleted.<br>
@@ -107,7 +107,6 @@ public class Utils {
 	 * @return The formatted instructions
 	 */
 	public static StringBuffer decoupe(String st) {  
-
 		StringBuffer buffer = new StringBuffer();
 		// If last character is a white space
 		boolean espace=false;

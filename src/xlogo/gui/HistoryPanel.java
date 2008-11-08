@@ -252,7 +252,7 @@ public void vide_texte(){
   	    	RTFEditorKit myRTFEditorKit = new RTFEditorKit();
   	    	StyledDocument myStyledDocument =getStyledDocument();
   	    	try{
-  	          JFileChooser jf=new JFileChooser(Config.defaultFolder);
+  	          JFileChooser jf=new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
   	          String[] ext={".rtf"};
   	          jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_rtf"),ext));
   	          Utils.recursivelySetFonts(jf,Config.police);

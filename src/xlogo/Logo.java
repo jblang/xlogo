@@ -65,6 +65,7 @@ public class Logo {
     // Overwrite loaded config with command line arguments
     readCommandLineConfig();
     
+    Config.defaultFolder=Utils.rajoute_backslash(Config.defaultFolder);
     if (null==messages)  generateLanguage(Config.langage); //Au cas où si le fichier de démarrage ne contient rien sur la langue
     // Initialize frame
     SwingUtilities.invokeLater(new Runnable(){
