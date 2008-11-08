@@ -566,8 +566,8 @@ import xlogo.kernel.perspective.*;
 				initCoords();
 				oldx = tortue.corX;
 				oldy = tortue.corY;
-				montrecacheTortue(false);
 				extractCoords(liste,Utils.primitiveName("drawing.fpos"));			
+				montrecacheTortue(false);
 				if (enabled3D()) {
 					tortue.X = coords[0];
 					tortue.Y = coords[1];				
