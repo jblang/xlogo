@@ -100,5 +100,10 @@ public class Affichage extends Thread {
 	protected boolean isOnPause() {
 		return pause;
 	}
-
+	public boolean getPause(){
+		return pause;
+	}
+	public void setPause(boolean b){
+		pause=b;
+	}
 }

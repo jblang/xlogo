@@ -1007,7 +1007,7 @@ public class LaunchPrimitive {
 				} catch (myException e) {
 				}
 				break;
-			case 76: // fcfg
+			case 76: // fcfg setscreencolor
 				try {
 					Color color = null;
 					if (isList(param.get(0))) {

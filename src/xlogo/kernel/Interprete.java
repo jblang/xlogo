@@ -100,7 +100,9 @@ public class Interprete {
 				break;
 //			System.out.print("debut\n"+instructionBuffer+"\nfin\n------------------\n");
 			String element = instructionBuffer.getNextWord();
-//			System.out.println("/"+instructionBuffer+"/");
+//			System.out.println(app.affichage.getPause()+element);
+
+			//			System.out.println("/"+instructionBuffer+"/");
 
 /*			if (element=="")
 

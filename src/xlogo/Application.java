@@ -14,6 +14,7 @@ import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.swing.*;
 
+
 import java.util.Stack;
 import java.util.ArrayList;
 import java.io.*;
@@ -820,24 +821,36 @@ public class Application extends JFrame {
 	 * Resize the dawing area
 	 */
 	public void resizeDrawingZone(){
+		if (null!=affichage) {
+			affichage.setPause(true);
+		}
 		// resize the drawing image
-		DrawPanel.dessin=new BufferedImage(Config.imageWidth,Config.imageHeight,BufferedImage.TYPE_INT_RGB);
-		 // 	System.out.println("Total :"+Runtime.getRuntime().totalMemory()/1024+" max "+Runtime.getRuntime().maxMemory()/1024+" Free "+Runtime.getRuntime().freeMemory()/1024);
-		MediaTracker tracker=new MediaTracker(ardoise);
-		tracker.addImage(DrawPanel.dessin,0);
-		try{tracker.waitForID(0);}
-		catch(InterruptedException e){}
-	//    ardoise1.getGraphics().drawImage(Ardoise.dessin,0,0,ardoise1);
-	    ardoise.setPreferredSize(new Dimension(Config.imageWidth,Config.imageHeight));
-	    ardoise.revalidate();
-	    kernel.initGraphics();
-	    //ardoise.repaint();
-		calculateMargin();
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
 
-		
-	    Dimension d=scrollArea.getViewport().getViewRect().getSize();
-	    Point p=new Point(Math.abs(Config.imageWidth/2-d.width/2),Math.abs(Config.imageHeight/2-d.height/2));
-	    scrollArea.getViewport().setViewPosition(p);  	
+				DrawPanel.dessin=new BufferedImage(Config.imageWidth,Config.imageHeight,BufferedImage.TYPE_INT_RGB);
+				 // 	System.out.println("Total :"+Runtime.getRuntime().totalMemory()/1024+" max "+Runtime.getRuntime().maxMemory()/1024+" Free "+Runtime.getRuntime().freeMemory()/1024);
+				MediaTracker tracker=new MediaTracker(ardoise);
+				tracker.addImage(DrawPanel.dessin,0);
+				try{tracker.waitForID(0);}
+				catch(InterruptedException e){}
+			//    ardoise1.getGraphics().drawImage(Ardoise.dessin,0,0,ardoise1);
+			    
+				ardoise.setPreferredSize(new Dimension(Config.imageWidth,Config.imageHeight));
+			    ardoise.revalidate();
+			    kernel.initGraphics();
+			    //ardoise.repaint();
+				calculateMargin();
+
+				
+			    Dimension d=scrollArea.getViewport().getViewRect().getSize();
+			    Point p=new Point(Math.abs(Config.imageWidth/2-d.width/2),Math.abs(Config.imageHeight/2-d.height/2));
+			    scrollArea.getViewport().setViewPosition(p);  					
+				if (null!=affichage) affichage.setPause(false);
+			}
+
+		});
+
 	}
 	/**
 	 * Modify the Look&Feel for the Application
