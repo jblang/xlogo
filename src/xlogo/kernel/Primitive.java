@@ -164,10 +164,12 @@ public class Primitive {
 			stackLoop.push(bp);
 			app.getKernel().getInstructionBuffer().insert(st + "\\ ");
 		}
-		else try{
+		else if (i!=0){
+			try{
 			throw new myException(app, Utils.primitiveName("controls.repete")+" "+Logo.messages.getString("attend_positif"));
-		}
+			}
 		catch(myException e){}
+		}
 	}
 	/**
 	 * This method is an internal primitive for the primitive "while"
