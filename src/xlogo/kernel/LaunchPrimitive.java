@@ -1516,7 +1516,7 @@ public class LaunchPrimitive {
 			case 122: // fixeforme setshape
 				try {
 					primitive2D("turtle.fforme");
-					int i = kernel.getCalculator().getInteger(param.get(0));
+					int i = kernel.getCalculator().getInteger(param.get(0))%7;
 					if (kernel.getActiveTurtle().id == 0) {
 						Config.activeTurtle = i;
 					}
@@ -3606,6 +3606,7 @@ public class LaunchPrimitive {
                     case 285: // controls.forever repetetoujours
                     	try{
         					String li2= getList(param.get(0));
+        					li2=new String(Utils.decoupe(li2));
     						LoopProperties bp=new LoopProperties(BigDecimal.ONE,BigDecimal.ZERO
     						,BigDecimal.ONE,li2);			
     						cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP+" ");
