@@ -41,10 +41,10 @@ public class Logo {
 	  public static ResourceBundle messages=null;
 	  
 	  
-	  public static String translationLanguage[]=new String[11];
+	  public static String translationLanguage[]=new String[12];
 	  public static final String englishLanguage[] = { "French","English","Arabic","Spanish","Portuguese","Esperanto","German",
-			"Galician","Asturian","Greek","Italian"};
-	  public static final String[] locales={"fr","en","ar","es","pt","eo","de","gl","as","el","it"};
+			"Galician","Asturian","Greek","Italian","Catalan"};
+	  public static final String[] locales={"fr","en","ar","es","pt","eo","de","gl","as","el","it","ca"};
 	/**
 	 * The main frame
 	 */
@@ -157,6 +157,7 @@ public class Logo {
     translationLanguage[8]=Logo.messages.getString("pref.general.asturian");
     translationLanguage[9]=Logo.messages.getString("pref.general.greek");
     translationLanguage[10]=Logo.messages.getString("pref.general.italian");
+    translationLanguage[11]=Logo.messages.getString("pref.general.catalan");
   }
 
   /**
@@ -348,8 +349,13 @@ public class Logo {
 		  SwingUtilities.invokeAndWait(new Runnable(){
 			  public void run(){
 				  select=new Selection_Langue();	
-			  } 
+			  }
 		  });
+  		try{
+   				UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
+    		}catch (Exception exc) {
+    			System.out.println(exc.toString());
+    		}  
 	  }
 	  catch(Exception e1){}
 	  	while(!select.getSelection_faite()){
@@ -481,6 +487,9 @@ public static Locale getLocale(int id){  // rend la locale
      case Config.LANGUAGE_ITALIAN: // Italian
     	   locale=new Locale("it","IT");
     	break;
+     case Config.LANGUAGE_CATALAN: // Catalan
+  	   locale=new Locale("ca","ES");
+  	break;
   }
 return locale;
 }

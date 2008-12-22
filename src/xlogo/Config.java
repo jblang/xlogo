@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class Config {
 	/** Version number**/
-	static final String version="0.9.94 (15 November 2008)";
+	static final String version="0.9.94 (22 December 2008)";
 	/** Drawing Quality **/
 	public static int quality=0;
 	/** Drawing Quality: normal **/
@@ -69,6 +69,10 @@ public class Config {
 		 * Italian language id
 		*/
 		 public static final int LANGUAGE_ITALIAN=10;
+	/**
+	 * Italian language id
+	*/
+	 public static final int LANGUAGE_CATALAN=11;
 	 /**
 	  * This integer represents the selected language
 	  */
