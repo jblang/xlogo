@@ -2417,7 +2417,6 @@ public class LaunchPrimitive {
 							if (crochet) {
 								crochet=false;
 								j=extractList(liste,j);
-								// System.out.println(j);
 							}
 							compteur++;
 						}
@@ -2429,11 +2428,11 @@ public class LaunchPrimitive {
 								+ "]");
 					reponse="[ "+liste.substring(0,compteur)+mot;
 					// On extrait le mot suivant
-					if (compteur<liste.length()&&liste.charAt(compteur)=='['&&liste.charAt(compteur+1)==' '){
+					if (compteur+1<liste.length()&&liste.charAt(compteur)=='['&&liste.charAt(compteur+1)==' '){
 							compteur=extractList(liste,compteur+2);
 							reponse+=liste.substring(compteur)+"] ";
-						}
-					
+							
+					}
 					else {
 						for (int i=compteur+1;i<liste.length();i++){
 							if (liste.charAt(i)==' ') {compteur=i;break;}
@@ -4187,9 +4186,8 @@ public class LaunchPrimitive {
 	private int extractList(String st, int deb) {
 		int compteur = 1;
 		char element;
-		boolean espace = false;
+		boolean espace = true;
 		boolean crochet_ouvert = false;
-		;
 		boolean crochet_ferme = false;
 		for (int i = deb; i < st.length(); i++) {
 			element = st.charAt(i);
