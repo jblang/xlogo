@@ -288,3 +288,4 @@ arithmetic.setdigits 1
 arithmetic.digits 0
 workspace.text 1
 workspace.externalcommand 1
+drawing.saveimage 2

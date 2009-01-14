@@ -38,8 +38,12 @@ import com.sun.j3d.utils.geometry.Text2D;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import javax.swing.JPanel;
+import javax.imageio.ImageIO;
 import javax.media.j3d.*;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Matrix3d;
@@ -2345,6 +2349,44 @@ import xlogo.kernel.perspective.*;
 		   if (null!=tortues[i]) tortues[i].fixe_taille_crayon(2*tortues[i].getPenWidth());
 	   }
    }
+   /**
+    * Saves the a part of the drawing area as an image
+    * @param name The image name
+    * @param coords The upper left corner and the right bottom corner
+    */
+   protected void saveImage(String name, int[] coords){
+	   BufferedImage buffer=getImagePart(coords);
+	   String lowerName=name.toLowerCase();
+	   String format="png";
+	   if (lowerName.endsWith(".jpg")||lowerName.endsWith(".jpeg")) {
+		   format="jpg";
+	   }
+	   else if (!lowerName.endsWith(".png")) {
+		   name=name+".png";
+	   }
+	   name=Config.defaultFolder+File.separator+name;
+	   try{
+		   File f=new File(name);
+		   ImageIO.write(buffer, format, f);
+	   }
+	   catch(IOException e){}
+	   
+   }
+   /**
+    * Return a part of the drawing area as an image
+    * @return
+    */
+   private BufferedImage getImagePart(int[] coords){
+	   Image pic=DrawPanel.dessin;
+	   if (zoom!=1){
+		  pic=createImage(new FilteredImageSource(pic.getSource(),
+				 new ReplicateScaleFilter((int)(dessin.getWidth()*zoom),(int)(dessin.getHeight()*zoom))));
+	   }
+		 pic=createImage(new FilteredImageSource(pic.getSource(),
+				 new CropImageFilter(coords[0],coords[1],coords[2],coords[3])));
+		 return toBufferedImage(pic);
+   }
+   
    
    public BufferedImage getSelectionImage(){
 	   Image pic=DrawPanel.dessin;

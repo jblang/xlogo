@@ -189,7 +189,9 @@ public class Utils {
 					if (espace) buffer.append(op+" ");
 					else {
 						espace=true;
-						buffer.append(" "+op+" ");
+						if (buffer.length()!=0) buffer.append(" "+op+" ");
+						// If buffer is empty no white space before
+						else buffer.append(op+" ");
 					}
 				}
 			}

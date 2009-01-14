@@ -3687,6 +3687,53 @@ public class LaunchPrimitive {
         				//System.out.println("coucou");
                     	}
                    		break;
+                    case 290: // drawing.saveimage
+                    try{
+                    	String word=getWord(param.get(0));
+                    	if (null==word) throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("error.word"));
+                    	if (word.equals("")) throw new myException(cadre,param.get(0)+" "+Logo.messages.getString("mot_vide"));
+                    	// xmin, ymin, width, height
+                    	int[] coord=new int[4];
+                    	String list=getFinalList(param.get(1));
+                    	StringTokenizer st=new StringTokenizer(list);
+                    	if (st.countTokens()==4){
+                    		try{
+                    			int j=0;
+                    			while(st.hasMoreTokens()){
+                    				coord[j]=Integer.parseInt(st.nextToken());
+                    				j++;
+                    			}
+                    			coord[0]+=Config.imageWidth/2;
+                    			coord[2]+=Config.imageWidth/2;
+                    			coord[1]=Config.imageHeight/2-coord[1];
+                    			coord[3]=Config.imageHeight/2-coord[3];
+                    			if (coord[2]<coord[0]){
+                    				int tmp=coord[0];
+                    				coord[0]=coord[2];
+                    				coord[2]=tmp;
+                    			}
+                    			if (coord[3]<coord[1]){
+                    				int tmp=coord[1];
+                    				coord[1]=coord[3];
+                    				coord[3]=tmp;
+                    			}
+                    			coord[2]=coord[2]-coord[0];
+                    			coord[3]=coord[3]-coord[1];
+                    		}
+                    		catch(NumberFormatException e){
+                    			coord[0]=0;coord[2]=Config.imageWidth;coord[1]=0;coord[3]=Config.imageHeight;
+                    		}
+                    	}
+                    	else {
+                			coord[0]=0;coord[2]=Config.imageWidth;coord[1]=0;coord[3]=Config.imageHeight;
+                    	}
+                    	if (coord[2]==0||coord[3]==0){
+                			coord[0]=0;coord[2]=Config.imageWidth;coord[1]=0;coord[3]=Config.imageHeight;                    		
+                    	}
+                    	cadre.getArdoise().saveImage(word,coord);
+                    }
+                    catch(myException e){}
+                    break;
 			}
 		}
 	}
@@ -3869,13 +3916,16 @@ public class LaunchPrimitive {
 		for (int i = 0; i < 3; i++) {
 			String element = st.nextToken();
 			try {
-				entier[i] = (int) (Double.parseDouble(element) + 0.5) % 256;
+				entier[i] = (int) (Double.parseDouble(element) + 0.5);
 			} catch (NumberFormatException e) {
 				throw new myException(cadre, element + " "
 						+ Logo.messages.getString("pas_nombre"));
 			}
 			if (entier[i] < 0)
-				entier[i] += 256;
+				entier[i]=0;
+			if (entier[i] > 255)
+				entier[i]=255;
+			
 		}
 		return (new Color(entier[0], entier[1], entier[2]));
 	}

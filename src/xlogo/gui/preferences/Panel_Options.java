@@ -24,6 +24,7 @@ public class Panel_Options extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Application cadre;
 	private JCheckBox effacer_editeur = new JCheckBox(Logo.messages.getString("effacer_editeur"));
+	private JCheckBox clearVariables = new JCheckBox(Logo.messages.getString("pref.options.eraseVariables"));
 	private GridBagLayout gridBagLayout4 = new GridBagLayout();
 	
 	private JLabel label_screencolor=new JLabel(Logo.messages.getString("screencolor"));
@@ -59,6 +60,7 @@ public class Panel_Options extends JPanel {
 		this.cadre=cadre;
 		epaisseur_crayon.setFont(Config.police);
 		forme_crayon.setFont(Config.police);
+		clearVariables.setFont(Config.police);
 		effacer_editeur.setFont(Config.police);
 		dimension_dessin.setFont(Config.police);
 		label_memoire.setFont(Config.police);
@@ -79,6 +81,8 @@ public class Panel_Options extends JPanel {
 		jc.setSelectedIndex(Config.penShape);
 		if (Config.eraseImage)
 			effacer_editeur.setSelected(true);
+		if (Config.clearVariables)
+			clearVariables.setSelected(true);
 		epaisseur.setText(String.valueOf(Config.maxPenWidth));
 		tortues.setText(String.valueOf(Config.maxTurtles));
 		jc_qualite.setSelectedIndex(Config.quality);
@@ -89,6 +93,7 @@ public class Panel_Options extends JPanel {
 		taille_dessin.add(hauteur);
 		taille_dessin.setBackground(Preference.violet);
 		effacer_editeur.setBackground(Preference.violet);
+		clearVariables.setBackground(Preference.violet);
 		
 		add(panelGrid, new GridBagConstraints(0, 0, 2, 1,
 				1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -139,22 +144,25 @@ public class Panel_Options extends JPanel {
 		add(effacer_editeur, new GridBagConstraints(0, 9, 2, 1,
 				1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 				new Insets(10, 0, 0, 0), 0, 0));
-		add(dimension_dessin, new GridBagConstraints(0, 10, 1,
+		add(clearVariables, new GridBagConstraints(0, 10, 2, 1,
+				1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(10, 0, 0, 0), 0, 0));
+		add(dimension_dessin, new GridBagConstraints(0, 11, 1,
 				1, 1.0, 1.0, GridBagConstraints.CENTER,
 				GridBagConstraints.BOTH, new Insets(10, 10, 0, 10), 0, 0));
-		add(taille_dessin, new GridBagConstraints(1, 10, 1, 1,
+		add(taille_dessin, new GridBagConstraints(1, 11, 1, 1,
 				1.0, 1.0, GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 0, 0, 0), 0, 0));
-		add(label_memoire, new GridBagConstraints(0, 11, 1,
+		add(label_memoire, new GridBagConstraints(0, 12, 1,
 				1, 1.0, 1.0, GridBagConstraints.CENTER,
 				GridBagConstraints.BOTH, new Insets(10, 10, 0, 10), 0, 0));
-		add(memoire, new GridBagConstraints(1, 11, 1, 1,
+		add(memoire, new GridBagConstraints(1, 12, 1, 1,
 				1.0, 1.0, GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, new Insets(10, 0, 0, 0), 0, 0));
-		add(labelTcp, new GridBagConstraints(0, 12, 1,
+		add(labelTcp, new GridBagConstraints(0, 13, 1,
 				1, 1.0, 1.0, GridBagConstraints.CENTER,
 			GridBagConstraints.BOTH, new Insets(10, 10, 0, 10), 0, 0));
-		add(textTcp, new GridBagConstraints(1, 12, 1, 1,
+		add(textTcp, new GridBagConstraints(1, 13, 1, 1,
 				1.0, 1.0, GridBagConstraints.CENTER,
 				GridBagConstraints.NONE, new Insets(10, 0, 0, 0), 0, 0));
 	}
@@ -176,7 +184,9 @@ public class Panel_Options extends JPanel {
 		if (effacer_editeur.isSelected())
 			Config.eraseImage = true;
 		else Config.eraseImage=false;
-		
+		if (clearVariables.isSelected())
+			Config.clearVariables = true;
+		else Config.clearVariables=false;
 		// Number of turtles
 		try {
 			int i = Integer.parseInt(tortues.getText());

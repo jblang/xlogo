@@ -554,6 +554,11 @@ public class Application extends JFrame {
 				eff = 1;
 			else
 				eff = 0;
+			int cle = 0;
+			if (Config.clearVariables)
+				cle = 1;
+			else
+				cle = 0;
 			sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
 			sb.append("<xlogo>\n");
 			sb.append("\t<lang value=\"");
@@ -576,6 +581,9 @@ public class Application extends JFrame {
 			sb.append("\"/>\n");
 			sb.append("\t<cleanscreen_leaving_editor value=\"");
 			sb.append(eff);
+			sb.append("\"/>\n");
+			sb.append("\t<clear_variables_closing_editor value=\"");
+			sb.append(cle);
 			sb.append("\"/>\n");
 			sb.append("\t<pen_width_max value=\"");
 			sb.append(Config.maxPenWidth);

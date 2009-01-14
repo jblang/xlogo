@@ -138,6 +138,16 @@ public class SimpleContentHandler implements ContentHandler {
     			if (id==0) Config.eraseImage=false;
     			else Config.eraseImage=true;
            	}
+           	else if (tag.equals("clear_variables_closing_editor")){
+           		int id;
+           		try{
+           			id=Integer.parseInt(attributs.getValue(0));
+           		}
+           		catch(NumberFormatException e){id=0;}
+
+    			if (id==0) Config.clearVariables=false;
+    			else Config.clearVariables=true;
+           	}
            	else if (tag.equals("pen_width_max")){
            		int id;
            		try{

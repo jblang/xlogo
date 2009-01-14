@@ -515,6 +515,19 @@ public class Editor extends JFrame implements ActionListener{
 				cadre.getKernel().vide_ecran();
 				cadre.focus_Commande();
       }
+      if (Config.clearVariables){
+    	  // Interrupt any running programs
+       	myException.lance=true;
+		cadre.error=true;
+		try{
+			while(!cadre.commande_isEditable()) Thread.sleep(100);
+		}
+		catch(InterruptedException e1){}
+		cadre.getKernel().getWorkspace().deleteAllVariables();
+		cadre.getKernel().getWorkspace().deleteAllPropertyLists();
+		cadre.focus_Commande();
+    	  
+      }
       Config.mainCommand=mainCommand.getText();
       
     }

@@ -121,7 +121,11 @@ public class Config {
 	 * This boolean indicates if the drawing area has to be cleaned when the editor is left.
 	 */
 	public static boolean eraseImage = false; //effacer le dessin en quittant l'éditeur
-												// erase the image when we leave the editor?
+											// erase the image when we leave the editor?
+	/**
+	 * This boolean indicates if variables are deleted when closing the editor.
+	 */
+	public static boolean clearVariables = false; 
 	/**
 	 * Max value for the turtles number 
 	 */

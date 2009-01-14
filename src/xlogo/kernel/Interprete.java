@@ -129,7 +129,6 @@ public class Interprete {
 				// "+calcul.pop() +" gdfdsf");
 				// exécuter la procédure ou la primitive.
 				Stack<String> param = new Stack<String>();
-				
 				if (isInfixedOperator(i)) { // Si c'est un opérateur infixé
 					deleteLineNumber();
 					operateur = true;
