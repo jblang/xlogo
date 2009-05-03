@@ -39,7 +39,7 @@ public class Selection_Langue extends JFrame implements ActionListener{
 		central.setLayout(gb);
     for (int i=0;i<boutons.length;i++){
     	ic=new ImageIcon(Utils.dimensionne_image("drapeau"+i+".png",this));
-      boutons[i]=new JToggleButton(ic);
+    	boutons[i]=new JToggleButton(ic);
       boutons[i].setToolTipText(Logo.englishLanguage[i]);
       groupe.add(boutons[i]);
       central.add(boutons[i],new GridBagConstraints(i%3, i/3, 1, 1 , 1.0, 1.0

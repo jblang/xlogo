@@ -113,7 +113,7 @@ public Procedure() {
   	return (name);
   }
   
-  public StringBuffer cutInList(){
+  protected StringBuffer cutInList(){
 	  // Only cut procedures which are visible in the editor
 	 StringBuffer sb=new StringBuffer();
      try{
@@ -128,7 +128,7 @@ public Procedure() {
         		break;
         	}
         	// delete comments
-        	line=deleteComments(line);
+ //       	line=deleteComments(line);
         	line=Utils.decoupe(line).toString().trim();
         	sb.append("[ ");
         	sb.append(line);

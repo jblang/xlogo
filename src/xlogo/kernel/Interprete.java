@@ -429,11 +429,11 @@ public class Interprete {
 						deleteEndZero=true;
 						element = element.substring(0, element.length() - 2);
 					}
-					boolean addStartZero=false;
+/*					boolean addStartZero=false;
 					if (element.startsWith(".") || element.equals("")){
 						element = "0" + element;
 						addStartZero=true;
-					}
+					}*/
 					calcul.push(element);
 					if (operande) {
 						checkParenthesis();
@@ -445,8 +445,8 @@ public class Interprete {
 					operande = true;
 					operateur = false;
 					drapeau_ouvrante = false;
-					if (addStartZero) instructionBuffer.deleteFirstWord(element.substring(1));
-					else if (deleteEndZero) instructionBuffer.deleteFirstWord(element + ".0");
+//					if (addStartZero) instructionBuffer.deleteFirstWord(element.substring(1));
+					 if (deleteEndZero) instructionBuffer.deleteFirstWord(element + ".0");
 					else instructionBuffer.deleteFirstWord(element);
 					
 				} catch (NumberFormatException e) {

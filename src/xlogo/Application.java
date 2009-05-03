@@ -476,26 +476,35 @@ public class Application extends JFrame {
 		panneauHistorique1.updateText();
 		
 		jpop.setText();
-		
 		// Find the HelpSet file and create the HelpSet object:
-		  HelpSet hs=null;
-		   try {
-			   String url="http://downloads.tuxfamily.org/xlogo/downloads-";
-			   url+=Logo.getLocaleTwoLetters();
-			   url+="/javahelp/manual-";
-			   url+=Logo.getLocaleTwoLetters();
-			   url+=".hs";
-		      java.net.URL hsURL = new java.net.URL(url);
-			   hs = new HelpSet(null, hsURL);
-				// Create a HelpBroker object:
-			   HelpBroker hb = hs.createHelpBroker();
-			// Create a "Help" menu item to trigger the help viewer:
-			   jMenuHelpOnLine.addActionListener(new CSH.DisplayHelpFromSource( hb ));
-		   } catch (Exception ee) {
-		      // Say what the exception really is
-		      System.out.println( "HelpSet " + ee.getMessage());
-		      if (null!=hs)  System.out.println("HelpSet "+ hs.getHelpSetURL()+" not found");
-		   }
+		// If there's no active internet connection, it will take lot of time
+		// That's why thi action is threaded
+		Thread th=new Thread(){
+			public void run(){
+				  HelpSet hs=null;
+				   try {
+					   String url="http://downloads.tuxfamily.org/xlogo/downloads-";
+					   url+=Logo.getLocaleTwoLetters();
+					   url+="/javahelp/manual-";
+					   url+=Logo.getLocaleTwoLetters();
+					   url+=".hs";
+				      java.net.URL hsURL = new java.net.URL(url);
+					   hs = new HelpSet(null, hsURL);
+						// Create a HelpBroker object:
+					   HelpBroker hb = hs.createHelpBroker();
+					// Create a "Help" menu item to trigger the help viewer:
+					   jMenuHelpOnLine.addActionListener(new CSH.DisplayHelpFromSource( hb ));
+				   } catch (Exception ee) {
+				      // Say what the exception really is
+				      System.out.println( "HelpSet " + ee.getMessage());
+				      if (null!=hs)  System.out.println("HelpSet "+ hs.getHelpSetURL()+" not found");
+				   }				
+			}
+		};
+		th.start();
+
+		   
+		   
 			jMenuHelp.insert(jMenuHelpOnLine,0);
 		
 		

@@ -41,10 +41,10 @@ public class Logo {
 	  public static ResourceBundle messages=null;
 	  
 	  
-	  public static String translationLanguage[]=new String[12];
+	  public static String translationLanguage[]=new String[13];
 	  public static final String englishLanguage[] = { "French","English","Arabic","Spanish","Portuguese","Esperanto","German",
-			"Galician","Asturian","Greek","Italian","Catalan"};
-	  public static final String[] locales={"fr","en","ar","es","pt","eo","de","gl","as","el","it","ca"};
+			"Galician","Asturian","Greek","Italian","Catalan","Hungarian"};
+	  public static final String[] locales={"fr","en","ar","es","pt","eo","de","gl","as","el","it","ca","hu"};
 	/**
 	 * The main frame
 	 */
@@ -158,6 +158,7 @@ public class Logo {
     translationLanguage[9]=Logo.messages.getString("pref.general.greek");
     translationLanguage[10]=Logo.messages.getString("pref.general.italian");
     translationLanguage[11]=Logo.messages.getString("pref.general.catalan");
+    translationLanguage[12]=Logo.messages.getString("pref.general.hungarian");
   }
 
   /**
@@ -488,8 +489,11 @@ public static Locale getLocale(int id){  // rend la locale
     	   locale=new Locale("it","IT");
     	break;
      case Config.LANGUAGE_CATALAN: // Catalan
-  	   locale=new Locale("ca","ES");
+  	   locale=new Locale("ca","ES");  
   	break;
+     case Config.LANGUAGE_HUNGARIAN: // Hungarian
+    	   locale=new Locale("hu","HU");  
+    	break;
   }
 return locale;
 }

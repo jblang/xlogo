@@ -704,7 +704,7 @@ public class LaunchPrimitive {
 						Interprete.calcul.push(st);
 					}
 					catch(NumberFormatException e1){
-						Interprete.calcul.push(debut_chaine+ st);}
+						Interprete.calcul.push("\""+ st);}
 					catch(myException e2){}
 					} 
 				break;
@@ -751,7 +751,7 @@ public class LaunchPrimitive {
 								Interprete.calcul.push(st);
 							}
 							catch(NumberFormatException e1){
-								Interprete.calcul.push(debut_chaine+st);
+								Interprete.calcul.push("\""+st);
 							}
 						}
 					}
@@ -848,12 +848,12 @@ public class LaunchPrimitive {
 						Interprete.calcul.push(st);
 					}
 					catch(NumberFormatException e1){
-						Interprete.calcul.push(debut_chaine + st);
+						Interprete.calcul.push("\"" + st);
 					}
 					catch(myException e2){}
 				} 
 				break;
-			case 61: // premier
+			case 61: // premier first
 				Interprete.operande = true;
 				mot = getWord(param.get(0));
 				if (null == mot) { // SI c'est une liste
@@ -874,7 +874,7 @@ public class LaunchPrimitive {
 					}
 					catch(myException e1){}
 					catch(NumberFormatException e2){
-						Interprete.calcul.push(debut_chaine + st);	
+						Interprete.calcul.push("\"" + st);	
 					}
 				}
 				break;
@@ -2711,7 +2711,7 @@ public class LaunchPrimitive {
         				} catch (myException e) {
         				}
                		break;
-               		case 209: // envoietcp // enviatcp etcp
+               		case 209: // envoietcp // sendtcp // enviatcp etcp
                			Interprete.operande=true;
            				mot = getWord(param.get(0));
            				if (null == mot){
@@ -3639,7 +3639,7 @@ public class LaunchPrimitive {
                                 Procedure proc=wp.getProcedure(index);
                                 sb=new StringBuffer();
                                 sb.append("[ [ ");
-                                
+                                // Append variable names
                                 for (int j = 0; j < proc.nbparametre; j++) {
                                     sb.append(proc.variable.get(j));
                                     sb.append(" ");
@@ -3652,6 +3652,7 @@ public class LaunchPrimitive {
                                   	sb.append(" ] ");    	  
                           	     } 
                                   sb.append("] ");
+                                  // Append body procedure
                                   sb.append(proc.cutInList());
                                   sb.append("] ");
                                   Interprete.operande=true;
