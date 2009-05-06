@@ -46,6 +46,7 @@ public class Selection_Langue extends JFrame implements ActionListener{
       		,GridBagConstraints.CENTER, GridBagConstraints.VERTICAL, new Insets(10, 10, 0, 10), 0, 0));
     }
     boutons[0].setSelected(true);
+    
     bouton_ok.setPreferredSize(new Dimension(100,50));
     central.add(bouton_ok,new GridBagConstraints(NUMBER_OF_LANGUAGE%3,NUMBER_OF_LANGUAGE/3, 1, 1 , 1.0, 1.0
       		,GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(10, 10, 0, 10), 0, 0));    

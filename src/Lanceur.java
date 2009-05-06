@@ -36,7 +36,7 @@ public class Lanceur {
 	 * The temporary folder which contains all files to start XLogo
 	 */
 	private File tmpFolder=null;
-	private File[] files=new File[9];
+	private File[] files=new File[10];
 	private int memoire=64;
 	/**
 	 * Constructs Lanceur with arguments args<br>
@@ -211,6 +211,12 @@ public class Lanceur {
 			b=copier(src,files[4]);
 			System.out.println("Copying j3dutils.jar - success: "+b);
 			
+			// extract the file jl1.0.1 in this folder (JLayer library for mp3 playing)
+            src= Lanceur.class.getResourceAsStream("jl1.0.1.jar");
+            files[5]=new File(tmpFolder.getAbsolutePath()+File.separator+"jl1.0.1.jar");
+			b=copier(src,files[5]);
+			System.out.println("Copying jl1.0.1.jar - success: "+b);
+			
 			// extract the native driver for java 3d in this folder
 			String os=System.getProperty("os.name").toLowerCase();
 			String arch=System.getProperty("os.arch");
@@ -221,42 +227,42 @@ public class Lanceur {
 			if (os.indexOf("linux")!=-1){
 				if (arch.indexOf("86")!=-1){
 		            InputStream lib= Lanceur.class.getResourceAsStream("linux/x86/libj3dcore-ogl.so");
-		            files[5]=new File(tmpFolder.getAbsolutePath()+File.separator+"libj3dcore-ogl.so");
-					copier(lib,files[5]);
-		            lib= Lanceur.class.getResourceAsStream("linux/x86/libj3dcore-ogl-cg.so");
-		            files[6]=new File(tmpFolder.getAbsolutePath()+File.separator+"libj3dcore-ogl-cg.so");
+		            files[6]=new File(tmpFolder.getAbsolutePath()+File.separator+"libj3dcore-ogl.so");
 					copier(lib,files[6]);
+		            lib= Lanceur.class.getResourceAsStream("linux/x86/libj3dcore-ogl-cg.so");
+		            files[7]=new File(tmpFolder.getAbsolutePath()+File.separator+"libj3dcore-ogl-cg.so");
+					copier(lib,files[7]);
 				}
 				else{
 				      InputStream lib= Lanceur.class.getResourceAsStream("linux/amd64/libj3dcore-ogl.so");
-			            files[5]=new File(tmpFolder.getAbsolutePath()+File.separator+"libj3dcore-ogl.so");
-						copier(lib,files[5]);
+			            files[6]=new File(tmpFolder.getAbsolutePath()+File.separator+"libj3dcore-ogl.so");
+						copier(lib,files[6]);
 				}
 			}
 			// windows
 			else if (os.indexOf("windows")!=-1){
 				if (arch.indexOf("86")!=-1){
 					InputStream lib= Lanceur.class.getResourceAsStream("windows/x86/j3dcore-d3d.dll");
-					files[5]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-d3d.dll");
-					b=copier(lib,files[5]);
+					files[6]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-d3d.dll");
+					b=copier(lib,files[6]);
 					System.out.println("Copying library 1 - success: "+b);
 					lib= Lanceur.class.getResourceAsStream("windows/x86/j3dcore-ogl.dll");
-					files[6]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl.dll");
-					b=copier(lib,files[6]);
+					files[7]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl.dll");
+					b=copier(lib,files[7]);
 					System.out.println("Copying library 2 - success: "+b);
 					lib= Lanceur.class.getResourceAsStream("windows/x86/j3dcore-ogl-cg.dll");
-					files[7]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl-cg.dll");
-					b=copier(lib,files[7]);
+					files[8]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl-cg.dll");
+					b=copier(lib,files[8]);
 					System.out.println("Copying library 3 - success: "+b);
 					lib= Lanceur.class.getResourceAsStream("windows/x86/j3dcore-ogl-chk.dll");
-					files[8]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl-chk.dll");
-					b=copier(lib,files[8]);
+					files[9]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl-chk.dll");
+					b=copier(lib,files[9]);
 					System.out.println("Copying library 4 - success: "+b);
 				}	
 				else{
 					InputStream lib= Lanceur.class.getResourceAsStream("windows/amd64/j3dcore-ogl.dll");
-					files[5]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl.dll");
-					copier(lib,files[5]);
+					files[6]=new File(tmpFolder.getAbsolutePath()+File.separator+"j3dcore-ogl.dll");
+					copier(lib,files[6]);
 				}
 			}
 			// Mac os

@@ -3735,6 +3735,20 @@ public class LaunchPrimitive {
                     }
                     catch(myException e){}
                     break;
+                   case 291: //sound.mp3play
+                	   if (kernel.getMp3Player()!=null) kernel.getMp3Player().getPlayer().close();
+                	   mot=getWord(param.get(0));
+                	   try{
+                		   if (null==mot) throw new myException(cadre, mot + " "
+               				+ Logo.messages.getString("error.word"));
+        				MP3Player player=new MP3Player(cadre,mot);
+        				kernel.setMp3Player(player);
+        				kernel.getMp3Player().start();
+                	   }
+                   catch(myException z){}
+    					break;
+                   case 292: //sound.mp3stop
+                	 if (null!=kernel.getMp3Player()) kernel.getMp3Player().getPlayer().close();
 			}
 		}
 	}

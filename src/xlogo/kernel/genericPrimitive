@@ -289,3 +289,5 @@ arithmetic.digits 0
 workspace.text 1
 workspace.externalcommand 1
 drawing.saveimage 2
+sound.mp3play 1
+sound.mp3stop 0

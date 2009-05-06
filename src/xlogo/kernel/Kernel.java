@@ -26,7 +26,7 @@ public class Kernel {
 	protected Primitive primitive = null;
 	private Workspace wp;
 	private Application app;
-
+	private MP3Player mp3Player;
 	private MyCalculator myCalculator;
 	
 	public Kernel(Application app){
@@ -108,7 +108,16 @@ public class Kernel {
 		  return interprete.getInstructionBuffer();
 	  }
 
-	 class ArrayFlow extends ArrayList<MyFlow>{
+	 public void setMp3Player(MP3Player mp3Player) {
+		this.mp3Player = mp3Player;
+	}
+
+
+	public MP3Player getMp3Player() {
+		return mp3Player;
+	}
+
+	class ArrayFlow extends ArrayList<MyFlow>{
 		ArrayFlow(){
 			super(); 
 		}

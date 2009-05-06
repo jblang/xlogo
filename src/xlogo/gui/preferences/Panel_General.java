@@ -186,7 +186,7 @@ public class Panel_General extends JPanel {
 	protected void update(){
 		// Language has changed?
 		int indicateur = jl_langues.getSelectedIndex();
-
+		
 		if (indicateur != Config.langage && indicateur != -1) {
 			cadre.changeLanguage(indicateur);
 		}
@@ -258,7 +258,6 @@ public class Panel_General extends JPanel {
 	  			setForeground(list.getForeground()); 
 	  		}
 	  		setBorder(BorderFactory.createEmptyBorder(5,0,5,5));
-//	  		setEnabled(list.isEnabled());
 	 		return(this); 
 	 		} 
 	  	}

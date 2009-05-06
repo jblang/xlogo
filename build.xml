@@ -74,6 +74,7 @@
 		    	<include name="j3dcore.jar"/>
     			<include name="vecmath.jar"/>
     			<include name="j3dutils.jar"/>
+				<include name="jl1.0.1.jar"/>
 				<include name="manifest_xlogo"/>
 				<include name="manifest_start"/>
 				<include name="build.xml"/>
@@ -153,7 +154,8 @@
 		        <pathelement location="vecmath.jar"/>
 		        <pathelement location="j3dcore.jar"/>
 		        <pathelement location="j3dutils.jar"/>
-    		        <pathelement location="jh.jar"/>
+    		    <pathelement location="jh.jar"/>
+   		 	<pathelement location="jl1.0.1.jar"/>
    		      </classpath>
     	</javac>
 	</target>
@@ -167,6 +169,7 @@
         			<include name="vecmath.jar"/>
         			<include name="j3dcore.jar"/>
         			<include name="j3dutils.jar"/>
+        			<include name="jl1.0.1.jar"/>
         			<include name="jh.jar"/>
         		</fileset>
         		<fileset dir="src/">
