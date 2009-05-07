@@ -1,12 +1,11 @@
 package xlogo.utils;
-import java.util.Stack;
-
 import xlogo.kernel.Interprete;
 import xlogo.Logo;
 import xlogo.kernel.LoopProperties;
 import xlogo.Application;
 import xlogo.utils.Utils;
 import xlogo.kernel.Primitive;
+import java.util.Stack;
 /**
  * Title :        XLogo
  * Description :  XLogo is an interpreter for the Logo 
