@@ -226,7 +226,7 @@ guiaction 2
 guiremove 1
 guiposition 2
 guidraw 1
-zoom 1
+setzoom 1
 grille 2
 stopgrille 0
 stopanimation 0
@@ -291,3 +291,4 @@ workspace.externalcommand 1
 drawing.saveimage 2
 sound.mp3play 1
 sound.mp3stop 0
+zoom 0

@@ -597,6 +597,9 @@ public class Editor extends JFrame implements ActionListener{
 	public boolean getAffichable(){
 		return affichable;
 	};
+	/**
+	 * Erase all text
+	 */
 	public void clearText(){
 		textZone.clearText();
 	}

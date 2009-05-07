@@ -53,6 +53,9 @@ public abstract class EditorTextZone implements Searchable, Printable {
 	    jtc.addMouseListener(popupListener);
 		undoManager=new UndoManager();
 	}
+	/**
+	 * Erase all text
+	 */
 	protected void clearText(){
 		jtc.setText("");
 	}

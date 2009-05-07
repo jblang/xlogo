@@ -122,11 +122,21 @@ public class MenuListener extends JDialog implements ActionListener{
 				Application.path=null;
 				cadre.setTitle("XLOGO");
 			}
+			if (cadre.editeur!=null && cadre.editeur.isVisible()){
+				cadre.editeur.setVisible(false);
+				cadre.editeur.clearText();
+			}
 			cadre.setEnabled_New(false);	
+			Config.mainCommand="";
+			
 		  }
 		  else cadre.setEnabled_New(true);
     }
     else if(MenuListener.FILE_SAVE.equals(cmd)|MenuListener.FILE_SAVE_AS.equals(cmd)){   //Enregistrer
+      if (null!=cadre.editeur&&cadre.editeur.isVisible()){
+    	  showCloseEditor();
+    	  return;
+      }
       String path=Application.path;
       if (MenuListener.FILE_SAVE_AS.equals(cmd)||null==path) {
         JFileChooser jf=new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
@@ -209,7 +219,8 @@ public class MenuListener extends JDialog implements ActionListener{
     }
   }
   else if(MenuListener.TOOLS_OPTIONS.equals(cmd)){  //preferences
-			if (cadre.editeur.isVisible()) JOptionPane.showMessageDialog(cadre,Logo.messages.getString("ferme_editeur"),Logo.messages.getString("erreur"),JOptionPane.ERROR_MESSAGE);
+
+	  		if (cadre.editeur.isVisible()) showCloseEditor();
 			else cadre.prefOpen();
   }
 	else if(MenuListener.TOOLS_TRANSLATOR.equals(cmd)){
@@ -346,6 +357,9 @@ public class MenuListener extends JDialog implements ActionListener{
 			return image;
 		}
 	 }
+  		private void showCloseEditor(){
+  			JOptionPane.showMessageDialog(cadre,Logo.messages.getString("ferme_editeur"),Logo.messages.getString("erreur"),JOptionPane.ERROR_MESSAGE);
+  		}
   
   
 }

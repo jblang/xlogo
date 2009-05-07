@@ -3732,10 +3732,12 @@ public class LaunchPrimitive {
                 			coord[0]=0;coord[2]=Config.imageWidth;coord[1]=0;coord[3]=Config.imageHeight;                    		
                     	}
                     	cadre.getArdoise().saveImage(word,coord);
+                 	   Interprete.operande=false;
                     }
                     catch(myException e){}
                     break;
                    case 291: //sound.mp3play
+                	   Interprete.operande=false;
                 	   if (kernel.getMp3Player()!=null) kernel.getMp3Player().getPlayer().close();
                 	   mot=getWord(param.get(0));
                 	   try{
@@ -3748,7 +3750,13 @@ public class LaunchPrimitive {
                    catch(myException z){}
     					break;
                    case 292: //sound.mp3stop
-                	 if (null!=kernel.getMp3Player()) kernel.getMp3Player().getPlayer().close();
+                	   Interprete.operande=false;
+                	   if (null!=kernel.getMp3Player()) kernel.getMp3Player().getPlayer().close();
+                	 break;
+                   case 293: // zoom
+                	   Interprete.operande=true;
+       				Interprete.calcul.push(MyCalculator.teste_fin_double(DrawPanel.zoom));
+                	break;
 			}
 		}
 	}
