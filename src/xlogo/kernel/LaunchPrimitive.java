@@ -526,9 +526,9 @@ public class LaunchPrimitive {
 			case 41: // pos
 				Interprete.operande = true;
 				if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
-					long a = Math.round(kernel.getActiveTurtle().corX - Config.imageWidth/2);
-					long b = Math.round(Config.imageHeight/2 - kernel.getActiveTurtle().corY);
-					Interprete.calcul.push("[ " + a + " " + b + " ] ");
+					double a = kernel.getActiveTurtle().corX - Config.imageWidth/2;
+					double b = Config.imageHeight/2 - kernel.getActiveTurtle().corY;
+					Interprete.calcul.push("[ " + MyCalculator.teste_fin_double(a) + " " + MyCalculator.teste_fin_double(b) + " ] ");
 				}
 				else {
 					Interprete.calcul.push("[ "+kernel.getActiveTurtle().X+" "
