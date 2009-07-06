@@ -3825,6 +3825,15 @@ public class LaunchPrimitive {
     					Interprete.calcul.push(kernel.getCalculator().modulo(param.get(0),param.get(1)));
     				} catch (myException e) {}
     				break;
+       			case 302: // drawing.setfontjustify
+    				Interprete.operande = false;
+    				try {
+						String li1 = getFinalList(param.get(0));
+	    				kernel.getActiveTurtle().setFontJustify(li1);
+    				} catch (myException e) {
+						e.printStackTrace();
+					}
+    				break;    				
 			}
 		}
 	}

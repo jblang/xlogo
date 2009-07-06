@@ -12,8 +12,12 @@ import java.awt.geom.GeneralPath;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.BasicStroke;
+import java.util.StringTokenizer;
+
 import xlogo.Config;
+import xlogo.Logo;
 import xlogo.utils.Utils;
+import xlogo.utils.myException;
 import xlogo.Application;
 public class Turtle {
 	private Application app;
@@ -22,6 +26,17 @@ public class Turtle {
 	public int id=-1;
 	BasicStroke crayon=null;
 	int police=12;
+	
+	private int labelHorizontalAlignment=0;
+	protected static final int LABEL_HORIZONTAL_ALIGNMENT_LEFT=0;
+	protected static final int LABEL_HORIZONTAL_ALIGNMENT_CENTER=1;
+	protected static final int LABEL_HORIZONTAL_ALIGNMENT_RIGHT=2;
+	private int labelVerticalAlignment=0;
+	protected static final int LABEL_VERTICAL_ALIGNMENT_BOTTOM=0;
+	protected static final int LABEL_VERTICAL_ALIGNMENT_CENTER=1;
+	protected static final int LABEL_VERTICAL_ALIGNMENT_TOP=2;
+	
+	
 	// Image for the turtle
 	// If null then draw the triangle
 	Image tort=null;  
@@ -251,5 +266,32 @@ public class Turtle {
 	  if (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_3D) return Y;
 	  return Config.imageHeight/2-corY;
 	  
-  } 
+  }
+	protected int getLabelHorizontalAlignment() {
+		return labelHorizontalAlignment;
+	}
+	protected int getLabelVerticalAlignment() {
+		return labelVerticalAlignment;
+	}
+	protected void setFontJustify(String list) throws myException{
+		StringTokenizer st=new StringTokenizer(list);
+		int i=0;
+		while(st.hasMoreTokens()){
+			String s=st.nextToken();
+			try{
+				int j=Integer.parseInt(s);
+				if (j<0||j>2) throw new myException(app,list+" "+Logo.messages.getString("pas_argument"));
+				else{
+					if (i==0) labelHorizontalAlignment=j;
+					else if (i==1) labelVerticalAlignment=j;
+				}
+			}
+			catch(NumberFormatException e){
+				throw new myException(app,list+" "+Logo.messages.getString("pas_argument"));
+			}
+			
+			i++;
+		}
+		if (i!=2) 	throw new myException(app,list+" "+Logo.messages.getString("pas_argument"));
+	}
 }

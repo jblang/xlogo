@@ -27,6 +27,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.TextLayout;
 import java.awt.Dimension;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
@@ -1792,29 +1793,55 @@ import xlogo.kernel.perspective.*;
 		if (classicMode) repaint();
 	}
 	private void etiquette2D(double x,double y, double angle, String word){
-		g.translate(x, y);
-		g.rotate(angle);
 		g.setPaintMode();
 		g.setColor(tortue.couleurcrayon);
 		Font f=Panel_Font.fontes[police_etiquette]
 		         				.deriveFont((float) tortue.police);
-		g.setFont(f);
-	 	g.drawString(word, 0, 0);
+		g.setFont(f);   
+		g.translate(x, y);
+		g.rotate(angle);
+		FontRenderContext frc = g.getFontRenderContext();
+		TextLayout layout = new TextLayout(word, f, frc);
+		Rectangle2D bounds = layout.getBounds();        
+	    float height=(float)bounds.getHeight();
+	    float width=(float)bounds.getWidth();
+	    float x1=0,y1=0;
+	    switch(tortue.getLabelHorizontalAlignment()){
+	    	case Turtle.LABEL_HORIZONTAL_ALIGNMENT_LEFT:
+	    		x1=0;
+	    	break;
+	    	case Turtle.LABEL_HORIZONTAL_ALIGNMENT_CENTER:
+	    		x1=-width/2;
+	    	break;
+	    	case Turtle.LABEL_HORIZONTAL_ALIGNMENT_RIGHT:
+	    		x1=-width;
+	    	break;
+	    }
+	    switch(tortue.getLabelVerticalAlignment()){
+    	case Turtle.LABEL_VERTICAL_ALIGNMENT_BOTTOM:
+    		y1=0;
+    	break;
+    		case Turtle.LABEL_VERTICAL_ALIGNMENT_CENTER:
+    		y1=height/2;
+    		break;
+    		case Turtle.LABEL_VERTICAL_ALIGNMENT_TOP:
+    			y1=height;
+    		break;
+	    }
+	    layout.draw(g, x1, y1);
+	    g.drawString(word, x1, y1);
 		g.rotate(-angle);
 		g.translate(-x, -y);
 		if (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_WRAP){
-			java.awt.FontMetrics fm = g.getFontMetrics(f);
-		    int height=fm.getHeight()-fm.getDescent();
-		    int width=fm.stringWidth(word);
 		    Rectangle2D.Double rec=new Rectangle2D.Double(0,0,width,height);
 		    AffineTransform at=new AffineTransform();
 		    at.translate(x, y);
 		    at.rotate(angle);
-		    Rectangle2D bounds =at.createTransformedShape(rec).getBounds2D();
-		    double right= bounds.getX()+bounds.getWidth()-x;
-		    double left= x-bounds.getX();
-		    double up=y-bounds.getY();
-		    double down=bounds.getY()+bounds.getHeight()-y;
+		    Rectangle2D bound =at.createTransformedShape(rec).getBounds2D();
+		    double right= bound.getX()+bound.getWidth()-x;
+		    double left= x-bound.getX();
+		    double up=y-bound.getY();
+		    double down=bound.getY()+bound.getHeight()-y;
 			if (x+right>Config.imageWidth&& x<=Config.imageWidth){
 				pt=new Point2D.Double(-Config.imageWidth+x,y);
 				if (! centers.contains(pt))	{
