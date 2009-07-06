@@ -292,3 +292,11 @@ drawing.saveimage 2
 sound.mp3play 1
 sound.mp3stop 0
 zoom 0
+drawing.x 0
+drawing.y 0
+drawing.z 0
+drawing.fillpolygon 1
+arithmetic.alea 0
+loop.dountil 2
+loop.dowhile 2
+aritmetic.modulo 2

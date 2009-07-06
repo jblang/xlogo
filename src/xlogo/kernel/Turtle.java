@@ -146,7 +146,7 @@ public class Turtle {
     		triangle=new GeneralPath();    	
     	}
     	else triangle.reset();
-    	if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
+    	if (DrawPanel.WINDOW_MODE!=DrawPanel.WINDOW_3D){
     		triangle.moveTo((float)(corX - 10.0 * Math.sin(angle)),
     			(float)(corY - 10.0 * Math.cos(angle)));
     		triangle.lineTo((float)(corX + 24.0 * Math.cos(angle)),
@@ -242,4 +242,14 @@ public class Turtle {
   protected double[][] getRotationMatrix(){
 	  return rotationMatrix;
   }
+  protected double getX(){
+	  if (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_3D) return X;
+	  return corX-Config.imageWidth/2;
+	  
+  } 
+  protected double getY(){
+	  if (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_3D) return Y;
+	  return Config.imageHeight/2-corY;
+	  
+  } 
 }

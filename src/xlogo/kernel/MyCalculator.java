@@ -224,6 +224,35 @@ public class MyCalculator {
 			
 		}
 	}
+	
+	protected String modulo(String a , String b) throws myException{
+		if (lowPrecision){
+			int aa = getInteger(a);
+			int bb = getInteger(b);
+			if (bb == 0)
+			throw new myException(app, Logo.messages
+					.getString("division_par_zero"));
+			double rem=aa % bb;
+			if (aa*bb<0) rem=rem+bb;
+			return teste_fin_double(rem);			
+		}
+		else {
+			BigDecimal aa = getBigInteger(a);
+			BigDecimal bb = getBigInteger(b);
+			if (bb.signum() == 0)
+			throw new myException(app, Logo.messages
+					.getString("division_par_zero"));
+			BigDecimal rem=aa.remainder(bb, mc);
+			if (aa.multiply(bb).compareTo(BigDecimal.ZERO)==-1) 
+				rem=rem.add(bb);
+			return rem.stripTrailingZeros().toPlainString();
+			
+		}
+	}
+	
+	
+	
+	
 
 	protected String quotient(String a , String b) throws myException{
 		if (lowPrecision){

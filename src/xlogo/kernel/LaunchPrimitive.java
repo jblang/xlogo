@@ -267,7 +267,7 @@ public class LaunchPrimitive {
 			case 14: // fixex
 				delay();
 				try {
-					if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
+					if (DrawPanel.WINDOW_MODE!=DrawPanel.WINDOW_3D){
 						double x = kernel.getCalculator().numberDouble(param.get(0));
 						double y = Config.imageHeight/2 - kernel.getActiveTurtle().corY;
 						cadre.getArdoise().fpos(x + " " + y);
@@ -280,7 +280,7 @@ public class LaunchPrimitive {
 			case 15: // fixey
 				delay();
 				try {
-					if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
+					if (DrawPanel.WINDOW_MODE!=DrawPanel.WINDOW_3D){
 						double y = kernel.getCalculator().numberDouble(param.get(0));
 						double x = kernel.getActiveTurtle().corX - Config.imageWidth/2;
 						cadre.getArdoise().fpos(x + " " + y);
@@ -303,7 +303,7 @@ public class LaunchPrimitive {
 			case 17: // fixecap
 				delay();
 				try {
-					if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D)
+					if (DrawPanel.WINDOW_MODE!=DrawPanel.WINDOW_3D)
 					cadre.getArdoise().td(360 - kernel.getActiveTurtle().heading
 							+ kernel.getCalculator().numberDouble(param.pop()));
 					else{
@@ -522,10 +522,14 @@ public class LaunchPrimitive {
 				else if (loop.isForEver()){
 					cadre.getKernel().getInstructionBuffer().insert(loop.getInstr()+ Primitive.END_LOOP+" ");
 				} 
+				// LOOP FILL POLYGON
+				else if (loop.isFillPolygon()){
+					cadre.getArdoise().stopRecord2DPolygon();
+				}
 				break;
 			case 41: // pos
 				Interprete.operande = true;
-				if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
+				if (DrawPanel.WINDOW_MODE!=DrawPanel.WINDOW_3D){
 					double a = kernel.getActiveTurtle().corX - Config.imageWidth/2;
 					double b = Config.imageHeight/2 - kernel.getActiveTurtle().corY;
 					Interprete.calcul.push("[ " + MyCalculator.teste_fin_double(a) + " " + MyCalculator.teste_fin_double(b) + " ] ");
@@ -1270,7 +1274,7 @@ public class LaunchPrimitive {
 			case 99: // vers=towards vers
 				try {
 					Interprete.operande=true;
-					if (DrawPanel.etat_fenetre!=DrawPanel.WINDOW_3D){
+					if (DrawPanel.WINDOW_MODE!=DrawPanel.WINDOW_3D){
 						double angle = cadre.getArdoise().vers2D(getFinalList(param.get(0)));
 						Interprete.calcul.push(MyCalculator.teste_fin_double(angle));
 					}
@@ -2815,7 +2819,7 @@ public class LaunchPrimitive {
     					if (kernel.getActiveTurtle().id == 0) {
     						Config.activeTurtle = 0;
     					}
-    					DrawPanel.etat_fenetre=DrawPanel.WINDOW_CLASSIC;
+    					DrawPanel.WINDOW_MODE=DrawPanel.WINDOW_CLASSIC;
    						String chemin = "tortue0.png";
    						kernel.change_image_tortue(chemin);
     					cadre.getArdoise().fcfg(Color.WHITE);
@@ -2834,7 +2838,7 @@ public class LaunchPrimitive {
      					kernel.setNumberOfTurtles(16);
 						Config.turtleSpeed=0;
 						Kernel.mode_trace=false;
-						DrawPanel.etat_fenetre=DrawPanel.WINDOW_CLASSIC;
+						DrawPanel.WINDOW_MODE=DrawPanel.WINDOW_CLASSIC;
 						cadre.getArdoise().zoom(1,false);
            			break;
            			case 215: // tc taillecrayon
@@ -3757,6 +3761,70 @@ public class LaunchPrimitive {
                 	   Interprete.operande=true;
        				Interprete.calcul.push(MyCalculator.teste_fin_double(DrawPanel.zoom));
                 	break;
+                   case 294: // drawing.x
+                	   Interprete.operande=true;
+          				Interprete.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().getX()));
+                	   break;
+                   case 295:// drawing.y
+                	   Interprete.operande=true;
+         				Interprete.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().getY()));
+                	   break;
+                   case 296: // drawing.z
+                	   Interprete.operande=true;
+                	   try{
+                		   primitive3D("drawing.z");
+                		   Interprete.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().Z));
+                	   }
+                	   catch(myException e){}
+                	   break;
+                   case 297: // drawing.fillpolygon
+                	   Interprete.operande=false;
+                	   try{
+                		   String list = getFinalList(param.get(0));
+                		   LoopFillPolygon bp=new LoopFillPolygon();
+                		   Primitive.stackLoop.push(bp);
+                		   cadre.getKernel().getInstructionBuffer().insert(list+Primitive.END_LOOP+" ");
+                		   cadre.getArdoise().startRecord2DPolygon();
+                 		}
+                		catch(myException e){
+                		}
+                	  break;
+                   case 298: // arithmetic.alea
+                	   Interprete.operande = true;
+    				   Interprete.calcul.push(MyCalculator.teste_fin_double(Math.random()));
+                	   break;
+                   case 299: // loop.dountil
+       				try {
+    					String li1 = getList(param.get(0));
+    					li1=new String(Utils.decoupe(li1));
+    					String li2 = getList(param.get(1));
+    					li2=new String(Utils.decoupe(li2));
+    					String instr="\\siwhile "+Utils.primitiveName("non")+" "+li2+ "[ " + li1+ "] ";
+    					LoopWhile bp=new LoopWhile(BigDecimal.ONE,BigDecimal.ZERO,BigDecimal.ONE,instr);
+    					Primitive.stackLoop.push(bp);
+    					cadre.getKernel().getInstructionBuffer().insert(instr+Primitive.END_LOOP+" ");
+    				} catch (myException e) {
+    				}
+                	   break;
+                   case 300: // loop.dowhile
+       				try {
+    					String li1 = getList(param.get(0));
+    					li1=new String(Utils.decoupe(li1));
+    					String li2 = getList(param.get(1));
+    					li2=new String(Utils.decoupe(li2));
+    					String instr=li1+"\\siwhile "+li2+ "[ " + li1+ "] ";
+    					LoopWhile bp=new LoopWhile(BigDecimal.ONE,BigDecimal.ZERO,BigDecimal.ONE,instr);
+    					Primitive.stackLoop.push(bp);
+    					cadre.getKernel().getInstructionBuffer().insert(instr+Primitive.END_LOOP+" ");
+    				} catch (myException e) {
+    				}
+                	   break;
+       			case 301: // arithmetic.modulo
+    				Interprete.operande = true;
+    				try{
+    					Interprete.calcul.push(kernel.getCalculator().modulo(param.get(0),param.get(1)));
+    				} catch (myException e) {}
+    				break;
 			}
 		}
 	}
@@ -3769,7 +3837,7 @@ public class LaunchPrimitive {
 	 * @throws myException
 	 */
 	private void primitive2D(String name) throws myException {
-		if (DrawPanel.etat_fenetre == DrawPanel.WINDOW_3D)
+		if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_3D)
 			throw new myException(cadre, Utils.primitiveName(name) + " "
 					+ Logo.messages.getString("error.primitive2D"));
 	}
@@ -3782,7 +3850,7 @@ public class LaunchPrimitive {
 	 * @throws myException
 	 */
 	private void primitive3D(String name) throws myException {
-		if (DrawPanel.etat_fenetre != DrawPanel.WINDOW_3D)
+		if (DrawPanel.WINDOW_MODE != DrawPanel.WINDOW_3D)
 			throw new myException(cadre, Utils.primitiveName(name) + " "
 					+ Logo.messages.getString("error.primitive3D"));
 	}

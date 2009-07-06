@@ -101,4 +101,7 @@ public class LoopProperties {
 	protected boolean isForEver(){
 		return true;
 	}
+	protected boolean isFillPolygon(){
+		return false;
+	}
 }

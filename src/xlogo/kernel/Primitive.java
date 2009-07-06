@@ -33,7 +33,7 @@ public class Primitive {
 	
 	//  float taille_crayon=(float)0;
 	private Application app;
-	protected static final int PRIMITIVE_NUMBER = 300;
+	protected static final int PRIMITIVE_NUMBER = 310;
 
 	protected int[] parametres=new int[PRIMITIVE_NUMBER];
 	protected boolean[] generalForm=new boolean[PRIMITIVE_NUMBER];

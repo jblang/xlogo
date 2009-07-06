@@ -24,6 +24,7 @@ import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.Dimension;
@@ -52,6 +53,7 @@ import java.util.Stack;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.Vector;
 import java.awt.event.*;
 import xlogo.Application;
 import xlogo.gui.preferences.Panel_Font;
@@ -82,7 +84,7 @@ import xlogo.kernel.perspective.*;
 	/**
 	 * this int indicates the window mode, default 0
 	 */
-	protected static int etat_fenetre = 0;
+	protected static int WINDOW_MODE = 0;
 	/**
 	 *  WINDOW MODE: 0 <br>
 	 *  Turtles can go out the drawing area
@@ -154,6 +156,16 @@ import xlogo.kernel.perspective.*;
 	protected final static int record3D_LINE=2;
 	protected final static int record3D_POINT=3;
 	protected final static int record3D_TEXT=4;
+	
+	/**
+	 * Boolean that indicates if the interpreter is recording polygon in 2D Mode
+	 */
+	private static int record2D=0;
+	private final static int record2D_NONE=0;
+	private  final static int record2D_POLYGON=1;
+	private Vector<Point2D.Double> stackTriangle;
+	
+	
 	protected static Element3D poly;
 	
 	private double[] coords;
@@ -201,8 +213,9 @@ import xlogo.kernel.perspective.*;
 		
 		oldx = tortue.corX;
 		oldy = tortue.corY;
-		if (DrawPanel.etat_fenetre == DrawPanel.WINDOW_CLASSIC) { //mode fenetre
+		if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_CLASSIC) { //mode fenetre
 			montrecacheTortue(false);
+		
 			tortue.corX = tortue.corX + arg
 					* Math.cos(tortue.angle);
 			tortue.corY = tortue.corY - arg
@@ -269,21 +282,22 @@ import xlogo.kernel.perspective.*;
 							(float)(y1-width));
 				}
 				shape=gp;*/
+				tryRecord2DMode(tortue.corX,tortue.corY);	
 				g.draw(line);
 				 //if (!tortue.isVisible()) 
 					 clip();
 		//		g.dispose();
 			}
 			montrecacheTortue(true);
-		} else if (DrawPanel.etat_fenetre == DrawPanel.WINDOW_WRAP) { //mode enroule
+		} else if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_WRAP) { //mode enroule
 			trace_enroule(arg, oldx, oldy);
-		} else if (DrawPanel.etat_fenetre == DrawPanel.WINDOW_CLOSE) { //mode clos
+		} else if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_CLOSE) { //mode clos
 			try {
 				trace_ferme(oldx, oldy, arg);
 			} catch (myException e) {
 			}
 		}
-		else if (DrawPanel.etat_fenetre==DrawPanel.WINDOW_3D){
+		else if (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_3D){
 			montrecacheTortue(false);
     		tortue.X=tortue.X+arg*tortue.getRotationMatrix()[0][1];
     		tortue.Y=tortue.Y+arg*tortue.getRotationMatrix()[1][1];
@@ -605,6 +619,7 @@ import xlogo.kernel.perspective.*;
 						}
 					}
 					line.setLine(x1,y1,x2,y2);
+					tryRecord2DMode(tortue.corX,tortue.corY);
 					g.draw(line);
 					clip();
 				}
@@ -651,16 +666,9 @@ import xlogo.kernel.perspective.*;
 		montrecacheTortue(false);
 		if (null==arc) arc=new Arc2D.Double();
 		if (!enabled3D()){
-			arc.setArcByCenter(tortue.corX,tortue.corY,rayon,
-					fangle,angle, Arc2D.OPEN);
-			if (tortue.isPenReverse()) {
-				g.setColor(couleurfond);
-				g.setXORMode(tortue.couleurcrayon);
-			} else {
-				g.setColor(tortue.couleurcrayon);
-				g.setPaintMode();
-			}
-		g.draw(arc);
+			if (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_WRAP) centers=new Vector<Point2D.Double>(); 
+			arc2D(tortue.corX,tortue.corY,rayon,fangle,pangle);
+
 	/*	if (null==gp) gp=new GeneralPath();
 		else gp.reset();
 		gp.moveTo((float)(tortue.corX-rayon-tortue.getPenWidth()),
@@ -685,6 +693,51 @@ import xlogo.kernel.perspective.*;
 		}
 		montrecacheTortue(true); 
 	}
+	private void arc2D(double x, double y, double radius,double fangle, double pangle){
+		arc.setArcByCenter(x,y,radius,
+				fangle,pangle, Arc2D.OPEN);
+		if (tortue.isPenReverse()) {
+			g.setColor(couleurfond);
+			g.setXORMode(tortue.couleurcrayon);
+		} else {
+			g.setColor(tortue.couleurcrayon);
+			g.setPaintMode();
+		}
+		g.draw(arc);
+		clip();
+		if (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_WRAP){
+			if (x+radius>Config.imageWidth&& x<=Config.imageWidth){
+				pt=new Point2D.Double(-Config.imageWidth+x,y);
+				if (! centers.contains(pt))	{
+					centers.add(pt);
+					arc2D(-Config.imageWidth+x,y,radius,fangle,pangle);
+				}
+			}
+			if (x-radius<0&& x>=0){
+				pt=new Point2D.Double(Config.imageWidth+x,y);
+				if (! centers.contains(pt))	{
+					centers.add(pt);
+					arc2D(Config.imageWidth+x,y,radius,fangle,pangle);
+				}
+			}
+			if (y-radius<0&& y>=0){
+				pt=new Point2D.Double(x,Config.imageHeight+y);
+				if (! centers.contains(pt))	{
+					centers.add(pt);
+					arc2D(x,Config.imageHeight+y,radius,fangle,pangle);
+				}
+			}
+			if (y+radius>Config.imageHeight&&y<=Config.imageHeight){
+				pt=new Point2D.Double(x,-Config.imageHeight+y);
+				if (! centers.contains(pt))	{
+					centers.add(pt);
+					arc2D(x,-Config.imageHeight+y,radius,fangle,pangle);
+				}
+			}
+		}
+	}
+	
+	
 	private void arcCircle3D(double radius,double angleStart,double angleExtent){
 		if (null==arc) arc=new Arc2D.Double();
 		arc.setArcByCenter(0,0,radius,
@@ -731,9 +784,32 @@ import xlogo.kernel.perspective.*;
 		montrecacheTortue(false);
 		if (null==arc) arc=new Arc2D.Double();
 		if (!enabled3D()){
-			arc.setArcByCenter(tortue.corX,tortue.corY,radius,
+			if (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_WRAP) centers=new Vector<Point2D.Double>(); 
+			circle2D(tortue.corX,tortue.corY,radius);
+	/*	if (null==clipArc) clipArc=new Arc2D.Double();
+		clipArc.setArcByCenter(tortue.corX,tortue.corY,
+				rayon+2+tortue.getPenWidth(),0,360, Arc2D.OPEN);*/
+		}
+		else{			
+			circle3D(radius);
+		}
+		montrecacheTortue(true); // on efface la tortue si elle st visible
+	}
+	/**
+	 * This method draws a circle in 2D mode
+	 * in WRAP mode, makes recursion to draw all circle part on the screen
+	 * @param x  x circle center 
+	 * @param y y circle center
+	 * @param circle radius
+	 */
+	private Point2D.Double pt;
+	private  Vector <Point2D.Double> centers;
+	private void circle2D(double x,double y, double radius){
+		
+		arc.setArcByCenter(x,y,radius,
 				0,360, Arc2D.OPEN);
-			if (tortue.isPenReverse()) {
+		
+		if (tortue.isPenReverse()) {
 				g.setColor(couleurfond);
 				g.setXORMode(tortue.couleurcrayon);
 			} else {
@@ -741,16 +817,39 @@ import xlogo.kernel.perspective.*;
 				g.setPaintMode();
 			}
 			g.draw(arc);
-	/*	if (null==clipArc) clipArc=new Arc2D.Double();
-		clipArc.setArcByCenter(tortue.corX,tortue.corY,
-				rayon+2+tortue.getPenWidth(),0,360, Arc2D.OPEN);*/
 			clip();
-		}
-		else{			
-			circle3D(radius);
-		}
-		montrecacheTortue(true); // on efface la tortue si elle st visible
+			if (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_WRAP){
+				if (x+radius>Config.imageWidth&& x<=Config.imageWidth){
+					pt=new Point2D.Double(-Config.imageWidth+x,y);
+					if (! centers.contains(pt))	{
+						centers.add(pt);
+						circle2D(-Config.imageWidth+x,y,radius);
+					}
+				}
+				if (x-radius<0&& x>=0){
+					pt=new Point2D.Double(Config.imageWidth+x,y);
+					if (! centers.contains(pt))	{
+						centers.add(pt);
+						circle2D(Config.imageWidth+x,y,radius);
+					}
+				}
+				if (y-radius<0&& y>=0){
+					pt=new Point2D.Double(x,Config.imageHeight+y);
+					if (! centers.contains(pt))	{
+						centers.add(pt);
+						circle2D(x,Config.imageHeight+y,radius);
+					}
+				}
+				if (y+radius>Config.imageHeight&&y<=Config.imageHeight){
+					pt=new Point2D.Double(x,-Config.imageHeight+y);
+					if (! centers.contains(pt))	{
+						centers.add(pt);
+						circle2D(x,-Config.imageHeight+y,radius);
+					}
+				}
+			}		
 	}
+	
 	/**
 	 * used for drawing with primitive "dot"
 	 * @param liste The list with the dot coordinates
@@ -1004,12 +1103,12 @@ import xlogo.kernel.perspective.*;
 		while (Math.abs(longueur) < Math.abs(arg)) {
 		//	System.out.println(Math.abs(longueur)+" "+Math.abs(arg));
 			arg -= longueur;
-			DrawPanel.etat_fenetre = DrawPanel.WINDOW_CLASSIC;
+			DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLASSIC;
 			av(longueur);
 			//System.out.println(Math.abs(longueur)+" "+Math.abs(arg));
 			if (cadre.error)
 				break; //permet d'interrompre avec le bouton stop
-			DrawPanel.etat_fenetre = DrawPanel.WINDOW_WRAP;
+			DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_WRAP;
 			if (Config.turtleSpeed != 0) {
 				try {
 					Thread.sleep(Config.turtleSpeed * 5);
@@ -1050,10 +1149,10 @@ import xlogo.kernel.perspective.*;
 				longueur = trouve_longueur(0, diagonale, tortue.corX,
 						tortue.corY);
 		}
-		DrawPanel.etat_fenetre = DrawPanel.WINDOW_CLASSIC;
+		DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLASSIC;
 		if (!cadre.error)
 			av(arg);
-		DrawPanel.etat_fenetre = DrawPanel.WINDOW_WRAP;
+		DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_WRAP;
 	}
 /**
  * This method is used for drawing with primitive forward, backward in CLOSE MODE
@@ -1079,9 +1178,9 @@ import xlogo.kernel.perspective.*;
 					+ Logo.messages.getString("erreur_sortie2")
 					+ Math.abs((int) (longueur)));
 		else {
-			DrawPanel.etat_fenetre = DrawPanel.WINDOW_CLASSIC;
+			DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLASSIC;
 			av(arg);
-			DrawPanel.etat_fenetre = DrawPanel.WINDOW_CLOSE;
+			DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLOSE;
 		}
 	}
 	/**
@@ -1131,7 +1230,7 @@ import xlogo.kernel.perspective.*;
     		Config.drawGrid=false;
     		change_image_tortue(cadre,"tortue0.png");
         	montrecacheTortue(false);
-    		DrawPanel.etat_fenetre=DrawPanel.WINDOW_3D;
+    		DrawPanel.WINDOW_MODE=DrawPanel.WINDOW_3D;
         	w3d=new World3D();
         	montrecacheTortue(true);        	
     	}
@@ -1141,9 +1240,9 @@ import xlogo.kernel.perspective.*;
 	 * @param id The window Mode
 	 */
 	protected void setWindowMode(int id){
-		if (DrawPanel.etat_fenetre!=id) {
+		if (DrawPanel.WINDOW_MODE!=id) {
     		montrecacheTortue(false);
-    		DrawPanel.etat_fenetre=id;
+    		DrawPanel.WINDOW_MODE=id;
         	w3d=null;
     		montrecacheTortue(true);
     	}
@@ -1196,7 +1295,7 @@ import xlogo.kernel.perspective.*;
 		}
 	}
 	public boolean  enabled3D(){
-		return (DrawPanel.etat_fenetre==DrawPanel.WINDOW_3D);
+		return (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_3D);
 	}
 
 	/**
@@ -1372,6 +1471,7 @@ import xlogo.kernel.perspective.*;
 		couleurfond=Config.screencolor;
 		g.setColor(Config.screencolor);
 		g.fillRect(0, 0, Config.imageWidth,Config.imageHeight);
+		stopRecord2DPolygon();
 		
 		// Draw Grid 
 		g.setStroke(new BasicStroke(1));
@@ -1403,9 +1503,11 @@ import xlogo.kernel.perspective.*;
 	 * Primitive wash
 	 */
 	protected void nettoie() {
+		stopRecord2DPolygon();
 		g.setPaintMode();
 		g.setColor(couleurfond);
 		g.fillRect(0, 0, Config.imageWidth,Config.imageHeight);
+
 		drawGrid();
 		/* Réinitialiser les tortues
 		if (null == tortues[0])
@@ -1639,7 +1741,9 @@ import xlogo.kernel.perspective.*;
 		montrecacheTortue(false);
 		if (!enabled3D()){
 			double angle = Math.PI / 2 - tortue.angle;
-			g.rotate(angle);
+			if(DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_WRAP) centers=new Vector<Point2D.Double>();
+			etiquette2D(tortue.corX,tortue.corY,angle,mot);
+/*			g.rotate(angle);
 			g.setPaintMode();
 			g.setColor(tortue.couleurcrayon);
 			float x = (float) (tortue.corX * Math.cos(angle) + tortue.corY
@@ -1649,7 +1753,7 @@ import xlogo.kernel.perspective.*;
 			g.setFont(Panel_Font.fontes[police_etiquette]
 				.deriveFont((float) tortue.police));
 			g.drawString(mot, x, y);
-			g.rotate(-angle);	
+			g.rotate(-angle);*/
 		}
 		else{
 			FontRenderContext frc=g.getFontRenderContext();
@@ -1687,6 +1791,61 @@ import xlogo.kernel.perspective.*;
 		montrecacheTortue(true);
 		if (classicMode) repaint();
 	}
+	private void etiquette2D(double x,double y, double angle, String word){
+		g.translate(x, y);
+		g.rotate(angle);
+		g.setPaintMode();
+		g.setColor(tortue.couleurcrayon);
+		Font f=Panel_Font.fontes[police_etiquette]
+		         				.deriveFont((float) tortue.police);
+		g.setFont(f);
+	 	g.drawString(word, 0, 0);
+		g.rotate(-angle);
+		g.translate(-x, -y);
+		if (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_WRAP){
+			java.awt.FontMetrics fm = g.getFontMetrics(f);
+		    int height=fm.getHeight()-fm.getDescent();
+		    int width=fm.stringWidth(word);
+		    Rectangle2D.Double rec=new Rectangle2D.Double(0,0,width,height);
+		    AffineTransform at=new AffineTransform();
+		    at.translate(x, y);
+		    at.rotate(angle);
+		    Rectangle2D bounds =at.createTransformedShape(rec).getBounds2D();
+		    double right= bounds.getX()+bounds.getWidth()-x;
+		    double left= x-bounds.getX();
+		    double up=y-bounds.getY();
+		    double down=bounds.getY()+bounds.getHeight()-y;
+			if (x+right>Config.imageWidth&& x<=Config.imageWidth){
+				pt=new Point2D.Double(-Config.imageWidth+x,y);
+				if (! centers.contains(pt))	{
+					centers.add(pt);
+					etiquette2D(-Config.imageWidth+x,y,angle,word);
+				}
+			}
+			if (x-left<0&& x>=0){
+				pt=new Point2D.Double(Config.imageWidth+x,y);
+				if (! centers.contains(pt))	{
+					centers.add(pt);
+					etiquette2D(Config.imageWidth+x,y,angle,word);
+				}
+			}
+			if (y-up<0&& y>=0){
+				pt=new Point2D.Double(x,Config.imageHeight+y);
+				if (! centers.contains(pt))	{
+					centers.add(pt);
+					etiquette2D(x,Config.imageHeight+y,angle,word);
+				}
+			}
+			if (y+down>Config.imageHeight&&y<=Config.imageHeight){
+				pt=new Point2D.Double(x,-Config.imageHeight+y);
+				if (! centers.contains(pt))	{
+					centers.add(pt);
+					etiquette2D(x,-Config.imageHeight+y,angle,word);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * This method transform a plane 2D shape in the shape corresponding to the turtle plane 
 	 * @param s the first shape
@@ -1924,6 +2083,7 @@ import xlogo.kernel.perspective.*;
 			
 			//access=true;
 //			refresh();
+			
 			repaint();
 	/*		if (SwingUtilities.isEventDispatchThread()){
 				repaint();
@@ -2256,7 +2416,7 @@ import xlogo.kernel.perspective.*;
 		  g2d.setClip(shape);
 		  shape=null;
 	  }
-	   g2d.scale(DrawPanel.zoom,DrawPanel.zoom);
+	  g2d.scale(DrawPanel.zoom,DrawPanel.zoom);
 	  g2d.drawImage(dessin,0,0,this);
 	  g2d.scale(1/DrawPanel.zoom,1/DrawPanel.zoom);
 	  if (!Affichage.execution_lancee&&null!=selection&&cadre.commande_isEditable()){
@@ -2467,5 +2627,34 @@ import xlogo.kernel.perspective.*;
 			
 			cadre.setZoomEnabled(true);
 	   }
+   }
+   private void tryRecord2DMode(double a, double b){
+		// FillPolygon mode
+		if (DrawPanel.record2D==DrawPanel.record2D_POLYGON){
+			if (stackTriangle.size()==3){
+				stackTriangle.remove(0);
+				stackTriangle.add(new Point2D.Double(a,b));
+			}
+			else{
+				stackTriangle.add(new Point2D.Double(a,b));		
+			}
+			if (stackTriangle.size()==3){
+				Path2D.Double path=new Path2D.Double();
+				path.moveTo(stackTriangle.get(0).x, stackTriangle.get(0).y);
+				path.lineTo(stackTriangle.get(1).x, stackTriangle.get(1).y);
+				path.lineTo(stackTriangle.get(2).x, stackTriangle.get(2).y);
+				path.closePath();
+				g.fill(path);
+			}
+		}
+
+   }
+   protected void startRecord2DPolygon(){
+	   DrawPanel.record2D=DrawPanel.record2D_POLYGON;
+	   	stackTriangle=new Vector<Point2D.Double>();
+	    stackTriangle.add(new Point2D.Double(tortue.corX,tortue.corX));
+   }
+   protected void stopRecord2DPolygon(){
+		DrawPanel.record2D=DrawPanel.record2D_NONE;
    }
 }
