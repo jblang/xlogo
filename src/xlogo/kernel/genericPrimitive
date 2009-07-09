@@ -301,3 +301,4 @@ loop.dountil 2
 loop.dowhile 2
 aritmetic.modulo 2
 drawing.setfontjustify 1
+drawing.fontjustify 0

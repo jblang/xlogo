@@ -525,6 +525,7 @@ public class LaunchPrimitive {
 				// LOOP FILL POLYGON
 				else if (loop.isFillPolygon()){
 					cadre.getArdoise().stopRecord2DPolygon();
+					Primitive.stackLoop.pop();
 				}
 				break;
 			case 41: // pos
@@ -3833,7 +3834,11 @@ public class LaunchPrimitive {
     				} catch (myException e) {
 						e.printStackTrace();
 					}
-    				break;    				
+    				break;    	
+       			case 303: // drawing.fontjustify
+       				Interprete.operande=true;
+       				Interprete.calcul.push(kernel.getActiveTurtle().getFontJustify());
+       				break;
 			}
 		}
 	}

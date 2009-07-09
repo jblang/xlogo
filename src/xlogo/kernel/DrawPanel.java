@@ -2656,8 +2656,13 @@ import xlogo.kernel.perspective.*;
 	   }
    }
    private void tryRecord2DMode(double a, double b){
-		// FillPolygon mode
 		if (DrawPanel.record2D==DrawPanel.record2D_POLYGON){
+			// FillPolygon mode
+			   int i=0;
+			   for(Point2D.Double p:stackTriangle){
+				   System.out.println(i+" "+p.toString());
+				   i++;
+			   }
 			if (stackTriangle.size()==3){
 				stackTriangle.remove(0);
 				stackTriangle.add(new Point2D.Double(a,b));
@@ -2679,7 +2684,7 @@ import xlogo.kernel.perspective.*;
    protected void startRecord2DPolygon(){
 	   DrawPanel.record2D=DrawPanel.record2D_POLYGON;
 	   	stackTriangle=new Vector<Point2D.Double>();
-	    stackTriangle.add(new Point2D.Double(tortue.corX,tortue.corX));
+	    stackTriangle.add(new Point2D.Double(tortue.corX,tortue.corY));
    }
    protected void stopRecord2DPolygon(){
 		DrawPanel.record2D=DrawPanel.record2D_NONE;

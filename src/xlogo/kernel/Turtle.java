@@ -294,4 +294,12 @@ public class Turtle {
 		}
 		if (i!=2) 	throw new myException(app,list+" "+Logo.messages.getString("pas_argument"));
 	}
+	public String getFontJustify() {
+		StringBuffer sb=new StringBuffer("[ ");
+		sb.append(labelHorizontalAlignment);
+		sb.append(" ");
+		sb.append(labelVerticalAlignment);
+		sb.append(" ] ");
+		return new String(sb);
+	}
 }
