@@ -668,7 +668,7 @@ import xlogo.kernel.perspective.*;
 		if (null==arc) arc=new Arc2D.Double();
 		if (!enabled3D()){
 			if (DrawPanel.WINDOW_MODE==DrawPanel.WINDOW_WRAP) centers=new Vector<Point2D.Double>(); 
-			arc2D(tortue.corX,tortue.corY,rayon,fangle,pangle);
+			arc2D(tortue.corX,tortue.corY,rayon,fangle,angle);
 
 	/*	if (null==gp) gp=new GeneralPath();
 		else gp.reset();
@@ -694,9 +694,9 @@ import xlogo.kernel.perspective.*;
 		}
 		montrecacheTortue(true); 
 	}
-	private void arc2D(double x, double y, double radius,double fangle, double pangle){
+	private void arc2D(double x, double y, double radius,double fangle, double angle){
 		arc.setArcByCenter(x,y,radius,
-				fangle,pangle, Arc2D.OPEN);
+				fangle,angle, Arc2D.OPEN);
 		if (tortue.isPenReverse()) {
 			g.setColor(couleurfond);
 			g.setXORMode(tortue.couleurcrayon);
@@ -711,28 +711,28 @@ import xlogo.kernel.perspective.*;
 				pt=new Point2D.Double(-Config.imageWidth+x,y);
 				if (! centers.contains(pt))	{
 					centers.add(pt);
-					arc2D(-Config.imageWidth+x,y,radius,fangle,pangle);
+					arc2D(-Config.imageWidth+x,y,radius,fangle,angle);
 				}
 			}
 			if (x-radius<0&& x>=0){
 				pt=new Point2D.Double(Config.imageWidth+x,y);
 				if (! centers.contains(pt))	{
 					centers.add(pt);
-					arc2D(Config.imageWidth+x,y,radius,fangle,pangle);
+					arc2D(Config.imageWidth+x,y,radius,fangle,angle);
 				}
 			}
 			if (y-radius<0&& y>=0){
 				pt=new Point2D.Double(x,Config.imageHeight+y);
 				if (! centers.contains(pt))	{
 					centers.add(pt);
-					arc2D(x,Config.imageHeight+y,radius,fangle,pangle);
+					arc2D(x,Config.imageHeight+y,radius,fangle,angle);
 				}
 			}
 			if (y+radius>Config.imageHeight&&y<=Config.imageHeight){
 				pt=new Point2D.Double(x,-Config.imageHeight+y);
 				if (! centers.contains(pt))	{
 					centers.add(pt);
-					arc2D(x,-Config.imageHeight+y,radius,fangle,pangle);
+					arc2D(x,-Config.imageHeight+y,radius,fangle,angle);
 				}
 			}
 		}
