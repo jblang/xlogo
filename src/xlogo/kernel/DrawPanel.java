@@ -2658,11 +2658,6 @@ import xlogo.kernel.perspective.*;
    private void tryRecord2DMode(double a, double b){
 		if (DrawPanel.record2D==DrawPanel.record2D_POLYGON){
 			// FillPolygon mode
-			   int i=0;
-			   for(Point2D.Double p:stackTriangle){
-				   System.out.println(i+" "+p.toString());
-				   i++;
-			   }
 			if (stackTriangle.size()==3){
 				stackTriangle.remove(0);
 				stackTriangle.add(new Point2D.Double(a,b));
@@ -2671,12 +2666,14 @@ import xlogo.kernel.perspective.*;
 				stackTriangle.add(new Point2D.Double(a,b));		
 			}
 			if (stackTriangle.size()==3){
-				Path2D.Double path=new Path2D.Double();
-				path.moveTo(stackTriangle.get(0).x, stackTriangle.get(0).y);
-				path.lineTo(stackTriangle.get(1).x, stackTriangle.get(1).y);
-				path.lineTo(stackTriangle.get(2).x, stackTriangle.get(2).y);
-				path.closePath();
-				g.fill(path);
+				GeneralPath gp=new GeneralPath();
+				Line2D.Double ld=new Line2D.Double(stackTriangle.get(0),stackTriangle.get(1));
+				gp.append(ld,false);
+				ld=new Line2D.Double(stackTriangle.get(1),stackTriangle.get(2));
+				gp.append(ld,true);
+				ld=new Line2D.Double(stackTriangle.get(2),stackTriangle.get(0));
+				gp.append(ld,true);
+				g.fill(gp);
 			}
 		}
 
