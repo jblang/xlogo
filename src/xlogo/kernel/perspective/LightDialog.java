@@ -118,8 +118,8 @@ public class LightDialog extends JDialog implements ActionListener{
 	private void updateLight(){
 		int t=comboType.getSelectedIndex();
 		Color3f c=new Color3f(panelColor.getValue());
-		Point3f p=(Point3f)panelPosition.getPosition();
-		Vector3f d=(Vector3f)panelDirection.getDirection();
+		Point3f p=panelPosition.getPosition();
+		Vector3f d=panelDirection.getDirection();
 		float a=panelAngle.getAngleValue();
 		light.setType(t);
 		light.setColor(c);

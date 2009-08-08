@@ -1047,7 +1047,7 @@ public class LaunchPrimitive {
 								+ Logo.messages.getString("attend_positif"));
 					}
 					else {
-						int nbsecondes = (int) (temps / 60);
+						int nbsecondes = temps / 60;
 						int reste = temps % 60;
 						for (int i = 0; i < nbsecondes; i++) {
 							Thread.sleep(1000);
@@ -1622,7 +1622,7 @@ public class LaunchPrimitive {
 						cadre.getArdoise()
 								.setGraphicsFont(new java.awt.Font(police,
 										java.awt.Font.PLAIN,
-										(int) kernel.getActiveTurtle().police));
+										kernel.getActiveTurtle().police));
 
 					} else {
 						try {
@@ -1693,7 +1693,7 @@ public class LaunchPrimitive {
 									cadre.getArdoise()
 											.setFont(new java.awt.Font(police,
 													java.awt.Font.PLAIN,
-													(int) kernel.getActiveTurtle().police));
+													 kernel.getActiveTurtle().police));
 
 								}
 							} else {

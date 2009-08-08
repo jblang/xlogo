@@ -2235,7 +2235,7 @@ import xlogo.kernel.perspective.*;
 	}
 	public void setNumberOfTurtles(int id){
 		Config.maxTurtles = id;
-		Turtle[] tampon = (Turtle[]) tortues.clone();
+		Turtle[] tampon = tortues.clone();
 		tortues = new Turtle[id];
 		int borne_sup=Math.min(tampon.length,tortues.length);
 		for(int i=0;i<borne_sup;i++){
