@@ -165,11 +165,13 @@ public class Utils {
 					if (espace||buffer.length()==0) {buffer.append(c+" ");espace=true;}
 					else {
 						buffer.append(" "+c+" ");
+						mot=false;
 						espace=true;
 					}
 				}
 			}
 			else if (c=='+'||c=='-'||c=='*'||c=='/'||c=='='||c=='<'||c=='>'||c=='&'||c=='|'){
+				//System.out.println(mot+" "+espace);
 				// à modifier (test + fin)
 				if (mot||crochet_liste>0) {
 					buffer.append(c);
@@ -214,7 +216,7 @@ public class Utils {
 				espace=false;
 			}
 		}
-		//System.out.println(buffer);
+//		System.out.println(buffer);
 		// Remove the space when the user write only "*" or "+" in the command line
 		//if (buffer.length()>0&&buffer.charAt(0)==' ') buffer.deleteCharAt(0);
 		return (buffer);

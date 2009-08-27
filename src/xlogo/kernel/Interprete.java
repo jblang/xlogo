@@ -43,8 +43,6 @@ public class Interprete {
 	protected static HashMap<String,String> locale = new HashMap<String,String>(); // Pile contenant les
 														// noms des variables
 														// locales
-	// protected static Stack valeur = new Stack(); // Pile contenant les
-	// valeurs de ses variables.
 
 	protected static boolean operande = false; // si l'élément trouvé est un
 												// nombre
