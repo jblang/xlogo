@@ -183,10 +183,13 @@
     <!-- Copy Specific OS libraries -->
     	
 	    <condition property="platform.solaris">
-			<equals arg1="${platform}" arg2="solaris"/>
+   			<or>
+   	  			<equals arg1="${platform}" arg2="all"/>
+   	  			<equals arg1="${platform}" arg2="solaris"/>
+   			</or>
 		</condition>
 		<antcall target="copy.solaris">
-		</antcall>  
+ 		</antcall>  
    		<condition property="platform.linux">
    			<or>
    	  			<equals arg1="${platform}" arg2="all"/>

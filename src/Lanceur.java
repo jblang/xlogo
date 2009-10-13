@@ -271,7 +271,16 @@ public class Lanceur {
 			}
 			// solaris
 			else if (os.indexOf("solaris")!=-1){
-				
+				if (arch.indexOf("86")!=-1){
+		            InputStream lib= Lanceur.class.getResourceAsStream("solaris/i386/libj3dcore-ogl.so");
+		            files[6]=new File(tmpFolder.getAbsolutePath()+File.separator+"libj3dcore-ogl.so");
+					copier(lib,files[6]);
+				}
+				else if (arch.indexOf("amd64")!=-1){
+				      InputStream lib= Lanceur.class.getResourceAsStream("solaris/amd64/libj3dcore-ogl.so");
+			            files[6]=new File(tmpFolder.getAbsolutePath()+File.separator+"libj3dcore-ogl.so");
+						copier(lib,files[6]);
+				}
 			}
 
 			
