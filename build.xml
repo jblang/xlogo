@@ -149,6 +149,7 @@
 <!--		<echo> ${ant.java.version}</echo> -->
     	<javac 
     		source="1.5" encoding="utf8"
+    		target="1.5"
     		srcdir="src" destdir="deploy/">
     		 <classpath>
 		        <pathelement location="vecmath.jar"/>

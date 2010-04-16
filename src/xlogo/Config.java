@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class Config {
 	/** Version number**/
-	static final String version="0.9.96pre October 13";
+	static final String version="0.9.96pre Feb 3";
 	/** Drawing Quality **/
 	public static int quality=0;
 	/** Drawing Quality: normal **/

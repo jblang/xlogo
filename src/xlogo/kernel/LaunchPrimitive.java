@@ -3784,7 +3784,7 @@ public class LaunchPrimitive {
                 		   String list = getFinalList(param.get(0));
                 		   LoopFillPolygon bp=new LoopFillPolygon();
                 		   Primitive.stackLoop.push(bp);
-                		   cadre.getKernel().getInstructionBuffer().insert(list+Primitive.END_LOOP+" ");
+                		   cadre.getKernel().getInstructionBuffer().insert(Utils.decoupe(list)+Primitive.END_LOOP+" ");
                 		   cadre.getArdoise().startRecord2DPolygon();
                  		}
                 		catch(myException e){
