@@ -302,3 +302,7 @@ loop.dowhile 2
 aritmetic.modulo 2
 drawing.setfontjustify 1
 drawing.fontjustify 0
+arithmetic.inf 2
+arithmetic.sup 2
+arithmetic.infequal 2
+arithmetic.supequal 2

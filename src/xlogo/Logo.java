@@ -381,6 +381,7 @@ public class Logo {
  * @param args The file *.lgo to load on startup
  */
   public static void main(String[] args)   {
+	  
 	  try{
 		  // Display the java3d version
 		  java.util.Map<String,String> map=VirtualUniverse.getProperties();

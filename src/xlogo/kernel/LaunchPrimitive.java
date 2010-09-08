@@ -402,28 +402,10 @@ public class LaunchPrimitive {
 				equal(param);
 				break;
 			case 35: // <
-				try {
-					double a = kernel.getCalculator().numberDouble(param.get(0));
-					double b = kernel.getCalculator().numberDouble(param.get(1));
-					if (a < b)
-						Interprete.calcul.push(Logo.messages.getString("vrai"));
-					else
-						Interprete.calcul.push(Logo.messages.getString("faux"));
-				} catch (myException e) {
-				}
-				Interprete.operande = true;
+				inf(param);
 				break;
 			case 36: // >
-				try {
-					double a = kernel.getCalculator().numberDouble(param.get(0));
-					double b = kernel.getCalculator().numberDouble(param.get(1));
-					if (a > b)
-						Interprete.calcul.push(Logo.messages.getString("vrai"));
-					else
-						Interprete.calcul.push(Logo.messages.getString("faux"));
-				} catch (myException e) {
-				}
-				Interprete.operande = true;
+				sup(param);
 				break;
 			case 37: // |
 				try {
@@ -2087,7 +2069,7 @@ public class LaunchPrimitive {
 					if (null == mot)
 						throw new myException(cadre, param.get(0) + " "
 								+ Logo.messages.getString("error.word"));
-					liste = Utils.SortieTexte(Config.defaultFolder + File.separator + mot);
+					liste = Utils.SortieTexte(Config.defaultFolder) + File.separator+Utils.SortieTexte(mot);
 					int ident = kernel.getCalculator().getInteger(param.get(0));
 					if (kernel.flows.search(ident) == -1)
 						kernel.flows.add(new MyFlow(ident,liste,false));
@@ -3438,28 +3420,10 @@ public class LaunchPrimitive {
                     	DrawPanel.record3D=DrawPanel.record3D_NONE;
                     	break;
                     case 273: // operator <=
-        				try {
-        					double a = kernel.getCalculator().numberDouble(param.get(0));
-        					double b = kernel.getCalculator().numberDouble(param.get(1));
-        					if (a <= b)
-        						Interprete.calcul.push(Logo.messages.getString("vrai"));
-        					else
-        						Interprete.calcul.push(Logo.messages.getString("faux"));
-        				} catch (myException e) {
-        				}
-        				Interprete.operande = true;
+						infequal(param);
                     break;
                     case 274: // operator >=
-        				try {
-        					double a = kernel.getCalculator().numberDouble(param.get(0));
-        					double b = kernel.getCalculator().numberDouble(param.get(1));
-        					if (a >= b)
-        						Interprete.calcul.push(Logo.messages.getString("vrai"));
-        					else
-        						Interprete.calcul.push(Logo.messages.getString("faux"));
-        				} catch (myException e) {
-        				}
-        				Interprete.operande = true;
+                    	supequal(param);
         				break;  
                     case 275: // primitives
                     	Interprete.operande=true;
@@ -3839,6 +3803,19 @@ public class LaunchPrimitive {
        				Interprete.operande=true;
        				Interprete.calcul.push(kernel.getActiveTurtle().getFontJustify());
        				break;
+       			case 304: // arithmetic.inf
+       				inf(param);
+       			break;
+       			case 305: // arithmetic.sup
+       				sup(param);
+           			break;
+       			case 306: // arithmetic.infequal
+       				infequal(param);
+           			break;
+       			case 307: // arithmetic.supequal
+       				supequal(param);
+           			break;           			
+			
 			}
 		}
 	}
@@ -3879,7 +3856,7 @@ public class LaunchPrimitive {
 		Interprete.operande = true;
 		Color co = DrawPanel.defaultColors[i];
 		Interprete.calcul.push("[ " + co.getRed() + " " + co.getGreen() + " "
-				+ co.getBlue() + " ]");
+				+ co.getBlue() + " ] ");
 	}
 
 	/**
@@ -4154,7 +4131,55 @@ public class LaunchPrimitive {
 			mot = Logo.messages.getString("faux");
 		Interprete.calcul.push(mot);
 	}
-
+	private void infequal(Stack<String> param){
+		try {
+			double a = kernel.getCalculator().numberDouble(param.get(0));
+			double b = kernel.getCalculator().numberDouble(param.get(1));
+			if (a <= b)
+				Interprete.calcul.push(Logo.messages.getString("vrai"));
+			else
+				Interprete.calcul.push(Logo.messages.getString("faux"));
+		} catch (myException e) {
+		}
+		Interprete.operande = true;
+		
+	}
+	private void supequal(Stack<String> param){
+    	try {
+			double a = kernel.getCalculator().numberDouble(param.get(0));
+			double b = kernel.getCalculator().numberDouble(param.get(1));
+			if (a >= b)
+				Interprete.calcul.push(Logo.messages.getString("vrai"));
+			else
+				Interprete.calcul.push(Logo.messages.getString("faux"));
+		} catch (myException e) {
+		}
+		Interprete.operande = true;
+	}
+	private void inf(Stack<String> param){
+		try {
+			double a = kernel.getCalculator().numberDouble(param.get(0));
+			double b = kernel.getCalculator().numberDouble(param.get(1));
+			if (a < b)
+				Interprete.calcul.push(Logo.messages.getString("vrai"));
+			else
+				Interprete.calcul.push(Logo.messages.getString("faux"));
+		} catch (myException e) {
+		}
+		Interprete.operande = true;
+	}
+	private void sup(Stack<String> param){
+		try {
+			double a = kernel.getCalculator().numberDouble(param.get(0));
+			double b = kernel.getCalculator().numberDouble(param.get(1));
+			if (a > b)
+				Interprete.calcul.push(Logo.messages.getString("vrai"));
+			else
+				Interprete.calcul.push(Logo.messages.getString("faux"));
+		} catch (myException e) {
+		}
+		Interprete.operande = true;
+	}
 	/**
 	 * / Primitive equal?
 	 * 

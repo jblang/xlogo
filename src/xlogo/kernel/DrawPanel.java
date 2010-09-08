@@ -65,6 +65,9 @@ import xlogo.utils.Utils;
 import xlogo.utils.myException;
 import xlogo.Config;
 import xlogo.Logo;
+import xlogo.kernel.grammar.LogoNumber;
+import xlogo.kernel.grammar.LogoType;
+import xlogo.kernel.grammar.LogoTypeNull;
 import xlogo.kernel.gui.*;
 import xlogo.kernel.perspective.*;
 /**
@@ -74,7 +77,7 @@ import xlogo.kernel.perspective.*;
  * @author Loïc Le Coq
  */
  public class DrawPanel extends JPanel implements MouseMotionListener,MouseListener {
-
+	public static final LogoTypeNull nullType=new LogoTypeNull(); 
 	private static final long serialVersionUID = 1L;
 	public Turtle tortue;
 	public Turtle[] tortues; 
@@ -209,10 +212,50 @@ import xlogo.kernel.perspective.*;
 		initGraphics();
 	}
 	/**
+	 * This method is used to draw for primitive "forward"
+	 * @param arg LogoType which represents the number of steps to move
+	 */
+	protected LogoType av(LogoType number){
+		if (number.isException()) return number;
+		LogoNumber ln=(LogoNumber)number;
+		return av(ln.getValue());
+		
+	}
+	/**
+	 * This method is used to draw for primitive "backward"
+	 * @param arg LogoType which represents the number of steps to move
+	 */
+	protected LogoType re(LogoType number){
+		if (number.isException()) return number;
+		LogoNumber ln=(LogoNumber)number;
+		return av(-ln.getValue());
+		
+	}
+	/**
+	 * This method is used to draw for primitive "right"
+	 * @param arg LogoType which represents the number of steps to rotate
+	 */
+	protected LogoType td(LogoType number){
+		if (number.isException()) return number;
+		LogoNumber ln=(LogoNumber)number;
+		return td(ln.getValue());
+		
+	}	/**
+	 * This method is used to draw for primitive "left"
+	 * @param arg LogoType which represents the number of steps to rotate
+	 */
+	protected LogoType tg(LogoType number){
+		if (number.isException()) return number;
+		LogoNumber ln=(LogoNumber)number;
+		return td(-ln.getValue());
+		
+	}
+	
+	/**
 	 * This method is used to draw for primitive "forward" and "backward"
 	 * @param arg Number of steps
 	 */
-	protected void av(double arg) {
+	protected LogoType av(double arg) {
 	//	Graphics2D g=(Graphics2D)dessin.getGraphics();
 		
 		oldx = tortue.corX;
@@ -349,13 +392,14 @@ import xlogo.kernel.perspective.*;
 			}
 			montrecacheTortue(true);
 		}
+		return DrawPanel.nullType;
 	}
-	
+
 	/**
 	 * This method is used for drawing with primitive "right" or "left"
-	 * @param arg The angle 
+	 * @param arg The angle to rotate
 	 */
-	protected void td(double arg) {
+	protected LogoType td(double arg) {
 //		System.out.println(tortue.angle);
 		if (tortue.isVisible())
 			montrecacheTortue(false);
@@ -373,6 +417,8 @@ import xlogo.kernel.perspective.*;
 		if (tortue.isVisible())
 			montrecacheTortue(true);
 		Interprete.operande = false;
+	
+		return DrawPanel.nullType;
 	}
 	/**
 	 * This method is used for drawing with primitive "rightroll" or "leftroll"

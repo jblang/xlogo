@@ -448,4 +448,20 @@ public class Primitive {
 		}
 		catch(Exception e){e.printStackTrace();}
 	}
+	public static int isPrimitive(String s){
+		String index=Primitive.primitives.get(s.toLowerCase());
+		if (null==index) return -1;
+		try{
+			int id=Integer.parseInt(index);
+			return id% Primitive.PRIMITIVE_NUMBER;
+		}
+		catch(NumberFormatException e) {
+			System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+					"The file xlogo/kernel/genericPrimitive has been corrupted...\n" +
+					" Please, check the integrity of xlogo.jar \n!!!!!!!!!!!!!!!!!!!!!!!!!");
+		}
+		return -1;
+	}
+		
+
 }

@@ -27,6 +27,7 @@ import xlogo.gui.*;
 import xlogo.kernel.Affichage;
 import xlogo.kernel.Kernel;
 import xlogo.gui.translation.TranslateXLogo;
+import xlogo.kernel.grammar.LogoParser;
 import xlogo.kernel.perspective.Viewer3D;
 public class Application extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -760,6 +761,8 @@ public class Application extends JFrame {
 			
 			// On enlève les éventuels commentaires
 			int a =texte.indexOf("#");
+
+//			LogoParser lp=new LogoParser(texte);
 			while (a!=-1){
 				if (a==0) {texte="";break;}
 				else if (!texte.substring(a-1,a).equals("\\")){
@@ -768,7 +771,7 @@ public class Application extends JFrame {
 				} 
 				a =texte.indexOf("#",a+1);
 			}
-	//	Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 			affichage_Start(Utils.decoupe(texte));
 
 			
