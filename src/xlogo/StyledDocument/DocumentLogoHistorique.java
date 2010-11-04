@@ -107,16 +107,19 @@ public class DocumentLogoHistorique extends DocumentLogo {
 	public boolean estbarre(){
 		return StyleConstants.isStrikeThrough(perso);
 	}
-
+	public Font getFont(){
+		return Panel_Font.fontes[HistoryPanel.fontPrint].deriveFont(Font.BOLD,(float)taille_texte);
+		
+	}
 	public void change_police_interface(Font font, int taille) {
 		
 		String famille = font.getName();
 
-		StyleConstants.setFontSize(erreur, taille);
-		StyleConstants.setFontFamily(erreur, famille);
+		StyleConstants.setFontSize(normal, taille);
+		StyleConstants.setFontFamily(normal, famille);
 
-		StyleConstants.setFontSize(erreur, taille);
-		StyleConstants.setFontFamily(erreur, famille);
+		StyleConstants.setFontSize(commentaire, taille);
+		StyleConstants.setFontFamily(commentaire, famille);
 
 		StyleConstants.setFontSize(erreur, taille);
 		StyleConstants.setFontFamily(erreur, famille);

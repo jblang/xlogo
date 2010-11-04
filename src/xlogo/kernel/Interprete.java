@@ -239,6 +239,7 @@ public class Interprete {
 								break;
 							}
 							String a = execute(new StringBuffer());
+							
 							param.push(a);
 						} catch (myException e) {
 							throw e;

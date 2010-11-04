@@ -34,6 +34,7 @@ import xlogo.Config;
 import xlogo.gui.HistoryPanel;
 import xlogo.Application;
 import xlogo.Logo;
+import xlogo.MenuListener;
 import xlogo.kernel.network.*;
 import xlogo.kernel.gui.*;
 import xlogo.kernel.perspective.ElementPolygon;
@@ -1806,14 +1807,11 @@ public class LaunchPrimitive {
 					}
 					liste += tampon;
 					liste=Utils.SortieTexte(liste);
-					JTextArea jt = new JTextArea(liste);
-					jt.setEditable(false);
-					jt.setBackground(new Color(255, 255, 177));
-					jt.setFont(Config.police);
-					ImageIcon icone = new ImageIcon(Utils.class
-							.getResource("icone.png"));
-					JOptionPane.showMessageDialog(cadre, jt, "",
-							JOptionPane.INFORMATION_MESSAGE, (Icon) icone);
+					
+					MyTextAreaDialog jt=new MyTextAreaDialog(liste,cadre.getHistoryPanel().getDsd());
+					ImageIcon icone=new ImageIcon(Utils.class.getResource("icone.png"));
+					JOptionPane.showMessageDialog(cadre,jt,"",JOptionPane.INFORMATION_MESSAGE,(Icon)icone);
+					
 				} catch (myException e) {
 				}
 				break;
@@ -3563,11 +3561,13 @@ public class LaunchPrimitive {
 
         						elements.add(character);
         					}
-    						LoopForEach bp=new LoopForEach(BigDecimal.ZERO,new BigDecimal(elements.size()-1)
+        					if (elements.size()>0){
+        					LoopForEach bp=new LoopForEach(BigDecimal.ZERO,new BigDecimal(elements.size()-1)
     						,BigDecimal.ONE,li2,var.toLowerCase(),elements);			
     						bp.AffecteVar(true);
     						cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP +" ");
 							Primitive.stackLoop.push(bp);
+							}
         				}
         				catch(myException e){}
                     break;
@@ -4132,53 +4132,20 @@ public class LaunchPrimitive {
 		Interprete.calcul.push(mot);
 	}
 	private void infequal(Stack<String> param){
-		try {
-			double a = kernel.getCalculator().numberDouble(param.get(0));
-			double b = kernel.getCalculator().numberDouble(param.get(1));
-			if (a <= b)
-				Interprete.calcul.push(Logo.messages.getString("vrai"));
-			else
-				Interprete.calcul.push(Logo.messages.getString("faux"));
-		} catch (myException e) {
-		}
 		Interprete.operande = true;
-		
+		Interprete.calcul.push(kernel.getCalculator().infequal(param));
 	}
 	private void supequal(Stack<String> param){
-    	try {
-			double a = kernel.getCalculator().numberDouble(param.get(0));
-			double b = kernel.getCalculator().numberDouble(param.get(1));
-			if (a >= b)
-				Interprete.calcul.push(Logo.messages.getString("vrai"));
-			else
-				Interprete.calcul.push(Logo.messages.getString("faux"));
-		} catch (myException e) {
-		}
 		Interprete.operande = true;
+		Interprete.calcul.push(kernel.getCalculator().supequal(param));
 	}
 	private void inf(Stack<String> param){
-		try {
-			double a = kernel.getCalculator().numberDouble(param.get(0));
-			double b = kernel.getCalculator().numberDouble(param.get(1));
-			if (a < b)
-				Interprete.calcul.push(Logo.messages.getString("vrai"));
-			else
-				Interprete.calcul.push(Logo.messages.getString("faux"));
-		} catch (myException e) {
-		}
-		Interprete.operande = true;
+			Interprete.operande = true;
+			Interprete.calcul.push(kernel.getCalculator().inf(param));
 	}
 	private void sup(Stack<String> param){
-		try {
-			double a = kernel.getCalculator().numberDouble(param.get(0));
-			double b = kernel.getCalculator().numberDouble(param.get(1));
-			if (a > b)
-				Interprete.calcul.push(Logo.messages.getString("vrai"));
-			else
-				Interprete.calcul.push(Logo.messages.getString("faux"));
-		} catch (myException e) {
-		}
 		Interprete.operande = true;
+		Interprete.calcul.push(kernel.getCalculator().sup(param));
 	}
 	/**
 	 * / Primitive equal?
@@ -4188,13 +4155,9 @@ public class LaunchPrimitive {
 	 */
 	private void equal(Stack<String> param) {
 		try {
-			double ope1, ope2 = 0;
-			ope1 = Double.parseDouble(param.get(0));
-			ope2 = Double.parseDouble(param.get(1));
-			if (ope2 == ope1)
-				Interprete.calcul.push(Logo.messages.getString("vrai"));
-			else
-				Interprete.calcul.push(Logo.messages.getString("faux"));
+			Double.parseDouble(param.get(0));
+			Double.parseDouble(param.get(1));
+			Interprete.calcul.push(kernel.getCalculator().equal(param));
 		} catch (NumberFormatException e) {
 			if (param.get(0).toString().equals(param.get(1).toString()))
 				Interprete.calcul.push(Logo.messages.getString("vrai"));

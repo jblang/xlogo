@@ -189,7 +189,51 @@ public class MyCalculator {
 		}
 		return sum.stripTrailingZeros().toPlainString();
 	}
-
+	protected String inf(Stack<String> param){
+		try {
+		BigDecimal a = numberDecimal(param.get(0));
+		BigDecimal b = numberDecimal(param.get(1));
+		if (a.compareTo(b)<0) return Logo.messages.getString("vrai");
+		} catch (myException e) {
+		}
+		return Logo.messages.getString("faux");
+	}
+	protected String sup(Stack<String> param){
+		try {
+		BigDecimal a = numberDecimal(param.get(0));
+		BigDecimal b = numberDecimal(param.get(1));
+		if (a.compareTo(b)>0) return Logo.messages.getString("vrai");
+		} catch (myException e) {
+		}
+		return Logo.messages.getString("faux");
+	}
+	protected String infequal(Stack<String> param){
+		try {
+		BigDecimal a = numberDecimal(param.get(0));
+		BigDecimal b = numberDecimal(param.get(1));
+		if (a.compareTo(b)<=0) return Logo.messages.getString("vrai");
+		} catch (myException e) {
+		}
+		return Logo.messages.getString("faux");
+	}
+	protected String supequal(Stack<String> param){
+		try {
+		BigDecimal a = numberDecimal(param.get(0));
+		BigDecimal b = numberDecimal(param.get(1));
+		if (a.compareTo(b)>=0) return Logo.messages.getString("vrai");
+		} catch (myException e) {
+		}
+		return Logo.messages.getString("faux");
+	}
+	protected String equal(Stack<String> param){
+		try {
+		BigDecimal a = numberDecimal(param.get(0));
+		BigDecimal b = numberDecimal(param.get(1));
+		if (a.compareTo(b)==0) return Logo.messages.getString("vrai");
+		} catch (myException e) {
+		}
+		return Logo.messages.getString("faux");
+	}
 	protected String substract(Stack<String> param) throws myException{
 			BigDecimal a = numberDecimal(param.get(0));
 			BigDecimal b = numberDecimal(param.get(1));
