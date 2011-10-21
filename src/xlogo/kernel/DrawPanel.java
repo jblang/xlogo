@@ -1842,6 +1842,8 @@ import xlogo.kernel.perspective.*;
 		if (classicMode) repaint();
 	}
 	private void etiquette2D(double x,double y, double angle, String word){
+		if (word.length()==0) return;
+		
 		g.setPaintMode();
 		g.setColor(tortue.couleurcrayon);
 		Font f=Panel_Font.fontes[police_etiquette]
@@ -2582,7 +2584,10 @@ import xlogo.kernel.perspective.*;
    // This method modifies all Shape for any turtle on screen
    protected void updateAllTurtleShape(){
 	   for (int i=0;i<tortues.length;i++){
-		   if (null!=tortues[i]) tortues[i].fixe_taille_crayon(2*tortues[i].getPenWidth());
+		   if (null!=tortues[i]) 
+			   {
+			   tortues[i].fixe_taille_crayon(2*tortues[i].getPenWidth());
+			   }
 	   }
    }
    /**

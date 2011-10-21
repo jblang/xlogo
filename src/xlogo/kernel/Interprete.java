@@ -300,6 +300,8 @@ public class Interprete {
 							throw e;
 						}
 					}
+//					System.out.println(instructionBuffer.toString());
+//					System.out.println(nom+"arguments"+param);
 					// Looking for Optional arguments in case of procedure
 					if (i < 0) {
 						Procedure proc = wp.getProcedure(-i - 2);

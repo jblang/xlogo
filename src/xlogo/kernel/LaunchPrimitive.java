@@ -565,6 +565,7 @@ public class LaunchPrimitive {
 				et(param);
 			break;
 			case 49: // non
+				
 				try {
 					Interprete.operande = true;
 					boolean b1 = predicat(param.get(0));
@@ -1127,7 +1128,7 @@ public class LaunchPrimitive {
 				if (null != image)
 					cadre.getArdoise().chargeimage(image);
 				break;
-			case 91: // ftc, fixetaillecrayon
+			case 91: // ftc, fixetaillecrayon 
 				try {
 					double nombre = kernel.getCalculator().numberDouble(param.get(0));
 					if (nombre < 0)
@@ -2838,6 +2839,7 @@ public class LaunchPrimitive {
            					}
            					Config.penShape=i;
            					cadre.getArdoise().updateAllTurtleShape();
+            				cadre.getArdoise().setStroke(kernel.getActiveTurtle().crayon);           					
            				}
            				catch(myException e){}
            			break;
@@ -3777,10 +3779,10 @@ public class LaunchPrimitive {
     					li1=new String(Utils.decoupe(li1));
     					String li2 = getList(param.get(1));
     					li2=new String(Utils.decoupe(li2));
-    					String instr=li1+"\\siwhile "+li2+ "[ " + li1+ "] ";
+    					String instr="\\siwhile "+li2+ "[ " + li1+ "] ";
     					LoopWhile bp=new LoopWhile(BigDecimal.ONE,BigDecimal.ZERO,BigDecimal.ONE,instr);
     					Primitive.stackLoop.push(bp);
-    					cadre.getKernel().getInstructionBuffer().insert(instr+Primitive.END_LOOP+" ");
+    					cadre.getKernel().getInstructionBuffer().insert(li1+instr+Primitive.END_LOOP+" ");
     				} catch (myException e) {
     				}
                 	   break;
