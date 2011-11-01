@@ -3142,6 +3142,7 @@ public class LaunchPrimitive {
         					if (null == mot)
         						throw new myException(cadre, param.get(0) + " "
         							+ Logo.messages.getString("error.word"));
+        					mot=mot.toLowerCase();
         					if (wp.globale.containsKey(mot)||Interprete.locale.containsKey(mot))
         					Interprete.calcul.push(Logo.messages.getString("vrai"));
         					else
