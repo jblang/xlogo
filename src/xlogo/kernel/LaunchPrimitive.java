@@ -1828,7 +1828,7 @@ public class LaunchPrimitive {
 			case 145: // heure
 				Interprete.operande = true;
 				cal = Calendar.getInstance(Logo.getLocale(Config.langage));
-				int heure = cal.get(Calendar.HOUR);
+				int heure = cal.get(Calendar.HOUR_OF_DAY);
 				int minute = cal.get(Calendar.MINUTE);
 				int seconde = cal.get(Calendar.SECOND);
 				Interprete.calcul.push("[ " + heure + " " + minute + " "
