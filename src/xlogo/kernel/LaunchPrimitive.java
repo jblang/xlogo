@@ -6,6 +6,7 @@
  */
 package xlogo.kernel;
 
+import java.text.NumberFormat;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.Iterator;
@@ -816,6 +817,9 @@ public class LaunchPrimitive {
 						Interprete.calcul.push(debut_chaine + mot);
 					}
 				}
+				
+				
+				
 				break;
 			case 60: // dernier
 				Interprete.operande = true;
@@ -4214,9 +4218,10 @@ public class LaunchPrimitive {
 			return (liste.substring(1, liste.length()));
 		} else
 			try {
-				Double.parseDouble(liste);
-				debut_chaine = "";
-				return liste;
+				if (liste==String.valueOf(Double.parseDouble(liste)))			
+					debut_chaine = "";
+				else debut_chaine="\"";
+				return Utils.SortieTexte(liste);
 			} catch (NumberFormatException e) {
 			}
 		return (null);
