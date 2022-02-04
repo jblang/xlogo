@@ -202,9 +202,8 @@ public class Panel_General extends JPanel {
 				UIManager
 						.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
 			} else if (motif.isSelected()) {
-				Config.looknfeel=Config.LOOKNFEEL_MOTIF;
-				UIManager
-						.setLookAndFeel(new com.sun.java.swing.plaf.motif.MotifLookAndFeel());
+				//Config.looknfeel=Config.LOOKNFEEL_MOTIF;
+				//UIManager.setLookAndFeel(new com.sun.java.swing.plaf.motif.MotifLookAndFeel());
 			}
 			cadre.changeLookNFeel();
 		} catch (Exception exc) {

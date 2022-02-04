@@ -322,7 +322,7 @@ public class Logo {
 			element=st.nextToken();
 			StringTokenizer sti=new StringTokenizer(element);
 			if (sti.countTokens()==9){
-				Config.COLOR_ENABLED=(new Boolean(sti.nextToken())).booleanValue();
+				Config.COLOR_ENABLED=Boolean.parseBoolean(sti.nextToken());
 				Config.coloration_commentaire=Integer.parseInt(sti.nextToken());	
 				Config.coloration_operande=Integer.parseInt(sti.nextToken());
 				Config.coloration_parenthese=Integer.parseInt(sti.nextToken());
@@ -384,8 +384,8 @@ public class Logo {
 	  
 	  try{
 		  // Display the java3d version
-		  java.util.Map<String,String> map=VirtualUniverse.getProperties();
-		  System.out.println("Java3d :"+map.get("j3d.version"));
+		  //java.util.Map<String,String> map=VirtualUniverse.getProperties();
+		  //System.out.println("Java3d :"+map.get("j3d.version"));
 	  }
 	  catch(Exception e){
 		  System.out.println("Java3d problem");

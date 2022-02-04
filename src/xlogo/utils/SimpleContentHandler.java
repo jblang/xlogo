@@ -245,8 +245,7 @@ public class SimpleContentHandler implements ContentHandler {
         		for (int index = 0; index < attributs.getLength(); index++) { // on parcourt la liste des attributs
           			String att=attributs.getLocalName(index);
            			if (att.equals("boolean"))  {
-           				Boolean b=new Boolean(attributs.getValue(index));
-           				Config.drawGrid=b.booleanValue();
+           				Config.drawGrid= Boolean.parseBoolean(attributs.getValue(index));
            			}
            			else if (att.equals("xgrid")){
            				try{
@@ -279,12 +278,10 @@ public class SimpleContentHandler implements ContentHandler {
           		for (int index = 0; index < attributs.getLength(); index++) { // on parcourt la liste des attributs
           			String att=attributs.getLocalName(index);
            			if (att.equals("boolean_xaxis"))  {
-           				Boolean b=new Boolean(attributs.getValue(index));
-           				Config.drawXAxis=b.booleanValue();
+           				Config.drawXAxis= Boolean.parseBoolean(attributs.getValue(index));
            			}
            			else if (att.equals("boolean_yaxis"))  {
-           				Boolean b=new Boolean(attributs.getValue(index));
-           				Config.drawYAxis=b.booleanValue();
+           				Config.drawYAxis= Boolean.parseBoolean(attributs.getValue(index));
            			}
            			else if (att.equals("xaxis")){
            				try{
@@ -345,8 +342,7 @@ public class SimpleContentHandler implements ContentHandler {
         				UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
         			break;
         			case Config.LOOKNFEEL_MOTIF:
-					UIManager
-							.setLookAndFeel(new com.sun.java.swing.plaf.motif.MotifLookAndFeel());
+					//UIManager.setLookAndFeel(new com.sun.java.swing.plaf.motif.MotifLookAndFeel());
         			break;
         			default:
         				UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
@@ -361,8 +357,7 @@ public class SimpleContentHandler implements ContentHandler {
           		for (int index = 0; index < attributs.getLength(); index++) { // on parcourt la liste des attributs
           			String att=attributs.getLocalName(index);
            			if (att.equals("boolean"))  {
-           				Boolean b=new Boolean(attributs.getValue(index));
-           				Config.COLOR_ENABLED=b.booleanValue();
+           				Config.COLOR_ENABLED= Boolean.parseBoolean(attributs.getValue(index));
 //           				Config.COLOR_ENABLED=Boolean.parseBoolean(attributs.getValue(index));
            				}
            			else if (att.equals("color_commentaire")){
