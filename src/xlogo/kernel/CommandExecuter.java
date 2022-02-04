@@ -1,142 +1,114 @@
 /**
  * Title :        XLogo
- * Description :  XLogo is an interpreter for the Logo 
- * 						programming language
+ * Description :  XLogo is an interpreter for the Logo
+ * programming language
+ *
  * @author Loïc Le Coq
  */
 package xlogo.kernel;
 
-import java.util.Stack;
-import java.util.Vector;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.StringTokenizer;
-import java.util.Calendar;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Rectangle;
-import javax.swing.JTextArea;
-import java.awt.image.BufferedImage;
-import javax.imageio.*;
-import java.io.*;
-import javax.swing.JOptionPane;
-import javax.swing.ImageIcon;
-import javax.swing.Icon;
-import javax.vecmath.Point3d;
-import java.math.BigDecimal;
-import xlogo.utils.Utils;
-import xlogo.gui.Lis;
-import xlogo.gui.MyTextAreaDialog;
-import xlogo.gui.preferences.*;
-import xlogo.utils.myException;
-import xlogo.kernel.Kernel;
-import xlogo.kernel.Workspace;
-import xlogo.Config;
-import xlogo.gui.HistoryPanel;
 import xlogo.Application;
+import xlogo.Config;
 import xlogo.Logo;
-import xlogo.kernel.network.*;
 import xlogo.kernel.grammar.LogoException;
-import xlogo.kernel.grammar.LogoNumber;
 import xlogo.kernel.grammar.LogoPrimitive;
 import xlogo.kernel.grammar.LogoType;
-import xlogo.kernel.gui.*;
-import xlogo.kernel.perspective.ElementPolygon;
-import xlogo.kernel.perspective.ElementLine;
-import xlogo.kernel.perspective.ElementPoint;
+
+import java.util.Stack;
 
 /*******************************************************************************
  * When a primitive or a procedure has all arguments, LauchPrimitive executes
  * the appropriate code.
  ******************************************************************************/
 public class CommandExecuter {
-	private LogoType result;
-	/**
-	 * Default Application frame
-	 */
-	private Application app;
-	/**
-	 * Default kernel
-	 */
-	private Kernel kernel;
-	/**
-	 * Default workspace
-	 */
-	private Workspace wp;
-	private Procedure procedure;
-	// private MathContext mc=MathContext.DECIMAL64;
-	/**
-	 * This is the start for the String returned by primitive or procedure.<br>
-	 * It is "\"" for words and "" for numbers. <br>
-	 * <br>
-	 * 
-	 * Ceci est le début de la chaine générique renvoyé par les primitives<br>
-	 * Elle vaut "\"" pour les mots et "" pour les nombres<br>
-	 */
-	private String debut_chaine = "";
-	/***************************************************************************
-	 * When we launch the primitive "listentcp", we have to save workspaces
-	 **************************************************************************/
-	private Stack<Workspace> savedWorkspace;
+    private LogoType result;
+    /**
+     * Default Application frame
+     */
+    private final Application app;
+    /**
+     * Default kernel
+     */
+    private final Kernel kernel;
+    /**
+     * Default workspace
+     */
+    private final Workspace wp;
+    private Procedure procedure;
+    // private MathContext mc=MathContext.DECIMAL64;
+    /**
+     * This is the start for the String returned by primitive or procedure.<br>
+     * It is "\"" for words and "" for numbers. <br>
+     * <br>
+     *
+     * Ceci est le début de la chaine générique renvoyé par les primitives<br>
+     * Elle vaut "\"" pour les mots et "" pour les nombres<br>
+     */
+    private final String debut_chaine = "";
+    /***************************************************************************
+     * When we launch the primitive "listentcp", we have to save workspaces
+     **************************************************************************/
+    private Stack<Workspace> savedWorkspace;
 
-	/**
-	 * @param cadre
-	 *            Default frame Application
-	 * @param wp
-	 *            Default workspace
-	 */
-	public CommandExecuter(Application app, Workspace wp) {
-		this.wp = wp;
-		this.app = app;
-		this.kernel = app.getKernel();
-	}
-	/**
-	 * Execute the primitive number "id" with the arguments contained in "param"<br>
-	 * <ul>
-	 * <li> if id<0: it is a procedure. <br>
-	 * For example, if id=-3, it is procedure number -i-2=-(-3)-2=1 </li>
-	 * <li> if d>=0: it is primitive number "id"</li>
-	 * </ul>
-	 * 
-	 * @param id
-	 *            The number representing the procedure or the primitive
-	 * @param param
-	 *            The Stack that contains all arguments
-	 */
-	protected LogoType execute(LogoType lt, Stack<LogoType> args){
-		if (lt.isPrimitive()){
-			LogoPrimitive lp=(LogoPrimitive)lt;
-			return executePrimitive(lp.getId(),args);
-		}
-		else if(lt.isProcedure()){
-			
-		}
-		
-		return null;
-	}
-	private LogoType executePrimitive(int id, Stack<LogoType> param) {
-		LogoType arg;
-		switch (id) {
-		case 0: // av 
-			delay();
-			arg=waitForDouble(param.pop());
-			result=app.getArdoise().av(arg);
-			break;
-		case 1: // re
-			delay();
-			arg=waitForDouble(param.pop());
-			result=app.getArdoise().re(arg);
-			break;
-		case 2: // td
-			delay();
-			arg=waitForDouble(param.pop());
-			result=app.getArdoise().td(arg);			
-			break;
-		case 3: // tg
-			delay();
-			arg=waitForDouble(param.pop());
-			result=app.getArdoise().tg(arg);
-			break;
+    /**
+     * @param app
+     *            Default frame Application
+     * @param wp
+     *            Default workspace
+     */
+    public CommandExecuter(Application app, Workspace wp) {
+        this.wp = wp;
+        this.app = app;
+        this.kernel = app.getKernel();
+    }
+
+    /**
+     * Execute the primitive number "id" with the arguments contained in "param"<br>
+     * <ul>
+     * <li> if id<0: it is a procedure. <br>
+     * For example, if id=-3, it is procedure number -i-2=-(-3)-2=1 </li>
+     * <li> if d>=0: it is primitive number "id"</li>
+     * </ul>
+     *
+     * @param lt
+     *            The number representing the procedure or the primitive
+     * @param args
+     *            The Stack that contains all arguments
+     */
+    protected LogoType execute(LogoType lt, Stack<LogoType> args) {
+        if (lt.isPrimitive()) {
+            LogoPrimitive lp = (LogoPrimitive) lt;
+            return executePrimitive(lp.getId(), args);
+        } else if (lt.isProcedure()) {
+
+        }
+
+        return null;
+    }
+
+    private LogoType executePrimitive(int id, Stack<LogoType> param) {
+        LogoType arg;
+        switch (id) {
+            case 0: // av
+                delay();
+                arg = waitForDouble(param.pop());
+                result = app.getArdoise().av(arg);
+                break;
+            case 1: // re
+                delay();
+                arg = waitForDouble(param.pop());
+                result = app.getArdoise().re(arg);
+                break;
+            case 2: // td
+                delay();
+                arg = waitForDouble(param.pop());
+                result = app.getArdoise().td(arg);
+                break;
+            case 3: // tg
+                delay();
+                arg = waitForDouble(param.pop());
+                result = app.getArdoise().tg(arg);
+                break;
 /*		case 4: // arithmetic.power puissance
 			try {
 				Interprete.operande = true;			
@@ -3807,24 +3779,25 @@ public class CommandExecuter {
    				Interprete.calcul.push(kernel.getActiveTurtle().getFontJustify());
    				break;
 		}*/
-		}
-		return result;
-	}
-	
-	/**
-	 * According to velocity settings, increase or decrease turtle execution on screen
-	 * 
-	 */
-	private void delay() {
-		if (Config.turtleSpeed != 0) {
-			try {
-				Thread.sleep(Config.turtleSpeed * 5);
-			} catch (InterruptedException e) {
-			}
-		}
-	}
-	private LogoType waitForDouble(LogoType type){
-		if (type.isNumber()) return type;
-		else return new LogoException(type.toString() + " "+ Logo.messages.getString("pas_nombre"));
-	}	
+        }
+        return result;
+    }
+
+    /**
+     * According to velocity settings, increase or decrease turtle execution on screen
+     *
+     */
+    private void delay() {
+        if (Config.turtleSpeed != 0) {
+            try {
+                Thread.sleep(Config.turtleSpeed * 5);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
+    private LogoType waitForDouble(LogoType type) {
+        if (type.isNumber()) return type;
+        else return new LogoException(type + " " + Logo.messages.getString("pas_nombre"));
+    }
 }

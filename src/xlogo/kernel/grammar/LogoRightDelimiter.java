@@ -1,8 +1,9 @@
 /**
  * Title :        XLogo
- * Description :  XLogo is an interpreter for the Logo 
- * 						programming language
+ * Description :  XLogo is an interpreter for the Logo
+ * programming language
  * Licence : GPL
+ *
  * @author Loïc Le Coq
  */
 package xlogo.kernel.grammar;
@@ -12,13 +13,13 @@ package xlogo.kernel.grammar;
  *
  */
 public class LogoRightDelimiter extends LogoType {
-	public boolean isRightDelimiter(){
-		return true;
-	}
+    public boolean isRightDelimiter() {
+        return true;
+    }
 
-	@Override
-	public String toDebug() {
-		return null;
-	}
-	
+    @Override
+    public String toDebug() {
+        return null;
+    }
+
 }
