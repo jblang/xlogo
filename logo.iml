@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/j3dcore.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/j3dutils.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jh.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/jl1.0.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/vecmath.jar!/" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
+    </src_description>
+  </component>
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/bin" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="module-library" exported="">
+      <library name="j3dcore.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/j3dcore.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="j3dutils.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/j3dutils.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="jh.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/jh.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="jl1.0.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/jl1.0.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="vecmath.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/vecmath.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>
