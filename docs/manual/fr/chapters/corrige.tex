@@ -1,0 +1,133 @@
+\chapter{Corrigé des activités}
+\section{Chapitre 2}
+\begin{verbatim}
+pour carre
+repete 4[av 150  td 90]
+fin
+
+pour tri
+repete 3[av 150 td 120]
+fin
+
+pour porte
+repete 2[av 70 td 90 av 50 td 90]
+fin
+
+pour che
+av 55 td 90 av 20 td 90 av 20
+fin
+
+pour dep1
+td 90 av 50  tg 90
+fin
+
+pour dep2
+tg 90 av 50 td 90 av 150 td 30
+fin
+
+pour dep3
+lc td 60 av 20 tg 90 av 35 bc
+fin
+
+pour ma
+carre dep1 porte dep2 tri dep3 che
+fin
+
+\end{verbatim}
+
+\section{Chapitre 3}
+\begin{verbatim}
+pour supercube
+ve lc fpos[ -30 150] bc fpos[-150 150]  fpos[-90 210] fpos[30 210] fpos[-30 150]
+fpos[-30 -210] fpos[30 -150] fpos[30 -90] fpos[-30 -90] fpos[90 -90] fpos[90 30]  
+fpos[-270 30] fpos[-270 -90] fpos[-210 -90] fpos[-210 -30] fpos[-90 -30] fpos[-90 -150]
+fpos[-210 -150] fpos[-210 -30] fpos[-150 30] fpos[-30 30] fpos[-90 -30] fpos[90 150]
+fpos[30 150] fpos[30 210] fpos[30 90] fpos[90 90] fpos[90 150] fpos[90 90] fpos[150 90]
+fpos[150 -30] fpos[90 -90] fpos[90 30] fpos[150 90] lc fpos[-150 30] bc fpos[-150 150] 
+fpos[-150 90] fpos[-210 90] fpos[-270 30] lc  fpos[-90 -150] bc fpos[-30 -90]
+lc fpos[-150 -150] bc fpos[-150 -210] fpos[-30 -210]
+fin
+\end{verbatim}
+
+\section{Chapitre 4}
+\subsection{Le robot}
+Le premier dessin est composé exclusivement de motif élémentaire à base de rectangle, carré et triangle. Voici le code associé à ce dessin:
+\begin{verbatim}
+pour rec :lo :la
+# trace un rectangle de longueur :lo et largeur :la
+repete 2[av :lo td 90 av :la td 90]
+fin
+
+pour carre :c
+# trace un carre de cote :c
+repete 4[av :c td 90]
+fin
+
+pour tri :c
+# trace un triangle equlateral de côté :c
+repete 3[av :c td 120]
+fin
+
+pour patte :c
+rec 2*:c 3*:c carre 2*:c
+fin
+
+pour antenne :c
+av 3*:c tg 90 av :c td 90 carre 2*:c
+lc re 3 *:c td 90 av :c tg 90 bc
+fin
+
+pour robot :c
+ve ct
+# Le corps
+rec 4*:c 28* :c
+# Les pattes
+td 90 av 2*:c patte :c av 4* :c patte :c av 14*:c patte :c av 4*:c patte :c
+# La queue
+lc tg 90 av 4* :c bc td 45 av 11*:c re 11 * :c tg 135
+# le cou et la tête
+av 18 *:c carre :c av 3*:c carre :c td 90 av :c tg 90 av 2*:c td 90 carre 8* :c
+# Oreilles
+av 4*:c tg 60 tri 3*:c lc td 150 av 8 *:c tg 90 bc tri 3*:c
+# Les antennes
+av 4 *:c tg 90 av 2*:c td 90 antenne :c tg 90 av 4*:c td 90 antenne :c
+# les yeux 
+lc re 3 *:c bc carre :c td 90 lc av 3*:c bc tg 90 carre :c
+# La bouche
+lc re 3*:c tg 90 av 3*:c td 90 bc rec :c 4*:c
+fin
+\end{verbatim}
+\subsection{La grenouille}
+\begin{verbatim}
+pour gre :c
+ve ct
+av 2 *:c td 90 av 5*:c tg 90 av 4*:c tg 90 av 7 *:c td 90 av 7*:c td 90
+av 21 *:c td 90 av 2*:c tg 90 av 2*:c td 90 av 9*:c td 90 av 2*:c tg 90
+av 2*:c td 90 av 9*:c td 90 av 2*:c td 90 av 7*:c re 5*:c tg 90 av 4*:c 
+td 90 av 4*:c re 4*:c tg 90 re 2*:c tg 90 av 5*:c tg 90 av 4*:c td 90 av 7*:c 
+td 90 lc av 9*:c bc repete 4[av 2*:c td 90]
+fin
+\end{verbatim}
+
+\section{Chapitre 8:}
+\begin{verbatim}
+pour jeu
+# On initialise le ,nombre recherché et le nombre de coups
+donne "nombre hasard 32
+donne "compteur 0
+boucle
+fin
+
+pour boucle
+lis [proposez un nombre] "essai
+si nombre? :essai[
+  # Si la valeur rentrée est bien un nombre 
+  si :nombre=:essai[ec ph ph [vous avez gagné en ] :compteur+1 [coup(s)]][
+    si :essai>:nombre [ec [Plus petit]][ec [Plus grand]]
+    donne "compteur :compteur+1
+    boucle
+  ]
+]
+[ecris [Vous devez rentrer un nombre valide!] boucle]
+fin
+\end{verbatim}

@@ -1,0 +1,168 @@
+XLogo Handbuch
+4 Konventionen
+geändert am %%mtime(%d.%m.%Y %H:%M)
+
+%!encoding: iso-8859-1
+
+ = XLogo Konventionen =
+
+
+== 4.1 Befehle und ihre Interpretation ==
+
+Dieser Abschnitt zeigt einige wichtige Punkte über die Sprache Logo selbst und speziell über XLogo auf.
+
+
+Die Sprache Logo erlaubt es, gewisse Ereignisse durch interne Kommandos auszugelösen - diese Kommandos werden **Primitive** genannt. Jedes Primitiv kann eine gewisse Anzahl von Parametern haben, die **Argumente** genannt werden.
+Zum Beispiel nimmt das Primitiv ``löschebild``, das den Schirm löscht, keine Argumente, während das Primitiv ``summe`` zwei Argumente nimmt.
+
+
+  ``druckezeile summe 2 3`` gibt ``5`` zurück.
+
+
+Es gibt **drei Arten von Argumenten**:
+
+  - **Zahlen**: einige Primitive erwarten Zahlen als ein Argument: ``vw 100`` ist ein Beispiel.
+
+  - **Wörter**: Wörter beginnen mit " . Ein Beispiel von einem Primitiv, das ein Wort als Argument nehmen kann, ist ``druckezeile``.  ``druckezeile "hallo`` ergibt ``hallo``. Beachten Sie, dass wenn Sie das " vergessen, der Interpreter eine Fehlermeldung zurückgibt. In Wirklichkeit erwartet ``druckezeile`` ein Argument, sonst stellt ``hallo`` für den Interpreter gar nichts dar, da es weder Zahl, Wort noch Liste oder eine schon definierte Prozedur ist.
+
+  - **Listen**: Diese werden zwischen Klammern definiert.
+Zahlen werden in einigen Fällen als ein nummerischer Wert betrachtet (z. B. ``vw 100``), und in anderen als ein Wort (z. B. ``druckezeile leer? 12``, das ``falsch`` schreibt).
+
+
+Einige Primitive haben eine allgemeine Form, das heißt dass sie mit einer unbegrenzten Anzahl von Argumenten benutzt werden können. All jene Primitive stehen in der Tabelle unten:
+
+  | druckezeile | summe | produkt | oder |
+| und | liste | satz | wort |
+
+
+Um dem Interpreter zu sagen, dass er diese Primitive in ihrer allgemeinen Form benutzen soll, müssen wir unser Kommando in Klammern schreiben. Sehen Sie sich die Beispiele unten an:
+
+
+```
+druckezeile (summe 1 2 3 4 5)
+---->
+15
+```
+
+```
+(liste [a b] 1 [c d])
+---->
+Ich weiss nicht, was ich machen soll mit [ [ a b ] 1 [ c d ] ]  ?
+```
+
+```
+wenn (und 1=1 2=2 8=5+3) [vw 100 re 90]
+---->
+
+```
+
+
+== 4.2 Prozeduren ==
+
+Zusätzlich zu diesen Primitiven, können Sie Ihre eigenen Befehle definieren. Diese werden **Prozeduren** genannt.
+
+Prozeduren werden vom Wort ``lerne`` eingeführt und enden mit dem Wort ``Ende``. Achten Sie darauf, dass hier ``lerne`` am Anfang klein geschrieben wird und ``Ende`` das Ende einer Prozedur hervor hebt. Sie können erzeugt werden, in dem Sie den internen Prozedureditor benutzen. Hier ist ein kleines Beispiel:
+
+```
+lerne quadrat
+  wiederhole 4 [vorwärts 100 rechts 90]
+Ende
+```
+
+Diese Prozeduren können ebenso Argumente tragen. Um das zu machen, werden Variable benutzt. Eine Variable ist ein Wort, dem ein Wert zugewiesen werden kann. Hier ist ein sehr einfaches Beispiel:
+
+
+```
+lerne zweimal :wort
+  druckezeile :wort
+  druckezeile :wort
+Ende
+```
+
+```
+zweimal [1 2 3]
+---->
+1 2 3
+1 2 3
+```
+
+Sehen Sie sich die verschiedenen Prozedurbeispiele am Ende vom Handbuch an.
+
+
+== 4.3 Spezielles Zeichen \ ==
+
+Das spezielle Zeichen \ erlaubt es besonders Wörter zu bilden, die Leerzeichen oder Zeilenvorschubzeichen enthalten. Wenn \n benutzt wird, springt die Schreibposition zur folgenden Zeile, und \ gefolgt von einem Leerzeichen bedeutet eine Lücke im Wort. Beispiel:
+
+```
+dz "xlogo\ xlogo
+---->
+xlogo xlogo
+```
+
+```
+dz "xlogo\nxlogo
+---->
+xlogo
+xlogo
+```
+
+Sie können deswegen das \-Symbol nur durch das Tippen von \\ schreiben.
+Mit gleichem Verhalten sind die Zeichen () [] # bestimmte Begrenzer von Logo. Wenn Sie sie in einem Wort benutzen wollen, müssen Sie das Zeichen \ davor schreiben.
+
+
+Alle \ Symbole werden ignoriert. Diese Bemerkung ist besonders wichtig für die Verwendung von Dateien.
+Um Ihren aktuellen Verzeichnispfad zu ``c:\Meine Dokumente`` zu setzen:
+
+``setzeordner "c:\\Meine\ Dokumente`` .
+
+Bemerken Sie bitte den Gebrauch von \, um das Leerzeichen zwischen ``Mein`` und ``Dokumente`` . Wenn Sie den Doppel-Backslash vergessen, wird der Pfad als ``c:My-Dokumente`` gelesen und der Interpreter eine Fehlermeldung schicken.
+
+
+== 4.4 Groß- und Kleinschreibung ==
+
+XLogo unterscheidet nicht zwischen Groß- und Kleinschreibung, was Prozedurnamen und Primitive betrifft. Damit wird XLogo die Prozedur ``Quadrat`` , wie oben definiert, richtig übersetzen und ausführen, ob Sie nun ``QUADRAT`` oder ``qUaDraT`` in den Kommandointerpreter tippen.
+
+Andererseits ist XLogo casesensitive bei Listen und Wörtern:
+
+```
+druckezeile "Hallo
+---->
+"Hallo (das Anfangszeichen H bleibt erhalten)
+```
+
+
+== 4.5 Operatoren und Syntax ==
+
+Es gibt zwei Wege gewisse Befehle zu schreiben. Zum Beispiel, um ``4`` und ``7`` zu addieren, gibt es zwei Möglichkeiten: Sie können entweder das Primitiv ``summe`` benutzen, das zwei Argumente erwartet: ``summe 4 7`` , oder Sie können den Operator + benutzen: ``4+7``. Beide haben die gleiche Wirkung.
+
+
+**Diese Tabelle zeigt die Beziehung zwischen Operatoren und Primitiven**:
+
+  || summe | differenz | produkt | quotient |
+| + | - | * | / |
+| oder | und | gleich? | _ |
+| ""|"" | & | = | _ |
+
+Es gibt zwei weitere Operatoren: 
+Operator "Kleiner oder gleich" : <=
+Operator "Größer oder gleich" : >=
+Beachte: Die zwei Operatoren ``| `` und ``&`` sind speziell für XLogo. Sie existieren nicht in traditionellen Logo-Versionen. Hier sind einige Beispiele zum Gebrauch:
+
+
+```
+dz 3+4 <= 7-1 ----> falsch
+
+dz 3=4 | 7<=49/7 ----> wahr
+
+dz 3=4 & 7<=49/7 ----> falsch
+```
+
+
+  --------------------
+
+//XLogo Handbuch//
+([siehe Quelle %%infile])
+
+
+  |  Übersetzt von [Michael Malien michael.malien@gmx.de?Meine_Hinweise_zum_XLogo-Handbuch]  |  Erzeugt durch [Txt2Tags http://txt2tags.sf.net]  |
+|  Geändert am: %%Mtime(%c)  |  am %%Date(%Y-%m-%d um %H% :%M:%S)  |

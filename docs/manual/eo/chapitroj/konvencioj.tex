@@ -1,0 +1,167 @@
+\chapter{Konvencioj adoptitaj en XLOGO}
+Jen prezentado de iuj aferoj pri la programlingvo LOGO mem kaj de
+aliaj pri XLOGO specife.
+
+\section{Komandoj kaj interpretado}
+Programlingvo LOGO konsistas el internaj komandoj: tiajn komandojn oni
+nomas \textbf{primitivoj}.  ^Ciu primitivo atendas iun nombron de
+parametroj nomataj \textbf{argumentoj}.  Por ekzemplo, la primitivo
+\texttt{ev} kiu ebligas vi^si l' ekranon prenas nul argumenton, dum la
+primitivo \texttt{sum} atendas du argumentojn: \texttt{ sum 2 3}
+skribos 5 redone.
+
+Estas tri specoj de argumentoj en LOGO:
+\begin{itemize}
+\item \textbf{La nombroj:} Iuj primitivoj atendas nombrojn kiel
+  argumenton.  Ekzemple \texttt{anta^uen 100}
+\item \textbf{La vortoj:} ^Ciuj vortoj komenci^gas per ".  Ekzemplo de
+  primitivo kapabla labori pri vortoj estas la primitivo
+  \texttt{skribu}.
+\begin{center}
+\texttt{skribu "saluton} 
+\end{center}
+Tiu komando ka^uzas l' aperon de la vorto \texttt{saluton} en la
+teksta areo.
+
+Rimarku ke se vi forgesas la ", l' interpretilo respondos per
+erarmesa^go.  Efektive, \texttt{skribu} atendas argumenton, sed por l'
+interpretilo \texttt{saluton} signifas nenion, ^car ^gi estas nek
+nombro nek vorto nek listo nek jam difinita proceduro.
+\item\textbf{La listoj:} Ilin oni difinas inter rektaj krampoj.
+\end{itemize}
+\vspace{0.5cm} \textbf{Rimarku:} La nombroj estas traktataj jen kiel
+nombraj valoroj, jen kiel vortoj.  Ekzemple: \texttt{skribu unuan 12}
+redonas 1.  Iuj primitivoj akceptas ^generalan formon, tio estas, ili
+povas ricevi nedifinitan nombron de argumentoj.  Jen la listo de tiuj
+primitivoj:
+\begin{center}
+  \begin{tabular}{cccc}
+    \texttt{skribu} & \texttt{sumon}&\texttt{produton} &\texttt{a^u}\\
+    \hline
+    \texttt{kaj}&\texttt{liston}&\texttt{frazon}& \texttt{vorton}\\
+  \end{tabular} 
+\end{center}
+Por sciigi l' interpretilon ke oni uzos ilin sub ilia ^generalan
+formon, oni tajpu la komandon inter rondaj krampoj; jen kelkaj
+ekzemploj:
+\begin{verbatim}
+skribu (sumon 1 2 3 4 5)
+15
+
+(list [a b] 1 [c d])
+Kiel uzi [[a b] 1 [c d]]?
+
+se (kaj 1=1 2=2 8=5+3) [an 100 dn 90]
+\end{verbatim}
+
+\section{Proceduroj}
+Krom tiuj primitivoj, vi povas difini viajn proprajn komandojn.  Oni
+nomas ilin \textit{proceduroj}.  La procedurojn oni komencas difini
+per helpo de la vorto \texttt{por} kaj oni finas difini per la vorto
+\texttt{fino}.  Oni uzas la proceduran redaktilon internan je XLOGO
+por tajpi ilin.  Jen malgrandan ekzemplon:
+\begin{verbatim}
+
+por kvadrato 
+ripetu 4 [antaŭen 100 dekstren 90]
+fino
+
+\end{verbatim}
+
+Anka^u tiaj proceduroj rajtas akcepti argumentojn.  Por tio, oni uzas
+variablojn.  Variablo estas vorto al kiu oni povas rilatigi valoron.
+Jen tre simpla ekzemplo:
+
+\begin{verbatim}
+
+por tuto :a :b
+skribu sum :a :b
+fino
+
+tuto 2 3 -----> 5
+
+\end{verbatim}
+
+\section{La speciala signo  \og\textbackslash\fg}
+La signo \og \textbackslash \fg \ (maloblikva streko) ebligas krei
+vortojn enhavantajn spacojn a^u enhavantajn linisalton.  \og
+\textbackslash n\fg \ enmetas linisalton kaj \og
+\textbackslash\textvisiblespace\fg \ enmetas spacon en vorton.
+Ekzemple:
+\begin{verbatim}
+skribu "xlogo\ xlogo
+xlogo xlogo
+skribu "xlogo\nxlogo
+xlogo
+xlogo
+\end{verbatim}
+Tial por skribi signon \og \textbackslash\fg \ oni tajpu ^gin duoble:
+\og \textbackslash\textbackslash\fg.
+
+Same, la signoj \og ( ) [ ] \# \fg\ estas limiloj de la lingvo Logo
+kiuj ne povas esti uzataj en vortoj.  Oni povos enmeti ilin per aldoni
+signon \og \textbackslash \fg\ anta^ue.
+
+\textbf{^Ciu signo \og \textbackslash \fg \ sola estos ignorita.  Tio
+  tre gravas specife por administri dosierojn.}
+
+Por establi la aktualan dosierujon je \texttt{C:\textbackslash Miaj
+  dokumentoj}, necesos tajpi:
+\begin{verbatim}
+dosierujon_provizu "c:\\Miaj\ dokumentoj
+\end{verbatim}
+Rimarku l' uzadon de \og \textbackslash\textvisiblespace \fg \ por
+indiki la spacon inter \og Miaj\fg \ kaj \og dokumentoj\fg.  Se
+aliflanke, vi ne metas la duoblan maloblikvan strekon, la vojo
+difinitas estos tiam \texttt{c:Miaj dokumentoj} kaj la interpretilo
+skribos erarmesa^gon.
+
+\section{Reguloj pri uskleco}
+
+\xlogo{} ne diferencas uskle pri la nomoj de proceduroj kaj
+primitivoj.  Tial, pri la proceduro \texttt{kvadrato} difinita
+anta^ue, ^cu vi tajpus \texttt{KVADRATO}, ^cu \texttt{KvaDRato}, l'
+interpretilo de komandoj ^guste interpretos kaj rulos
+\texttt{kvadrato}.  Male, \xlogo{} diferencas en listoj kaj vortoj:
+\begin{verbatim}
+skribu "Saluton ----> "Saluton (oni konservas la majusklan S)
+\end{verbatim}
+\section{Operatoroj kaj sintakso}
+Estas du manieroj skribi kelkajn komandojn.  Ekzemple, por adicii 4
+kaj 7, estas du ebloj:
+\begin{itemize}
+\item jen oni uzas la primitivon \texttt{sumon} kiu atendas du
+  argumentojn: oni skribas \texttt{sumon 4 7 }
+\item jen oni uzas l' operatoron +: oni skribas \texttt{4+7}.
+\end{itemize}
+La du havas saman efikon.  Jen la listo de rilatoj inter operatoroj
+kaj primitivoj:
+\begin{center}
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    \texttt{sumon} & \texttt{subtrahon} & \texttt{produton} & \texttt{dividon}\\
+    \hline
+    + & - & * & / \\
+    \hline
+    \texttt{a^u} & \texttt{kaj}&\texttt{egala?}& \\
+    \hline
+    | & \& &=&\\
+    \hline
+  \end{tabular}\end{center}
+\vspace{0.25cm}
+Ekzistas anka^u du operatoroj de numeraj provoj rilataj al neniu primitivo:
+\begin{itemize}
+\item Operatoro \og malpli granda a^u egala\fg{} \texttt{<=}
+\item Operatoro \og pli granda a^u egala\fg{} \texttt{>=}
+\end{itemize}
+
+\textbf{Atentu:} Neniu spaco inter la signoj \verb+>+ kaj \verb+=+!
+
+\textbf{Rimarku:} La du operatoroj | et \& estas specifaj operatoroj
+de XLOGO.  Ili ne ekzistas en la tradiciaj versioj de LOGO.  Jen
+kelkaj ekzemploj de uzo:
+\begin{verbatim}
+s 3+4=7-1 ----> vera
+s 3=4 | 7>=49/7 ----> vera
+s 3=4 & 7=49/7 ----> malvera
+\end{verbatim}

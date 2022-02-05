@@ -1,0 +1,62 @@
+XLogo Handbuch
+1 Einführung
+erzeugt am %%mtime(%d.%m.%Y %H:%M)
+
+%!encoding: iso-8859-1
+
+ = 1 Einführung =
+
+
+== 1.1 XLogo und die Sprache Logo ==
+
+- Logo ist eine in den 70ern von Seymour Papert entwickelte Computersprache. Es ist eine ausgezeichnete Sprache, um das Programmieren zu lernen, und bietet Dinge wie **Schleifen, Bedingungen, Prozeduren, etc**. Der Benutzer kann eine "Schildkröte" genanntes Objekt mit Kommandos so einfach wie mit ``vorwärts``, ``zurück``, ``rechts`` und so weiter bewegen. Bei jedem Schritt hinterläßt die Schildkröte eine Spur hinter sich, wodurch Zeichnungen erzeugt werden. Zudem zählen  Operationen auf Wörter und Listen dazu, was Logo eigentlich ausmacht.
+
+    - Geben Sie zum Beispiel ``vorwärts 100 rechts 90`` ein, wird der Igel ``100`` Schritte vor gehen, und sich dann um ``90`` Grad nach rechts drehen.
+    
+    - Dieser sehr intuitive graphische Ansatz macht Logo zu einer idealen Sprache für Anfänger, und besonders leicht für Kinder!
+
+
+- XLogo ist ein in Java geschriebener Logo-Interpreter. Er unterstützt gegenwärtig sieben Sprachen (Französisch, Englisch, Arabisch, Spanisch, Portugiesisch, Esperanto und Deutsch, und wird unter der GPL lizenziert. Dieses Programm ist deswegen frei erhältlich. (Lizenz in Deutsch)
+
+  - XLogo arbeitet zusammen mit:
+    - Windows (95, 98, 2000, XP)
+    - LINUX (Debian und Mandrake 9.*, 10.*)
+    - MacOSX (10.4 Tiger)
+
+		  
+- **Anmerkungen des Übersetzers: Schreibweisen in der deutschen Version**
+
+    - Der Einfachheit wegen wird in der deutschen Version das Wort **Igel** anstelle von **Schildkröte** geschrieben.
+
+    - Überhaupt sind die meisten Grundwörter angelehnt an die aus MSW/FMSLogo. So fühlen sich Anfänger automatisch auch in dem Dialekt heimisch.
+
+    - In XLogo heißen die Grundwörter auch **Primitive**, um sie von den Kommandos in der Kommandozeile zu unterscheiden, die sich aus mehreren Grundwörtern zusammensetzen können.
+	  
+
+== 1.2 Java ==
+
+- XLogo ist in Java geschrieben.
+
+    - Bei Java handelt es sich um eine Programmiersprache mit dem Nutzen, systemübergreifend zu sein. Deswegen wird XLogo auf Linux-, Windows- oder MacOS-Maschinen ohne Probleme laufen.
+
+    - **WICHTIG**: Um eine in Java geschriebene Anwendung laufen zu lassen, müssen Sie die Java-Laufzeit-Umgebung (JRE) auf Ihrem Computer installieren. Diese ist frei und kann geladen werden von:
+      http://java.sun.com/javase/downloads/index.jsp (Empfohlene, neueste Version)
+
+    - Für ältere JRE-(1.4.1-) Versionen und für ältere Apple Macs:
+      http://java.sun.com/products/archive/j2se/1.4.1_07/index.html (älteres JRE)
+
+
+**Erinnern Sie sich daran, die Ihrem Betriebssystem entsprechende JRE zu wählen.**
+
+**Auf der Download-Seite gibt es eine Version von XLogo für die Verwendung mit JRE 1.4.1. Diese sollte sehr stabil laufen. Allerdings würde ich jedem dazu raten, aktuelle JRE- und XLogo-Versionen zu benutzen.**
+
+
+
+  --------------------
+
+//XLogo Handbuch//
+([siehe Quelle %%infile])
+
+  |  Übersetzt von [Michael Malien michael.malien@gmx.de?Meine_Hinweise_zum_XLogo-Handbuch]  |  Erzeugt durch [Txt2Tags http://txt2tags.sf.net]  |
+|  Geändert am: %%Mtime(%c)  |  am %%Date(%Y-%m-%d um %H% :%M:%S)  |
+

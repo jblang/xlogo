@@ -1,0 +1,123 @@
+\chapter{Installation de \xlogo}
+\noindent 
+\begin{itemize}
+ \item Premièrement, il vous faut installer un environnement d'exécution JAVA sur votre ordinateur. Rendez-vous sur cette page:
+\begin{center}
+ \texttt{http://java.sun.com/javase/downloads/index.jsp}
+\end{center}
+Télécharger le JRE (Java Runtime Environment) correspondant à votre systèmee d’exploitation (windows, Linux ...) puis installez-le.
+\item Deuxièmement, il faut télécharger le fichier \texttt{xlogo.jar} situé à l'adresse:
+\begin{center}
+ \texttt{http://downloads.tuxfamily.org/xlogo/common/xlogo.jar}
+\end{center}
+Sinon, plus simplement, rendez-vous sur le site de \xlogo, à l'adresse \texttt{http://xlogo.tuxfamily.org} puis choisir le français et le menu téléchargement.
+\end{itemize}
+\section{Configuration de \xlogo}
+\subsection{Environnement Linux}
+Sous Ubuntu 8.04:
+\begin{enumerate}
+ \item Pour installer JAVA:
+\begin{itemize}
+ \item Système -> Administration -> Gestionnaire de paquets Synaptic
+ \item Installer le paquet \texttt{sun-java6-jre}
+\end{itemize}
+ \item  Pour ouvrir le fichier \texttt{xlogo.jar} par double-clic:
+\begin{itemize}
+ \item Clic droit sur \texttt{xlogo.jar}, Propriétés
+ \item Onglet \og Ouvrir avec\fg: Choisir Sun Java Runtime 
+\end{itemize}
+ \item Asscocier les extensions \texttt{lgo} à \xlogo:
+\begin{itemize}
+ \item Clic droit sur \texttt{xlogo.jar}, Propriétés
+ \item Onglet \og Ouvrir avec\fg:
+ \item Bouton \og Ajouter \fg
+ \item Dans \og Utiliser une comande personnalisée:\fg, taper:
+\begin{center}
+\texttt{java -jar chemin\_vers\_xlogo.jar} 
+\end{center}
+\end{itemize}
+\end{enumerate}
+\textbf{Remarque:} \xlogo\ est inclus dans la distribution OpenSuse.
+\subsection{Environnement Windows}
+    En principe, si vous double-cliquez sur l’icône de \xlogo, le logiciel doit se lancer. Si c’est le cas,
+passer au paragraphe suivant. Sinon, c'est qu'un autre programme prend en charge les fichiers d'extension \og\texttt{jar}\fg\ (Souvent, des programmes de décompression, style WinZip et autres).\\ \\
+ Voilà comment associer le programme \og\texttt{java}\fg\ aux fichiers d'exetnsion \og \texttt{jar}\fg. (Certains chemins peuvent différés selon que vous possédiez Windows 98, 2000, XP ...)
+\begin{enumerate}
+ \item Démarrer–> Paramètres —> Options des dossiers ... 
+ \item Cliquez ensuite sur l’onglet \og Types de fichiers\fg\ (le 3\textsuperscript{ème}). 
+ \item Repérez alors dans la liste des options proposées celles se rapportant au fichiers JAR (Fichiers JAR, Fichiers exécutables JAR, archive JAR ...) 
+ \item Sélectionner ce type de fichiers et cliquez sur \og Modifier...\fg 
+ \item Une nouvelle fenêtre apparaît alors choisissez \og Modifier... \fg 
+ \item Séectionner alors \og Parcourir...\fg
+ \item Il faut indiquer le chemni vers \texttt{javaw.exe}, en principe
+\begin{center}
+ \texttt{c:\textbackslash Program Files\textbackslash java\textbackslash j2re1.4.1\textbackslash bin\textbackslash javaw.exe}
+\end{center}
+ \item Une fois ceci fait, il apparaît dans le champ Application utilisée pour réaliser l’action :
+\begin{center}
+ \texttt{c:\textbackslash Program Files\textbackslash java\textbackslash j2re1.4.1\textbackslash bin\textbackslash javaw.exe}
+\end{center}
+Il faut alors rajouter au bout :
+\begin{center}
+\texttt{"c:\textbackslash Program Files\textbackslash java\textbackslash j2re1.4.1\textbackslash bin\textbackslash javaw.exe" -jar "\%1" \%*}
+\end{center} 
+(Attention il faut un espace de chaque côté de -jar)
+\item Ensuite, il n'y a plus qu'à refermer toutes les fenêtres puis double-cliquer sur l'icône de \xlogo. 
+\end{enumerate}
+ Si ca ne fonctionne toujours pas, il y a une deuxième possiblité: Vous ouvrez une console MSDOS (Démarrer –> Programmes –> Commandes MSDOS ou Démarrer—> Programmes—-> Accessoires—-> Invite MSDOS) puis vous tapez l’instruction suivante :
+\begin{center}
+ \texttt{java -jar le\_chemin\_ou\_se\_trouve\_le\_fichier}
+\end{center}
+Par exemple : \texttt{java -jar c:\textbackslash xlogo\textbackslash xlogo.jar}\\ \\
+    Si cela vous ennuie de systématiquement devoir taper cette instruction. Taper là dans un fichier texte et
+enregistrer le par exemple sous le nom de \texttt{xlogo.bat}. Il ne reste plus qu'à double cliquer sur \texttt{xlogo.bat} pour lancer \xlogo.
+
+\subsubsection*{Associer les fichiers d'extension \texttt{lgo} avec \xlogo}
+Je n'ai pas réussi à configurer cela sous Vista. (Je n'ai pas trop cherché non plus... avis aux amateurs! Merci de me communiquer la solution)\\ \\
+     En principe, les fichiers d'extension \texttt{.lgo} ne sont pas reconnus par votre ordinateur, lorsque vous double-cliquez
+dessus, une boîte de dialogue apparaît vous demandant quelle application il faut utiliser pour ouvrir le fichier.
+\begin{itemize}
+ \item  Indiquer \og Autre \fg puis indiquer le chemin vers l’application \texttt{javaw.exe}
+\begin{center}
+ Généralement, \texttt{c:\textbackslash Program Files\textbackslash java\textbackslash j2re1.4.1\textbackslash bin\textbackslash javaw.exe}
+\end{center}
+\item Doner un nom pour désigner les fichiers d'extension \texttt{lgo}.\\
+Par exemple: Fichiers Logo
+\item Démarrer -> Paramèters -> Options des dossiers
+\item Onglet \og Type de Fichiers \fg
+\item Repérer dans la liste les fichiers \texttt{lgo}
+\item Sélectionner ce type de fichiers puis cliquer sur \og Modifier\fg
+\item Une nouvelle fenêtre apparaît, Encore \og Modifier\fg
+\item Dans le champ \og Application utilisée pour réaliser l'action\fg,
+\begin{center}
+\texttt{"c:\textbackslash Program Files\textbackslash java\textbackslash j2re1.4.1\textbackslash bin\textbackslash javaw.exe" -jar xlogo.jar "\%1" \%*}
+\end{center} 
+\item Reste à fermer les fenêtres
+\end{itemize}
+\section{Mises à jour}
+\begin{center}
+\includegraphics{images/rss.png} \hspace{1cm} \texttt{http://xlogo.tuxfamily.org/rss.xml}
+\end{center}
+Pour mettre à jour \xlogo, il suffit de remplacer le fichier \texttt{xlogo.jar} par sa nouvelle version. 
+Si vous souhaitez être prévenu de la parution de chaque nouvelle version, ou de chaque amélioration, il est possible de s'abonner au fil RSS de \xlogo. L'adresse du fill RSS est:
+\begin{center}
+ \texttt{http://xlogo.tuxfamily.org/rss.xml}
+\end{center}
+Il existe plusieurs logiciels permettant de gérer les fils RSS, si vous n'êtes pas coutumier de cette technique, le plus simple est d'utiliser Mozilla Thunderbird:
+\begin{itemize}
+ \item Menu Edition - Paramètre des comptes
+ \item Bouton \og Ajouter un compte\fg
+ \item \og Nouvelles RSS et Blogs\fg
+ \item Nom du compte: \og Fils RSS\fg\ par exemple
+ \item Boutons \og Suivant\fg\ et \og Terminer\fg
+ \item Dans la fenêtre \og Paramètre des comptes\fg, sélectionner alors \og Fils RSS\fg\ dans le menu de gauche puis cliquer sur le bouton \og Gérer les abonnements\fg.
+ \item Bouton \og Ajouter\fg
+	\begin{itemize}
+ 	\item URL du fil: \texttt{http://xlogo.tuxfamily.org/rss.xml}
+	\item  Cocher la case \og Aficher le résumé de l'article plutôt que de télécharger la page Web\fg
+	\end{itemize}
+\end{itemize}
+\vspace*{0.2cm}
+Voilà, avec le bouton \og Envoyer-Recevoir\fg, vous recevrez les nouvelles de \xlogo\ de la même façon que vous gérez vos mails.
+\section{Désinstallation}\label{fichier_perso}
+Pour désinstaller \xlogo, il suffit de supprimer le fichier \texttt{xlogo.jar} et le fichier de démarrage \texttt{.xlogo} (il est situé dans votre répertoire utilisateur c'est à dire \texttt{/home/votre\_login} pour les linuxiens ou \texttt{c:\textbackslash windows\textbackslash.xlogo}

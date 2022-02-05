@@ -1,0 +1,125 @@
+\chapter{Utilizaci\'on de la red con \textsc{XLogo}}
+  \label{Red_XLogo}
+
+\section{La red: ?`c\'omo funciona eso?}
+  \label{Red_Como}
+En primer lugar es necesario explicar los conceptos b\'asicos de la
+comunicaci\'on en una red para usar correctamente las primitivas de
+\textsc{XLogo}. \\
+\begin{center}
+\includegraphics[scale=0.5]{Imagenes/12_Redes/Redes_es.png}
+
+Figura: noci\'on de red
+\end{center}
+
+Dos ordenadores pueden comunicarse a trav\'es de una red si est\'an equipados
+con una tarjeta de red (llamada tambi\'en tarjeta \textit{ethernet}). Cada
+ordenador se  identifica por una direcci\'on personal: su direcci\'on I.P.
+Esta direcci\'on IP consta de cuatro n\'umeros enteros comprendidos entre
+0 y 255 separados por puntos. Por ejemplo, la direcci\'on IP del primer
+ordenador del esquema de la figura es \texttt{192.168.1.1} \\
+
+Dado que no es f\'acil acordarse de este tipo de direcci\'on, tambi\'en se
+puede hacer corresponder a cada direcci\'on IP un nombre m\'as f\'acil de
+recordar. Sobre el esquema anterior, podemos comunicar con el ordenador de
+la derecha bien llam\'andolo por su direcci\'on IP: \texttt{192.168.1.2}, o
+llam\'andolo por su nombre: \texttt{tortuga}. \\
+
+No nos extendamos m\'as sobre el significado de estos n\'umeros. A\~nadamos
+\'unicamente una cosa que es interesante saber, el ordenador local en el cual
+se trabaja tambi\'en se identifica por una direcci\'on: \texttt{127.0.0.1}.
+El nombre que se asocia con \'el es habitualmente \texttt{localhost}.
+
+\section{Primitivas orientadas a la red}
+  \label{Red_Primitivas}
+\textsc{XLogo} dispone de 4 primitivas que permiten comunicarse a trav\'es de
+una red: \texttt{escuchatcp}, \texttt{ejecutatcp}, \texttt{chattcp} y
+\texttt{enviatcp}. 
+
+En los ejemplos siguientes, mantendremos el esquema de red de la subsecci\'on
+anterior.
+\begin{itemize}
+   \item \texttt{escuchatcp}: \index{escuchatcp@\texttt{escuchatcp}} esta
+      primitiva es la base de cualquier comunicaci\'on a trav\'es de la red.
+      No espera ning\'un argumento. Permite poner al ordenador que la ejecuta
+      a la espera de instrucciones dadas por otros ordenadores de la red.
+   \item \texttt{ejecutatcp}: \index{ejecutatcp@\texttt{ejecutatcp}} esta
+      primitiva permite ejecutar instrucciones sobre otro ordenador de la red.
+
+      Sintaxis: \texttt{ejecutatcp palabra lista} $\rightarrow$ La palabra indica
+      la direcci\'on IP o el nombre del ordenador de destino (el que va a
+      ejecutar las \'ordenes), la lista contiene las instrucciones que hay
+      que ejecutar. \\
+
+      Ejemplo: desde el ordenador \texttt{liebre}, deseo trazar un cuadrado
+      de lado 100 en el otro ordenador. Por tanto, hace falta que desde el
+      ordenador \texttt{tortuga} ejecute la orden \texttt{escuchatcp}. Luego,
+      desde el ordenador \texttt{liebre}, ejecuto:
+      \begin{verbatim}
+ ejecutatcp "192.168.2.2 [repite 4 [avanza 100 giraderecha 90]] \end{verbatim}
+      o
+      \begin{verbatim}
+ ejecutatcp "tortuga [repite 4 [avanza 100 giraderecha 90]] \end{verbatim}
+
+   \item \texttt{chattcp}: \index{chattcp@\texttt{chattcp}} permite chatear
+      entre dos ordenadores de la red, abriendo una ventana en cada uno que
+      permite la conversaci\'on.
+
+      Sintaxis: \texttt{chattcp palabra lista} $\rightarrow$ La palabra indica la
+      direcci\'on IP o el nombre del ordenador de destino, la lista contiene
+      la frase que hay que mostrar.
+
+      Ejemplo: \texttt{liebre} quiere hablar con \texttt{tortuga}. \\
+      \texttt{tortuga} ejecuta \texttt{escuchatcp} para ponerse en espera de
+      los ordenadores de la red. \texttt{liebre} ejecuta entonces:
+      \texttt{chattcp "192.168.1.2 [buenos d\'ias]}.\\
+      Una ventana se abre en cada uno de los ordenadores para permitir la
+      conversaci\'on 
+   \item \texttt{enviatcp}: \index{enviatcp@\texttt{enviatcp}} env\'ia datos
+      hacia un ordenador de la red.
+
+      Sintaxis: \texttt{enviatcp palabra lista} $\rightarrow$ La palabra indica
+      la direcci\'on IP o el nombre del ordenador de destino, la lista
+      contiene los datos que hay que enviar. Cuando \textsc{XLogo} recibe
+      los datos en el otro ordenador, responder\'a \texttt{Si} , que podr\'a
+      asignarse a una variable o mostrarse en el \textbf{Hist\'orico de
+      comandos}.\\ 
+
+      Ejemplo: \texttt{tortuga} quiere enviar a \texttt{liebre} la frase
+      \texttt{\char`\"{}3.14159 casi el n\'umero pi"}. \\
+      \texttt{liebre} ejecuta \texttt{escuchatcp} para ponerse en espera de
+      los ordenadores de la red. \\
+      Si \texttt{tortuga} ejecuta entonces:
+      \texttt{enviatcp "liebre [3.14159 casi el n\'umero pi]}, \texttt{liebre}
+      mostrar\'a la frase, pero en \texttt{tortuga} aparecer\'a el mensaje:\\
+      \textcolor{red}{\texttt{?`Qu\'e hacer con  [ Si ]  ?}}\\
+      Deber\'iamos escribir: \\
+      \texttt{es enviatcp "liebre [3.14159 casi el n\'umero pi]} \\
+      o \\
+      \texttt{haz \char`\"{}respuesta enviatcp \char`\"{}liebre [3.14159 casi el 
+            n\'umero pi]}\\
+      En el primer caso, el \textbf{Hist\'orico de comandos} mostrar\'a
+      \texttt{Si}, y en el segundo \verb+"respuesta+ contendr\'a la lista 
+      \texttt{[ Si ]}, como podemos comprobar haciendo\\
+      \texttt{es lista? :respuesta} \\
+      \texttt{cierto} \\
+      \texttt{es :respuesta} \\
+      \texttt{Si} \\
+
+      Con esta primitiva se puede establecer comunicaci\'on con un robot
+      did\'actico a trav\'es de su interfaz de red. En este caso, la respuesta
+      del robot puede ser diferente, y se podr\'an decidir otras acciones en
+      base al contenido de \texttt{:respuesta}.
+\end{itemize}
+
+\noindent Un peque\~no truco: lanzar dos veces \textsc{XLogo} en un mismo
+ordenador.
+\begin{itemize}
+   \item En la primera ventana, ejecuta \texttt{escuchatcp}.
+   \item En la segunda, ejecuta
+      \begin{verbatim}
+ ejecutatcp "127.0.0.1 [repite 4 [avanza 100 giraderecha 90]] \end{verbatim}
+\end{itemize}
+!`As\'i puedes mover a la tortuga en la otra ventana! (!`Ah s\'i!, esto es
+as\'i porque \texttt{127.0.0.1} indica tu direcci\'on local, es decir, de
+tu propio ordenador)

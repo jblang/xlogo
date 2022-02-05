@@ -1,0 +1,67 @@
+XLogo Handbuch
+8 FAQ - Tricks und wissenswerte Dinge
+geändert am %%mtime(%d.%m.%Y %H:%M)
+
+%!encoding: iso-8859-1
+
+ = 8 FAQ - Tricks und wissenswerte Dinge =
+
+
+== 8.1 Obwohl ich eine Prozedur aus dem Editor lösche, läuft sie weiter ==
+
+Wenn Sie aus dem Editor gehen, wird gerade gespeichert oder aktualisiert, was im Editor steht. Der einzige Weg in XLogo eine Prozedur zu löschen geht mit dem Primitiv ``lösche`` oder ``er``.
+
+Beispiel: ``lösche "toto   # löscht die Prozedur toto``
+
+
+== 8.2 Ich benutze die Version in Esperanto, aber ich kann nicht mit Sonderzeichen schreiben! ==
+
+Wenn Sie in die Befehlszeile oder in den Editor tippen, wird, wenn Sie mit dem rechten Knopf klicken, ein rollender Bildschirm erscheinen. In diesem Menü können Sie die traditionellen Editierfunktionen finden (ausschneiden, kopieren, einfügen) und die Esperanto-Sonderzeichen, wenn diese Sprache ausgewählt wird.
+
+
+== 8.3 Im Sound Tab der Hilfsmittel-Dialogbox kann kein Instrument gefunden werden. ==
+
+Traurig ist, dass dieses Problem schon erkannt worden ist. Es ist wegen der Virtuellen Maschine von Java. Dieses Problem tritt völlig zufällig auf. In meinem Fall habe ich zum Beispiel einen Computer, der mit Linux und Windows 98 arbeitet.
+
+Mit Windows 98 erscheint die Liste nicht und mit Linux tut sie es!! Und ich benutze die gleiche JRE und habe kein Hardware-Problem. Dies kann sich von einer JRE-Version zur anderen ändern.
+
+
+== 8.4 Ich habe Probleme den Schirm zu aktualisieren, wenn der Igel zeichnet. ==
+
+Dies ist auch ein bekanntes Problem des JRE. Ich werde versuchen mich damit in der Zukunft zu befassen. Ich könnte in der Lage sein etwas zu tun. Bis jetzt gibt es zwei Lösungen:
+
+- Das Fenster zu minimieren und seine Größe wieder zu verhöhen.
+
+- Das auf der Website vorgeschlagene JRE 1.4.1_07 zu benutzen. Mit JRE > 1.5 geht es besser.
+
+
+== 8.5 Wie tippt man schnell ein früher benutztes Kommando? ==
+
+- Erste Methode: Klicken Sie mit der Maus auf die Zeile der Befehlsgeschichte, wird das Kommando sofort auf der Kommandozeile wieder erscheinen.
+
+============================
+page 64
+
+- Zweite Methode: Mit der Tastatur erlauben die Auf- und Abwärtspfeile durch die Liste der letzten Kommandos zu navigieren, die getippt worden sind (sehr praktisch).
+
+
+== 8.6 Wie kann Ihnen geholfen werden? ==
+
+- Indem jeder beobachteter Fehler berichtet wird. Wenn Sie ein beobachtetes Problem reproduzieren können, ist es umso besser.
+
+- Jeder Vorschlag zum Verbessern des Programms ist willkommen.
+
+- Durch Hilfe beim Übersetzen: besonders in Englisch ...
+
+- Ein bisschen moralische Unterstützung wird immer gerne gesehen!
+
+
+
+  --------------------
+
+//XLogo Handbuch//
+([siehe Quelle %%infile])
+
+  |  Übersetzt von [Michael Malien michael.malien@gmx.de?Meine_Hinweise_zum_XLogo-Handbuch]  |  Erzeugt durch [Txt2Tags http://txt2tags.sf.net]  |
+|  Geändert am: %%Mtime(%c)  |  am %%Date(%Y-%m-%d um %H% :%M:%S)  |
+

@@ -1,0 +1,60 @@
+\chapter{Interact with the user}
+{ }\hfill\textbf{Level:} Newbie
+\section{Question-answer}
+\noindent The program that we're going to create in this chapter will ask the user his first name, his name and his age. At the end, the program will make a synthesis!
+\begin{verbatim}
+Your first name is: .......
+Your name is: .......
+Your age is: .......
+You're over 20/less than 20
+\end{verbatim}
+\noindent \textsc{Here are the primitives we're going to use:}  \\
+\begin{itemize}
+\item \texttt{read}:\hspace{4cm}  \textcolor{red}{ \texttt{read [ ] "a}}\\
+Displays a dialog box whose title is the text from the list (here, ``How are you?'').  The answer given by the user is stored in a word or in a list (in case of several words) in the variable \texttt{:a}.
+\item \texttt{make}:\hspace{4cm}  \textcolor{red}{ \texttt{make "a 30}}\\
+Gives the value 30 to the variable \texttt{:a}
+\item \texttt{sentence, se}:\hspace{4cm}  \textcolor{red}{ \texttt{sentence [30 k] "a }}\\
+Adds a value in a list. If this value is a list, removes square brackets.
+\begin{verbatim}
+sentence [30 k] "a ---> [30 k a]
+sentence [1 2 3] 4 ---> [1 2 3 4]
+sentence [1 2 3] [4 5 6] ---> [1 2 3 4 5 6]
+\end{verbatim} 
+\end{itemize}
+This is the code program:
+\begin{verbatim}
+to question
+read [How old are you?] "age
+read [What's your first name?] "fname
+read [What's your name?] "name
+print sentence [Your name is: ] :name
+print sentence [Your first name is: ] :fname
+print sentence [Your age is: ] :age
+if or :age>20 :age=20 [print [You're over 20]] [print [You're less than 20]]
+end
+\end{verbatim}
+\section{Programming a little game.}
+\noindent \textsc{Here is the game we want to program:}\\ \\
+The program chooses an integer between 0 and 32 and memorizes it. Then, a dialog box opens and asks the user to enter an integer. If this integer is equal to the saved integer, it displays ``WIN'' in the text zone. Otherwise, the program indicates if the saved integer in greater or lesser than the user's integer and reopens the dialog box. The program will end when the user has found the correct integer.\\ \\
+We need to use the primitive \texttt{random}:\\
+For example, \texttt{random 20} returns an integer randomly between 0 and 19.\\ \\
+\textsc{Here are the rules to create this game:}
+\begin{itemize}
+\item The number choosen by the computer will be stored in a variable called \texttt{number}.
+\item The dialog box will be named ``Give an integer please''
+\item The number choosen by the user will be stored in a variable called \texttt{try}.
+\item The main procedure will be named \texttt{game}.
+\end{itemize}
+\vspace{0.5cm}
+\noindent \textsc{Some possible improvements:} \\
+\begin{itemize}
+\item Displays the number of tries.
+\item The computer's number will be between 0 and 2000.
+\item Check that the user enters a valid number. You can use the primitive \texttt{number?}. \\
+Examples: \begin{tabular}[t]{l}
+\texttt{number? 8} returns true.\\
+\texttt{number? [5 6 7]} returns false. \\
+\texttt{number? "abcde} returns false 
+\end{tabular}
+\end{itemize}

@@ -1,0 +1,190 @@
+XLogo Handbuch
+3 Menüaufbau
+geändert am %%mtime(%d.%m.%Y %H:%M)
+
+%!encoding: iso-8859-1
+
+ = 3 Menü-Optionen =
+
+
+== 3.1 Das Menü Datei ==
+
+  - Datei / Neu: lösche alle Prozeduren und Variable. Sie schaffen eine neue Arbeitsumgebung.
+
+  - Datei / Öffne...: öffne eine früher abgespeicherte Logodatei.
+
+  || [images/img16.png] |
+
+  
+  - Datei / Speichere unter...: speichere die aktuellen Prozeduren unter einem bestimmten Namen.
+
+  || [images/img17.png] |
+
+  
+  - Datei / Speichere: speichere die Prozeduren in der aktuellen Datei.
+
+
+  || [images/img18.png] |
+
+
+  - Datei / Bild / Kopiere in die Zwischenablage: kopiere das Bild in die Zwischenablage. Wie für das Drucken und das Aufzeichnen können Sie einen Bildbereich wählen. Diese Funktion arbeitet sehr gut unter Windows. Andererseits funktioniert es nicht unter Linux, da die Zwischenablage dort ein anderes Verhalten zeigt. Nicht getestet unter Mac.
+
+  - Datei / Bild / Speichere unter...: speichere das Bild im jpg- oder png-Format. Wenn Sie nur einen Teil des Bildes auswählen wollen, können Sie einen begrenzenden Kasten durch zweimaliges Klicken der zwei Punkte einer Diagonalen definieren.
+
+  - Datei / Bild / Drucke Bild : drucke das Bild. In der gleichen Weise wie oben können Sie ein zu druckendes Gebiet wählen.
+
+  - Datei / Textbereich / Speichere im RTF-Format: speichere die Befehlsgeschichte im RTF-Format (Farbe und Format werden bewahrt).
+
+  - Datei / Beenden: beende die Anwendung XLogo.
+
+
+== 3.2 Das Menü Bearbeiten ==
+
+  - Bearbeiten / Ausschneide Strg-X: schneide den ausgewählten Text aus
+
+  - Bearbeiten / Kopiere Strg-C: kopiere den ausgewählten Text in die Zwischenablage.
+
+  - Bearbeiten / Einfüge Strg-V: füge den in der Zwischenablage enthaltenen Text in die Kommandozeile ein.
+
+  - Bearbeiten / Markiere Alles: markiere den ganzen Text in der Kommandozeile.
+
+
+== 3.3 Das Menü Hilfsmittel ==
+
+
+  || [images/img19.png] |
+
+  - Hilfsmittel / **Wähle Stiftfarbe**: wähle die Farbe in der der Igel schreiben soll aus einer Palette von Farben. Auch zugänglich über den Befehl ``setzestiftfarbe``.
+
+
+Hintergrundbild
+
+
+  - Hilfsmittel / **Wähle Hintergrundfarbe**: setze die Farbe des Schirmhintergrunds. Zugänglich über den Befehl ``setzebildfarbe`` .
+
+  - Hilfsmittel / **Starte Datei...**: setze den Pfad zu einer Start-Datei. Prozeduren, die in diesen *.lgo-Dateien enthalten sind, werden zu "Pseudo-Befehlen" in XLogo und können weder editiert noch vom Benutzer verändert werden. Sie können damit Befehle definieren, die XLogo an Ihre Erfordernisse anpassen.
+
+
+  || [images/img20.png] |
+
+- Hilfsmittel / **Übersetze den Quelltext...**: übersetze eine Quelle von einer Sprache in die andere. In der Tat sehr nützlich, wenn Sie zum Beispiel eine Logo-Quelle verwenden wollen, die in einer anderen Sprache geschrieben ist.
+
+  || [images/img21.png] |
+  
+- Hilfsmittel / **Prozeduren löschen**: lösche einige Prozeduren. Sie können die Reihenfolge aller Prozeduren im Editor ändern.
+
+
+
+  || [images/img22.png] |
+  
+
+Hintergrundbild
+
+
+  - Hilfsmittel / **Einstellungen**: öffne ein Dialogfeld, in dem Sie einige Dinge konfigurieren können:
+
+
+**Tab Allgemein**:
+
+  - Sprache: erlaubt es die Sprache zu wählen. Beachten Sie, dass sich die Befehle in jeder Sprache unterscheiden.
+
+  - Erscheinungsbild: stellt den Stil des XLogo-Fensters ein. Verfügbar sind die Stile Metall, natives Java und Motif.
+
+  - Geschwindigkeit des Igel: Wenn Sie die Bewegungen des Igel sehen wollen, können Sie sie mit dem Einsteller auf dem ersten Tabulator verlangsamen.
+
+
+  || [images/img23.png] |
+  || [images/img24.png] |
+
+  
+** Tab Igelwahl**: Auf dem zweiten Tab können Sie Ihren bevorzugten Igel wählen.
+
+  || [images/img25.png] |
+
+
+**Tab Optionen**: Auf dem dritten Tab gibt es viele Optionen:
+
+  - Gitter: Sie können ein Gitter auf dem Schirmhintergrund ziehen. Dazu definieren Sie die Breite und die Höhe eines Gitterquadrates.
+
+  - Achsen: Sie können eine horizontale oder vertikale Achse auf dem Hintergrund des Zeichenbereichs zeichnen. Sie können den Abstand zweier Teilstriche und die Achsenfarbe einstellen.
+
+  - Standard Hintergrundfarbe: Sie können eine Hintergrundfarbe als Standard definieren.
+
+  - Standard Schriftfarbe: Sie können eine Schreibstiftfarbe als Standard definieren.
+
+  - Randmotiv: Sie können Ihr eigenes Motiv für den Rand des Zeichenbereichs wählen. Es können ein Bild oder eine einheitliche Farbe sein.
+
+
+  || [images/img26.png] |
+
+
+  - Anzahl Igel: Sie können die maximale Anzahl von Igeln im Viele-Igel-Modus wählen.
+
+  - Maximale Stiftbreite: Sie können die maximal erlaubte Schreibstiftbreite wählen. Stellen Sie auf ``-1``, wenn Sie diese Option nicht benutzen wollen.
+
+  - Form des Stiftes: Sie können die Form des Schreibstifts wählen: rund oder quadratisch.
+
+  - Qualität der Zeichnung: Schließlich können Sie die Genauigkeit der Zeichenlinie wählen. In hoher Qualität werden Sie besonders nicht den Quadrateffekt haben. Vergessen Sie nicht, dass Sie durch das Vergrößern der Qualität eine geringere Ausführungsgeschwindigkeit bewirken.
+
+  - Lösche den Bildschirm beim Verlassen des Editors: Sie können wählen, ob Sie Schirm löschen wollen, wenn Sie den Editor verlassen.
+
+  - Bildschirmgröße zum Zeichnen: Sie können eine persönliche Größe für den Zeichenbereich wählen, sonst öffnet XLogo in einer Größe von 1000 mal 1000 Bildelementen. Seien Sie vorsichtig, wenn Sie die Größe des Bildes vergrößern, werden Sie die Speichergröße von XLogo erhöhen müssen. Eine Fehlermeldung wird auftauchen.
+
+  - Zugewiesener Speicher für XLogo: Sie können auch den XLogo zugewiesenen Speicher verändern, sonst wird er 64 Mo groß sein. Sie könnten ihn vergrößern, wenn Sie in einem größeren Zeichenbereich arbeiten wollen. Wenn Sie diesen Parameter ändern, müssen Sie XLogo neu starten, so dass die Änderung wirksam wird.
+**Seien Sie vorsichtig**, denn ein zu hoher Wert kann Ihr System verlangsamen.
+
+  || [images/img27.png] |
+
+  
+**Tab Sound**: Auf dem vierten Tab können Sie ein Instrument für Ihre MIDI-Schnittstelle wählen. Einige Erkennungs-Probleme können auftreten, traurig... Auf diese Funktion kann mit dem Befehl ``setzeinstrument`` zugegriffen werden.
+
+
+  || [images/img28.png] |
+
+  
+**Tab Schriftart**: Auf dem fünften Tab können Sie die Schriftart für die Schnittstelle wählen.
+
+
+  || [images/img29.png] |
+
+  
+**Tab Markierung**: Sie können hier die Farbhervorhebung von Wörtern aktivieren und definieren Ihre eigenen Farben.
+
+
+
+== 3.4 Das Hilfe-Menü ==
+
+
+  - Hilfe / Lizenz: zeigt die GPL-Lizenz unter der diese Software verteilt wird.
+
+
+  - Hilfe / Übersetzung der Lizenz: Zeigt eine Übersetzung der obigen Lizenz. Diese Übersetzung hat keinen offiziellen Charakter - diesen gibt es nur in der englischen Version, und die Übersetzung wird hier nur informativ zur Verfügung gestellt.
+
+
+  || [images/img30.png] |
+  
+  - Hilfe / Übersetze XLogo: Dieses Dialogfeld erlaubt für Sprache das Nachschlagen, Ändern und Vervollständigen von XLogo-Übersetzungen (Meldungen und Befehle).
+
+
+  || [images/img31.png] |
+  
+  || [images/img32.png] |
+
+  
+Sonst können Sie, wenn Sie wollen, eine neue Übersetzung für eine neue Sprache schaffen. In jedem Fall schicken Sie mir die erzeugte Datei an loic@xlogo.tuxfamily.org
+
+
+  - Hilfe / über...: Das standardmäßige Ding.... und xlogo.tuxfamily.org für Ihre Lesezeichen!! o:)
+
+ 
+  || [images/img33.png] |
+
+
+
+  --------------------
+
+//XLogo Handbuch//
+([siehe Quelle %%infile])
+
+  |  Übersetzt von [Michael Malien michael.malien@gmx.de?Meine_Hinweise_zum_XLogo-Handbuch]  |  Erzeugt durch [Txt2Tags http://txt2tags.sf.net]  |
+|  Geändert am: %%Mtime(%c)  |  am %%Date(%Y-%m-%d um %H% :%M:%S)  |

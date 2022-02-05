@@ -1,0 +1,22 @@
+XLogo Handbuch
+11 Index aller XLogo Grundwörter
+erzeugt am %%mtime(%d.%m.%Y %H:%M)
+
+%!encoding: iso-8859-1
+
+ = 11 Index aller XLogo Grundwörter =
+
+== Index ==
+
+%!include(html): ''xlogo-de-en-fr.html''
+
+
+
+  --------------------
+
+//XLogo Handbuch//
+([siehe Quelle %%infile])
+
+  |  Übersetzt von [Michael Malien michael.malien@gmx.de?Meine_Hinweise_zum_XLogo-Handbuch]  |  Erzeugt durch [Txt2Tags http://txt2tags.sf.net]  |
+|  Geändert am: %%Mtime(%c)  |  am %%Date(%Y-%m-%d um %H% :%M:%S)  |
+

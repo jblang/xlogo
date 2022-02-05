@@ -1,0 +1,54 @@
+\chapter{Ekruli XLogo en komandlinio}
+
+Jen la sintakso de la komando tajpenda por ekruli XLogo:
+\begin{center}
+  \texttt{java -jar xlogo.jar [-a] [-lang eo] [-memory
+    64][dosiero1.lgo dosiero2.lgo ...] }
+\end{center}
+Jen detaloj de la diversaj elektebloj:
+\begin{itemize}
+\item Elekteblo \texttt{-lang}: ^gi ebligas indiki homan lingvon por
+  XLogo.  Tiu parametro superregas tiun enhavatan en la persona agorda
+  dosiero nomata \texttt{.xlogo}.  La lingvojn oni povas elekti la^u
+  tiu tabelo:
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+      \hline
+      Franca & Angla & Hispana & Germana & Araba & Portugala & Esperanto & Galega & Greka \\
+      \hline
+      fr & en & es & de & ar & pt & eo & gl & el \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{0.5cm}
+\item Elekteblo \texttt{-a}: ^gi ebligas ruli ekde la malfermo de
+  XLogo la ^cefan komandon enhavatan en la dosierojn ^sargitajn je la
+  starto.
+\item Elekteblo \texttt{-memory}: ^gi ebligas establi la memoron
+  rezervita por la virtuala ma^sino Java.
+\item dosiero1.lgo, dosiero2.lgo ...: tiuj dosieroj kun fina^jo
+  \texttt{.lgo} estas ^sargataj je la starto de XLogo.  Tiuj dosieroj
+  povas esti lokaj a^u foraj, tio estas, ilia adreso povas indiki
+  vojon en la loka hierar^hia arbo de dosierujoj a^u interretan
+  adreson.
+\item Elekteblo \texttt{tcp\_port}: ^gi ebligas elekti pordan numeron
+  por la reta komunikado.  Apriora pordo estas $1948$.  Rigardu
+  p.~\pageref{reseau}.
+\end{itemize}
+\vspace{0.5cm}
+Jen ekzemploj de komandoj:
+\begin{itemize}
+\item \texttt{java -jar xlogo.jar -lang es prog.lgo}: La dosieroj
+  \texttt{xlogo.jar} kaj \texttt{prog.lgo} estas en la nuna dosierujo.
+  Tiu komando ekrulas \xlogo{} agordita en la hispana kaj ^sargas tuj
+  poste la dosieron \texttt{prog.lgo} (kiu do devas esti redaktita en
+  la hispana...).
+\item \texttt{java -jar xlogo.jar -a -lang en
+    http://xlogo.tuxfamily.org/prog.lgo}: Tiu komando rulas \xlogo{}
+  agordita en la angla kaj ^sargas la dosieron nomatan
+  \texttt{http://xlogo.tuxfamily.org/prog.lgo}.  Por fini, la ^cefa
+  (startiga) komando difinita en tiu dosiero estas rulota je la
+  starto.
+\end{itemize}
+
+

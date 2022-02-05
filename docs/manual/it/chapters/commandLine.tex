@@ -1,0 +1,35 @@
+\chapter{Avviare \xlogo\ tramite la linea di comando}
+
+Per eseguire \xlogo, da linea di comando ecco la sintassi completa:
+\begin{center}
+ \texttt{java -jar xlogo.jar [-a] [-lang en] [-memory 64] [file1.lgo file2.lgo ...] } 
+\end{center}
+
+Elenco delle opzioni disponibili:\\
+
+\begin{itemize}
+	\item Attributo \texttt{-lang}: specifica un linguaggio. Questo parametro sovrascrive quello dal file di configurazione chiamato \texttt{.xlogo}. La seguente tabella elenca tutti i possibili linguaggi:
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+			\hline
+			French & English & Spanish & German & Arabic & Portuguese & Espéranto & Galician & Greek & Italian\\
+			\hline
+			fr & en & es & de & ar & pt & eo & gla & el & it\\
+			\hline
+		\end{tabular}
+	\end{center}
+	\vspace{0.5cm}
+	\item Attribute \texttt{-a}: indica l'esecuzione di un comando principale, contenuto in un file caricato all'avvio, dopo che la finestra \xlogo\ si è aperta.
+	\item Attribute \texttt{-memory}: imposta la quantità di memoria che \xlogo\ alloca per i suoi programmi.
+	\item file1.lgo, file2.lgo \textellipsis: questi file in formato \texttt{.lgo} sono caricati all'avvio di \xlogo. I file possono essere locali o remoti, si può quindi specificare un indirizzo web.
+	\item Attribute \texttt{-tcp\_port}: permette di modificare la porta TCP preimpostata (1984) usata per le comunicazioni in rete (cfr. pagina \pageref{network}).
+\end{itemize}
+\vspace{0.5cm}
+
+Qualche esempio:
+\begin{itemize}
+	\item \texttt{java -jar xlogo.jar -lang es prog.lgo}:\\
+	I file \texttt{xlogo.jar} e \texttt{prog.lgo} sono nella cartella corrente. Il comando esegue \xlogo, in spagnolo. Quindi carica il file \texttt{prog.lgo} che, quindi, deve essere scritto in spagnolo.
+	\item \texttt{java -jar xlogo.jar -a -lang en http://xlogo.tuxfamily.org/prog.lgo}:\\
+	Questo comando esegue \xlogo\ in inglese. Carica il file \texttt{http://xlogo.tuxfamily.org/prog.lgo}. Infine il comando principale di questo file viene eseguito all'avvio.
+\end{itemize}

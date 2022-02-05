@@ -1,0 +1,119 @@
+\chapter{Conventions adoptées dans XLOGO}
+Voici la présentation de certaines choses à savoir concernant le langage LOGO lui-même et d'autres concernant XLOGO spécifiquement.
+
+\section{Commandes et interprétation}
+Le langage LOGO est composé de commandes internes: On appelle ces commandes les \textbf{primitives}. Chaque primitive attend un certain nombre de paramètres que l'on appelle \textbf{arguments}. Par exemple la primitive \texttt{ve} qui permet d'effacer l'écran ne prend aucun argument alors que la primitive \texttt{somme} attend deux arguments.\\
+\\
+\texttt{ somme 2 3} écrira 5 en retour.\\
+\\
+Les arguments sont de trois types en LOGO:
+\begin{itemize}
+\item \textbf{Les nombres:}  certaines primitives attendent des nombres comme argument. Exemple \texttt{avance 100}
+\item \textbf{Les mots:}  Les mots commencent tous par ". Un exemple de primitive pouvant travailler avec les mots est la primitive \texttt{ecris}. 
+\begin{center}
+\texttt{ecris "bonjour} 
+\end{center}
+Cette commande provoque l'affichage du mot \texttt{bonjour} dans la zone de texte.\\
+ A noter que si vous oubliez le ", l'interpréteur vous renverra un message d'erreur. En effet, \texttt{ecris} attend un argument, or pour l'interpréteur, \texttt{bonjour} ne représente rien puisque ce n'est ni un nombre, ni un mot, ni une liste ni une procédure déjà définie.
+\item\textbf{Les listes:} Elles sont définies entre crochets.
+\end{itemize}
+\vspace{0.5cm}
+\textbf{Remarque:} Les nombres sont traités soit en tant que valeurs numériques, soit en tant que mots.\\
+Exemple: \texttt{ecris premier 12} renvoie 1\\ \\
+Certaines primitives admettent une forme généralisée, c'est à dire qu'elles peuvent recevoir un nombre indéfini d'arguments. Voici la liste de ces primitives ci-dessous:
+\begin{center}
+ \begin{tabular}{cccc}
+ \texttt{ecris} & \texttt{somme}&\texttt{produit} &\texttt{ou}\\
+\hline
+\texttt{et}&\texttt{liste}&\texttt{phrase}& \texttt{mot}\\
+ \end{tabular} 
+\end{center}
+Pour notifier à l'interpréteur que l'on va les utiliser sous leur forme généralisée, on tape la commande entre parenthèses, voici quelques exemples: 
+ \begin{verbatim}
+ ecris (somme 1 2 3 4 5)
+15
+
+(liste [a b] 1 [c d])
+Que faire de [[a b] 1 [c d]]?
+
+si (et 1=1 2=2 8=5+3) [av 100 td 90]
+\end{verbatim}
+
+\section{Procédures}
+En plus de ces primitives, vous pouvez définir vos propres commandes. On les appelle les \textit{procédures}. Les procédures sont introduites à l'aide du mot \texttt{pour} et se terminent par le mot \texttt{fin}. On utilise l'éditeur de procédures interne à XLOGO pour les taper. Voici un petit exemple:
+\begin{verbatim}
+
+pour carre
+repete 4[avance 100 tournedroite 90]
+fin
+
+\end{verbatim}
+
+Ces procédures ont le droit d'admettre également des arguments. Pour cela, on utilise des variables. Une variable est un mot auquel on peut affecter une valeur. voici un exemple très simple:
+
+\begin{verbatim}
+
+pour total :a :b
+ecris somme :a :b
+fin
+
+total 2 3 -----> 5
+
+\end{verbatim}
+
+\section{Le caractère spécial \og \textbackslash \fg}
+Le caractère \og \textbackslash \fg \ (backslash) permet en particulier de créer des mots contenant des espaces ou contenant un retour à la ligne. \og \textbackslash n\fg \ provoque un retour à la ligne et \og \textbackslash\textvisiblespace\fg \ désigne une espace dans un mot. \\ Exemple:
+\begin{verbatim}
+ecris "xlogo\ xlogo
+xlogo xlogo
+ecris "xlogo\nxlogo
+xlogo
+xlogo
+\end{verbatim}
+Il s'ensuit que l'on ne peut plus accéder au caractère \og \textbackslash\fg \  en le tapant il faudra taper \og \textbackslash\textbackslash\fg.\\ \\
+De même, les caractères \og ( ) [ ] \# \fg\  sont des délimiteurs du langage Logo qui ne peuvent être utilisés dans des mots. On pourra les introduire en rajoutant un caractère \og \textbackslash \fg\  devant. \\ \\
+\textbf{Tout caractère \og \textbackslash \fg \ tout seul est ignoré. Cette remarque est très importante en particulier pour la gestion des fichiers}\\ \\
+Pour fixer le répertoire courant à \texttt{C:\textbackslash Mes Documents}, il faudra taper:
+\begin{verbatim}
+fixerepertoire "c:\\Mes\ Documents.
+\end{verbatim}
+Noter l'utilisation du \og \textbackslash\textvisiblespace \fg \ pour notifier l'espace entre \og Mes \fg \ et \og Documents \fg. Si d'autre part, vous omettez le double backclash, le chemin défini sera alors \texttt{c:Mes Documents} et l'interpréteur rendra un message d'erreur.
+
+\section{Règles concernant les majuscules et minuscules}
+
+\xlogo ne fait pas la différence majuscule-minuscule en ce qui concerne les noms de procédures et de primitives. Ainsi, avec la procédure \texttt{carre} définie précédemment, que vous tapiez \texttt{CARRE} ou \texttt{cArRe}, l'interpréteur de commande traduira correctement et exécutera \texttt{carre}. En revanche, \xlogo respecte les majuscules dans les listes et les mots: \\
+\begin{verbatim}
+ecris "Bonjour ----> "Bonjour (on garde le B majuscule)
+\end{verbatim}
+\section{Opérateurs et syntaxe}
+	Il y a deux façons d'écrire certaines commandes. Par exemple, pour effectuer l'addition de 4 et de 7, il y a deux possibilités:
+	\begin{itemize}
+	 \item soit on se sert de la primitive \texttt{somme} qui attend deux arguments: on écrit \texttt{somme 4 7 }
+	\item soit on se sert de l'opérateur +: on écrit \texttt{4+7}.
+	\end{itemize}
+  Les deux ont le même effet. Voici la liste des correspondances entre opérateurs et primitives:\\
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\texttt{somme} & \texttt{difference} & \texttt{produit } & \texttt{divise}\\
+\hline
++ & - & * & / \\
+\hline
+\texttt{ou} & \texttt{et}&\texttt{egal?}& \\
+\hline
+| (ALT GR+6) & \& &=&\\
+\hline
+\end{tabular}\end{center}
+\vspace{0.25cm}
+Il existe également deux opérateurs de tests numériques ne correspondant à aucune primitive:\begin{itemize}
+ \item Opérateur \og Inférieur ou égal \fg \texttt{<=}
+\item Opérateur \og Supérieur ou égal \fg \texttt{>=}
+\end{itemize}
+\textbf{Attention:} pas d'espace entre les symboles > et =! \\ \\
+\textbf{Remarque:} Les deux opérateurs | et \& sont deux opérateurs spécifiques à XLOGO. Ils n'existent pas dans les versions traditionnelles de LOGO. Voici quelques exemples d'utilisation:
+\begin{verbatim}
+
+ec 3+4=7-1 ----> vrai
+ec 3=4 | 7>=49/7 ----> vrai
+ec 3=4 & 7=49/7 ----> faux
+\end{verbatim}

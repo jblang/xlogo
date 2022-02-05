@@ -1,0 +1,74 @@
+\chapter{Interazione utente-programma}
+{ }\hfill\textbf{Livello:} Principiante\\
+
+\section{Un programma di domanda e risposta}
+Il programma che creeremo in questo capitolo chiederà all'utente il suo nome, cognome ed età. Alla fine il programma ne farà una sintesi.
+\begin{verbatim}
+	Il tuo nome è: .......
+	Il tuo cognome è: .......
+	La tua età è: .......
+	Sei oltre i 20/sotto i 20 anni
+\end{verbatim}
+
+Queste sono le primitive che useremo:\\
+\begin{itemize}
+	\item \texttt{Leggi}:\hspace{4cm}  \textcolor{red}{ \texttt{Leggi [Come stai?] \textquotedbl a}}\\
+	Visualizza una finestra di dialogo il cui titolo è il testo dall'elenco (qui ``Come stai?''). La risposta fornita dall'utente è inserita in una parola o in un elenco (in caso di più parole) nella variabile \texttt{:a}.
+
+	\item \texttt{AssegnaVar}:\hspace{4cm}  \textcolor{red}{ \texttt{AssegnaVar \textquotedbl a 30}}\\
+	Inserisce il valore 30 nella variabile \texttt{:a}
+
+	\item \texttt{Frase}:\hspace{4cm}  \textcolor{red}{ \texttt{Frase [30 k] \textquotedbl a }}\\
+	Aggiunge un valore ad un elenco. Se il valore è un elenco a sua volta, ne rimuove le parentesi quadre.
+
+	\begin{lstlisting}
+	Frase [30 k] "a # [30 k a]
+	Frase [1 2 3] 4 # [1 2 3 4]
+	Frase [1 2 3] [4 5 6] # [1 2 3 4 5 6]
+	\end{lstlisting} 
+
+\end{itemize}
+
+
+Questo è il programma:
+\begin{lstlisting}
+Per domande
+	Leggi [Quanti anni hai?] "age
+	Leggi [Qual e' il tuo nome di battesimo?] "fname
+	Leggi [Qual e' il tuo cognome?] "name
+	Stampa Frase [Il tuo cognome e': ] :name
+	Stampa Frase [Il tuo nome e': ] :fname
+	Stampa Frase [La tua eta' e': ] :age
+	Se o :age>20 :age=20 [Stampa [Sei oltre i 20 anni]] 
+		[Stampa [Sei sotto i 20 anni]]
+Fine
+\end{lstlisting}
+
+
+\section{Programmare un semplice gioco}
+Vogliamo realizzare questo semplice gioco. Il programma sceglie un numero intero tra 0 e 32 e lo memorizza. Quindi apre una finestra di dialogo e chiede all'utente di inserire un numero. Se l'intero è uguale a quello scelto, visualizza ``Hai vinto!''. Altrimenti il programma indica se il numero scelto è più grande o più piccolo del numero dell'utente e riapre la finestra di dialogo. Il programma termina quando l'utente ha indovinato il numero corretto.\\
+Dobbiamo usare la primitiva  \texttt{Casuale}:\\
+Per esempio \texttt{Casuale 20} restituisce un numero intero scelto casualmente tra 0 e 19.\\
+
+Ecco come il programma deve essere realizzato:
+\begin{itemize}
+	\item Il numero scelto dal computer viene inserito nella variabile \texttt{numero}.
+	\item La finestra di dialogo deve essere chiamata ``Inserisci un numero intero''.
+	\item Il numero scelto dall'utente deve essere immagazzinato in una variabile chiamata \texttt{prova}.
+	\item La procedura principale deve essere chiamata \texttt{gioco}.
+\end{itemize}
+\vspace{0.5cm}
+
+
+Alcune possibili miglioramenti:\\
+\begin{itemize}
+	\item Mostrare il numero di prove.
+	\item Il numero scelto dal computer può essere tra 0 e 2000.
+	\item Controllare che l'utente inserisce un numero valido utilizzando la primitiva \texttt{Numero?}. \\
+	Esempi: 
+	\begin{tabular}[t]{l}
+		\texttt{Numero? 8} restituisce vero.\\
+		\texttt{Numero? [5 6 7]} restituisce falso. \\
+		\texttt{Numero? "abcde} restituisce falso. 
+	\end{tabular}
+\end{itemize}

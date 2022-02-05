@@ -1,0 +1,80 @@
+\chapter{Ejecutando \textsc{XLogo} desde la \textit{web}}
+
+\section{El problema}
+
+Supongamos que usted es administrador/a de un sitio web. En este sitio, habla de
+\textsc{XLogo} y quiere ofrecer algunos de los programas que ha creado.
+
+Podr\'ia distribuir el fichero \textsc{Logo} en formato \texttt{.lgo} y esperar
+que los visitantes descarguen primero \textsc{XLogo}, despu\'es el programa y, por
+\'ultimo, lo carguen para ver qu\'e hace. \\
+
+\noindent La alternativa es que el usuario pueda ejecutar \textsc{Xlogo} 
+\textit{en l\'inea}, y probar su programa sin apenas esfuerzo. \\
+
+\noindent Para lanzar \textsc{XLogo} desde una p\'agina \textit{web}, utilizaremos
+la tecnolog\'ia \textsc{Java Web Start}. Con ello, s\'olo necesita poner en su
+web un enlace hacia un archivo con extensi\'on \texttt{.jnlp}, que iniciar\'a la
+ejecuci\'on de \textsc{XLogo}.
+
+\section{C\'omo crear un fichero \texttt{.jnlp}}
+
+Veamos c\'omo hacerlo con un archivo de ejemplo. De hecho, el siguiente ejemplo es
+el que se usa en la secci\'on ``\textbf{Ejemplos}'' de la p\'agina de \textsc{XLogo} 
+en franc\'es. \\
+
+\noindent Este archivo carga el programa que dibuja un dado en la secci\'on 3D.
+Veamos primero el archivo, y veremos despu\'es las explicaciones sobre su contenido.
+
+\begin{verbatim}
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.5+" codebase="http://downloads.tuxfamily.org/xlogo/common/webstart">
+<information>
+  <title>XLogo</title>
+  <vendor>xlogo.tuxfamily.org</vendor>
+  <homepage href="http://xlogo.tuxfamily.org"/>
+  <description>Logo Programming Language</description>
+  <offline-allowed/>
+</information>
+
+<security>
+  <all-permissions/>
+</security>
+
+<resources>
+  <j2se version="1.4+"/>
+  <jar href="xlogo.jar"/>
+</resources>
+
+<application-desc main-class="Lanceur">
+  <argument>-lang</argument>
+  <argument>fr</argument>
+  <argument>-a</argument>
+  <argument>http://xlogo.tuxfamily.org/fr/html/examples-fr/3d/de.lgo</argument>
+</application-desc>
+</jnlp>
+\end{verbatim}
+
+Este archivo est\'a escrito en formato XML, y las cuatro l\'ineas m\'as importantes
+son:
+\begin{verbatim}
+  <argument>-lang</argument>
+  <argument>fr</argument>
+  <argument>-a</argument>
+  <argument>http://xlogo.tuxfamily.org/fr/html/examples-fr/3d/de.lgo</argument>
+\end{verbatim}
+Esas l\'ineas especifican los par\'ametros de inicio de \textsc{XLogo}:
+\begin{itemize}
+   \item Las l\'ineas 1 y 2 fuerzan a \textsc{XLogo} a ejecutarse en franc\'es.
+   \item La \'ultima línea indica la ruta del fichero a cargar.
+   \item La l\'inea 3 indica que se ejecute el Comando de Inicio de este
+      programa al iniciarse \textsc{XLogo}. 
+\end{itemize}
+
+Una \'ultima sugerencia (petici\'on): Dado que el servidor de Tuxfamily no puede
+aceptar ``infinitas'' conexiones, le pedimos que tenga una copia del archivo
+\texttt{xlogo.jar} en su web. Para ello, cambie la direcci\'on en la segunda
+l\'inea del archivo \texttt{.jnlp}, donde dice \texttt{codebase=} por:
+\begin{verbatim}
+   <jnlp spec="1.5+" codebase="http://mi.direccion.web/directorio/XLogo">
+\end{verbatim}

@@ -1,0 +1,30 @@
+XLogo Handbuch
+7 Deinstallation und Lesezeichen
+geändert am %%mtime(%d.%m.%Y %H:%M)
+
+%!encoding: iso-8859-1
+
+ = 7 Deinstallation und Lesezeichen =
+
+
+== 7.1 Deinstallation ==
+
+Um XLogo zu deinstallieren, ist alles, was gemacht werden muss, die Datei ``XLogo.jar`` und die Konfigurationsdatei ``.xlogo`` zu löschen, die in Ihrem Home-Verzeichnis zu finden ist (``/Home/Ihr_Anmeldename``) für Linux-Benutzer, oder ``c:\windows\.xlogo`` für Windows-Benutzer.
+
+
+== 7.2 Lesezeichen ==
+
+Für die aktuelle Version und Fehlerkorrekturen besuchen Sie ab und zu die [XLogo-Site http://xlogo.tuxfamily.org].
+
+Fühlen Sie sich frei, sich mit dem Verfasser in Verbindung zu setzen, wenn Sie ein Problem bei der Installation oder Benutzung haben. Alle Vorschläge sind willkommen.
+
+
+
+  --------------------
+
+//XLogo Handbuch//
+([siehe Quelle %%infile])
+
+  |  Übersetzt von [Michael Malien michael.malien@gmx.de?Meine_Hinweise_zum_XLogo-Handbuch]  |  Erzeugt durch [Txt2Tags http://txt2tags.sf.net]  |
+|  Geändert am: %%Mtime(%c)  |  am %%Date(%Y-%m-%d um %H% :%M:%S)  |
+

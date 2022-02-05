@@ -1,0 +1,121 @@
+\chapter{Convenzioni adottate da \xlogo}
+
+Questo capitolo espone alcuni punti chiave circa il linguaggio LOGO e circa \xlogo\ in modo specifico.
+
+
+\section{I comandi e loro elaborazione}
+
+Il linguaggio LOGO permette di invocare alcuni eventi tramite comandi interni. Questi comandi sono chiamati \textit{primitive}. Ciascuna primitiva può accettare uno o più parametri che vengono chiamati \textit{argomenti}. Per esempio, la primitiva \texttt{PulisciSchermo} non accetta alcun argomento mentre la primitiva \texttt{Somma} accetta due argomenti.\\
+\texttt{Stampa Somma 2 3} restituirà 5.\\
+\\
+Gli argomenti LOGO sono di tre tipi:
+
+\begin{itemize}
+	\item \textbf{Numeri}: alcune primitive si aspettano un numero come argomenti: \texttt{Avanti 100} ne è un esempio. 
+	\item \textbf{Parole}: le parole sono contrassegnate dai doppi apici (\textquotedbl ) all'inizio del nome della parola stessa. Un esempio di una primitiva che accetta una parola come argomento è \texttt{Stampa}. 
+	\begin{center}
+		\texttt{Stampa \textquotedbl ciao}
+	\end{center}
+	Questo comando visualizza \texttt{ciao}. Se viene dimenticato il carattere \textquotedbl\ l'interprete logo restituirà un messaggio di errore. Per l'interprete LOGO \texttt{ciao} non rappresenta niente poiché non è un numero, una parola, un elenco o una procedura già definita.
+	\item \textbf{Elenchi}: gli elenchi sono definiti entro parentesi quadre.
+\end{itemize}
+\textbf{Nota}: i Numeri sono trattati a volte come valori numerici (per esempio \texttt{Avanti 100}), altre volte come parole (per esempio \texttt{Stampa Primo 12} scrive \texttt{1}). \\
+
+\subsection{Le primitive generali}
+
+Molte primitive possiedono una forma generale ossia possono essere usate con un numero di argomenti indefinito. Queste primitive sono:
+\begin{center}
+	\begin{tabular}{cccc}
+		\texttt{Stampa} & \texttt{Somma}&\texttt{Prodotto} &\texttt{o}\\
+		\hline
+		\texttt{e}&\texttt{Elenco}&\texttt{Frase}& \texttt{Parola}\\
+	\end{tabular} 
+\end{center}
+Per notificare l'interprete LOGO che queste primitive saranno usate nella loro forma generale occorre inscrivere il comando fra parentesi tonde, come nell'esempio seguente:
+\begin{lstlisting}
+Stampa (Somma 1 2 3 4 5)
+# 15
+
+Stampa (Elenco [a b] 1 [c d])
+# [a b] 1 [c d] 
+
+Se (e 1=1 2=2 8=5+3) [Avanti 100 RuotaDestra 90]
+\end{lstlisting}
+
+\section{Le procedure e le variabili}
+
+Oltre alle primitive è possibile definire comandi personalizzati. Questi comandi sono chiamati \textit{procedure}. Le procedure sono definite mediante le primitive \texttt{Per \textellipsis Fine}. Il blocco di comandi che la procedura eseguirà viene posto all'interno delle due precedenti primitive. Esse possono essere create utilizzando l'editor interno di \xlogo. Ecco un breve esempio:
+\begin{lstlisting}
+Per quadrato
+	Ripeti 4 [Avanti 100 RuotaDestra 90]
+Fine
+\end{lstlisting}
+
+Come le primitive anche le procedure possono trarre vantaggio degli argomenti. Per passare argomenti alle procedure si utilizzano le variabili. Una variabile è una parola alla quale si può associare (assegnare in termini informatici) un valore. Le variabili sono quindi una sorta di contenitori che possono essere riempiti di valori a nostro piacimento. Ecco un semplice esempio:
+\begin{lstlisting}
+Per totale :a :b
+	Stampa Somma :a :b
+Fine
+\end{lstlisting} 
+
+Invocando \texttt{totale 2 3} otterremo 5 come risultato.
+
+
+\section{Il carattere speciale \textbackslash}
+Il carattere speciale  \textbackslash \ (barra rovesciata) permette la creazione di parole contenenti simboli vuoti o di particolare significato come l'andare a capo. Se \textbackslash n è usato la frase salta alla linea successiva e \textbackslash\textvisiblespace\ seguito da uno spazio permette di inserire uno spazio in una parola. Per esempio:
+\begin{lstlisting}
+	Stampa "xlogo\ xlogo
+	# xlogo xlogo
+	Stampa "xlogo\nxlogo
+	# xlogo
+	# xlogo
+\end{lstlisting}
+
+Per inserire la barra rovesciata in una parola occorre scrivere \textbackslash\textbackslash.\\
+Allo stesso modo, per includere quei caratteri a cui \xlogo\ assegna particolari significati ( ( ) [ ] \# ) in una parola occorre prefissarli con la barra rovesciata.  \\
+\textbf{Tutti i simboli preceduti da \textbackslash \ sono ignorati. Questo è particolarmente importante nello scrivere i nomi dei file.}. Per esempio per impostare il percorso attuale a \texttt{c:\textbackslash Miei Documenti}:
+\begin{lstlisting}
+	ImpDir "c:\\Miei\ Documenti.
+\end{lstlisting}
+
+Da notare l'uso di \textbackslash\textvisiblespace \ per notificare all'interprete LOGO dell'esistenza dello spazio fra Miei e Documenti. Se si omette la doppia barra rovesciata il percorso diventa  \texttt{c:Miei Documenti} e l'interprete restituirà un messaggio di errore circa l'inesistenza di tale percorso.
+
+
+\section{Maiuscole e minuscole}
+
+\xlogo\ non fa differenza tra maiuscole e minuscole nei nomi delle procedure e delle primitive. Quindi la procedura \texttt{quadrato} definita precedentemente può essere invocata come \texttt{QUADRATO}, \texttt{Quadrato}, \texttt{qUadrato} e così via, l'interprete LOGO la eseguirà in ogni caso. Al contrario \xlogo\ differenzia le maiuscole dalle minuscole nel caso degli elenchi e delle parole, per esempio:
+\begin{lstlisting}
+Stampa "Ciao
+# Ciao (la maiuscola iniziale viene conservata)
+\end{lstlisting}
+
+
+\section{Gli operatori e la sintassi}
+
+Ci sono due modi per scrivere taluni comandi. Per esempio per sommare 4 e 7 si può usare la primitiva \texttt{Somma} che richiede due argomenti: \texttt{Somma 4 7}, o si può usare l'operatore ``+'': \texttt{4+7}. Entrambi i modi hanno il medesimo effetto. La seguente tabella illustra la relazione tra operatori e primitive:
+\begin{center}
+	\begin{tabular}{|c|c|c|c|}
+		\hline 
+		\texttt{Somma}&		\texttt{Differenza}&		\texttt{Prodotto}&		\texttt{Quoziente}\\
+		\hline
+		+ &		- &		{*} &		/ \\
+		\hline
+		\texttt{o}&		\texttt{e}&		\texttt{uguale?}&\\
+		\hline
+		| (ALT GR+6) &		\&&		=&\\
+		\hline
+	\end{tabular}
+\end{center}
+\vspace{0.25cm}
+Ci sono due altri operatori che non sono associati ad alcuna primitiva:
+\begin{itemize}
+	\item l'operatore ``Minore o uguale'': \texttt{<=}
+	\item l'operatore ``Maggiore o uguale'': \texttt{>=}
+\end{itemize}
+
+Nota: I due operatori | e \& sono specifici di \xlogo. Non esistono nelle versioni tradizionali di LOGO. Qualche esempio di impiego:
+\begin{lstlisting}
+Stampa 3+4=7-1 			# falso
+Stampa 3=4 | 7<=49/7	# vero
+Stampa 3=4 & 7=49/7		# falso
+\end{lstlisting}

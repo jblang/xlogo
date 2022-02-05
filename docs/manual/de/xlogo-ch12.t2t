@@ -1,0 +1,30 @@
+XLogo Handbuch
+12 Über dieses Dokument
+geändert am %%mtime(%d.%m.%Y %H:%M)
+
+%!encoding: iso-8859-1
+
+ = 12 Über dieses Dokument =
+
+
+== XLOGO Benutzerhandbuch ==
+
+
+Dieses Dokument entstand durch Übersetzung des englischen Manual und wurde erzeugt unter Verwendung
+
+
+  - der [Windows-Version 2005-06-17 (2.3) http://txt2tags-win.sourceforge.net/index.html.en]
+  - von [Txt2Tags http://txt2tags.sf.net]
+
+
+  ||  [img/t2tpowered.png]  |
+
+
+
+  --------------------
+
+//XLogo Handbuch//
+([siehe Quelle %%infile])
+
+  |  Übersetzt von [Michael Malien michael.malien@gmx.de?Meine_Hinweise_zum_XLogo-Handbuch]  |  Erzeugt durch [Txt2Tags http://txt2tags.sf.net]  |
+|  Geändert am: %%Mtime(%c)  |  am %%Date(%Y-%m-%d um %H% :%M:%S)  |

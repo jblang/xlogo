@@ -1,0 +1,95 @@
+\chapter{Interaktiva programado}
+\label{interaktiva}
+
+{ }\hfill\textbf{Nivelo:} komencanto
+\section{Komuniki kun l' uzulo}
+
+Ni realigos malgrandan programon kiu demandas de l' uzulo ^slian
+nomon, baptonomon kaj a^gon.  Je l' fin' de la demandaro, la programo
+respondos per memorigilo jene:
+\begin{verbatim}
+Via familinomo estas:........
+Via baptonomo estas: .......
+Via aĝo estas: .......
+Vi estas (mal)plenkreskulo
+\end{verbatim}
+\textsc{Por tio, ni uzos la jenajn primitivojn:}
+\begin{itemize}
+\item \texttt{legu}:\hspace{4cm}  \textcolor{red}{ \texttt{legu [Kiom estas via a^go? ] "a}}
+
+  Aperigas dialogfenestron kun titolo kiel la listo argumento (tie,
+  \og Kiom estas via a^go?\fg). La respondo donita de l' uzulo estas
+  memorita kiel vorto a^u listo (se l' uzul' tajpas plurajn
+  vortojn) en la variablo \texttt{:a}.
+
+\item \texttt{provizu, p}:\hspace{4cm}  \textcolor{red}{ \texttt{provizu "a 30}}
+
+  Donas la valoron $30$ al la variablo \texttt{:a}
+
+\item \texttt{frazon, fr}:\hspace{4cm}  \textcolor{red}{ \texttt{frazon [30 k] "a }}
+
+  Aldonas valoron en liston.  Se tiu valoro estas listo, kunigas la du listojn.
+
+\begin{verbatim}
+frazon [30 k] "a ---> [30 k a]
+frazon [1 2 3] 4 ---> [1 2 3 4]
+frazon [1 2 3] [4 5 6] ---> [1 2 3 4 5 6]
+\end{verbatim} 
+\end{itemize}
+Jen la kodo:
+\begin{verbatim}
+por demandaro
+legu [Kiom aĝas vi?] "aĝo
+legu [Kio estas via familinomo?] "famnomo
+legu [Kio estas via baptonmo?] "bapnomo
+skribu frazon [Via familinomo estas: ] :famnom
+skribu frazon [Via baptonomo: ] :bapnomo
+skribu frazon [Via aĝo estas: ] :aĝo
+se aŭ :aĝo>18 :aĝo=18 [skribu [Vi estas plenkreskulo]] [skribu [Vi estas malplenkreskulo]]
+fino
+\end{verbatim}
+
+\section{Programi malgrandan ludon}
+
+\textsc{La celo de ^ci tiu sekcio estas krei la jenan ludon:}
+
+La programo elektas hazardan nombron inter $0$ kaj $32$ kaj memoras
+^gin.  Dialogfenestro aperas kaj demandas l' uzulon enigi nombron.  Se
+la proponita nomo estas egala al la memorita nomo, ^gi skribas \og
+venkis\fg en la tekstejo.  En mala okazo, la programo indikas ^cu la
+nombro memorita estas pli malgranda a^u granda ol la nombro proponita
+de l' uzulo; poste ^gi reaperigas la dialogfenestron.  La programo
+haltos kiam l' uzulo trovas la memoritan nombron.
+
+Vi bezonos uzi la jenan primitivon:
+
+\texttt{hazardon, hzd}: \hspace{4cm} \textcolor{red}{\texttt{hazardon 8}} 
+
+\texttt{hazardon 20} donas nombron hazarde elektitan inter $0$ kaj $19$.
+
+\textsc{Jen kelkaj reguloj respektendaj por realigi tiun ludon:}
+\begin{itemize}
+\item La nombro memorita de l' komputilo estas memorata en variablo
+  nomata \texttt{nombro}.
+\item La dialogfenestro havos por titolo; \og Proponu nombron:\fg.
+\item La nombro proponita de l' uzulo estos registrita en variablo
+  nomata \texttt{provo}.
+\item La proceduro kiu ebligas ruli la ludon nomi^gos  \texttt{ludo}.
+\end{itemize}
+
+\vspace{0.5cm}
+\textsc{Kelkaj eblaj plibonigoj:}
+\begin{itemize}
+\item Skribi la nombro de provoj.
+\item La nombro ser^cota estu inter $0$ kaj $2000$.
+\item Konstati ^cu tio enigita de l' uzulo estas vere nombro.  Por
+  tio, uzu la primitivon \texttt{nombra?}.
+
+  Exemples: \begin{tabular}[t]{l}
+    \texttt{nombra? 8} estas vera.\\
+    \texttt{nombra? [5 6 7]} estas malvera ([5 6 7] estas listo sed ne
+    nombro).\\
+    \texttt{nombra? "abcde} estas malvera ("abcde estas
+    vorto sed ne nombro).
+\end{tabular}
+\end{itemize}

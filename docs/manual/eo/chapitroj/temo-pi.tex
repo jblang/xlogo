@@ -1,0 +1,252 @@
+\chapter{Temo: Proksimumi probablike al $\pi$}
+
+{ }\hfill\textbf{Nivelo:} Alta
+
+\textsc{Averto:} Necesas kelkaj nocioj pri matematiko por bone
+kompreni ^ci tiun ^capitron.
+
+\section{Nocio de pgkd (plej granda komuna dividanto)}
+
+Donitaj du entjeroj, ilia pgkd estas la plej granda el la dividantoj
+de amba^u.
+\begin{itemize}
+\item Por ekzemplo, $42$ kaj $28$ havas kiel pgkd $14$ (^gi dividas
+  samtempe al $28$ kaj al $42$, kaj ^gi estas la plej granda el la
+  nombroj tiaj).
+\item $25$ kaj $55$ havas kiel pgkd $5$.
+\item $42$ kaj $23$ havas kiel pgkd $1$.
+\end{itemize}
+Kiam du nombroj havas $1$ kiel pgkd, oni nomas ilin \emph{primoj inter
+  si}.  Do por l' anta^ua ekzemplo, $42$ kaj $23$ estas primoj inter
+si.  Tio signifas ke ili havas neniun komunan dividanton krom $1$
+(kompreneble, ^gi dividas ^ciun entjeron!).
+
+\section{Algoritmo de E^uklido}
+
+Por kalkuli la pgkd de du nombroj, oni povas uzi metodon nomatan
+algoritmo de E^uklido (oni ne pruvos ^ci tie la validecon de tiu
+algoritmo).  Jen la principo:
+
+Donitaj du pozitivalaj entjeroj $a$ kaj $b$, oni komence provu ^cu $b$
+estas nul.  Se jes, tiam la PGKD egalas $a$.  Se ne, oni kalkulu $r$,
+la resto de la divido de $a$ per $b$.  Anstata^uigu $a$ per $b$, poste
+$b$ per $r$, kaj rekomencu la procedon.
+
+Ni kalkulu, ekzemple, la pgkd de $2160$ kaj $888$ per tiu algoritmo;
+jen la stadioj:
+\begin{center}
+$\begin{array}{ccc}
+a & b & r\\
+2160 & 888 & 384 \\
+888 & 384 & 120 \\
+384 & 120 & 24 \\
+120 & 24 & 0 \\
+24 & 0 & \\
+\end{array}$
+\end{center}
+La pgkd de $2160$ kaj $888$ estas do $24$.  Estas neniu pli granda entjero kiu dividas tiujn du nombrojn.
+(Efektive $2160=24\times90$ kaj $888=24\times37$).
+
+La pgkd estas efektive la lasta ne nula resto.
+\section{Kalkuli pgkd en \logo}
+Malgranda rekursiva algortimo ebligas kalkuli la pgkd de du nombroj
+\texttt{:a} kaj \texttt{:b}:
+\begin{verbatim}
+por pgkd :a :b
+se (rest :a :b) = 0 [sendu :b] [sendu pgcd :b rest :a :b] 
+fino
+
+skribu pgkd 2160 888 
+24
+\end{verbatim}
+Rimarku: Oni nepre metu parentezojn ^cirka^u \texttt{rest :a :b}; se
+ne, l' interpretilo provos evalui \texttt{:b = 0}.  Por ^spari la
+parentezojn, skribu: \texttt{se 0 = rest :a :b}
+
+\section{Kalkuli proksimumon de $\pi$}
+
+Efektive, konata rezulto de entjerteorio asertas ke la probablo ke du
+entjeroj hazarde elektitaj estas primoj inter si estas
+${6}/{\pi^2}\approx 0,6079$.  Por provi konstati tiun rezulton, jen
+tio kion ni faros:
+\begin{itemize}
+\item Prenu du nombrojn hazarde inter $0$ kaj $1\,000\,000$.
+\item Kalkulu ilian pgkd.
+\item Se ^gi egalas $1$, aldonu $1$ al variablo nombrilo.
+\item Ripetu tion $1000$ fojojn.
+\item La frekvencon de la paroj de nombroj primoj inter si oni akiru
+  dividante la nombrilon per $1000$ (la nombro de ripetoj).
+\end{itemize}
+
+\begin{verbatim}
+por test
+# Komencu la variablon nombrilo je 0
+provizu "nombrilo 0
+ripetu 1000  
+  [se (pgkd hazardon 1000000 hazardon 1000000) = 1 [provizu "nombrilo :nombrilo + 1]]
+skribu [frekvenco:]
+skribu :nombrilo / 1000
+fino
+\end{verbatim}
+
+Rimarko: Kiel anta^ue, oni devas meti la parentezojn ^cirka^u
+\texttt{pgkd hazardon 1000000 hazardon 1000000}; se ne, l'
+interpretilo provos evalui $1\,000\,000 = 1$.  Por ne skribi
+parentezojn, skribu tiel: \texttt{se 1 = pgkd hazardon 1000000
+  hazardon 1000000}.
+
+Rulu la programon \texttt{test}.
+\begin{verbatim}
+test
+0.609
+test
+0.626
+test
+0.597
+\end{verbatim}
+Oni akiras valorojn proksimaj de la teoria valoro $0.6097$.
+Rimarkindas ja ke tiu frekvenco estas valoro proksima al
+$\dfrac{6}{\pi^2}$.
+
+Se mi indikas per $f$ la trovitan frekvencon, oni do havas: $f\approx
+\dfrac{6}{\pi^2}$.
+
+Do $\pi^2\approx\dfrac{6}{f}$ kaj do $\pi\approx\sqrt{\dfrac{6}{f}}$.
+
+Mi aldonu tiun proksimumigon en mia programo; mi transformu la finon
+de la proceduro \texttt{test}:
+
+\begin{verbatim}
+por test
+# Komencu la variablon nombrilo je 0
+provizu "nombrilo 0
+ripetu 1000  
+  [se 1 = pgkd hazardon 1000000 hazardon 1000000 [provizu "nombrilo :nombrilo + 1]]
+# Kalkulu la frekvencon 
+provizu "f :nombrilo/1000
+# Skribu la valoron proksimuman al pi
+skribu frazon [proksimumigo de pi:] radikon (6/:f)
+fino
+test
+proksimumigo de pi: 3.164916190172819
+test
+proksimumigo de pi: 3.1675613357997525
+test
+proksimumigo de pi: 3.1008683647302115
+\end{verbatim}
+
+Nu, mi modifu mian programon tiel ke kiam mi rulos ^gin, mi indiku la
+nombron de provoj deziratan.  Mi intencas provi per $10\,000$ provoj;
+jen tio kion mi akiras en miaj tri unuaj ruladoj:
+
+\begin{verbatim}
+por test :provoj
+# Komencu la variablon nombrilo je 0
+provizu "nombrilo 0
+ripetu :provoj  
+  [se 1 = pgkd hazardon 1000000 hazardon 1000000 [provizu "nombrilo :nombrilo + 1]]
+# Kalkulu la frekvencon
+provizu "f :nombrilo/:provoj
+# Skribu la valoron proksimuman al pi
+skribu frazon [proksimumigo de pi:] radiko (6/:f)
+fino
+
+test 10000
+proksimumigo de pi: 3.1300987144363774
+test 10000
+proksimumigo de pi: 3.1517891481565017
+test 10000
+proksimumigo de pi: 3.1416626832299914
+\end{verbatim} 
+Ne malbone, ^cu?
+
+\section{Ni kompliku iom pli: $\pi$ kiu generas $\pi$.....}
+
+Kio estas hazarda entjero?  ^Cu hazarde prenita entjero inter $1$ kaj
+$1\,000\,000$ estas vere reprezentiva de iu ajn hazarda entjero?  Oni
+rimarkas tre rapide ke nia modelado nur proksimi^gas de la ideala
+modelo.  En ordo, ja pri la maniero generi la hazardan nombron ke ni
+realigos kelkajn ^san^gojn...  Ne ne uzos plu la primitivon
+\texttt{hazardon} sed uzos la sekvencon de la decimaloj de $\pi$.  Mi
+klarigu: la decimaloj de $\pi$ de ^ciam intrigis la matematikistojn
+pro ilia manko de reguleco; la ciferoj de $0$ ^gis $9$ ^sajnas aperi
+la^u kvantoj preska^u egalaj kaj la^u hazarda maniero.  Ni vidos tuj
+kiel generi hazaradan nombron per decimaloj de $\pi$.  Anta^u ^cio,
+necesos kolekti la unuajn decimalojn de $\pi$ (ekzeple unu milionon).
+\begin{itemize}
+\item Ekzistas malgrandaj programoj kiuj faras tion tre bone.  Mi
+  konsilas PiFast por Vindozo kaj ScnhellPi por Linukso.
+\item Pluku tiun dosieron de la retpa^garo de \xlogo: 
+  \begin{center}
+    \texttt{http://downloads.tuxfamily.org/xlogo/common/millionpi.txt} 
+  \end{center}
+\end{itemize}
+
+Por krei niajn hazardajn nombrojn, ni prenu pakojn de $8$ ciferojn el
+la sekvenco de decimaloj de $\pi$.  Por klarigo, la dosiero
+komenci^gas tiel:
+
+$\underbrace{3.1415926}_{\textrm{Unua nombro}}\underbrace{53589793}_{\textrm{Dua nombro}}\underbrace{23846264}_{\textrm{Tria nombro}}338327950288419716939$ ktp\\ \\
+
+Mi forigu la \og $.$\fg{} de $3.14$... kiu ^genos kiam oni grupigos la
+decimalojn.  ^Cio en ordo, ni kreu novan proceduron nomatan
+\texttt{hazardpi} kaj modifu malmulte la proceduron \texttt{test}:
+\begin{verbatim}
+por pgkd :a :b
+se (rest :a :b) = 0 [sendu :b] [sendu pgkd :b rest :a :b] 
+fino
+
+por test :provoj
+# Malfermu flukson indikatan de la cifero 1 al la dosiero millionpi.txt
+# (ĉi tie, supozate ke ĝi estas en la kuranta dosierujo;
+# se ne, uzu dosieron_provizu kaj absolutan vojon)
+flukson_malfermu 1 "millionpi.txt
+# Provizu al la variablo linio la unuan linion de la dosiero millionpi.txt
+provizu "linio unuan flukslinion_legu 1
+# Komencu la variablon nombrilo je 0
+provizu "nombrilo 0
+ripetu :provoj 
+  [se 1 = pgkd hazardpi 7 hazardpi 7 [provizu "nombrilo :nombrilo + 1]]
+# Kalkulu la frekvencon
+provizu "f :nombrilo / :provoj
+# Skribu la valoron proksimuman al pi
+skribu frazon [proksimumigo de pi:] radiko (6/:f)
+flukson_fermu 1
+fino
+
+por hazardpi :n
+lokp "nombre "
+ripetu :n 
+  [# Se estas plu neniu signo sur la linio
+   se 0 = kmpt :linio [provizu "linio unuan flukslinion_legu 1]
+   # Provizu la variablon signo per la valoro de la unua signo de la linio
+   provizu "signo unuan :linio
+   # poste oni forigu tiun unuan signon de la linio
+   provizu "linio senunuan :linio
+   provizu "nombro vorton :nombro :signo]
+sendu :nombro
+fino
+
+test 10
+proksimumigo de pi: 3.4641016151377544 
+test 100
+proksimumigo de pi: 3.1108550841912757 
+test 1000
+proksimumigo de pi: 3.081180112566604 
+test 10000
+proksimumigo de pi: 3.1403714651066386 
+test 70000
+proksimumigo de pi: 3.1361767950325627
+\end{verbatim}
+
+Oni trovas do proksimumigon de la nombro $\pi$ per ^giaj propraj
+decimaloj!
+
+Ankora^u eblas plibonigi tiun programon indikante ekzemple la tempon
+uzitan por la kalkulo.  Aldonu en unua linio de la proceduro test:
+
+\texttt{provizu "komenco tempon}
+
+Aldonu ^guste anta^u \texttt{flukson\_fermu 1}:
+
+\texttt{skribu frazon [Tempo uzita: ] tempon - :komenco}\\

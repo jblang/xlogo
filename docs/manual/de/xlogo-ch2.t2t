@@ -1,0 +1,100 @@
+XLogo Handbuch
+2 Schnittstellen-Merkmale
+geändert am %%mtime(%d.%m.%Y %H:%M)
+
+%!encoding: iso-8859-1
+
+ = 2 Schnittstellen-Merkmale =
+
+
+==  2.1 Erster Programmlauf ==
+
+Starten Sie XLogo (oder wenn Sie die Datei .xlogo gelöscht haben, siehe Abschnitt 7.1), wird ein Dialogfeld Sie nach Ihrer Sprache fragen.
+
+  || [images/img3.png] |
+
+Dann können Sie die Sprache in dem Dialogfenster unter **Hilfsmittel-Einstellungen** ändern (siehe Abschnitt 3.3).
+
+
+== 2.2 Das Hauptfenster ==
+
+- Entlang der oberen Fensterhälfte gibt es das übliche Menü: **Datei**, **Bearbeiten**, **Hilfsmittel** und **Hilfe**
+
+- Gleich darunter befindet sich die **Kommandozeile**, wo Logoanweisungen eingegeben und ausgeführt werden.
+
+
+  || [images/img2.png] |
+
+
+  - In der Mitte vom Fenster findet sich die **Zeichenfläche**.
+
+  - Unten steht die **Befehlsgeschichte**, welche jedes eingegebene Kommando zeigt und die dazugehörige Antwort. Um schnell ein Kommando wieder aufzurufen, das schon einmal eingegeben worden ist, gibt es zwei Möglichkeiten: Sie können entweder auf das alte Kommando in der Geschichte klicken, oder Sie können einige Male den oberen Rollpfeil klicken bis das gewünschte Kommando erscheint. Die Rollpfeile erlauben es Ihnen in der Tat nach oben und unten durch alle Kommandos zu navigieren, die Sie schon einmal eingegeben haben (sehr praktisch).
+
+- Rechts von der Befehlsgeschichte sind zwei Schaltflächen: **EDITOR** und **STOP**.
+
+  - Schaltfläche **STOP** unterbricht die Ausführung des Programms.
+
+  - Schaltfläche **EDITOR** öffnet den Editor.
+
+  
+== 2.3 Der Editor ==
+
+  || [images/img4.png] |
+
+
+- Es gibt **drei Wege, den Editor zu öffnen**:
+
+  - Geben Sie ``ed`` auf der Kommandozeile am oberen Teil vom Fenster ein. Der Editor wird sich dann öffnen, um alle schon definierten Prozeduren zu zeigen. Wenn Sie nur bestimmte Prozeduren bearbeiten wollen, geben Sie ein:
+
+  ``ed [Prozedur_1 Prozedur_2 .. ]``  
+  
+
+  - Drücken Sie auf die **Editor**-Schaltfläche in dem Hauptfenster.
+
+  - Benutzen Sie die die Tastaturabkürzung **Alt + E**
+
+  
+- **Dies sind die unterschiedlichen Schaltflächen, die Sie im Editor finden werden**:
+
+  || Schaltfläche | Erklärung |
+|  [images/img6.png]  | Speichere die im Editor gemachten Änderungen und schließe ihn dann. Es ist diese Schaltfläche, die Sie jedes Mal drücken müssen, um neu eingegebene Operationen anzuwenden. Wenn Sie wollen, können Sie das Tastaturabkürzel **ALT + Q** benutzen. |
+|  [images/img7.png]  | Verlasse den Editor ohne eine der dort gemachten Änderungen zu übernehmen. Sie können auch die Abkürzung **ALT + C** benutzen. |
+|  [images/img8.png]  | Drucke den Inhalt des Editors |
+|  [images/img9.png]  | Kopiere den ausgewählten Text in die Zwischenablage |
+|  [images/img10.png]  | Schneide den ausgewählten Text aus und kopiere ihn in die Zwischenablage |
+|  [images/img11.png]  | Füge den ausgewählten Text aus der Zwischenablage ein |
+|  [images/img12.png]  | Öffne ein Finde/Ersetzen-Dialogfeld für den Prozedur-Editor |
+
+
+
+  || [images/img13.png] |
+
+
+
+[images/legu.png]
+  Unterhalb vom Editor erlaubt ein Textfeld dem Benutzer ein Hauptkommando zu definieren. Dieses Kommando ist die Haupt-Instruktion zum Starten des Programms. Mit der Play-Taste in der Werkzeugleiste im Hauptfenster kann es gestartet werden. Es wird gespeichert und zurück geladen, wenn der Editorinhalt im Logoformat gespeichert wird.
+ 
+ 
+**WICHTIG**:
+
+  - Beachten Sie, dass ein Klicken auf die Schaltfläche (x) in der Fenster-Titelzeile keine Wirkung haben wird! Nur die zwei Haupt-Schaltflächen werden Ihnen erlauben, den Editor zu verlassen.
+
+  - Zum Löschen einer oder mehrerer unerwünschter Prozeduren benutzen Sie die Befehle ``vergesse`` und ``vergessealles``. Oder Sie gehen in die Menüleiste: **Hilfsmittel-Lösche Prozeduren**.
+
+
+== 2.4 XLogo beenden ==
+
+Zum Verlassen von XLogo können Sie **Beende** im **Menü Datei** wählen oder klicken Sie auf die Schließe-Schaltfläche in der Fenster-Titelzeile. Ein Dialogfeld wird Sie fragen, ob Sie wirklich aufhören wollen.
+
+
+  || [images/img15.png] |
+
+
+
+  --------------------
+
+//XLogo Handbuch//
+([siehe Quelle %%infile])
+
+  |  Übersetzt von [Michael Malien michael.malien@gmx.de?Meine_Hinweise_zum_XLogo-Handbuch]  |  Erzeugt durch [Txt2Tags http://txt2tags.sf.net]  |
+|  Geändert am: %%Mtime(%c)  |  am %%Date(%Y-%m-%d um %H% :%M:%S)  |

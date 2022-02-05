@@ -1,0 +1,1271 @@
+ \documentclass[12pt,frenchb]{report}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,a4paper,tmargin=2.5cm,bmargin=2.5cm,lmargin=1.5cm,rmargin=2cm}
+\pagestyle{empty}
+\usepackage{array,ae,aeguill,picins}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{pstricks,pst-all}
+
+\makeatletter
+\usepackage{amsfonts}
+\usepackage{babel}
+\makeatother
+\title{Neuf leçons pour découvrir le langage LOGO}
+\author{Le Coq Loïc}
+\begin{document}
+\maketitle
+\pagebreak
+\tableofcontents \pagebreak
+\chapter{Introduction} 
+\noindent Dans ce manuel, vous trouverez un certain nombre d'ingrédients afin de maîtriser le langage Logo. Etant prof de math, ce guide est un petit peu le récapitulatif des diverses activités traitées en classe avec les élèves de classe de quatrième et de cinquième. Chaque chapitre essaye d'aborder une notion particulière du langage et propose des activités à réaliser soit en guise de découverte soit pour autoévaluation (Une correction est disponible dans ce cas à la fin du manuel).\\ \\
+Ca manuel ne se veut pas être LE tutoriel idéal pour appréhender le LOGO. Il se contente de proposer diverses pistes, différentes approches sur certains aspects de la programmation en LOGO. Les activités sont de tout niveau et je pense, représente un bon panel de ce qu'est capable de réaliser le langage LOGO.  J'espère que les explications apportées seront le plus claires possible! N'hésitez pas à me faire parvenir vos commentaires et vos critiques à l'égard de ce tutoriel. Et maintenant, commencez à vous initier aux joies de la petite tortue!
+\chapter{Découvrir les primitives de base}
+\noindent
+Pour déplacer la tortue sur l'écran, on utilise des commandes prédéfinies appelées \og primitives\fg. Dans cette premier chapitre, on va découvrir les  primitives de base permettant de contrôler la tortue.
+\section{Primitives nouvelles utilisées:}
+\noindent \begin{enumerate}
+\item [$\bullet$] \texttt{av nombre}\hspace {4cm } {\red \texttt{av 50}}\\
+Fait avancer la tortue du nombre de pas de tortues indiqué.
+\item [$\bullet$] \texttt{re nombre}\hspace {4cm } {\red \texttt{re 100}}\\
+Fait reculer la tortue du nombre de pas de tortues indiqué.
+\item [$\bullet$] \texttt{td nombre}\hspace {4cm } {\red \texttt{td 90}}\\
+La tortue tourne vers la droite de l'angle indiqué.
+\item [$\bullet$] \texttt{tg nombre}\hspace {4cm } {\red \texttt{tg 45}}\\
+La tortue tourne vers la gauche de l'angle indiqué.
+\item [$\bullet$] \texttt{ve}\hspace {4cm } {\red \texttt{ve}}\\
+Efface l'écran et réinitialise la tortue au centre de l'écran (appelé l'origine).
+\item [$\bullet$] \texttt{mt}\hspace {4cm } {\red \texttt{mt}}\\
+La tortue est visible à l'écran.
+\item [$\bullet$] \texttt{ct}\hspace {4cm } {\red \texttt{ct}}\\
+Cache la tortue. Peut permettre de rendre l'affichage plus rapide.
+\item [$\bullet$] \texttt{lc}\hspace {4cm } {\red \texttt{lc}}\\
+Lève le crayon. La tortue ne laisse plus de trait derrière elle lorsqu'elle se déplace.
+\item [$\bullet$] \texttt{bc}\hspace {4cm } {\red \texttt{bc}}\\
+Baisse le crayon. La tortue écrit lorsqu'elle se déplace.
+\item [$\bullet$] \texttt{repete nombre liste}\hspace {4cm } {\red \texttt{repete 5[av 50 td 45]}}\\
+Répète les instructions contenues dans la liste le nombre de fois indiqué.
+\end{enumerate}
+\section{Dessiner un polygone régulier}
+\noindent Ici, nous allons apprendre à tracer un carré, un triangle équilatéral, un pentagone régulier etc. \pagebreak
+\subsection{Le carré}
+\parpic[r]{
+\psset{xunit=1cm,yunit=1cm}
+c
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\begin{pspicture}(0,0)(40,40)
+\pspolygon[](0,40)(40,40)(40,0)(0,0)
+\pspolygon(3.12,0)(0,7.5)
+(0,7.5)(-2.5,0)
+(-2.5,0)(3.12,0)
+\end{pspicture}
+}
+\noindent Un carreau représente 50 pas de tortue. Pour dessiner le carré ci-contre, on va donc taper:
+\begin{verbatim}
+av 200 td 90 av 200 td 90 av 200 td 90 av 200 td 90
+\end{verbatim}
+On s'aperçoit ainsi que l'on répète 4 fois la même instruction d'où une syntaxe plus rapide:
+\begin{verbatim}
+repete 4[av 200 td 90]
+\end{verbatim}
+\subsection{Le triangle équilatéral}
+\parpic[r]{
+\psset{xunit=1cm,yunit=1cm}
+\psgrid[subgriddiv=2,gridlabels=0,gridcolor=lightgray](0,0)(5,4)
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\begin{pspicture}(0,0)(35,42.5)
+\psline(5,5)(35,5)
+\psline(35,5)(20,30)
+\psline(20,30)(5,5)
+\psline[linestyle=dotted](20,30)(27.5,42.5)
+\rput{0}(20,27.5){\parametricplot[arrows=-]{45}{135}{ t cos 5 mul t sin -5 mul }}
+\rput{0}(17.5,32.5){\parametricplot[arrows=->]{-30.96}{49.76}{ t cos 8.5 mul t sin -8.5 mul }}
+\rput(30,31){?}
+\rput(20,19){60°}
+\pspolygon(3.91,5.62)(6.09,4.38)
+(6.09,4.38)(6.55,7.71)
+(6.55,7.71)(3.91,5.62)
+\end{pspicture}
+}
+\noindent Ici, un carreau représente 30 pas de tortues. Nous allons voir ici comment tracer ce triangle équilatéral de 150 pas de tortue de côté.\\
+La commande ressemblera à quelque chose du style: \begin{verbatim}
+repete 3[av 150 td ....]
+\end{verbatim}
+Reste à déterminer le bon angle. Dans un triangle équilatéral, les angles valent tous 60°. Comme la tortue doit tourner à l'extérieur du triangle. L'angle vaudra 180-60=120°. La commande est donc:
+\begin{verbatim}
+repete 3[av 150 td 120]
+\end{verbatim}
+\subsection{L'hexagone}
+\parpic[r]{
+\psset{xunit=1cm,yunit=1cm}
+\psgrid[subgriddiv=2,gridlabels=0,gridcolor=lightgray](0,0)(5,4)
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\begin{pspicture}(0,0)(41.25,41.25)
+\pspolygon[linewidth=0.18](40.02,30)(22.71,40.02)
+(22.71,40.02)(5.38,30.04)
+(5.38,30.04)(5.36,10.04)
+(5.36,10.04)(22.67,0.02)
+(22.67,0.02)(40,10)
+(40,10)(40.02,30)
+\pspolygon(5.51,11.14)(4.49,8.86)
+(4.49,8.86)(7.28,8.98)
+(7.28,8.98)(5.51,11.14)
+\pspolygon(38.75,10)(41.25,10)
+(41.25,10)(40,12.5)
+(40,12.5)(38.75,10)
+\pspolygon(23.12,38.91)(21.88,41.09)
+(21.88,41.09)(20.33,38.76)
+(20.33,38.76)(23.12,38.91)
+\pspolygon(6.87,30)(4.38,30)
+(4.38,30)(5.63,27.5)
+(5.63,27.5)(6.87,30)
+\pspolygon(39.37,28.92)(40.63,31.08)
+(40.63,31.08)(37.84,31.26)
+(37.84,31.26)(39.37,28.92)
+\pspolygon(21.84,1.06)(23.16,-1.06)
+(23.16,-1.06)(24.63,1.31)
+(24.63,1.31)(21.84,1.06)
+\rput[l](41.25,8.75){\pscirclebox[]{1}}
+\rput(40,35){\pscirclebox[]{2}}
+\rput(22.88,44.25){\pscirclebox[]{3}}
+\rput(4.38,34.38){\pscirclebox[]{4}}
+\rput(-1.25,10.62){\pscirclebox[]{5}}
+\rput(23,-5.5){\pscirclebox[]{6}}
+\end{pspicture}
+}
+\noindent Ici, un carreau=20 pas de tortues.\\
+\begin{verbatim}
+repete 6[av 80 td ....]
+\end{verbatim}
+On s'aperçoit que lors de son déplacement, la tortue effectue en fait un tour complet sur elle même. (Elle part orientée vers le haut puis revient dans cette position). Cette rotation de 360° s'effectue en 6 étapes. Par conséquent, à chaque fois, elle tourne de $\dfrac{360}{6}=60°$. La commande est donc:
+\begin{verbatim}
+repete 6[av 80 td 60]
+\end{verbatim}
+\subsection{Tracer un polygone régulier en général}
+\noindent En fait, on réitérant le petit raisonnement précédent, on s'aperçoit que pour tracer un polygone à $n$ côtés, l'angle s'obtiendra en divisant 360 par $n$. Par exemple:\begin{itemize}
+\item Pour tracer un pentagone régulier de côté 100:
+\begin{verbatim}
+repete 5[av 100 td 72]    (360:5=72)
+\end{verbatim}
+\item Pour tracer un ennagone régulier (9 côtés) de côté 20:
+\begin{verbatim}
+repete 9[av 20 td 40]    (360:9=40)
+\end{verbatim}
+\item Pour tracer un euh... 360-gone régulier de côté 2: (ça ressemble fortement à un cercle, ça!)
+\begin{verbatim}
+repete 360[av 2 td 1]  
+\end{verbatim}
+\item Pour tracer un heptagone de côté 120:
+\begin{verbatim}
+repete 7[av 120 td 360/7]
+\end{verbatim}
+\end{itemize}
+
+\section{Enregistrer une procédure}
+\noindent Pour éviter d'avoir à retaper à chaque fois les instructions pour
+dessiner un carré, un triangle ... on peut définir des instructions personnelles appelées \og procédures \fg. Une procédure commence par le mot-clé \texttt{pour} et se termine par le mot-clé \texttt{fin}. On ouvre l'éditeur, on tape par exemple
+
+\begin{verbatim}
+pour carre
+repete 4[av 100 td 90]
+fin
+\end{verbatim}
+puis on ferme l'éditeur en enregistrant les modifications grâce au pingouin.  Maintenant à chaque fois que l'on tape \texttt{carre}, un carré apparaîtra à l'écran!
+
+\section{Activité ...}
+\noindent
+Un petit carreau vaut 10 pas de tortue.\\
+ Vous allez devoir réaliser le dessin ci-dessous. Pour cela, vous devrez définir huit procédures:
+
+\begin{itemize}
+\item Une procédure \og \texttt{carre} \fg{} qui tracera le carre de base
+de la maison.
+\item Une procédure \og \texttt{tri} \fg{} qui tracera le triangle équilatéral
+représentant le toit de la maison.
+\item Une procédure \og \texttt{porte} \fg{} qui tracera le rectangle
+représentant la porte.
+\item Une procédure \og \texttt{che} \fg{} qui tracera la cheminée
+\item Une procédure \og \texttt{dep1} \fg{} qui permettra à la tortue
+de se déplacer de la position A à la position B.
+\item Une procédure \og \texttt{dep2} \fg{} qui permettra à la tortue
+de se déplacer de la position B à la position C.
+\item Une procédure \og \texttt{dep3} \fg{} qui permettra à la tortue
+de se déplacer de la position C à la position D. (Attention, il faudra
+peut-être lever le crayon de la tortue...)
+\item Une procédure \og \texttt{ma} \fg{} qui permettra de tracer la maison
+en entier en s'aidant de toutes les autres procédures.
+\item 
+\begin{center}
+\psset{xunit=1cm,yunit=1cm}
+\psgrid[subgriddiv=2,gridlabels=0,gridcolor=lightgray](0,0)(9,15)
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\begin{pspicture}(0,0)(85,150)
+\pspolygon[](10,10)(85,10)(85,85)(10,85)
+\pspolygon[](35,10)(60,10)(60,45)(35,45)
+\psline(47.5,150)(10,85)
+\psline(47.5,150)(85,85)
+\psline(30,120)(30,130)
+\psline(30,130)(20,130)
+\psline(20,130)(20,102.5)
+\rput(10,5){A}
+\rput(35,5){B}
+\rput(5,85){C}
+\rput(15,103.75){D}
+\end{pspicture}
+
+\end{center}\end{itemize}
+\pagebreak
+\chapter{Se servir des coordonnées}
+\section{Présentation}
+\noindent
+Dans ce chapitre, nous allons découvrir la primitive \texttt{fixeposition}. La zone de dessin est en fait muni d'un repère dont l'origine est située au centre de l'écran. On peut ainsi atteindre chacun des points de la zone de dessin à l'aide de ses coordonnées. \\ \\
+\texttt{fpos liste}\hspace {4cm } {\red \texttt{fpos [100 -250]}}\\
+Déplace la tortue au point dont les coordonnées sont définis dans la liste.\\ \\
+\\ Un petit exemple d'utilisation:\\ 
+\texttt{ve fpos [200 100] fpos [50 -150] fpos [-100 -150]} \\ \\
+
+\begin{center}
+\psset{xunit=1cm,yunit=1cm}
+\psgrid[subgriddiv=0,gridlabels=0,gridcolor=lightgray](-1,-1)(6,5.5)
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\begin{pspicture}(0,0)(60,55)
+\psline(20,30)(60,50)
+\psline(60,50)(30,0)
+\psline(30,0)(0,0)
+\rput(60,55){\blue{(200;100)}}
+\rput(30,-5){\blue{(50;-150)}}
+\rput(-5,-5){\blue{(-100;-150)}}
+\pspolygon(-2,0)(2,0)
+(2,0)(0,5)
+(0,5)(-2,0)
+\psset{xunit=0.2mm,yunit=0.2mm}
+\psaxes[Dx=50,Dy=50]{->}(100,150)(0,0)(300,250)
+\end{pspicture}
+\end{center}
+\vspace{1cm}
+\section{Activité:}
+Dans cette activité, vous devez réaliser la figure située à la page suivante. Vous n'avez le droit d'utiliser que les primitives: \texttt{fpos}, \texttt{ve}, \texttt{lc}, \texttt{bc}.\\ \\
+\psset{xunit=1cm,yunit=1cm}
+\begin{pspicture}(0,0)(15,16)
+\psgrid[subgriddiv=0,gridlabels=0,gridcolor=lightgray](0,0)(15,16)
+\psset{xunit=0.333333 mm,yunit=0.333333mm,runit=0.333333mm}
+\psaxes[Dx=60,Dy=60,linecolor=red]{->}(270,240)(0,0)(480,480)
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\psline(80,10)(80,130)
+\psbezier(80,130)(80,130)(80,130)(80,130)
+\psline(80,130)(40,130)
+\psline(40,130)(40,90)
+\psline(40,130)(60,150)
+\psline(60,150)(100,150)
+\psline(100,150)(80,130)
+\psline(120,130)(60,70)
+\psline(60,70)(20,70)
+\psline(20,70)(20,30)
+\psline(20,30)(60,30)
+\psline(60,30)(60,70)
+\psline(20,70)(40,90)
+\psline(120,130)(100,130)
+\psline(120,130)(120,110)
+\psline(100,150)(100,110)
+\psline(100,110)(140,110)
+\psline(140,110)(120,90)
+\psline(120,90)(0,90)
+\psline(140,110)(140,70)
+\psline(120,90)(120,50)
+\psline(120,50)(140,70)
+\psline(120,50)(80,50)
+\psline(80,50)(60,30)
+\psline(0,90)(20,110)
+\psline(20,110)(40,110)
+\psline(0,90)(0,50)
+\psline(0,50)(20,50)
+\psline(80,10)(100,30)
+\psline(100,30)(100,50)
+\psline(80,10)(40,10)
+\psline(40,10)(40,30)
+\rput(93,76) {$0$}
+\end{pspicture}
+\chapter{Les variables}
+\section{Rôle des variables}
+\noindent \noindent Parfois, on souhaiterait dessiner une même forme mais à des dimensions différentes. Par exemple, si on souhaite dessiner un carré de côté 100, un carré de côté 200 et un carré de côté 50, actuellement on définirait trois procédures différentes correspondant à chacun de ces carrés. Il serait plus simple de définir une seule procédure à laquelle on passerait en paramètre la longueur du côté souhaitée. Par exemple, \texttt{carre 200} tracerait le carré de côté 200, \texttt{carre 100} tracerait le carré de côté 100 etc. C'est précisément ce que vont permettre de réaliser les variables.
+\section{Exemples d'utilisation}
+\noindent Pour tracer un carré de côté 100, on utilise:
+\begin{verbatim}
+pour carre
+repete 4[av 100 td 90]
+fin
+\end{verbatim}
+Nous allons modifier cette procédure afin qu'elle reçoive un paramètre (on dit également \og argument \fg) indiquant la longueur du côté du carré à tracer. \\
+Une variable est toujours précédée du symbole \og : \fg. Si nous voulons indiquer à la procédure \texttt{carre} qu'elle dépend de la variable \texttt{:c}, on rajoute à la fin de la ligne de défnition \texttt{:c}. \\
+Par conséquent, ensuite, on avancera non plus de 100 pas de tortue mais de \texttt{:c} pas de tortues. La procédure devient donc:
+\parpic[r]{\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\begin{pspicture}(0,0)(50,50)
+\pspolygon[](0,0)(50,0)(50,50)(0,50)
+\pspolygon[](0,25)(25,25)(25,0)(0,0)
+\pspolygon[](0,10)(10,10)(10,0)(0,0)
+\pspolygon[](0,5)(5,5)(5,0)(0,0)
+\pspolygon[](0,15)(15,15)(15,0)(0,0)
+\end{pspicture}
+}
+\begin{verbatim}
+pour carre :c
+repete 4[av :c td 90]
+fin
+\end{verbatim}
+Ainsi, en tapant:\\
+ \texttt{carre 100 carre 50 carre 30 carre 20 carre 10}\\
+ On obtient la figure ci-contre.
+ \vspace{1cm}
+ \section{Tracer un rectangle de longueur et largeur déterminée}
+ \noindent Nous allons ici définir une procedure nommée \texttt{rec} qui dépendra de deux variables. \\ Par exemple, \texttt{rec 200 100} tracera un rectangle de hauteur 200 et largeur 100. On obtient:
+ \begin{verbatim}
+pour rec :lo :la
+repete 2[av :lo td 90 av :la td 90]
+fin
+\end{verbatim} 
+Faites des essais: 
+\begin{verbatim}
+rec 200 100 rec 100 300 rec 50 150 rec 1 20 rec 100 2 
+\end{verbatim}
+Bien sûr, si vous ne donnez qu'un argument à la procédure \texttt{rec}, l'interpréteur vous signalera par un message d'erreur que la procédure attend un autre argument.
+\section{Tracer une forme à des tailles diverses}
+\noindent
+Nous avons vu comment tracer un carré, un rectangle à des tailles différentes. Nous allons reprendre l'exemple de la maison du chapitre 1 et voir comment modifier le code pour tracer la maison avec n'importe quelles dimensions.\\ \\
+L'objectif est de passer un argument à la procédure \texttt{ma} pour que selon le paramètre, la maison soit plus ou moins grande. Nous souhaitons que \texttt{ma 10} trace la maison du chapitre 1.\\
+\texttt{ma 5} tracera une maison à l'échelle 0,5. \\
+\texttt{ma 20} tracera une maison aux dimensions deux fois plus grandes etc \\ \\
+La notion de proportionnalité est bien sûr sous-jacente. Sur le dessin, du chapitre 1, un carreau représente 10. La procédure \texttt{carre} était la suivante.
+\begin{verbatim}
+pour carre 
+repete 4[av 150 td 90]
+fin
+\end{verbatim}
+A présent, elle va donc devenir: 
+\begin{verbatim}
+pour carre :c
+repete 4[av 15*:c td 90]
+fin
+\end{verbatim}
+Ainsi quand on tapera \texttt{carre 10}, le carré aura pour côté $15\times10=150$. les proportions sont bien respectées! En fait, on s'aperçoit qu'il va juste falloir reprendre toutes les procédures et changer les longueurs de déplacement de la manière suivante. \\
+\texttt{70} deviendra \texttt{7*:c} \\ 
+\texttt{av 45} deviendra \texttt{av 4.5*:c} \\
+etc\\ \\
+Cela revient en fait simplement à compter le nombre de carreaux pour chaque longueur! On obtient:
+\begin{verbatim}
+pour carre :c
+repete 4[av 15*:c  td 90]
+fin
+
+pour tri :c
+repete 3[av 15*:c td 120]
+fin
+
+pour porte :c
+repete 2[av 7*:c td 90 av 5*:c td 90]
+fin
+
+pour che :c
+av 5.5*:c td 90 av 2*:c td 90 av 2*:c
+fin
+
+pour dep1 :c
+td 90 av 5*:c tg 90
+fin
+
+pour dep2 :c
+tg 90 av 5*:c td 90 av 15*:c td 30
+fin
+
+pour dep3 :c
+lc td 60 av 2*:c tg 90 av 3.5*:c bc
+fin
+
+pour ma :c
+carre :c dep1 :c porte :c dep2 :c tri :c dep3 :c che :c
+fin
+\end{verbatim}
+\section{Activité}
+\noindent Réaliser les dessins suivants avec des variables de telle sorte que l'on puisse les obtenir à des tailles diverses.\\ \\ \\
+\psset{xunit=1cm,yunit=1cm}
+\psgrid[subgriddiv=2,gridlabels=0,gridcolor=lightgray](0,0)(18,12)
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\begin{pspicture}(0,0)(180,115)
+\pspolygon[](20,45)(160,45)(160,25)(20,25)
+\pspolygon[](30,50)(35,50)(35,45)(30,45)
+\pspolygon[](45,50)(50,50)(50,45)(45,45)
+\pspolygon[](20,50)(60,50)(60,90)(20,90)
+\pspolygon[](30,25)(40,25)(40,15)(30,15)
+\pspolygon[](40,15)(30,15)(30,10)(40,10)
+\pspolygon[](50,25)(60,25)(60,10)(50,10)
+\pspolygon[](60,10)(50,10)(50,15)(60,15)
+\pspolygon[](140,25)(150,25)(150,10)(140,10)
+\pspolygon[](150,10)(140,10)(140,15)(150,15)
+\pspolygon[](130,25)(120,25)(120,10)(130,10)
+\pspolygon[](120,10)(130,10)(130,15)(120,15)
+\pspolygon[](30,60)(50,60)(50,65)(30,65)
+\pspolygon[](30,80)(35,80)(35,75)(30,75)
+\pspolygon[](45,80)(50,80)(50,75)(45,75)
+\psline(140,45)(180,85)
+\psline(30,105)(30,90)
+\psline(50,105)(50,90)
+\pspolygon[](25,115)(35,115)(35,105)(25,105)
+\pspolygon[](45,115)(55,115)(55,105)(45,105)
+\psline(60,85)(72.5,77.5)
+\psline(72.5,77.5)(60,70)
+\psline(20,85)(7.5,77.5)
+\psline(7.5,77.5)(20,70)
+\end{pspicture}
+\vspace{2cm}
+\begin{center}
+\psset{xunit=1cm,yunit=1cm}
+\psgrid[subgriddiv=2,gridlabels=0,gridcolor=lightgray](0,0)(11.5,7)
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\begin{pspicture}(0,0)(115,70)
+\psline(10,5)(45,5)
+\psline(45,5)(45,25)
+\psline(45,25)(70,25)
+\psline(70,35)(70,15)
+\psline(70,35)(90,35)
+\psline(60,15)(95,15)
+\psline(60,15)(60,5)
+\psbezier(60,5)(60,5)(60,5)(60,5)
+\psline(60,5)(105,5)
+\psline(105,5)(105,15)
+\psline(105,15)(115,15)
+\psbezier(115,15)(115,15)(115,15)(115,15)
+\psline(115,15)(115,60)
+\psline(115,60)(105,60)
+\psline(105,60)(105,70)
+\psbezier(105,70)(105,70)(105,70)(105,70)
+\psline(105,70)(0,70)
+\psbezier(0,70)(0,70)(0,70)(0,70)
+\psline(0,70)(0,35)
+\psline(0,35)(35,35)
+\psline(35,35)(35,15)
+\psbezier(35,15)(35,15)(35,15)(35,15)
+\psline(35,15)(10,15)
+\psbezier(10,15)(10,15)(10,15)(10,15)
+\psline(10,5)(10,15)
+\pspolygon[](10,60)(20,60)(20,50)(10,50)
+\end{pspicture}
+\end{center}
+\pagebreak
+\chapter{La récursivité}
+\noindent On dit qu'une procédure est \textbf{récursive} si elle s'appelle elle-même. Voyons quelques exemples utilisant cette propriété.
+\section{Avec la zone de dessin.}
+\subsection{ Premier exemple:}
+\noindent Taper la procédure suivante dans votre éditeur: \\ \\
+\begin{tabular}{|l|l}
+\cline{1-1}
+\begin{minipage}{1.8cm}
+\begin{verbatim}
+pour ex1
+td 1
+ex1
+fin
+\end{verbatim}
+\end{minipage}
+&
+\begin{minipage}{16cm}
+\vspace{0.5cm}
+Cette procédure est récursive puisque la commande \texttt{ex1} est exécuté à la dernière ligne. A l'exécution, on constate que la tortue ne cesse de tourner sur elle-même. Pour interrompre le programme, on est obligé de se servir du bouton STOP.
+\end{minipage}
+\\
+\cline{1-1}
+\end{tabular}
+\subsection{Trois nouvelles primitives:}
+\begin{itemize}
+\item [$\bullet$] \texttt{attends nombre}\hspace {4cm } {\red \texttt{attends 60}}\\
+Bloque le programme pendant le nombre de 60$^{\textrm{ième}}$ de secondes indiqué. \\
+Par exemple, \texttt{attends 120} bloquera le programme pendant deux secondes.
+\item [$\bullet$] \texttt{gomme}\hspace {4cm } {\red{gomme}}\\
+Lorsque la tortue se déplace, elle efface tout au lieu de laisser un trait derrière elle.
+\item [$\bullet$] \texttt{dessine,de}\hspace {4cm } {\red{dessine}}\\
+Repasse en mode dessin classique: la tortue laisse un trait derrière elle en se déplaçant.
+\end{itemize}
+\subsection{Deuxième exemple:}
+\noindent
+\begin{tabular}{|l|l}
+\cline{1-1}
+\begin{minipage}{5cm}
+\begin{verbatim}
+pour ex2
+av 200 gomme attends 60
+re 200 dessine td 6
+ex2
+fin
+\end{verbatim}
+
+\end{minipage}
+&
+\begin{minipage}{11cm}
+\vspace{0.5cm}
+Essayer de deviner ce que va faire ce programme.\\
+\\
+Lancer la commande \texttt{ve ex2}\\
+Une belle trotteuse!
+\end{minipage}
+\\
+\cline{1-1}
+\end{tabular}
+\pagebreak
+\section{Avec la zone de texte}
+\noindent
+\subsection{Un premier exemple:}
+Tapez successivement \texttt{ecris "bonjour}, \texttt{ec "bonjour}, \texttt{ec [J'écris ce que je veux]}\\
+J'espère qu'à présent vous maîtrisez la primitive \texttt{ecris} ou \texttt{ec}.\\
+Ne pas oublier le \og " \fg lorsqu'on veut juste écrire un mot.
+\\
+\begin{tabular}{|l|l}
+\cline{1-1}
+\begin{minipage}{3cm}
+\begin{verbatim}
+pour ex3 :n
+ecris :n
+ex3 :n+1
+fin
+\end{verbatim}
+
+\end{minipage}
+&
+\begin{minipage}{12cm}
+Lancer la commande \texttt{ex3 0}\\
+(Interrompre avec le bouton STOP)\\
+Faites les changements nécessaires dans ce programme pour que les chiffres apparaissent de deux en deux.\\
+\\
+Je veux à présent afficher tous les chiffres supérieur à 100 qui sont dans la table de cinq. Que dois-je faire sur le programme ? Que dois-je taper pour le lancer ?
+\end{minipage}
+\\
+\cline{1-1}
+\end{tabular}
+\subsection{Réaliser un test de sortie}
+\noindent Taper les commandes suivantes:\\
+\texttt{si 2+1=3 [ecris [ceci est vrai]]} \\
+\texttt{si 2+1=4 [ecris [ceci est vrai]][ecris [le calcul est faux]]} \\
+\texttt{si 2+5=7 [ec "vrai][ec "faux]}\\
+\\
+Si vous n'avez toujours pas compris la syntaxe de la primtive \texttt{si}, reportez-vous au manuel de référence de XLogo.\\ \\
+\begin{tabular}{|l|l}
+\cline{1-1}
+\begin{minipage}{4cm}
+\begin{verbatim}
+pour ex3 :n
+si :n=100 [stop]
+ecris :n
+ex3 :n+1
+fin
+\end{verbatim}
+
+\end{minipage}
+&
+\begin{minipage}{10cm}
+\vspace{0.5cm}
+Lancer la commande \texttt{ex3 0}\\
+Faites les changements nécessaires dans ce programme pour faire apparaître les chiffres compris entre et 55 et 350 qui sont dans la table de 11.\\
+\end{minipage}
+\\
+\cline{1-1}
+\end{tabular}
+
+\chapter{Quelques techniques de remplissage}
+\noindent Dans cette leçon, nous allons voir comment on peut procéder pour remplir un rectangle de longueur et largeur déterminée. Nous choisirons dans les exemples suivants un rectangle de 100 sur 200.
+\section{Première approche}
+\parpic[r]{
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\psset{arrowsize=1 2,arrowlength=1,arrowinset=0.25,tbarsize=0.7 5,bracketlength=0.15,rbracketlength=0.15}
+\begin{pspicture}(0,0)(50,30)
+\pspolygon[fillstyle=solid](0,0)(40,0)
+(40,0)(40,20)
+(40,20)(0,20)
+(0,20)(0,30)
+(0,30)(50,30)
+(50,30)(50,0)
+(50,0)(0,0)
+\psline{->}(35,15)(30,10)
+\psline{<-}(2.5,15)(2.5,5)
+\psline{->}(5,17.5)(35,17.5)
+\psline{->}(37.5,15)(37.5,5)
+\psline(0,20)(0,0)
+\end{pspicture}}
+\noindent Si l'on souhaite par exemple tracer un rectangle rempli de 100 sur 200, une première idée peut être de dessiner le rectangle de 100 sur 200 puis de tracer un rectangle de 99 sur 199 puis un rectangle de 98 sur 198 ... jusqu'à ce que le rectangle soit entièrement rempli.  \\
+Commençons par définir un rectangle de longueur et largeur dépendant de deux variables. 
+\begin{verbatim}
+pour rec :lo :la
+repete 2[av :lo td 90 av :la td 90]
+fin
+\end{verbatim}
+Pour remplir notre grand rectangle, on va donc exécuter:\\
+\texttt{rec 100 200 rec 99 199 rec 98 198  ..... rec 1 101}\\ \\
+Définissons alors une procédure rectangle dédié à tracer ce rectangle rempli.
+
+\begin{verbatim}
+pour rectangle :lo :la
+rec :lo :la
+rectangle :lo-1 :la-1
+fin
+\end{verbatim}
+
+On teste \texttt{rectangle 100 200} et on s'aperçoit qu'il y a un problème: la procédure ne s'arrête pas lorsque le rectangle est rempli, elle continue de tracer des rectangles! On va donc ajouter un test permettant de détecter si la longueur ou la largeur est égale à 0. A ce moment, on demande au programme de s'interrompre avec la commande \texttt{stop}.
+\begin{verbatim}
+pour rectangle :lo :la
+si ou :lo=0 :la=0 [stop]
+rec :lo :la
+rectangle :lo-1 :la-1
+fin
+\end{verbatim}
+Note: à la place d'utiliser la primitive \texttt{ou}, on peut utiliser le symbole \og | \fg: on obtiendrait: \begin{center}
+\texttt{si :lo=0 | :la=0 [stop]}
+\end{center}
+\section{Deuxième approche}
+\parpic[r]{\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\psset{arrowsize=1 2,arrowlength=1,arrowinset=0.25,tbarsize=0.7 5,bracketlength=0.15,rbracketlength=0.15}
+\begin{pspicture}(0,0)(50,30)
+\pspolygon[fillstyle=solid](0,30)(20,30)(20,0)(0,0)
+\psline[arrowsize=1.2 2]{->}(22.5,27.5)(22.5,2.5)
+\psline[arrowsize=1.2 2]{<-}(25,27.5)(25,2.5)
+\psline{->}(32.5,15)(47.5,15)
+\psline[linestyle=dotted](20,30)(50,30)
+(50,30)(50,0)
+(50,0)(20,0)
+\end{pspicture}}
+\noindent L'idée ici va être de commencer par avancer de 100 pas puis reculer de 100 pas, se déplacer de un pas vers la droite, puis répéter ce mouvement élémentaire jusqu'à ce que le rectangle soit entièrement rempli.
+Si la hauteur du rectangle est repéré par la variable \texttt{:lo}, on va donc répéter le mouvement élémentaire:
+\begin{verbatim}
+av :lo re :lo td 90 av 1 tg 90
+\end{verbatim}
+Ce mouvement devra être répéter \texttt{:la} fois. La procédure finale est donc:
+\begin{verbatim}
+pour rectangle :lo :la
+av :lo re :lo
+repete :la-1 [ td 90 av 1 tg 90 av :lo re :lo]
+fin
+\end{verbatim}
+Note: Si on inclut le premier trait vertical dans la boucle, il y aura un petit trait de longueur un pas en trop en bas du rectangle.\\ \\
+Une autre approche aurait pu être d'utiliser la récursivité et un test de fin.
+\begin{verbatim}
+pour rectangle :lo :la
+si :la=0 [stop]
+av :lo re :lo 
+si non :la=1 [td 90 av 1 tg 90]
+rectangle :lo :la-1
+fin
+\end{verbatim}
+Note: A chaque trait vertical dessiné, on décrémente la variable \texttt{:la} de une unité. Ainsi, lorsqu'elle vaut 0, c'est que le rectangle est dessiné.
+\section{Troisième approche}
+\parpic[r]{
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\psset{arrowsize=1 2,arrowlength=1,arrowinset=0.25,tbarsize=0.7 5,bracketlength=0.15,rbracketlength=0.15}
+\begin{pspicture}(0,0)(50,30)
+\pspolygon[fillstyle=solid](0,10)(50,10)(50,0)(0,0)
+\psline[arrowsize=1.2 2]{->}(2.5,15)(47.5,15)
+\psline[arrowsize=1.2 2]{<-}(2.5,12.5)(47.5,12.5)
+\psline{->}(25,17.5)(25,27.5)
+\psline[linestyle=dotted](0,10)(0,30)
+(0,30)(50,30)
+(50,30)(50,10)
+\end{pspicture}
+}
+\noindent On effectue le même mouvement que précédemment mais en traçant successivement les traits horizontaux.
+\begin{verbatim}
+pour rectangle :lo :la
+td 90 av :la re :la
+repete :lo-1 [ tg 90 av 1 td 90 av :la re :la]
+fin
+\end{verbatim}
+\pagebreak
+\chapter{Activité sur les chiffres de calculatrice}
+
+\parpic[r]{
+\psset{xunit=1cm,yunit=1cm}
+\psgrid[subgriddiv=2,gridlabels=0,gridcolor=lightgray](4,1)(8,8)
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\psset{arrowsize=1 2,arrowlength=1,arrowinset=0.25,tbarsize=0.7 5,bracketlength=0.15,rbracketlength=0.15}
+\begin{pspicture}(0,0)(80,80)
+\pspolygon[](40,80)(80,80)(80,10)(40,10)
+\pspolygon[](80,40)(40,40)(40,50)(80,50)
+\pspolygon[](70,80)(80,80)(80,10)(70,10)
+\pspolygon[](50,80)(40,80)(40,10)(50,10)
+\pspolygon[](40,80)(80,80)(80,70)(40,70)
+\pspolygon[](40,20)(80,20)(80,10)(40,10)
+\rput(60,75){}
+\rput(45,30){\pscirclebox[]{1}}
+\rput(60,15){\pscirclebox[]{2}}
+\rput(75,30){\pscirclebox[]{3}}
+\rput(60,45){\pscirclebox[]{4}}
+\rput(75,60){\pscirclebox[]{5}}
+\rput(60,75){\pscirclebox[]{6}}
+\rput(45,60){\pscirclebox[]{7}}
+\rput(20,40){Unité:}
+\rput(20,30){1 carreau = 20 pas}
+\end{pspicture}
+}
+\noindent Cette activité est basé sur le fait que tous les nombres de calculatrice peuvent être obtenus à l'aide du patron ci-contre:\\ \\
+Par exemple, pour dessiner un \og 4\fg, on allumera les rectangles 3,4,5,7.\\
+Pour dessiner un \og 8\fg, on allumera les rectangles 1,2,3,4,5,6,7.\\
+Pour dessiner un \og 3\fg, on allumera les rectangles 2,3,4,5,6.\\ \\
+\section{Le programme}
+\noindent 
+Nous aurons besoin du rectangle rempli précédent:
+\begin{verbatim}
+pour rec :lo :la
+si :lo=0 |:la=0[stop]
+repete 2[av :lo td 90 av :la td 90]
+rec :lo-1 :la-1
+fin
+\end{verbatim}
+Nous supposerons ici que la tortue part du coin inférieur gauche. Nous allons définir une procédure appelée \texttt{chiffre} admettant 7 argument \texttt{:a}, \texttt{:b}, \texttt{:c}, \texttt{:d}, \texttt{:e}, \texttt{:f}, \texttt{:g}. Quand \texttt{:a} vaut 1, on dessine le rectangle 1. Si \texttt{:a} vaut 0, on ne le dessine pas. Voilà le principe.\\ \\ On obtient la procédure suivante:\pagebreak
+\begin{verbatim}
+pour chiffre :a :b :c :d :e :f :g
+# On dessine le rectangle 1
+si :a=1 [rec 160 40]
+# On dessine le rectangle 2
+si :b=1 [rec 40 160]
+lc td 90 av 120 tg 90 bc
+# On dessine le rectangle 3
+si :c=1 [rec 160 40]
+lc av 120 bc
+# On dessine le rectangle 5
+si :e=1 [rec 160 40]
+# On dessine le rectangle 4
+tg 90 lc re 40 bc
+si :d=1 [rec 160 40]
+# On dessine le rectangle 6
+td 90 lc av 120 tg 90 bc
+si :f=1 [rec 160 40]
+# On dessine le rectangle 7
+lc av 120 tg 90 re 40 bc 
+si :g=1 [rec 160 40]
+fin
+\end{verbatim}
+\section{Création d'une petite animation}
+\noindent Nous allons ici simuler un compte à rebours en faisant apparaitre succesivement les chiffres de 9 à 0 par ordre décroissant.
+\begin{verbatim}
+pour rebours
+ve ct chiffre 0 1 1 1 1 1 1 attends 60
+ve ct chiffre 1 1 1 1 1 1 1 attends 60
+ve ct chiffre 0 0 1 0 1 1 0 attends 60
+ve ct chiffre 1 1 1 1 0 1 1 attends 60
+ve ct chiffre 0 1 1 1 0 1 1 attends 60
+ve ct chiffre 0 0 1 1 1 0 1 attends 60
+ve ct chiffre 0 1 1 1 1 1 0 attends 60
+ve ct chiffre 1 1 0 1 1 1 0 attends 60
+ve ct chiffre 0 0 1 0 1 0 0 attends 60
+ve ct chiffre 1 1 1 0 1 1 1 attends 60
+fin
+\end{verbatim}
+Petit problème: il y aun effet de clignotement désagréable pendant la création de chaque chiffre. Pour fluidifier cela on va utiliser les primitives \texttt{animation} et \texttt{rafraichis}.\\
+\texttt{animation} attend un argument égal à \texttt{vrai} ou \texttt{faux}.
+\begin{itemize}
+\item S'il est égal à \texttt{faux}, cest le mode d'affichage classique.
+\item S'il est égal à \texttt{vrai}, on passe en mode \og animation \fg. La tortue ne dessine plus à l'écran mais dans le cache, c'est à dire qu'elle effectue les changements en mémoire. Elle n'affichera l'image que lorsqu'on lui le demande à l'aide la primitive \texttt{rafraichis}.
+\end{itemize}
+On obtient ainsi le programme modifié:
+\begin{verbatim}
+pour rebours
+# On passe en mode animation
+animation vrai
+ve ct chiffre 0 1 1 1 1 1 1 rafraichis attends 60
+ve ct chiffre 1 1 1 1 1 1 1 rafraichis attends 60
+ve ct chiffre 0 0 1 0 1 1 0 rafraichis attends 60
+ve ct chiffre 1 1 1 1 0 1 1 rafraichis attends 60
+ve ct chiffre 0 1 1 1 0 1 1 rafraichis attends 60
+ve ct chiffre 0 0 1 1 1 0 1 rafraichis attends 60
+ve ct chiffre 0 1 1 1 1 1 0 rafraichis attends 60
+ve ct chiffre 1 1 0 1 1 1 0 rafraichis attends 60
+ve ct chiffre 0 0 1 0 1 0 0 rafraichis attends 60
+ve ct chiffre 1 1 1 0 1 1 1 rafraichis attends 60
+# On rebascule en mode dessin classique
+animation faux
+fin
+\end{verbatim}
+\pagebreak
+\chapter{Découvrir les listes et les variables.}
+\section{Communiquer avec l'utilisateur}
+\noindent Nous allons réaliser un petit programme qui demande à l'utilisateur son nom, son prénom et son age. A la fin du questionnaire, le programme répond par un récapitulatif su style:
+\begin{verbatim}
+Ton nom est:........
+Ton prénom est: .......
+Ton age est: .......
+Tu es mineur ou majeur
+\end{verbatim}
+\noindent \textsc{Pour cela, nous allons utiliser les primitives suivantes:}  \\
+\begin{itemize}
+\item \texttt{lis}:\hspace{4cm}  {\red \texttt{lis [Quel est ton age? ] "a}}\\
+Affiche une boîte de dialogue ayant pour titre le texte contenu dans la liste (ici, \og Quel est ton age?\fg). La réponse donnée par l'utilisateur est mémorisée sous forme d'une liste dans la variable \texttt{:a}. Par exemple, si l'on rentre 20, la variable \texttt{:a} contiendra  \texttt{[20]}\\
+\item \texttt{donne}:\hspace{4cm}  {\red \texttt{donne "a 30}}\\ \\
+Donne la valeur 30 à la variable \texttt{:a}\\
+\item \texttt{phrase, ph}:\hspace{4cm}  {\red \texttt{phrase [30 k] "a }}\\ \\
+Rajoute une valeur dans une liste. Si cette valeur est une liste, assemble les deux listes.\\ 
+\begin{verbatim}
+phrase [30 k] "a ---> [30 k a]
+phrase [1 2 3] 4 ---> [1 2 3 4]
+phrase [1 2 3] [4 5 6] ---> [1 2 3 4 5 6]
+
+\end{verbatim} 
+\item \texttt{premier}: Rend le premier élément contenu dans une liste:
+\begin{verbatim}
+ecris premier [4 5 6]  ---> 4
+ecris premier [comment ca va 8]  ----> comment
+\end{verbatim} 
+\end{itemize}
+Nous obtenons le code suivant: \pagebreak
+\begin{verbatim}
+pour question
+lis [Quel est ton age?] "age
+# :age contient alors une liste à un élément, 
+# on extrait cet élément et on le stocke dans :age
+donne "age premier :age
+lis [Quel est ton nom?] "nom
+lis [Quel est ton prénom?] "prenom
+ecris phrase [Ton nom est: ] :nom
+ecris phrase [Ton prénom est: ] :prenom
+ecris phrase [Ton age est: ] :age
+si ou :age>18 :age=18 [ecris [Tu es majeur]] [ecris [Tu es mineur]]
+fin
+\end{verbatim}
+\section{Programmer un petit jeu.}
+\noindent \textsc{L'objectif de ce paragraphe est de créer le jeu suivant:}\\ \\ 
+Le programme choisit un nombre au hasard entre 0 et 32 et le mémorise. Une boîte de dialogue s'ouvre et demande à l'utilisateur de rentrer un nombre. Si le nombre proposé est égal au nombre mémorisé, il affiche \og gagné \fg dans la zone de texte. Dans le cas contraire, le programme indique si le nombre mémorisé est plus petit ou plus grand que le nombre proposé par l'utilisateur puis rouvre la boîte de dialogue. Le programme se termine quand l'utilisateur a trouvé le nombre mémorisé.\\ \\
+Vous aurez besoin d'utiliser la primitive suivante:\\
+\texttt{hasard}: \hspace{4cm} {\red\texttt{hasard 8}} \\
+\texttt{hasard 20} rend donc un nombre choisi au hasard entre 0 et 19.\\
+Rend un nombre au hasard compris entre 0 et 8 strictement.\\ \\
+\textsc{Voici quelques règles à respecter pour réaliser ce petit jeu:}
+\begin{itemize}
+\item Le nombre mémorisé par l'ordinateur sera mémorisé dans une variable nommée \texttt{nombre}.
+\item La boîte de dialogue aura pour titre: \og Propose un nombre: \fg.
+\item Le nombre proposé par l'utilisateur sera enregistré dans une variable nommée \texttt{essai}.
+\item La procédure qui permet de lancer le jeu s'appellera  \texttt{jeu}.
+\end{itemize}
+\vspace{0.5cm}
+\noindent \textsc{Quelques améliorations possibles:} \\
+\begin{itemize}
+\item Afficher le nombre de coups.
+\item Le nombre recherché devra être compris entre 0 et 2000.
+\item Vérifier si ce que rentre l'utilisateur est réellement un nombre. Pour cela, utiliser la primitive \texttt{nombre?}. \\
+Exemples: \begin{tabular}[t]{l}
+\texttt{nombre? 8} est vrai.\\
+\texttt{nombre? [5 6 7]} est faux. ([5 6 7] est une liste et non pas un nombre)\\
+\texttt{nombre? "abcde} est faux. ("abcde est un mot et non pas un nombre)
+\end{tabular}
+\end{itemize}
+\pagebreak
+\chapter{Une animation: le bonhomme qui grandit}
+\parpic[r]{\psset{xunit=1cm,yunit=1cm}
+\psgrid[subgriddiv=2,gridlabels=0,gridcolor=lightgray](0,0)(2,6)
+\psset{xunit=1mm,yunit=1mm,runit=1mm}
+\psset{linewidth=0.3,dotsep=1,hatchwidth=0.3,hatchsep=1.5,shadowsize=1}
+\psset{dotsize=0.7 2.5,dotscale=1 1,fillcolor=black}
+\psset{arrowsize=1 2,arrowlength=1,arrowinset=0.25,tbarsize=0.7 5,bracketlength=0.15,rbracketlength=0.15}
+\begin{pspicture}(0,0)(20,55)
+\psline[linewidth=0.18](0,0)(10,20)
+\psline[linewidth=0.18](20,0)(10,20)
+\psline[linewidth=0.18](10,45)(10,20)
+\psline[linewidth=0.18](10,40)(0,20)
+\psline[linewidth=0.18](10,40)(20,20)
+\rput{0}(10,50){\psellipse[linewidth=0.18](0,0)(5,5)}
+\psline[linestyle=dashed,dash=1 1](10,20)(10,5)
+\rput{0}(10,15){\parametricplot[arrows=-]{90}{146.31}{ t cos 5 mul t sin -5 mul }}
+\rput(7,7.5){26°}
+\end{pspicture}
+}
+Tout d'abord, nous allons définir une procédure \texttt{bon} qui trace le bonhomme ci-contre à la taille de notre choix. 
+\begin{verbatim}
+pour bon :c
+tg 154 av 2.2*:c re :c*2.2 
+tg 52 av 2.2*:c re :c*2.2 
+tg 154 av :c*2
+tg 154 av 2.2*:c re :c*2.2 
+tg 52 av 2.2*:c re :c*2.2 
+tg 154 av :c/2
+tg 90 repete 180[av :c/40 td 2] td 90
+fin
+\end{verbatim}
+Nous allons à présent créer une animation donnant l'illusion que le bonhomme grandit petit à petit. Pour cela, nous allons tracer \texttt{bon 1} puis \texttt{bon 2} \texttt{bon 3} ... jusqu'à \texttt{bon 75}. Entre chaque tracé, on effacera l'écran. On obtient les deux procédures suivantes:
+\begin{verbatim}
+pour bon :c
+si :c=75[stop]
+tg 154 av 2.2*:c re :c*2.2 
+tg 52 av 2.2*:c re :c*2.2 
+tg 154 av :c*2
+tg 154 av 2.2*:c re :c*2.2 
+tg 52 av 2.2*:c re :c*2.2 
+tg 154 av :c/2
+tg 90 repete 180[av :c/40 td 2] td 90
+ve ct bon :c+1
+fin
+
+pour demarrer
+ve ct 
+bon 0
+fin
+\end{verbatim}
+Enfin, pour fluidifier le tout, on va se servir du mode animation et de la primitive \texttt{rafraichis}.
+\begin{verbatim}
+pour bon :c
+si :c=75[stop]
+ve ct tg 154 av 2.2*:c re :c*2.2 
+tg 52 av 2.2*:c re :c*2.2 
+tg 154 av :c*2
+tg 154 av 2.2*:c re :c*2.2 
+tg 52 av 2.2*:c re :c*2.2 
+tg 154 av :c/2
+tg 90 repete 180[av :c/40 td 2] td 90
+rafraichis
+bon :c+1
+fin
+
+pour demarrer
+ct animation vrai
+bon 0
+animation faux
+fin
+\end{verbatim}
+\pagebreak
+\chapter{Activité sur les nombres premiers entre eux.}
+\noindent \textsc{Avertissement:} Quelques notions de mathématiques sont nécessaires pour bien appréhender ce chapitre.
+
+\section{Notion de pgcd (plus grand commun diviseur)}
+\noindent 
+Etant donné deux nomnres entiers, leur pgcd désigne leur plus grand commun diviseur. \\
+\begin{itemize}
+\item Par exemple, 42 et 28 ont pour pgcd 14 (c'est le plus grand nombre possible qui divise à la fois 28 et 42)\\
+\item 25 et 55 ont pour pgcd 5.
+\item 42 et 23 ont pour pgcd 1.
+\end{itemize}
+Lorsque deux nombres ont pour pgcd 1, on dit qu'ils sont premiers entre eux. Ainsi sur l'exemple précédent, 42 et 23 sont premiers entre eux. Cela signifie qu'ils n'ont aucun diviseur commun hormis 1 (bien sûr, il divise tout entier!).
+\section{Algorithme d'Euclide}
+\noindent Pour déterminer le pgcd de deux nombres, on peut utiliser une méthode appelée algorithme d'Euclide: (Ici, on ne démontrera pas la validité de cet algorithme, il est admis qu'il fonctionne)\\ \\
+Voici le principe :
+Étant donnés deux entiers positifs $a$ et $b$, on commence par tester si $b$ est nul. Si oui, alors le PGCD est égal à $a$. Sinon, on calcule $r$, le reste de la division de $a$ par $b$. On remplace $a$ par $b$, et $b$ par $r$, et recommence le procédé. \\
+Calculons par exemple, le pgcd de 2160 et 888  par cet algorithme avec les étapes suivantes:
+\begin{center}
+$\begin{array}{ccc}
+a & b & r\\
+2160 & 888 & 384 \\
+888 & 384 & 120 \\
+384 & 120 & 24 \\
+120 & 24 & 0 \\
+24 & 0 & \\
+\end{array}$
+\end{center}
+Le pgcd de 2160 et 888 est donc 24. Il n'y pas de plus grand entier qui divise ces deux nombres.
+(En fait $2160=24\times90$ et $888=24\times37$)\\
+Le pgcd est en fait le dernier reste non nul.
+\section{Calculer un pgcd en Logo}
+\noindent Un petit algorithme récursif permet de calculer le pgcd de deux nombres \texttt{:a} et \texttt{:b}
+\begin{verbatim}
+pour pgcd :a :b
+si (reste :a :b)=0 [retourne :b][retourne pgcd :b reste :a :b] 
+fin
+
+ecris pgcd 2160 888 ---> 24
+\end{verbatim}
+Note: On est obligé de mettre des parenthèses sur \texttt{reste :a :b}, sinon l'interpréteur va chercher à évaluer $:b = 0$. Pour éviter ce problème de parenthésage, écrire: \texttt{si 0=reste :a :b}
+
+\section{Calculer une approximation de $\pi$}
+\noindent En fait, un résultat connu de théorie des nombres montre que la probabilité que deux nombres pris au hasard soient premiers entre eux est de $\dfrac{6}{\pi^2}\approx 0,6079$. Pour essayer de retrouver ce résultat, voilà ce que l'on va faire:
+\begin{itemize}
+\item Prendre deux nombres au hasard entre 0 et 1 000 000.
+\item Calculer leur pgcd
+\item Si leur pgcd vaut 1. Rajouter 1 à une varaible compteur.
+\item Répéter cela 1000 fois
+\item La fréquence des couples de nombres premiers entre eux s'obtiendra en divisant la variable compteur par 1000 (le nombre d'essais).
+\end{itemize}
+\begin{verbatim}
+
+pour test
+# On initialise la variable compteur à 0
+donne "compteur 0
+repete 1000 [ 
+  si (pgcd hasard 1000000 hasard 1000000)=1 [donne "compteur :compteur+1]
+]
+ecris [frequence:]
+ecris :compteur/1000
+fin
+
+\end{verbatim}
+Note: De même que précédemment, On est obligé de mettre des parenthèses sur \texttt{pgcd hasard 1000000 hasard 1000000}, sinon l'interpréteur va chercher à évaluer $1\ 000\ 000 = 1$. Pour éviter ce problème de parenthésage, écrire: \texttt{si 1=pgcd hasard 1000000 hasard 1000000} \\ \\
+On lance le programme \texttt{test}.
+\begin{verbatim}
+test
+0.609
+test
+0.626
+test
+0.597
+\end{verbatim}
+On obtient des valeurs proches de la valeur théorique de 0,6097. Ce qui est remarquable est que cette fréquence est une valeur approchée de $\dfrac{6}{\pi^2}$.\\
+ Si je note $f$ la fréquence trouvée, on a donc: $f\approx \dfrac{6}{\pi^2}$ \\
+Donc $\pi^2\approx\dfrac{6}{f}$ et donc $\pi\approx\sqrt{\dfrac{6}{f}}$.\\
+Je m'empresse de rajouter cette approximation dans mon programme, je transforme la fin de la procédure \texttt{test}:
+\begin{verbatim}
+
+pour test
+# On initialise la variable compteur à 0
+donne "compteur 0
+repete 1000 [ 
+  si 1=pgcd hasard 1000000 hasard 1000000 [donne "compteur :compteur+1]
+]
+# On calcule la frequence
+donne "f :compteur/1000
+# On affiche la valeur approchée de pi
+ecris phrase [approximation de pi:] racine (6/:f)
+fin
+test
+approximation de pi: 3.164916190172819
+test
+approximation de pi: 3.1675613357997525
+test
+approximation de pi: 3.1008683647302115
+\end{verbatim}
+ Bon, je modifie mon programme de tel sorte que quand je le lance, je précise le nombre d'essais souhaités. J'ai dans l'idée d'essayer avec 10000 essais, voilà ce que j'obtiens sur mes trois premières tentatives:
+\begin{verbatim}
+pour test :essais
+# On initialise la variable compteur à 0
+donne "compteur 0
+repete :essais [ 
+  si 1=pgcd hasard 1000000 hasard 1000000 [donne "compteur :compteur+1]
+]
+# On calcule la frequence
+donne "f :compteur/:essais
+# On affiche la valeur approchée de pi
+ecris phrase [approximation de pi:] racine (6/:f)
+fin
+
+test 10000
+approximation de pi: 3.1300987144363774
+test 10000
+approximation de pi: 3.1517891481565017
+test 10000
+approximation de pi: 3.1416626832299914
+\end{verbatim} 
+ Pas mal, non?
+\section{Compliquons encore un peu: $\pi$ qui génère $\pi$.....}
+\noindent Qu'est-ce qu'un nombre aléatoire? Est-ce qu'un nombre pris au hasard antre 1 et 1 00 0000 est réellement un nombre aléatoire? On s'aperçoit très vite que notre modélisation ne fait qu'approcher le modèle idéal. Bien, c'est justement sur la façon de générer le nombre aléatoire que nous allons effectuer quelques changements... Nous n'allons plus utiliser la primitive \texttt{hasard} mais utiliser la séquence des décimales de $\pi$. Je m'explique: les décimales de $\pi$ ont toujours intrigué les mathématiciens par leur manque d'irrégularité, les chiffres de 0 à 9 semblent apparaître en quantité à peu près égales et de manière aléatoire. On ne peut prédire la prochaine décimales à l'aide des précédentes. Nous allons voir ci-après comment générer un nombre alatoire à l'aide des décimales de $\pi$. Tout d'abord, il va vous falloir récupérer les premières décimales de pi (par exemple un million).
+ \begin{itemize}
+ \item Il existe des petits programmes qui font cela très bien.  Je conseille PiFast pour Windows et ScnhellPi pour Linux.
+ \item Vous pouvez égalemeent aller sur ce site et effectuer un copier coller dans un fichier texte: http://3.141592653589793238462643383279502884197169399375105820974944592.com/
+ \item Récupérer ce fichier sur mon site: http://xlogo.free.fr/fichiers/millionpi.txt
+ \end{itemize}
+Pour créer nos nombres aléatoires, bous prendrons des paquets de 8 chiffres dans la suite des décimales de $\pi$. Explication, le fichier commence ainsi:\\
+$\underbrace{3.1415926}_{\textrm{Premier nombre}}\underbrace{53589793}_{\textrm{Deuxième nombre}}\underbrace{23846264}_{\textrm{Troisième nombre}}338327950288419716939$ etc\\ \\
+
+J'enlève le \og . \fg du 3.14 .... qui risque de nous ennuyer quand on extraiera les décimales. Bien, tout est en place, nous créons une nouvelle procédure appelée \texttt{hasardpi} et modifions légèrement la procédure \texttt{test}
+\begin{verbatim}
+pour pgcd :a :b
+si (reste :a :b)=0 [retourne :b][retourne pgcd :b reste :a :b] 
+fin
+
+pour test :essais
+# On ouvre un flux repéré par le chiffre 1 vers le fichier millionpi.txt 
+# (ici, supposé être dand le répertoire courant 
+# sinon utiliser une liste et un chemin absolu)
+ouvreflux 1 "millionpi.txt
+# Affecte à la variable ligne la première ligne du fichier millionpi.txt
+donne "ligne premier lisligneflux 1
+# On initialise la variable compteur à 0
+donne "compteur 0
+repete :essais [
+  si 1=pgcd hasardpi 8 hasardpi 8  [donne "compteur :compteur+1]
+]
+# On calcule la frequence
+donne "f :compteur/:essais
+# On affiche la valeur approchée de pi
+ecris phrase [approximation de pi:] racine (6/:f)
+fermeflux 1
+fin
+
+pour hasardpi :n
+soit "nombre "
+repete :n [
+# S'il n'y plus de caractere sur la ligne
+si 0=compte :ligne [donne "ligne premier lisligneflux 1]
+# On donne à la variable caractere la valeur du premier caractere de la ligne
+donne "caractere premier :ligne
+# puis on enleve ce vpremier caractere de la ligne.
+donne "ligne saufpremier :ligne
+donne "nombre mot :nombre :caractere
+]
+retourne :nombre
+fin
+test 10
+approximation de pi: 2.7386127875258306
+test 100
+approximation de pi: 2.9704426289300225
+test 1000
+approximation de pi: 3.0959109381151797
+test 10000
+approximation de pi: 3.139081837741219
+\end{verbatim}
+On retrouve donc une approximation du nombre $\pi$ à l'aide de ses propres décimales!!\\ 
+Il est encore possible d'améliorer ce programme en indiquant par exemple le temps mis pour le calcul. On rajoute alors en première ligne de la procedure test:\\
+\texttt{donne "debut temps}\\
+On rajoute juste avant \texttt{fermeflux 1}:\\
+\texttt{ecris phrase [Temps mis: ] temps - :debut}\\
+\pagebreak
+\chapter{Corrigé des activités}
+\section{Chapitre 2}
+\begin{verbatim}
+pour carre
+repete 4[av 150  td 90]
+fin
+
+pour tri
+repete 3[av 150 td 120]
+fin
+
+pour porte
+repete 2[av 70 td 90 av 50 td 90]
+fin
+
+pour che
+av 55 td 90 av 20 td 90 av 20
+fin
+
+pour dep1
+td 90 av 50  tg 90
+fin
+
+pour dep2
+tg 90 av 50 td 90 av 150 td 30
+fin
+
+pour dep3
+lc td 60 av 20 tg 90 av 35 bc
+fin
+
+pour ma
+carre dep1 porte dep2 tri dep3 che
+fin
+
+\end{verbatim}
+
+\section{Chapitre 3}
+\begin{verbatim}
+pour supercube
+ve lc fpos[ -30 150] bc fpos[-150 150]  fpos[-90 210] fpos[30 210] fpos[-30 150]
+fpos[-30 -210] fpos[30 -150] fpos[30 -90] fpos[-30 -90] fpos[90 -90] fpos[90 30]  
+fpos[-270 30] fpos[-270 -90] fpos[-210 -90] fpos[-210 -30] fpos[-90 -30] fpos[-90 -150]
+fpos[-210 -150] fpos[-210 -30] fpos[-150 30] fpos[-30 30] fpos[-90 -30] fpos[90 150]
+fpos[30 150] fpos[30 210] fpos[30 90] fpos[90 90] fpos[90 150] fpos[90 90] fpos[150 90]
+fpos[150 -30] fpos[90 -90] fpos[90 30] fpos[150 90] lc fpos[-150 30] bc fpos[-150 150] 
+fpos[-150 90] fpos[-210 90] fpos[-270 30] lc  fpos[-90 -150] bc fpos[-30 -90]
+lc fpos[-150 -150] bc fpos[-150 -210] fpos[-30 -210]
+fin
+\end{verbatim}
+
+\section{Chapitre 4}
+\subsection{Le robot}
+Le premier dessin est composé exclusivement de motif élémentaire à base de rectangle, carré et triangle. Voici le code associé à ce dessin:
+\begin{verbatim}
+pour rec :lo :la
+# trace un rectangle de longueur :lo et largeur :la
+repete 2[av :lo td 90 av :la td 90]
+fin
+
+pour carre :c
+# trace un carre de cote :c
+repete 4[av :c td 90]
+fin
+
+pour tri :c
+# trace un triangle equlateral de côté :c
+repete 3[av :c td 120]
+fin
+
+pour patte :c
+rec 2*:c 3*:c carre 2*:c
+fin
+
+pour antenne :c
+av 3*:c tg 90 av :c td 90 carre 2*:c
+lc re 3 *:c td 90 av :c tg 90 bc
+fin
+
+pour robot :c
+ve ct
+# Le corps
+rec 4*:c 28* :c
+# Les pattes
+td 90 av 2*:c patte :c av 4* :c patte :c av 14*:c patte :c av 4*:c patte :c
+# La queue
+lc tg 90 av 4* :c bc td 45 av 11*:c re 11 * :c tg 135
+# le cou et la tête
+av 18 *:c carre :c av 3*:c carre :c td 90 av :c tg 90 av 2*:c td 90 carre 8* :c
+# Oreilles
+av 4*:c tg 60 tri 3*:c lc td 150 av 8 *:c tg 90 bc tri 3*:c
+# Les antennes
+av 4 *:c tg 90 av 2*:c td 90 antenne :c tg 90 av 4*:c td 90 antenne :c
+# les yeux 
+lc re 3 *:c bc carre :c td 90 lc av 3*:c bc tg 90 carre :c
+# La bouche
+lc re 3*:c tg 90 av 3*:c td 90 bc rec :c 4*:c
+fin
+\end{verbatim}
+\subsection{La grenouille}
+\begin{verbatim}
+pour gre :c
+ve ct
+av 2 *:c td 90 av 5*:c tg 90 av 4*:c tg 90 av 7 *:c td 90 av 7*:c td 90
+av 21 *:c td 90 av 2*:c tg 90 av 2*:c td 90 av 9*:c td 90 av 2*:c tg 90
+av 2*:c td 90 av 9*:c td 90 av 2*:c td 90 av 7*:c re 5*:c tg 90 av 4*:c 
+td 90 av 4*:c re 4*:c tg 90 re 2*:c tg 90 av 5*:c tg 90 av 4*:c td 90 av 7*:c 
+td 90 lc av 9*:c bc repete 4[av 2*:c td 90]
+fin
+\end{verbatim}
+
+\section{Chapitre 8:}
+\begin{verbatim}
+pour jeu
+# On initialise le ,nombre recherché et le nombre de coups
+donne "nombre hasard 32
+donne "compteur 0
+boucle
+fin
+
+pour boucle
+lis [proposez un nombre] "essai
+donne "essai premier :essai
+si nombre? :essai[
+  # Si la valeur rentrée est bien un nombre 
+  si :nombre=:essai[ec ph ph [vous avez gagné en ] :compteur+1 [coup(s)]][
+    si :essai>:nombre [ec [Plus petit]][ec [Plus grand]]
+    donne "compteur :compteur+1
+    boucle
+  ]
+]
+[ecris [Vous devez rentrer un nombre valide!] boucle]
+fin
+\end{verbatim}
+\end{document}

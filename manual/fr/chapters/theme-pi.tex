@@ -1,0 +1,186 @@
+\chapter{Thème: Approximation probabilistique de $\pi$}
+{ }\hfill\textbf{Niveau:} Avancé\\ \\
+\noindent \textsc{Avertissement:} Quelques notions de mathématiques sont nécessaires pour bien appréhender ce chapitre.
+\section{Notion de pgcd (plus grand commun diviseur)}
+\noindent 
+Etant donné deux nombres entiers, leur pgcd désigne leur plus grand commun diviseur. \\
+\begin{itemize}
+\item Par exemple, 42 et 28 ont pour pgcd 14 (c'est le plus grand nombre possible qui divise à la fois 28 et 42)
+\item 25 et 55 ont pour pgcd 5.
+\item 42 et 23 ont pour pgcd 1.
+\end{itemize}
+Lorsque deux nombres ont pour pgcd 1, on dit qu'ils sont premiers entre eux. Ainsi sur l'exemple précédent, 42 et 23 sont premiers entre eux. Cela signifie qu'ils n'ont aucun diviseur commun hormis 1 (bien sûr, il divise tout entier!).
+\section{Algorithme d'Euclide}
+\noindent Pour déterminer le pgcd de deux nombres, on peut utiliser une méthode appelée algorithme d'Euclide: (Ici, on ne démontrera pas la validité de cet algorithme)\\ \\
+Voici le principe :
+Étant donnés deux entiers positifs $a$ et $b$, on commence par tester si $b$ est nul. Si oui, alors le PGCD est égal à $a$. Sinon, on calcule $r$, le reste de la division de $a$ par $b$. On remplace $a$ par $b$, puis $b$ par $r$, et on recommence le procédé. \\
+Calculons par exemple, le pgcd de 2160 et 888  par cet algorithme avec les étapes suivantes:
+\begin{center}
+$\begin{array}{ccc}
+a & b & r\\
+2160 & 888 & 384 \\
+888 & 384 & 120 \\
+384 & 120 & 24 \\
+120 & 24 & 0 \\
+24 & 0 & \\
+\end{array}$
+\end{center}
+Le pgcd de 2160 et 888 est donc 24. Il n'y pas de plus grand entier qui divise ces deux nombres.
+(En fait $2160=24\times90$ et $888=24\times37$)\\
+Le pgcd est en fait le dernier reste non nul.
+\section{Calculer un pgcd en \logo}
+\noindent Un petit algorithme récursif permet de calculer le pgcd de deux nombres \texttt{:a} et \texttt{:b}
+\begin{verbatim}
+pour pgcd :a :b
+si (reste :a :b)=0 [retourne :b][retourne pgcd :b reste :a :b] 
+fin
+
+ecris pgcd 2160 888 
+24
+\end{verbatim}
+Remarque: On est obligé de mettre des parenthèses sur \texttt{reste :a :b}, sinon l'interpréteur va chercher à évaluer \texttt{:b = 0}. Pour éviter ce problème de parenthésage, écrire: \texttt{si 0=reste :a :b}
+
+\section{Calculer une approximation de $\pi$}
+\noindent En fait, un résultat connu de théorie des nombres établit que la probabilité que deux entiers pris au hasard soient premiers entre eux est de $\dfrac{6}{\pi^2}\approx 0,6079$. Pour essayer de retrouver ce résultat, voilà ce que l'on va faire:
+\begin{itemize}
+\item Prendre deux nombres au hasard entre 0 et 1 000 000.
+\item Calculer leur pgcd
+\item Si leur pgcd vaut 1. Rajouter 1 à une variable compteur.
+\item Répéter l'expérience 1000 fois
+\item La fréquence des couples de nombres premiers entre eux s'obtiendra en divisant la variable compteur par 1000 (le nombre d'essais).
+\end{itemize}
+\begin{verbatim}
+
+pour test
+# On initialise la variable compteur à 0
+donne "compteur 0
+repete 1000 [ 
+  si (pgcd hasard 1000000 hasard 1000000)=1 [donne "compteur :compteur+1]
+]
+ecris [frequence:]
+ecris :compteur/1000
+fin
+
+\end{verbatim}
+Note: De même que précédemment, On est obligé de mettre des parenthèses sur \texttt{pgcd hasard 1000000 hasard 1000000}, sinon l'interpréteur va chercher à évaluer $1\ 000\ 000 = 1$. Pour éviter ce problème de parenthésage, écrire: \texttt{si 1=pgcd hasard 1000000 hasard 1000000}\\ \\
+On lance le programme \texttt{test}.
+\begin{verbatim}
+test
+0.609
+test
+0.626
+test
+0.597
+\end{verbatim}
+On obtient des valeurs proches de la valeur théorique de 0,6097. Ce qui est remarquable est que cette fréquence est une valeur approchée de $\dfrac{6}{\pi^2}$.\\
+ Si je note $f$ la fréquence trouvée, on a donc: $f\approx \dfrac{6}{\pi^2}$ \\
+Donc $\pi^2\approx\dfrac{6}{f}$ et donc $\pi\approx\sqrt{\dfrac{6}{f}}$.\\
+Je m'empresse de rajouter cette approximation dans mon programme, je transforme la fin de la procédure \texttt{test}:
+\begin{verbatim}
+
+pour test
+# On initialise la variable compteur à 0
+donne "compteur 0
+repete 1000 [ 
+  si 1=pgcd hasard 1000000 hasard 1000000 [donne "compteur :compteur+1]
+]
+# On calcule la frequence
+donne "f :compteur/1000
+# On affiche la valeur approchée de pi
+ecris phrase [approximation de pi:] racine (6/:f)
+fin
+test
+approximation de pi: 3.164916190172819
+test
+approximation de pi: 3.1675613357997525
+test
+approximation de pi: 3.1008683647302115
+\end{verbatim}
+ Bon, je modifie mon programme de tel sorte que quand je le lance, je précise le nombre d'essais souhaités. J'ai dans l'idée d'essayer avec 10000 essais, voilà ce que j'obtiens sur mes trois premières tentatives:
+\begin{verbatim}
+pour test :essais
+# On initialise la variable compteur à 0
+donne "compteur 0
+repete :essais [ 
+  si 1=pgcd hasard 1000000 hasard 1000000 [donne "compteur :compteur+1]
+]
+# On calcule la frequence
+donne "f :compteur/:essais
+# On affiche la valeur approchée de pi
+ecris phrase [approximation de pi:] racine (6/:f)
+fin
+
+test 10000
+approximation de pi: 3.1300987144363774
+test 10000
+approximation de pi: 3.1517891481565017
+test 10000
+approximation de pi: 3.1416626832299914
+\end{verbatim} 
+ Pas mal, non?
+\section{Compliquons encore un peu: $\pi$ qui génère $\pi$.....}
+Qu'est-ce qu'un entier aléatoire? Est-ce qu'un entier pris au hasard antre 1 et 1 000 000 est réellement représentatif d'un entier aléatoire quelconque? On s'aperçoit très vite que notre modélisation ne fait qu'approcher le modèle idéal. Bien, c'est justement sur la façon de générer le nombre aléatoire que nous allons effectuer quelques changements... Nous n'allons plus utiliser la primitive \texttt{hasard} mais utiliser la séquence des décimales de $\pi$. Je m'explique: les décimales de $\pi$ ont toujours intrigué les mathématiciens par leur manque d'irrégularité, les chiffres de 0 à 9 semblent apparaître en quantité à peu près égales et de manière aléatoire. On ne peut prédire la prochaine décimales à l'aide des précédentes. Nous allons voir ci-après comment générer un nombre alatoire à l'aide des décimales de $\pi$. Tout d'abord, il va vous falloir récupérer les premières décimales de pi (par exemple un million).
+ \begin{itemize}
+ \item Il existe des petits programmes qui font cela très bien.  Je conseille PiFast pour Windows et ScnhellPi pour Linux.
+ \item Récupérer ce fichier sur le site de \xlogo: 
+\begin{center}
+\texttt{http://downloads.tuxfamily.org/xlogo/common/millionpi.txt} 
+\end{center}
+ \end{itemize}
+Pour créer nos nombres aléatoires, bous prendrons des paquets de 8 chiffres dans la suite des décimales de $\pi$. Explication, le fichier commence ainsi:\\
+$\underbrace{3.1415926}_{\textrm{Premier nombre}}\underbrace{53589793}_{\textrm{Deuxième nombre}}\underbrace{23846264}_{\textrm{Troisième nombre}}338327950288419716939$ etc\\ \\
+
+J'enlève le \og . \fg du 3.14 .... qui risque de nous ennuyer quand on extraiera les décimales. Bien, tout est en place, nous créons une nouvelle procédure appelée \texttt{hasardpi} et modifions légèrement la procédure \texttt{test}
+\begin{verbatim}
+pour pgcd :a :b
+si (reste :a :b)=0 [retourne :b][retourne pgcd :b reste :a :b] 
+fin
+
+pour test :essais
+# On ouvre un flux repéré par le chiffre 1 vers le fichier millionpi.txt
+# (ici, supposé être dand le répertoire courant 
+# sinon utiliser fixerepertoire et un chemin absolu)
+ouvreflux 1 "millionpi.txt
+# Affecte à la variable ligne la première ligne du fichier millionpi.txt
+donne "ligne premier lisligneflux 1
+# On initialise la variable compteur à 0
+donne "compteur 0
+repete :essais [
+  si 1=pgcd hasardpi 7 hasardpi 7 [donne "compteur :compteur+1]
+]
+# On calcule la frequence
+donne "f :compteur/:essais
+# On affiche la valeur approchée de pi
+ecris phrase [approximation de pi:] racine (6/:f)
+fermeflux 1
+fin
+pour hasardpi :n
+soit "nombre "
+repete :n [
+# S'il n'y plus de caractere sur la ligne
+si 0=compte :ligne [donne "ligne premier lisligneflux 1]
+# On donne à la variable caractere la valeur du premier caractere de la ligne
+donne "caractere premier :ligne
+# puis on enleve ce premier caractere de la ligne.
+donne "ligne saufpremier :ligne
+donne "nombre mot :nombre :caractere
+]
+retourne :nombre
+fin
+
+test 10
+approximation de pi: 3.4641016151377544 
+test 100
+approximation de pi: 3.1108550841912757 
+test 1000
+approximation de pi: 3.081180112566604 
+test 10000
+approximation de pi: 3.1403714651066386 
+test 70000
+approximation de pi: 3.1361767950325627
+\end{verbatim}
+On retrouve donc une approximation du nombre $\pi$ à l'aide de ses propres décimales!\\ 
+Il est encore possible d'améliorer ce programme en indiquant par exemple le temps mis pour le calcul. On rajoute alors en première ligne de la procedure test:\\
+\texttt{donne "debut temps}\\
+On rajoute juste avant \texttt{fermeflux 1}:\\
+\texttt{ecris phrase [Temps mis: ] temps - :debut}\\

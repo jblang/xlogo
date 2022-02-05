@@ -1,0 +1,70 @@
+\chapter{Ekruli \xlogo{} disde la reto}
+
+Vi havas retpa^gon sur kiu vi parolas pri \xlogo{}.  E^c pli bone: vi
+deziras havigi iujn programojn kiujn vi verkis.  Anstata^u simple
+distribui la dosierojn \texttt{.lgo}, estus pli agrable por l' uzulo
+povi ruli \xlogo{} enrete por provi rekti tiujn ekzemplojn.  Jen la
+sekvenda proceduro:
+
+La enretan ruleblon de \xlogo{} certigas la te^hnologio \textsc{JAVA
+  WEB START}.  Efektive, sufi^cas meti en vian retpa^gon ligilon al
+dosiero kun fina^jo \texttt{.jnlp}; tio certigas la ruladon de
+\xlogo{}.
+
+\subsubsection*{Krei dosieron kun ligilo \texttt{jnlp}}
+
+Jen ekzemplo de tia dosiero.  Tiu dosiero estas efektive tiu uzata en
+la sekcio \og exemples\fg\ de la franca retpa^go.  ^Gi ebligas ^sargi
+la programon grafikantan la ludkubon en la sekcio pri 3D.  La grandaj
+linioj por klarigi aperas poste.
+
+\begin{verbatim}
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.5+" codebase="http://downloads.tuxfamily.org/xlogo/common/webstart">
+<information>
+  <title>XLogo</title>
+  <vendor>xlogo.tuxfamily.org</vendor>
+  <homepage href="http://xlogo.tuxfamily.org"/>
+  <description>Logo Programming Language</description>
+  <offline-allowed/>
+</information>
+
+<security>
+ <all-permissions/>
+</security>
+
+<resources>
+  <j2se version="1.4+"/>
+  <jar href="xlogo.jar"/>
+</resources>
+
+<application-desc main-class="Lanceur">
+  <argument>-lang</argument>
+  <argument>fr</argument>
+  <argument>-a</argument>
+  <argument>http://xlogo.tuxfamily.org/fr/html/examples-fr/3d/de.lgo</argument>
+</application-desc>
+</jnlp>
+\end{verbatim}
+
+Tiu dosiero estas skribita observante la formaton XML.
+La grava parto estas je la fino, ^cefe tiuj $4$ linioj:
+\begin{verbatim}
+  <argument>-lang</argument>
+  <argument>fr</argument>
+  <argument>-a</argument>
+  <argument>http://xlogo.tuxfamily.org/fr/html/examples-fr/3d/de.lgo</argument>
+\end{verbatim}
+
+Ja tie oni indikas la ekrulajn parametrojn.
+\begin{itemize}
+\item La du unuaj linioj devigas uzi la francan lingvon.
+\item La lasta linio indikas la adreson de la ^sargota dosiero.
+\item La tria linio indikas ke la startiga komando de tiu dosiero
+  estas rulota je la starto de \xlogo{}.
+\end{itemize}
+\vspace{0.5cm} \textbf{Lasta konsileto}: Se vi deziras ne tro^sar^gi
+la servilon de Tuxfamily, vi povas meti la dosieron \texttt{xlogo.jar}
+sur vian servilon.  Por ligi la dosieron \texttt{.jnlp} al tiu
+dosiero, sufi^cus ^san^gi l' adreson en la dua linio, post
+\texttt{codebase=}.

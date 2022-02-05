@@ -1,0 +1,54 @@
+\chapter{Executing Xlogo from the WEB}
+\section{The problem}
+\noindent
+You're managing a web site. On this site, you're talking about \xlogo\ and you want to provide some of the programs you have created with \xlogo. You could distribute the Logo file in format \texttt{.lgo}, but it would be better if the user could launch Xlogo on line and directly test your program. \\ \\
+To launch \xlogo\ from a web site, we'll use the technology \textsc{JAVA WEB START}. In fact, we just need to put on our site a link towards a file with extension \texttt{.jnlp}. It will execute \xlogo\ on line.
+\section{How to create the \texttt{jnlp} file}
+Here is an example of such a file. In fact, the following example is the one used on the french site in the section called ''exemples``. This file allows loading of the program that draws a dice in the 3D section. Explanation of the file's contents will be given after the code.
+\begin{verbatim}
+
+ <?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.5+" codebase="http://downloads.tuxfamily.org/xlogo/common/webstart">
+<information>
+  <title>XLogo</title>
+  <vendor>xlogo.tuxfamily.org</vendor>
+  <homepage href="http://xlogo.tuxfamily.org"/>
+  <description>Logo Programming Language</description>
+  <offline-allowed/>
+</information>
+
+<security>
+	<all-permissions/>
+</security>
+
+<resources>
+  <j2se version="1.4+"/>
+  <jar href="xlogo.jar"/>
+</resources>
+
+<application-desc main-class="Lanceur">
+  <argument>-lang</argument>
+  <argument>fr</argument>
+  <argument>-a</argument>
+  <argument>http://xlogo.tuxfamily.org/fr/html/examples-fr/3d/de.lgo</argument>
+</application-desc>
+</jnlp>
+
+\end{verbatim}
+This file is written in format XML. The most important part are these four lines:
+\begin{verbatim}
+
+  <argument>-lang</argument>
+  <argument>fr</argument>
+  <argument>-a</argument>
+  <argument>http://xlogo.tuxfamily.org/fr/html/examples-fr/3d/de.lgo</argument>
+
+\end{verbatim}
+These lines specify the parameters for \xlogo\ on startup 
+\begin{itemize}
+ \item Line 1 and line 2 force the language to be french.
+\item The last line indicates the file address to load.
+\item Line 3 indicates that the main command from this file will be executed on \xlogo\ start up.
+\end{itemize}
+\vspace{0.5cm}
+\textbf{A last hint}: Because Tuxfamily's server can't accept all connections, it's better to put the file \texttt{xlogo.jar} on your site. To link this file with the \texttt{.jnlp} file, you just have to modify the address on line 2 after \texttt{codebase=}

@@ -1,0 +1,155 @@
+\chapter{Instalado de \xlogo}
+\noindent 
+\begin{itemize}
+ \item Unue, vi bezonas instali rulmedion JAVA en via komputilo.  Iru al tiu pa^go:
+\begin{center}
+ \texttt{http://java.sun.com/javase/downloads/index.jsp}
+\end{center}
+De^sutu la JRE (Java Runtime Environment) korespondantan al via
+mastruma sistemo (Vindozo, GNU/Linukso...); poste instalu ^gin.
+\item Due, necesas de^suti la dosieron \texttt{xlogo.jar} estanta ^ce
+  la adreso:
+\begin{center}
+ \texttt{http://downloads.tuxfamily.org/xlogo/common/xlogo.jar}
+\end{center}
+Se ne, pli simple, iru al la loko de \xlogo, ^ce la adreso
+\texttt{http://xlogo.tuxfamily.org}; poste elektu la lingvon kaj la
+menuon de^suti.
+\end{itemize}
+\section{Agordado de \xlogo}
+\subsection{Medio GNU/Linukso}
+En Ubuntu 8.04:
+\begin{enumerate}
+ \item Por instali JAVA:
+\begin{itemize}
+\item Sistemo -> Administri -> Administrilo de pakoj Synaptic
+\item Instali la pakon \texttt{sun-java6-jre}
+\end{itemize}
+\item Por malfermi la dosieron \texttt{xlogo.jar} per duobla klako:
+\begin{itemize}
+\item Dekstreklaku sur \texttt{xlogo.jar}, Atributoj
+\item Tabo \og Malfermi per\fg: Elektu Sun Java Runtime 
+\end{itemize}
+ \item Asociigu la dosiertipon \texttt{lgo} al \xlogo:
+\begin{itemize}
+ \item Dekstreklaku sur \texttt{xlogo.jar}, Atributoj
+ \item Tabo \og Malferm per\fg:
+ \item Butono \og Aldoni\fg
+ \item En \og Uzi komandon personigitan:\fg, tajpu:
+\begin{center}
+\texttt{java -jar vojo\_al\_xlogo.jar} 
+\end{center}
+\end{itemize}
+\end{enumerate}
+\textbf{Rimarku:} \xlogo\ estas enhavita en la distribuo OpenSuse.
+\subsection{Medio Windows}
+Komence, se vi duobleklakas sur la ikono de \xlogo, la programo devas
+starti.  Se ^gi okazas, iru al la sekva paragrafo.  Se ne, la ka^uzo
+estas ke alia programo okupi^gas pri la dosierojn de tipo
+\og\texttt{jar}\fg\ (ofte, malkunpremaj programoj, kiel WinZip kaj
+aliaj).
+
+Jen kiel asociigi la programon \og\texttt{java}\fg\ al la dosieroj de
+tipo \og \texttt{jar}\fg.  (Kelkaj vojoj povas esti malsamaj, la^u ke
+vi posedas Vindozo 98, 2000, XP...)
+\begin{enumerate}
+\item Starto –> Parametroj —> Elekto de dosieroj...
+\item Klaku poste sur la tabo \og Dosiertipoj\fg\ (la
+  3\textsuperscript{a}).
+\item Ser^cu en la listo la elekta^jojn rilatajn al dosieroj JAR
+  (Dosieroj JAR, Ruldosieroj JAR, Ar^hivo JAR...)
+\item Elektu tiun dosiertipon kaj klaku sur \og Modifi...\fg 
+\item Nova fenestro aperas, tiam elektu \og Modifi... \fg 
+\item Elekt tiam \og Traser^ci...\fg
+\item Necesas indiki la vojon al \texttt{javaw.exe}, ekzemple
+\begin{center}
+ \texttt{c:\textbackslash Program Files\textbackslash java\textbackslash j2re1.4.1\textbackslash bin\textbackslash javaw.exe}
+\end{center}
+\item Tion farinte, aperas en la kampo Aplika^jo uzata por efektivigi
+  la agon:
+\begin{center}
+ \texttt{c:\textbackslash Program Files\textbackslash java\textbackslash j2re1.4.1\textbackslash bin\textbackslash javaw.exe}
+\end{center}
+Necesas tiam aldoni ^ce la fino:
+\begin{center}
+\texttt{"c:\textbackslash Program Files\textbackslash java\textbackslash j2re1.4.1\textbackslash bin\textbackslash javaw.exe" -jar "\%1" \%*}
+\end{center} 
+(Rimarku ke necesas spaceto je ^ciu flanko de -jar)
+\item Poste, nur fermu ^ciun fenestron kaj poste duobleklaku sur la
+  ikono de \xlogo.
+\end{enumerate}
+Se tio ne ^ciam funkcias, estas dua eblo: Vi malfermu konsolon MSDOS
+(Starto --> Programoj -–> Komandoj MSDOS a^u Starto --> Programoj -->
+Iloj --> Invito MSDOS); poste tajpu la ordonon jenan:
+\begin{center}
+ \texttt{java -jar la\_vojo\_kie\_trovi^gas\_la\_dosiero}
+\end{center}
+Por ekzemplo: \texttt{java -jar c:\textbackslash xlogo\textbackslash xlogo.jar}\\ \\
+Se tio enuas vin, sisteme devi tajpi tiun ordonon, tajpu tion en
+teksta dosiero kaj konservu ^gin ekzemple sub la nomo
+\texttt{xlogo.bat}.  Nur restas duobleklaki sur \texttt{xlogo.bat} por
+startigi \xlogo n.
+
+\subsubsection*{Asociigi la dosierojn de tipo \texttt{lgo} kun \xlogo}
+Mi ne atingis agordi tion en Vista.  (Sed mi ne tre ser^cis...
+Rimarku, amatoroj!  Dankon pro komuniki al mi la solvon.)
+
+Principe, la dosieroj de tipo \texttt{.lgo} ne estas rekonataj de via
+komputilo; kiam vi duobleklakas ilin, dialogskatolo aperas por demandi
+al vi kiun aplika^jon oni uzu por malfermi la dosieron.
+\begin{itemize}
+\item Indiku \og Alia\fg; poste indiku la vojon al la programo
+  \texttt{javaw.exe}
+\begin{center}
+^Generale, \texttt{c:\textbackslash Program Files\textbackslash java\textbackslash j2re1.4.1\textbackslash bin\textbackslash javaw.exe}
+\end{center}
+\item Doni nomon por nomi la dosierojn je tipo \texttt{lgo}.\\
+Por ekzemplo: Dosieroj Logo
+\item Starto -> Parametroj -> Agorda^joj de la dosieroj
+\item Tabo \og Dosiertipoj \fg
+\item Ser^cu en la listo la dosierojn \texttt{lgo}
+\item Elektu tiun dosiertipojn; poste klaku sur \og Modifi\fg
+\item Nova fenestro aperas; refoje \og Modifi\fg
+\item En la kampo \og Aplika^jo uzata por efektivigi la agon\fg,
+\begin{center}
+\texttt{"c:\textbackslash Program Files\textbackslash java\textbackslash j2re1.4.1\textbackslash bin\textbackslash javaw.exe" -jar xlogo.jar "\%1" \%*}
+\end{center} 
+\item Fermu la fenestrojn.
+\end{itemize}
+\section{^Gisdatigoj}
+\begin{center}
+\includegraphics{bildoj/rss.png} \hspace{1cm} \texttt{http://xlogo.tuxfamily.org/rss.xml}
+\end{center}
+Por ^gisdatigi \xlogo, sufi^cas anstata^uigi la dosieron
+\texttt{xlogo.jar} per ^gia nova versio.  Se vi deziras esti avertata
+de la apero de ^ciu nova versio, a^u de ^ciu plibonigo, eblas aboni al
+la RSS-fadeno de \xlogo.  La adreso de la RSS-fadeno estas:
+\begin{center}
+ \texttt{http://xlogo.tuxfamily.org/rss.xml}
+\end{center}
+Ekzistas pluraj softvoj ebligantaj sekvi la fadenojn RSS; se vi ne
+konas tiun te^hnikon, la plej simpla estas uzi Mozilla Thunderbird:
+\begin{itemize}
+ \item Menu' Redakti - Parametroj de la kontoj
+ \item Buton' \og Aldoni konton\fg
+ \item \og Nova^joj RSS kaj blogoj\fg
+ \item Nomo de la konto: \og Fadenoj RSS\fg\ por ekzemplo
+ \item Butonoj \og Sekva\fg\ kaj \og Fini\fg
+ \item En la fenestro \og Parametroj de la kontoj\fg, elektu tiam \og
+   Fadenoj RSS\fg\ en la menu' maldekstra; poste klaku sur la butono
+   \og Administri la abonoj\fg.
+ \item Buton' \og Aldoni\fg
+	\begin{itemize}
+ 	\item URL de la fadeno: \texttt{http://xlogo.tuxfamily.org/rss.xml}
+	\item Aktivigu la skatolon \og Afi^si la resumon de l'
+          artikolo anstata^u de^suti la retpa^gon\fg
+	\end{itemize}
+\end{itemize}
+\vspace*{0.2cm} Jen, per la butono \og Sendi-Ricevi\fg, vi ricevos la
+nova^jojn de \xlogo\ sammaniere kiel vi ricevas viajn retpo^sta^join.
+\section{Malinstalado}\label{fichier_perso}
+Por malinstali \xlogo, sufi^cas forigi la dosieron \texttt{xlogo.jar}
+kaj la startan dosieron \texttt{.xlogo} (^gi estas lokita en via uzula
+dosierujo, tio estas, \texttt{/home/via\_konto} por la gnulinuksistoj
+a^u \texttt{c:\textbackslash windows\textbackslash.xlogo} por la
+vindozistoj.

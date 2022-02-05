@@ -1,0 +1,84 @@
+XLogo Handbuch
+10 XLogo aus dem Web ausführen
+erzeugt am %%mtime(%d.%m.%Y %H:%M)
+
+%!encoding: iso-8859-1
+
+ = 10 XLogo aus dem Web ausführen =
+
+
+== 10.1 Das Problem ==
+
+Sie sind Webmaster einer Website auf der Sie über XLogo sprechen und wollen einige Ihrer Programme zur Verfügung stellen, die Sie mit XLogo erschaffen haben. Sie können die Logo-Datei im ``.lgo``-Format herausgeben, besser aber wäre es wenn der Benutzer XLogo online starten kann, dass er direkt Ihr Programm testen kann.
+
+Daher werden wir die Technologie namens "**Java Webstart**" verwenden, um XLogo von einer Website zu starten. Tatsächlich brauchen wir dazu auf unserer Site nur einen Link zu einer Datei mit der Erweiterung ``.jnlp`` anzubringen, die dann XLogo ausführen wird.
+
+
+== 10.2 Eine jnlp Datei erzeugen ==
+
+Hier sehen Sie ein Beispiel für eine solche Datei. Tatsächlich ist das folgende Beispiel das auf der französischen Site im Abschnitt ''exemples`` verwendet wird. Diese Datei erlaubt das Programm zu laden, das den Würfel aus dem Abschnitt über 3D zeichnet. Erklärungen zu dem Programm werden nach dem Code gegeben.
+
+
+%!include(html): ''code/jnlp-Datei.xml.html''
+
+
+Diese Datei ist im XML-Format geschrieben. Der wichtigste Teil sind diese vier Zeilen:
+
+
+```
+<argument>-lang</argument>
+<argument>fr</argument>
+<argument>-a</argument>
+<argument>http://xlogo.tuxfamily.org/fr/html/examples-fr/3d/de.lgo</argument>
+```
+
+
+wird z.B. zu:
+
+```
+<argument>http://logolei.de/xlogo/common/webstart/examples-de/3d/de.lgo</argument>
+```
+
+
+In diesen Zeilen stehen die Parameter für XLogo beim Startup.
+
+  - Zeile 1 und Zeile 2 erzwingen die Sprache Französisch.
+    
+  - Die letzte Zeile gibt die zu ladende Datei an.
+    
+  - Zeile 3 zeigt an, dass das Hauptkommando der Datei beim Startup von XLogo ausgeführt wird.
+
+
+
+: **Ein letzter Hinweis**:
+
+  Weil der Server von Tuxfamily nicht alle Verbindungen akzeptieren kann, ist es besser die Datei ``xlogo.jar`` auf Ihrer Site zu speichern. Sie verlinken diese Datei mit der ``.jnlp``-Datei, in dem Sie die Adresse in Zeile 2 nach dem Wort ``codebase`` ändern.
+
+
+
+In **xlogo-de.jnlp**:
+
+```
+<jnlp spec="1.5+" codebase="http://logolei.de/xlogo/common/webstart" href="xlogo-de.jnlp">
+```
+
+
+
+In **test-de.jnlp**:
+
+<jnlp spec="1.5+" codebase="http://logolei.de/xlogo/common/webstart" href="test-de.jnlp">
+
+
+Dieser Link wird einfach in HTML eingebunden, aehnlich wie auf der Download-Seite:
+
+    <a href="http://logolei.de/xlogo/common/webstart/xlogo-de.jnlp">http://logolei.de/xlogo/common/webstart/xlogo-de.jnlp</a>
+
+
+  --------------------
+
+//XLogo Handbuch//
+([siehe Quelle %%infile])
+
+  |  Übersetzt von [Michael Malien michael.malien@gmx.de?Meine_Hinweise_zum_XLogo-Handbuch]  |  Erzeugt durch [Txt2Tags http://txt2tags.sf.net]  |
+|  Geändert am: %%Mtime(%c)  |  am %%Date(%Y-%m-%d um %H% :%M:%S)  |
+

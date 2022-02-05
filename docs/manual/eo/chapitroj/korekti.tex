@@ -1,0 +1,140 @@
+\chapter{Korekta^joj de l' ekzercoj}
+
+\section{^Capitro \ref{bazo}}
+
+\begin{verbatim}
+por kvadrato
+  ripetu 4 [an 150 dn 90]
+fino
+
+por tri
+  ripetu 3 [an 150 dn 120]
+fino
+
+por pordo
+  ripetu 2 [an 70 dn 90 an 50 dn 90]
+fino
+
+por kam
+  an 55 dn 90 an 20 dn 90 an 20
+fino
+
+por mov1
+  dn 90 an 50 mdn 90
+fino
+
+por mov2
+  mdn 90 an 50 dn 90 an 150 dn 30
+fino
+
+por mov3
+  l dn 60 an 20 mdn 90 an 35 ml
+fino
+
+por domo
+  kvadrato mov1 pordo mov2 tri mov3 kam
+fino
+\end{verbatim}
+
+\section{^Capitro \ref{koordinatoj}}
+
+\begin{verbatim}
+por superkubo
+ev l sitp [-30 150] ml sitp [-150 150] sitp [-90 210] sitp [30 210] sitp [-30 150]
+sitp [-30 -210] sitp [30 -150] sitp [30 -90] sitp [-30 -90] sitp [90 -90] sitp [90 30]  
+sitp [-270 30] sitp [-270 -90] sitp [-210 -90] sitp [-210 -30] sitp [-90 -30] sitp [-90 -150]
+sitp [-210 -150] sitp [-210 -30] sitp [-150 30] sitp [-30 30] sitp [-90 -30] sitp [90 150]
+sitp [30 150] sitp [30 210] sitp [30 90] sitp [90 90] sitp [90 150] sitp [90 90] sitp [150 90]
+sitp [150 -30] sitp [90 -90] sitp [90 30] sitp [150 90] l sitp [-150 30] ml sitp [-150 150] 
+sitp [-150 90] sitp [-210 90] sitp [-270 30] l  sitp [-90 -150] ml sitp [-30 -90]
+l sitp [-150 -150] ml sitp [-150 -210] sitp [-30 -210]
+fino
+\end{verbatim}
+
+\section{^Capitro \ref{variabloj}}
+
+\subsection{La roboto}
+
+\begin{verbatim}
+por ort :lo :la
+# grafiku ortangulon je longo :lo kaj je larĝo :la
+ripetu 2 [an :lo dn 90 an :la dn 90]
+fino
+
+por kvadrato :c
+# grafiku kvadraton je latero :c
+ripetu 4 [an :c dn 90]
+fino
+
+por tri :c
+# grafiku trilateron egallateran je latero :c
+ripetu 3[an :c dn 120]
+fino
+
+por piedo :c
+ort 2*:c 3*:c kvadrato 2*:c
+fino
+
+por anteno :c
+an 3*:c mdn 90 an :c dn 90 kvadrato 2*:c
+l man 3 *:c dn 90 an :c mdn 90 ml
+fino
+
+por roboto :c
+ev tdk
+# La korpo
+ort 4*:c 28*:c
+# La piedoj
+dn 90 an 2*:c piedo :c an 4* :c piedo :c an 14*:c piedo :c an 4*:c piedo :c
+# La vosto
+l mdn 90 an 4* :c ml dn 45 an 11*:c man 11 * :c mdn 135
+# la kolo kaj la kapo
+an 18 *:c kvadrato :c an 3*:c kvadrato :c dn 90 an :c mdn 90 an 2*:c dn 90 kvadrato 8*:c
+# Oreloj
+an 4*:c mdn 60 tri 3*:c l dn 150 an 8 *:c mdn 90 ml tri 3*:c
+# La antenoj
+an 4*:c mdn 90 an 2*:c dn 90 anteno :c mdn 90 an 4*:c dn 90 anteno :c
+# la okuloj
+l man 3*:c ml kvadrato :c dn 90 l an 3*:c ml mdn 90 kvadrato :c
+# La buŝo
+l man 3*:c mdn 90 an 3*:c dn 90 ml ort :c 4*:c
+fino
+\end{verbatim}
+
+\subsection{La rano}
+
+\begin{verbatim}
+por rano :c
+ev tdk
+an 2 *:c dn 90 an 5*:c mdn 90 an 4*:c mdn 90 an 7 *:c dn 90 an 7*:c dn 90
+an 21 *:c dn 90 an 2*:c mdn 90 an 2*:c dn 90 an 9*:c dn 90 an 2*:c mdn 90
+an 2*:c dn 90 an 9*:c dn 90 an 2*:c dn 90 an 7*:c man 5*:c mdn 90 an 4*:c 
+dn 90 an 4*:c man 4*:c mdn 90 man 2*:c mdn 90 an 5*:c mdn 90 an 4*:c dn 90 an 7*:c 
+dn 90 l an 9*:c ml ripetu 4[an 2*:c dn 90]
+fino
+\end{verbatim}
+
+\section{^Capitro \ref{interaktiva}}
+
+\begin{verbatim}
+por ludo
+# Oni pretigas la nombron serĉotan kaj la nombro de provoj
+provizu "nombro hazardon 32
+provizu "nombrilo 0
+buklo
+fino
+
+por buklo
+leg [proponu nombron] "provo
+se nombra? :provo
+  [# Se la enigita valoro ja estas nombro
+   se :nombro=:provo 
+      [s fr fr [vi gajnis post ] :nombrilo+1 [provo(j)]]
+      [se :provo>:nombro 
+            [s [Malpli granda]]
+            [s [Pli granda]]
+       provizu "nombrilo :nombrilo+1
+       buklo]]
+  [skribu [Vi devas enigi validan nombron!] buklo]
+fino
+\end{verbatim}

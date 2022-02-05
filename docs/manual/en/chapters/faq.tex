@@ -1,0 +1,31 @@
+\chapter{FAQ - Tricks Things to know}
+\section{Though I erase a procedure from the editor, it keeps on popping back!}
+When you leave the editor, it just saves or updates whatever the editor contains. The only way to erase a procedure in \xlogo\ is to use the primitive \texttt{eraseprocedure} or \texttt{erp}.\\
+Exemple: \texttt{erp "toto} $\longrightarrow$ erases the procedure \texttt{toto}.
+ \section{I'm using the version in Esperanto but I can't write with the special characters!}
+When you type in the command line or the editor, if you click with the right button, a rolling screen appears. In this menu, you can find the traditional editing functions (cut, copy, paste) and the esperanto special characters when this language is selected.
+ \section{In the Sound tab from the Preferences dialogue box, no instrument can be found.}
+Sometimes, the instruments list doesn't appear in \texttt{Tools/Preferences/Sound}. Go here: 
+\begin{center}
+ \texttt{http://java.sun.com/products/java-media/sound/soundbanks.html}
+\end{center}
+Download on eof the sound banks: minimal, midsize ou deluxe and uncompress it in \texttt{C:\textbackslash Program Files\textbackslash Java\textbackslash jre1.6.0\_05\textbackslash lib\textbackslash audio\textbackslash}.\\
+\begin{itemize}
+ \item The folder  \texttt{jre1.6.0\_05} corresponds to your installed JRE version.
+ \item If the folder \texttt{audio} doesn't exist, create it.
+ \item You have to rename the uncompressed file as: \texttt{soundbank.gm}
+\end{itemize}
+\vspace{0.2cm}
+\noindent Then, restart \xlogo\ and have a look at \texttt{Tools/Preferences/Sound}
+\section{How to quickly retype a command used previously?}
+\begin{itemize}
+\item First method: with the mouse, click on the line in the history area, it will reappear immediately on the control line.
+\item Second method: with the keyboard, the Up and Down arrows allow navigation of the list of previous commands that have been typed, (very practical).
+\end{itemize}
+ \section{How can you help?}
+\begin{itemize}
+\item By reporting any observed bug. If you are able to reproduce systematically an observed problem, it is even better.
+\item Any suggestion to improve the program is welcome.
+\item By helping to translate. 
+\item A little moral support is always welcome!
+\end{itemize}

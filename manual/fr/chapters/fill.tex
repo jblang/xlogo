@@ -1,0 +1,75 @@
+\chapter{Quelques techniques de remplissage}
+\noindent Dans cette leçon, nous allons voir comment on peut procéder pour remplir un rectangle de longueur et largeur déterminée. Nous choisirons dans les exemples suivants un rectangle de 100 sur 200.
+\section{Première approche}
+\begin{center}
+\includegraphics{tut-images/cap10.png}
+\end{center}
+\noindent Si l'on souhaite par exemple tracer un rectangle rempli de 100 sur 200, une première idée peut être de dessiner le rectangle de 100 sur 200 puis de tracer un rectangle de 99 sur 199 puis un rectangle de 98 sur 198 ... jusqu'à ce que le rectangle soit entièrement rempli.  \\
+Commençons par définir un rectangle de longueur et largeur dépendant de deux variables. 
+\begin{verbatim}
+pour rec :lo :la
+repete 2[av :lo td 90 av :la td 90]
+fin
+\end{verbatim}
+Pour remplir notre grand rectangle, on va donc exécuter:\\
+\texttt{rec 100 200 rec 99 199 rec 98 198  ..... rec 1 101}\\ \\
+Définissons alors une procédure rectangle dédié à tracer ce rectangle rempli.
+
+\begin{verbatim}
+pour rectangle :lo :la
+rec :lo :la
+rectangle :lo-1 :la-1
+fin
+\end{verbatim}
+
+On teste \texttt{rectangle 100 200} et on s'aperçoit qu'il y a un problème: la procédure ne s'arrête pas lorsque le rectangle est rempli, elle continue de tracer des rectangles! On va donc ajouter un test permettant de détecter si la longueur ou la largeur est égale à 0. A ce moment, on demande au programme de s'interrompre avec la commande \texttt{stop}.
+\begin{verbatim}
+pour rectangle :lo :la
+si ou :lo=0 :la=0 [stop]
+rec :lo :la
+rectangle :lo-1 :la-1
+fin
+\end{verbatim}
+Note: à la place d'utiliser la primitive \texttt{ou}, on peut utiliser le symbole \og | \fg: on obtiendrait: \begin{center}
+\texttt{si :lo=0 | :la=0 [stop]}
+\end{center}
+\section{Deuxième approche}
+\begin{center}
+\includegraphics{tut-images/cap11.png}
+\end{center}
+
+\noindent L'idée ici va être de commencer par avancer de 100 pas puis reculer de 100 pas, se déplacer de un pas vers la droite, puis répéter ce mouvement élémentaire jusqu'à ce que le rectangle soit entièrement rempli.
+Si la hauteur du rectangle est repéré par la variable \texttt{:lo}, on va donc répéter le mouvement élémentaire:
+\begin{verbatim}
+av :lo re :lo td 90 av 1 tg 90
+\end{verbatim}
+Ce mouvement devra être répéter \texttt{:la} fois. La procédure finale est donc:
+\begin{verbatim}
+pour rectangle :lo :la
+av :lo re :lo
+repete :la-1 [ td 90 av 1 tg 90 av :lo re :lo]
+fin
+\end{verbatim}
+Note: Si on inclut le premier trait vertical dans la boucle, il y aura un petit trait de longueur un pas en trop en bas du rectangle.\\ \\
+Une autre approche aurait pu être d'utiliser la récursivité et un test de fin.
+\begin{verbatim}
+pour rectangle :lo :la
+si :la=0 [stop]
+av :lo re :lo 
+si non :la=1 [td 90 av 1 tg 90]
+rectangle :lo :la-1
+fin
+\end{verbatim}
+Note: A chaque trait vertical dessiné, on décrémente la variable \texttt{:la} de une unité. Ainsi, lorsqu'elle vaut 0, c'est que le rectangle est dessiné.
+\section{Troisième approche}
+\begin{center}
+\includegraphics{tut-images/cap12.png}
+\end{center}
+
+\noindent On effectue le même mouvement que précédemment mais en traçant successivement les traits horizontaux.
+\begin{verbatim}
+pour rectangle :lo :la
+td 90 av :la re :la
+repete :lo-1 [ tg 90 av 1 td 90 av :la re :la]
+fin
+\end{verbatim}

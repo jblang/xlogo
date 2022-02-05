@@ -1,0 +1,57 @@
+XLogo Handbuch
+9 XLogo von der Kommandozeile starten
+geändert am %%mtime(%d.%m.%Y %H:%M)
+
+%!encoding: iso-8859-1
+
+ = 9 XLogo von der Kommandozeile starten =
+
+
+== 9.1 XLogo ausführen ==
+
+
+Hier ist die Syntax des Kommandos, um XLogo auszuführen:
+
+
+  ``java -jar xlogo.jar [-a] [-lang en] [-memory 64] [datei1.lgo datei2.lgo ...]``
+
+
+**Liste verfügbarer Optionen**:
+
+  - **Attribut -lang**: Dieses Attribut spezifiziert eine Sprache für XLogo. Dieser Parameter überschreibt den in der Konfigurationsdatei ``.xlogo``. Werfen Sie einen Blick auf auf die folgende Tabelle, die alle verfügbaren Sprachen enthält:
+
+
+  | Französisch | Englisch | Spanisch | Deutsch | Arabisch | Portugiesisch | Espéranto | Galizisch |
+  |  fr  |  en  |  es  |  de  |  ar  |  pt  |  eo  |  gl  |
+
+
+  - **Attribut -a**: Dieses Attribut zeigt an, das Hauptkommando der geladenen Dateien bei Startup auszuführen, nachdem XLogo sein Fenster öffnet.
+
+
+  - **Attribut -memory**: Dieses Attribut aendert die Groesse des XLogo zugeteilten Arbeitsspeicher.
+
+
+  - **datei1.lgo, datei2.lgo ...**: Diese Dateien im ``.lgo``-Format werden beim Startup von XLogo geladen. Diese Dateien können lokal oder entfernt vorhanden sein. Daher können Sie eine lokale Adresse oder eine Webadresse angeben.
+
+
+
+**Einige Beispiele**:
+
+  - ``java -jar xlogo.jar -lang es prog.lgo``
+  
+    Die Dateien ``xlogo.jar`` und ``prog.lgo`` liegen im aktuellen Verzeichnis. Dieses Kommando führt XLogo in Spanisch aus. Dann ladet es die Datei ``prog.lgo`` (Diejenige Datei ist dann in Spanisch geschrieben...)
+
+
+  - ``java -jar xlogo.jar -a -lang en http://xlogo.tuxfamily.org/prog.lgo``
+  
+    Dieses Kommando führt XLogo in Englisch aus. Es ladet die Datei ``http://xlogo.tuxfamily.org/prog.lgo``. Ausserdem wird das Hauptkommando aus dieser Datei beim Startup ausgeführt.
+
+
+  --------------------
+
+//XLogo Handbuch//
+([siehe Quelle %%infile])
+
+  |  Übersetzt von [Michael Malien michael.malien@gmx.de?Meine_Hinweise_zum_XLogo-Handbuch]  |  Erzeugt durch [Txt2Tags http://txt2tags.sf.net]  |
+|  Geändert am: %%Mtime(%c)  |  am %%Date(%Y-%m-%d um %H% :%M:%S)  |
+

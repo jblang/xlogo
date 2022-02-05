@@ -1,0 +1,390 @@
+XLogo Handbuch
+6 Programm-Beispiele
+geändert am %%mtime(%d.%m.%Y %H:%M)
+
+%!encoding: iso-8859-1
+
+ = 6 Programm-Beispiele =
+
+
+== 6.1 Häuser zeichnen ==
+
+
+  || [images/img70.png] |
+  
+Abbildung 6.1: Häuser
+
+
+```
+lerne häuser
+  löschebild stifthoch links 90 vorwärts 200 rechts 90 stiftab versteckeigel
+  haus 3 platz 3 haus 5 platz 5 haus 7 platz 7 haus 10
+Ende
+
+lerne haus :c
+  wiederhole 4 [vorwärts 20*:c rechts 90]
+  vorwärts 20*:c rechts 30
+  wiederhole 3 [vorwärts 20*:c rechts 120]
+Ende
+
+
+lerne platz :c
+  stifthoch links 30 rückwärts :c*20 rechts 90 vorwärts :c*22 links 90 stiftab
+Ende
+```
+
+
+== 6.2 Ein ganzes Rechteck zeichnen ==
+
+
+  || [images/img71.png] |
+
+Abbildung 6.2: Rechteck
+
+```
+lerne rechteck :lo :la
+  wenn :lo=0 | :la=0 [stoppe]
+  wiederhole 2[vorwärts :lo rechts 90 vorwärts :la rechts 90]
+  rechteck :lo -1 :la -1
+Ende
+```
+
+== 6.3 Fakultät ==
+
+: Gedächtnishilfe 
+5! = 5 × 4 × 3 × 2 × 1 = 120
+
+
+```
+lerne fac :n
+  wenn :n=1[rückgabe 1][rückgabe :n*fac :n-1]
+Ende
+```
+
+```
+dz fac 5
+120.0
+```
+
+```
+dz fac 6
+720.0
+```
+
+
+== 6.4 Die Schneeflocke (mit Dank an Georges No¨ el)) ==
+
+```
+lerne koch :order :len
+  wenn :order < 1 | :len <1 [vorwärts :len stoppe]
+  koch :order-1 :len/3
+  links 60
+  koch :order-1 :len/3
+  rechts 120
+  koch :order-1 :len/3
+  links 60
+  koch :order-1 :len/3
+Ende
+```
+
+
+  || [images/img73.png] |
+
+Abbildung 6.3: Die Schneeflocke
+
+```
+lerne kochflocke :order :len
+  wiederhole 3 [rechts 120 koch :order :len]
+Ende
+```
+
+``kochflocke 5 450``
+
+
+  || [images/img74.png] |
+
+Abbildung 6.4: XLogo ist toll!
+
+
+== 6.5 Ein wenig Schrift... ==
+
+```
+lerne schrift
+  versteckeigel 
+    wiederhole 40[
+      vorwärts 30 rechts 9 setzestiftfarbe zufallszahl 7 igeltext [XLogo ist toll!]
+	]
+Ende
+```
+
+
+== 6.6 Und Konjugation... ==
+
+
+=== 6.6.1 Erste Version ===
+
+```
+lerne fr_zukunft :wort
+  druckezeile satz "je wort :wort "ai
+  druckezeile satz "tu wort :wort "as
+  druckezeile satz "il wort :wort "a
+  druckezeile satz "nous wort :wort "ons
+  druckezeile satz "vous wort :wort "ez
+  druckezeile satz "elles wort :wort "ont
+Ende
+```
+
+``Fr_zukunft "parler``
+
+```
+je parlerai
+tu parleras
+il parlera
+nous parlerons
+vous parlerez
+elles parleront
+```
+
+
+=== 6.6.2 Zweiter Versuch ===
+
+```
+lerne fut :wort
+  setze "pronomen [je tu il nous vous elles]
+  setze "endungen [ai as a ons ez ont]
+  setze "i 0
+  wiederhole 6[
+    setze "i :i+1 dz satz element :i :pronomen wort :wort element :i :endungen
+  ]
+Ende
+```
+
+``fut "parler``
+
+```
+je parlerai
+tu parleras
+il parlera
+nous parlerons
+vous parlerez
+elles parleront
+```
+
+
+=== 6.6.3 Oder sogar: Ein wenig Rekursion! ===
+
+```
+lerne fu :verb
+  setze "pronomen [je tu il nous vous elles]
+  setze "endungen [ai as a ons ez ont]
+  konjugiere :verb :pronomen :endungen
+Ende
+```
+
+
+```
+lerne konjugiere :verb :pronomen :endungen
+  wenn leer? :pronomen [stoppe]
+  druckezeile satz erstes :pronomen wort :verb erstes :endungen
+  konjugiere :verb ohneerstes :pronomen ohneerstes :endungen
+Ende
+```
+
+``fu "parler``
+
+```
+je parlerai
+tu parleras
+il parlera
+nous parlerons
+vous parlerez
+elles parleront
+```
+
+
+== 6.7 Alles über Farben ==
+
+
+=== 6.7.1 Einführung ===
+
+Zunächst ein paar Erklärungen: Sie werden zur Kenntnis nehmen, dass das Befehl ``Setpc`` entweder eine Liste oder eine Zahl als  Parameter haben kann. Hier sind wir an der Codierung von RGB-Werten interessiert.
+
+Jede Farbe in XLogo wird durch drei Werte kodiert: ``Rot``, ``grün`` und ``blau``, woher der Name RGB-Verschlüsselung. Die drei Zahlen im Listenparameter nach dem Primitiv ``setzestiftfarbe`` repräsentieren deswegen die roten, grünen und blauen Bestandteile einer Farbe. Dieses Verschlüsseln ist nicht wirklich intuitiv, und daher können eine Idee von der Farbe bekommen, die durch diese Kodierung gegeben ist, durch die Benutzung des Dialogkastens in **Hilfsmittel-Wähle Stiftfarbe**.
+
+Bei der Benutzung dieser Kodierung ist es sehr leicht, ein Bild zu transformieren. Zum Beispiel wenn Sie ein Farbfoto in ein Grautonbild verwandeln wollen, können Sie die Farbe jedes Bildelements des Bildes zum Durchschnitts-Wert der drei Bestandteile ``[r g b]`` verändern. Stellen Sie sich vor, dass die Farbe von einem Punkt des Bildes gegeben wird durch die Kodierung ``[0 100 80]``. Nun berechnen Sie den Durchschnitt von diesen drei Zahlen:
+
+%   || [images/img75.png] |
+
+``( 0+100+80 ) / 3 = 60``, und weisen dann die Farbe ``[60 60 60]`` diesem Bildelement zu. Diese Operation muss auf jedes Bildelement des Bildes durchgeführt werden.
+
+
+=== 6.7.2 Werden wir praktisch! ===
+
+Wir werden ein ``100 × 100`` Bildelemente großes Bild in ein Grauwert-Bild transformieren.
+
+Dies heißt, dass es ``100 × 100 = 10000`` zu ändernde Bildelemente gibt. Sie können auf das in diesem Beispiel benutzte Bild  an der folgenden Adresse zugreifen:
+
+http://xlogo.tuxfamily.org/pics/transfo.png
+
+Dies ist, wie wir fortfahren werden: Zuerst werden wir uns auf die obere linke Ecke vom Bild beziehen, nämlich [0 0].
+Dann wird der Igel die ersten 100 Bildelemente der Anfangszeile, von den ersten 100 der zweiten Zeile gefolgt, prüfen und so weiter. Jedes Mal wird die Farbe des Bildelements mit ``findefarbe``, und die Farbe wird dann verändert zu dem Durchschnitt von den drei ``[r g b]`` Werten. Hier ist der dazugehörige Code:
+(Vergessen Sie nicht, den ``dateipfad`` in der Prozedur zu verändern!)
+
+```
+lerne pixel :list
+  # gebe den Durchschnitt der drei Zahlen [r g b] zurück
+  setze "r erstes :list
+  setze "list ohneerstes :list
+  setze "g erstes :list
+  setze "list ohneerstes :list
+  setze "b erstes :list
+  setze "b runde (:r+:g+:b)/3
+  rückgabe satz liste :b :b :b
+Ende
+```
+
+
+
+  || [images/img77.png] |
+
+Abbildung 6.5: XLogo macht eine Bildretusche....
+
+
+```
+lerne grauwert :c
+  wenn :y=-100 [stoppe]
+  wenn :c=100 [setze "c 0 setze "y :y-1]
+  # wir weisen die "Durchschnittsfarbe" des Pixel dem Stift zu
+  setzestiftfarbe pixel findefarbe liste :c :y
+  # wir verwandeln den Pixel in einen Grauwert
+  pixel liste :c :y
+  grauwert :c+1
+Ende
+
+lerne transform
+  # Sie müssen den Pfad zu dem Bild transfo.png ändern
+  # z.B. mit setzeordner "c:\\my_images ladebild "transfo.png]
+  löschebild versteckeigel setzeordner "/heim/loic 
+  ladebild "transfo.png setze "y 0 grauwert 0
+Ende
+```
+
+
+=== 6.7.3 Und wenn Sie es negativ wollen? ===
+
+Um aus einem Bild das Negativbild zu bekommen, können Sie den gleichen Prozess benutzen, außer dass an Stelle den Durchschnitt der Zahlen ``R G B`` zu ermitteln,  Sie die Zahl durch die ersetzen, die Sie bekommen wenn Sie sie von 255 subtrahieren. Z. B.: Wenn ein Bildelement die Farbe ``[2 100 200]`` hat, ersetzen Sie sie durch die Farbe ``[253 155 55]``.
+
+Nur die Prozedur ``pixel`` muss zum folgenden Programm geändert werden:
+
+
+```
+lerne grauwert2 :c
+  wenn :y=-100 [stoppe]
+  wenn :c=100 [setze "c 0 setze "y :y-1]
+  setzestiftfarbe pixel2 findefarbe liste :c :y
+  pixel2 liste :c :y
+  grauwert2 :c+1
+Ende
+```
+
+
+
+  || [images/img78.png] |
+
+Abbildung 6.6: XLogo täuscht vor GIMP zu sein... (anmaßend? :-)) 
+
+
+```
+lerne transform2
+  # Sie müssen den Pfad zu dem Bild transfo.png ändern
+  # eg: setzeordner "c:\\my_images ladebild "transfo.png]
+  versteckeigel löschebild setzeordner "/heim/loic 
+  ladebild "transfo.png setze "y 0 grauwert2 0
+Ende
+
+lerne pixel2 :list
+  setze "r erstes :list
+  setze "list ohneerstes :list
+  setze "g erstes :list
+  setze "liste ohneerstes :list
+  setze "b erstes :list
+  rückgabe satz liste 255-:r 255-:g 255-:b
+Ende
+```
+
+
+== 6.8 Ein gutes Beispiel für die Benutzung von Listen (Dank an Olivier SC) ==
+
+
+Ich hoffe, dass Sie dieses wunderbare Palindrom-Programm schätzen werden:
+
+```
+lerne umkehrew :w
+  wenn leer? :w [rückgabe "]
+  rückgabe wort letztes :w umkehrew ohneletztes :w
+Ende
+
+lerne palindrom :w
+  wenn gleich? :w umkehrew :w [rückgabe "true] [rückgabe "false]
+Ende
+```
+
+
+
+```
+lerne palin :n
+  wenn palindrom :n [druckezeile :n stoppe]
+  druckezeile satz satz satz satz :n "mehr umkehrew :n "gleich summe :n umkehrew :n
+  palin :n + umkehrew :n
+Ende
+```
+
+
+``palin 78``
+
+
+```
+78 mehr 87 gleich 165
+165 mehr 561 gleich 726
+726 mehr 627 gleich 1353
+1353 mehr 3531 gleich 4884
+4884
+```
+
+
+== 6.9 Eine reizende Rose ==
+
+
+  || [images/img79.png] |
+
+  Abbildung 6.7: Besser als die Benutzung eines Kompass!  
+
+  
+```  
+lerne rose
+  wiederhole 6[ wiederhole 60[vorwärts 2 rechts 1] rechts 60 
+  wiederhole 120 [vorwärts 2 rechts 1] rechts 60]
+Ende
+
+lerne liebreizende_rose
+  rose
+  wiederhole 30[vorwärts 2 rechts 1]
+  rose
+  wiederhole 15[vorwärts 2 rechts 1]
+  rose
+  wiederhole 30[vorwärts 2 rechts 1]
+  rose
+Ende
+```
+
+``setzebildfarbe 0 löschebild setzestiftfarbe 5 versteckeigel rose stifthoch aufpos [-300 0] stiftab aufkurs 0 liebreizende_rose``
+
+
+
+  --------------------
+
+//XLogo Handbuch//
+([siehe Quelle %%infile])
+
+  |  Übersetzt von [Michael Malien michael.malien@gmx.de?Meine_Hinweise_zum_XLogo-Handbuch]  |  Erzeugt durch [Txt2Tags http://txt2tags.sf.net]  |
+|  Geändert am: %%Mtime(%c)  |  am %%Date(%Y-%m-%d um %H% :%M:%S)  |

@@ -1,0 +1,73 @@
+%%%%%%%%%% ESPERANTO MANUAL %%%%%%%%%%%%%%%%%
+\documentclass[a4paper,11pt]{book}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsfonts,amsmath,amssymb,mathrsfs}
+\usepackage{makeidx}
+\usepackage[esperanto]{babel}
+%% carleos: 
+%% difinitaj en babel-french
+\newcommand{\og}{{«}}
+\newcommand{\fg}{{»}}
+\newcommand{\degre}{{\ensuremath{^{\circ}}}}
+%% pro stetiko
+\usepackage{url}
+%% fin-carleos
+\usepackage[T1]{fontenc}
+\usepackage{graphicx,ulem}
+\usepackage{multicol,longtable,array}
+\usepackage{colortbl,color}
+\usepackage{pstricks,pstricks-add,pst-math,pst-xkey}
+\usepackage{geometry}
+\geometry{a4paper,tmargin=2cm,bmargin=2cm,rmargin=1.5cm,lmargin=1.5cm}
+\newcommand{\logo}{\textsc{Logo}}
+\newcommand{\xlogo}{\textsc{XLogo}}
+\newcommand{\prim}[2]{%
+%karleos forigas: \\
+\noindent \begin{tabular}{>{\columncolor[gray]{0.9}}p{\textwidth}} 
+\ifx \Css\UnDef\else
+\Css{\#TBL-\TableNo {width:100\%;} }
+\fi
+\index{#1} \textbf{#1} \textit{#2}\\ 
+\end{tabular} 
+\\ 
+}
+\author{Loïc Le Coq}
+\title{
+\Huge \textbf{\xlogo: referenca gvidlibro}
+}
+\date{\today
+\begin{center}
+\includegraphics[scale=0.8]{bildoj/titolo.png}
+\end{center}
+\texttt{http://xlogo.tuxfamily.org}\\
+}
+\makeindex
+\begin{document} 
+\renewcommand{\labelitemi}{\textbullet}
+\renewcommand{\labelitemiii}{$\rightarrow$}
+\maketitle
+\include{chapitroj/enkonduko}
+\tableofcontents
+\include{chapitroj/instalado}
+\include{chapitroj/interfaco}
+\include{chapitroj/konvencioj}
+\include{chapitroj/bazo}
+\include{chapitroj/fpos}
+\include{chapitroj/variabloj}
+\include{chapitroj/rekursiveco}
+\include{chapitroj/animacio}
+\include{chapitroj/interagado}
+\include{chapitroj/temo-sumo-kuboj}
+\include{chapitroj/temo-pi}
+\include{chapitroj/temo-menger}
+\include{chapitroj/temo-lindenmayer}
+\appendix
+\include{chapitroj/primitivoj}
+\include{chapitroj/komandLinio}
+\include{chapitroj/vebstarto}
+\include{chapitroj/korekti}
+\include{chapitroj/oftajdemandoj}
+\include{chapitroj/dankon}
+\printindex
+\end{document}
+\include{chapitroj/fill}
