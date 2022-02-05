@@ -65,10 +65,6 @@ public class PanelGrid extends JPanel implements ActionListener {
         jtXGrid = new JTextField(String.valueOf(Config.XGrid));
         jtYGrid = new JTextField(String.valueOf(Config.YGrid));
         panelColorGrid = new PanelColor(new Color(Config.gridColor));
-        labelXGrid.setFont(Config.police);
-        labelYGrid.setFont(Config.police);
-        checkGrid.setFont(Config.police);
-        panelColorGrid.setFont(Config.police);
         setLayout(new GridBagLayout());
         add(checkGrid, new GridBagConstraints(0, 0, 1, 1, 0.3, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -94,11 +90,7 @@ public class PanelGrid extends JPanel implements ActionListener {
         jtYGrid.setEnabled(Config.drawGrid);
         panelColorGrid.setEnabled(Config.drawGrid);
 
-        checkGrid.setBackground(Preference.violet);
-        panelColorGrid.setBackground(Preference.violet);
-        setBackground(Preference.violet);
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("draw_grid"));
-        tb.setTitleFont(Config.police);
         setBorder(tb);
         checkGrid.addActionListener(this);
     }

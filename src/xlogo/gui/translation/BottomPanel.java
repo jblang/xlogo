@@ -1,7 +1,7 @@
 package xlogo.gui.translation;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
-import xlogo.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ public class BottomPanel extends JPanel {
     private final String id;
     private final String action;
     private JButton searchButton;
-    private final ImageIcon ichercher = new ImageIcon(Utils.dimensionne_image("chercher.png", this));
+    private final ImageIcon ichercher = new FlatSVGIcon("xlogo/icons/find.svg");
 
     protected BottomPanel(TranslateXLogo tx, String action, String id) {
         this.tx = tx;

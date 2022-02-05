@@ -1,5 +1,6 @@
 package xlogo.gui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.Utils;
@@ -38,9 +39,9 @@ public class Traduc extends JFrame implements ActionListener {
     private final JPanel p_edition_origine = new JPanel();
     private final JPanel p_edition_destination = new JPanel();
     private final JButton traduire = new JButton(Logo.messages.getString("traduire"));
-    private final ImageIcon icopier = new ImageIcon(Utils.dimensionne_image("editcopy.png", this));
-    private final ImageIcon icoller = new ImageIcon(Utils.dimensionne_image("editpaste.png", this));
-    private final ImageIcon icouper = new ImageIcon(Utils.dimensionne_image("editcut.png", this));
+    private final ImageIcon icopier = new FlatSVGIcon("xlogo/icons/copy.svg");
+    private final ImageIcon icoller = new FlatSVGIcon("xlogo/icons/menu-paste.svg");
+    private final ImageIcon icouper = new FlatSVGIcon("xlogo/icons/menu-cut.svg");
     private final JButton copier_origine = new JButton(icopier);
     private final JButton coller_origine = new JButton(icoller);
     private final JButton couper_origine = new JButton(icouper);
@@ -55,10 +56,6 @@ public class Traduc extends JFrame implements ActionListener {
     public Traduc() {
         setTitle(Logo.messages.getString("menu.tools.translate"));
         setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
-        setFont(Config.police);
-        traduire.setFont(Config.police);
-        vers.setFont(Config.police);
-        traduire_de.setFont(Config.police);
         getContentPane().setLayout(new BorderLayout());
         combo_origine.setSelectedIndex(Config.langage);
         combo_destination.setSelectedIndex(Config.langage);

@@ -1,5 +1,6 @@
 package xlogo.kernel.perspective;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import xlogo.Config;
@@ -43,7 +44,7 @@ public class Viewer3D extends JFrame implements ActionListener {
     // To store the Fog attributes
     private MyFog myFog;
     // Gui Components
-    private final ImageIcon iscreenshot = new ImageIcon(Utils.dimensionne_image("screenshot.png", this));
+    private final ImageIcon iscreenshot = new FlatSVGIcon("xlogo/icons/screen.svg");
     private JButton screenshot;
     private World3D w3d;
     private Canvas3D canvas3D;
@@ -375,7 +376,7 @@ public class Viewer3D extends JFrame implements ActionListener {
         }
 
         private void initGui() {
-            ImageIcon ifog = new ImageIcon(Utils.dimensionne_image("fog.png", viewer3d));
+            ImageIcon ifog = new FlatSVGIcon("xlogo/icons/cloud.svg");
             buttonFog = new JButton(ifog);
             buttonFog.setActionCommand(Viewer3D.ACTION_FOG);
             buttonFog.addActionListener(viewer3d);

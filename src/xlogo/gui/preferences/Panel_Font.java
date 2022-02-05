@@ -41,8 +41,6 @@ public class Panel_Font extends JPanel implements ActionListener {
     }
 
     private void initGui() {
-        apercu_police.setFont(Config.police);
-        taille_police.setFont(Config.police);
         apercu_police.setEditable(false);
         setLayout(new BorderLayout());
         noms_police = new String[fontes.length];
@@ -50,7 +48,6 @@ public class Panel_Font extends JPanel implements ActionListener {
             noms_police[i] = i + " " + fontes[i].getFontName();
         }
         jl_police = new JList(noms_police);
-        jl_police.setFont(Config.police);
         jl_police.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jl_police.setSelectedIndex(Application.police);
         js_police = new JScrollPane(jl_police);

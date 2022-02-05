@@ -18,7 +18,6 @@ import java.awt.event.ActionListener;
  */
 public class Preference extends JDialog implements ActionListener {
     private static final long serialVersionUID = 1L;
-    protected static Color violet = new Color(169, 169, 246);
     private final Application app;
     private final JButton bouton_OK = new JButton(Logo.messages.getString("pref.ok"));
     private final JButton bouton_CANCEL = new JButton(Logo.messages.getString("pref.cancel"));
@@ -57,16 +56,6 @@ public class Preference extends JDialog implements ActionListener {
         panel_Font = new Panel_Font(app);
         panel_Highlighter = new Panel_Highlighter(app);
 
-        bouton_CANCEL.setFont(Config.police);
-        bouton_OK.setFont(Config.police);
-        jt.setFont(Config.police);
-
-        jt.setBackground(Color.pink);
-        jt.setFont(new java.awt.Font("DialogInput", 1, 12));
-        panneau_bouton.setBackground(violet);
-        bouton_OK.setBackground(Color.orange);
-        bouton_CANCEL.setBackground(Color.orange);
-        this.getContentPane().setBackground(violet);
         this.setTitle("");
         this.getContentPane().setLayout(new BorderLayout());
 

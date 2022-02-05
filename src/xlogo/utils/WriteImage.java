@@ -80,7 +80,6 @@ public class WriteImage extends Thread {
         }
 
         private void initGui() {
-            setFont(Config.police);
             setTitle(Logo.messages.getString("titredialogue2"));
             prog.setIndeterminate(true);
             java.awt.FontMetrics fm = owner.getGraphics()

@@ -49,8 +49,8 @@ public class DocumentLogo extends DefaultStyledDocument {
     public void initStyles(int c_comment, int sty_comment, int c_primitive, int sty_primitive,
                            int c_parenthese, int sty_parenthese, int c_operande, int sty_operande) {
         normal = new SimpleAttributeSet();
-        StyleConstants.setFontFamily(normal, Config.police.getFamily());
-        StyleConstants.setForeground(normal, Color.black);
+        //StyleConstants.setFontFamily(normal, Config.police.getFamily());
+        //StyleConstants.setForeground(normal, Color.black);
         StyleConstants.setFontSize(normal, Config.police.getSize());
 
         comment = new SimpleAttributeSet();

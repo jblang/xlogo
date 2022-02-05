@@ -7,12 +7,11 @@
  */
 package xlogo.gui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Application;
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.Workspace;
-import xlogo.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,8 +27,8 @@ public class ProcedureEraser extends JDialog implements ActionListener {
     private JButton down;
     private JList procedureList;
     private JLabel allProcedureLabel;
-    private final ImageIcon iup = new ImageIcon(Utils.dimensionne_image("up_arrow.png", this));
-    private final ImageIcon idown = new ImageIcon(Utils.dimensionne_image("down_arrow.png", this));
+    private final ImageIcon iup =  new FlatSVGIcon("xlogo/icons/moveUp.svg");
+    private final ImageIcon idown =  new FlatSVGIcon("xlogo/icons/moveDown.svg");
     private JPanel buttonPanel;
     private Vector<String> list;
     private final Workspace wp;
@@ -64,9 +63,6 @@ public class ProcedureEraser extends JDialog implements ActionListener {
         procedureList = new JList(list);
         deleteButton = new JButton(Logo.messages.getString("enlever"));
         allProcedureLabel = new JLabel(Logo.messages.getString("procedure_list"));
-        deleteButton.setFont(Config.police);
-        procedureList.setFont(Config.police);
-        allProcedureLabel.setFont(Config.police);
         scroll = new JScrollPane(procedureList);
 
         getContentPane().setLayout(new BorderLayout());

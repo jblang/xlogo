@@ -73,11 +73,6 @@ public class PanelAxis extends JPanel implements ActionListener {
         jtXAxis = new JTextField(String.valueOf(Config.XAxis));
         jtYAxis = new JTextField(String.valueOf(Config.YAxis));
         panelAxisColor = new PanelColor(new Color(Config.axisColor));
-        labelXAxis.setFont(Config.police);
-        labelYAxis.setFont(Config.police);
-        checkXAxis.setFont(Config.police);
-        checkYAxis.setFont(Config.police);
-        panelAxisColor.setFont(Config.police);
         setLayout(new GridBagLayout());
         add(checkXAxis, new GridBagConstraints(0, 0, 1, 1, 0.3, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -106,12 +101,7 @@ public class PanelAxis extends JPanel implements ActionListener {
         jtYAxis.setEnabled(Config.drawYAxis);
         panelAxisColor.setEnabled(Config.drawXAxis || Config.drawYAxis);
 
-        checkXAxis.setBackground(Preference.violet);
-        checkYAxis.setBackground(Preference.violet);
-        panelAxisColor.setBackground(Preference.violet);
-        setBackground(Preference.violet);
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("title_axis"));
-        tb.setTitleFont(Config.police);
         setBorder(tb);
         checkXAxis.addActionListener(this);
         checkYAxis.addActionListener(this);

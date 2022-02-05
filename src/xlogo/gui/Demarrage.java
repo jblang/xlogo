@@ -4,7 +4,6 @@ import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.ExtensionFichier;
-import xlogo.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,15 +52,6 @@ public class Demarrage extends JDialog implements ActionListener {
     }
 
     private void jbInit() throws Exception {
-        setFont(Config.police);
-        jList1.setFont(Config.police);
-        jButton1.setFont(Config.police);
-        jButton2.setFont(Config.police);
-        jButton3.setFont(Config.police);
-        jButton4.setFont(Config.police);
-        jLabel1.setFont(Config.police);
-        jTextField1.setFont(Config.police);
-        exec.setFont(Config.police);
         this.getContentPane().setLayout(borderLayout1);
         jList1.setOpaque(true);
         jLabel1.setText(Logo.messages.getString("chemin") + " ");
@@ -113,7 +103,6 @@ public class Demarrage extends JDialog implements ActionListener {
             JFileChooser jf = new JFileChooser();
             String[] ext = {".lgo"};
             jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_logo"), ext));
-            Utils.recursivelySetFonts(jf, Config.police);
             int retval = jf.showDialog(this, Logo.messages.getString("menu.file.open"));
             if (retval == JFileChooser.APPROVE_OPTION) {
                 jTextField1.setText(jf.getSelectedFile().getAbsolutePath());

@@ -36,7 +36,6 @@ public class Combo_Couleur extends JPanel implements ActionListener {
             intArray[i] = i;
         }
         //Create the combo box.
-        titre.setFont(Config.police);
         titre.setText(ti + ":");
 
         combo_couleur = new JComboBox(intArray);
@@ -45,8 +44,6 @@ public class Combo_Couleur extends JPanel implements ActionListener {
         setColorAndStyle(rgb, sty);
         combo_couleur.setActionCommand("combo");
         combo_couleur.addActionListener(this);
-        bchoisir.setFont(Config.police);
-        style.setFont(Config.police);
         bchoisir.setActionCommand("bouton");
         bchoisir.addActionListener(this);
 
@@ -69,7 +66,7 @@ public class Combo_Couleur extends JPanel implements ActionListener {
                 GridBagConstraints.WEST, GridBagConstraints.VERTICAL, new Insets(
                 5, 5, 0, 5), 0, 0));
 
-        setBorder(BorderFactory.createLineBorder(Color.BLUE));
+        setBorder(BorderFactory.createTitledBorder(""));
         setPreferredSize(new Dimension(300, hauteur * 2 + 20));
     }
 

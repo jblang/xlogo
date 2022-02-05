@@ -51,10 +51,6 @@ public class BorderImagePanel extends JPanel implements ActionListener {
 
     private void initGui() {
         previewPanel = new Thumbnail();
-        setBackground(Preference.violet);
-        labelBorderMotif.setBackground(Preference.violet);
-        labelBorderMotif.setFont(Config.police);
-        button.setFont(Config.police);
         setLayout(new GridBagLayout());
 
         add(labelBorderMotif, new GridBagConstraints(0, 0, 2, 1, 2.0,

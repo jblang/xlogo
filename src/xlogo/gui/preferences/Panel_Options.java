@@ -48,31 +48,11 @@ public class Panel_Options extends JPanel {
     private final JComboBox jc_qualite = new JComboBox(choix_qualite);
     private final PanelGrid panelGrid = new PanelGrid();
     private final PanelAxis panelAxis = new PanelAxis();
-    private final BorderImagePanel borderPanel = new BorderImagePanel();
     private final JLabel labelTcp = new JLabel(Logo.messages.getString("pref.options.tcp"));
     private final JTextField textTcp = new JTextField(String.valueOf(Config.TCP_PORT));
 
     protected Panel_Options(Application cadre) {
         this.cadre = cadre;
-        epaisseur_crayon.setFont(Config.police);
-        forme_crayon.setFont(Config.police);
-        clearVariables.setFont(Config.police);
-        effacer_editeur.setFont(Config.police);
-        dimension_dessin.setFont(Config.police);
-        label_memoire.setFont(Config.police);
-        label_qualite.setFont(Config.police);
-        jc.setFont(Config.police);
-        tortues.setFont(Config.police);
-        epaisseur.setFont(Config.police);
-        largeur.setFont(Config.police);
-        hauteur.setFont(Config.police);
-        memoire.setFont(Config.police);
-        jc_qualite.setFont(Config.police);
-        label_pencolor.setFont(Config.police);
-        label_screencolor.setFont(Config.police);
-        nb_tortues.setFont(Config.police);
-        labelTcp.setFont(Config.police);
-        textTcp.setFont(Config.police);
 
         jc.setSelectedIndex(Config.penShape);
         if (Config.eraseImage)
@@ -82,14 +62,10 @@ public class Panel_Options extends JPanel {
         epaisseur.setText(String.valueOf(Config.maxPenWidth));
         tortues.setText(String.valueOf(Config.maxTurtles));
         jc_qualite.setSelectedIndex(Config.quality);
-        setBackground(Preference.violet);
         setLayout(gridBagLayout4);
         taille_dessin.add(largeur);
         taille_dessin.add(labelx);
         taille_dessin.add(hauteur);
-        taille_dessin.setBackground(Preference.violet);
-        effacer_editeur.setBackground(Preference.violet);
-        clearVariables.setBackground(Preference.violet);
 
         add(panelGrid, new GridBagConstraints(0, 0, 2, 1,
                 1.0, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -110,9 +86,6 @@ public class Panel_Options extends JPanel {
                 1.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
                 new Insets(10, 10, 0, 10), 0, 0));
 
-        add(borderPanel, new GridBagConstraints(0, 4, 2, 1, 1.0,
-                1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(10, 10, 0, 10), 0, 0));
         add(nb_tortues, new GridBagConstraints(0, 5, 1, 1, 1.0,
                 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(10, 10, 0, 10), 0, 0));
@@ -278,9 +251,6 @@ public class Panel_Options extends JPanel {
         } else if (Config.drawYAxis == true) refresh = true;
         if (refresh) refreshGridAxis();
         // Modify the image border
-        Config.borderColor = borderPanel.getBorderColor();
-        Config.borderImageSelected = borderPanel.getPath();
-        Config.borderExternalImage = borderPanel.getExternalImages();
         cadre.calculateMargin();
     }
 

@@ -140,13 +140,9 @@ public class ThumbFrame extends JDialog implements ActionListener {
         setSize(500, 400);
         initMainPanel();
         getContentPane().setLayout(new GridBagLayout());
-        getContentPane().setBackground(Preference.violet);
         add = new JButton(Logo.messages.getString("ajouter"));
         remove = new JButton(Logo.messages.getString("enlever"));
         ok = new JButton(Logo.messages.getString("pref.ok"));
-        add.setFont(Config.police);
-        ok.setFont(Config.police);
-        remove.setFont(Config.police);
         add.addActionListener(this);
         ok.addActionListener(this);
         remove.addActionListener(this);
@@ -156,11 +152,9 @@ public class ThumbFrame extends JDialog implements ActionListener {
         pc = new PanelColorThumb(col, this);
         pc.setEnabled(getButton(0).isSelected());
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("uniform_color"));
-        tb.setTitleFont(Config.police);
         pc.setBorder(tb);
         setTitle(Logo.messages.getString("bordermotif"));
         TitledBorder tb2 = BorderFactory.createTitledBorder(Logo.messages.getString("images"));
-        tb2.setTitleFont(Config.police);
         js.setBorder(tb2);
         getContentPane().add(js, new GridBagConstraints(0, 0, 4, 3, 1.0,
                 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,

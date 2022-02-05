@@ -7,6 +7,7 @@
  */
 package xlogo;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -194,8 +195,6 @@ public class Logo {
 		JTextArea jt=new JTextArea(message);
 		jt.setPreferredSize(new Dimension(400,400));
 		jt.setEditable(false);
-		jt.setBackground(new Color(255,255,177));
-		jt.setFont(Config.police);
 		jf.getContentPane().add(jt);
 		jf.pack();
     	jf.setVisible(true);
@@ -465,7 +464,7 @@ public class Logo {
                     }
                 });
                 try {
-                    UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
+                    UIManager.setLookAndFeel(new FlatDarkLaf());
                 } catch (Exception exc) {
                     System.out.println(exc);
                 }

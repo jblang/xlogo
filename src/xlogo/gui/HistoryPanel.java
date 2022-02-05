@@ -1,12 +1,12 @@
 package xlogo.gui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.StyledDocument.DocumentLogoHistorique;
 import xlogo.gui.preferences.Panel_Font;
 import xlogo.kernel.DrawPanel;
-import xlogo.kernel.network.NetworkServer;
 import xlogo.utils.ExtensionFichier;
 import xlogo.utils.Utils;
 import xlogo.utils.myException;
@@ -33,14 +33,11 @@ public class HistoryPanel extends JPanel {
     // numéro identifiant la police de
     // l'historique avec "ecris"
     public static int fontPrint = Panel_Font.police_id(Config.police);
-    private final ImageIcon ianimation = new ImageIcon(Utils.dimensionne_image("animation.png", this));
+    private final ImageIcon ianimation = new FlatSVGIcon("xlogo/icons/cwmCamOn.svg");
     private final JLabel label_animation = new JLabel(ianimation);
     private MouseAdapter mouseAdapt;
     private final Color couleur_texte = Color.BLUE;
     private final int taille_texte = 12;
-    private final JPanel jPanel1 = new JPanel();
-    private final JButton bstop = new JButton();
-    private final JButton bediteur = new JButton();
     private final JScrollPane jScrollPane1 = new JScrollPane();
     private final Historique historique = new Historique();
     private DocumentLogoHistorique dsd;
@@ -51,7 +48,6 @@ public class HistoryPanel extends JPanel {
     }
 
     public HistoryPanel(Application cadre) {
-        historique.setFont(Config.police);
         this.cadre = cadre;
         try {
             jbInit();
@@ -93,37 +89,13 @@ public class HistoryPanel extends JPanel {
     }
 
     private void jbInit() throws Exception {
-        bstop.setToolTipText(Logo.messages.getString("interrompre_execution"));
-        bstop.setText(Logo.messages.getString("stop"));
-        bstop.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                bstop_actionPerformed(e);
-            }
-        });
-        bediteur.setToolTipText(Logo.messages.getString("ouvrir_editeur"));
-        bediteur.setText(Logo.messages.getString("editeur"));
-        bediteur.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                bediteur_actionPerformed(e);
-            }
-        });
         this.setLayout(borderLayout1);
-        bediteur.setMnemonic('E');
-        this.setMinimumSize(new Dimension(4, 4));
-        this.setPreferredSize(new Dimension(600, 40));
-        historique.setForeground(Color.black);
         historique.setEditable(false);
-        this.add(jPanel1, BorderLayout.EAST);
         label_animation.setToolTipText(Logo.messages.getString("animation_active"));
-        jPanel1.add(bediteur, null);
-        jPanel1.add(bstop, null);
         this.add(jScrollPane1, BorderLayout.CENTER);
         jScrollPane1.getViewport().add(historique, null);
     }
 
-    void bediteur_actionPerformed(ActionEvent e) {
-        cadre.editeur.open();
-    }
 
     public void active_animation() {
         add(label_animation, BorderLayout.WEST);
@@ -145,14 +117,6 @@ public class HistoryPanel extends JPanel {
         validate();
     }
 
-    void bstop_actionPerformed(ActionEvent e) {
-        myException.lance = true;
-        cadre.error = true;
-        if (NetworkServer.isActive) {
-            NetworkServer.stopServer();
-        }
-    }
-
     // Change Syntax Highlighting for the editor
     public void initStyles(int c_comment, int sty_comment, int c_primitive, int sty_primitive,
                            int c_parenthese, int sty_parenthese, int c_operande, int sty_operande) {
@@ -166,21 +130,14 @@ public class HistoryPanel extends JPanel {
     }
 
     public void changeFont(Font f) {
-        bediteur.setFont(f);
-        bstop.setFont(f);
         historique.setFont(f);
     }
 
     public void updateText() {
-        bediteur.setText(Logo.messages.getString("editeur"));
-        bstop.setText(Logo.messages.getString("stop"));
         historique.setText();
     }
 
     public void changeLanguage() {
-        bediteur.setText(Logo.messages.getString("editeur"));
-        bstop.setToolTipText(Logo.messages.getString("interrompre_execution"));
-        bediteur.setToolTipText(Logo.messages.getString("ouvrir_editeur"));
     }
 
     public DocumentLogoHistorique getDsd() {
@@ -200,7 +157,6 @@ public class HistoryPanel extends JPanel {
         private final JMenuItem jpopsave = new JMenuItem();
 
         Historique() {
-            //	this.setBackground(new Color(255,255,220));
             popup.add(jpopcopier);
             popup.add(jpopselect);
             popup.add(jpopsave);
@@ -277,7 +233,6 @@ public class HistoryPanel extends JPanel {
                     JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
                     String[] ext = {".rtf"};
                     jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_rtf"), ext));
-                    Utils.recursivelySetFonts(jf, Config.police);
                     int retval = jf.showDialog(cadre, Logo.messages.getString("menu.file.save"));
                     if (retval == JFileChooser.APPROVE_OPTION) {
                         String path = jf.getSelectedFile().getPath();

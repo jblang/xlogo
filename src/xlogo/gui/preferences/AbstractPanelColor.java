@@ -1,6 +1,5 @@
 package xlogo.gui.preferences;
 
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.DrawPanel;
 
@@ -18,7 +17,6 @@ public abstract class AbstractPanelColor extends JPanel implements ActionListene
     private Color couleur_perso = Color.WHITE;
 
     public AbstractPanelColor(Color c) {
-        setBackground(Preference.violet);
         for (int i = 0; i < 17; i++) {
             intArray[i] = i;
         }
@@ -28,7 +26,6 @@ public abstract class AbstractPanelColor extends JPanel implements ActionListene
         setColorAndStyle(c);
         combo_couleur.setActionCommand("combo");
         combo_couleur.addActionListener(this);
-        bchoisir.setFont(Config.police);
         bchoisir.setActionCommand("bouton");
         bchoisir.addActionListener(this);
         add(combo_couleur);

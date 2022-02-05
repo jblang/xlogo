@@ -18,15 +18,10 @@ public class MyTextAreaDialog extends JTextArea {
     public MyTextAreaDialog(String message) {
         setText(message);
         setEditable(false);
-        setBackground(new Color(255, 255, 177));
-        setFont(Config.police);
     }
 
     public MyTextAreaDialog(String message, DocumentLogoHistorique dsd) {
-        setFont(dsd.getFont());
         setText(message);
         setEditable(false);
-        setBackground(new Color(255, 255, 177));
-        setFont(Config.police);
     }
 }

@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
-import java.awt.*;
 
 /**
  * Title :        XLogo
@@ -27,7 +26,6 @@ public class ZoneCommande extends JTextPane implements CaretListener {
 
     public ZoneCommande(Application cadre) {
         dlc = new DocumentLogoCommande(cadre);
-        this.setBackground(Color.WHITE);
         setDocument(dlc);
         addCaretListener(this);
     }

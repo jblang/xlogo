@@ -76,15 +76,9 @@ public class SearchFrame extends JDialog implements ActionListener {
     }
 
     protected void setText() {
-        backward.setFont(Config.police);
-        forward.setFont(Config.police);
-        find.setFont(Config.police);
-        labelFind.setFont(Config.police);
-        setFont(Config.police);
         backward = new JRadioButton(Logo.messages.getString("backward"));
         forward = new JRadioButton(Logo.messages.getString("forward"));
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("direction"));
-        tb.setTitleFont(Config.police);
         buttonPanel.setBorder(tb);
         find = new JButton(Logo.messages.getString("find"));
         labelFind = new JLabel(Logo.messages.getString("find") + " :");
@@ -105,7 +99,6 @@ public class SearchFrame extends JDialog implements ActionListener {
         buttonPanel.add(forward);
         buttonPanel.add(backward);
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("direction"));
-        tb.setTitleFont(Config.police);
         buttonPanel.setBorder(tb);
 
         // Init Buttons
@@ -120,11 +113,6 @@ public class SearchFrame extends JDialog implements ActionListener {
         comboFind = new JComboBox();
         comboFind.setEditable(true);
 
-        backward.setFont(Config.police);
-        forward.setFont(Config.police);
-        find.setFont(Config.police);
-        labelFind.setFont(Config.police);
-        setFont(Config.police);
 
         getContentPane().setLayout(new GridBagLayout());
         // Draw all

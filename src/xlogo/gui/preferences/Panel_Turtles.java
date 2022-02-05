@@ -32,7 +32,6 @@ public class Panel_Turtles extends JPanel {
             icone[i].setText("");
             buttonGroup3.add(icone[i]);
         }
-        setBackground(Preference.violet);
         setLayout(gridBagLayout2);
 
         add(icone[5], new GridBagConstraints(2, 1, 1, 1, 1.0,

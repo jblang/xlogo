@@ -14,10 +14,8 @@ import xlogo.kernel.DrawPanel;
 import xlogo.kernel.Kernel;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.Workspace;
-import xlogo.utils.ExtensionFichier;
-import xlogo.utils.Utils;
-import xlogo.utils.WebPage;
-import xlogo.utils.WriteImage;
+import xlogo.kernel.network.NetworkServer;
+import xlogo.utils.*;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -48,6 +46,8 @@ public class MenuListener extends JDialog implements ActionListener {
     public static final String EDIT_CUT = "cut";
     public static final String EDIT_PASTE = "paste";
     public static final String PLAY = "play";
+    public static final String STOP = "stop";
+    public static final String EDIT = "edit";
     public static final String ZOOMIN = "zoomin";
     public static final String ZOOMOUT = "zoomout";
     protected static final String FILE_NEW = "new";
@@ -135,7 +135,6 @@ public class MenuListener extends JDialog implements ActionListener {
                 JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
                 String[] ext = {".lgo"};
                 jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_logo"), ext));
-                Utils.recursivelySetFonts(jf, Config.police);
 
                 int retval = jf.showDialog(cadre, Logo.messages
                         .getString("menu.file.save"));
@@ -174,7 +173,6 @@ public class MenuListener extends JDialog implements ActionListener {
             JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
             String[] ext = {".lgo"};
             jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_logo"), ext));
-            Utils.recursivelySetFonts(jf, Config.police);
             int retval = jf.showDialog(cadre, Logo.messages.getString("menu.file.open"));
             if (retval == JFileChooser.APPROVE_OPTION) {
                 String txt = "";
@@ -239,7 +237,6 @@ public class MenuListener extends JDialog implements ActionListener {
                 JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
                 String[] ext = {".rtf"};
                 jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_rtf"), ext));
-                Utils.recursivelySetFonts(jf, Config.police);
                 int retval = jf.showDialog(cadre, Logo.messages.getString("menu.file.save"));
                 if (retval == JFileChooser.APPROVE_OPTION) {
                     String path = jf.getSelectedFile().getPath();
@@ -310,6 +307,14 @@ public class MenuListener extends JDialog implements ActionListener {
         } else if (MenuListener.PLAY.equals(cmd)) {
             cadre.affichage_Start(Utils.decoupe(Config.mainCommand));
             cadre.getHistoryPanel().ecris("normal", Config.mainCommand + "\n");
+        } else if (MenuListener.STOP.equals((cmd))) {
+            myException.lance = true;
+            cadre.error = true;
+            if (NetworkServer.isActive) {
+                NetworkServer.stopServer();
+            }
+        } else if (MenuListener.EDIT.equals((cmd))) {
+            cadre.editeur.open();
         }
 
     }

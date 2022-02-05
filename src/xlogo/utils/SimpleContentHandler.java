@@ -1,5 +1,7 @@
 package xlogo.utils;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -317,7 +319,7 @@ public class SimpleContentHandler implements ContentHandler {
             try {
                 Config.looknfeel = Integer.parseInt(attributs.getValue(0));
             } catch (NumberFormatException e) {
-                Config.looknfeel = Config.LOOKNFEEL_JAVA;
+                Config.looknfeel = Config.LOOKNFEEL_DARK;
             }
             try {
                 switch (Config.looknfeel) {
@@ -325,14 +327,11 @@ public class SimpleContentHandler implements ContentHandler {
                         UIManager.setLookAndFeel(UIManager
                                 .getSystemLookAndFeelClassName());
                         break;
-                    case Config.LOOKNFEEL_JAVA:
-                        UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
-                        break;
-                    case Config.LOOKNFEEL_MOTIF:
-                        //UIManager.setLookAndFeel(new com.sun.java.swing.plaf.motif.MotifLookAndFeel());
+                    case Config.LOOKNFEEL_LIGHT:
+                        UIManager.setLookAndFeel(new FlatLightLaf());
                         break;
                     default:
-                        UIManager.setLookAndFeel(new javax.swing.plaf.metal.MetalLookAndFeel());
+                        UIManager.setLookAndFeel(new FlatDarkLaf());
                         break;
                 }
 

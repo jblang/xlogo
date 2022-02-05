@@ -342,10 +342,7 @@ public class MyTable extends JPanel implements Searchable {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
             if (value instanceof String) {
-                if (value.toString().equals("")) setBackground(new java.awt.Color(255, 200, 200));
-                else setBackground(java.awt.Color.WHITE);
                 setText((String) value);
-                if (isSelected) setBackground(java.awt.Color.LIGHT_GRAY);
                 // set the table's row height, if necessary
                 //updateRowHeight(row,getPreferredSize().height);
             } else

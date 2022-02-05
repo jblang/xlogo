@@ -1,19 +1,21 @@
 package xlogo.gui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.MenuListener;
-import xlogo.utils.Utils;
 
 import javax.swing.*;
 
 public class MyToolBar extends JToolBar {
     private static final long serialVersionUID = 1L;
     private final MenuListener menulistener;
-    private final ImageIcon izoomin = new ImageIcon(Utils.dimensionne_image("zoomin.png", this));
-    private final ImageIcon izoomout = new ImageIcon(Utils.dimensionne_image("zoomout.png", this));
-    private final ImageIcon icopier = new ImageIcon(Utils.dimensionne_image("editcopy.png", this));
-    private final ImageIcon icoller = new ImageIcon(Utils.dimensionne_image("editpaste.png", this));
-    private final ImageIcon icouper = new ImageIcon(Utils.dimensionne_image("editcut.png", this));
-    private final ImageIcon iplay = new ImageIcon(Utils.dimensionne_image("play.png", this));
+    private final ImageIcon izoomin = new FlatSVGIcon( "xlogo/icons/zoomIn.svg" );
+    private final ImageIcon izoomout = new FlatSVGIcon( "xlogo/icons/zoomOut.svg" );
+    private final ImageIcon icopier = new FlatSVGIcon( "xlogo/icons/copy.svg" );
+    private final ImageIcon icoller = new FlatSVGIcon( "xlogo/icons/menu-paste.svg" );
+    private final ImageIcon icouper = new FlatSVGIcon( "xlogo/icons/menu-cut.svg" );
+    private final ImageIcon iplay = new FlatSVGIcon( "xlogo/icons/execute.svg" );
+    private final ImageIcon istop = new FlatSVGIcon( "xlogo/icons/suspend.svg" );
+    private final ImageIcon iedit = new FlatSVGIcon( "xlogo/icons/editSource.svg" );
     //private ImageIcon iturtleProp=new ImageIcon(Utils.dimensionne_image("turtleProp.png", this));
     private final JButton zoomin = new JButton(izoomin);
     private final JButton zoomout = new JButton(izoomout);
@@ -21,11 +23,13 @@ public class MyToolBar extends JToolBar {
     private final JButton coller = new JButton(icoller);
     private final JButton couper = new JButton(icouper);
     private final JButton play = new JButton(iplay);
+    private final JButton stop = new JButton(istop);
+    private final JButton edit = new JButton(iedit);
     //private JButton turtleProp=new JButton(iturtleProp);
 
 
     public MyToolBar(MenuListener menulistener) {
-        super(JToolBar.VERTICAL);
+        super(JToolBar.HORIZONTAL);
         this.menulistener = menulistener;
         initGui();
     }
@@ -43,6 +47,10 @@ public class MyToolBar extends JToolBar {
         coller.setActionCommand(MenuListener.EDIT_PASTE);
         play.addActionListener(menulistener);
         play.setActionCommand(MenuListener.PLAY);
+        stop.addActionListener(menulistener);
+        stop.setActionCommand(MenuListener.STOP);
+        edit.addActionListener(menulistener);
+        edit.setActionCommand(MenuListener.EDIT);
 /*		slider= new JSlider(JSlider.VERTICAL);
 		slider.setValue(slider.getMaximum()-Config.turtleSpeed);
 		//Create the label table
@@ -68,18 +76,17 @@ public class MyToolBar extends JToolBar {
 		slider.setMinimumSize(new java.awt.Dimension(width,200));
 		slider.setMaximumSize(new java.awt.Dimension(width,200));
 		*/
-        add(zoomin);
+        add(edit);
         addSeparator();
+        add(play);
+        add(stop);
+        addSeparator();
+        add(zoomin);
         add(zoomout);
         addSeparator();
         add(couper);
-        addSeparator();
         add(copier);
-        addSeparator();
         add(coller);
-        addSeparator();
-        add(play);
-        addSeparator();
 //		add(slider);
     }
 

@@ -150,8 +150,6 @@ public class Application extends JFrame {
                 Utils.class.getResource("icone.png")));
         contentPane = (JPanel) this.getContentPane();
         contentPane.setLayout(borderLayout1);
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize(new Dimension(d.width, d.height * 9 / 10));
         this.setTitle("XLogo");
 
         jMenuHelpLicence.addActionListener(menulistener);
@@ -229,7 +227,7 @@ public class Application extends JFrame {
         jMenuBar1.add(jMenuEdition);
         jMenuBar1.add(jMenuOptions);
         jMenuBar1.add(jMenuHelp);
-        contentPane.add(jPanel1, BorderLayout.NORTH);
+        contentPane.add(jPanel1, BorderLayout.SOUTH);
         jPanel1.add(jLabel1, BorderLayout.WEST);
         jPanel1.add(commande, BorderLayout.CENTER);
         commande.setAlignmentY(JComponent.CENTER_ALIGNMENT);
@@ -281,7 +279,7 @@ public class Application extends JFrame {
 
         // Toolbar
         toolbar = new MyToolBar(menulistener);
-        getContentPane().add(toolbar, BorderLayout.EAST);
+        getContentPane().add(toolbar, BorderLayout.NORTH);
 
 
         MouseListener popupListener = new PopupListener();
@@ -296,6 +294,7 @@ public class Application extends JFrame {
                 calculateMargin();
             }
         });
+        this.pack();
     }
 
     /**
@@ -303,7 +302,6 @@ public class Application extends JFrame {
      */
     public void setText() {
         //		System.out.println(Config.police.getName());
-        setFont(Config.police);
         // Texte interne à utiliser pour JFileChooser et JColorChooser
         UIManager.put("FileChooser.cancelButtonText", Logo.messages
                 .getString("pref.cancel"));
@@ -387,47 +385,11 @@ public class Application extends JFrame {
         //		System.out.println(UIManager.get("ColorChooser.font"));
         // On change la police et le texte de tous les composants texte
         UIManager.put("OptionPane.buttonFont", Config.police);
-        commande.setFont(Config.police);
-        jMenuFile.setFont(Config.police);
-        jMenuFileEnregistrer_sous.setFont(Config.police);
-        jMenuFileNouveau.setFont(Config.police);
-        jMenuHelp.setFont(Config.police);
-        jMenuHelpLicence.setFont(Config.police);
-        jMenuHelpAbout.setFont(Config.police);
         if (null == jMenuHelpOnLine) jMenuHelpOnLine = new JMenuItem();
         else {
             jMenuHelp.remove(jMenuHelpOnLine);
             jMenuHelpOnLine = new JMenuItem();
         }
-        jMenuHelpOnLine.setFont(Config.police);
-        jMenuHelpTranslateXLogo.setFont(Config.police);
-        jMenuHelplicencefrancais.setFont(Config.police);
-        jLabel1.setFont(Config.police);
-        jMenuEdition.setFont(Config.police);
-        jMenuEditionCopier.setFont(Config.police);
-        jMenuEditionColler.setFont(Config.police);
-        jMenuEditionCouper.setFont(Config.police);
-        jMenuEditionSelect.setFont(Config.police);
-        jMenuFileOuvrir.setFont(Config.police);
-        jMenuFileEnregistrer.setFont(Config.police);
-        jMenuFileQuitter.setFont(Config.police);
-        jMenuCapture.setFont(Config.police);
-        jMenuZoneTexte.setFont(Config.police);
-        jMenuZoneTexteItem.setFont(Config.police);
-        jMenuImageCopy.setFont(Config.police);
-        jMenuImageSave.setFont(Config.police);
-        jMenuImagePrint.setFont(Config.police);
-        jMenuOptions.setFont(Config.police);
-        jMenuOptionsDemarrage.setFont(Config.police);
-        jMenuOptionsCouleurCrayon.setFont(Config.police);
-        jMenuOptionsCouleurFond.setFont(Config.police);
-        jMenuOptionsPreference.setFont(Config.police);
-        jMenuOptionsTraduction.setFont(Config.police);
-        jMenuOptionsEraser.setFont(Config.police);
-
-        this.panneauHistorique1.changeFont(Config.police);
-        editeur.setEditorFont(Config.police);
-
         jMenuFile.setText(Logo.messages.getString("menu.file"));
         jMenuFileEnregistrer_sous.setText(Logo.messages
                 .getString("menu.file.saveas") + "...");
@@ -841,7 +803,7 @@ public class Application extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 
-                DrawPanel.dessin = new BufferedImage(Config.imageWidth, Config.imageHeight, BufferedImage.TYPE_INT_RGB);
+                DrawPanel.dessin = new BufferedImage((Config.imageWidth*3)/2, (Config.imageHeight*3)/2, BufferedImage.TYPE_INT_RGB);
                 // 	System.out.println("Total :"+Runtime.getRuntime().totalMemory()/1024+" max "+Runtime.getRuntime().maxMemory()/1024+" Free "+Runtime.getRuntime().freeMemory()/1024);
                 MediaTracker tracker = new MediaTracker(ardoise);
                 tracker.addImage(DrawPanel.dessin, 0);
@@ -870,6 +832,7 @@ public class Application extends JFrame {
 
     /**
      * Modify the Look&Feel for the Application
+     *
      * @throws Exception
      */
     public void changeLookNFeel() throws Exception {
@@ -1000,7 +963,6 @@ public class Application extends JFrame {
         if (b) {
             if (SwingUtilities.isEventDispatchThread()) {
                 commande.setEditable(true);
-                commande.setBackground(Color.WHITE);
                 toolbar.enabledPlay(true);
             } else {
                 SwingUtilities.invokeLater(new Runnable() {
@@ -1008,14 +970,12 @@ public class Application extends JFrame {
                         toolbar.enabledPlay(true);
                         commande.setEditable(true);
 //						   commande.requestFocus();
-                        commande.setBackground(Color.WHITE);
                     }
                 });
             }
         } else {
             toolbar.enabledPlay(false);
             commande.setEditable(false);
-            commande.setBackground(new Color(250, 232, 217));
         }
     }
 
@@ -1242,37 +1202,6 @@ public class Application extends JFrame {
         }
         if (height > panelHeight + 30) {
             verticalMargin = (height - panelHeight) / 2;
-        }
-        if (null != Config.borderColor) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    scrollArea.setBorder(
-                            BorderFactory.createMatteBorder(verticalMargin, horizontalMargin,
-                                    verticalMargin, horizontalMargin, Config.borderColor));
-                }
-            });
-
-        } else {
-            SwingUtilities.invokeLater(new Runnable() {
-                                           public void run() {
-                                               String name = Config.borderImageSelected;
-                                               ImageIcon icon = null;
-                                               if (Config.searchInternalImage(name) != -1)
-                                                   icon = new ImageIcon(Utils.dimensionne_image(name, ardoise));
-                                               else if (Config.borderExternalImage.contains(name)) {
-                                                   if (Utils.fileExists(name)) icon = new ImageIcon(name);
-                                                   else {
-                                                       Config.borderImageSelected = "background.png";
-                                                       icon = new ImageIcon(Utils.dimensionne_image("background.png", ardoise));
-                                                   }
-                                               }
-                                               scrollArea.setBorder(
-                                                       BorderFactory.createMatteBorder(verticalMargin, horizontalMargin, verticalMargin, horizontalMargin, icon));
-
-                                           }
-
-                                       }
-            );
         }
     }
 

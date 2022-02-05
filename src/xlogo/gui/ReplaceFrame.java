@@ -113,28 +113,10 @@ public class ReplaceFrame extends JDialog implements ActionListener {
         }
     }
 
-    private void setFont() {
-        find.setFont(Config.police);
-        replace.setFont(Config.police);
-        findReplace.setFont(Config.police);
-        replaceAll.setFont(Config.police);
-        backward.setFont(Config.police);
-        forward.setFont(Config.police);
-        comboFind.setFont(Config.police);
-        comboReplace.setFont(Config.police);
-        labelFind.setFont(Config.police);
-        labelReplace.setFont(Config.police);
-        labelResult.setFont(Config.police);
-
-
-    }
-
     protected void setText() {
-        setFont();
         backward = new JRadioButton(Logo.messages.getString("backward"));
         forward = new JRadioButton(Logo.messages.getString("forward"));
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("direction"));
-        tb.setTitleFont(Config.police);
         buttonPanel.setBorder(tb);
         find = new JButton(Logo.messages.getString("find"));
         replace = new JButton(Logo.messages.getString("replace"));
@@ -160,7 +142,6 @@ public class ReplaceFrame extends JDialog implements ActionListener {
         buttonPanel.add(forward);
         buttonPanel.add(backward);
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("direction"));
-        tb.setTitleFont(Config.police);
         buttonPanel.setBorder(tb);
         // Init Buttons
         find = new JButton(Logo.messages.getString("find"));
@@ -187,7 +168,6 @@ public class ReplaceFrame extends JDialog implements ActionListener {
         comboReplace = new JComboBox();
         comboFind.setEditable(true);
         comboReplace.setEditable(true);
-        setFont();
         getContentPane().setLayout(new GridBagLayout());
 
         // Draw all

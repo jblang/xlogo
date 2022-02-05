@@ -32,9 +32,6 @@ public class Panel_Sound extends JPanel {
     }
 
     private void initGui() {
-        instruments_dispo.setFont(Config.police);
-        setBackground(Preference.violet);
-        instruments_dispo.setBackground(Preference.violet);
         setLayout(new BorderLayout());
         add(instruments_dispo, BorderLayout.NORTH);
         try {
@@ -47,7 +44,6 @@ public class Panel_Sound extends JPanel {
             }
             synthesizer.close();
             instrument = new JList(ob);
-            instrument.setFont(Config.police);
             instrument.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             instrument.setSelectedIndex(cadre.getSon().getInstrument());
             scroll_son = new JScrollPane(instrument);

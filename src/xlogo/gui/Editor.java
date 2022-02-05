@@ -1,5 +1,6 @@
 package xlogo.gui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
@@ -326,18 +327,18 @@ public class Editor extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         // Init Toolbar button
-        ImageIcon icopier, icoller, icouper, iimprimer, iquit, ichercher, iundo, iredo, iplay;
-        icopier = new ImageIcon(Utils.dimensionne_image("editcopy.png", this));
-        icoller = new ImageIcon(Utils.dimensionne_image("editpaste.png", this));
-        icouper = new ImageIcon(Utils.dimensionne_image("editcut.png", this));
-        iimprimer = new ImageIcon(Utils.dimensionne_image("fileprint.png", this));
-        iquit = new ImageIcon(Utils.dimensionne_image("quit.png", this));
-        ichercher = new ImageIcon(Utils.dimensionne_image("chercher.png", this));
-        iundo = new ImageIcon(Utils.dimensionne_image("undo.png", this));
-        iredo = new ImageIcon(Utils.dimensionne_image("redo.png", this));
-        iplay = new ImageIcon(Utils.dimensionne_image("play.png", this));
-        lire = new JButton();
-        generateTurtleImage();
+        ImageIcon icopier, icoller, icouper, iimprimer, iquit, ichercher, iundo, iredo, iplay, ilire;
+        ilire = new FlatSVGIcon( "xlogo/icons/menu-saveall.svg" );
+        iquit = new FlatSVGIcon( "xlogo/icons/cancel.svg" );
+        iundo = new FlatSVGIcon( "xlogo/icons/undo.svg" );
+        iredo = new FlatSVGIcon( "xlogo/icons/redo.svg" );
+        icopier = new FlatSVGIcon( "xlogo/icons/copy.svg" );
+        icoller = new FlatSVGIcon( "xlogo/icons/menu-paste.svg" );
+        icouper = new FlatSVGIcon( "xlogo/icons/menu-cut.svg" );
+        ichercher = new FlatSVGIcon( "xlogo/icons/find.svg" );
+        iimprimer = new FlatSVGIcon( "xlogo/icons/print.svg" );
+        iplay = new FlatSVGIcon( "xlogo/icons/execute.svg" );
+        lire = new JButton(ilire);
         copier = new JButton(icopier);
         coller = new JButton(icoller);
         couper = new JButton(icouper);
@@ -387,22 +388,18 @@ public class Editor extends JFrame implements ActionListener {
         quit.setMnemonic('C');
 
         menu.add(lire);
-        menu.addSeparator();
         menu.add(quit);
         menu.addSeparator();
         menu.add(imprimer);
         menu.addSeparator();
+        menu.add(undo);
+        menu.add(redo);
+        menu.addSeparator();
         menu.add(couper);
-        menu.addSeparator();
         menu.add(copier);
-        menu.addSeparator();
         menu.add(coller);
         menu.addSeparator();
         menu.add(chercher);
-        menu.addSeparator();
-        menu.add(undo);
-        menu.addSeparator();
-        menu.add(redo);
 
         imprimer.addActionListener(this);
         copier.addActionListener(this);
@@ -414,8 +411,6 @@ public class Editor extends JFrame implements ActionListener {
         undo.addActionListener(this);
         redo.addActionListener(this);
 
-        labelCommand.setFont(Config.police);
-        mainCommand.setFont(Config.police);
         initMainCommand();
         if (Config.mainCommand.length() < 30) mainCommand.setPreferredSize(new Dimension(150, 20));
         panelCommand.add(labelCommand);
@@ -670,14 +665,6 @@ public class Editor extends JFrame implements ActionListener {
 
     public void focus_textZone() {
         textZone.requestFocus();
-    }
-
-    /**
-     * Create the Turtle Image for the Button "save change"
-     */
-    public void generateTurtleImage() {
-        ImageIcon read = new ImageIcon(Utils.dimensionne_image("preview" + Config.activeTurtle + ".png", this));
-        lire.setIcon(read);
     }
 
     /**

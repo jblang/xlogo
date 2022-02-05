@@ -33,13 +33,10 @@ public class Panel_Highlighter extends JPanel implements ActionListener {
 
     protected Panel_Highlighter(Application cadre) {
         this.cadre = cadre;
-        l_active.setFont(Config.police);
         l_active.setText(Logo.messages.getString("pref.highlight.enabled"));
-        bdefaut.setFont(Config.police);
         bdefaut.setText(Logo.messages.getString("pref.highlight.init"));
         setLayout(gb);
         jt.setOpaque(true);
-        jt.setBackground(Color.white);
         dsd = new DocumentLogo();
         jt.setDocument(dsd);
         dsd.setColore_Parenthese(true);

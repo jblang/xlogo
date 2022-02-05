@@ -81,9 +81,9 @@ public class Config {
     /**Native looknfeel**/
     public static final int LOOKNFEEL_NATIVE = 0;
     /**Java looknfeel**/
-    public static final int LOOKNFEEL_JAVA = 1;
+    public static final int LOOKNFEEL_LIGHT = 1;
     /**Motif looknfeel**/
-    public static final int LOOKNFEEL_MOTIF = 2;
+    public static final int LOOKNFEEL_DARK = 2;
     /**
      * Selected pen shape: Square
      */
