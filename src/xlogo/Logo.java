@@ -69,7 +69,6 @@ public class Logo {
         // Initialize frame
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                DrawPanel.dessin = new BufferedImage(Config.imageWidth, Config.imageHeight, BufferedImage.TYPE_INT_RGB);
                 frame = new Application();
 
                 frame.setVisible(true);
@@ -276,12 +275,12 @@ public class Logo {
         // Displays turtle
         // 	System.out.println("Total :"+Runtime.getRuntime().totalMemory()/1024+" max "+Runtime.getRuntime().maxMemory()/1024+" Free "+Runtime.getRuntime().freeMemory()/1024);
         MediaTracker tracker = new MediaTracker(frame);
-        tracker.addImage(DrawPanel.dessin, 0);
+        //tracker.addImage(DrawPanel.dessin, 0);
         try {
             tracker.waitForID(0);
         } catch (InterruptedException e) {
         }
-        frame.getArdoise().getGraphics().drawImage(DrawPanel.dessin, 0, 0, frame);
+        //frame.getArdoise().getGraphics().drawImage(DrawPanel.dessin, 0, 0, frame);
         frame.scrollArea.validate();//getArdoise().revalidate();
 
         /////////////frame.getKernel().initDrawGraphics();

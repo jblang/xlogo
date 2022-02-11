@@ -114,6 +114,7 @@ public class Application extends JFrame {
         kernel = new Kernel(this);
         scrollArea = new JScrollPane();
         ardoise = new DrawPanel(this);
+        resizeDrawingZone();
         kernel.initInterprete();
 
         menulistener = new MenuListener(this);
@@ -803,10 +804,10 @@ public class Application extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 
-                DrawPanel.dessin = new BufferedImage((Config.imageWidth*3)/2, (Config.imageHeight*3)/2, BufferedImage.TYPE_INT_RGB);
+                //DrawPanel.dessin = new BufferedImage((Config.imageWidth*3)/2, (Config.imageHeight*3)/2, BufferedImage.TYPE_INT_RGB);
                 // 	System.out.println("Total :"+Runtime.getRuntime().totalMemory()/1024+" max "+Runtime.getRuntime().maxMemory()/1024+" Free "+Runtime.getRuntime().freeMemory()/1024);
                 MediaTracker tracker = new MediaTracker(ardoise);
-                tracker.addImage(DrawPanel.dessin, 0);
+                //tracker.addImage(DrawPanel.dessin, 0);
                 try {
                     tracker.waitForID(0);
                 } catch (InterruptedException e) {
@@ -815,6 +816,7 @@ public class Application extends JFrame {
 
                 ardoise.setPreferredSize(new Dimension(Config.imageWidth, Config.imageHeight));
                 ardoise.revalidate();
+                ardoise.initGraphics();
                 kernel.initGraphics();
                 //ardoise.repaint();
                 calculateMargin();

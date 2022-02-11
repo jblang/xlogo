@@ -101,7 +101,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     /**
      * This Image is used for Buffering the drawing
      */
-    public static BufferedImage dessin;
+    private BufferedImage dessin;
     /**
      * The scale for the zoom
      */
@@ -205,7 +205,6 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         this.cadre = cadre;
         addMouseListener(this);
         addMouseMotionListener(this);
-        initGraphics();
     }
 
     /**
@@ -870,7 +869,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         int x = (int) coords[0];
         int y = (int) coords[1];
         if (0 < x && x < Config.imageWidth && 0 < y && y < Config.imageHeight) {
-            couleur = DrawPanel.dessin.getRGB(x, y);
+            couleur = dessin.getRGB(x, y);
         }
         return new Color(couleur);
     }
@@ -1640,8 +1639,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     private int bornes_remplis_zone(int x, int y, int increment, int couleur_frontiere) {
 //		System.out.println(x+" "+y);
-        while (!meme_couleur(DrawPanel.dessin.getRGB(x, y), couleur_frontiere)) {
-            DrawPanel.dessin.setRGB(x, y, couleur_frontiere);
+        while (!meme_couleur(dessin.getRGB(x, y), couleur_frontiere)) {
+            dessin.setRGB(x, y, couleur_frontiere);
             x = x + increment;
             if (!(x > 0 && x < Config.imageWidth - 1))
                 break;
@@ -1712,7 +1711,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         int x = (int) (tortue.corX + 0.5);
         int y = (int) (tortue.corY + 0.5);
         if (x > 0 & x < Config.imageWidth & y > 0 & y < Config.imageHeight) {
-            int couleur_origine = DrawPanel.dessin.getRGB(x, y);
+            int couleur_origine = dessin.getRGB(x, y);
             int couleur_frontiere = tortue.couleurcrayon.getRGB();
             //	System.out.println(couleur_origine+" " +couleur_frontiere);
             Stack<Point> pile_germes = new Stack<Point>();
@@ -1734,7 +1733,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 for (int i = xmin; i < xmax + 1; i++) {
                     //on recherche les germes au dessus et au dessous
                     if (ygerme > 0
-                            && meme_couleur(DrawPanel.dessin.getRGB(i, ygerme - 1), couleur_frontiere)) {
+                            && meme_couleur(dessin.getRGB(i, ygerme - 1), couleur_frontiere)) {
                         if (ligne_dessus)
                             pile_germes.push(new Point(i - 1, ygerme - 1));
                         ligne_dessus = false;
@@ -1744,7 +1743,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                             pile_germes.push(new Point(xmax, ygerme - 1));
                     }
                     if (ygerme < Config.imageHeight - 1
-                            && meme_couleur(DrawPanel.dessin.getRGB(i, ygerme + 1), couleur_frontiere)) {
+                            && meme_couleur(dessin.getRGB(i, ygerme + 1), couleur_frontiere)) {
                         if (ligne_dessous)
                             pile_germes.push(new Point(i - 1, ygerme + 1));
                         ligne_dessous = false;
@@ -1772,8 +1771,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     private int bornes_remplis(int x, int y, int increment, int couleur_crayon,
                                int couleur_origine) {
-        while (DrawPanel.dessin.getRGB(x, y) == couleur_origine) {
-            DrawPanel.dessin.setRGB(x, y, couleur_crayon);
+        while (dessin.getRGB(x, y) == couleur_origine) {
+            dessin.setRGB(x, y, couleur_crayon);
             x = x + increment;
             if (!(x > 0 && x < Config.imageWidth - 1))
                 break;
@@ -1789,7 +1788,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         int x = (int) (tortue.corX + 0.5);
         int y = (int) (tortue.corY + 0.5);
         if (x > 0 & x < Config.imageWidth & y > 0 & y < Config.imageHeight) {
-            int couleur_origine = DrawPanel.dessin.getRGB(x, y);
+            int couleur_origine = dessin.getRGB(x, y);
             int couleur_crayon = tortue.couleurcrayon.getRGB();
             if (x > 0 & x < Config.imageWidth & y > 0 & y < Config.imageHeight) {
                 Stack<Point> pile_germes = new Stack<Point>();
@@ -1812,7 +1811,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                     for (int i = xmin; i < xmax + 1; i++) {
                         //on recherche les germes au dessus et au dessous
                         if (ygerme > 0
-                                && DrawPanel.dessin.getRGB(i, ygerme - 1) != couleur_origine) {
+                                && dessin.getRGB(i, ygerme - 1) != couleur_origine) {
                             if (ligne_dessus)
                                 pile_germes.push(new Point(i - 1, ygerme - 1));
                             ligne_dessus = false;
@@ -1822,7 +1821,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                                 pile_germes.push(new Point(xmax, ygerme - 1));
                         }
                         if (ygerme < Config.imageHeight - 1
-                                && DrawPanel.dessin.getRGB(i, ygerme + 1) != couleur_origine) {
+                                && dessin.getRGB(i, ygerme + 1) != couleur_origine) {
                             if (ligne_dessous)
                                 pile_germes.push(new Point(i - 1, ygerme + 1));
                             ligne_dessous = false;
@@ -2371,7 +2370,12 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
     }
 
-    protected void initGraphics() {
+    public void initGraphics() {
+        Graphics2D pg = (Graphics2D) getGraphics();
+        AffineTransform t = pg.getTransform();
+        double scaleX = t.getScaleX();
+        double scaleY = t.getScaleY();
+        dessin = new BufferedImage((int)(scaleX * Config.imageWidth), (int)(scaleY * Config.imageHeight), BufferedImage.TYPE_INT_RGB);
         police_etiquette = Application.police;
         //		 init all turtles
         tortues = new Turtle[Config.maxTurtles];
@@ -2385,6 +2389,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             tortues[i] = null;
         }
         g = (Graphics2D) dessin.getGraphics();
+        g.scale(scaleX, scaleY);
         couleurfond = Config.screencolor;
         setQuality(Config.quality);
         g.setColor(Config.screencolor);
@@ -2568,15 +2573,19 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     protected synchronized void paintComponent(Graphics graph) {
         super.paintComponent(graph);
         Graphics2D g2d = (Graphics2D) graph;
+        /*
         if (null == shape) {
             g2d.setClip(cadre.scrollArea.getViewport().getViewRect());
         } else {
             g2d.setClip(shape);
             shape = null;
-        }
-        g2d.scale(DrawPanel.zoom, DrawPanel.zoom);
+        }*/
+        //g2d.scale(DrawPanel.zoom, DrawPanel.zoom);
+        AffineTransform t = g2d.getTransform();
+        t.scale(1.0 / t.getScaleX(), 1.0/t.getScaleY());
+        g2d.setTransform(t);
         g2d.drawImage(dessin, 0, 0, this);
-        g2d.scale(1 / DrawPanel.zoom, 1 / DrawPanel.zoom);
+        //g2d.scale(1 / DrawPanel.zoom, 1 / DrawPanel.zoom);
         if (!Affichage.execution_lancee && null != selection && cadre.commande_isEditable()) {
             g2d.setColor(colorSelection);
             g2d.fillRect(selection.x, selection.y, selection.width, selection.height);
@@ -2714,7 +2723,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @return
      */
     private BufferedImage getImagePart(int[] coords) {
-        Image pic = DrawPanel.dessin;
+        Image pic = dessin;
         if (zoom != 1) {
             pic = createImage(new FilteredImageSource(pic.getSource(),
                     new ReplicateScaleFilter((int) (dessin.getWidth() * zoom), (int) (dessin.getHeight() * zoom))));
@@ -2726,7 +2735,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
 
     public BufferedImage getSelectionImage() {
-        Image pic = DrawPanel.dessin;
+        Image pic = dessin;
         if (zoom != 1) {
             pic = createImage(new FilteredImageSource(pic.getSource(),
                     new ReplicateScaleFilter((int) (dessin.getWidth() * zoom), (int) (dessin.getHeight() * zoom))));
