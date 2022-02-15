@@ -71,8 +71,7 @@ public class MenuListener extends JDialog implements ActionListener {
     protected static final String HELP_TRANSLATE_XLOGO = "translate_xlogo";
     protected static final String HELP_ABOUT = "about";
     private static final long serialVersionUID = 1L;
-    private static final String WEB_SITE = "http://xlogo.tuxfamily.org";
-    private static final String MAIL = "loic@xlogo.tuxfamily.org";
+    private static final String WEB_SITE = "github.com/jblang/xlogo";
     private final double zoomfactor = 1.25;
     private final Application cadre;
     private final Workspace wp;
@@ -253,7 +252,7 @@ public class MenuListener extends JDialog implements ActionListener {
             }
         } else if (MenuListener.HELP_ABOUT.equals(cmd)) {   //Boite de dialogue A propos
             String message = Logo.messages.getString("message_a_propos1") + Config.version + "\n\n"
-                    + Logo.messages.getString("message_a_propos2") + " " + MenuListener.WEB_SITE + "\n\n" + Logo.messages.getString("message_a_propos3") + "\n     " + MenuListener.MAIL;
+                    + Logo.messages.getString("message_a_propos2") + " " + MenuListener.WEB_SITE;
             MyTextAreaDialog jt = new MyTextAreaDialog(message);
             ImageIcon icone = new ImageIcon(Utils.class.getResource("icone.png"));
             JOptionPane.showMessageDialog(null, jt, Logo.messages.getString("menu.help.about"), JOptionPane.INFORMATION_MESSAGE, icone);

@@ -12,17 +12,11 @@ Here is a simple example that produces the image in [this screenshot](xlogo.png)
 
 This very intuitive graphical approach makes Logo an ideal language for beginners, including children.
 
-## Current Status
+## Download
 
-This is a development version of XLogo. I plan to release a new version it's ready, but if you want a pre-built version right now, you are better off downloading the [old version](http://xlogo.tuxfamily.org/en/download-en.html) from the XLogo website.
+Pre-compiled jars available on the [Releases](https://github.com/jblang/xlogo/releases) page. You can also still download the [old version](http://xlogo.tuxfamily.org/en/download-en.html) from the XLogo website.
 
-XLogo's development ceased in 2012. I tried to contact the original author in 2022 but got no response. I migrated the Subversion repository to GitHub and started working on some improvements:
-
-- Fix blurry/pixelated scaling on high resolution displays
-- Make a nice looking themeable UI using FlatLaf
-- Fix bugs and improve code quality
-
-If you're not afraid to compile your own software and deal with some bugs, then read the [DEVNOTES](DEVNOTES.md) to get started. 
+Note: You will need Java on your computer to run XLogo. Java 11 or Java 17 is recommended. Java 8 may also work but has scaling issues on high resolution displays. If you don't already have a JDK installed, [Microsoft](https://docs.microsoft.com/en-us/java/openjdk/download) offers free OpenJDK downloads for Windows, Mac, and Linux.
 
 ## Documentation
 
@@ -50,6 +44,16 @@ Guy Walker's wonderful [Logo Arts](http://www.cr31.co.uk/logoarts/index.html) we
 - Comprehensive [Primitive Reference](http://www.cr31.co.uk/logoarts/ipt/top/prim.html)
 - Excellent [Book Recommendations](http://www.cr31.co.uk/logoarts/ipt/info/books.html)
 
+## Current Status
+
+XLogo's development ceased in 2012. I tried to contact the original author in 2022 but got no response. I migrated the Subversion repository to GitHub and started working on some improvements:
+
+- Fix blurry/pixelated scaling on high resolution displays
+- Make a nice looking themeable UI using FlatLaf
+- Fix bugs and improve code quality
+
+If you want to help improve the code, check out the [Developer Notes](DEVNOTES.md) to get started. 
+
 ## Credits
 
 ### Developers
@@ -72,7 +76,10 @@ Guy Walker's wonderful [Logo Arts](http://www.cr31.co.uk/logoarts/index.html) we
 - David Arso: Catalan
 - Jozsef Varga: Hungarian
 
-### Libraries
+### Third-party
 
-- [FlatLaf](https://www.formdev.com/flatlaf/): GUI Components [Apache Licensed]
-- [IntelliJ Community Edition](https://jetbrains.design/intellij/resources/icons_list/): SVG Icons [Apache Licensed]
+- [FlatLaf](https://www.formdev.com/flatlaf/): GUI Components (Apache license)
+- [IntelliJ IDEA](https://jetbrains.design/intellij/resources/icons_list/): SVG Icons (Apache license)
+- [Java3D](https://github.com/hharrison/java3d-core): OpenGL libraries (GPL license)
+- [JavaHelp](https://github.com/javaee/javahelp): Help library (GPL license)
+- [JLayer](https://github.com/umjammer/jlayer): MP3 library (LGPL license)

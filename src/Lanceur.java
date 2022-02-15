@@ -34,7 +34,7 @@ public class Lanceur {
      * The temporary folder which contains all files to start XLogo
      */
     private File tmpFolder = null;
-    private final File[] files = new File[10];
+    private final File[] files = new File[13];
     private int memoire = 64;
 
     /**
@@ -61,20 +61,31 @@ public class Lanceur {
             // Bug when launching under Windows with java webstart
             javaLibraryPath = javaLibraryPath.replaceAll("\"", "");
             System.out.println("Path: " + javaLibraryPath + "\n");
-            String[] commande = new String[5 + args.length];
+            int len = System.getProperty("java.version").startsWith("1.8") ? 5 : 8;
+            String[] commande = new String[len + args.length];
             commande[0] = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
             commande[1] = "-jar";
             commande[2] = "-Xmx" + memoire + "m";
             commande[3] = "-Djava.library.path=" + javaLibraryPath;
-            commande[4] = files[0].getAbsolutePath();
+            if (System.getProperty("java.version").startsWith("1.8")) {
+                commande[4] = files[0].getAbsolutePath();
+            } else {
+                // Workaround for Java3D incompatibility with Java 9+
+                // see: https://jogamp.org/bugzilla/show_bug.cgi?id=1317#c9
+                commande[4] = "--add-exports=java.base/java.lang=ALL-UNNAMED";
+                commande[5] = "--add-exports=java.desktop/sun.awt=ALL-UNNAMED";
+                commande[6] = "--add-exports=java.desktop/sun.java2d=ALL-UNNAMED";
+                commande[7] = files[0].getAbsolutePath();
+            }
             for (int i = 0; i < args.length; i++) {
-                commande[i + 5] = args[i];
+                commande[i + 7] = args[i];
 //				System.out.println("Argument "+i+" "+args[i]);
             }
             System.out.println("<----- Starting XLogo ---->");
             String cmd = "";
             for (int i = 0; i < commande.length; i++) {
-                cmd += commande[i] + " ";
+                if (commande[i] != null)
+                    cmd += commande[i] + " ";
             }
             System.out.println(cmd + "\n\n");
             p = Runtime.getRuntime().exec(commande);
@@ -296,7 +307,15 @@ public class Lanceur {
             }
         }
 
-
+        String[] jars = new String[] {"flatlaf-2.0.1.jar", "flatlaf-extras-2.0.1.jar", "svgSalamander-1.1.3.jar"};
+        int f = 10;
+        for (String jar: jars) {
+            src = Lanceur.class.getResourceAsStream(jar);
+            File file = new File(tmpFolder.getAbsolutePath() + File.separator + jar);
+            files[f++] = file;
+            b = copier(src, file);
+            System.out.println("Copying " + jar + " - success: " + b);
+        }
     }
 
     /**

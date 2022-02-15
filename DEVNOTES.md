@@ -2,36 +2,27 @@
 
 These instructions are for developers or advanced users who are comfortable compiling their own code. If you try it, please report any bugs you find or additional Java or OS versions you test. Pull requests are welcome and encouraged.
 
-## Java Requirements
-
-You'll need a JDK to compile and run XLogo. I have been using [Amazon Coretto 17](https://aws.amazon.com/corretto) for development. This is the only build I am regularly testing with.  Many companies offer free [OpenJDK builds](https://sdkman.io/jdks). Any OpenJDK 17 build should work, so pick one you prefer.
-
 ## Build Process
 
-I'm using the free community edition of [IntelliJ IDEA](https://www.jetbrains.com/idea/download/) for development. There are project files in the repo. Use the pre-configured `Logo` run configuration.
-
-There are also Eclipse project files, but beyond importing them into IntelliJ, I haven't tested them.  The project contains an Ant build script but again, I have not tested it. Dependency management is currently manual.
-
-## Required Libraries
-- For now, I just downloaded the dependencies from Maven Central:
-  - [flatlaf-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf/2.0.1/jar)
-  - [flatlaf-extras-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf-extras/2.0.1/jar)
-  - [svgSalamander-1.1.3.jar](https://search.maven.org/artifact/com.formdev/svgSalamander/1.1.3/jar)
-- The Java 3D jars and native libraries already in the repo are untested. 
-
-## Currently Untested
-- Linux, macOS, and older Windows versions
-- Java 9 through 16
-- Java 8 (expect problems with HiDPI displays)
-- Building an executable jar
-- 3D support
-- Networking
-- Sound support
+- You'll need a JDK to compile and run XLogo. Many companies offer free [OpenJDK builds](https://sdkman.io/jdks). Any OpenJDK 17 build should work, so pick one you prefer.  I have been using [Amazon Coretto 17](https://aws.amazon.com/corretto) for development.
+- I'm using the free community edition of [IntelliJ IDEA](https://www.jetbrains.com/idea/download/) for development. There are project files in the repo with a pre-configured `Logo` run configuration.
+- There are also Eclipse project files, but beyond importing them into IntelliJ, I haven't tested them.  
+- The project contains an Ant build script, which I have successfully used to build a working jar. 
+- Until the build system is replaced with something supporting dependency management, I am keeping the dependencies in the repo.
+  - Jars for newly added dependencies were downloaded from maven.org:
+    - [flatlaf-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf/2.0.1/jar)
+    - [flatlaf-extras-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf-extras/2.0.1/jar)
+    - [svgSalamander-1.1.3.jar](https://search.maven.org/artifact/com.formdev/svgSalamander/1.1.3/jar)
+  - The remaining jars were already in the subversion repo when it was imported:
+    - jh.jar: JavaHelp 2.0_03
+    - j3dcore.jar: Java3D 1.5.2 core library
+    - j3dutils.jar: Java3D 1.5.2 utilities
+    - vecmath.jar: Java3D 1.5.2 vector math
+    - jl1.0.1.jar: JLayer 1.0.1 MP3 library 
 
 ## Known Bugs
 - Zooming and clipboard selection on images don't work right
-- Fill commands currently don't work right on high resolution displays
-- Rendering animations in high quality sometimes leaves artifacts
+- Rendering in high quality sometimes leaves artifacts
 - The scroll area for the graphics display doesn't size to properly fit
 - The turtle PNGs need to be replaced with SVGs so they aren't pixelated
 - Save, new, stop, and play commands don't always disable when they should

@@ -14,13 +14,12 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import xlogo.gui.Selection_Langue;
 import xlogo.kernel.Affichage;
-import xlogo.kernel.DrawPanel;
 import xlogo.utils.SimpleContentHandler;
 import xlogo.utils.Utils;
 
+import javax.media.j3d.VirtualUniverse;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
@@ -146,8 +145,8 @@ public class Logo {
 
         try {
             // Display the java3d version
-            //java.util.Map<String,String> map=VirtualUniverse.getProperties();
-            //System.out.println("Java3d :"+map.get("j3d.version"));
+            java.util.Map<String,String> map= VirtualUniverse.getProperties();
+            System.out.println("Java3d :"+map.get("j3d.version"));
         } catch (Exception e) {
             System.out.println("Java3d problem");
             e.printStackTrace();
