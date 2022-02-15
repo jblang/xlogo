@@ -196,6 +196,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     private Point2D.Double pt;
     private Vector<Point2D.Double> centers;
     private javax.swing.JComponent gui;
+    private double scaleX = 1.0;
+    private double scaleY = 1.0;
 
     public DrawPanel(Application cadre) {
         this.gm = cadre.getKernel().getWorkspace().getGuiMap();
@@ -866,9 +868,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         extractCoords(liste, Utils.primitiveName("tc"));
         coords = toScreenCoord(coords, false);
         int couleur = -1;
-        int x = (int) coords[0];
-        int y = (int) coords[1];
-        if (0 < x && x < Config.imageWidth && 0 < y && y < Config.imageHeight) {
+        int x = (int) (coords[0] * scaleX);
+        int y = (int) (coords[1] * scaleY);
+        if (0 < x && x < dessin.getWidth() && 0 < y && y < dessin.getHeight()) {
             couleur = dessin.getRGB(x, y);
         }
         return new Color(couleur);
@@ -1642,7 +1644,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         while (!meme_couleur(dessin.getRGB(x, y), couleur_frontiere)) {
             dessin.setRGB(x, y, couleur_frontiere);
             x = x + increment;
-            if (!(x > 0 && x < Config.imageWidth - 1))
+            if (!(x > 0 && x < dessin.getWidth() - 1))
                 break;
         }
         return x - increment;
@@ -1708,9 +1710,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     protected void rempliszone() {
         montrecacheTortue(false);
-        int x = (int) (tortue.corX + 0.5);
-        int y = (int) (tortue.corY + 0.5);
-        if (x > 0 & x < Config.imageWidth & y > 0 & y < Config.imageHeight) {
+        int x = (int) (tortue.corX * scaleX);
+        int y = (int) (tortue.corY * scaleY);
+        if (x > 0 & x < dessin.getWidth() & y > 0 & y < dessin.getHeight()) {
             int couleur_origine = dessin.getRGB(x, y);
             int couleur_frontiere = tortue.couleurcrayon.getRGB();
             //	System.out.println(couleur_origine+" " +couleur_frontiere);
@@ -1742,14 +1744,14 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                         if (i == xmax && ygerme > 0)
                             pile_germes.push(new Point(xmax, ygerme - 1));
                     }
-                    if (ygerme < Config.imageHeight - 1
+                    if (ygerme < dessin.getHeight() - 1
                             && meme_couleur(dessin.getRGB(i, ygerme + 1), couleur_frontiere)) {
                         if (ligne_dessous)
                             pile_germes.push(new Point(i - 1, ygerme + 1));
                         ligne_dessous = false;
                     } else {
                         ligne_dessous = true;
-                        if (i == xmax && ygerme < Config.imageHeight - 1)
+                        if (i == xmax && ygerme < dessin.getHeight() - 1)
                             pile_germes.push(new Point(xmax, ygerme + 1));
                     }
                 }
@@ -1774,7 +1776,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         while (dessin.getRGB(x, y) == couleur_origine) {
             dessin.setRGB(x, y, couleur_crayon);
             x = x + increment;
-            if (!(x > 0 && x < Config.imageWidth - 1))
+            if (!(x > 0 && x < dessin.getWidth() - 1))
                 break;
         }
         return x - increment;
@@ -1785,12 +1787,12 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     protected void remplis() {
         montrecacheTortue(false);
-        int x = (int) (tortue.corX + 0.5);
-        int y = (int) (tortue.corY + 0.5);
-        if (x > 0 & x < Config.imageWidth & y > 0 & y < Config.imageHeight) {
+        int x = (int) (tortue.corX * scaleX);
+        int y = (int) (tortue.corY * scaleY);
+        if (x > 0 & x < dessin.getWidth() & y > 0 & y < dessin.getHeight()) {
             int couleur_origine = dessin.getRGB(x, y);
             int couleur_crayon = tortue.couleurcrayon.getRGB();
-            if (x > 0 & x < Config.imageWidth & y > 0 & y < Config.imageHeight) {
+            if (x > 0 & x < dessin.getWidth() & y > 0 & y < dessin.getHeight()) {
                 Stack<Point> pile_germes = new Stack<Point>();
                 boolean couleurs_differentes = !(couleur_origine == couleur_crayon);
                 if (couleurs_differentes)
@@ -1820,14 +1822,14 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                             if (i == xmax && ygerme > 0)
                                 pile_germes.push(new Point(xmax, ygerme - 1));
                         }
-                        if (ygerme < Config.imageHeight - 1
+                        if (ygerme < dessin.getHeight() - 1
                                 && dessin.getRGB(i, ygerme + 1) != couleur_origine) {
                             if (ligne_dessous)
                                 pile_germes.push(new Point(i - 1, ygerme + 1));
                             ligne_dessous = false;
                         } else {
                             ligne_dessous = true;
-                            if (i == xmax && ygerme < Config.imageHeight - 1)
+                            if (i == xmax && ygerme < dessin.getHeight() - 1)
                                 pile_germes.push(new Point(xmax, ygerme + 1));
                         }
                     }
@@ -2373,8 +2375,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     public void initGraphics() {
         Graphics2D pg = (Graphics2D) getGraphics();
         AffineTransform t = pg.getTransform();
-        double scaleX = t.getScaleX();
-        double scaleY = t.getScaleY();
+        scaleX = t.getScaleX();
+        scaleY = t.getScaleY();
         dessin = new BufferedImage((int)(scaleX * Config.imageWidth), (int)(scaleY * Config.imageHeight), BufferedImage.TYPE_INT_RGB);
         police_etiquette = Application.police;
         //		 init all turtles
