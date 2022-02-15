@@ -93,7 +93,7 @@ public class Config {
      */
     public static final int PEN_SHAPE_OVAL = 1;
     /** Version number**/
-    static final String version = "0.9.96pre 27/06/12";
+    static final String version = "1.0.0 beta 1";
     /** Drawing Quality **/
     public static int quality = 0;
     /**

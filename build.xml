@@ -17,7 +17,7 @@
 	Does the Jar has to be signed ? 
 	================================-->
 	
-	<property name="signJar" value="true" />
+	<property name="signJar" value="false" />
 	
 	<!-- Property platform:
 	================================================
@@ -35,7 +35,7 @@
 
 	<!-- Version for this Build -->
 	
-	<property name="version" value="0.9.94beta-2008-08-02"/>
+	<property name="version" value="1.0.0beta1"/>
 
 	
     <!-- ================================= 
@@ -147,17 +147,22 @@
 
 	<target name="compile" depends="copy.static.files">
 <!--		<echo> ${ant.java.version}</echo> -->
-    	<javac 
-    		source="1.5" encoding="utf8"
-    		target="1.5"
+    	<javac
+			source="1.8"
+			target="1.8"
+    		encoding="utf8"
     		srcdir="src" destdir="deploy/">
     		 <classpath>
 		        <pathelement location="vecmath.jar"/>
 		        <pathelement location="j3dcore.jar"/>
 		        <pathelement location="j3dutils.jar"/>
     		    <pathelement location="jh.jar"/>
-   			 	<pathelement location="jl1.0.1.jar"/> 
-   		      </classpath>
+   			 	<pathelement location="jl1.0.1.jar"/>
+				<pathelement location="flatlaf-2.0.1.jar"/>
+				<pathelement location="flatlaf-extras-2.0.1.jar"/>
+				<pathelement location="svgSalamander-1.1.3.jar"/>
+
+			 </classpath>
     	</javac>
 	</target>
 	
@@ -172,10 +177,14 @@
         			<include name="j3dutils.jar"/>
 	      			<include name="jl1.0.1.jar"/>
         			<include name="jh.jar"/>
+					<include name="flatlaf-2.0.1.jar"/>
+					<include name="flatlaf-extras-2.0.1.jar"/>
+					<include name="svgSalamander-1.1.3.jar"/>
         		</fileset>
         		<fileset dir="src/">
         			<include name="**.properties"/>
            			<include name="**/*.png"/>
+					<include name="**/*.svg"/>
         			<include name="**/*.html"/>
         			<include name="**/genericPrimitive"/>
         		</fileset>

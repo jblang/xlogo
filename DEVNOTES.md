@@ -12,26 +12,26 @@ I'm using the free community edition of [IntelliJ IDEA](https://www.jetbrains.co
 
 There are also Eclipse project files, but beyond importing them into IntelliJ, I haven't tested them.  The project contains an Ant build script but again, I have not tested it. Dependency management is currently manual.
 
-## Required Libraries
-- For now, I just downloaded the dependencies from Maven Central:
-  - [flatlaf-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf/2.0.1/jar)
-  - [flatlaf-extras-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf-extras/2.0.1/jar)
-  - [svgSalamander-1.1.3.jar](https://search.maven.org/artifact/com.formdev/svgSalamander/1.1.3/jar)
-- The Java 3D jars and native libraries already in the repo are untested. 
+## Dependencies
 
-## Currently Untested
-- Linux, macOS, and older Windows versions
-- Java 9 through 16
-- Java 8 (expect problems with HiDPI displays)
-- Building an executable jar
-- 3D support
-- Networking
-- Sound support
+Until the ant build system is replaced with something supporting dependency management, the dependencies 
+are stored in the repo.
+
+I downloaded the jars for dependencies I added from maven.org:
+- [flatlaf-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf/2.0.1/jar)
+- [flatlaf-extras-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf-extras/2.0.1/jar)
+- [svgSalamander-1.1.3.jar](https://search.maven.org/artifact/com.formdev/svgSalamander/1.1.3/jar)
+
+The remaining jars were already in the subversion repo when it was imported:
+- jh.jar: JavaHelp
+- j3dcore.jar: Java3D core
+- j3dutils.jar: Java3D utilities
+- vecmath.jar: Java3D vector math
+- jl1.0.1.jar: JavaZOOM JLayer MP3 library
 
 ## Known Bugs
 - Zooming and clipboard selection on images don't work right
-- Fill commands currently don't work right on high resolution displays
-- Rendering animations in high quality sometimes leaves artifacts
+- Rendering in high quality sometimes leaves artifacts
 - The scroll area for the graphics display doesn't size to properly fit
 - The turtle PNGs need to be replaced with SVGs so they aren't pixelated
 - Save, new, stop, and play commands don't always disable when they should
