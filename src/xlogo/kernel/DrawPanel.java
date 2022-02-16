@@ -2296,10 +2296,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             if ((int) (facteur + 0.001) != 1) {
                 tortue.largeur = tortue.tort.getWidth(cadre);
                 tortue.hauteur = tortue.tort.getHeight(cadre);
-                tortue.tort = tortue.tort.getScaledInstance(
-                        (int) (facteur * tortue.largeur),
-                        (int) (facteur * tortue.hauteur),
-                        Image.SCALE_SMOOTH);
+                //tortue.tort = tortue.tort.getScaledInstance((int) (facteur * tortue.largeur), (int) (facteur * tortue.hauteur), Image.SCALE_SMOOTH);
                 tracker = new MediaTracker(cadre);
                 tracker.addImage(tortue.tort, 0);
                 try {

@@ -117,7 +117,7 @@ public class Turtle {
             // On fait attention à la résolution de l'utilisateur
             double facteur = largeur_ecran / 1024.0;
             if ((int) (facteur + 0.001) != 1) {
-                tort = tort.getScaledInstance((int) (facteur * largeur), (int) (facteur * hauteur), Image.SCALE_SMOOTH);
+                //tort = tort.getScaledInstance((int) (facteur * largeur), (int) (facteur * hauteur), Image.SCALE_SMOOTH);
                 tracker = new MediaTracker(app);
                 tracker.addImage(tort, 0);
                 try {
