@@ -2254,16 +2254,14 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     public void setQuality(int id) {
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         if (id == Config.QUALITY_HIGH) {
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         } else if (id == Config.QUALITY_LOW) {
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         } else { //normal
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
         }
@@ -2370,10 +2368,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     public void initGraphics() {
-        Graphics2D pg = (Graphics2D) getGraphics();
-        AffineTransform t = pg.getTransform();
-        scaleX = t.getScaleX();
-        scaleY = t.getScaleY();
+        AffineTransform t = ((Graphics2D) getGraphics()).getTransform();
+        scaleX = t.getScaleX() * 2;
+        scaleY = t.getScaleY() * 2;
         dessin = new BufferedImage((int)(scaleX * Config.imageWidth), (int)(scaleY * Config.imageHeight), BufferedImage.TYPE_INT_RGB);
         police_etiquette = Application.police;
         //		 init all turtles
@@ -2572,19 +2569,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     protected synchronized void paintComponent(Graphics graph) {
         super.paintComponent(graph);
         Graphics2D g2d = (Graphics2D) graph;
-        /*
-        if (null == shape) {
-            g2d.setClip(cadre.scrollArea.getViewport().getViewRect());
-        } else {
-            g2d.setClip(shape);
-            shape = null;
-        }*/
-        //g2d.scale(DrawPanel.zoom, DrawPanel.zoom);
-        AffineTransform t = g2d.getTransform();
-        t.scale(1.0 / t.getScaleX(), 1.0/t.getScaleY());
-        g2d.setTransform(t);
-        g2d.drawImage(dessin, 0, 0, this);
-        //g2d.scale(1 / DrawPanel.zoom, 1 / DrawPanel.zoom);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2d.drawImage(dessin, 0, 0, (int) (Config.imageWidth * zoom), (int) (Config.imageHeight * zoom), this);
         if (!Affichage.execution_lancee && null != selection && cadre.commande_isEditable()) {
             g2d.setColor(colorSelection);
             g2d.fillRect(selection.x, selection.y, selection.width, selection.height);
