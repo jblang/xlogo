@@ -11,8 +11,8 @@ package xlogo.kernel;
 import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
+import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
-import xlogo.utils.myException;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
@@ -296,24 +296,24 @@ public class Turtle {
         return new String(sb);
     }
 
-    protected void setFontJustify(String list) throws myException {
+    protected void setFontJustify(String list) throws LogoException {
         StringTokenizer st = new StringTokenizer(list);
         int i = 0;
         while (st.hasMoreTokens()) {
             String s = st.nextToken();
             try {
                 int j = Integer.parseInt(s);
-                if (j < 0 || j > 2) throw new myException(app, list + " " + Logo.messages.getString("pas_argument"));
+                if (j < 0 || j > 2) throw new LogoException(app, list + " " + Logo.messages.getString("pas_argument"));
                 else {
                     if (i == 0) labelHorizontalAlignment = j;
                     else if (i == 1) labelVerticalAlignment = j;
                 }
             } catch (NumberFormatException e) {
-                throw new myException(app, list + " " + Logo.messages.getString("pas_argument"));
+                throw new LogoException(app, list + " " + Logo.messages.getString("pas_argument"));
             }
 
             i++;
         }
-        if (i != 2) throw new myException(app, list + " " + Logo.messages.getString("pas_argument"));
+        if (i != 2) throw new LogoException(app, list + " " + Logo.messages.getString("pas_argument"));
     }
 }

@@ -3,7 +3,7 @@ package xlogo.kernel.perspective;
 import com.sun.j3d.utils.geometry.Cylinder;
 import com.sun.j3d.utils.geometry.Sphere;
 import xlogo.Application;
-import xlogo.utils.myException;
+import xlogo.utils.LogoException;
 
 import javax.media.j3d.*;
 import javax.vecmath.AxisAngle4d;
@@ -22,7 +22,7 @@ public class ElementLine extends Element3D {
         lineWidth = app.getKernel().getActiveTurtle().getPenWidth();
     }
 
-    public void addToScene() throws myException {
+    public void addToScene() throws LogoException {
         int size = vertex.size();
         if (size > 1) {
             if (lineWidth == 0.5) createSimpleLine(size);

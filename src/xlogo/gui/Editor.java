@@ -7,8 +7,8 @@ import xlogo.Logo;
 import xlogo.kernel.Primitive;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.Workspace;
+import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
-import xlogo.utils.myException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,8 +43,8 @@ public class Editor extends JFrame implements ActionListener {
     private JButton copier, coller, couper, imprimer, quit, lire, chercher, undo, redo;
     private boolean affichable = true;
     private JScrollPane scroll;
-    private EditorTextZone textZone;
-    //  private ZoneEdition zonedition;
+    private EditorTextFacade textZone;
+    //  private HighlightedTextPane zonedition;
     private JLabel labelCommand;
     private JTextField mainCommand;
     private JPanel panelCommand;
@@ -481,7 +481,7 @@ public class Editor extends JFrame implements ActionListener {
             setVisible(visible);
             cadre.focus_Commande();
             if (Config.eraseImage) { //Effacer la zone de dessin
-                myException.lance = true;
+                LogoException.lance = true;
                 cadre.error = true;
                 try {
                     while (!cadre.commande_isEditable()) Thread.sleep(100);
@@ -492,7 +492,7 @@ public class Editor extends JFrame implements ActionListener {
             }
             if (Config.clearVariables) {
                 // Interrupt any running programs
-                myException.lance = true;
+                LogoException.lance = true;
                 cadre.error = true;
                 try {
                     while (!cadre.commande_isEditable()) Thread.sleep(100);
@@ -512,7 +512,7 @@ public class Editor extends JFrame implements ActionListener {
             textZone.setText("");
             setVisible(false);
             if (Config.eraseImage) { //Effacer la zone de dessin
-                myException.lance = true;
+                LogoException.lance = true;
                 cadre.error = true;
                 while (!cadre.commande_isEditable()) {
                     try {
@@ -732,7 +732,7 @@ public class Editor extends JFrame implements ActionListener {
 
         EditeurException(Editor editeur, String message) {        // et des variables
             this.editeur = editeur;
-            MyTextAreaDialog jt = new MyTextAreaDialog(message);
+            MessageTextArea jt = new MessageTextArea(message);
             JOptionPane.showMessageDialog(this.editeur, jt, Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
             for (int i = 0; i < wp.getNumberOfProcedure(); i++) { // On remémorise les anciennes définitions de procédures
                 Procedure pr = wp.getProcedure(i);

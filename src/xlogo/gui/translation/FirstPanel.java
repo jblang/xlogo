@@ -24,9 +24,9 @@ public class FirstPanel extends JPanel implements ActionListener {
     private JComboBox comboLangModify;
     private JComboBox comboLangComplete;
     //	private JTextField textLang;
-    private final TranslateXLogo tx;
+    private final GuiTranslator tx;
 
-    protected FirstPanel(TranslateXLogo tx) {
+    protected FirstPanel(GuiTranslator tx) {
         this.tx = tx;
         int n = Logo.translationLanguage.length;
         intArray = new Integer[n];
@@ -37,10 +37,10 @@ public class FirstPanel extends JPanel implements ActionListener {
     }
 
     protected String getAction() {
-        if (modifyButton.isSelected()) return TranslateXLogo.MODIFY;
-        else if (completeButton.isSelected()) return TranslateXLogo.COMPLETE;
-        else if (consultButton.isSelected()) return TranslateXLogo.CONSULT;
-        else if (createButton.isSelected()) return TranslateXLogo.CREATE;
+        if (modifyButton.isSelected()) return GuiTranslator.MODIFY;
+        else if (completeButton.isSelected()) return GuiTranslator.COMPLETE;
+        else if (consultButton.isSelected()) return GuiTranslator.CONSULT;
+        else if (createButton.isSelected()) return GuiTranslator.CREATE;
         return null;
     }
 
@@ -62,10 +62,10 @@ public class FirstPanel extends JPanel implements ActionListener {
         modifyButton = new JRadioButton(Logo.messages.getString("translatemodify"));
         completeButton = new JRadioButton(Logo.messages.getString("translatecomplete"));
         consultButton = new JRadioButton(Logo.messages.getString("translateconsult"));
-        createButton.setActionCommand(TranslateXLogo.CREATE);
-        modifyButton.setActionCommand(TranslateXLogo.MODIFY);
-        consultButton.setActionCommand(TranslateXLogo.CONSULT);
-        completeButton.setActionCommand(TranslateXLogo.COMPLETE);
+        createButton.setActionCommand(GuiTranslator.CREATE);
+        modifyButton.setActionCommand(GuiTranslator.MODIFY);
+        consultButton.setActionCommand(GuiTranslator.CONSULT);
+        completeButton.setActionCommand(GuiTranslator.COMPLETE);
         createButton.addActionListener(this);
         completeButton.addActionListener(this);
         modifyButton.addActionListener(this);
@@ -75,7 +75,7 @@ public class FirstPanel extends JPanel implements ActionListener {
         comboLangComplete = new JComboBox(intArray);
         comboLangComplete.setRenderer(new Contenu());
         validButton = new JButton(Logo.messages.getString("pref.ok"));
-        validButton.setActionCommand(TranslateXLogo.OK);
+        validButton.setActionCommand(GuiTranslator.OK);
         validButton.addActionListener(tx);
         setSize(new java.awt.Dimension(600, 120));
         validButton.setSize(new java.awt.Dimension(100, 50));
@@ -122,20 +122,20 @@ public class FirstPanel extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
-        if (cmd.equals(TranslateXLogo.MODIFY)) {
+        if (cmd.equals(GuiTranslator.MODIFY)) {
             comboLangComplete.setVisible(false);
             comboLangModify.setVisible(true);
             //	textLang.setVisible(false);
-        } else if (cmd.equals(TranslateXLogo.CREATE)) {
+        } else if (cmd.equals(GuiTranslator.CREATE)) {
             comboLangComplete.setVisible(false);
             comboLangModify.setVisible(false);
             //textLang.setVisible(true);
             //textLang.validate();
-        } else if (cmd.equals(TranslateXLogo.COMPLETE)) {
+        } else if (cmd.equals(GuiTranslator.COMPLETE)) {
             comboLangComplete.setVisible(true);
             comboLangModify.setVisible(false);
             //textLang.setVisible(false);
-        } else if (cmd.equals(TranslateXLogo.CONSULT)) {
+        } else if (cmd.equals(GuiTranslator.CONSULT)) {
             comboLangComplete.setVisible(false);
             comboLangModify.setVisible(false);
             //textLang.setVisible(false);

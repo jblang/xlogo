@@ -8,10 +8,10 @@
 package xlogo;
 
 import xlogo.gui.*;
-import xlogo.gui.preferences.Panel_Font;
-import xlogo.gui.preferences.Preference;
-import xlogo.gui.translation.TranslateXLogo;
-import xlogo.kernel.Affichage;
+import xlogo.gui.preferences.FontPanel;
+import xlogo.gui.preferences.PreferencesDialog;
+import xlogo.gui.translation.GuiTranslator;
+import xlogo.kernel.Animation;
 import xlogo.kernel.DrawPanel;
 import xlogo.kernel.Kernel;
 import xlogo.kernel.perspective.Viewer3D;
@@ -23,7 +23,6 @@ import javax.help.HelpSet;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -35,14 +34,14 @@ public class Application extends JFrame {
     // ouvert
     public static String path = null;
     //	 numéro identifiant de la police de l'interface
-    public static int police = Panel_Font.police_id(Config.police);
+    public static int police = FontPanel.police_id(Config.police);
     private static final Stack<String> pile_historique = new Stack<String>();
     public String tmp_path = null; // Lorsqu'on ouvre un fichier
     public Editor editeur;
     public JSplitPane jSplitPane1 = new JSplitPane();
     public JScrollPane scrollArea;
     public boolean error = false;
-    public Affichage affichage = null;
+    public Animation animation = null;
     boolean stop = false;
     int horizontalMargin = 15;
     int verticalMargin = 15;
@@ -51,12 +50,12 @@ public class Application extends JFrame {
     private JPanel contentPane;
     private final BorderLayout borderLayout1 = new BorderLayout();
     private final JPanel jPanel1 = new JPanel();
-    private final ZoneCommande commande = new ZoneCommande(this);
+    private final CommandLine commande = new CommandLine(this);
     private final JLabel jLabel1 = new JLabel();
     private final BorderLayout borderLayout2 = new BorderLayout();
     private final DrawPanel ardoise;
     private final HistoryPanel panneauHistorique1 = new HistoryPanel(this);
-    private final Sound_Player son = new Sound_Player(this);
+    private final SoundPlayer son = new SoundPlayer(this);
     private final Touche touche = new Touche();
     private final JMenuBar jMenuBar1 = new JMenuBar();
     private final JMenu jMenuFile = new JMenu();
@@ -83,7 +82,7 @@ public class Application extends JFrame {
     private final JMenuItem jMenuOptionsPreference = new JMenuItem();
     private final JMenuItem jMenuOptionsTraduction = new JMenuItem();
     private final JMenuItem jMenuOptionsEraser = new JMenuItem();
-    private final Popup jpop;
+    private final PopupMenuListener jpop;
     private final JMenu jMenuHelp = new JMenu();
     private JMenuItem jMenuHelpOnLine;
     private final JMenuItem jMenuHelpTranslateXLogo = new JMenuItem();
@@ -91,19 +90,19 @@ public class Application extends JFrame {
     private final JMenuItem jMenuHelpLicence = new JMenuItem();
     private final JMenuItem jMenuHelplicencefrancais = new JMenuItem();
     // Toolbar
-    private MyToolBar toolbar;
+    private MainToolBar toolbar;
     //private JSlider slider;
     // Dialog boxes available in menu
     // pref Box
-    private Preference pf = null;
+    private PreferencesDialog pf = null;
     // To define startup files
-    private Demarrage dem = null;
+    private StartupFileDialog dem = null;
     // To erase procedure
     private ProcedureEraser eraser = null;
     // To translate files
-    private Traduc traduc = null;
+    private CodeTranslator codeTranslator = null;
     // To translate XLogo
-    private TranslateXLogo tx = null;
+    private GuiTranslator tx = null;
     // To display 3D View
     private Viewer3D viewer3d = null;
     // Interpreter and drawer
@@ -118,7 +117,7 @@ public class Application extends JFrame {
         kernel.initInterprete();
 
         menulistener = new MenuListener(this);
-        jpop = new Popup(menulistener, commande);
+        jpop = new PopupMenuListener(menulistener, commande);
         editeur = new Editor(this);
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         try {
@@ -279,7 +278,7 @@ public class Application extends JFrame {
         jMenuOptions.add(jMenuOptionsPreference);
 
         // Toolbar
-        toolbar = new MyToolBar(menulistener);
+        toolbar = new MainToolBar(menulistener);
         getContentPane().add(toolbar, BorderLayout.NORTH);
 
 
@@ -484,7 +483,7 @@ public class Application extends JFrame {
     public void closeWindow() {
         setVisible(true);
         String message = Logo.messages.getString("quitter?");
-        MyTextAreaDialog jt = new MyTextAreaDialog(message);
+        MessageTextArea jt = new MessageTextArea(message);
         ImageIcon icone = new ImageIcon(Utils.class.getResource("icone.png"));
         String[] choix = {Logo.messages.getString("pref.ok"), Logo.messages.getString("pref.cancel")};
         int retval = JOptionPane.showOptionDialog(this,
@@ -736,19 +735,19 @@ public class Application extends JFrame {
     }
 
     /**
-     * Launch the Thread Affichage with the instructions "st"
+     * Launch the Thread Animation with the instructions "st"
      * @param st List of instructions
      */
     public void affichage_Start(StringBuffer st) {
-        affichage = new Affichage(this, st);
-        affichage.start();
+        animation = new Animation(this, st);
+        animation.start();
     }
 
     /**
      * Get Method for Sound Player
      * @return The Sound Player
      */
-    public Sound_Player getSon() {
+    public SoundPlayer getSon() {
         return son;
     }
     // change language for the interface
@@ -797,8 +796,8 @@ public class Application extends JFrame {
      * Resize the dawing area
      */
     public void resizeDrawingZone() {
-        if (null != affichage) {
-            affichage.setPause(true);
+        if (null != animation) {
+            animation.setPause(true);
         }
         // resize the drawing image
         SwingUtilities.invokeLater(new Runnable() {
@@ -825,7 +824,7 @@ public class Application extends JFrame {
                 Dimension d = scrollArea.getViewport().getViewRect().getSize();
                 Point p = new Point(Math.abs(Config.imageWidth / 2 - d.width / 2), Math.abs(Config.imageHeight / 2 - d.height / 2));
                 scrollArea.getViewport().setViewPosition(p);
-                if (null != affichage) affichage.setPause(false);
+                if (null != animation) animation.setPause(false);
             }
 
         });
@@ -1074,7 +1073,7 @@ public class Application extends JFrame {
         if (null == pf) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    pf = new Preference(getApp());
+                    pf = new PreferencesDialog(getApp());
                     pf.setBounds(100, 100, 600, 580);
                     pf.setVisible(true);
                 }
@@ -1083,11 +1082,11 @@ public class Application extends JFrame {
     }
 
     /**
-     * Open the TranslateXLogo Dialog box
+     * Open the GuiTranslator Dialog box
      */
     protected void txOpen() {
         if (null == tx) {
-            tx = new TranslateXLogo(this);
+            tx = new GuiTranslator(this);
             tx.setBounds(100, 100, 600, 300);
             tx.setVisible(true);
         } else tx.requestFocus();
@@ -1098,7 +1097,7 @@ public class Application extends JFrame {
      */
     protected void demOpen() {
         if (null == dem || !dem.isVisible()) {
-            dem = new Demarrage(this);
+            dem = new StartupFileDialog(this);
             dem.setBounds(100, 100, 400, 250);
             dem.setVisible(true);
         } else dem.requestFocus();
@@ -1145,12 +1144,12 @@ public class Application extends JFrame {
      * Open the Tranlator tool Dialog box
      */
     protected void traducOpen() {
-        if (null == traduc || !traduc.isVisible()) {
-            traduc = new Traduc();
-            traduc.setVisible(true);
+        if (null == codeTranslator || !codeTranslator.isVisible()) {
+            codeTranslator = new CodeTranslator();
+            codeTranslator.setVisible(true);
         } else {
-            traduc.setVisible(false);
-            traduc.setVisible(true);
+            codeTranslator.setVisible(false);
+            codeTranslator.setVisible(true);
         }
     }
 

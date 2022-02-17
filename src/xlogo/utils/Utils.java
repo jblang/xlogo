@@ -9,7 +9,7 @@ package xlogo.utils;
 
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.kernel.Affichage;
+import xlogo.kernel.Animation;
 import xlogo.kernel.MyCalculator;
 
 import java.awt.*;
@@ -116,7 +116,7 @@ public class Utils {
         int crochet_liste = 0;
 //		boolean variable=false;
         // If XLogo is running a program
-        boolean execution_lancee = Affichage.execution_lancee;
+        boolean execution_lancee = Animation.execution_lancee;
         for (int i = 0; i < st.length(); i++) {
             char c = st.charAt(i);
             if (c == ' ') {

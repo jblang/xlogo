@@ -8,8 +8,8 @@
 
 package xlogo;
 
-import xlogo.gui.AImprimer;
-import xlogo.gui.MyTextAreaDialog;
+import xlogo.gui.MessageTextArea;
+import xlogo.gui.PrinterPanel;
 import xlogo.kernel.DrawPanel;
 import xlogo.kernel.Kernel;
 import xlogo.kernel.Procedure;
@@ -106,7 +106,7 @@ public class MenuListener extends JDialog implements ActionListener {
         } else if (MenuListener.FILE_NEW.equals(cmd)) { //nouveau
             String[] choix = {Logo.messages.getString("pref.ok"), Logo.messages.getString("pref.cancel")};
             ImageIcon icone = new ImageIcon(Utils.class.getResource("icone.png"));
-            MyTextAreaDialog jt = new MyTextAreaDialog(Logo.messages.getString("enregistrer_espace"));
+            MessageTextArea jt = new MessageTextArea(Logo.messages.getString("enregistrer_espace"));
             int retval = JOptionPane.showOptionDialog(cadre, jt, Logo.messages.getString("enregistrer_espace"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, icone, choix, choix[0]);
 
             if (retval == JOptionPane.OK_OPTION) {
@@ -133,7 +133,7 @@ public class MenuListener extends JDialog implements ActionListener {
             if (MenuListener.FILE_SAVE_AS.equals(cmd) || null == path) {
                 JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
                 String[] ext = {".lgo"};
-                jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_logo"), ext));
+                jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_logo"), ext));
 
                 int retval = jf.showDialog(cadre, Logo.messages
                         .getString("menu.file.save"));
@@ -171,7 +171,7 @@ public class MenuListener extends JDialog implements ActionListener {
         } else if (MenuListener.FILE_OPEN.equals(cmd)) {              //Ouvrir
             JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
             String[] ext = {".lgo"};
-            jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_logo"), ext));
+            jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_logo"), ext));
             int retval = jf.showDialog(cadre, Logo.messages.getString("menu.file.open"));
             if (retval == JFileChooser.APPROVE_OPTION) {
                 String txt = "";
@@ -226,7 +226,7 @@ public class MenuListener extends JDialog implements ActionListener {
                 writeImage.start();
             }
         } else if (MenuListener.FILE_PRINT_IMAGE.equals(cmd)) {    //imprimer l'image
-            AImprimer can = new AImprimer(cadre.getArdoise().getSelectionImage());
+            PrinterPanel can = new PrinterPanel(cadre.getArdoise().getSelectionImage());
             Thread imprime = new Thread(can);
             imprime.start();
         } else if (MenuListener.FILE_SAVE_TEXT.equals(cmd)) {
@@ -235,7 +235,7 @@ public class MenuListener extends JDialog implements ActionListener {
             try {
                 JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
                 String[] ext = {".rtf"};
-                jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_rtf"), ext));
+                jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_rtf"), ext));
                 int retval = jf.showDialog(cadre, Logo.messages.getString("menu.file.save"));
                 if (retval == JFileChooser.APPROVE_OPTION) {
                     String path = jf.getSelectedFile().getPath();
@@ -253,7 +253,7 @@ public class MenuListener extends JDialog implements ActionListener {
         } else if (MenuListener.HELP_ABOUT.equals(cmd)) {   //Boite de dialogue A propos
             String message = Logo.messages.getString("message_a_propos1") + Config.version + "\n\n"
                     + Logo.messages.getString("message_a_propos2") + " " + MenuListener.WEB_SITE;
-            MyTextAreaDialog jt = new MyTextAreaDialog(message);
+            MessageTextArea jt = new MessageTextArea(message);
             ImageIcon icone = new ImageIcon(Utils.class.getResource("icone.png"));
             JOptionPane.showMessageDialog(null, jt, Logo.messages.getString("menu.help.about"), JOptionPane.INFORMATION_MESSAGE, icone);
 
@@ -261,13 +261,13 @@ public class MenuListener extends JDialog implements ActionListener {
             cadre.getArdoise().zoom(zoomfactor * DrawPanel.zoom, true);
         } else if (MenuListener.ZOOMOUT.equals(cmd)) {
             cadre.getArdoise().zoom(1 / zoomfactor * DrawPanel.zoom, false);
-        } else if (MenuListener.HELP_LICENCE.equals(cmd) | MenuListener.HELP_TRANSLATED_LICENCE.equals(cmd)) {     // Affichage de la licence
+        } else if (MenuListener.HELP_LICENCE.equals(cmd) | MenuListener.HELP_TRANSLATED_LICENCE.equals(cmd)) {     // Animation de la licence
             JFrame frame = new JFrame(Logo.messages.getString("menu.help.licence"));
             frame.setIconImage(Toolkit.getDefaultToolkit().createImage(
-                    WebPage.class.getResource("icone.png")));
+                    LicensePane.class.getResource("icone.png")));
             frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             frame.setSize(500, 500);
-            WebPage editorPane = new WebPage();
+            LicensePane editorPane = new LicensePane();
             editorPane.setEditable(false);
             String path = "gpl/gpl-";
             if (MenuListener.HELP_LICENCE.equals(cmd)) path += "en";
@@ -307,7 +307,7 @@ public class MenuListener extends JDialog implements ActionListener {
             cadre.affichage_Start(Utils.decoupe(Config.mainCommand));
             cadre.getHistoryPanel().ecris("normal", Config.mainCommand + "\n");
         } else if (MenuListener.STOP.equals((cmd))) {
-            myException.lance = true;
+            LogoException.lance = true;
             cadre.error = true;
             if (NetworkServer.isActive) {
                 NetworkServer.stopServer();

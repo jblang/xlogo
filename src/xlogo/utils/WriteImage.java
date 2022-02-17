@@ -27,7 +27,7 @@ public class WriteImage extends Thread {
     public int chooseFile() {
         JFileChooser jf = new JFileChooser();
         String[] ext = {".jpg", ".png"};
-        jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("imagefile"),
+        jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("imagefile"),
                 ext));
         int retval = jf.showDialog(owner, Logo.messages.getString("menu.file.save"));
         // Si l'utilisateur appuie sur enregistrer du JFileChooser

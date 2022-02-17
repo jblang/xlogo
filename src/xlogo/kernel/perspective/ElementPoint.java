@@ -2,7 +2,7 @@ package xlogo.kernel.perspective;
 
 import com.sun.j3d.utils.geometry.Sphere;
 import xlogo.Application;
-import xlogo.utils.myException;
+import xlogo.utils.LogoException;
 
 import javax.media.j3d.*;
 import javax.vecmath.Color3f;
@@ -18,7 +18,7 @@ public class ElementPoint extends Element3D {
         pointWidth = app.getKernel().getActiveTurtle().getPenWidth();
     }
 
-    public void addToScene() throws myException {
+    public void addToScene() throws LogoException {
         if (vertex.size() == 0) return;
         if (pointWidth == 0.5) {
             int[] tab = new int[1];

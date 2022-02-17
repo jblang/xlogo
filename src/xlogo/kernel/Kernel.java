@@ -2,6 +2,7 @@ package xlogo.kernel;
 
 import xlogo.Application;
 import xlogo.gui.Editor;
+import xlogo.utils.LogoException;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,8 +15,8 @@ public class Kernel {
 //	protected DrawPanel dg;
     // For primitive
     protected Primitive primitive = null;
-    // interprete the user command and launch primitive and procedure
-    private Interprete interprete;
+    // interpreter the user command and launch primitive and procedure
+    private Interpreter interpreter;
     private Workspace wp;
     private final Application app;
     private MP3Player mp3Player;
@@ -35,11 +36,11 @@ public class Kernel {
     public void setWorkspace(Workspace workspace) {
         wp = workspace;
         app.editeur = new Editor(app);
-        interprete.setWorkspace(wp);
+        interpreter.setWorkspace(wp);
     }
 
-    protected String listSearch() throws xlogo.utils.myException {
-        return interprete.chercheListe();
+    protected String listSearch() throws LogoException {
+        return interpreter.chercheListe();
     }
 
     public void fcfg(Color color) {
@@ -86,8 +87,8 @@ public class Kernel {
         primitive.buildPrimitiveTreemap(id);
     }
 
-    public String execute(StringBuffer st) throws xlogo.utils.myException {
-        return interprete.execute(st);
+    public String execute(StringBuffer st) throws LogoException {
+        return interpreter.execute(st);
     }
 
     protected void initCalculator(int s) {
@@ -101,14 +102,14 @@ public class Kernel {
 
 
     public void initInterprete() {
-        interprete = new Interprete(app);
+        interpreter = new Interpreter(app);
     }
 
     /**
      * Returns the InstructionBuffer containing all commands to execute
      */
     public InstructionBuffer getInstructionBuffer() {
-        return interprete.getInstructionBuffer();
+        return interpreter.getInstructionBuffer();
     }
 
     public MP3Player getMp3Player() {
@@ -119,7 +120,7 @@ public class Kernel {
         this.mp3Player = mp3Player;
     }
 
-    class ArrayFlow extends ArrayList<MyFlow> {
+    class ArrayFlow extends ArrayList<Flow> {
         private static final long serialVersionUID = 1L;
 
         ArrayFlow() {

@@ -2,7 +2,7 @@ package xlogo.gui;
 
 import javax.swing.*;
 
-public class EditorTextArea extends EditorTextZone {
+public class EditorTextArea extends EditorTextFacade {
     EditorTextArea(Editor editor) {
         super(editor);
         jtc = new JTextArea();

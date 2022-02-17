@@ -12,7 +12,7 @@ import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.Kernel;
 import xlogo.kernel.Workspace;
-import xlogo.utils.myException;
+import xlogo.utils.LogoException;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -37,7 +37,7 @@ public class NetworkServer {
         this.kernel = app.getKernel();
         try {
             init();
-        } catch (myException e) {
+        } catch (LogoException e) {
         }
 
     }
@@ -52,11 +52,11 @@ public class NetworkServer {
         }
     }
 
-    private void init() throws myException {
+    private void init() throws LogoException {
         try {
             serverSocket = new ServerSocket(Config.TCP_PORT);
         } catch (IOException e) {
-            throw (new myException(app, Logo.messages.getString("pb_port") + Config.TCP_PORT));
+            throw (new LogoException(app, Logo.messages.getString("pb_port") + Config.TCP_PORT));
         }
         Socket clientSocket = null;
         try {
@@ -126,7 +126,7 @@ public class NetworkServer {
 
             }
         } catch (IOException e) {
-            throw (new myException(app, Logo.messages.getString("erreur_tcp")));
+            throw (new LogoException(app, Logo.messages.getString("erreur_tcp")));
         }
         isActive = false;
     }

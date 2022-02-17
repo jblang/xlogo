@@ -1,7 +1,7 @@
 package xlogo.kernel.perspective;
 
 import xlogo.Application;
-import xlogo.utils.myException;
+import xlogo.utils.LogoException;
 
 import javax.vecmath.Point3d;
 import java.awt.*;
@@ -34,7 +34,7 @@ abstract public class Element3D {
     /**
      * This method calculates all attributes for polygon and add it in the 3D Viewer
      */
-    abstract public void addToScene() throws myException;
+    abstract public void addToScene() throws LogoException;
 
     /**
      * This method indicates if the Element3D is a Point.

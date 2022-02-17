@@ -7,7 +7,7 @@
  **/
 package xlogo;
 
-import xlogo.gui.MyTextAreaDialog;
+import xlogo.gui.MessageTextArea;
 
 import javax.swing.*;
 
@@ -64,7 +64,7 @@ public class MemoryChecker extends Thread {
                 cadre.error = true;
                 alive = false;
                 String message = Logo.messages.getString("depassement_memoire");
-                MyTextAreaDialog jt = new MyTextAreaDialog(message);
+                MessageTextArea jt = new MessageTextArea(message);
                 JOptionPane.showMessageDialog(cadre, jt, Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
 
             }

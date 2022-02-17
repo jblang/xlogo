@@ -4,12 +4,12 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.StyledDocument.DocumentLogoHistorique;
-import xlogo.gui.preferences.Panel_Font;
+import xlogo.document.HistoricLogoDocument;
+import xlogo.gui.preferences.FontPanel;
 import xlogo.kernel.DrawPanel;
-import xlogo.utils.ExtensionFichier;
+import xlogo.utils.ExtensionFilter;
+import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
-import xlogo.utils.myException;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -32,7 +32,7 @@ public class HistoryPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     // numéro identifiant la police de
     // l'historique avec "ecris"
-    public static int fontPrint = Panel_Font.police_id(Config.police);
+    public static int fontPrint = FontPanel.police_id(Config.police);
     private final ImageIcon ianimation = new FlatSVGIcon("xlogo/icons/cwmCamOn.svg");
     private final JLabel label_animation = new JLabel(ianimation);
     private MouseAdapter mouseAdapt;
@@ -40,7 +40,7 @@ public class HistoryPanel extends JPanel {
     private final int taille_texte = 12;
     private final JScrollPane jScrollPane1 = new JScrollPane();
     private final Historique historique = new Historique();
-    private DocumentLogoHistorique dsd;
+    private HistoricLogoDocument dsd;
     private final BorderLayout borderLayout1 = new BorderLayout();
     private Application cadre;
 
@@ -54,7 +54,7 @@ public class HistoryPanel extends JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        dsd = new DocumentLogoHistorique();
+        dsd = new HistoricLogoDocument();
         historique.setDocument(dsd);
     }
 
@@ -73,7 +73,7 @@ public class HistoryPanel extends JPanel {
     public void ecris(String sty, String texte) {
         try {
             int longueur = historique.getDocument().getLength();
-            if (texte.length() > 32000) throw new myException(cadre, Logo.messages.getString("chaine_trop_longue"));
+            if (texte.length() > 32000) throw new LogoException(cadre, Logo.messages.getString("chaine_trop_longue"));
             if (longueur + texte.length() < 65000) {
                 try {
                     dsd.setStyle(sty);
@@ -84,7 +84,7 @@ public class HistoryPanel extends JPanel {
             } else {
                 vide_texte();
             }
-        } catch (myException e2) {
+        } catch (LogoException e2) {
         }
     }
 
@@ -140,7 +140,7 @@ public class HistoryPanel extends JPanel {
     public void changeLanguage() {
     }
 
-    public DocumentLogoHistorique getDsd() {
+    public HistoricLogoDocument getDsd() {
         return dsd;
     }
 
@@ -232,7 +232,7 @@ public class HistoryPanel extends JPanel {
                 try {
                     JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
                     String[] ext = {".rtf"};
-                    jf.addChoosableFileFilter(new ExtensionFichier(Logo.messages.getString("fichiers_rtf"), ext));
+                    jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_rtf"), ext));
                     int retval = jf.showDialog(cadre, Logo.messages.getString("menu.file.save"));
                     if (retval == JFileChooser.APPROVE_OPTION) {
                         String path = jf.getSelectedFile().getPath();

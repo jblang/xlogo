@@ -2,7 +2,7 @@ package xlogo.kernel.perspective;
 
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.gui.preferences.PanelColor;
+import xlogo.gui.preferences.ColorPanel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -16,7 +16,7 @@ import java.awt.event.ActionListener;
 
 public class LightDialog extends JDialog implements ActionListener {
     private static final long serialVersionUID = 1L;
-    PanelColor panelColor;
+    ColorPanel colorPanel;
     private final String[] type = {Logo.messages.getString("3d.light.none"), Logo.messages.getString("3d.light.ambient"),
             Logo.messages.getString("3d.light.directional"), Logo.messages.getString("3d.light.point"),
             Logo.messages.getString("3d.light.spot")};
@@ -45,9 +45,9 @@ public class LightDialog extends JDialog implements ActionListener {
         comboType.setSelectedIndex(light.getType());
 
         Color3f col = light.getColor();
-        if (null != col) panelColor = new PanelColor(col.get());
-        else panelColor = new PanelColor(Color.white);
-        panelColor.setBackground(comboType.getBackground());
+        if (null != col) colorPanel = new ColorPanel(col.get());
+        else colorPanel = new ColorPanel(Color.white);
+        colorPanel.setBackground(comboType.getBackground());
 
         panelPosition = new PanelPosition(Logo.messages.getString("3d.light.position"), light.getPosition());
         panelDirection = new PanelPosition(Logo.messages.getString("3d.light.direction"), light.getDirection());
@@ -72,7 +72,7 @@ public class LightDialog extends JDialog implements ActionListener {
         getContentPane().add(comboType, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(
                 0, 0, 0, 0), 0, 0));
-        getContentPane().add(panelColor, new GridBagConstraints(0, 1, 2, 1, 1.0, 1.0,
+        getContentPane().add(colorPanel, new GridBagConstraints(0, 1, 2, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(
                 0, 0, 0, 0), 0, 0));
         getContentPane().add(panelPosition, new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0,
@@ -112,7 +112,7 @@ public class LightDialog extends JDialog implements ActionListener {
 
     private void updateLight() {
         int t = comboType.getSelectedIndex();
-        Color3f c = new Color3f(panelColor.getValue());
+        Color3f c = new Color3f(colorPanel.getValue());
         Point3f p = panelPosition.getPosition();
         Vector3f d = panelDirection.getDirection();
         float a = panelAngle.getAngleValue();
@@ -133,35 +133,35 @@ public class LightDialog extends JDialog implements ActionListener {
         int id = comboType.getSelectedIndex();
         // None
         if (id == MyLight.LIGHT_OFF) {
-            panelColor.setEnabled(false);
+            colorPanel.setEnabled(false);
             panelPosition.setEnabled(false);
             panelDirection.setEnabled(false);
             panelAngle.setEnabled(false);
         }
         // Ambient
         else if (id == MyLight.LIGHT_AMBIENT) {
-            panelColor.setEnabled(true);
+            colorPanel.setEnabled(true);
             panelPosition.setEnabled(false);
             panelDirection.setEnabled(false);
             panelAngle.setEnabled(false);
         }
         // Directional
         else if (id == MyLight.LIGHT_DIRECTIONAL) {
-            panelColor.setEnabled(true);
+            colorPanel.setEnabled(true);
             panelPosition.setEnabled(false);
             panelDirection.setEnabled(true);
             panelAngle.setEnabled(false);
         }
         // PointLight
         else if (id == MyLight.LIGHT_POINT) {
-            panelColor.setEnabled(true);
+            colorPanel.setEnabled(true);
             panelPosition.setEnabled(true);
             panelDirection.setEnabled(false);
             panelAngle.setEnabled(false);
         }
         // Spot
         else if (id == MyLight.LIGHT_SPOT) {
-            panelColor.setEnabled(true);
+            colorPanel.setEnabled(true);
             panelPosition.setEnabled(true);
             panelDirection.setEnabled(true);
             panelAngle.setEnabled(true);

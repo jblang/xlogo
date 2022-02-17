@@ -8,16 +8,16 @@ import java.awt.*;
 
 public class BottomPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    private final TranslateXLogo tx;
+    private final GuiTranslator tx;
     private JTabbedPane jt;
-    private MyTable messageTable;
-    private MyTable primTable;
+    private TranslationTable messageTable;
+    private TranslationTable primTable;
     private final String id;
     private final String action;
     private JButton searchButton;
     private final ImageIcon ichercher = new FlatSVGIcon("xlogo/icons/find.svg");
 
-    protected BottomPanel(TranslateXLogo tx, String action, String id) {
+    protected BottomPanel(GuiTranslator tx, String action, String id) {
         this.tx = tx;
         this.action = action;
         this.id = id;
@@ -27,8 +27,8 @@ public class BottomPanel extends JPanel {
     private void initGui() {
         setLayout(new BorderLayout());
         jt = new JTabbedPane();
-        messageTable = new MyTable(tx, action, id, "langage");
-        primTable = new MyTable(tx, action, id, "primitives");
+        messageTable = new TranslationTable(tx, action, id, "langage");
+        primTable = new TranslationTable(tx, action, id, "primitives");
         jt.add(primTable, Logo.messages.getString("primitives"));
         jt.add(messageTable, Logo.messages.getString("messages"));
         javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(jt);
@@ -37,7 +37,7 @@ public class BottomPanel extends JPanel {
         searchButton = new JButton(ichercher);
         searchButton.setToolTipText(Logo.messages.getString("find"));
         searchButton.addActionListener(tx);
-        searchButton.setActionCommand(TranslateXLogo.SEARCH);
+        searchButton.setActionCommand(GuiTranslator.SEARCH);
         searchButton.setSize(new java.awt.Dimension(100, 50));
         add(searchButton, BorderLayout.EAST);
     }
@@ -51,15 +51,15 @@ public class BottomPanel extends JPanel {
         return st;
     }
 
-    protected MyTable getMessageTable() {
+    protected TranslationTable getMessageTable() {
         return this.messageTable;
     }
 
-    protected MyTable getPrimTable() {
+    protected TranslationTable getPrimTable() {
         return this.primTable;
     }
 
-    protected MyTable getVisibleTable() {
+    protected TranslationTable getVisibleTable() {
         if (jt.getSelectedIndex() == 0) return primTable;
         return messageTable;
     }

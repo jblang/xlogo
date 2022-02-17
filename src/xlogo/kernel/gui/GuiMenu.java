@@ -2,7 +2,7 @@ package xlogo.kernel.gui;
 
 import xlogo.Application;
 import xlogo.Config;
-import xlogo.kernel.Interprete;
+import xlogo.kernel.Interpreter;
 import xlogo.utils.Utils;
 
 import javax.swing.*;
@@ -39,7 +39,7 @@ public class GuiMenu extends GuiComponent {
 //		System.out.println("coucou");
         int select = ((JComboBox) guiObject).getSelectedIndex();
         if (!app.commande_isEditable()) {
-            Interprete.actionInstruction.append(action[select]);
+            Interpreter.actionInstruction.append(action[select]);
         } else {
             app.affichage_Start(action[select]);
         }

@@ -82,9 +82,9 @@ public class LogoParser {
                             break;
 
                         } else cursor++;
-                    } else if (c == ')') return new LogoException(Logo.messages
+                    } else if (c == ')') return new LogoSyntaxError(Logo.messages
                             .getString("parenthese_ouvrante"));
-                    else if (c == ']') return new LogoException(Logo.messages
+                    else if (c == ']') return new LogoSyntaxError(Logo.messages
                             .getString("error.whattodo") + " ]");
                     else {
                         sb.append(c);
@@ -105,7 +105,7 @@ public class LogoParser {
             if (id != -1) {
                 return new LogoPrimitive(id, sb.toString());
             }
-            return new LogoException(Logo.messages.getString("je_ne_sais_pas") + " " + sb);
+            return new LogoSyntaxError(Logo.messages.getString("je_ne_sais_pas") + " " + sb);
         }
 
     }
@@ -113,7 +113,7 @@ public class LogoParser {
     /**
      * This method extracts a list.
      * @return a LogoList if operation succeed,
-     * 			a LogoException otherwise
+     * 			a LogoSyntaxError otherwise
      */
 
     private LogoType extractList() {
@@ -121,13 +121,13 @@ public class LogoParser {
         while (cursor < text.length()) {
             LogoType lt = getListToken();
             if (lt.isNull()) {
-                return new LogoException(Logo.messages.getString("erreur_crochet"));
+                return new LogoSyntaxError(Logo.messages.getString("erreur_crochet"));
             } else if (lt.isRightDelimiter()) return list;
             else {
                 list.add(lt);
             }
         }
-        return new LogoException(Logo.messages.getString("erreur_crochet"));
+        return new LogoSyntaxError(Logo.messages.getString("erreur_crochet"));
     }
 
     private LogoType getListToken() {

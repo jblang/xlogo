@@ -11,7 +11,7 @@ import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.Kernel;
-import xlogo.utils.myException;
+import xlogo.utils.LogoException;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -28,19 +28,19 @@ public class NetworkClientExecute {
     private Socket socket;
     private final Kernel kernel;
 
-    public NetworkClientExecute(Application app, String ip, String cmd) throws myException {
+    public NetworkClientExecute(Application app, String ip, String cmd) throws LogoException {
         this.app = app;
         this.kernel = app.getKernel();
         try {
             this.ip = InetAddress.getByName(ip);
         } catch (UnknownHostException e) {
-            throw new myException(app, Logo.messages.getString("no_host") + " " + ip);
+            throw new LogoException(app, Logo.messages.getString("no_host") + " " + ip);
         }
         this.cmd = cmd;
         init();
     }
 
-    private void init() throws myException {
+    private void init() throws LogoException {
         try {
             socket = new Socket(ip, Config.TCP_PORT);
             java.io.OutputStream os = socket.getOutputStream();
@@ -65,7 +65,7 @@ public class NetworkClientExecute {
             in.close();
             socket.close();
         } catch (IOException e) {
-            throw new myException(app, Logo.messages.getString("no_host") + ip.getHostAddress());
+            throw new LogoException(app, Logo.messages.getString("no_host") + ip.getHostAddress());
         }
     }
 }

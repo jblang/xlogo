@@ -1,17 +1,17 @@
 package xlogo.gui;
 
-import xlogo.StyledDocument.DocumentLogo;
+import xlogo.document.LogoDocument;
 
 import javax.swing.text.BadLocationException;
 
 
-public class EditorTextPane extends EditorTextZone {
-    private final DocumentLogo dsd;
+public class EditorTextPane extends EditorTextFacade {
+    private final LogoDocument dsd;
 
     EditorTextPane(Editor editor) {
         super(editor);
-        dsd = new DocumentLogo();
-        jtc = new ZoneEdition(this);
+        dsd = new LogoDocument();
+        jtc = new HighlightedTextPane(this);
         initGui();
         initHighlight();
     }
@@ -21,7 +21,7 @@ public class EditorTextPane extends EditorTextZone {
         dsd.addUndoableEditListener(new MyUndoableEditListener());
     }
 
-    protected DocumentLogo getDsd() {
+    protected LogoDocument getDsd() {
         return dsd;
     }
 
@@ -35,7 +35,7 @@ public class EditorTextPane extends EditorTextZone {
     }
 
     public void setActive(boolean b) {
-        ((ZoneEdition) jtc).setActive(b);
+        ((HighlightedTextPane) jtc).setActive(b);
     }
 
     protected boolean supportHighlighting() {

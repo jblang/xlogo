@@ -9,8 +9,8 @@ package xlogo.kernel;
 import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
+import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
-import xlogo.utils.myException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class Primitive {
             return id % Primitive.PRIMITIVE_NUMBER;
         } catch (NumberFormatException e) {
             System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                    "The file xlogo/kernel/genericPrimitive has been corrupted...\n" +
+                    "The file xlogo/kernel/Primitives.txt has been corrupted...\n" +
                     " Please, check the integrity of xlogo.jar \n!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
         return -1;
@@ -69,7 +69,7 @@ public class Primitive {
         ResourceBundle prim = ResourceBundle.getBundle("primitives", locale);
         try {
             BufferedReader bfr = new BufferedReader(
-                    new InputStreamReader(Primitive.class.getResourceAsStream("genericPrimitive")));
+                    new InputStreamReader(Primitive.class.getResourceAsStream("Primitives.txt")));
             while (bfr.ready()) {
                 String line = bfr.readLine();
                 // read the generic keyword for the primitive
@@ -109,7 +109,7 @@ public class Primitive {
         ResourceBundle prim = ResourceBundle.getBundle("primitives", locale);
         try {
             BufferedReader bfr = new BufferedReader(
-                    new InputStreamReader(Primitive.class.getResourceAsStream("genericPrimitive")));
+                    new InputStreamReader(Primitive.class.getResourceAsStream("Primitives.txt")));
             int i = 0;
             while (bfr.ready()) {
                 String line = bfr.readLine();
@@ -173,8 +173,8 @@ public class Primitive {
             app.getKernel().getInstructionBuffer().insert(st + "\\ ");
         } else if (i != 0) {
             try {
-                throw new myException(app, Utils.primitiveName("controls.repete") + " " + Logo.messages.getString("attend_positif"));
-            } catch (myException e) {
+                throw new LogoException(app, Utils.primitiveName("controls.repete") + " " + Logo.messages.getString("attend_positif"));
+            } catch (LogoException e) {
             }
         }
     }
@@ -191,7 +191,7 @@ public class Primitive {
         } else {
             try {
                 eraseLevelStop(app);
-            } catch (myException e) {
+            } catch (LogoException e) {
             }
         }
     }
@@ -206,77 +206,77 @@ public class Primitive {
     }
 
     // primitive stop
-    protected void stop() throws myException {
-        Interprete.operande = false;
+    protected void stop() throws LogoException {
+        Interpreter.operande = false;
         String car = "";
         try {
             car = eraseLevelStop(app);
-        } catch (myException e) {
+        } catch (LogoException e) {
         }
 
         // A procedure has been stopped
         if (car.equals("\n")) {
-            String en_cours = Interprete.en_cours.pop();
-            Interprete.locale = Interprete.stockvariable.pop();
+            String en_cours = Interpreter.en_cours.pop();
+            Interpreter.locale = Interpreter.stockvariable.pop();
             // Example: 	to bug
             //				fd stop
             //				end
             // 				--------
             //				bug
             //				stop doesn't output to fd
-            if (!Interprete.nom.isEmpty() && !Interprete.nom.peek().equals("\n")) {
-                //	System.out.println(Interprete.nom);
-                throw new myException(app, Utils.primitiveName("controls.stop")
+            if (!Interpreter.nom.isEmpty() && !Interpreter.nom.peek().equals("\n")) {
+                //	System.out.println(Interpreter.nom);
+                throw new LogoException(app, Utils.primitiveName("controls.stop")
                         + " " + Logo.messages.getString("ne_renvoie_pas") + " "
-                        + Interprete.nom.peek());
-            } else if (!Interprete.nom.isEmpty()) {
+                        + Interpreter.nom.peek());
+            } else if (!Interpreter.nom.isEmpty()) {
                 // Removing the character "\n"
-                Interprete.nom.pop();
+                Interpreter.nom.pop();
                 // Example: 	to bug		|	to bug2
                 // 				fd bug2		|	stop
                 //				end			|	end
                 //				------------------------
                 // 				bug
                 //				bug2 doesn't output to fd
-                if (!Interprete.nom.isEmpty() && !Interprete.nom.peek().equals("\n")) {
-                    //	System.out.println(Interprete.nom);
-                    throw new myException(app, en_cours
+                if (!Interpreter.nom.isEmpty() && !Interpreter.nom.peek().equals("\n")) {
+                    //	System.out.println(Interpreter.nom);
+                    throw new LogoException(app, en_cours
                             + " " + Logo.messages.getString("ne_renvoie_pas") + " "
-                            + Interprete.nom.peek());
+                            + Interpreter.nom.peek());
                 }
             }
         }
     }
 
     // primitive output
-    protected void retourne(String val) throws myException {
-        Interprete.calcul.push(val);
-        Interprete.operande = true;
+    protected void retourne(String val) throws LogoException {
+        Interpreter.calcul.push(val);
+        Interpreter.operande = true;
         if (Kernel.mode_trace) {
             StringBuffer buffer = new StringBuffer();
-            for (int i = 0; i < Interprete.en_cours.size() - 1; i++)
+            for (int i = 0; i < Interpreter.en_cours.size() - 1; i++)
                 buffer.append("  ");
-            buffer.append(Interprete.en_cours.peek());
+            buffer.append(Interpreter.en_cours.peek());
             buffer
                     .append(" " + Utils.primitiveName("ret") + " "
                             + val);
             app.ecris("normal", Utils.SortieTexte(buffer.toString()) + "\n");
         }
-        Interprete.en_cours.pop();
-        Interprete.locale = Interprete.stockvariable.pop();
-        if ((!Interprete.nom.isEmpty())
-                && Interprete.nom.peek().equals("\n")) {
+        Interpreter.en_cours.pop();
+        Interpreter.locale = Interpreter.stockvariable.pop();
+        if ((!Interpreter.nom.isEmpty())
+                && Interpreter.nom.peek().equals("\n")) {
             try {
                 eraseLevelReturn(app);
-            } catch (myException e) {
+            } catch (LogoException e) {
             }
-            Interprete.nom.pop();
-        } else if (!Interprete.nom.isEmpty())
-            throw new myException(app, Utils.primitiveName("ret")
+            Interpreter.nom.pop();
+        } else if (!Interpreter.nom.isEmpty())
+            throw new LogoException(app, Utils.primitiveName("ret")
                     + " " + Logo.messages.getString("ne_renvoie_pas") + " "
-                    + Interprete.nom.peek());
+                    + Interpreter.nom.peek());
         else
-            throw new myException(app, Logo.messages
+            throw new LogoException(app, Logo.messages
                     .getString("erreur_retourne"));
     }
 
@@ -284,10 +284,10 @@ public class Primitive {
      * This method deletes all instruction since it encounters the end of a loop or the end of a procedure
      * @param app The runnning frame Application
      * @return The specific character \n or \ if found
-     * @throws myException
+     * @throws LogoException
      */
     private String eraseLevelStop(Application app)
-            throws myException {
+            throws LogoException {
         boolean error = true;
         String caractere = "";
         int marqueur = 0;
@@ -313,7 +313,7 @@ public class Primitive {
         }
 
         if (error) {
-            throw new myException(app, Logo.messages
+            throw new LogoException(app, Logo.messages
                     .getString("erreur_stop"));
         }
         if (marqueur + 2 > instruction.getLength())
@@ -330,10 +330,10 @@ public class Primitive {
      * This method deletes all instruction since it encounters the end of a procedure
      * @param app The running frame Application
      * @return an integer that indicates the number of loop to delete from Primitive.stackLoop
-     * @throws myException
+     * @throws LogoException
      */
     private void eraseLevelReturn(Application app)
-            throws myException {
+            throws LogoException {
         boolean error = true;
         String caractere = "";
         int loopLevel = 0;
@@ -356,7 +356,7 @@ public class Primitive {
             }
         }
         if (error) {
-            throw new myException(app, Logo.messages
+            throw new LogoException(app, Logo.messages
                     .getString("erreur_retourne"));
         }
         if (marqueur + 2 > instruction.getLength())
@@ -388,7 +388,7 @@ public class Primitive {
         ResourceBundle[] prim = {prim_fr, prim_en, prim_es, prim_pt, prim_ar, prim_eo, prim_de};
         try {
             BufferedReader bfr = new BufferedReader(
-                    new InputStreamReader(Primitive.class.getResourceAsStream("genericPrimitive")));
+                    new InputStreamReader(Primitive.class.getResourceAsStream("Primitives.txt")));
             int i = 0;
             while (bfr.ready()) {
                 String line = bfr.readLine();

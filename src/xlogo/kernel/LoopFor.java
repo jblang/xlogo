@@ -47,11 +47,11 @@ public class LoopFor extends LoopProperties {
         if (element.endsWith(".0")) element = element.substring(0, element.length() - 2);
         if (element.startsWith(".") || element.equals("")) element = "0" + element;
 
-        if (Interprete.locale.containsKey(var)) {
+        if (Interpreter.locale.containsKey(var)) {
             if (first) conserver = true;
-            Interprete.locale.put(var, element);
+            Interpreter.locale.put(var, element);
         } else {
-            Interprete.locale.put(var, element);
+            Interpreter.locale.put(var, element);
         }
     }
 
@@ -60,7 +60,7 @@ public class LoopFor extends LoopProperties {
      */
     void DeleteVar() {
         if (!conserver) {
-            Interprete.locale.remove(var);
+            Interpreter.locale.remove(var);
 
         }
     }

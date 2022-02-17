@@ -2,7 +2,7 @@ package xlogo.kernel.gui;
 
 import xlogo.Application;
 import xlogo.Config;
-import xlogo.kernel.Interprete;
+import xlogo.kernel.Interpreter;
 import xlogo.utils.Utils;
 
 import javax.swing.*;
@@ -25,7 +25,7 @@ public class GuiButton extends GuiComponent {
 
     public void actionPerformed(ActionEvent e) {
         if (!app.commande_isEditable()) {
-            Interprete.actionInstruction.append(action);
+            Interpreter.actionInstruction.append(action);
         } else {
             app.affichage_Start(action);
         }

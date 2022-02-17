@@ -3,7 +3,7 @@ package xlogo.kernel.network;
 import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.utils.myException;
+import xlogo.utils.LogoException;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -20,12 +20,12 @@ public class NetworkClientSend {
     private Socket socket;
     private String answer;
 
-    public NetworkClientSend(Application app, String ip, String data) throws myException {
+    public NetworkClientSend(Application app, String ip, String data) throws LogoException {
         this.app = app;
         try {
             this.ip = InetAddress.getByName(ip);
         } catch (UnknownHostException e) {
-            throw new myException(app, Logo.messages.getString("no_host") + " " + ip);
+            throw new LogoException(app, Logo.messages.getString("no_host") + " " + ip);
         }
         this.data = data;
         init();
@@ -35,7 +35,7 @@ public class NetworkClientSend {
         return answer;
     }
 
-    private void init() throws myException {
+    private void init() throws LogoException {
         try {
             socket = new Socket(ip, Config.TCP_PORT);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -50,7 +50,7 @@ public class NetworkClientSend {
             out.close();
             socket.close();
         } catch (IOException e) {
-            throw new myException(app, Logo.messages.getString("no_host") + ip.getHostAddress());
+            throw new LogoException(app, Logo.messages.getString("no_host") + ip.getHostAddress());
         }
     }
 }

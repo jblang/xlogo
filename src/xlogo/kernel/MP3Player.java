@@ -5,8 +5,8 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
+import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
-import xlogo.utils.myException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +18,7 @@ public class MP3Player extends Thread {
     private AdvancedPlayer player;
     private final Application app;
 
-    MP3Player(Application app, String path) throws myException {
+    MP3Player(Application app, String path) throws LogoException {
         this.app = app;
         try {
             // Build absolutePath
@@ -33,7 +33,7 @@ public class MP3Player extends Thread {
                 player = new AdvancedPlayer(fr);
             } catch (java.net.MalformedURLException e1) {
 
-                throw new myException(app, Logo.messages.getString("error.iolecture"));
+                throw new LogoException(app, Logo.messages.getString("error.iolecture"));
 
 
             } catch (IOException e2) {

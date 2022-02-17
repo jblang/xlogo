@@ -2,7 +2,7 @@ package xlogo.kernel.gui;
 
 import xlogo.Application;
 import xlogo.Logo;
-import xlogo.utils.myException;
+import xlogo.utils.LogoException;
 
 import java.util.HashMap;
 
@@ -14,9 +14,9 @@ public class GuiMap extends HashMap<String, GuiComponent> {
         this.app = app;
     }
 
-    public void put(GuiComponent gc) throws myException {
+    public void put(GuiComponent gc) throws LogoException {
         if (this.containsKey(gc.getId())) {
-            throw new myException(app, Logo.messages.getString("gui_exists") + " " + gc.getId());
+            throw new LogoException(app, Logo.messages.getString("gui_exists") + " " + gc.getId());
         } else this.put(gc.getId(), gc);
     }
 
@@ -25,12 +25,12 @@ public class GuiMap extends HashMap<String, GuiComponent> {
         return super.get(k);
     }
 	
-/*	public void remove(GuiComponent gc) throws myException{
+/*	public void remove(GuiComponent gc) throws LogoException{
 		if (this.containsKey(gc.getId())){
 			this.remove(gc.getId());
 		}
 		else{
-			throw new myException(app,Logo.messages.getString("no_gui")+" "+gc.getId());
+			throw new LogoException(app,Logo.messages.getString("no_gui")+" "+gc.getId());
 		}
 	}*/
 }

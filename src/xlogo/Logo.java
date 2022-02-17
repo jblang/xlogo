@@ -12,8 +12,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import xlogo.gui.Selection_Langue;
-import xlogo.kernel.Affichage;
+import xlogo.gui.LanguageSelection;
+import xlogo.kernel.Animation;
 import xlogo.utils.SimpleContentHandler;
 import xlogo.utils.Utils;
 
@@ -48,7 +48,7 @@ public class Logo {
     /**
      * On the first start, XLogo opens a dialog box where the user can select its language.
      */
-    private Selection_Langue select = null;
+    private LanguageSelection select = null;
 
 //  private Language language;
 
@@ -101,8 +101,8 @@ public class Logo {
                 }
                 // Else if this command is defined from the Start Up Dialog Box
                 else if (!Config.a_executer.equals("")) {
-                    frame.affichage = new Affichage(frame, Utils.decoupe(Config.a_executer));
-                    frame.affichage.start();
+                    frame.animation = new Animation(frame, Utils.decoupe(Config.a_executer));
+                    frame.animation.start();
                 } else {
                     frame.setCommandLine(true);
                     frame.focus_Commande();
@@ -458,7 +458,7 @@ public class Logo {
             try {
                 SwingUtilities.invokeAndWait(new Runnable() {
                     public void run() {
-                        select = new Selection_Langue();
+                        select = new LanguageSelection();
                     }
                 });
                 try {

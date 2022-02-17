@@ -22,7 +22,7 @@ public class BorderImagePanel extends JPanel implements ActionListener {
     private final JLabel labelBorderMotif = new JLabel(Logo.messages.getString("bordermotif"));
     private final JButton button = new JButton(Logo.messages.getString("pref.highlight.other"));
     private Thumbnail previewPanel;
-    private ThumbFrame frame = null;
+    private ThumbDialog frame = null;
 
     BorderImagePanel() {
         externalImages = new ArrayList<String>(Config.borderExternalImage);
@@ -77,7 +77,7 @@ public class BorderImagePanel extends JPanel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (null == frame) frame = new ThumbFrame(this);
+        if (null == frame) frame = new ThumbDialog(this);
         else frame.setVisible(true);
     }
 

@@ -7,11 +7,11 @@ import java.awt.*;
 
 public class TopPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    private final TranslateXLogo tx;
+    private final GuiTranslator tx;
     private JTextArea area;
     private JButton sendButton;
 
-    protected TopPanel(TranslateXLogo tx) {
+    protected TopPanel(GuiTranslator tx) {
         this.tx = tx;
         initGui();
     }
@@ -26,7 +26,7 @@ public class TopPanel extends JPanel {
 
         area.setEditable(false);
         sendButton.addActionListener(tx);
-        sendButton.setActionCommand(TranslateXLogo.SEND);
+        sendButton.setActionCommand(GuiTranslator.SEND);
 
 
         area.setSize(new Dimension(400, 100));

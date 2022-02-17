@@ -9,7 +9,7 @@ package xlogo.kernel.perspective;
 
 import xlogo.Application;
 import xlogo.Logo;
-import xlogo.utils.myException;
+import xlogo.utils.LogoException;
 
 import javax.media.j3d.*;
 import javax.vecmath.Color3f;
@@ -29,9 +29,9 @@ public class ElementPolygon extends Element3D {
     /**
      * This method calculates all attributes for polygon and add it to the Polygon's list
      */
-    public void addToScene() throws myException {
+    public void addToScene() throws LogoException {
 
-        if (vertex.size() < 3) throw new myException(app, Logo.messages.getString("error.3d.3vertex"));
+        if (vertex.size() < 3) throw new LogoException(app, Logo.messages.getString("error.3d.3vertex"));
 
         // Create normal vector
 
@@ -51,7 +51,7 @@ public class ElementPolygon extends Element3D {
                 break;
             }
         }
-        if (null == vec1) throw new myException(app, Logo.messages.getString("error.3d.emptypolygon"));
+        if (null == vec1) throw new LogoException(app, Logo.messages.getString("error.3d.emptypolygon"));
         for (int i = 2; i < vertex.size(); i++) {
             point1 = vertex.get(i);
             //System.out.println(" point1 "+point1.x+" "+point1.y+" "+point1.z);
@@ -71,7 +71,7 @@ public class ElementPolygon extends Element3D {
                 //if (vec1.x!=0&& vec1.y!=0&& vec1.z!=0) 				System.out.println("coucou"+" vec1 "+vec1.x+" "+vec1.y+" "+vec1.z);
                 break;
             }
-            if (null == vec2) throw new myException(app, Logo.messages.getString("error.3d.emptypolygon"));
+            if (null == vec2) throw new LogoException(app, Logo.messages.getString("error.3d.emptypolygon"));
         }
 
         // Create Geometry

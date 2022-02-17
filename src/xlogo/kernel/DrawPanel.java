@@ -4,7 +4,7 @@ import com.sun.j3d.utils.geometry.Text2D;
 import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.gui.preferences.Panel_Font;
+import xlogo.gui.preferences.FontPanel;
 import xlogo.kernel.grammar.LogoNumber;
 import xlogo.kernel.grammar.LogoType;
 import xlogo.kernel.grammar.LogoTypeNull;
@@ -13,8 +13,8 @@ import xlogo.kernel.gui.GuiComponent;
 import xlogo.kernel.gui.GuiMap;
 import xlogo.kernel.gui.GuiMenu;
 import xlogo.kernel.perspective.*;
+import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
-import xlogo.utils.myException;
 
 import javax.imageio.ImageIO;
 import javax.media.j3d.Appearance;
@@ -358,7 +358,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         } else if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_CLOSE) { //mode clos
             try {
                 trace_ferme(oldx, oldy, arg);
-            } catch (myException e) {
+            } catch (LogoException e) {
             }
         } else if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_3D) {
             montrecacheTortue(false);
@@ -442,7 +442,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
         if (tortue.isVisible())
             montrecacheTortue(true);
-        Interprete.operande = false;
+        Interpreter.operande = false;
 
         return DrawPanel.nullType;
     }
@@ -465,7 +465,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
         if (tortue.isVisible())
             montrecacheTortue(true);
-        Interprete.operande = false;
+        Interpreter.operande = false;
     }
 
     /**
@@ -486,7 +486,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
         if (tortue.isVisible())
             montrecacheTortue(true);
-        Interprete.operande = false;
+        Interpreter.operande = false;
     }
 
     /**
@@ -501,7 +501,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         tortue.setRotationMatrix(w3d.EulerToRotation(-tortue.roll, tortue.pitch, -tortue.heading));
         if (tortue.isVisible())
             montrecacheTortue(true);
-        Interprete.operande = false;
+        Interpreter.operande = false;
     }
 
     /**
@@ -516,7 +516,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         tortue.setRotationMatrix(w3d.EulerToRotation(-tortue.roll, tortue.pitch, -tortue.heading));
         if (tortue.isVisible())
             montrecacheTortue(true);
-        Interprete.operande = false;
+        Interpreter.operande = false;
     }
 
     /**
@@ -531,16 +531,16 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         tortue.setRotationMatrix(w3d.EulerToRotation(-tortue.roll, tortue.pitch, -tortue.heading));
         if (tortue.isVisible())
             montrecacheTortue(true);
-        Interprete.operande = false;
+        Interpreter.operande = false;
     }
 
     /**
      * This method set the turtle's orientation
      *
      * @param arg The new orientation
-     * @throws myException If the list doesn't contain three numbers
+     * @throws LogoException If the list doesn't contain three numbers
      */
-    protected void setOrientation(String arg) throws myException {
+    protected void setOrientation(String arg) throws LogoException {
         initCoords();
         if (tortue.isVisible())
             montrecacheTortue(false);
@@ -551,7 +551,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         tortue.setRotationMatrix(w3d.EulerToRotation(-tortue.roll, tortue.pitch, -tortue.heading));
         if (tortue.isVisible())
             montrecacheTortue(true);
-        Interprete.operande = false;
+        Interpreter.operande = false;
     }
 
     /**
@@ -562,7 +562,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             if (!enabled3D())
                 fpos("0 0");
             else fpos("0 0 0");
-        } catch (myException e) {
+        } catch (LogoException e) {
         }
         if (tortue.isVisible())
             montrecacheTortue(false);
@@ -581,9 +581,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      *
      * @param liste The coords
      * @return The distance from the turtle position to this point
-     * @throws myException If bad format list
+     * @throws LogoException If bad format list
      */
-    protected double distance(String liste) throws myException {
+    protected double distance(String liste) throws LogoException {
 
         initCoords();
         extractCoords(liste, Utils.primitiveName("distance"));
@@ -597,7 +597,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         return distance;
     }
 
-    protected double[] vers3D(String liste) throws myException {
+    protected double[] vers3D(String liste) throws LogoException {
         double[] tmp = new double[3];
         initCoords();
         extractCoords(liste, Utils.primitiveName("vers"));
@@ -628,9 +628,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      *
      * @param liste the coordinate for the point
      * @return the rotation angle
-     * @throws myException if Bad format List
+     * @throws LogoException if Bad format List
      */
-    protected double vers2D(String liste) throws myException {
+    protected double vers2D(String liste) throws LogoException {
         initCoords();
         extractCoords(liste, Utils.primitiveName("vers"));
         double angle;
@@ -666,9 +666,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * Draw with the primitive "setposition" in 2D mode or 3D
      *
      * @param liste The list with the coordinates to move
-     * @throws myException If the coordinates are invalid
+     * @throws LogoException If the coordinates are invalid
      */
-    protected void fpos(String liste) throws myException {
+    protected void fpos(String liste) throws LogoException {
         initCoords();
         oldx = tortue.corX;
         oldy = tortue.corY;
@@ -861,9 +861,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      *
      * @param liste: The list containing the coordinates of the pixel
      * @return Color of this pixel
-     * @throws myException If the list doesn't contain coordinates
+     * @throws LogoException If the list doesn't contain coordinates
      */
-    protected Color guessColorPoint(String liste) throws myException {
+    protected Color guessColorPoint(String liste) throws LogoException {
         initCoords();
         extractCoords(liste, Utils.primitiveName("tc"));
         coords = toScreenCoord(coords, false);
@@ -946,9 +946,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * used for drawing with primitive "dot"
      *
      * @param liste The list with the dot coordinates
-     * @throws myException If the list is invalid coordinates
+     * @throws LogoException If the list is invalid coordinates
      */
-    protected void point(String liste) throws myException {
+    protected void point(String liste) throws LogoException {
         initCoords();
         extractCoords(liste, Utils.primitiveName("drawing.point"));
         coords = toScreenCoord(coords, true);
@@ -1102,7 +1102,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         if (null != DrawPanel.poly && DrawPanel.poly.getVertexCount() > 1) {
             try {
                 DrawPanel.poly.addToScene();
-            } catch (myException e) {
+            } catch (LogoException e) {
             }
         }
         if (DrawPanel.record3D == DrawPanel.record3D_POLYGON) {
@@ -1255,9 +1255,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @param oldx X position
      * @param oldy Y position
      * @param arg  The length to forward
-     * @throws myException
+     * @throws LogoException
      */
-    private void trace_ferme(double oldx, double oldy, double arg) throws myException {
+    private void trace_ferme(double oldx, double oldy, double arg) throws LogoException {
         boolean re = false;
         double longueur;
         double diagonale = Math.sqrt(Math.pow(Config.imageWidth, 2) + Math.pow(Config.imageHeight, 2)) + 1;
@@ -1268,7 +1268,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         else
             longueur = trouve_longueur(0, diagonale, oldx, oldy);
         if (Math.abs(longueur) < Math.abs(arg))
-            throw new myException(cadre, Logo.messages
+            throw new LogoException(cadre, Logo.messages
                     .getString("erreur_sortie1")
                     + "\n"
                     + Logo.messages.getString("erreur_sortie2")
@@ -1286,16 +1286,16 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      *
      * @param liste The list
      * @param prim  The calling primitive
-     * @throws myException If List isn't a list coordinate
+     * @throws LogoException If List isn't a list coordinate
      */
 
-    private void extractCoords(String liste, String prim) throws myException {
+    private void extractCoords(String liste, String prim) throws LogoException {
         StringTokenizer st = new StringTokenizer(liste);
         try {
             for (int i = 0; i < coords.length; i++) {
                 coords[i] = 1;
                 if (!st.hasMoreTokens())
-                    throw new myException(cadre, prim
+                    throw new LogoException(cadre, prim
                             + " " + Logo.messages.getString("n_aime_pas") + liste
                             + Logo.messages.getString("comme_parametre"));
                 String element = st.nextToken();
@@ -1308,12 +1308,12 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             }
 
         } catch (NumberFormatException e) {
-            throw new myException(cadre, prim
+            throw new LogoException(cadre, prim
                     + " " + Logo.messages.getString("n_aime_pas") + liste
                     + Logo.messages.getString("comme_parametre"));
         }
         if (st.hasMoreTokens())
-            throw new myException(cadre, prim
+            throw new LogoException(cadre, prim
                     + " " + Logo.messages.getString("n_aime_pas") + liste
                     + Logo.messages.getString("comme_parametre"));
     }
@@ -1859,7 +1859,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 				* Math.sin(angle));
 			float y = (float) (-tortue.corX * Math.sin(angle) + tortue.corY
 				* Math.cos(angle));
-			g.setFont(Panel_Font.fontes[police_etiquette]
+			g.setFont(FontPanel.fontes[police_etiquette]
 				.deriveFont((float) tortue.police));
 			g.drawString(mot, x, y);
 			g.rotate(-angle);*/
@@ -1873,7 +1873,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             g.fill(s);
             if (record3D == DrawPanel.record3D_TEXT) {
                 Text2D text = new Text2D(
-                        mot, new Color3f(tortue.couleurcrayon), Panel_Font.fontes[police_etiquette].getName(),
+                        mot, new Color3f(tortue.couleurcrayon), FontPanel.fontes[police_etiquette].getName(),
                         tortue.police, Font.PLAIN);
 
                 text.setRectangleScaleFactor(0.001f);
@@ -1905,7 +1905,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
         g.setPaintMode();
         g.setColor(tortue.couleurcrayon);
-        Font f = Panel_Font.fontes[police_etiquette]
+        Font f = FontPanel.fontes[police_etiquette]
                 .deriveFont((float) tortue.police);
         g.setFont(f);
         g.translate(x, y);
@@ -2110,9 +2110,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @param id    The id for the gui Object
      * @param liste The Coordinates list
      * @param name  The translated name for the primitive "guiposition"
-     * @throws myException If coordinates list is invalid
+     * @throws LogoException If coordinates list is invalid
      */
-    protected void guiposition(String id, String liste, String name) throws myException {
+    protected void guiposition(String id, String liste, String name) throws LogoException {
         if (guiExist(id)) {
             initCoords();
             extractCoords(liste, name);
@@ -2125,9 +2125,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * Draw the Gui object refered with "id"
      *
      * @param id The Gui Object Id
-     * @throws myException If this object doesn't exist
+     * @throws LogoException If this object doesn't exist
      */
-    protected void guiDraw(String id) throws myException {
+    protected void guiDraw(String id) throws LogoException {
         if (guiExist(id)) {
             GuiComponent gc = gm.get(id);
             add(gc.getGuiObject());
@@ -2141,10 +2141,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * This method erases a Gui on the drawing area
      *
      * @param id The Gui Object id
-     * @throws myException
+     * @throws LogoException
      */
 
-    protected void guiRemove(String id) throws myException {
+    protected void guiRemove(String id) throws LogoException {
         if (guiExist(id)) {
             gui = gm.get(id).getGuiObject();
             gm.remove(id);
@@ -2166,7 +2166,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
     }
 
-    private StringBuffer extractList(String list) throws myException {
+    private StringBuffer extractList(String list) throws LogoException {
         StringBuffer sb = new StringBuffer();
         int compteur = 0;
         int i = 0;
@@ -2180,10 +2180,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             sb.append(c);
             i++;
         }
-        throw new myException(cadre, "[ " + list + " " + Logo.messages.getString("pas_liste"));
+        throw new LogoException(cadre, "[ " + list + " " + Logo.messages.getString("pas_liste"));
     }
 
-    protected void guiAction(String id, String liste) throws myException {
+    protected void guiAction(String id, String liste) throws LogoException {
         if (guiExist(id)) {
             GuiComponent gc = gm.get(id);
             // If gc is a JButton
@@ -2205,7 +2205,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                         liste = liste.substring(sb.length() + 1).trim();
                         ((GuiMenu) gc).setAction(sb, i);
                         i++;
-                    } else throw new myException(cadre, liste.charAt(0) + " " + Logo.messages.getString("pas_liste"));
+                    } else throw new LogoException(cadre, liste.charAt(0) + " " + Logo.messages.getString("pas_liste"));
                 }
                 GuiMenu gm = (GuiMenu) gc;
                 if (!gm.hasAction) {
@@ -2216,9 +2216,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
     }
 
-    private boolean guiExist(String id) throws myException {
+    private boolean guiExist(String id) throws LogoException {
         if (gm.containsKey(id.toLowerCase())) return true;
-        else throw new myException(cadre, Logo.messages.getString("no_gui") + " " + id);
+        else throw new LogoException(cadre, Logo.messages.getString("no_gui") + " " + id);
     }
 
     //	boolean access=false;
@@ -2572,7 +2572,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         g2d.drawImage(dessin, 0, 0, (int) (Config.imageWidth * zoom), (int) (Config.imageHeight * zoom), this);
-        if (!Affichage.execution_lancee && null != selection && cadre.commande_isEditable()) {
+        if (!Animation.execution_lancee && null != selection && cadre.commande_isEditable()) {
             g2d.setColor(colorSelection);
             g2d.fillRect(selection.x, selection.y, selection.width, selection.height);
         }
@@ -2598,7 +2598,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     public void mousePressed(MouseEvent e) {
-        if (!Affichage.execution_lancee) {
+        if (!Animation.execution_lancee) {
             selection = new Rectangle();
             origine = new Point(e.getPoint());
             selection.setSize(0, 0);
@@ -2609,7 +2609,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     public void mouseClicked(MouseEvent ev) {
-        if (!Affichage.execution_lancee) {
+        if (!Animation.execution_lancee) {
             selection = null;
             origine = null;
             repaint();
@@ -2629,7 +2629,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     // Select an export area
     public void mouseDragged(MouseEvent e) {
-        if (!Affichage.execution_lancee && null != selection) {
+        if (!Animation.execution_lancee && null != selection) {
             // First, we test if we need to move the scrollbars
             Point pos = e.getPoint();
             javax.swing.JViewport jv = cadre.scrollArea.getViewport();
@@ -2666,7 +2666,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         possouris = "[ " + (point.x - Config.imageWidth / 2) + " " + (Config.imageHeight / 2 - point.y) + " ] ";
     }
 
-    protected void addToGuiMap(GuiComponent gc) throws xlogo.utils.myException {
+    protected void addToGuiMap(GuiComponent gc) throws LogoException {
         gm.put(gc);
     }
 
