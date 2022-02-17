@@ -11,8 +11,10 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.StringTokenizer;
+import java.util.jar.JarFile;
 
 /**
  * @author loic
@@ -34,8 +36,9 @@ public class Launcher {
      * The temporary folder which contains all files to start XLogo
      */
     private File tmpFolder = null;
-    private final File[] files = new File[13];
-    private int memoire = 64;
+    private File[] files;
+    private File mainJar;
+    private int memory = 64;
 
     /**
      * Constructs Launcher with arguments args<br>
@@ -45,107 +48,64 @@ public class Launcher {
         // Look for old files from XLogo crash
         cleanTmp();
         // Look from file .xlogo for the memory allocated to the JVM heap size
-        lis_config();
-        // Look from comand line for the memory allocated to the JVM heap size
+        readConfig();
+        // Look from command line for the memory allocated to the JVM heap size
         // And overwrite the existing value
         int mem = readMemoryFromCommandLine(args);
-        if (mem > 63) memoire = mem;
+        if (mem > 63) memory = mem;
 
         // extract application in the java.io.tmp directory
-        extrait_application();
+        extractApplication();
         try {
-            // Add the tmp to the path
-            String newPath = tmpFolder.getAbsolutePath();
-
-            String javaLibraryPath = newPath + File.pathSeparatorChar + System.getProperty("java.library.path");
-            // Bug when launching under Windows with java webstart
-            javaLibraryPath = javaLibraryPath.replaceAll("\"", "");
-            System.out.println("Path: " + javaLibraryPath + "\n");
-            int len = System.getProperty("java.version").startsWith("1.8") ? 5 : 8;
-            String[] commande = new String[len + args.length];
-            commande[0] = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
-            commande[1] = "-jar";
-            commande[2] = "-Xmx" + memoire + "m";
-            commande[3] = "-Djava.library.path=" + javaLibraryPath;
-            if (System.getProperty("java.version").startsWith("1.8")) {
-                commande[4] = files[0].getAbsolutePath();
-            } else {
-                // Workaround for Java3D incompatibility with Java 9+
-                // see: https://jogamp.org/bugzilla/show_bug.cgi?id=1317#c9
-                commande[4] = "--add-exports=java.base/java.lang=ALL-UNNAMED";
-                commande[5] = "--add-exports=java.desktop/sun.awt=ALL-UNNAMED";
-                commande[6] = "--add-exports=java.desktop/sun.java2d=ALL-UNNAMED";
-                commande[7] = files[0].getAbsolutePath();
+            String[] command = new String[7 + args.length];
+            int i = 0;
+            command[i++] = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+            command[i++] = "-Xmx" + memory + "m";
+            // Workaround for Java3D incompatibility with Java 9+
+            // see: https://jogamp.org/bugzilla/show_bug.cgi?id=1317#c9
+            command[i++] = "--add-exports=java.base/java.lang=ALL-UNNAMED";
+            command[i++] = "--add-exports=java.desktop/sun.awt=ALL-UNNAMED";
+            command[i++] = "--add-exports=java.desktop/sun.java2d=ALL-UNNAMED";
+            command[i++] = "-jar";
+            command[i++] = mainJar.getAbsolutePath();
+            for (String arg: args) {
+                command[i++] = arg;
             }
-            for (int i = 0; i < args.length; i++) {
-                commande[i + 7] = args[i];
-//				System.out.println("Argument "+i+" "+args[i]);
-            }
-            System.out.println("<----- Starting XLogo ---->");
-            String cmd = "";
-            for (int i = 0; i < commande.length; i++) {
-                if (commande[i] != null)
-                    cmd += commande[i] + " ";
-            }
-            System.out.println(cmd + "\n\n");
-            p = Runtime.getRuntime().exec(commande);
+            System.out.println("Starting XLogo");
+            System.out.println(String.join(" ", command) + "\n\n");
+            p = Runtime.getRuntime().exec(command);
             // Recept Message from the Process
-            new Thread() {
-                public void run() {
-                    try {
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                        String line = "";
-                        try {
-                            while ((line = reader.readLine()) != null) {
-                                // Traitement du flux de sortie de l'application si besoin est
-                                System.out.println(line);
-                            }
-                        } finally {
-                            reader.close();
+            new Thread(() -> {
+                try {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            // Traitement du flux de sortie de l'application si besoin est
+                            System.out.println(line);
                         }
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
                     }
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
                 }
-            }.start();
+            }).start();
             // Recept Error Message from the Process
-            new Thread() {
-                public void run() {
-                    try {
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-                        String line = "";
-                        try {
-                            while ((line = reader.readLine()) != null) {
-                                // Traitement du flux de sortie de l'application si besoin est
-                                System.out.println(line);
-                            }
-                        } finally {
-                            reader.close();
+            new Thread(() -> {
+                try {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            // Traitement du flux de sortie de l'application si besoin est
+                            System.out.println(line);
                         }
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
                     }
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
                 }
-            }.start();
+            }).start();
             p.waitFor();
-        } catch (InterruptedException e3) {
-            System.out.println(e3);
-        } catch (IOException e1) {
-            System.out.println(e1);
-        } catch (SecurityException e2) {
-            System.out.println(e2);
+        } catch (InterruptedException | IOException | SecurityException e) {
+            e.printStackTrace();
         }
-        // Restore path
-        String pathToFolder = tmpFolder.getAbsolutePath();
-        String path = System.getProperty("java.library.path");
-        StringTokenizer st = new StringTokenizer(path, File.pathSeparator);
-        String newPath = "";
-        while (st.hasMoreTokens()) {
-            if (!newPath.equals("")) newPath += File.pathSeparator;
-            String element = st.nextToken();
-            if (!element.equals(pathToFolder)) newPath += element;
-        }
-        System.setProperty("java.library.path", newPath);
         // Delete tmp files
         for (int i = 0; i < files.length; i++) {
             if (null != files[i]) files[i].delete();
@@ -173,7 +133,7 @@ public class Launcher {
         if (null != files) {
             for (int i = 0; i < files.length; i++) {
                 try {
-                    if (files[i].getName().startsWith("tmp_xlogo")) {
+                    if (files[i].getName().startsWith("xlogo-nested")) {
                         long fileTime = files[i].lastModified();
                         long time = Calendar.getInstance().getTimeInMillis();
                         // Delete file if it's more than 24 hours old
@@ -191,129 +151,42 @@ public class Launcher {
     }
 
     /**
-     * This method extracts the file tmp_xlogo.jar from the archive and copy it into the temporary directory.
+     * This method extracts the file xlogo-nested.jar from the archive and copy it into the temporary directory.
      */
-    private void extrait_application() {
-        // Create in the "java.io.tmpdir" a directory called tmp_xlogo
+    private void extractApplication() {
+        // Create in the "java.io.tmpdir" a directory called xlogo-nested
         int i = 0;
-        String tmpPath = System.getProperty("java.io.tmpdir") + File.separator + "tmp_xlogo";
+        String tmpPath = System.getProperty("java.io.tmpdir") + File.separator + "xlogo-nested";
         while (true) {
             tmpFolder = new File(tmpPath + i);
             if (!tmpFolder.exists()) break;
             else i++;
         }
         boolean b = tmpFolder.mkdir();
-        System.out.println("Creating tmp_xlogo directory - success: " + b);
+        System.out.println("Creating temp directory - success: " + b);
 
-        // extract the file tmp_xlogo.jar in this folder
-        InputStream src = Launcher.class.getResourceAsStream("tmp_xlogo.jar");
-        files[0] = new File(tmpFolder.getAbsolutePath() + File.separator + "tmp_xlogo.jar");
-        b = copier(src, files[0]);
-        System.out.println("Copying tmp_xlogo.jar - success: " + b);
-
-        // extract the file jh.jar in this folder
-        src = Launcher.class.getResourceAsStream("jh.jar");
-        files[1] = new File(tmpFolder.getAbsolutePath() + File.separator + "jh.jar");
-        b = copier(src, files[1]);
-        System.out.println("Copying jh.jar - success: " + b);
-
-        // extract the file vecmath.jar in this folder
-        src = Launcher.class.getResourceAsStream("vecmath.jar");
-        files[2] = new File(tmpFolder.getAbsolutePath() + File.separator + "vecmath.jar");
-        b = copier(src, files[2]);
-        System.out.println("Copying vecmath.jar - success: " + b);
-
-        // extract the file j3dcore.jar in this folder
-        src = Launcher.class.getResourceAsStream("j3dcore.jar");
-        files[3] = new File(tmpFolder.getAbsolutePath() + File.separator + "j3dcore.jar");
-        b = copier(src, files[3]);
-        System.out.println("Copying j3dcore.jar - success: " + b);
-
-        // extract the file j3dutils.jar in this folder
-        src = Launcher.class.getResourceAsStream("j3dutils.jar");
-        files[4] = new File(tmpFolder.getAbsolutePath() + File.separator + "j3dutils.jar");
-        b = copier(src, files[4]);
-        System.out.println("Copying j3dutils.jar - success: " + b);
-
-        // extract the file jl1.0.1 in this folder (JLayer library for mp3 playing)
-        src = Launcher.class.getResourceAsStream("jl1.0.1.jar");
-        files[5] = new File(tmpFolder.getAbsolutePath() + File.separator + "jl1.0.1.jar");
-        b = copier(src, files[5]);
-        System.out.println("Copying jl1.0.1.jar - success: " + b);
-
-        // extract the native driver for java 3d in this folder
-        String os = System.getProperty("os.name").toLowerCase();
-        String arch = System.getProperty("os.arch");
-        System.out.println("Operating system: " + os);
-        System.out.println("Architecture: " + arch);
-
-        // Linux
-        if (os.indexOf("linux") != -1) {
-            if (arch.indexOf("86") != -1) {
-                InputStream lib = Launcher.class.getResourceAsStream("linux/x86/libj3dcore-ogl.so");
-                files[6] = new File(tmpFolder.getAbsolutePath() + File.separator + "libj3dcore-ogl.so");
-                copier(lib, files[6]);
-                lib = Launcher.class.getResourceAsStream("linux/x86/libj3dcore-ogl-cg.so");
-                files[7] = new File(tmpFolder.getAbsolutePath() + File.separator + "libj3dcore-ogl-cg.so");
-                copier(lib, files[7]);
-            } else {
-                InputStream lib = Launcher.class.getResourceAsStream("linux/amd64/libj3dcore-ogl.so");
-                files[6] = new File(tmpFolder.getAbsolutePath() + File.separator + "libj3dcore-ogl.so");
-                copier(lib, files[6]);
+        var jars = new ArrayList<String>();
+        var myJar = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
+        try {
+            var files = new JarFile(myJar).entries();
+            while (files.hasMoreElements()) {
+                var file = files.nextElement().getName();
+                if (file.endsWith(".jar")) {
+                    jars.add(file);
+                }
             }
-        }
-        // windows
-        else if (os.indexOf("windows") != -1) {
-            if (arch.indexOf("86") != -1) {
-                InputStream lib = Launcher.class.getResourceAsStream("windows/x86/j3dcore-d3d.dll");
-                files[6] = new File(tmpFolder.getAbsolutePath() + File.separator + "j3dcore-d3d.dll");
-                b = copier(lib, files[6]);
-                System.out.println("Copying library 1 - success: " + b);
-                lib = Launcher.class.getResourceAsStream("windows/x86/j3dcore-ogl.dll");
-                files[7] = new File(tmpFolder.getAbsolutePath() + File.separator + "j3dcore-ogl.dll");
-                b = copier(lib, files[7]);
-                System.out.println("Copying library 2 - success: " + b);
-                lib = Launcher.class.getResourceAsStream("windows/x86/j3dcore-ogl-cg.dll");
-                files[8] = new File(tmpFolder.getAbsolutePath() + File.separator + "j3dcore-ogl-cg.dll");
-                b = copier(lib, files[8]);
-                System.out.println("Copying library 3 - success: " + b);
-                lib = Launcher.class.getResourceAsStream("windows/x86/j3dcore-ogl-chk.dll");
-                files[9] = new File(tmpFolder.getAbsolutePath() + File.separator + "j3dcore-ogl-chk.dll");
-                b = copier(lib, files[9]);
-                System.out.println("Copying library 4 - success: " + b);
-            } else {
-                InputStream lib = Launcher.class.getResourceAsStream("windows/amd64/j3dcore-ogl.dll");
-                files[6] = new File(tmpFolder.getAbsolutePath() + File.separator + "j3dcore-ogl.dll");
-                b = copier(lib, files[6]);
-                System.out.println("Copying library 1 - success: " + b);
-            }
-        }
-        // Mac os
-        else if (os.indexOf("mac") != -1) {
-
-        }
-        // solaris
-        else if (os.indexOf("sunos") != -1) {
-            if (arch.indexOf("86") != -1) {
-                InputStream lib = Launcher.class.getResourceAsStream("solaris/i386/libj3dcore-ogl.so");
-                files[6] = new File(tmpFolder.getAbsolutePath() + File.separator + "libj3dcore-ogl.so");
-                b = copier(lib, files[6]);
-                System.out.println("Copying library 1 - success: " + b);
-            } else if (arch.indexOf("amd64") != -1) {
-                InputStream lib = Launcher.class.getResourceAsStream("solaris/amd64/libj3dcore-ogl.so");
-                files[6] = new File(tmpFolder.getAbsolutePath() + File.separator + "libj3dcore-ogl.so");
-                b = copier(lib, files[6]);
-                System.out.println("Copying library 1 - success: " + b);
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        String[] jars = new String[] {"flatlaf-2.0.1.jar", "flatlaf-extras-2.0.1.jar", "svgSalamander-1.1.3.jar"};
-        int f = 10;
+        i = 0;
+        files = new File[jars.size()];
         for (String jar: jars) {
-            src = Launcher.class.getResourceAsStream(jar);
+            InputStream src = Launcher.class.getResourceAsStream(jar);
             File file = new File(tmpFolder.getAbsolutePath() + File.separator + jar);
-            files[f++] = file;
-            b = copier(src, file);
+            if (jar.equals("xlogo-main.jar")) mainJar = file;
+            files[i++] = file;
+            b = copyFile(src, file);
             System.out.println("Copying " + jar + " - success: " + b);
         }
     }
@@ -321,7 +194,7 @@ public class Launcher {
     /**
      * This method reads the Memory needed by XLogo in the file .xlogo
      */
-    private void lis_config() {
+    private void readConfig() {
         try {
             // Try to read XML format (new config file)
             FileInputStream fr = new FileInputStream(System.getProperty("user.home") + File.separator + ".xlogo");
@@ -346,23 +219,24 @@ public class Launcher {
                     String element = st.nextToken();
                     if (element.equals("# memoire")) {
                         element = st.nextToken();
-                        memoire = Integer.parseInt(element);
+                        memory = Integer.parseInt(element);
                     }
                 }
             }
-        } catch (FileNotFoundException e1) {
+        } catch (FileNotFoundException e) {
             System.out.println("No File \".xlogo\". Will create one...");
-        } catch (IOException e2) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     /**
-     * This method copy the file tmp_xlogo.jar from the archive to the file Destination.
+     * This method copies the file xlogo-main.jar from the archive to the file Destination.
      * @param destination The output file
      * @return true if success, false otherwise
      */
-    private boolean copier(InputStream src, File destination) {
-        boolean resultat = false;
+    private boolean copyFile(InputStream src, File destination) {
+        boolean result = false;
         // Declaration des flux
         java.io.FileOutputStream destinationFile = null;
         try {
@@ -373,14 +247,14 @@ public class Launcher {
             destinationFile = new java.io.FileOutputStream(destination);
             // Lecture par segment de 0.5Mo
             byte[] buffer = new byte[512 * 1024];
-            int nbLecture;
-            while ((nbLecture = src.read(buffer)) != -1) {
-                destinationFile.write(buffer, 0, nbLecture);
+            int bytesRead;
+            while ((bytesRead = src.read(buffer)) != -1) {
+                destinationFile.write(buffer, 0, bytesRead);
             }
             // Copie réussie
-            resultat = true;
-        } catch (java.io.FileNotFoundException f) {
-        } catch (java.io.IOException e) {
+            result = true;
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             // Quoi qu'il arrive, on ferme les flux
             try {
@@ -390,9 +264,10 @@ public class Launcher {
             try {
                 destinationFile.close();
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        return (resultat);
+        return (result);
     }
 
     /**
@@ -401,21 +276,21 @@ public class Launcher {
      * @return true if success
      */
     private boolean deleteDirectory(File path) {
-        boolean resultat = true;
+        boolean result = true;
         if (path.exists()) {
             File[] files = path.listFiles();
             if (null != files) {
                 for (int i = 0; i < files.length; i++) {
                     if (files[i].isDirectory()) {
-                        resultat &= deleteDirectory(files[i]);
+                        result &= deleteDirectory(files[i]);
                     } else {
-                        resultat &= files[i].delete();
+                        result &= files[i].delete();
                     }
                 }
             }
         }
-        resultat &= path.delete();
-        return (resultat);
+        result &= path.delete();
+        return (result);
     }
 
     /**
@@ -469,7 +344,7 @@ public class Launcher {
 
         // Open new Tag
         public void startElement(String nameSpaceURI, String localName, String rawName, Attributes attributs) throws SAXException {
-            analyseBalise(localName, attributs);
+            analyzeTag(localName, attributs);
 	/*                   System.out.println("Ouverture de la balise: "+localName);
 	                  for (int index = 0; index < attributs.getLength(); index++) { // on parcourt la liste des attributs
 	                          System.out.println("     - " +  attributs.getLocalName(index) + " = " + attributs.getValue(index));
@@ -499,9 +374,9 @@ public class Launcher {
         public void skippedEntity(String arg0) throws SAXException {
         }
 
-        private void analyseBalise(String tag, Attributes attributs) {
+        private void analyzeTag(String tag, Attributes attributs) {
             if (tag.equals("memory")) {
-                memoire = Integer.parseInt(attributs.getValue(0));
+                memory = Integer.parseInt(attributs.getValue(0));
             }
         }
 

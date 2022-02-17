@@ -9,20 +9,18 @@ These instructions are for developers or advanced users who are comfortable comp
 - There are also Eclipse project files, but beyond importing them into IntelliJ, I haven't tested them.  
 - The project contains an Ant build script, which I have successfully used to build a working jar. 
 - Until the build system is replaced with something supporting dependency management, I am keeping the dependencies in the repo.
-  - Jars for newly added dependencies were downloaded from maven.org:
+  - Jars imported from subversion:
+    - jh.jar: JavaHelp 2.0_03
+    - jl1.0.1.jar: JLayer 1.0.1 MP3 library
+  - FlatLaf jars downloaded from maven.org:
     - [flatlaf-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf/2.0.1/jar)
     - [flatlaf-extras-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf-extras/2.0.1/jar)
     - [svgSalamander-1.1.3.jar](https://search.maven.org/artifact/com.formdev/svgSalamander/1.1.3/jar)
-  - The remaining jars were already in the subversion repo when it was imported:
-    - jh.jar: JavaHelp 2.0_03
-    - j3dcore.jar: Java3D 1.5.2 core library
-    - j3dutils.jar: Java3D 1.5.2 utilities
-    - vecmath.jar: Java3D 1.5.2 vector math
-    - jl1.0.1.jar: JLayer 1.0.1 MP3 library 
+  - [Java3D](https://github.com/hharrison/java3d-core) updated to 1.6.2
+  - [JOGL/GlueGen](https://jogamp.org/) 2.3.2 added
 
 ## Known Bugs
 - Zooming and clipboard selection on images don't work right
-- Rendering in high quality sometimes leaves artifacts
 - The scroll area for the graphics display doesn't size to properly fit
 - The turtle PNGs need to be replaced with SVGs so they aren't pixelated
 - Save, new, stop, and play commands don't always disable when they should

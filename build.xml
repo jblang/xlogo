@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- ====================================================================== 
-     9 févr. 08 15:00:15                                                        
+<!-- ======================================================================
+     9 févr. 08 15:00:15
 
-     project: Xlogo    
+     project: Xlogo
      description: Logo Programming Interpreter
-                   
-     Le Coq Loïc                                                      
+
+     Le Coq Loïc
      ====================================================================== -->
-<project name="project Xlogo" default="deploy">
+<project name="XLogo" default="deploy">
     <description>
-        XLogo: Logo Programming Interpreter
+        XLogo: Logo Interpreter
     </description>
     <!-- Build Properties -->
 
@@ -19,16 +19,6 @@
 
     <property name="signJar" value="false"/>
 
-    <!-- Property platform:
-    ================================================
-        * "all": Builds a crossPlatform Jar
-        * "linux": Builds a Linux specific Jar
-        * "windows": Builds a Windows specific Jar
-        * "solaris": Builds a Solaris specific Jar
-        Note: The built file is always valid for Mac
-    ===============================================-->
-    <property name="platform" value="all"/>
-
     <!-- Build source tarball -->
 
     <property name="buildSrc" value="true"/>
@@ -37,9 +27,8 @@
 
     <property name="version" value="1.0.0beta1"/>
 
-
-    <!-- ================================= 
-         default target: deploy              
+    <!-- =================================
+         default target: deploy
          ================================= -->
     <target name="deploy" depends="create.jar">
         <condition property="sign.jar">
@@ -52,12 +41,11 @@
         </condition>
         <antcall target="create.src.tarball">
         </antcall>
-
     </target>
 
 
-    <!-- - - - - - - - - - - - - - - - - - 
-          target: depends                      
+    <!-- - - - - - - - - - - - - - - - - -
+          target: depends
          - - - - - - - - - - - - - - - - - -->
 
     <!-- Creates the source tarball -->
@@ -67,16 +55,7 @@
         <copy todir="deploy/xlogo-${version}">
             <fileset dir=".">
                 <include name="src/**"/>
-                <include name="lib/windows/**"/>
-                <include name="lib/linux/**"/>
-                <include name="lib/solaris/**"/>
-                <include name="lib/jh.jar"/>
-                <include name="lib/j3dcore.jar"/>
-                <include name="lib/vecmath.jar"/>
-                <include name="lib/j3dutils.jar"/>
-                <include name="lib/jl1.0.1.jar"/>
-                <include name="manifest_xlogo"/>
-                <include name="manifest_start"/>
+                <include name="lib/**"/>
                 <include name="build.xml"/>
                 <include name="README"/>
             </fileset>
@@ -86,7 +65,6 @@
             <fileset dir="deploy/">
                 <include name="xlogo-${version}/**"/>
             </fileset>
-
         </tar>
         <delete dir="deploy/xlogo-${version}"/>
     </target>
@@ -99,18 +77,30 @@
                 addproperty="pwd"/>
         <signjar keystore="keystore.ks" storepass="${pwd}" alias="myalias">
             <fileset dir="deploy">
-                <include name="xlogo.jar"/>
+                <include name="xlogo-${version}.jar"/>
             </fileset>
         </signjar>
     </target>
 
+    <path id="build.classpath">
+        <fileset dir=".">
+            <include name="lib/*.jar"/>
+        </fileset>
+    </path>
+
+    <pathconvert property="manifest.classpath" pathsep=" ">
+        <path refid="build.classpath"/>
+        <flattenmapper/>
+    </pathconvert>
 
     <target name="create.jar" depends="compile">
 
-        <!-- Create tmp-xlogo.jar -->
-
-        <jar destfile="deploy/tmp_xlogo.jar"
-             manifest="manifest_xlogo">
+        <!-- Create xlogo-main.jar -->
+        <jar destfile="deploy/xlogo-main.jar">
+            <manifest>
+                <attribute name="Main-Class" value="xlogo.Logo"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+            </manifest>
             <fileset dir="deploy/">
                 <include name="xlogo/**"/>
                 <include name="*.properties"/>
@@ -125,10 +115,11 @@
             </fileset>
         </delete>
 
-        <!-- Create xlogo.jar -->
-
-        <jar destfile="deploy/xlogo.jar"
-             manifest="manifest_start">
+        <!-- Create xlogo-${version}.jar -->
+        <jar destfile="deploy/xlogo-${version}.jar">
+            <manifest>
+                <attribute name="Main-Class" value="Launcher"/>
+            </manifest>
             <fileset dir="deploy/">
                 <include name="**"/>
             </fileset>
@@ -137,7 +128,7 @@
         <!-- Delete Used files -->
         <delete includeemptydirs="true">
             <fileset dir="deploy/">
-                <exclude name="xlogo.jar"/>
+                <exclude name="xlogo-${version}.jar"/>
                 <include name="**"/>
             </fileset>
         </delete>
@@ -146,24 +137,14 @@
     <!-- Compile all Files -->
 
     <target name="compile" depends="copy.static.files">
-        <!--		<echo> ${ant.java.version}</echo> -->
         <javac
                 debug="true"
-                source="1.8"
-                target="1.8"
+                release="11"
+                classpathref="build.classpath"
                 encoding="utf8"
-                srcdir="src" destdir="deploy/">
-            <classpath>
-                <pathelement location="lib/vecmath.jar"/>
-                <pathelement location="lib/j3dcore.jar"/>
-                <pathelement location="lib/j3dutils.jar"/>
-                <pathelement location="lib/jh.jar"/>
-                <pathelement location="lib/jl1.0.1.jar"/>
-                <pathelement location="lib/flatlaf-2.0.1.jar"/>
-                <pathelement location="lib/flatlaf-extras-2.0.1.jar"/>
-                <pathelement location="lib/svgSalamander-1.1.3.jar"/>
-            </classpath>
-        </javac>
+                srcdir="src"
+                destdir="deploy/"
+        />
     </target>
 
     <!-- Copy all non binaries files (images, properties files...
@@ -172,14 +153,7 @@
     <target name="copy.static.files" depends="create.deploy">
         <copy todir="deploy/">
             <fileset dir="lib/">
-                <include name="vecmath.jar"/>
-                <include name="j3dcore.jar"/>
-                <include name="j3dutils.jar"/>
-                <include name="jl1.0.1.jar"/>
-                <include name="jh.jar"/>
-                <include name="flatlaf-2.0.1.jar"/>
-                <include name="flatlaf-extras-2.0.1.jar"/>
-                <include name="svgSalamander-1.1.3.jar"/>
+                <include name="*.jar"/>
             </fileset>
             <fileset dir="src/">
                 <include name="**.properties"/>
@@ -189,64 +163,8 @@
                 <include name="**/Primitives.txt"/>
             </fileset>
         </copy>
-
-        <!-- Copy Specific OS libraries -->
-
-        <condition property="platform.solaris">
-            <or>
-                <equals arg1="${platform}" arg2="all"/>
-                <equals arg1="${platform}" arg2="solaris"/>
-            </or>
-        </condition>
-        <antcall target="copy.solaris">
-        </antcall>
-        <condition property="platform.linux">
-            <or>
-                <equals arg1="${platform}" arg2="all"/>
-                <equals arg1="${platform}" arg2="linux"/>
-            </or>
-        </condition>
-        <antcall target="copy.linux">
-        </antcall>
-        <condition property="platform.windows">
-            <or>
-                <equals arg1="${platform}" arg2="all"/>
-                <equals arg1="${platform}" arg2="windows"/>
-            </or>
-        </condition>
-        <antcall target="copy.windows">
-        </antcall>
     </target>
 
-    <!-- Copy Solaris specific JAVA3D driver into "deploy" -->
-
-    <target name="copy.solaris" if="platform.solaris">
-        <copy todir="deploy/">
-            <fileset dir="lib">
-                <include name="solaris/**"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <!-- Copy Linux specific JAVA3D driver into "deploy" -->
-
-    <target name="copy.linux" if="platform.linux">
-        <copy todir="deploy/">
-            <fileset dir="lib">
-                <include name="linux/**"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <!-- Copy Windows specific JAVA3D driver into "deploy" -->
-
-    <target name="copy.windows" if="platform.windows">
-        <copy todir="deploy/">
-            <fileset dir="lib">
-                <include name="windows/**"/>
-            </fileset>
-        </copy>
-    </target>
 
     <!-- Create the folder "deploy", delete if exists -->
 

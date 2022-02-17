@@ -78,8 +78,9 @@ If you want to help improve the code, check out the [Developer Notes](DEVNOTES.m
 
 ### Third-party
 
-- [FlatLaf](https://www.formdev.com/flatlaf/): GUI Components (Apache license)
+- [FlatLaf](https://www.formdev.com/flatlaf/): Swing look and feel (Apache license)
 - [IntelliJ IDEA](https://jetbrains.design/intellij/resources/icons_list/): SVG Icons (Apache license)
-- [Java3D](https://github.com/hharrison/java3d-core): OpenGL libraries (GPL license)
+- [Java3D](https://github.com/hharrison/java3d-core): 3D scene graph library (GPL license)
+- [Jogamp](https://jogamp.org/): OpenGL libraries (BSD/MIT/Apache license)
 - [JavaHelp](https://github.com/javaee/javahelp): Help library (GPL license)
 - [JLayer](https://github.com/umjammer/jlayer): MP3 library (LGPL license)
