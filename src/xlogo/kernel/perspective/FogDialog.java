@@ -20,9 +20,9 @@ public class FogDialog extends JDialog implements ActionListener {
     private JButton ok;
     private JButton refresh;
     private final Viewer3D viewer3d;
-    private final MyFog fog;
+    private final Fog fog;
 
-    FogDialog(Viewer3D viewer3d, MyFog fog, String title) {
+    FogDialog(Viewer3D viewer3d, Fog fog, String title) {
         super(viewer3d, title, true);
         this.viewer3d = viewer3d;
         this.fog = fog;
@@ -42,10 +42,10 @@ public class FogDialog extends JDialog implements ActionListener {
 
         ok = new JButton(Logo.messages.getString("pref.ok"));
         refresh = new JButton(Logo.messages.getString("3d.light.apply"));
-        labelType.setFont(Config.police);
-        comboType.setFont(Config.police);
-        ok.setFont(Config.police);
-        refresh.setFont(Config.police);
+        labelType.setFont(Config.font);
+        comboType.setFont(Config.font);
+        ok.setFont(Config.font);
+        refresh.setFont(Config.font);
 
         comboType.addActionListener(this);
         comboType.setActionCommand("combo");
@@ -113,19 +113,19 @@ public class FogDialog extends JDialog implements ActionListener {
     private void selectComponents() {
         int id = comboType.getSelectedIndex();
         // None
-        if (id == MyFog.FOG_OFF) {
+        if (id == Fog.FOG_OFF) {
             panelDensity.setEnabled(false);
             panelBack.setEnabled(false);
             panelFront.setEnabled(false);
         }
         // Linear Fog
-        else if (id == MyFog.FOG_LINEAR) {
+        else if (id == Fog.FOG_LINEAR) {
             panelDensity.setEnabled(false);
             panelBack.setEnabled(true);
             panelFront.setEnabled(true);
         }
         // Exponential Fog
-        else if (id == MyFog.FOG_EXPONENTIAL) {
+        else if (id == Fog.FOG_EXPONENTIAL) {
             panelBack.setEnabled(false);
             panelFront.setEnabled(false);
             panelDensity.setEnabled(true);
@@ -148,7 +148,7 @@ public class FogDialog extends JDialog implements ActionListener {
 
         private void initGui() {
             label = new JLabel(title);
-            label.setFont(Config.police);
+            label.setFont(Config.font);
             String st;
             int i = (int) textValue;
             if (i == textValue) {

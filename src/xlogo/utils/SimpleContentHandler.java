@@ -85,7 +85,7 @@ public class SimpleContentHandler implements ContentHandler {
             } catch (NumberFormatException e) {
                 id = Config.LANGUAGE_ENGLISH;
             }
-            Config.langage = id;
+            Config.language = id;
             Logo.generateLanguage(id);
         } else if (tag.equals("speed")) {
             int id;
@@ -106,7 +106,7 @@ public class SimpleContentHandler implements ContentHandler {
             } catch (NumberFormatException e) {
                 id = 1948;
             }
-            Config.TCP_PORT = id;
+            Config.tcpPort = id;
         } else if (tag.equals("turtle_shape")) {
             int id;
             try {
@@ -171,7 +171,7 @@ public class SimpleContentHandler implements ContentHandler {
             if (null == f || !f.isDirectory()) Config.defaultFolder = System.getProperty("user.home");
         } else if (tag.equals("start_command")) {
             if (attributs.getLength() != 0)
-                Config.a_executer = attributs.getValue(0);
+                Config.startupCommand = attributs.getValue(0);
         } else if (tag.equals("font")) {
             String name = "";
             int size = 0;
@@ -186,7 +186,7 @@ public class SimpleContentHandler implements ContentHandler {
                     }
             }
 
-            Config.police = new Font(name, Font.PLAIN, size);
+            Config.font = new Font(name, Font.PLAIN, size);
         } else if (tag.equals("width")) {
             int id;
             try {
@@ -206,7 +206,7 @@ public class SimpleContentHandler implements ContentHandler {
                 id = Color.BLACK.getRGB();
             }
 
-            Config.pencolor = new Color(id);
+            Config.penColor = new Color(id);
         } else if (tag.equals("screen_color")) {
             int id;
             try {
@@ -214,7 +214,7 @@ public class SimpleContentHandler implements ContentHandler {
             } catch (NumberFormatException e) {
                 id = Color.WHITE.getRGB();
             }
-            Config.screencolor = new Color(id);
+            Config.screenColor = new Color(id);
         } else if (tag.equals("height")) {
             int id;
             try {
@@ -235,36 +235,36 @@ public class SimpleContentHandler implements ContentHandler {
             } catch (NumberFormatException e) {
                 id = 64;
             }
-            Config.memoire = id;
-            Config.tmp_memoire = id;
+            Config.memoryLimit = id;
+            Config.newMemoryLimit = id;
         } else if (tag.equals("quality")) {
             int id;
             try {
                 id = Integer.parseInt(attributs.getValue(0));
                 // check valid
-                if (id != Config.QUALITY_HIGH && id != Config.QUALITY_LOW && id != Config.QUALITY_NORMAL)
-                    id = Config.QUALITY_NORMAL;
+                if (id != Config.DRAW_QUALITY_HIGH && id != Config.DRAW_QUALITY_LOW && id != Config.DRAW_QUALITY_NORMAL)
+                    id = Config.DRAW_QUALITY_NORMAL;
             } catch (NumberFormatException e) {
-                id = Config.QUALITY_NORMAL;
+                id = Config.DRAW_QUALITY_NORMAL;
             }
-            Config.quality = id;
+            Config.drawQuality = id;
         } else if (tag.equals("grid")) {
 
             for (int index = 0; index < attributs.getLength(); index++) { // on parcourt la liste des attributs
                 String att = attributs.getLocalName(index);
                 if (att.equals("boolean")) {
-                    Config.drawGrid = Boolean.parseBoolean(attributs.getValue(index));
+                    Config.gridEnabled = Boolean.parseBoolean(attributs.getValue(index));
                 } else if (att.equals("xgrid")) {
                     try {
-                        Config.XGrid = Integer.parseInt(attributs.getValue(index));
+                        Config.xGridSpacing = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
-                        Config.XGrid = 30;
+                        Config.xGridSpacing = 30;
                     }
                 } else if (att.equals("ygrid")) {
                     try {
-                        Config.YGrid = Integer.parseInt(attributs.getValue(index));
+                        Config.yGridSpacing = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
-                        Config.YGrid = 30;
+                        Config.yGridSpacing = 30;
                     }
 
                 } else if (att.equals("gridcolor")) {
@@ -279,20 +279,20 @@ public class SimpleContentHandler implements ContentHandler {
             for (int index = 0; index < attributs.getLength(); index++) { // on parcourt la liste des attributs
                 String att = attributs.getLocalName(index);
                 if (att.equals("boolean_xaxis")) {
-                    Config.drawXAxis = Boolean.parseBoolean(attributs.getValue(index));
+                    Config.xAxisEnabled = Boolean.parseBoolean(attributs.getValue(index));
                 } else if (att.equals("boolean_yaxis")) {
-                    Config.drawYAxis = Boolean.parseBoolean(attributs.getValue(index));
+                    Config.yAxisEnabled = Boolean.parseBoolean(attributs.getValue(index));
                 } else if (att.equals("xaxis")) {
                     try {
-                        Config.XAxis = Integer.parseInt(attributs.getValue(index));
+                        Config.xAxisSpacing = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
-                        Config.XAxis = 50;
+                        Config.xAxisSpacing = 50;
                     }
                 } else if (att.equals("yaxis")) {
                     try {
-                        Config.YAxis = Integer.parseInt(attributs.getValue(index));
+                        Config.yAxisSpacing = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
-                        Config.YAxis = 50;
+                        Config.yAxisSpacing = 50;
                     }
                 } else if (att.equals("axiscolor")) {
                     try {
@@ -304,7 +304,7 @@ public class SimpleContentHandler implements ContentHandler {
             }
         } else if (tag.equals("border_image")) {
             for (int index = 0; index < attributs.getLength(); index++) { // on parcourt la liste des attributs
-                Config.borderExternalImage.add(attributs.getValue(index));
+                Config.userBorderImages.add(attributs.getValue(index));
             }
         } else if (tag.equals("border_color")) {
             try {
@@ -317,17 +317,17 @@ public class SimpleContentHandler implements ContentHandler {
             Config.borderImageSelected = attributs.getValue(0);
         } else if (tag.equals("looknfeel")) {
             try {
-                Config.looknfeel = Integer.parseInt(attributs.getValue(0));
+                Config.lookAndFeel = Integer.parseInt(attributs.getValue(0));
             } catch (NumberFormatException e) {
-                Config.looknfeel = Config.LOOKNFEEL_DARK;
+                Config.lookAndFeel = Config.LAF_DARK;
             }
             try {
-                switch (Config.looknfeel) {
-                    case Config.LOOKNFEEL_NATIVE:
+                switch (Config.lookAndFeel) {
+                    case Config.LAF_NATIVE:
                         UIManager.setLookAndFeel(UIManager
                                 .getSystemLookAndFeelClassName());
                         break;
-                    case Config.LOOKNFEEL_LIGHT:
+                    case Config.LAF_LIGHT:
                         UIManager.setLookAndFeel(new FlatLightLaf());
                         break;
                     default:
@@ -342,53 +342,53 @@ public class SimpleContentHandler implements ContentHandler {
             for (int index = 0; index < attributs.getLength(); index++) { // on parcourt la liste des attributs
                 String att = attributs.getLocalName(index);
                 if (att.equals("boolean")) {
-                    Config.COLOR_ENABLED = Boolean.parseBoolean(attributs.getValue(index));
+                    Config.syntaxHighlightingEnabled = Boolean.parseBoolean(attributs.getValue(index));
 //           				Config.COLOR_ENABLED=Boolean.parseBoolean(attributs.getValue(index));
                 } else if (att.equals("color_commentaire")) {
                     try {
-                        Config.coloration_commentaire = Integer.parseInt(attributs.getValue(index));
+                        Config.syntaxCommentColor = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
                     }
                 } else if (att.equals("color_operand")) {
                     try {
-                        Config.coloration_operande = Integer.parseInt(attributs.getValue(index));
+                        Config.syntaxOperandColor = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
                     }
                 } else if (att.equals("color_parenthesis")) {
                     try {
-                        Config.coloration_parenthese = Integer.parseInt(attributs.getValue(index));
+                        Config.syntaxBracketColor = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
                     }
                 } else if (att.equals("color_primitive")) {
                     try {
-                        Config.coloration_primitive = Integer.parseInt(attributs.getValue(index));
+                        Config.syntaxPrimitiveColor = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
                     }
                 } else if (att.equals("style_commentaire")) {
                     try {
-                        Config.style_commentaire = Integer.parseInt(attributs.getValue(index));
+                        Config.syntaxCommentStyle = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
                     }
                 } else if (att.equals("style_operand")) {
                     try {
-                        Config.style_operande = Integer.parseInt(attributs.getValue(index));
+                        Config.syntaxOperandStyle = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
                     }
                 } else if (att.equals("style_parenthesis")) {
                     try {
-                        Config.style_parenthese = Integer.parseInt(attributs.getValue(index));
+                        Config.syntaxBracketStyle = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
                     }
                 } else if (att.equals("style_primitive")) {
                     try {
-                        Config.style_primitive = Integer.parseInt(attributs.getValue(index));
+                        Config.syntaxPrimitiveStyle = Integer.parseInt(attributs.getValue(index));
                     } catch (NumberFormatException e) {
                     }
                 }
             }
         } else if (tag.equals("startup_files")) {
             for (int index = 0; index < attributs.getLength(); index++) { // on parcourt la liste des attributs
-                Config.path.add(0, attributs.getValue(index));
+                Config.startupFiles.add(0, attributs.getValue(index));
             }
         }
     }

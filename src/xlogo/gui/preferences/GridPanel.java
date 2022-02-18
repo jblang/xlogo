@@ -59,11 +59,11 @@ public class GridPanel extends JPanel implements ActionListener {
 
     private void initGui() {
         checkGrid = new JCheckBox(Logo.messages.getString("active_grid"));
-        checkGrid.setSelected(Config.drawGrid);
+        checkGrid.setSelected(Config.gridEnabled);
         labelXGrid = new JLabel(Logo.messages.getString("xgrid"));
         labelYGrid = new JLabel(Logo.messages.getString("ygrid"));
-        jtXGrid = new JTextField(String.valueOf(Config.XGrid));
-        jtYGrid = new JTextField(String.valueOf(Config.YGrid));
+        jtXGrid = new JTextField(String.valueOf(Config.xGridSpacing));
+        jtYGrid = new JTextField(String.valueOf(Config.yGridSpacing));
         colorPanelGrid = new ColorPanel(new Color(Config.gridColor));
         setLayout(new GridBagLayout());
         add(checkGrid, new GridBagConstraints(0, 0, 1, 1, 0.3, 1.0,
@@ -84,11 +84,11 @@ public class GridPanel extends JPanel implements ActionListener {
         add(jtYGrid, new GridBagConstraints(2, 1, 1, 1, 0.25, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(10, 10, 0, 10), 0, 0));
-        labelXGrid.setEnabled(Config.drawGrid);
-        labelYGrid.setEnabled(Config.drawGrid);
-        jtXGrid.setEnabled(Config.drawGrid);
-        jtYGrid.setEnabled(Config.drawGrid);
-        colorPanelGrid.setEnabled(Config.drawGrid);
+        labelXGrid.setEnabled(Config.gridEnabled);
+        labelYGrid.setEnabled(Config.gridEnabled);
+        jtXGrid.setEnabled(Config.gridEnabled);
+        jtYGrid.setEnabled(Config.gridEnabled);
+        colorPanelGrid.setEnabled(Config.gridEnabled);
 
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("draw_grid"));
         setBorder(tb);

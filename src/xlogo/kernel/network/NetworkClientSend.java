@@ -1,6 +1,6 @@
 package xlogo.kernel.network;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
@@ -37,7 +37,7 @@ public class NetworkClientSend {
 
     private void init() throws LogoException {
         try {
-            socket = new Socket(ip, Config.TCP_PORT);
+            socket = new Socket(ip, Config.tcpPort);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             java.io.OutputStream os = socket.getOutputStream();

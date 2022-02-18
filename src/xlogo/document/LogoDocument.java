@@ -31,15 +31,15 @@ public class LogoDocument extends DefaultStyledDocument {
     private MutableAttributeSet keyword;
     private MutableAttributeSet comment;
     private MutableAttributeSet quote;
-    private boolean coloration_activee = Config.COLOR_ENABLED;
+    private boolean coloration_activee = Config.syntaxHighlightingEnabled;
     private boolean colore_parenthese = false;
 
     public LogoDocument() {
         doc = this;
         rootElement = doc.getDefaultRootElement();
         putProperty(DefaultEditorKit.EndOfLineStringProperty, "\n");
-        initStyles(Config.coloration_commentaire, Config.style_commentaire, Config.coloration_primitive, Config.style_primitive,
-                Config.coloration_parenthese, Config.style_parenthese, Config.coloration_operande, Config.style_operande);
+        initStyles(Config.syntaxCommentColor, Config.syntaxCommentStyle, Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle,
+                Config.syntaxBracketColor, Config.syntaxBracketStyle, Config.syntaxOperandColor, Config.syntaxOperandStyle);
     }
 
     public void setColoration(boolean b) {
@@ -51,27 +51,27 @@ public class LogoDocument extends DefaultStyledDocument {
         normal = new SimpleAttributeSet();
         //StyleConstants.setFontFamily(normal, Config.police.getFamily());
         //StyleConstants.setForeground(normal, Color.black);
-        StyleConstants.setFontSize(normal, Config.police.getSize());
+        StyleConstants.setFontSize(normal, Config.font.getSize());
 
         comment = new SimpleAttributeSet();
         StyleConstants.setForeground(comment, new Color(c_comment));
         setBoldItalic(sty_comment, comment);
-        StyleConstants.setFontSize(comment, Config.police.getSize());
+        StyleConstants.setFontSize(comment, Config.font.getSize());
 
         keyword = new SimpleAttributeSet();
         StyleConstants.setForeground(keyword, new Color(c_primitive));
         setBoldItalic(sty_primitive, keyword);
-        StyleConstants.setFontSize(keyword, Config.police.getSize());
+        StyleConstants.setFontSize(keyword, Config.font.getSize());
 
         quote = new SimpleAttributeSet();
         StyleConstants.setForeground(quote, new Color(c_operande));
         setBoldItalic(sty_operande, quote);
-        StyleConstants.setFontSize(quote, Config.police.getSize());
+        StyleConstants.setFontSize(quote, Config.font.getSize());
 
         parenthese = new SimpleAttributeSet();
         StyleConstants.setForeground(parenthese, new Color(c_parenthese));
         setBoldItalic(sty_parenthese, parenthese);
-        StyleConstants.setFontSize(parenthese, Config.police.getSize());
+        StyleConstants.setFontSize(parenthese, Config.font.getSize());
     }
 
     void setBoldItalic(int id, MutableAttributeSet sty) {

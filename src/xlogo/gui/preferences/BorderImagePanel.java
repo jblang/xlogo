@@ -25,7 +25,7 @@ public class BorderImagePanel extends JPanel implements ActionListener {
     private ThumbDialog frame = null;
 
     BorderImagePanel() {
-        externalImages = new ArrayList<String>(Config.borderExternalImage);
+        externalImages = new ArrayList<String>(Config.userBorderImages);
         initGui();
     }
 

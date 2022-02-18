@@ -1,6 +1,6 @@
 package xlogo.gui.preferences;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.MessageTextArea;
@@ -23,9 +23,9 @@ public class OptionsPanel extends JPanel {
     private final GridBagLayout gridBagLayout4 = new GridBagLayout();
 
     private final JLabel label_screencolor = new JLabel(Logo.messages.getString("screencolor"));
-    private final ColorPanel b_screencolor = new ColorPanel(Config.screencolor);
+    private final ColorPanel b_screencolor = new ColorPanel(Config.screenColor);
     private final JLabel label_pencolor = new JLabel(Logo.messages.getString("pencolor"));
-    private final ColorPanel b_pencolor = new ColorPanel(Config.pencolor);
+    private final ColorPanel b_pencolor = new ColorPanel(Config.penColor);
     private final JLabel nb_tortues = new JLabel(Logo.messages.getString("nb_tortues"));
     private final JLabel epaisseur_crayon = new JLabel(Logo.messages
             .getString("epaisseur_crayon"));
@@ -42,14 +42,14 @@ public class OptionsPanel extends JPanel {
     private final JLabel labelx = new JLabel("x");
     private final JTextField hauteur = new JTextField(String.valueOf(Config.imageHeight));
     private final JLabel label_memoire = new JLabel(Logo.messages.getString("memoire"));
-    private final JTextField memoire = new JTextField(String.valueOf(Config.tmp_memoire));
+    private final JTextField memoire = new JTextField(String.valueOf(Config.newMemoryLimit));
     private final JLabel label_qualite = new JLabel(Logo.messages.getString("qualite_dessin"));
     private final Object[] choix_qualite = {Logo.messages.getString("normal"), Logo.messages.getString("haut"), Logo.messages.getString("bas")};
     private final JComboBox jc_qualite = new JComboBox(choix_qualite);
     private final GridPanel gridPanel = new GridPanel();
     private final AxisPanel axisPanel = new AxisPanel();
     private final JLabel labelTcp = new JLabel(Logo.messages.getString("pref.options.tcp"));
-    private final JTextField textTcp = new JTextField(String.valueOf(Config.TCP_PORT));
+    private final JTextField textTcp = new JTextField(String.valueOf(Config.tcpPort));
 
     protected OptionsPanel(Application cadre) {
         this.cadre = cadre;
@@ -61,7 +61,7 @@ public class OptionsPanel extends JPanel {
             clearVariables.setSelected(true);
         epaisseur.setText(String.valueOf(Config.maxPenWidth));
         tortues.setText(String.valueOf(Config.maxTurtles));
-        jc_qualite.setSelectedIndex(Config.quality);
+        jc_qualite.setSelectedIndex(Config.drawQuality);
         setLayout(gridBagLayout4);
         taille_dessin.add(largeur);
         taille_dessin.add(labelx);
@@ -141,14 +141,14 @@ public class OptionsPanel extends JPanel {
         try {
             int p = Integer.parseInt(textTcp.getText());
             if (p <= 0) p = 1948;
-            Config.TCP_PORT = p;
+            Config.tcpPort = p;
         } catch (NumberFormatException e) {
-            Config.TCP_PORT = 1948;
+            Config.tcpPort = 1948;
         }
         //pen color
-        Config.pencolor = b_pencolor.getValue();
+        Config.penColor = b_pencolor.getValue();
         // screencolor
-        Config.screencolor = b_screencolor.getValue();
+        Config.screenColor = b_screencolor.getValue();
         // Clear screen when we leave editor?
         Config.eraseImage = effacer_editeur.isSelected();
         Config.clearVariables = clearVariables.isSelected();
@@ -171,8 +171,8 @@ public class OptionsPanel extends JPanel {
         // pen shape
         Config.penShape = jc.getSelectedIndex();
         // Quality of drawing
-        Config.quality = jc_qualite.getSelectedIndex();
-        cadre.getKernel().setDrawingQuality(Config.quality);
+        Config.drawQuality = jc_qualite.getSelectedIndex();
+        cadre.getKernel().setDrawingQuality(Config.drawQuality);
         // Si on redimensionne la zone de dessin
         // Resize drawing zone
         try {
@@ -195,7 +195,7 @@ public class OptionsPanel extends JPanel {
                 long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
                 long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
 //				System.out.println("memoire envisagee "+(total-free+memoire_necessaire-memoire_image));
-                if (total - free + memoire_necessaire - memoire_image < Config.memoire * 0.8) {
+                if (total - free + memoire_necessaire - memoire_image < Config.memoryLimit * 0.8) {
                     cadre.resizeDrawingZone();
                 } else {
                     Config.imageWidth = tmp_largeur;
@@ -204,7 +204,7 @@ public class OptionsPanel extends JPanel {
                     hauteur.setText(String.valueOf(Config.imageHeight));
                     long conseil = 64 * ((total - free + memoire_necessaire - memoire_image) / 64) + 64;
                     if (total - free + memoire_necessaire - memoire_image > 0.8 * conseil) conseil += 64;
-                    if (conseil == Config.memoire) conseil += 64;
+                    if (conseil == Config.memoryLimit) conseil += 64;
                     String message = Logo.messages.getString("erreur_memoire") + " " + conseil + "\n" + Logo.messages.getString("relancer");
                     MessageTextArea jt = new MessageTextArea(message);
                     JOptionPane.showMessageDialog(this, jt, Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
@@ -214,58 +214,56 @@ public class OptionsPanel extends JPanel {
             Config.imageWidth = 1000;
             Config.imageHeight = 1000;
         }
-        Config.tmp_memoire = Integer.parseInt(memoire.getText());
-        if (Config.tmp_memoire < 64) Config.tmp_memoire = 64;
+        Config.newMemoryLimit = Integer.parseInt(memoire.getText());
+        if (Config.newMemoryLimit < 64) Config.newMemoryLimit = 64;
         // Draw the grid and axis
         boolean refresh = false;
         boolean b = gridPanel.gridVisible();
         if (b) {
-            if (Config.drawGrid == false) {
+            if (Config.gridEnabled == false) {
                 refresh = true;
             } else {
-                if (Config.XGrid != gridPanel.getXGrid()
-                        || Config.YGrid != gridPanel.getYGrid()
+                if (Config.xGridSpacing != gridPanel.getXGrid()
+                        || Config.yGridSpacing != gridPanel.getYGrid()
                         || Config.gridColor != gridPanel.getGridColor())
                     refresh = true;
             }
-        } else if (Config.drawGrid == true) {
+        } else if (Config.gridEnabled == true) {
             refresh = true;
         }
         b = axisPanel.xAxisVisible();
         if (b) {
-            if (Config.drawXAxis == false) refresh = true;
+            if (Config.xAxisEnabled == false) refresh = true;
             else {
-                if (Config.XAxis != axisPanel.getXAxis() ||
+                if (Config.xAxisSpacing != axisPanel.getXAxis() ||
                         Config.axisColor != axisPanel.getAxisColor())
                     refresh = true;
             }
-        } else if (Config.drawXAxis == true) refresh = true;
+        } else if (Config.xAxisEnabled == true) refresh = true;
         b = axisPanel.yAxisVisible();
         if (b) {
-            if (Config.drawYAxis == false) refresh = true;
+            if (Config.yAxisEnabled == false) refresh = true;
             else {
-                if (Config.YAxis != axisPanel.getYAxis() ||
+                if (Config.yAxisSpacing != axisPanel.getYAxis() ||
                         Config.axisColor != axisPanel.getAxisColor())
                     refresh = true;
             }
-        } else if (Config.drawYAxis == true) refresh = true;
+        } else if (Config.yAxisEnabled == true) refresh = true;
         if (refresh) refreshGridAxis();
-        // Modify the image border
-        cadre.calculateMargin();
     }
 
     private void refreshGridAxis() {
         boolean b = gridPanel.gridVisible();
-        Config.drawGrid = b;
-        Config.XGrid = gridPanel.getXGrid();
-        Config.YGrid = gridPanel.getYGrid();
+        Config.gridEnabled = b;
+        Config.xGridSpacing = gridPanel.getXGrid();
+        Config.yGridSpacing = gridPanel.getYGrid();
         Config.gridColor = gridPanel.getGridColor();
         b = axisPanel.xAxisVisible();
-        Config.drawXAxis = b;
-        Config.XAxis = axisPanel.getXAxis();
+        Config.xAxisEnabled = b;
+        Config.xAxisSpacing = axisPanel.getXAxis();
         b = axisPanel.yAxisVisible();
-        Config.drawYAxis = b;
-        Config.YAxis = axisPanel.getYAxis();
+        Config.yAxisEnabled = b;
+        Config.yAxisSpacing = axisPanel.getYAxis();
         Config.axisColor = axisPanel.getAxisColor();
         cadre.getKernel().vide_ecran();
     }

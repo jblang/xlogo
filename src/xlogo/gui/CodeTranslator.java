@@ -57,8 +57,8 @@ public class CodeTranslator extends JFrame implements ActionListener {
         setTitle(Logo.messages.getString("menu.tools.translate"));
         setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
         getContentPane().setLayout(new BorderLayout());
-        combo_origine.setSelectedIndex(Config.langage);
-        combo_destination.setSelectedIndex(Config.langage);
+        combo_origine.setSelectedIndex(Config.language);
+        combo_destination.setSelectedIndex(Config.language);
 
         p_nord_origine.add(traduire_de);
         p_nord_origine.add(combo_origine);

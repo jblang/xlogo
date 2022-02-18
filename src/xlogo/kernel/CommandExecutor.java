@@ -7,7 +7,7 @@
  */
 package xlogo.kernel;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.grammar.LogoSyntaxError;
@@ -92,22 +92,22 @@ public class CommandExecutor {
             case 0: // av
                 delay();
                 arg = waitForDouble(param.pop());
-                result = app.getArdoise().av(arg);
+                result = app.getDrawPanel().av(arg);
                 break;
             case 1: // re
                 delay();
                 arg = waitForDouble(param.pop());
-                result = app.getArdoise().re(arg);
+                result = app.getDrawPanel().re(arg);
                 break;
             case 2: // td
                 delay();
                 arg = waitForDouble(param.pop());
-                result = app.getArdoise().td(arg);
+                result = app.getDrawPanel().td(arg);
                 break;
             case 3: // tg
                 delay();
                 arg = waitForDouble(param.pop());
-                result = app.getArdoise().tg(arg);
+                result = app.getDrawPanel().tg(arg);
                 break;
 /*		case 4: // arithmetic.power puissance
 			try {
@@ -472,7 +472,7 @@ public class CommandExecutor {
 			if (DrawPanel.WINDOW_MODE!=DrawPanel.WINDOW_3D){
 				double a = kernel.getActiveTurtle().corX - Config.imageWidth/2;
 				double b = Config.imageHeight/2 - kernel.getActiveTurtle().corY;
-				Interpreter.calcul.push("[ " + MyCalculator.teste_fin_double(a) + " " + MyCalculator.teste_fin_double(b) + " ] ");
+				Interpreter.calcul.push("[ " + Calculator.teste_fin_double(a) + " " + Calculator.teste_fin_double(b) + " ] ");
 			}
 			else {
 				Interpreter.calcul.push("[ "+kernel.getActiveTurtle().X+" "
@@ -482,7 +482,7 @@ public class CommandExecutor {
 			break;
 		case 42: // cap
 			Interpreter.operande = true;
-			Interpreter.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().heading));
+			Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().heading));
 			break;
 		case 43: // arrondi
 			Interpreter.operande = true;
@@ -1216,7 +1216,7 @@ public class CommandExecutor {
 				Interpreter.operande=true;
 				if (DrawPanel.WINDOW_MODE!=DrawPanel.WINDOW_3D){
 					double angle = cadre.getArdoise().vers2D(getFinalList(param.get(0)));
-					Interpreter.calcul.push(MyCalculator.teste_fin_double(angle));
+					Interpreter.calcul.push(Calculator.teste_fin_double(angle));
 				}
 				else{
 					double[] orientation=cadre.getArdoise().vers3D(getFinalList(param.get(0)));
@@ -1229,7 +1229,7 @@ public class CommandExecutor {
 			try {
 				Interpreter.operande=true;
 				double distance = cadre.getArdoise().distance(getFinalList(param.get(0)));
-				Interpreter.calcul.push(MyCalculator.teste_fin_double(distance));
+				Interpreter.calcul.push(Calculator.teste_fin_double(distance));
 			} catch (LogoException e) {
 			}
 			break;
@@ -1681,7 +1681,7 @@ public class CommandExecutor {
 		case 135: // indexsequence
 			Interpreter.operande = true;
 			double d = (double) cadre.getSon().getTicks() / 64;
-			Interpreter.calcul.push(MyCalculator.teste_fin_double(d));
+			Interpreter.calcul.push(Calculator.teste_fin_double(d));
 
 			break;
 		case 136: // fixeindexsequence
@@ -2199,7 +2199,7 @@ public class CommandExecutor {
 		break;
 		case 175: // separation
 			Interpreter.operande=true;
-			Interpreter.calcul.push(MyCalculator.teste_fin_double(cadre.jSplitPane1.getResizeWeight()));
+			Interpreter.calcul.push(Calculator.teste_fin_double(cadre.jSplitPane1.getResizeWeight()));
 		break;
 		case 176: // tronque
 			Interpreter.operande=true;
@@ -2784,7 +2784,7 @@ public class CommandExecutor {
        			case 215: // tc taillecrayon
        				Interpreter.operande=true;
        				double penwidth=2*kernel.getActiveTurtle().getPenWidth();
-       				Interpreter.calcul.push(String.valueOf(MyCalculator.teste_fin_double(penwidth)));
+       				Interpreter.calcul.push(String.valueOf(Calculator.teste_fin_double(penwidth)));
        			break;
        			case 216: // setpenshape=ffc fixeformecrayon
        				Interpreter.operande=false;
@@ -3207,7 +3207,7 @@ public class CommandExecutor {
                 	try{
                 		primitive3D("3d.roll");
         				Interpreter.operande = true;
-        				Interpreter.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().roll));
+        				Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().roll));
                 	}
                 	catch(LogoException e){}
                     break;
@@ -3215,7 +3215,7 @@ public class CommandExecutor {
                 	try{
                 		primitive3D("3d.pitch");
                 		Interpreter.operande = true;
-                		Interpreter.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().pitch));
+                		Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().pitch));
                 	}
                 	catch(LogoException e){}
                 		break;
@@ -3247,9 +3247,9 @@ public class CommandExecutor {
                 	try{
                 		primitive3D("3d.orientation");
                 		Interpreter.operande = true;
-                		String pitch=MyCalculator.teste_fin_double(kernel.getActiveTurtle().pitch);
-                		String roll=MyCalculator.teste_fin_double(kernel.getActiveTurtle().roll);
-                		String heading=MyCalculator.teste_fin_double(kernel.getActiveTurtle().heading);
+                		String pitch=Calculator.teste_fin_double(kernel.getActiveTurtle().pitch);
+                		String roll=Calculator.teste_fin_double(kernel.getActiveTurtle().roll);
+                		String heading=Calculator.teste_fin_double(kernel.getActiveTurtle().heading);
                 		Interpreter.calcul.push("[ "+roll+" "+pitch+" "+heading+" ] ");
                 	}
                 	catch(LogoException e){}
@@ -3699,21 +3699,21 @@ public class CommandExecutor {
             	 break;
                case 293: // zoom
             	   Interpreter.operande=true;
-   				Interpreter.calcul.push(MyCalculator.teste_fin_double(DrawPanel.zoom));
+   				Interpreter.calcul.push(Calculator.teste_fin_double(DrawPanel.zoom));
             	break;
                case 294: // drawing.x
             	   Interpreter.operande=true;
-      				Interpreter.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().getX()));
+      				Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().getX()));
             	   break;
                case 295:// drawing.y
             	   Interpreter.operande=true;
-     				Interpreter.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().getY()));
+     				Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().getY()));
             	   break;
                case 296: // drawing.z
             	   Interpreter.operande=true;
             	   try{
             		   primitive3D("drawing.z");
-            		   Interpreter.calcul.push(MyCalculator.teste_fin_double(kernel.getActiveTurtle().Z));
+            		   Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().Z));
             	   }
             	   catch(LogoException e){}
             	   break;
@@ -3731,7 +3731,7 @@ public class CommandExecutor {
             	  break;
                case 298: // arithmetic.alea
             	   Interpreter.operande = true;
-				   Interpreter.calcul.push(MyCalculator.teste_fin_double(Math.random()));
+				   Interpreter.calcul.push(Calculator.teste_fin_double(Math.random()));
             	   break;
                case 299: // loop.dountil
    				try {

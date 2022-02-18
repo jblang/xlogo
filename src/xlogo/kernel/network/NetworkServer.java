@@ -7,7 +7,7 @@ package xlogo.kernel.network;
  * @author Loïc Le Coq
  */
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.Kernel;
@@ -45,7 +45,7 @@ public class NetworkServer {
     public static void stopServer() {
         String st = NetworkServer.EXECUTETCP + "\n" + NetworkServer.END_OF_FILE + "\n\n";
         try {
-            Socket socket = new Socket("127.0.0.1", Config.TCP_PORT);
+            Socket socket = new Socket("127.0.0.1", Config.tcpPort);
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(st);
         } catch (IOException e) {
@@ -54,9 +54,9 @@ public class NetworkServer {
 
     private void init() throws LogoException {
         try {
-            serverSocket = new ServerSocket(Config.TCP_PORT);
+            serverSocket = new ServerSocket(Config.tcpPort);
         } catch (IOException e) {
-            throw (new LogoException(app, Logo.messages.getString("pb_port") + Config.TCP_PORT));
+            throw (new LogoException(app, Logo.messages.getString("pb_port") + Config.tcpPort));
         }
         Socket clientSocket = null;
         try {
@@ -117,7 +117,7 @@ public class NetworkServer {
             }
             // ******************* Envoietcp **************************
             else {
-                app.ecris("normal", inputLine);
+                app.updateHistory("normal", inputLine);
                 out.println(Logo.messages.getString("pref.ok"));
                 out.close();
                 in.close();

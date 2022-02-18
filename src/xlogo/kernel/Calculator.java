@@ -1,6 +1,6 @@
 package xlogo.kernel;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
@@ -12,7 +12,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Stack;
 
-public class MyCalculator {
+public class Calculator {
     private static int digits;
     private final BigDecimal tenth = new BigDecimal(0.1);
     private MathContext mc = null;
@@ -42,8 +42,8 @@ public class MyCalculator {
     private final BigDecimal[] cosTable;
     private final Application app;
 
-    protected MyCalculator(int digits, Application app) {
-        MyCalculator.digits = digits;
+    protected Calculator(int digits, Application app) {
+        Calculator.digits = digits;
         this.app = app;
         initLogTable = false;
         initCosTable = false;

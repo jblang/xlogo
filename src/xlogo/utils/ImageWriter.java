@@ -10,12 +10,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class WriteImage extends Thread {
+public class ImageWriter extends Thread {
     private BufferedImage image;
     private final JFrame owner;
     private String path;
 
-    public WriteImage(JFrame owner, BufferedImage image) {
+    public ImageWriter(JFrame owner, BufferedImage image) {
         this.image = image;
         this.owner = owner;
     }
@@ -83,7 +83,7 @@ public class WriteImage extends Thread {
             setTitle(Logo.messages.getString("titredialogue2"));
             prog.setIndeterminate(true);
             java.awt.FontMetrics fm = owner.getGraphics()
-                    .getFontMetrics(Config.police);
+                    .getFontMetrics(Config.font);
             int width = fm.stringWidth(Logo.messages.getString("titredialogue2"));
             setSize(new Dimension(width + 150, 100));
             getContentPane().add(prog);

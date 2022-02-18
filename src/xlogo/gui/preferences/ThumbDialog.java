@@ -86,7 +86,7 @@ public class ThumbDialog extends JDialog implements ActionListener {
     private void initMainPanel() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
-        columns = (int) (Math.sqrt(Config.borderInternalImage.length + externalImages.size() + 1) + .5);
+        columns = (int) (Math.sqrt(Config.includedBorderImages.length + externalImages.size() + 1) + .5);
         // Add the first button for uniform color
         toggleButtons.add(new JToggleButton());
         col = Config.borderColor;
@@ -100,11 +100,11 @@ public class ThumbDialog extends JDialog implements ActionListener {
         getButton(0).addActionListener(this);
         getButton(0).setActionCommand("FirstButton");
         // Add buttons from Internal Images
-        for (int i = 1; i < Config.borderInternalImage.length + 1; i++) {
+        for (int i = 1; i < Config.includedBorderImages.length + 1; i++) {
             try {
-                ImageIcon ic = new ImageIcon(scale(Config.borderInternalImage[i - 1], true));
+                ImageIcon ic = new ImageIcon(scale(Config.includedBorderImages[i - 1], true));
                 this.createToggle(ic, i);
-                if (Config.borderInternalImage[i - 1].equals(Config.borderImageSelected) && null == Config.borderColor) {
+                if (Config.includedBorderImages[i - 1].equals(Config.borderImageSelected) && null == Config.borderColor) {
                     getButton(i).setSelected(true);
                 }
             } catch (Exception e) {
@@ -121,9 +121,9 @@ public class ThumbDialog extends JDialog implements ActionListener {
         }
 
         // Add buttons from External Images
-        for (int i = Config.borderInternalImage.length + 1; i < externalImages.size() + Config.borderInternalImage.length + 1; i++) {
+        for (int i = Config.includedBorderImages.length + 1; i < externalImages.size() + Config.includedBorderImages.length + 1; i++) {
             try {
-                String name = externalImages.get(i - Config.borderInternalImage.length - 1);
+                String name = externalImages.get(i - Config.includedBorderImages.length - 1);
                 ImageIcon ic = new ImageIcon(scale(name, false));
                 this.createToggle(ic, i);
                 if (name.equals(Config.borderImageSelected) && null == Config.borderColor) {
@@ -219,14 +219,14 @@ public class ThumbDialog extends JDialog implements ActionListener {
             }
         } else if (cmd.equals("remove")) {
             int id = getSelectedButton();
-            if (id > Config.borderInternalImage.length) {
+            if (id > Config.includedBorderImages.length) {
                 String key = String.valueOf(id);
                 String name = map.get(key);
                 map.remove(key);
-                for (int i = id; i < Config.borderInternalImage.length + externalImages.size(); i++) {
+                for (int i = id; i < Config.includedBorderImages.length + externalImages.size(); i++) {
                     map.put(String.valueOf(id), map.get(String.valueOf(i + 1)));
                 }
-                map.remove(String.valueOf(Config.borderInternalImage.length + externalImages.size() - 1));
+                map.remove(String.valueOf(Config.includedBorderImages.length + externalImages.size() - 1));
 
                 externalImages.remove(name);
                 mainPanel.remove(getButton(id));
@@ -241,10 +241,10 @@ public class ThumbDialog extends JDialog implements ActionListener {
                 bip.setBorderColor(null);
                 int id = getSelectedButton();
                 if (id == -1) id = 1;
-                if (id <= Config.borderInternalImage.length)
-                    bip.setPath(Config.borderInternalImage[id - 1]);
+                if (id <= Config.includedBorderImages.length)
+                    bip.setPath(Config.includedBorderImages[id - 1]);
                 else
-                    bip.setPath(externalImages.get(id - 1 - Config.borderInternalImage.length));
+                    bip.setPath(externalImages.get(id - 1 - Config.includedBorderImages.length));
             }
             bip.updatePreviewBorderImage();
             dispose();
@@ -254,7 +254,7 @@ public class ThumbDialog extends JDialog implements ActionListener {
         } else {
             pc.setEnabled(false);
             int id = getSelectedButton();
-            remove.setEnabled(id > Config.borderInternalImage.length);
+            remove.setEnabled(id > Config.includedBorderImages.length);
         }
 
     }

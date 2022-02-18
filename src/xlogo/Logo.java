@@ -12,6 +12,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+import xlogo.gui.Application;
 import xlogo.gui.LanguageSelection;
 import xlogo.kernel.Animation;
 import xlogo.utils.SimpleContentHandler;
@@ -64,7 +65,7 @@ public class Logo {
 
         Config.defaultFolder = Utils.rajoute_backslash(Config.defaultFolder);
         if (null == messages)
-            generateLanguage(Config.langage); //Au cas où si le fichier de démarrage ne contient rien sur la langue
+            generateLanguage(Config.language); //Au cas où si le fichier de démarrage ne contient rien sur la langue
         // Initialize frame
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -76,36 +77,36 @@ public class Logo {
                 int memoire_necessaire = Config.imageWidth * Config.imageHeight * 4 / 1024 / 1024;
                 long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
                 long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
-                if (total - free + memoire_necessaire > Config.memoire * 0.8) {
+                if (total - free + memoire_necessaire > Config.memoryLimit * 0.8) {
                     Config.imageHeight = 1000;
                     Config.imageWidth = 1000;
                 }
                 // init frame
                 init(frame);
-                frame.setCommandLine(false);
+                frame.setCommandEnabled(false);
                 //  On génère les primitives et les fichiers de démarrage
                 // generate primitives and start up files
-                frame.genere_primitive();
+                frame.generatePrimitives();
 
                 // On Enregistre le temps auquel la session a commencé
                 // hour when we launch XLogo
-                Config.heure_demarrage = Calendar.getInstance().getTimeInMillis();
+                Config.startupHour = Calendar.getInstance().getTimeInMillis();
 
 
                 // Command to execute on startup
 
                 // If this command is defined from the command line
                 if (Config.autoLaunch) {
-                    frame.affichage_Start(Utils.decoupe(Config.mainCommand));
+                    frame.startAnimation(Utils.decoupe(Config.mainCommand));
                     frame.getHistoryPanel().ecris("normal", Config.mainCommand + "\n");
                 }
                 // Else if this command is defined from the Start Up Dialog Box
-                else if (!Config.a_executer.equals("")) {
-                    frame.animation = new Animation(frame, Utils.decoupe(Config.a_executer));
+                else if (!Config.startupCommand.equals("")) {
+                    frame.animation = new Animation(frame, Utils.decoupe(Config.startupCommand));
                     frame.animation.start();
                 } else {
-                    frame.setCommandLine(true);
-                    frame.focus_Commande();
+                    frame.setCommandEnabled(true);
+                    frame.focusCommandLine();
                 }
             }
         });
@@ -174,11 +175,11 @@ public class Logo {
         // ou au lancement en ligne de commande
 
         for (int i = 0; i < args.length; i++) {
-            Config.path.add(args[i]);
+            Config.startupFiles.add(args[i]);
         }
 
 
-        Config.path.add(0, "#####");
+        Config.startupFiles.add(0, "#####");
         //try{;
         new Logo();
 /*    }
@@ -222,7 +223,7 @@ public class Logo {
             case Config.LANGUAGE_SPANISH: // spanish
                 locale = new Locale("es", "ES");
                 break;
-            case Config.LANGUAGE_PORTUGAL: // portuguese
+            case Config.LANGUAGE_PORTUGUESE: // portuguese
                 locale = new Locale("pt", "BR");
                 break;
             case Config.LANGUAGE_ESPERANTO: // esperanto
@@ -254,7 +255,7 @@ public class Logo {
     }
 
     public static String getLocaleTwoLetters() {
-        if (Config.langage > -1 && Config.langage < locales.length) return locales[Config.langage];
+        if (Config.language > -1 && Config.language < locales.length) return locales[Config.language];
         else return "en";
     }
 
@@ -266,9 +267,9 @@ public class Logo {
     private void init(Application frame) {
         // on centre la tortue
         // Centering turtle
-        Dimension d = frame.scrollArea.getViewport().getViewRect().getSize();
+        Dimension d = frame.scrollPane.getViewport().getViewRect().getSize();
         Point p = new Point(Math.abs(Config.imageWidth / 2 - d.width / 2), Math.abs(Config.imageHeight / 2 - d.height / 2));
-        frame.scrollArea.getViewport().setViewPosition(p);
+        frame.scrollPane.getViewport().setViewPosition(p);
 
         // on affiche la tortue sur la zone de dessin
         // Displays turtle
@@ -280,7 +281,7 @@ public class Logo {
         } catch (InterruptedException e) {
         }
         //frame.getArdoise().getGraphics().drawImage(DrawPanel.dessin, 0, 0, frame);
-        frame.scrollArea.validate();//getArdoise().revalidate();
+        frame.scrollPane.validate();//getArdoise().revalidate();
 
         /////////////frame.getKernel().initDrawGraphics();
     }
@@ -294,38 +295,38 @@ public class Logo {
      */
     private void readCommandLineConfig() {
         int i = 0;
-        while (i < Config.path.size()) {
-            String element = Config.path.get(i);
+        while (i < Config.startupFiles.size()) {
+            String element = Config.startupFiles.get(i);
             // AutoLaunch main Command on startup
             if (element.equals("-a")) {
                 Config.autoLaunch = true;
-                Config.path.remove(i);
+                Config.startupFiles.remove(i);
             }
             // Choosing language
             else if (element.equals("-lang")) {
-                Config.path.remove(i);
-                if (i < Config.path.size()) {
-                    element = Config.path.get(i);
+                Config.startupFiles.remove(i);
+                if (i < Config.startupFiles.size()) {
+                    element = Config.startupFiles.get(i);
                     for (int j = 0; j < Logo.locales.length; j++) {
                         if (Logo.locales[j].equals(element)) {
-                            Config.langage = j;
+                            Config.language = j;
                             Logo.generateLanguage(j);
                             break;
                         }
                     }
-                    Config.path.remove(i);
+                    Config.startupFiles.remove(i);
                 }
             }
             // Memory Heap Size
             else if (element.equals("-memory")) {
-                Config.path.remove(i);
-                if (i < Config.path.size()) {
-                    element = Config.path.get(i);
+                Config.startupFiles.remove(i);
+                if (i < Config.startupFiles.size()) {
+                    element = Config.startupFiles.get(i);
                     try {
                         int mem = Integer.parseInt(element);
-                        Config.memoire = mem;
-                        Config.tmp_memoire = mem;
-                        Config.path.remove(i);
+                        Config.memoryLimit = mem;
+                        Config.newMemoryLimit = mem;
+                        Config.startupFiles.remove(i);
 
                     } catch (NumberFormatException e) {
                     }
@@ -333,17 +334,17 @@ public class Logo {
             }
             // TCP port
             else if (element.equals("-tcp_port")) {
-                Config.path.remove(i);
-                if (i < Config.path.size()) {
-                    element = Config.path.get(i);
+                Config.startupFiles.remove(i);
+                if (i < Config.startupFiles.size()) {
+                    element = Config.startupFiles.get(i);
                     try {
                         int port = Integer.parseInt(element);
                         if (port <= 0) port = 1948;
-                        Config.TCP_PORT = port;
-                        Config.path.remove(i);
+                        Config.tcpPort = port;
+                        Config.startupFiles.remove(i);
 
                     } catch (NumberFormatException e) {
-                        Config.TCP_PORT = 1948;
+                        Config.tcpPort = 1948;
                     }
                 }
             }
@@ -385,7 +386,7 @@ public class Logo {
                     if (element.equals("# langue")) {
                         element = st.nextToken();
                         int id = Integer.parseInt(element);
-                        Config.langage = id;
+                        Config.language = id;
                         generateLanguage(id);
                     } else if (element.equals("# vitesse")) {
                         element = st.nextToken();
@@ -411,42 +412,42 @@ public class Logo {
                         if (!f.isDirectory()) Config.defaultFolder = System.getProperty("user.home");
                     } else if (element.equals("# a executer au demarrage")) {
                         element = st.nextToken();
-                        if (!element.equals("# aucun")) Config.a_executer = element;
+                        if (!element.equals("# aucun")) Config.startupCommand = element;
                     } else if (element.equals("# police")) {
                         element = st.nextToken();
                         String nom = element;
                         element = st.nextToken();
-                        Config.police = new Font(nom, Font.PLAIN, Integer.parseInt(element));
+                        Config.font = new Font(nom, Font.PLAIN, Integer.parseInt(element));
                     } else if (element.equals("# hauteur")) {
                         Config.imageHeight = Integer.parseInt(st.nextToken());
                     } else if (element.equals("# largeur")) {
                         Config.imageWidth = Integer.parseInt(st.nextToken());
                     } else if (element.equals("# memoire")) {
                         element = st.nextToken();
-                        Config.memoire = Integer.parseInt(element);
-                        Config.tmp_memoire = Integer.parseInt(element);
+                        Config.memoryLimit = Integer.parseInt(element);
+                        Config.newMemoryLimit = Integer.parseInt(element);
                     } else if (element.equals("# qualite")) {
                         element = st.nextToken();
-                        Config.quality = Integer.parseInt(element);
+                        Config.drawQuality = Integer.parseInt(element);
                     } else if (element.equals("# coloration")) {
                         element = st.nextToken();
                         StringTokenizer sti = new StringTokenizer(element);
                         if (sti.countTokens() == 9) {
-                            Config.COLOR_ENABLED = Boolean.parseBoolean(sti.nextToken());
-                            Config.coloration_commentaire = Integer.parseInt(sti.nextToken());
-                            Config.coloration_operande = Integer.parseInt(sti.nextToken());
-                            Config.coloration_parenthese = Integer.parseInt(sti.nextToken());
-                            Config.coloration_primitive = Integer.parseInt(sti.nextToken());
-                            Config.style_commentaire = Integer.parseInt(sti.nextToken());
-                            Config.style_operande = Integer.parseInt(sti.nextToken());
-                            Config.style_parenthese = Integer.parseInt(sti.nextToken());
-                            Config.style_primitive = Integer.parseInt(sti.nextToken());
+                            Config.syntaxHighlightingEnabled = Boolean.parseBoolean(sti.nextToken());
+                            Config.syntaxCommentColor = Integer.parseInt(sti.nextToken());
+                            Config.syntaxOperandColor = Integer.parseInt(sti.nextToken());
+                            Config.syntaxBracketColor = Integer.parseInt(sti.nextToken());
+                            Config.syntaxPrimitiveColor = Integer.parseInt(sti.nextToken());
+                            Config.syntaxCommentStyle = Integer.parseInt(sti.nextToken());
+                            Config.syntaxOperandStyle = Integer.parseInt(sti.nextToken());
+                            Config.syntaxBracketStyle = Integer.parseInt(sti.nextToken());
+                            Config.syntaxPrimitiveStyle = Integer.parseInt(sti.nextToken());
                         }
                     } else if (element.equals("# fichiers de demarrage")) {
                         while (st.hasMoreTokens()) {
                             element = st.nextToken();
 //			  System.out.println(path+" "+element);
-                            if (!element.startsWith("#")) Config.path.add(element);
+                            if (!element.startsWith("#")) Config.startupFiles.add(element);
                         }
                     }
                 }
@@ -475,7 +476,7 @@ public class Logo {
                 }
             }
             select.dispose();
-            generateLanguage(Config.langage);
+            generateLanguage(Config.language);
         }
         // Verify that all values are in valid range
 

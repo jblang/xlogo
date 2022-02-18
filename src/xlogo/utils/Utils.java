@@ -10,7 +10,7 @@ package xlogo.utils;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.Animation;
-import xlogo.kernel.MyCalculator;
+import xlogo.kernel.Calculator;
 
 import java.awt.*;
 import java.io.*;
@@ -90,7 +90,7 @@ public class Utils {
                 else if (c == ' ') ignore = false;
             }
         }
-        return MyCalculator.getOutputNumber(new String(buffer));
+        return Calculator.getOutputNumber(new String(buffer));
     }
 
     /**
@@ -294,7 +294,7 @@ public class Utils {
     }
 
     public static String primitiveName(String generic) {
-        Locale locale = Logo.getLocale(Config.langage);
+        Locale locale = Logo.getLocale(Config.language);
         ResourceBundle prim = ResourceBundle.getBundle(
                 "primitives", locale);
         String st = prim.getString(generic);

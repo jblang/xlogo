@@ -8,7 +8,7 @@
 
 package xlogo.kernel;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
@@ -95,8 +95,8 @@ public class Turtle {
         this.app = app;
         fixe_taille_crayon(1);
         String chemin = "tortue" + Config.activeTurtle + ".png";
-        couleurcrayon = Config.pencolor;
-        couleurmodedessin = Config.pencolor;
+        couleurcrayon = Config.penColor;
+        couleurmodedessin = Config.penColor;
         if (Config.activeTurtle == 0) {
             tort = null;
             largeur = 26;
@@ -153,8 +153,8 @@ public class Turtle {
         angle = Math.PI / 2;
         pendown = true;
         fixe_taille_crayon(1);
-        couleurcrayon = Config.pencolor;
-        couleurmodedessin = Config.pencolor;
+        couleurcrayon = Config.penColor;
+        couleurmodedessin = Config.penColor;
         penReverse = false;
     }
 
@@ -179,17 +179,17 @@ public class Turtle {
                 x1[0] = X - 20 * rotationMatrix[0][0];
                 x1[1] = Y - 20 * rotationMatrix[1][0];
                 x1[2] = Z - 20 * rotationMatrix[2][0];
-                screenCoord = app.getArdoise().toScreenCoord(x1, false);
+                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
                 triangle.moveTo((float) screenCoord[0], (float) screenCoord[1]);
                 x1[0] = X + 48 * rotationMatrix[0][1];
                 x1[1] = Y + 48 * rotationMatrix[1][1];
                 x1[2] = Z + 48 * rotationMatrix[2][1];
-                screenCoord = app.getArdoise().toScreenCoord(x1, false);
+                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
                 triangle.lineTo((float) screenCoord[0], (float) screenCoord[1]);
                 x1[0] = X + 20 * rotationMatrix[0][0];
                 x1[1] = Y + 20 * rotationMatrix[1][0];
                 x1[2] = Z + 20 * rotationMatrix[2][0];
-                screenCoord = app.getArdoise().toScreenCoord(x1, false);
+                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
                 triangle.lineTo((float) screenCoord[0], (float) screenCoord[1]);
                 triangle.closePath();
 
@@ -198,17 +198,17 @@ public class Turtle {
                 x1[0] = X + 15 * rotationMatrix[0][1];
                 x1[1] = Y + 15 * rotationMatrix[1][1];
                 x1[2] = Z + 15 * rotationMatrix[2][1];
-                screenCoord = app.getArdoise().toScreenCoord(x1, false);
+                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
                 triangle.moveTo((float) screenCoord[0], (float) screenCoord[1]);
                 x1[0] = X + 15 * rotationMatrix[0][2];
                 x1[1] = Y + 15 * rotationMatrix[1][2];
                 x1[2] = Z + 15 * rotationMatrix[2][2];
-                screenCoord = app.getArdoise().toScreenCoord(x1, false);
+                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
                 triangle.lineTo((float) screenCoord[0], (float) screenCoord[1]);
                 x1[0] = X;
                 x1[1] = Y;
                 x1[2] = Z;
-                screenCoord = app.getArdoise().toScreenCoord(x1, false);
+                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
                 triangle.lineTo((float) screenCoord[0], (float) screenCoord[1]);
             }
         }

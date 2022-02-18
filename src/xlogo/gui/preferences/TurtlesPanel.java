@@ -1,6 +1,6 @@
 package xlogo.gui.preferences;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.utils.Utils;
 

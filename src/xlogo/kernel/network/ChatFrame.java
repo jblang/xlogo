@@ -1,6 +1,6 @@
 package xlogo.kernel.network;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.Utils;
@@ -35,14 +35,14 @@ public class ChatFrame extends JFrame implements ActionListener {
 
     private void initStyle() {
         local = new SimpleAttributeSet();
-        StyleConstants.setFontFamily(local, Config.police.getFamily());
+        StyleConstants.setFontFamily(local, Config.font.getFamily());
         StyleConstants.setForeground(local, Color.black);
-        StyleConstants.setFontSize(local, Config.police.getSize());
+        StyleConstants.setFontSize(local, Config.font.getSize());
 
         distant = new SimpleAttributeSet();
-        StyleConstants.setFontFamily(distant, Config.police.getFamily());
+        StyleConstants.setFontFamily(distant, Config.font.getFamily());
         StyleConstants.setForeground(distant, Color.RED);
-        StyleConstants.setFontSize(distant, Config.police.getSize());
+        StyleConstants.setFontSize(distant, Config.font.getSize());
     }
 
     private void initGui() {
@@ -55,12 +55,12 @@ public class ChatFrame extends JFrame implements ActionListener {
         textPane.setBackground(new Color(255, 255, 220));
         this.getContentPane().setLayout(new BorderLayout());
         textField = new JTextField();
-        java.awt.FontMetrics fm = app.getGraphics().getFontMetrics(Config.police);
+        java.awt.FontMetrics fm = app.getGraphics().getFontMetrics(Config.font);
         int width = fm.stringWidth(Logo.messages.getString("stop_chat")) + 30;
         if (width < 200) width = 200;
 
         textPane.setPreferredSize(new Dimension(width, 300));
-        textField.setPreferredSize(new Dimension(width, Config.police.getSize() + 10));
+        textField.setPreferredSize(new Dimension(width, Config.font.getSize() + 10));
         scroll = new JScrollPane(textPane);
         getContentPane().add(scroll, BorderLayout.CENTER);
         getContentPane().add(textField, BorderLayout.SOUTH);

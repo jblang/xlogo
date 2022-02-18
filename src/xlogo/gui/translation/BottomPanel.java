@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class BottomPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    private final GuiTranslator tx;
+    private final UiTranslator tx;
     private JTabbedPane jt;
     private TranslationTable messageTable;
     private TranslationTable primTable;
@@ -17,7 +17,7 @@ public class BottomPanel extends JPanel {
     private JButton searchButton;
     private final ImageIcon ichercher = new FlatSVGIcon("xlogo/icons/find.svg");
 
-    protected BottomPanel(GuiTranslator tx, String action, String id) {
+    protected BottomPanel(UiTranslator tx, String action, String id) {
         this.tx = tx;
         this.action = action;
         this.id = id;
@@ -37,7 +37,7 @@ public class BottomPanel extends JPanel {
         searchButton = new JButton(ichercher);
         searchButton.setToolTipText(Logo.messages.getString("find"));
         searchButton.addActionListener(tx);
-        searchButton.setActionCommand(GuiTranslator.SEARCH);
+        searchButton.setActionCommand(UiTranslator.SEARCH);
         searchButton.setSize(new java.awt.Dimension(100, 50));
         add(searchButton, BorderLayout.EAST);
     }

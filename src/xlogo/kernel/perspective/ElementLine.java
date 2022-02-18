@@ -2,7 +2,7 @@ package xlogo.kernel.perspective;
 
 import com.sun.j3d.utils.geometry.Cylinder;
 import com.sun.j3d.utils.geometry.Sphere;
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.utils.LogoException;
 
 import javax.media.j3d.*;

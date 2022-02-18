@@ -1,6 +1,6 @@
 package xlogo.kernel.perspective;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 
 import java.math.BigDecimal;
 
@@ -57,7 +57,7 @@ public class Conic {
             halfYAxis = 1 / Math.sqrt(eigenValue[1].divide(omega.negate(), 20, BigDecimal.ROUND_HALF_EVEN).doubleValue());
             double angle = Math.atan(eigenVect[1][0].divide(eigenVect[0][0], 20, BigDecimal.ROUND_HALF_EVEN).doubleValue());
             //	System.out.println(toString());
-            app.getArdoise().drawEllipseArc(halfXAxis, halfYAxis, angle,
+            app.getDrawPanel().drawEllipseArc(halfXAxis, halfYAxis, angle,
                     center[0].doubleValue(), center[1].doubleValue(), 0, 360);
 
         }

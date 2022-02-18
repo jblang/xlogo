@@ -1,6 +1,6 @@
 package xlogo.gui.preferences;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.document.LogoDocument;
@@ -40,12 +40,12 @@ public class HighlighterPanel extends JPanel implements ActionListener {
         dsd = new LogoDocument();
         jt.setDocument(dsd);
         dsd.setColore_Parenthese(true);
-        p_comment = new SyntaxStylePanel(Config.coloration_commentaire, Config.style_commentaire, Logo.messages.getString("pref.highlight.comment"), this);
-        p_parenthese = new SyntaxStylePanel(Config.coloration_parenthese, Config.style_parenthese, Logo.messages.getString("pref.highlight.parenthesis"), this);
-        p_primitive = new SyntaxStylePanel(Config.coloration_primitive, Config.style_primitive, Logo.messages.getString("pref.highlight.primitive"), this);
-        p_operande = new SyntaxStylePanel(Config.coloration_operande, Config.style_operande, Logo.messages.getString("pref.highlight.operand"), this);
+        p_comment = new SyntaxStylePanel(Config.syntaxCommentColor, Config.syntaxCommentStyle, Logo.messages.getString("pref.highlight.comment"), this);
+        p_parenthese = new SyntaxStylePanel(Config.syntaxBracketColor, Config.syntaxBracketStyle, Logo.messages.getString("pref.highlight.parenthesis"), this);
+        p_primitive = new SyntaxStylePanel(Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle, Logo.messages.getString("pref.highlight.primitive"), this);
+        p_operande = new SyntaxStylePanel(Config.syntaxOperandColor, Config.syntaxOperandStyle, Logo.messages.getString("pref.highlight.operand"), this);
         jt.setText(Logo.messages.getString("pref.highlight.example"));
-        if (Config.COLOR_ENABLED) active_coloration.setSelected(true);
+        if (Config.syntaxHighlightingEnabled) active_coloration.setSelected(true);
         else {
             active_coloration.setSelected(false);
             p_comment.setEnabled(false);
@@ -87,30 +87,29 @@ public class HighlighterPanel extends JPanel implements ActionListener {
     protected void update() {
 
         if (active_coloration.isSelected()) {
-            if (!Config.COLOR_ENABLED) {
-                Config.COLOR_ENABLED = true;
-                cadre.editeur.toTextPane();
+            if (!Config.syntaxHighlightingEnabled) {
+                Config.syntaxHighlightingEnabled = true;
+                cadre.editor.toTextPane();
             }
-            Config.coloration_commentaire = p_comment.color();
-            Config.coloration_operande = p_operande.color();
-            Config.coloration_primitive = p_primitive.color();
-            Config.coloration_parenthese = p_parenthese.color();
-            Config.style_commentaire = p_comment.style();
-            Config.style_operande = p_operande.style();
-            Config.style_primitive = p_primitive.style();
-            Config.style_parenthese = p_parenthese.style();
+            Config.syntaxCommentColor = p_comment.color();
+            Config.syntaxOperandColor = p_operande.color();
+            Config.syntaxPrimitiveColor = p_primitive.color();
+            Config.syntaxBracketColor = p_parenthese.color();
+            Config.syntaxCommentStyle = p_comment.style();
+            Config.syntaxOperandStyle = p_operande.style();
+            Config.syntaxPrimitiveStyle = p_primitive.style();
+            Config.syntaxBracketStyle = p_parenthese.style();
 
             // On attribue les styles sélectionnés à l'éditeur
-            cadre.changeSyntaxHighlightingStyle(Config.coloration_commentaire, Config.style_commentaire, Config.coloration_primitive, Config.style_primitive,
-                    Config.coloration_parenthese, Config.style_parenthese, Config.coloration_operande, Config.style_operande);
+            cadre.changeSyntaxHighlightingStyle();
         } else {
-            if (Config.COLOR_ENABLED) {
-                cadre.editeur.toTextArea();
-                Config.COLOR_ENABLED = false;
+            if (Config.syntaxHighlightingEnabled) {
+                cadre.editor.toTextArea();
+                Config.syntaxHighlightingEnabled = false;
             }
         }
-        cadre.setColoration(Config.COLOR_ENABLED);
-        cadre.resizeCommande();
+        cadre.setSyntaxHighlightingEnabled(Config.syntaxHighlightingEnabled);
+        cadre.resizeCommandLine();
         cadre.validate();
     }
 
@@ -148,8 +147,8 @@ public class HighlighterPanel extends JPanel implements ActionListener {
         dsd.initStyles(p_comment.color(), p_comment.style(), p_primitive.color(), p_primitive.style(),
                 p_parenthese.color(), p_parenthese.style(), p_operande.color(), p_operande.style());
         jt.setText(Logo.messages.getString("pref.highlight.example"));
-        dsd.initStyles(Config.coloration_commentaire, Config.style_commentaire, Config.coloration_primitive, Config.style_primitive,
-                Config.coloration_parenthese, Config.style_parenthese, Config.coloration_operande, Config.style_operande);
+        dsd.initStyles(Config.syntaxCommentColor, Config.syntaxCommentStyle, Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle,
+                Config.syntaxBracketColor, Config.syntaxBracketStyle, Config.syntaxOperandColor, Config.syntaxOperandStyle);
 
     }
 }

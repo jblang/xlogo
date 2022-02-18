@@ -7,7 +7,7 @@
  */
 package xlogo.kernel;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 
@@ -545,12 +545,12 @@ public class Interpreter {
                                 definition += element + " ";
                                 instructionBuffer.deleteFirstWord(element);
                             }
-                            if (app.editeur.isVisible())
+                            if (app.editor.isVisible())
                                 throw new LogoException(app, Logo.messages
                                         .getString("ferme_editeur"));
                             else {
-                                app.editeur.setVisible(true);
-                                app.editeur.setEditorStyledText(definition + "\n\n"
+                                app.editor.setVisible(true);
+                                app.editor.setEditorStyledText(definition + "\n\n"
                                         + Logo.messages.getString("fin"));
                             }
                         }

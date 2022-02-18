@@ -3,7 +3,7 @@ package xlogo.kernel.perspective;
 import javax.media.j3d.*;
 import javax.vecmath.Color3f;
 
-public class MyFog extends BranchGroup {
+public class Fog extends BranchGroup {
     protected final static int FOG_OFF = 0;
     protected final static int FOG_LINEAR = 1;
     protected final static int FOG_EXPONENTIAL = 2;
@@ -12,9 +12,9 @@ public class MyFog extends BranchGroup {
     private float density = 1;
     private float backDistance = 3.5f;
     private float frontDistance = 0.5f;
-    private Fog fog;
+    private javax.media.j3d.Fog fog;
 
-    MyFog(int type, Color3f color) {
+    Fog(int type, Color3f color) {
         super();
         setCapability(BranchGroup.ALLOW_DETACH);
         setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);

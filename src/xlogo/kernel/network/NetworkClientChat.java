@@ -1,6 +1,6 @@
 package xlogo.kernel.network;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
@@ -41,7 +41,7 @@ public class NetworkClientChat {
 
     private void init() throws LogoException {
         try {
-            socket = new Socket(ip, Config.TCP_PORT);
+            socket = new Socket(ip, Config.tcpPort);
             java.io.OutputStream os = socket.getOutputStream();
             BufferedOutputStream b = new BufferedOutputStream(os);
             OutputStreamWriter osw = new OutputStreamWriter(b, StandardCharsets.UTF_8);

@@ -7,7 +7,7 @@
  */
 package xlogo.kernel;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Logo;
 import xlogo.kernel.gui.GuiMap;
 
@@ -241,9 +241,9 @@ public class Workspace {
             bfr.close();
             sr.close();
             try {
-                app.editeur.setAffichable(false);
-                app.editeur.setEditorStyledText(new String(sb));
-                app.editeur.analyseprocedure();
+                app.editor.setAffichable(false);
+                app.editor.setEditorStyledText(new String(sb));
+                app.editor.analyseprocedure();
             } catch (Exception e) {
             }
 

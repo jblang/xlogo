@@ -1,6 +1,6 @@
 package xlogo.kernel.perspective;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.utils.LogoException;
 
 import javax.vecmath.Point3d;

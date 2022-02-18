@@ -2,7 +2,7 @@ package xlogo.gui.preferences;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.Utils;
@@ -46,7 +46,7 @@ public class GeneralPanel extends JPanel {
         buttonGroup2.add(lightLaf);
         buttonGroup2.add(nativeLaf);
 
-        jl_langues.setSelectedIndex(Config.langage);
+        jl_langues.setSelectedIndex(Config.language);
         jSlider1.setValue(jSlider1.getMaximum() - Config.turtleSpeed);
 
         setLayout(gridBagLayout3);
@@ -66,14 +66,14 @@ public class GeneralPanel extends JPanel {
         nativeLaf.setHorizontalTextPosition(SwingConstants.LEFT);
         nativeLaf.setText(Logo.messages.getString("pref.general.nativeLaf"));
         nativeLaf.setVerticalAlignment(SwingConstants.CENTER);
-        switch (Config.looknfeel) {
-            case Config.LOOKNFEEL_LIGHT:
+        switch (Config.lookAndFeel) {
+            case Config.LAF_LIGHT:
                 lightLaf.setSelected(true);
                 break;
-            case Config.LOOKNFEEL_DARK:
+            case Config.LAF_DARK:
                 darkLaf.setSelected(true);
                 break;
-            case Config.LOOKNFEEL_NATIVE:
+            case Config.LAF_NATIVE:
                 nativeLaf.setSelected(true);
                 break;
         }
@@ -148,25 +148,25 @@ public class GeneralPanel extends JPanel {
         // Language has changed?
         int indicateur = jl_langues.getSelectedIndex();
 
-        if (indicateur != Config.langage && indicateur != -1) {
+        if (indicateur != Config.language && indicateur != -1) {
             cadre.changeLanguage(indicateur);
         }
         // Turtle Speed
         Config.turtleSpeed = jSlider1.getMaximum() - jSlider1.getValue();
         try { //Look and Feel has changed?
             if (nativeLaf.isSelected()) {
-                Config.looknfeel = Config.LOOKNFEEL_NATIVE;
+                Config.lookAndFeel = Config.LAF_NATIVE;
                 UIManager.setLookAndFeel(UIManager
                         .getSystemLookAndFeelClassName());
             } else if (lightLaf.isSelected()) {
-                Config.looknfeel = Config.LOOKNFEEL_LIGHT;
+                Config.lookAndFeel = Config.LAF_LIGHT;
                 UIManager
                         .setLookAndFeel(new FlatLightLaf());
             } else if (darkLaf.isSelected()) {
-                Config.looknfeel=Config.LOOKNFEEL_DARK;
+                Config.lookAndFeel =Config.LAF_DARK;
                 UIManager.setLookAndFeel(new FlatDarkLaf());
             }
-            cadre.changeLookNFeel();
+            cadre.changeLookAndFeel();
         } catch (Exception exc) {
             System.out.println(exc);
         }
@@ -195,7 +195,7 @@ public class GeneralPanel extends JPanel {
                 }
                 int largeur = image.getWidth(this);
                 int hauteur = image.getHeight(this);
-                double facteur = (double) Config.police.getSize() / (double) hauteur;
+                double facteur = (double) Config.font.getSize() / (double) hauteur;
                 image = image.getScaledInstance((int) (facteur * largeur), (int) (facteur * hauteur), Image.SCALE_SMOOTH);
                 tracker = new MediaTracker(this);
                 tracker.addImage(image, 0);

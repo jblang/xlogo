@@ -7,7 +7,7 @@
  */
 package xlogo.kernel.perspective;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 

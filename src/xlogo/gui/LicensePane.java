@@ -5,7 +5,7 @@
  *
  * @author Loïc Le Coq
  */
-package xlogo.utils;
+package xlogo.gui;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;

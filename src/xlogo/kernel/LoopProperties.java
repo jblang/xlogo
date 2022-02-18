@@ -48,7 +48,7 @@ public class LoopProperties {
 
     protected void incremente() {
         counter = counter.add(increment);
-        counter = new BigDecimal(MyCalculator.eraseZero(counter));
+        counter = new BigDecimal(Calculator.eraseZero(counter));
     }
     /**
      * This method returns the Loop Id

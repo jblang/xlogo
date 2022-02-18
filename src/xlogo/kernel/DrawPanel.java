@@ -1,7 +1,7 @@
 package xlogo.kernel;
 
 import com.sun.j3d.utils.geometry.Text2D;
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.preferences.FontPanel;
@@ -964,7 +964,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             }
             if (rec == null) rec = new Rectangle2D.Double();
             // High quality
-            if (Config.quality == Config.QUALITY_HIGH) {
+            if (Config.drawQuality == Config.DRAW_QUALITY_HIGH) {
                 double width = tortue.getPenWidth();
                 rec.setRect(coords[0] - width + 0.5, coords[1] - width + 0.5,
                         2 * width, 2 * width);
@@ -1324,9 +1324,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     protected void perspective() {
         if (!enabled3D()) {
-            Config.drawXAxis = false;
-            Config.drawYAxis = false;
-            Config.drawGrid = false;
+            Config.xAxisEnabled = false;
+            Config.yAxisEnabled = false;
+            Config.gridEnabled = false;
             change_image_tortue(cadre, "tortue0.png");
             montrecacheTortue(false);
             DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_3D;
@@ -1566,8 +1566,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
 
         g.setPaintMode();
-        couleurfond = Config.screencolor;
-        g.setColor(Config.screencolor);
+        couleurfond = Config.screenColor;
+        g.setColor(Config.screenColor);
         g.fillRect(0, 0, Config.imageWidth, Config.imageHeight);
         stopRecord2DPolygon();
 
@@ -2255,10 +2255,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     public void setQuality(int id) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        if (id == Config.QUALITY_HIGH) {
+        if (id == Config.DRAW_QUALITY_HIGH) {
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        } else if (id == Config.QUALITY_LOW) {
+        } else if (id == Config.DRAW_QUALITY_LOW) {
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         } else { //normal
@@ -2372,7 +2372,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         scaleX = t.getScaleX() * 2;
         scaleY = t.getScaleY() * 2;
         dessin = new BufferedImage((int)(scaleX * Config.imageWidth), (int)(scaleY * Config.imageHeight), BufferedImage.TYPE_INT_RGB);
-        police_etiquette = Application.police;
+        police_etiquette = Application.fontId;
         //		 init all turtles
         tortues = new Turtle[Config.maxTurtles];
         tortues_visibles = new Stack<String>();
@@ -2386,11 +2386,11 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
         g = (Graphics2D) dessin.getGraphics();
         g.scale(scaleX, scaleY);
-        couleurfond = Config.screencolor;
-        setQuality(Config.quality);
-        g.setColor(Config.screencolor);
+        couleurfond = Config.screenColor;
+        setQuality(Config.drawQuality);
+        g.setColor(Config.screenColor);
         g.fillRect(0, 0, Config.imageWidth, Config.imageHeight);
-        g.setColor(Config.screencolor);
+        g.setColor(Config.screenColor);
         if (!enabled3D()) {
             drawGrid();
             drawXAxis();
@@ -2426,7 +2426,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             gui.getGuiObject().setSize((int) (gui.getOriginalWidth() * d),
                     (int) (gui.getOriginalHeight() * d));
             Font f = gui.getGuiObject().getFont();
-            gui.getGuiObject().setFont(f.deriveFont((float) (Config.police.getSize() * d)));
+            gui.getGuiObject().setFont(f.deriveFont((float) (Config.font.getSize() * d)));
             double x = gui.getLocation().x / zoom;
             double y = gui.getLocation().y / zoom;
             gui.setLocation((int) (x * d), (int) (y * d));
@@ -2445,7 +2445,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         // Disable zoom buttons
         cadre.setZoomEnabled(false);
 
-        javax.swing.JViewport jv = cadre.scrollArea.getViewport();
+        javax.swing.JViewport jv = cadre.scrollPane.getViewport();
         Point p = jv.getViewPosition();
         Rectangle r = jv.getVisibleRect();
 
@@ -2453,7 +2453,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         // If a selection rectangle is displaying on the drawing area
         // And If zoomout has been pressed
         // Zooming on the rectangular selection
-        if (null != selection && cadre.commande_isEditable() && zoomIn) {
+        if (null != selection && cadre.isCommandEditable() && zoomIn) {
             int originalWidth = jv.getWidth();
             double width = selection.getWidth();
             d = zoom * originalWidth / width;
@@ -2507,10 +2507,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * Draw the horizontal axis
      */
     private void drawXAxis() {
-        if (Config.drawXAxis) {
+        if (Config.xAxisEnabled) {
             g.setColor(getTransparencyColor(Config.axisColor, 128));
             g.drawLine(0, Config.imageHeight / 2, Config.imageWidth, Config.imageHeight / 2);
-            for (int i = Config.imageWidth / 2 % Config.XAxis; i < Config.imageWidth; i = i + Config.XAxis) {
+            for (int i = Config.imageWidth / 2 % Config.xAxisSpacing; i < Config.imageWidth; i = i + Config.xAxisSpacing) {
                 g.drawLine(i, Config.imageHeight / 2 - 2, i, Config.imageHeight / 2 + 2);
                 g.setFont(new Font("Dialog", Font.PLAIN, 10));
                 String tick = String.valueOf(i - Config.imageWidth / 2);
@@ -2518,7 +2518,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 int back = fm.stringWidth(tick) / 2;
                 // if the both axes are drawn, the zero has to translated
                 // So we don't draw the zero
-                if (i != Config.imageWidth / 2 || !Config.drawYAxis)
+                if (i != Config.imageWidth / 2 || !Config.yAxisEnabled)
                     g.drawString(tick, i - back, Config.imageHeight / 2 + 20);
             }
         }
@@ -2528,15 +2528,15 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * Draw the vertical axis
      */
     private void drawYAxis() {
-        if (Config.drawYAxis) {
+        if (Config.yAxisEnabled) {
             g.setColor(getTransparencyColor(Config.axisColor, 128));
             g.drawLine(Config.imageWidth / 2, 0, Config.imageWidth / 2, Config.imageHeight);
-            for (int i = Config.imageHeight / 2 % Config.YAxis; i < Config.imageHeight; i = i + Config.YAxis) {
+            for (int i = Config.imageHeight / 2 % Config.yAxisSpacing; i < Config.imageHeight; i = i + Config.yAxisSpacing) {
                 g.drawLine(Config.imageWidth / 2 - 2, i, Config.imageWidth / 2 + 2, i);
                 g.setFont(new Font("Dialog", Font.PLAIN, 10));
                 String tick = String.valueOf(Config.imageHeight / 2 - i);
                 // If both axes are drawn, zero is translated
-                if (i == Config.imageHeight / 2 && Config.drawXAxis)
+                if (i == Config.imageHeight / 2 && Config.xAxisEnabled)
                     g.drawString("0", Config.imageWidth / 2 + 10, i - 5);
                 else g.drawString(tick, Config.imageWidth / 2 + 10, i + 5);
             }
@@ -2544,13 +2544,13 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     private void drawGrid() {
-        if (Config.drawGrid) {
+        if (Config.gridEnabled) {
             g.setStroke(new BasicStroke(1));
             g.setColor(getTransparencyColor(Config.gridColor, 100));
-            for (int i = Config.imageWidth / 2 % Config.XGrid; i < Config.imageWidth; i = i + Config.XGrid)
+            for (int i = Config.imageWidth / 2 % Config.xGridSpacing; i < Config.imageWidth; i = i + Config.xGridSpacing)
                 g.drawLine(i, 0, i, Config.imageHeight);
 
-            for (int i = Config.imageHeight / 2 % Config.YGrid; i < Config.imageHeight; i = i + Config.YGrid)
+            for (int i = Config.imageHeight / 2 % Config.yGridSpacing; i < Config.imageHeight; i = i + Config.yGridSpacing)
                 g.drawLine(0, i, Config.imageWidth, i);
         }
     }
@@ -2570,9 +2570,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         super.paintComponent(graph);
         Graphics2D g2d = (Graphics2D) graph;
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.drawImage(dessin, 0, 0, (int) (Config.imageWidth * zoom), (int) (Config.imageHeight * zoom), this);
-        if (!Animation.execution_lancee && null != selection && cadre.commande_isEditable()) {
+        if (!Animation.execution_lancee && null != selection && cadre.isCommandEditable()) {
             g2d.setColor(colorSelection);
             g2d.fillRect(selection.x, selection.y, selection.width, selection.height);
         }
@@ -2632,7 +2632,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         if (!Animation.execution_lancee && null != selection) {
             // First, we test if we need to move the scrollbars
             Point pos = e.getPoint();
-            javax.swing.JViewport jv = cadre.scrollArea.getViewport();
+            javax.swing.JViewport jv = cadre.scrollPane.getViewport();
             Point viewPosition = jv.getViewPosition();
             Rectangle r = jv.getVisibleRect();
             r.setLocation(viewPosition);
@@ -2822,13 +2822,12 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
         public void run() {
             revalidate();
-            cadre.calculateMargin();
             //  I have to add those two lines because of a bug I don't understand
             // zoom 8 zoom 1 zoom 8
             // Sometimes after the method revalidate(), the left upper corner position
             // wasn't correct
-            cadre.scrollArea.invalidate();
-            cadre.scrollArea.validate();
+            cadre.scrollPane.invalidate();
+            cadre.scrollPane.validate();
             // End Bug
 
             jv.setViewPosition(p);

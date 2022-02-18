@@ -1,7 +1,6 @@
 package xlogo.gui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.Primitive;
@@ -208,8 +207,8 @@ public class Editor extends JFrame implements ActionListener {
             }
 
             if (!defineSentence.equals("") && affichable) {
-                cadre.ecris("commentaire", Logo.messages.getString("definir") + " " + defineSentence.substring(0, defineSentence.length() - 2) + ".\n");
-                cadre.eraserUpdate();
+                cadre.updateHistory("commentaire", Logo.messages.getString("definir") + " " + defineSentence.substring(0, defineSentence.length() - 2) + ".\n");
+                cadre.updateProcedureEraser();
             }
         } catch (IOException e) {
         }
@@ -351,7 +350,7 @@ public class Editor extends JFrame implements ActionListener {
         // Init All other components
         labelCommand = new JLabel(Logo.messages.getString("mainCommand"), iplay, JLabel.LEFT);
         scroll = new JScrollPane();
-        if (Config.COLOR_ENABLED) {
+        if (Config.syntaxHighlightingEnabled) {
             textZone = new EditorTextPane(this);
         } else textZone = new EditorTextArea(this);
 
@@ -450,7 +449,7 @@ public class Editor extends JFrame implements ActionListener {
             }
             if (null != text && text.length() > 100000) {
                 if (textZone instanceof EditorTextPane) {
-                    Config.COLOR_ENABLED = false;
+                    Config.syntaxHighlightingEnabled = false;
                     toTextArea();
                 }
             }
@@ -461,46 +460,46 @@ public class Editor extends JFrame implements ActionListener {
             try {
                 analyseprocedure();
                 this.textZone.setText("");
-                if (null != cadre.tmp_path) {
-                    Application.path = cadre.tmp_path;
+                if (null != cadre.tempPath) {
+                    Application.path = cadre.tempPath;
                     cadre.setTitle("XLOGO        " + Application.path);
                     try {
-                        File f = new File(cadre.tmp_path);
+                        File f = new File(cadre.tempPath);
                         Config.defaultFolder = Utils.rajoute_backslash(f.getParent());
                     } catch (NullPointerException e2) {
                     }
-                    cadre.tmp_path = null;
-                    cadre.setEnabled_Record(true);
+                    cadre.tempPath = null;
+                    cadre.setSaveEnabled(true);
                 }
-                if (!cadre.isEnabled_new())
-                    cadre.setEnabled_New(true); //Si c'est la première fois qu'on enregistre, on active le menu nouveau
+                if (!cadre.isNewEnabled())
+                    cadre.setNewEnabled(true); //Si c'est la première fois qu'on enregistre, on active le menu nouveau
             } catch (EditeurException ex) {
                 visible = true;
             }
 //			System.out.println(visible);
             setVisible(visible);
-            cadre.focus_Commande();
+            cadre.focusCommandLine();
             if (Config.eraseImage) { //Effacer la zone de dessin
                 LogoException.lance = true;
                 cadre.error = true;
                 try {
-                    while (!cadre.commande_isEditable()) Thread.sleep(100);
+                    while (!cadre.isCommandEditable()) Thread.sleep(100);
                 } catch (InterruptedException e1) {
                 }
                 cadre.getKernel().vide_ecran();
-                cadre.focus_Commande();
+                cadre.focusCommandLine();
             }
             if (Config.clearVariables) {
                 // Interrupt any running programs
                 LogoException.lance = true;
                 cadre.error = true;
                 try {
-                    while (!cadre.commande_isEditable()) Thread.sleep(100);
+                    while (!cadre.isCommandEditable()) Thread.sleep(100);
                 } catch (InterruptedException e1) {
                 }
                 cadre.getKernel().getWorkspace().deleteAllVariables();
                 cadre.getKernel().getWorkspace().deleteAllPropertyLists();
-                cadre.focus_Commande();
+                cadre.focusCommandLine();
 
             }
             Config.mainCommand = mainCommand.getText();
@@ -514,7 +513,7 @@ public class Editor extends JFrame implements ActionListener {
             if (Config.eraseImage) { //Effacer la zone de dessin
                 LogoException.lance = true;
                 cadre.error = true;
-                while (!cadre.commande_isEditable()) {
+                while (!cadre.isCommandEditable()) {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e2) {
@@ -522,10 +521,10 @@ public class Editor extends JFrame implements ActionListener {
                 }
                 cadre.getKernel().vide_ecran();
             }
-            if (null != cadre.tmp_path) {
-                cadre.tmp_path = null;
+            if (null != cadre.tempPath) {
+                cadre.tempPath = null;
             }
-            cadre.focus_Commande();
+            cadre.focusCommandLine();
         } else if (cmd.equals(Logo.messages.getString("find"))) {
             if (!sf.isVisible()) {
                 sf.setSize(350, 350);
@@ -552,8 +551,8 @@ public class Editor extends JFrame implements ActionListener {
     public void initStyles(int c_comment, int sty_comment, int c_primitive, int sty_primitive,
                            int c_parenthese, int sty_parenthese, int c_operande, int sty_operande) {
         if (textZone.supportHighlighting()) {
-            ((EditorTextPane) textZone).getDsd().initStyles(Config.coloration_commentaire, Config.style_commentaire, Config.coloration_primitive, Config.style_primitive,
-                    Config.coloration_parenthese, Config.style_parenthese, Config.coloration_operande, Config.style_operande);
+            ((EditorTextPane) textZone).getDsd().initStyles(Config.syntaxCommentColor, Config.syntaxCommentStyle, Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle,
+                    Config.syntaxBracketColor, Config.syntaxBracketStyle, Config.syntaxOperandColor, Config.syntaxOperandStyle);
         }
     }
 
@@ -638,7 +637,7 @@ public class Editor extends JFrame implements ActionListener {
             textZone.ecris(txt);
         } else {
             if (textZone instanceof EditorTextPane) {
-                Config.COLOR_ENABLED = false;
+                Config.syntaxHighlightingEnabled = false;
                 toTextArea();
                 textZone.ecris(txt);
             } else textZone.ecris(txt);
@@ -672,7 +671,7 @@ public class Editor extends JFrame implements ActionListener {
      * and adds all defined procedures
      */
     public void open() {
-        if (!cadre.editeur.isVisible()) {
+        if (!cadre.editor.isVisible()) {
             setVisible(true);
             toFront();
             setTitle(Logo.messages.getString("editeur"));
@@ -684,8 +683,8 @@ public class Editor extends JFrame implements ActionListener {
             discardAllEdits();
             textZone.requestFocus();
         } else {
-            cadre.editeur.setVisible(false);
-            cadre.editeur.setVisible(true);
+            cadre.editor.setVisible(false);
+            cadre.editor.setVisible(true);
             textZone.requestFocus();
         }
     }

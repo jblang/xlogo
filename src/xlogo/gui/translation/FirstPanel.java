@@ -24,9 +24,9 @@ public class FirstPanel extends JPanel implements ActionListener {
     private JComboBox comboLangModify;
     private JComboBox comboLangComplete;
     //	private JTextField textLang;
-    private final GuiTranslator tx;
+    private final UiTranslator tx;
 
-    protected FirstPanel(GuiTranslator tx) {
+    protected FirstPanel(UiTranslator tx) {
         this.tx = tx;
         int n = Logo.translationLanguage.length;
         intArray = new Integer[n];
@@ -37,10 +37,10 @@ public class FirstPanel extends JPanel implements ActionListener {
     }
 
     protected String getAction() {
-        if (modifyButton.isSelected()) return GuiTranslator.MODIFY;
-        else if (completeButton.isSelected()) return GuiTranslator.COMPLETE;
-        else if (consultButton.isSelected()) return GuiTranslator.CONSULT;
-        else if (createButton.isSelected()) return GuiTranslator.CREATE;
+        if (modifyButton.isSelected()) return UiTranslator.MODIFY;
+        else if (completeButton.isSelected()) return UiTranslator.COMPLETE;
+        else if (consultButton.isSelected()) return UiTranslator.CONSULT;
+        else if (createButton.isSelected()) return UiTranslator.CREATE;
         return null;
     }
 
@@ -62,10 +62,10 @@ public class FirstPanel extends JPanel implements ActionListener {
         modifyButton = new JRadioButton(Logo.messages.getString("translatemodify"));
         completeButton = new JRadioButton(Logo.messages.getString("translatecomplete"));
         consultButton = new JRadioButton(Logo.messages.getString("translateconsult"));
-        createButton.setActionCommand(GuiTranslator.CREATE);
-        modifyButton.setActionCommand(GuiTranslator.MODIFY);
-        consultButton.setActionCommand(GuiTranslator.CONSULT);
-        completeButton.setActionCommand(GuiTranslator.COMPLETE);
+        createButton.setActionCommand(UiTranslator.CREATE);
+        modifyButton.setActionCommand(UiTranslator.MODIFY);
+        consultButton.setActionCommand(UiTranslator.CONSULT);
+        completeButton.setActionCommand(UiTranslator.COMPLETE);
         createButton.addActionListener(this);
         completeButton.addActionListener(this);
         modifyButton.addActionListener(this);
@@ -75,7 +75,7 @@ public class FirstPanel extends JPanel implements ActionListener {
         comboLangComplete = new JComboBox(intArray);
         comboLangComplete.setRenderer(new Contenu());
         validButton = new JButton(Logo.messages.getString("pref.ok"));
-        validButton.setActionCommand(GuiTranslator.OK);
+        validButton.setActionCommand(UiTranslator.OK);
         validButton.addActionListener(tx);
         setSize(new java.awt.Dimension(600, 120));
         validButton.setSize(new java.awt.Dimension(100, 50));
@@ -122,20 +122,20 @@ public class FirstPanel extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
-        if (cmd.equals(GuiTranslator.MODIFY)) {
+        if (cmd.equals(UiTranslator.MODIFY)) {
             comboLangComplete.setVisible(false);
             comboLangModify.setVisible(true);
             //	textLang.setVisible(false);
-        } else if (cmd.equals(GuiTranslator.CREATE)) {
+        } else if (cmd.equals(UiTranslator.CREATE)) {
             comboLangComplete.setVisible(false);
             comboLangModify.setVisible(false);
             //textLang.setVisible(true);
             //textLang.validate();
-        } else if (cmd.equals(GuiTranslator.COMPLETE)) {
+        } else if (cmd.equals(UiTranslator.COMPLETE)) {
             comboLangComplete.setVisible(true);
             comboLangModify.setVisible(false);
             //textLang.setVisible(false);
-        } else if (cmd.equals(GuiTranslator.CONSULT)) {
+        } else if (cmd.equals(UiTranslator.CONSULT)) {
             comboLangComplete.setVisible(false);
             comboLangModify.setVisible(false);
             //textLang.setVisible(false);
@@ -164,7 +164,7 @@ public class FirstPanel extends JPanel implements ActionListener {
                 }
                 int largeur = image.getWidth(this);
                 int hauteur = image.getHeight(this);
-                double facteur = (double) Config.police.getSize() / (double) hauteur;
+                double facteur = (double) Config.font.getSize() / (double) hauteur;
                 image = image.getScaledInstance((int) (facteur * largeur), (int) (facteur * hauteur), Image.SCALE_SMOOTH);
                 tracker = new MediaTracker(this);
                 tracker.addImage(image, 0);

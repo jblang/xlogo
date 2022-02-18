@@ -1,6 +1,6 @@
 package xlogo.utils;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Logo;
 import xlogo.kernel.Interpreter;
 import xlogo.kernel.LoopProperties;
@@ -28,12 +28,12 @@ public class LogoException extends Exception {
 //    if (st.equals("siwhile")) st=Logo.messages.getString("tantque");
         while (!Interpreter.en_cours.isEmpty() && Interpreter.en_cours.peek().equals("(")) Interpreter.en_cours.pop();
         if (!cadre.error & !Interpreter.en_cours.isEmpty()) {
-            cadre.ecris("erreur", Logo.messages.getString("dans") + " " + Interpreter.en_cours.pop() + ", "
+            cadre.updateHistory("erreur", Logo.messages.getString("dans") + " " + Interpreter.en_cours.pop() + ", "
                     + Logo.messages.getString("line") + " " + getLineNumber() + ":\n");
         }
-        if (!cadre.error) cadre.ecris("erreur", Utils.SortieTexte(st) + "\n");
+        if (!cadre.error) cadre.updateHistory("erreur", Utils.SortieTexte(st) + "\n");
 
-        cadre.focus_Commande();
+        cadre.focusCommandLine();
         cadre.error = true;
         Interpreter.calcul = new Stack<String>();
         cadre.getKernel().getInstructionBuffer().clear();
@@ -70,7 +70,7 @@ public class LogoException extends Exception {
         }
 
         public void run() {
-            cadre.ecris("erreur", msg);
+            cadre.updateHistory("erreur", msg);
         }
     }
 }

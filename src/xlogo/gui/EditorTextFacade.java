@@ -1,7 +1,5 @@
 package xlogo.gui;
 
-import xlogo.PopupMenuListener;
-
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.AbstractDocument;
@@ -31,7 +29,7 @@ public abstract class EditorTextFacade implements Searchable, Printable {
     protected JTextComponent jtc;
     private final Editor editor;
     private StringBuffer text;
-    private PopupMenuListener jpop;
+    private EditorPopupMenu jpop;
 
     // When printing the text area, this stack stores each page
     private Stack<String> pages = null;
@@ -50,7 +48,7 @@ public abstract class EditorTextFacade implements Searchable, Printable {
 
     protected void initGui() {
         // Adds the JPopup Menu
-        jpop = new PopupMenuListener(editor, jtc);
+        jpop = new EditorPopupMenu(jtc);
         MouseListener popupListener = new PopupListener();
         jtc.addMouseListener(popupListener);
         undoManager = new UndoManager();

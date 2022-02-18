@@ -64,7 +64,7 @@ public class LanguageSelection extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         for (int i = 0; i < boutons.length; i++) {
-            if (boutons[i].isSelected()) Config.langage = i;
+            if (boutons[i].isSelected()) Config.language = i;
         }
         selection_faite = true;
     }

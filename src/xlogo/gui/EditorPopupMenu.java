@@ -5,7 +5,10 @@
  *
  * @author Loïc Le Coq
  */
-package xlogo;
+package xlogo.gui;
+
+import xlogo.Config;
+import xlogo.Logo;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -20,7 +23,7 @@ import java.awt.event.ActionListener;
  * @author loic
  *
  */
-public class PopupMenuListener extends JPopupMenu implements ActionListener {
+public class EditorPopupMenu extends JPopupMenu implements ActionListener {
     private static final long serialVersionUID = 1L;
     /**
      * This array contains all special characters for esperanto
@@ -49,14 +52,13 @@ public class PopupMenuListener extends JPopupMenu implements ActionListener {
     /**
      * The text Component for the Jpopup Menu
      */
-    private JTextComponent jt = null;
+    private JTextComponent jt;
 
     /**
      * This Constructot attached the Jpopup to Text Component jt
-     * @param menulistener The Controller for action
      * @param jt The Text Component
      */
-    public PopupMenuListener(ActionListener menulistener, JTextComponent jt) {
+    public EditorPopupMenu(JTextComponent jt) {
         this.jt = jt;
         car[0] = "\u0109";
         car[1] = "\u011d";
@@ -78,11 +80,11 @@ public class PopupMenuListener extends JPopupMenu implements ActionListener {
         add(jpopcouper);
         add(jpopcopier);
         add(jpopcoller);
-        jpopcouper.setActionCommand(MenuListener.EDIT_CUT);
+        jpopcouper.setActionCommand("menu.edition.cut");
         jpopcouper.addActionListener(this);
-        jpopcoller.setActionCommand(MenuListener.EDIT_PASTE);
+        jpopcoller.setActionCommand("menu.edition.paste");
         jpopcoller.addActionListener(this);
-        jpopcopier.setActionCommand(MenuListener.EDIT_COPY);
+        jpopcopier.setActionCommand("menu.edition.copy");
         jpopcopier.addActionListener(this);
         setText();
     }
@@ -95,7 +97,7 @@ public class PopupMenuListener extends JPopupMenu implements ActionListener {
         jpopcouper.setText(Logo.messages.getString("menu.edition.cut"));
         jpopcopier.setText(Logo.messages.getString("menu.edition.copy"));
         // Si le langage choisie est l'esperanto, on rajoute les caractères accentués spéciaux au menu
-        if (Config.langage == Config.LANGUAGE_ESPERANTO) {
+        if (Config.language == Config.LANGUAGE_ESPERANTO) {
             add(separ);
             for (int i = 0; i < jpopcar.length; i++) {
                 add(jpopcar[i]);
@@ -111,9 +113,9 @@ public class PopupMenuListener extends JPopupMenu implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
-        if (cmd.equals(MenuListener.EDIT_COPY)) jt.copy();
-        else if (cmd.equals(MenuListener.EDIT_CUT)) jt.cut();
-        else if (cmd.equals(MenuListener.EDIT_PASTE)) jt.paste();
+        if (cmd.equals("menu.edition.copy")) jt.copy();
+        else if (cmd.equals("menu.edition.cut")) jt.cut();
+        else if (cmd.equals("menu.edition.copy")) jt.paste();
         else {
             for (int i = 0; i < car.length; i++) {
                 if (car[i].equals(cmd)) {

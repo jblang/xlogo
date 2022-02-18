@@ -1,6 +1,5 @@
 package xlogo.gui;
 
-import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.ExtensionFilter;
@@ -24,7 +23,7 @@ import java.awt.event.WindowEvent;
 public class StartupFileDialog extends JDialog implements ActionListener {
     private static final long serialVersionUID = 1L;
     private final BorderLayout borderLayout1 = new BorderLayout();
-    private final JList jList1 = new JList(Config.path.toArray());
+    private final JList jList1 = new JList(Config.startupFiles.toArray());
     private final JScrollPane scroll = new JScrollPane(jList1);
     private final JPanel jPanel1 = new JPanel();
     private final JLabel jLabel1 = new JLabel();
@@ -88,7 +87,7 @@ public class StartupFileDialog extends JDialog implements ActionListener {
         jButton4.addActionListener(this);
         jButton4.setActionCommand(Logo.messages.getString("pref.ok"));
         jTextField1.addActionListener(this);
-        if (!Config.a_executer.equals("")) proc_demarrage.setText(Config.a_executer);
+        if (!Config.startupCommand.equals("")) proc_demarrage.setText(Config.startupCommand);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     }
 
@@ -108,24 +107,24 @@ public class StartupFileDialog extends JDialog implements ActionListener {
                 jTextField1.setText(jf.getSelectedFile().getAbsolutePath());
             }
         } else if (e.getActionCommand().equals(Logo.messages.getString("enlever"))) {    //Enlever
-            if (!Config.path.isEmpty()) {
-                int index = Config.path.indexOf(jList1.getSelectedValue());
+            if (!Config.startupFiles.isEmpty()) {
+                int index = Config.startupFiles.indexOf(jList1.getSelectedValue());
                 if (index != -1) {
-                    Config.path.remove(index);
-                    jList1.setListData(Config.path.toArray());
+                    Config.startupFiles.remove(index);
+                    jList1.setListData(Config.startupFiles.toArray());
                 }
             }
         }
         if (e.getActionCommand().equals(Logo.messages.getString("pref.ok"))) {
             String texte = proc_demarrage.getText().trim();
-            if (texte.equals("")) Config.a_executer = "";
-            else Config.a_executer = texte;
+            if (texte.equals("")) Config.startupCommand = "";
+            else Config.startupCommand = texte;
             dispose();
         } else {  // Si on valide ou si on appuie sur le bouton ajouter
 
             String text = jTextField1.getText().trim();
-            if (Config.path.indexOf(text) == -1 && !text.equals("")) Config.path.add(text);
-            jList1.setListData(Config.path.toArray());
+            if (Config.startupFiles.indexOf(text) == -1 && !text.equals("")) Config.startupFiles.add(text);
+            jList1.setListData(Config.startupFiles.toArray());
             jTextField1.setText("");
         }
     }

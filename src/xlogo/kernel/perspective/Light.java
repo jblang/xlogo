@@ -6,7 +6,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-public class MyLight extends BranchGroup {
+public class Light extends BranchGroup {
     protected final static int LIGHT_OFF = 0;
     protected final static int LIGHT_AMBIENT = 1;
     protected final static int LIGHT_DIRECTIONAL = 2;
@@ -18,14 +18,14 @@ public class MyLight extends BranchGroup {
     private Point3f position;
     private Vector3f direction;
     private float angle = DEFAULT_ANGLE;
-    private Light light;
+    private javax.media.j3d.Light light;
 
-    MyLight(int type) {
+    Light(int type) {
         super();
         this.type = type;
     }
 
-    MyLight(int type, Color3f color, Point3f position) {
+    Light(int type, Color3f color, Point3f position) {
         super();
         this.type = type;
         this.color = color;

@@ -1,6 +1,6 @@
 package xlogo.gui.preferences;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Logo;
 
 import javax.sound.midi.Instrument;
@@ -44,7 +44,7 @@ public class SoundPanel extends JPanel {
             synthesizer.close();
             instrument = new JList(ob);
             instrument.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            instrument.setSelectedIndex(cadre.getSon().getInstrument());
+            instrument.setSelectedIndex(cadre.getSoundPlayer().getInstrument());
             scroll_son = new JScrollPane(instrument);
             add(scroll_son, BorderLayout.CENTER);
         } catch (MidiUnavailableException e) {
@@ -60,6 +60,6 @@ public class SoundPanel extends JPanel {
     protected void update() {
         int i = instrument.getSelectedIndex();
         if (i != -1)
-            cadre.getSon().setInstrument(i);
+            cadre.getSoundPlayer().setInstrument(i);
     }
 }

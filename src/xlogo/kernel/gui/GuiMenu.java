@@ -1,6 +1,6 @@
 package xlogo.kernel.gui;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.kernel.Interpreter;
 import xlogo.utils.Utils;
@@ -25,23 +25,23 @@ public class GuiMenu extends GuiComponent {
         while (st.hasMoreTokens()) {
             item[i] = Utils.SortieTexte(st.nextToken());
             java.awt.FontMetrics fm = app.getGraphics()
-                    .getFontMetrics(Config.police);
+                    .getFontMetrics(Config.font);
             originalWidth = Math.max(originalWidth, fm.stringWidth(item[i]));
             i++;
         }
         originalWidth += 50;
         guiObject = new JComboBox(item);
-        originalHeight = Config.police.getSize() + 10;
+        originalHeight = Config.font.getSize() + 10;
         setSize(originalWidth, originalHeight);
     }
 
     public void actionPerformed(ActionEvent e) {
 //		System.out.println("coucou");
         int select = ((JComboBox) guiObject).getSelectedIndex();
-        if (!app.commande_isEditable()) {
+        if (!app.isCommandEditable()) {
             Interpreter.actionInstruction.append(action[select]);
         } else {
-            app.affichage_Start(action[select]);
+            app.startAnimation(action[select]);
         }
     }
 

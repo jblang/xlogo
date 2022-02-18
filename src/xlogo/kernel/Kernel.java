@@ -1,6 +1,6 @@
 package xlogo.kernel;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.gui.Editor;
 import xlogo.utils.LogoException;
 
@@ -20,7 +20,7 @@ public class Kernel {
     private Workspace wp;
     private final Application app;
     private MP3Player mp3Player;
-    private MyCalculator myCalculator;
+    private Calculator calculator;
 
     public Kernel(Application app) {
         this.app = app;
@@ -35,7 +35,7 @@ public class Kernel {
 
     public void setWorkspace(Workspace workspace) {
         wp = workspace;
-        app.editeur = new Editor(app);
+        app.editor = new Editor(app);
         interpreter.setWorkspace(wp);
     }
 
@@ -44,43 +44,43 @@ public class Kernel {
     }
 
     public void fcfg(Color color) {
-        app.getArdoise().fcfg(color);
+        app.getDrawPanel().fcfg(color);
     }
 
     public Turtle getActiveTurtle() {
-        return app.getArdoise().tortue;
+        return app.getDrawPanel().tortue;
     }
 
-    public MyCalculator getCalculator() {
-        return myCalculator;
+    public Calculator getCalculator() {
+        return calculator;
     }
 
     public void fcc(Color color) {
-        app.getArdoise().fcc(color);
+        app.getDrawPanel().fcc(color);
     }
 
     public void vide_ecran() {
-        app.getArdoise().videecran();
+        app.getDrawPanel().videecran();
     }
 
     public void setNumberOfTurtles(int i) {
-        app.getArdoise().setNumberOfTurtles(i);
+        app.getDrawPanel().setNumberOfTurtles(i);
     }
 
     public void setDrawingQuality(int id) {
-        app.getArdoise().setQuality(id);
+        app.getDrawPanel().setQuality(id);
     }
 
     public Color getScreenBackground() {
-        return app.getArdoise().getBackgroundColor();
+        return app.getDrawPanel().getBackgroundColor();
     }
 
     public void change_image_tortue(String chemin) {
-        app.getArdoise().change_image_tortue(app, chemin);
+        app.getDrawPanel().change_image_tortue(app, chemin);
     }
 
     public void initGraphics() {
-        app.getArdoise().initGraphics();
+        app.getDrawPanel().initGraphics();
     }
 
     public void buildPrimitiveTreemap(int id) {
@@ -92,7 +92,7 @@ public class Kernel {
     }
 
     protected void initCalculator(int s) {
-        myCalculator = new MyCalculator(s, app);
+        calculator = new Calculator(s, app);
 
     }
 

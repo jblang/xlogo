@@ -1,6 +1,6 @@
 package xlogo.kernel.gui;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 

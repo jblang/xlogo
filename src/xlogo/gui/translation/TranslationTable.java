@@ -20,13 +20,13 @@ public class TranslationTable extends JPanel implements Searchable {
     int selectedColumn = 0;
     private JTable table;
     private JScrollPane scrollPane;
-    private final GuiTranslator tx;
+    private final UiTranslator tx;
     private final String id;
     private final String action;
     private final String bundle;
     private Vector<String> keys;
 
-    protected TranslationTable(GuiTranslator tx, String action, String id, String bundle) {
+    protected TranslationTable(UiTranslator tx, String action, String id, String bundle) {
         this.tx = tx;
         this.action = action;
         this.id = id;
@@ -240,7 +240,7 @@ public class TranslationTable extends JPanel implements Searchable {
             this.action = action;
             this.id = id;
 
-            if (action.equals(GuiTranslator.CREATE)) {
+            if (action.equals(UiTranslator.CREATE)) {
                 // Initilaize all Column Names
                 String[] tmp = Logo.translationLanguage;
                 columnNames = new String[tmp.length + 1];
@@ -269,12 +269,12 @@ public class TranslationTable extends JPanel implements Searchable {
         }
 
         public boolean isCellEditable(int row, int col) {
-            if (action.equals(GuiTranslator.CONSULT)) return false;
-            else if (action.equals(GuiTranslator.CREATE)) {
+            if (action.equals(UiTranslator.CONSULT)) return false;
+            else if (action.equals(UiTranslator.CREATE)) {
                 return col == 0;
-            } else if (action.equals(GuiTranslator.MODIFY)) {
+            } else if (action.equals(UiTranslator.MODIFY)) {
                 return col == Integer.parseInt(id);
-            } else if (action.equals(GuiTranslator.COMPLETE)) {
+            } else if (action.equals(UiTranslator.COMPLETE)) {
                 if (col == Integer.parseInt(id)) {
 
                     return rowData[row][col].equals("");
@@ -315,7 +315,7 @@ public class TranslationTable extends JPanel implements Searchable {
                 String key = keys.get(j);
 
                 for (int i = 0; i < getColumnCount(); i++) {
-                    if (action.equals(GuiTranslator.CREATE)) {
+                    if (action.equals(UiTranslator.CREATE)) {
                         if (i == 0) rowData[row][0] = "";
                         else rowData[row][i] = rb[i - 1].getString(key);
                     } else {

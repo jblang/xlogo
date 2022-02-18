@@ -6,9 +6,8 @@
  */
 package xlogo.kernel;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Logo;
-import xlogo.MemoryChecker;
 import xlogo.utils.LogoException;
 
 import javax.swing.*;
@@ -43,17 +42,17 @@ public class Animation extends Thread {
         //	currentThread().setPriority(Thread.MIN_PRIORITY);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                cadre.setCommandLine(false);// la ligne de commandes
+                cadre.setCommandEnabled(false);// la ligne de commandes
                 // n'est plus active
             }
         });
         execution_lancee = true;
-        cadre.getArdoise().active_souris(); // On active les événements souris sur
+        cadre.getDrawPanel().active_souris(); // On active les événements souris sur
         // la zone de dessin
-        cadre.scrollArea.getVerticalScrollBar().addMouseListener(souris);
-        cadre.scrollArea.getHorizontalScrollBar().addMouseListener(souris);
+        cadre.scrollPane.getVerticalScrollBar().addMouseListener(souris);
+        cadre.scrollPane.getHorizontalScrollBar().addMouseListener(souris);
         try {
-            cadre.setCar(-1);
+            cadre.setKey(-1);
             cadre.error = false;
             LogoException.lance = false;
             Interpreter.operande = Interpreter.operateur = Interpreter.drapeau_ouvrante = false;
@@ -79,14 +78,14 @@ public class Animation extends Thread {
             }
         } catch (LogoException e) {
         }
-        cadre.setCommandLine(true);
-        if (!cadre.viewer3DVisible()) cadre.focus_Commande();
+        cadre.setCommandEnabled(true);
+        if (!cadre.viewer3DVisible()) cadre.focusCommandLine();
         execution_lancee = false;
         cm.setContinuer(false);
         cadre.error = false;
         LogoException.lance = false;
-        cadre.scrollArea.getVerticalScrollBar().removeMouseListener(souris);
-        cadre.scrollArea.getHorizontalScrollBar().removeMouseListener(souris);
+        cadre.scrollPane.getVerticalScrollBar().removeMouseListener(souris);
+        cadre.scrollPane.getHorizontalScrollBar().removeMouseListener(souris);
     }
 
     protected boolean isOnPause() {

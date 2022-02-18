@@ -1,6 +1,6 @@
 package xlogo.gui.preferences;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Logo;
 
 import javax.swing.*;
@@ -60,7 +60,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
 
         jt.add(generalPanel, Logo.messages.getString("pref.general"));
 
-        if (!app.getArdoise().enabled3D()) {
+        if (!app.getDrawPanel().enabled3D()) {
             panel_Turtles = new TurtlesPanel(app);
             jsTurtles.getViewport().add(panel_Turtles);
             jt.add(jsTurtles, Logo.messages.getString("pref.turtles"));
@@ -89,7 +89,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        app.close_Preference();
+        app.closePreferences();
         if (e.getActionCommand().equals(Logo.messages.getString("pref.ok"))) {
             generalPanel.update();
             if (null != panel_Turtles) panel_Turtles.update();

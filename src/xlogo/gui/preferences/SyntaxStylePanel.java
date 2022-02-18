@@ -49,7 +49,7 @@ public class SyntaxStylePanel extends JPanel implements ActionListener {
 
         style.setActionCommand("style");
         style.addActionListener(this);
-        int hauteur = Config.police.getSize() + 5;
+        int hauteur = Config.font.getSize() + 5;
 //	        jt.setPreferredSize(new Dimension(240,hauteur));
 
         //Lay out the demo.

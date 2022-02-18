@@ -65,13 +65,13 @@ public class AxisPanel extends JPanel implements ActionListener {
 
     private void initGui() {
         checkXAxis = new JCheckBox(Logo.messages.getString("active_xaxis"));
-        checkXAxis.setSelected(Config.drawXAxis);
+        checkXAxis.setSelected(Config.xAxisEnabled);
         checkYAxis = new JCheckBox(Logo.messages.getString("active_yaxis"));
-        checkYAxis.setSelected(Config.drawYAxis);
+        checkYAxis.setSelected(Config.yAxisEnabled);
         labelXAxis = new JLabel(Logo.messages.getString("pas"));
         labelYAxis = new JLabel(Logo.messages.getString("pas"));
-        jtXAxis = new JTextField(String.valueOf(Config.XAxis));
-        jtYAxis = new JTextField(String.valueOf(Config.YAxis));
+        jtXAxis = new JTextField(String.valueOf(Config.xAxisSpacing));
+        jtYAxis = new JTextField(String.valueOf(Config.yAxisSpacing));
         panelAxisColor = new ColorPanel(new Color(Config.axisColor));
         setLayout(new GridBagLayout());
         add(checkXAxis, new GridBagConstraints(0, 0, 1, 1, 0.3, 1.0,
@@ -95,11 +95,11 @@ public class AxisPanel extends JPanel implements ActionListener {
         add(panelAxisColor, new GridBagConstraints(0, 2, 1, 1, 0.3, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(10, 10, 10, 10), 0, 0));
-        labelXAxis.setEnabled(Config.drawXAxis);
-        labelYAxis.setEnabled(Config.drawYAxis);
-        jtXAxis.setEnabled(Config.drawXAxis);
-        jtYAxis.setEnabled(Config.drawYAxis);
-        panelAxisColor.setEnabled(Config.drawXAxis || Config.drawYAxis);
+        labelXAxis.setEnabled(Config.xAxisEnabled);
+        labelYAxis.setEnabled(Config.yAxisEnabled);
+        jtXAxis.setEnabled(Config.xAxisEnabled);
+        jtYAxis.setEnabled(Config.yAxisEnabled);
+        panelAxisColor.setEnabled(Config.xAxisEnabled || Config.yAxisEnabled);
 
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("title_axis"));
         setBorder(tb);

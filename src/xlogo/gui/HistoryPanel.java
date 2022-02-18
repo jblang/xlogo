@@ -1,7 +1,6 @@
 package xlogo.gui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import xlogo.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.document.HistoricLogoDocument;
@@ -32,7 +31,7 @@ public class HistoryPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     // numéro identifiant la police de
     // l'historique avec "ecris"
-    public static int fontPrint = FontPanel.police_id(Config.police);
+    public static int fontPrint = FontPanel.police_id(Config.font);
     private final ImageIcon ianimation = new FlatSVGIcon("xlogo/icons/cwmCamOn.svg");
     private final JLabel label_animation = new JLabel(ianimation);
     private MouseAdapter mouseAdapt;
@@ -103,7 +102,7 @@ public class HistoryPanel extends JPanel {
         mouseAdapt = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 stop_animation();
-                cadre.getArdoise().repaint();
+                cadre.getDrawPanel().repaint();
             }
         };
         label_animation.addMouseListener(mouseAdapt);
@@ -120,8 +119,8 @@ public class HistoryPanel extends JPanel {
     // Change Syntax Highlighting for the editor
     public void initStyles(int c_comment, int sty_comment, int c_primitive, int sty_primitive,
                            int c_parenthese, int sty_parenthese, int c_operande, int sty_operande) {
-        dsd.initStyles(Config.coloration_commentaire, Config.style_commentaire, Config.coloration_primitive, Config.style_primitive,
-                Config.coloration_parenthese, Config.style_parenthese, Config.coloration_operande, Config.style_operande);
+        dsd.initStyles(Config.syntaxCommentColor, Config.syntaxCommentStyle, Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle,
+                Config.syntaxBracketColor, Config.syntaxBracketStyle, Config.syntaxOperandColor, Config.syntaxOperandStyle);
     }
 
     // Enable or disable Syntax Highlighting
@@ -174,13 +173,13 @@ public class HistoryPanel extends JPanel {
                         select(borneinf + 1, bornesup - 2);
                         cadre.setCommandText(getSelectedText());
 //				    historique.setCaretPosition(historique.getDocument().getLength());
-                        cadre.focus_Commande();
+                        cadre.focusCommandLine();
                     }
                 }
 
                 public void mouseReleased(MouseEvent e) {
                     maybeShowPopup(e);
-                    cadre.focus_Commande();
+                    cadre.focusCommandLine();
                 }
 
                 public void mousePressed(MouseEvent e) {
@@ -225,7 +224,7 @@ public class HistoryPanel extends JPanel {
             } else if (Logo.messages.getString("menu.edition.selectall").equals(cmd)) {   //Selectionner tout
                 requestFocus();
                 selectAll();
-                cadre.focus_Commande();
+                cadre.focusCommandLine();
             } else if (cmd.equals(Logo.messages.getString("menu.file.textzone.rtf"))) {
                 RTFEditorKit myRTFEditorKit = new RTFEditorKit();
                 StyledDocument myStyledDocument = getStyledDocument();

@@ -1,6 +1,6 @@
 package xlogo.kernel.gui;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.kernel.Interpreter;
 import xlogo.utils.Utils;
@@ -17,17 +17,17 @@ public class GuiButton extends GuiComponent {
         guiObject = new JButton(Utils.SortieTexte(text));
         this.app = app;
         java.awt.FontMetrics fm = app.getGraphics()
-                .getFontMetrics(Config.police);
+                .getFontMetrics(Config.font);
         originalWidth = fm.stringWidth(((JButton) (getGuiObject())).getText()) + 50;
-        originalHeight = Config.police.getSize() + 10;
+        originalHeight = Config.font.getSize() + 10;
         setSize(originalWidth, originalHeight);
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (!app.commande_isEditable()) {
+        if (!app.isCommandEditable()) {
             Interpreter.actionInstruction.append(action);
         } else {
-            app.affichage_Start(action);
+            app.startAnimation(action);
         }
     }
 

@@ -6,8 +6,10 @@
  * @author Loïc Le Coq
  */
 
-package xlogo;
+package xlogo.kernel;
 
+import xlogo.gui.Application;
+import xlogo.Logo;
 import xlogo.utils.LogoException;
 
 import javax.sound.midi.*;
@@ -35,7 +37,7 @@ public class SoundPlayer {
      * Builds our Sound Player
      * @param cadre The main Frame
      */
-    SoundPlayer(Application cadre) {
+    public SoundPlayer(Application cadre) {
         this.cadre = cadre;
         try {
             sequence = new Sequence(Sequence.PPQ, 16);

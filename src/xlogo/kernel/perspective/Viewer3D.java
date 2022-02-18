@@ -6,7 +6,7 @@ import com.sun.j3d.utils.universe.SimpleUniverse;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.Utils;
-import xlogo.utils.WriteImage;
+import xlogo.utils.ImageWriter;
 
 import javax.media.j3d.*;
 import javax.swing.*;
@@ -40,9 +40,9 @@ public class Viewer3D extends JFrame implements ActionListener {
     private final static String ACTION_FOG = "fog";
     private static final long serialVersionUID = 1L;
     // To store the Light attributes
-    private MyLight[] myLights;
+    private Light[] lights;
     // To store the Fog attributes
-    private MyFog myFog;
+    private Fog fog;
     // Gui Components
     private final ImageIcon iscreenshot = new FlatSVGIcon("xlogo/icons/screen.svg");
     private JButton screenshot;
@@ -73,7 +73,7 @@ public class Viewer3D extends JFrame implements ActionListener {
         String cmd = e.getActionCommand();
         // Take a screenshot
         if (cmd.equals(Viewer3D.ACTION_SCREENSHOT)) {
-            WriteImage wi = new WriteImage(this, null);
+            ImageWriter wi = new ImageWriter(this, null);
             int id = wi.chooseFile();
             if (id == JFileChooser.APPROVE_OPTION) {
                 GraphicsContext3D ctx = canvas3D.getGraphicsContext3D();
@@ -91,23 +91,23 @@ public class Viewer3D extends JFrame implements ActionListener {
         }
         // Click on Button Light1
         else if (cmd.equals(Viewer3D.ACTION_LIGHT0)) {
-            new LightDialog(this, myLights[0], Logo.messages.getString("3d.light") + " 1");
+            new LightDialog(this, lights[0], Logo.messages.getString("3d.light") + " 1");
         }
         // Click on Button Light2
         else if (cmd.equals(Viewer3D.ACTION_LIGHT1)) {
-            new LightDialog(this, myLights[1], Logo.messages.getString("3d.light") + " 2");
+            new LightDialog(this, lights[1], Logo.messages.getString("3d.light") + " 2");
         }
         // Click on Button Light3
         else if (cmd.equals(Viewer3D.ACTION_LIGHT2)) {
-            new LightDialog(this, myLights[2], Logo.messages.getString("3d.light") + " 3");
+            new LightDialog(this, lights[2], Logo.messages.getString("3d.light") + " 3");
         }
         // Click on Button Light4
         else if (cmd.equals(Viewer3D.ACTION_LIGHT3)) {
-            new LightDialog(this, myLights[3], Logo.messages.getString("3d.light") + " 4");
+            new LightDialog(this, lights[3], Logo.messages.getString("3d.light") + " 4");
         }
         // Click on the Fog Button
         else if (cmd.equals(Viewer3D.ACTION_FOG)) {
-            new FogDialog(this, myFog, Logo.messages.getString("3d.fog"));
+            new FogDialog(this, fog, Logo.messages.getString("3d.fog"));
 
         }
     }
@@ -163,8 +163,8 @@ public class Viewer3D extends JFrame implements ActionListener {
         initLights();
 
         // Configure Fog
-        myFog = new MyFog(MyFog.FOG_OFF, backgroundColor);
-        scene.addChild(myFog);
+        fog = new Fog(Fog.FOG_OFF, backgroundColor);
+        scene.addChild(fog);
 
         // Rattachement de la scène 3D à l'univers
         universe.addBranchGraph(scene);
@@ -220,20 +220,20 @@ public class Viewer3D extends JFrame implements ActionListener {
      * This methods adds two default PointLight int the 3d Scene
      */
     private void initLights() {
-        myLights = new MyLight[4];
+        lights = new Light[4];
         // First Default Point Light
         Color3f color = new Color3f(1f, 1f, 1f);
         Point3f pos = new Point3f((float) w3d.xCamera / 1000, (float) w3d.yCamera / 1000, (float) w3d.zCamera / 1000);
-        myLights[0] = new MyLight(MyLight.LIGHT_POINT, color, pos);
+        lights[0] = new Light(Light.LIGHT_POINT, color, pos);
 
         // Second default Point Light
         pos = new Point3f(-(float) w3d.xCamera / 1000, -(float) w3d.yCamera / 1000, -(float) w3d.zCamera / 1000);
-        myLights[1] = new MyLight(MyLight.LIGHT_POINT, color, pos);
+        lights[1] = new Light(Light.LIGHT_POINT, color, pos);
 
-        myLights[2] = new MyLight(MyLight.LIGHT_OFF);
-        myLights[3] = new MyLight(MyLight.LIGHT_OFF);
+        lights[2] = new Light(Light.LIGHT_OFF);
+        lights[3] = new Light(Light.LIGHT_OFF);
         for (int i = 0; i < 4; i++) {
-            myLights[i].createLight();
+            lights[i].createLight();
         }
         addAllLights(scene);
     }
@@ -243,7 +243,7 @@ public class Viewer3D extends JFrame implements ActionListener {
      */
     private void addAllLights(BranchGroup bg) {
         for (int i = 0; i < 4; i++) {
-            bg.addChild(myLights[i]);
+            bg.addChild(lights[i]);
         }
     }
 
@@ -359,7 +359,7 @@ public class Viewer3D extends JFrame implements ActionListener {
 
         void setText() {
             TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("3d.light"));
-            tb.setTitleFont(Config.police);
+            tb.setTitleFont(Config.font);
             setBorder(tb);
         }
     }
@@ -386,7 +386,7 @@ public class Viewer3D extends JFrame implements ActionListener {
 
         void setText() {
             TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("3d.fog"));
-            tb.setTitleFont(Config.police);
+            tb.setTitleFont(Config.font);
             setBorder(tb);
         }
     }

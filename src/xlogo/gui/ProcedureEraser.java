@@ -8,7 +8,6 @@
 package xlogo.gui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import xlogo.Application;
 import xlogo.Logo;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.Workspace;

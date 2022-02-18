@@ -6,7 +6,7 @@
  */
 package xlogo.kernel;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
@@ -42,7 +42,7 @@ public class Primitive {
     public Primitive(Application app) {
         this.app = app;
         //build treemap for primitives
-        buildPrimitiveTreemap(Config.langage);
+        buildPrimitiveTreemap(Config.language);
     }
 
     public static int isPrimitive(String s) {
@@ -65,7 +65,7 @@ public class Primitive {
      */
     protected String getAllPrimitives() {
         Vector<String> list = new Vector<String>();
-        Locale locale = Logo.getLocale(Config.langage);
+        Locale locale = Logo.getLocale(Config.language);
         ResourceBundle prim = ResourceBundle.getBundle("primitives", locale);
         try {
             BufferedReader bfr = new BufferedReader(
@@ -105,7 +105,7 @@ public class Primitive {
     public void buildPrimitiveTreemap(int id) {
         //	this.exportPrimCSV();
         primitives = new TreeMap<String, String>();
-        Locale locale = Logo.getLocale(Config.langage);
+        Locale locale = Logo.getLocale(Config.language);
         ResourceBundle prim = ResourceBundle.getBundle("primitives", locale);
         try {
             BufferedReader bfr = new BufferedReader(
@@ -260,7 +260,7 @@ public class Primitive {
             buffer
                     .append(" " + Utils.primitiveName("ret") + " "
                             + val);
-            app.ecris("normal", Utils.SortieTexte(buffer.toString()) + "\n");
+            app.updateHistory("normal", Utils.SortieTexte(buffer.toString()) + "\n");
         }
         Interpreter.en_cours.pop();
         Interpreter.locale = Interpreter.stockvariable.pop();

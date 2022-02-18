@@ -1,6 +1,6 @@
 package xlogo.gui.preferences;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 import xlogo.Config;
 
 import javax.swing.*;
@@ -49,13 +49,13 @@ public class FontPanel extends JPanel implements ActionListener {
         }
         jl_police = new JList(noms_police);
         jl_police.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        jl_police.setSelectedIndex(Application.police);
+        jl_police.setSelectedIndex(Application.fontId);
         js_police = new JScrollPane(jl_police);
         gauche.setActionCommand("gauche");
         droite.setActionCommand("droite");
         gauche.addActionListener(this);
         droite.addActionListener(this);
-        taille_police.setText(String.valueOf(Config.police.getSize()));
+        taille_police.setText(String.valueOf(Config.font.getSize()));
         panneau_taille_police.add(gauche);
         panneau_taille_police.add(taille_police);
         panneau_taille_police.add(droite);
@@ -89,10 +89,10 @@ public class FontPanel extends JPanel implements ActionListener {
 
         Font font = FontPanel.fontes[jl_police
                 .getSelectedIndex()].deriveFont((float) size);
-        Application.police = jl_police.getSelectedIndex();
+        Application.fontId = jl_police.getSelectedIndex();
 
         // Si l'on change la police de l'interface
-        if (!Config.police.equals(font)) {
+        if (!Config.font.equals(font)) {
             cadre.changeFont(font, size);
         }
 

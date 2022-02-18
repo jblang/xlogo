@@ -1,6 +1,6 @@
 package xlogo.document;
 
-import xlogo.Application;
+import xlogo.gui.Application;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -30,7 +30,7 @@ public class CommandLogoDocument extends LogoDocument {
             buffer.append(st.nextToken());
         }
         if (str.equals("\n")) {
-            cadre.commande_actionPerformed();
+            cadre.executeCommand();
 
         } else {
             str = new String(buffer);

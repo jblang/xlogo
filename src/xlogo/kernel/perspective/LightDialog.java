@@ -28,9 +28,9 @@ public class LightDialog extends JDialog implements ActionListener {
     private JButton ok;
     private JButton refresh;
     private final Viewer3D viewer3d;
-    private final MyLight light;
+    private final Light light;
 
-    LightDialog(Viewer3D viewer3d, MyLight light, String title) {
+    LightDialog(Viewer3D viewer3d, Light light, String title) {
         super(viewer3d, title, true);
         this.viewer3d = viewer3d;
         this.light = light;
@@ -54,10 +54,10 @@ public class LightDialog extends JDialog implements ActionListener {
         panelAngle = new PanelAngle(light.getAngle());
         ok = new JButton(Logo.messages.getString("pref.ok"));
         refresh = new JButton(Logo.messages.getString("3d.light.apply"));
-        labelType.setFont(Config.police);
-        comboType.setFont(Config.police);
-        ok.setFont(Config.police);
-        refresh.setFont(Config.police);
+        labelType.setFont(Config.font);
+        comboType.setFont(Config.font);
+        ok.setFont(Config.font);
+        refresh.setFont(Config.font);
 
         comboType.addActionListener(this);
         comboType.setActionCommand("combo");
@@ -132,35 +132,35 @@ public class LightDialog extends JDialog implements ActionListener {
     private void selectComponents() {
         int id = comboType.getSelectedIndex();
         // None
-        if (id == MyLight.LIGHT_OFF) {
+        if (id == Light.LIGHT_OFF) {
             colorPanel.setEnabled(false);
             panelPosition.setEnabled(false);
             panelDirection.setEnabled(false);
             panelAngle.setEnabled(false);
         }
         // Ambient
-        else if (id == MyLight.LIGHT_AMBIENT) {
+        else if (id == Light.LIGHT_AMBIENT) {
             colorPanel.setEnabled(true);
             panelPosition.setEnabled(false);
             panelDirection.setEnabled(false);
             panelAngle.setEnabled(false);
         }
         // Directional
-        else if (id == MyLight.LIGHT_DIRECTIONAL) {
+        else if (id == Light.LIGHT_DIRECTIONAL) {
             colorPanel.setEnabled(true);
             panelPosition.setEnabled(false);
             panelDirection.setEnabled(true);
             panelAngle.setEnabled(false);
         }
         // PointLight
-        else if (id == MyLight.LIGHT_POINT) {
+        else if (id == Light.LIGHT_POINT) {
             colorPanel.setEnabled(true);
             panelPosition.setEnabled(true);
             panelDirection.setEnabled(false);
             panelAngle.setEnabled(false);
         }
         // Spot
-        else if (id == MyLight.LIGHT_SPOT) {
+        else if (id == Light.LIGHT_SPOT) {
             colorPanel.setEnabled(true);
             panelPosition.setEnabled(true);
             panelDirection.setEnabled(true);
@@ -182,9 +182,9 @@ public class LightDialog extends JDialog implements ActionListener {
 
         private void initGui() {
             label = new JLabel(Logo.messages.getString("3d.light.angle"));
-            label.setFont(Config.police);
+            label.setFont(Config.font);
             angle = new JTextField(String.valueOf(angleValue));
-            angle.setSize(30, Config.police.getSize() + 10);
+            angle.setSize(30, Config.font.getSize() + 10);
             add(label);
             add(angle);
         }
@@ -201,7 +201,7 @@ public class LightDialog extends JDialog implements ActionListener {
                 return f;
             } catch (NumberFormatException e) {
             }
-            return MyLight.DEFAULT_ANGLE;
+            return Light.DEFAULT_ANGLE;
         }
     }
 
@@ -223,7 +223,7 @@ public class LightDialog extends JDialog implements ActionListener {
 
         private void initGui() {
             TitledBorder tb = BorderFactory.createTitledBorder(title);
-            tb.setTitleFont(Config.police);
+            tb.setTitleFont(Config.font);
             setBorder(tb);
             sep1 = new JLabel("x");
             sep2 = new JLabel("x");
