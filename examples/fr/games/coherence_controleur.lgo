@@ -1,0 +1,49 @@
+# Commande principale: demarrer
+# Commande principale: demarrer
+pour demarrer
+fsep 0.1 vt
+donnees_coherence
+fin
+
+#-----------------------------------------------------------------
+
+pour donnees_coherence
+lis [Échelle à contrôler :] "gamme 
+donne "echelle :gamme
+si vide? :gamme [ec "Stoppé\ !  stoptout]
+donne "nombre_de_degres compte :gamme
+donne "i 1
+repete :nombre_de_degres [donne "gamme md 2*(item :i :gamme) :gamme donne "i :i+1]
+donne "nombre_d_intervalles 0
+intervalles 1 :gamme 1 0 1
+fin
+
+pour intervalles :i :gamme :controle :intervalles_coherents :d
+si :i+:d >2*:nombre_de_degres [si :controle = 0 [fct 11 tape "Nombre\ d'\ intervalles\ cohérents\ :\  fct 1 tape :intervalles_coherents fct 4 ec ph  "\ sur :nombre_d_intervalles
+fct 11 tape "Pourcentage\ de\ cohérence\ :\  fct 1  fixedecimales 2 tape (100*:intervalles_coherents / :nombre_d_intervalles) fct 4 ec  "\ % ]
+ [fct 4 tape ph :echelle ":\  fct 11 ec "Échelle\ entièrement\ cohérente ] donnees_coherence ]
+
+si :d > :nombre_de_degres [intervalles 1 :gamme :controle :intervalles_coherents :d+1]
+
+si ((item :i+:d :gamme)/(item :i :gamme)) <= 1.5
+[
+si :i > :nombre_de_degres  [intervalles 1 :gamme :controle :intervalles_coherents :d+1]
+ [
+fct 0 tape (ph "Intervalle (item :i :gamme) (item (:i+:d) :gamme) [ : ] )
+donne "n :i donne "p :i+:d
+note difference (item :i+:d :gamme) (item :i :gamme) :gamme :controle :n :p :intervalles_coherents :d
+intervalles :i+1 :gamme :controle :intervalles_coherents+1 :d ] ]
+[
+intervalles :i+1 :gamme :controle :intervalles_coherents :d
+]
+fin
+
+pour note :note :gamme :controle :n :p :intervalles_coherents :d
+si :note >= prem :gamme [fct 0 tape  (ph "  [Son différentiel transposé dans l'octave : ] :note "\  ) comparer :note :gamme 1 :controle :n :p :intervalles_coherents :d stop]
+si :note < prem :gamme [donne "dif (:note *2) note :dif :gamme :controle :n :p :intervalles_coherents :d]
+fin
+
+pour comparer :note :gamme :degre :controle :n :p :intervalles_coherents :d
+si :degre > :nombre_de_degres [fct 13 ec "Intervalle\ non\ cohérent  donne "nombre_d_intervalles :nombre_d_intervalles+1 intervalles :n+1 :gamme 0 :intervalles_coherents :d]
+si :note = item :degre :gamme [fct 11 ec ph  "Cohérence\ avec\ le\ degré :degre donne "nombre_d_intervalles :nombre_d_intervalles+1 stop][comparer :note :gamme :degre + 1 :controle :n :p :intervalles_coherents :d]
+fin

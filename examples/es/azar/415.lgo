@@ -1,0 +1,64 @@
+# Comando de Inicio: empezar 25 37
+para empezar :ai :pa
+  nuevo poncolorlapiz gris
+  haz "ll 15         # longitud de linea predeterminada
+  haz "nc ciclos :ai :pa :ll
+  optimiza :ai :pa :ll :nc
+  nuevo leyenda :ai :pa :nueva.long :nc
+  ponxy :xcent :ycent ponrumbo 0 bajalapiz
+  circulo 2         # posicion inicial de circulo
+  repite :nc [poncolorlapiz angcol avanza :nueva.long
+  giraderecha :ai haz "ai :ai+:pa]
+fin
+
+para nuevo
+# inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para ciclos :ai2 :pa :ll
+  haz "a posicion
+  bajalapiz repite 720 [
+  avanza :ll giraderecha :ai2 haz "ai2 :ai2+:pa
+  si y posicion = :a rumbo = 0         # si vuelve a principio
+  [devuelve contador] ]
+  devuelve 666         # curva no cierra
+fin
+
+para optimiza :ai :pa :ll :nc
+  haz "ai3 :ai
+  subelapiz centro
+  haz "xmax 0 haz "xmin 0
+  haz "ymax 0 haz "ymin 0
+  repite :nc [avanza :ll giraderecha :ai3 haz "ai3 :ai3+:pa
+  si (elemento 1 posicion) > :xmax [haz "xmax elemento 1 posicion]
+  si (elemento 1 posicion) < :xmin [haz "xmin elemento 1 posicion]
+  si (elemento 2 posicion) > :ymax [haz "ymax elemento 2 posicion]
+  si (elemento 2 posicion) < :ymin [haz "ymin elemento 2 posicion] ]
+  haz "xtam :xmax + abs :xmin
+  haz "ytam :ymax + abs :ymin
+  si :xtam=:ytam | :xtam>:ytam
+  [haz "tam :xtam] [haz "tam :ytam]
+  haz "escala 360/:tam
+  haz "nueva.long :ll*:escala
+  si ((abs (:nueva.long - :ll))>:ll/10) [
+  haz "ll :nueva.long optimiza :ai :pa :ll :nc]
+  haz "xcent cambiasigno redondea (:xmax + :xmin) / 2
+  haz "ycent cambiasigno redondea (:ymax + :ymin) / 2
+fin
+
+para leyenda :ai :pa :long.linea :nc
+  centro poncolorlapiz blanco
+  ponposicion [-192 184] rotula [Vagando Feliz]
+  ponposicion [74 184] rotula frase [Angulo inicial ] :ai
+  ponposicion [94 168] rotula frase [Paso de angulo] :pa
+  ponposicion [-192 -176] rotula frase [Pasos] :nc
+  ponposicion [-192 -190] rotula frase [Longitud de linea] redondea :long.linea
+  ponposicion [80 -190] rotula lista "centro lista :xcent :ycent
+fin
+
+para angcol
+  haz "red 255*seno rumbo/2
+  devuelve frase lista :red 255 0
+fin

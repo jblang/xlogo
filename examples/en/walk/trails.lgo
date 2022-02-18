@@ -1,0 +1,24 @@
+# Main Command: Go
+# Trails by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to roam
+  SetPC Angcol Forward 8 Left (30-Random 60)
+end
+
+to angcol
+  Make "Red Round 127*(1+Cos (120+Heading))
+  Make "Green Round 127*(1+Cos Heading)
+  Output ( List :Red :Green 0 )
+end
+
+to go
+  New Wrap PenDown
+  Repeat 3200 [Roam]
+end

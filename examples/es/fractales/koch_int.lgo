@@ -1,0 +1,28 @@
+# Comando de Inicio: empezar 6
+para empezar :nivel
+  nuevo
+  koch.int :nivel 320
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+  poncolorlapiz 7 ponposicion [-160 -90] bajalapiz
+fin
+
+para koch.int :nivel :lado
+  ponrumbo 90
+  repite 3
+    [ koch :nivel :lado giraizquierda 120]
+fin
+
+para koch :nivel :lado
+  si :nivel < 1 [
+  avanza :lado alto]
+  koch :nivel-1 :lado/3 giraizquierda 60
+  koch :nivel-1 :lado/3 giraderecha 120
+  koch :nivel-1 :lado/3 giraizquierda 60
+  koch :nivel-1 :lado/3
+fin
+

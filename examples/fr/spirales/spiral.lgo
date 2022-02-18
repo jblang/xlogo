@@ -1,0 +1,26 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour spiral :length :angle
+  fcc pencol :length        # pen color depends on line length
+  si :length > 390        # si line length too long ...
+  [avance :length/2 stop]        # draw half line length et stop
+  avance :length tournegauche :angle        # draw line et rotate a fixed angle
+  spiral :length+4 :angle       # do again with a length 4 pixels longer
+fin
+
+pour pencol :length
+  donne "green arrondi :length/1.62        # vert depends on length
+  retourne phrase liste 0 :green 0        # rouge et bleu set pour 0
+fin
+
+pour demarrer
+  repetepour [angle 158 176 2] [        # repete 10 times
+  new fcc vert baissecrayon
+  attends 5 spiral 1 :angle attends 200]        # begin spiral with a length 1
+fin
+

@@ -1,0 +1,15 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos la pantalla, el lapiz, la tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  repite 10000 [sier]  # repite 10000 veces
+fin
+
+para sier
+  haz "vertice elige [ [190 -180] [-190 -180] [0 160] ]   # elige vertice
+  ponrumbo hacia :vertice       # gira hacia el vertice
+  avanza (distancia :vertice)/2   # avanza medio lado hacia vertice
+  bajalapiz avanza 0 subelapiz        # dibuja pixel
+fin

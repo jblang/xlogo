@@ -1,0 +1,24 @@
+# Comando de Inicio: empezar
+para empezar
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  poncolorlapiz amarillo
+  repitepara [angulo 0 8660]
+    [ espiral :angulo
+      ponposicion p2r :radio :angulo
+      bajalapiz]
+fin
+
+para p2r :radio :angulo
+  haz "x :radio * coseno :angulo
+  haz "y :radio * seno :angulo
+  devuelve lista :x :y
+fin
+
+para espiral :angulo
+# Orquidea de Arquimedes
+  haz "Offset sen 7.05*:angulo
+  haz "radio :angulo/52 + (potencia (:angulo/2000) 2) * :Offset
+  poncolorlapiz (frase 0 (truncar 127.5 * (1+:Offset)) 255)
+fin

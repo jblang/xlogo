@@ -1,0 +1,46 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour spir
+  fpos xycurve 0 baissecrayon
+  repetepour [t 0 360] [fcc angcol :t fpos xycurve :t]
+fin
+
+pour rand
+  donne "r choix [80 90 100 110 120]
+  donne "s 160-:r
+  donne "a (1 + hasard 9)
+  donne "b (1 + hasard 9)
+  donne "c (1 + hasard 9)
+  donne "d (1 + hasard 9)
+fin
+
+pour display
+  # tape header title et footer values
+  fcc blanc
+  fpos [-190 184] etiquette "spirograph
+  fpos [-190 -190] etiquette phrase phrase phrase liste "abcd= :a :b :c :d
+  fpos [110 -190] etiquette phrase liste "rs= :r :s
+fin
+
+pour angcol :theta
+  donne "red abs 255 *cos (:theta)
+  donne "gre abs 255 *cos (:theta + 120)
+  donne "blu abs 255 *cos (:theta + 240)
+  retourne phrase liste :red :gre :blu
+fin
+
+pour xycurve :t
+  donne "x :r*(sin :a*:t) + :s*(sin :b*:t)
+  donne "y :r*(cos :c*:t) + :s*(cos :d*:t)
+  retourne (liste :x :y)
+fin
+
+pour demarrer
+  repete 12 [new rand display spir  attends 200]
+fin
+

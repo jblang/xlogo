@@ -1,0 +1,35 @@
+# Main Command: Go 7
+# Antenna Tree by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init :order
+  Make "Size 96  # make Size and RootHalf global values
+  Make "RootHalf 1/Sqrt 2
+end
+
+to display :order
+  # write header title and curve level
+  SetPC White SetPos [-190 184]
+  Label Sentence [Antenna Tree Level] :Order
+end
+
+to tree :order :size
+  If :Order < 1 [Stop]  # ie if = 0
+  SetPW :Order Forward :Size Left 90 
+  Tree :Order-1 :RootHalf*:Size
+  SetPW :Order Left 90 Forward 2*:Size Left 90
+  Tree :Order-1 :RootHalf*:Size
+  SetPW :Order Left 90 Forward :Size
+end
+
+to go :order
+  New Init :Order Display :Order
+  Home Right 90 SetPC Green PenDown
+  Tree :Order :Size
+end

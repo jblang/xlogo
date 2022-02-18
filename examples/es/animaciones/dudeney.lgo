@@ -1,0 +1,44 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos pantalla, lapiz, tortuga, ...
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz verde subelapiz animacion
+#
+  mientras [cierto]
+   [ repitepara [angulo 0 180 9] [pintar :angulo]
+     repitepara [angulo 180 0 -9] [pintar :angulo]]
+fin
+
+para forma0
+  subelapiz ponxy 0 50 ponrumbo -42.12 bajalapiz
+  avanza 52 giraderecha 90 avanza 45.5 giraderecha 42.12
+  avanza 41 giraderecha 120 avanza 80
+fin
+
+para forma1
+  subelapiz ponxy 0 50 ponrumbo -150-:offset bajalapiz
+  avanza 80 giraderecha 120 avanza 80 forma2
+  giraderecha 180+:offset avanza 60.5 giraderecha 90 avanza 52
+fin
+
+para forma2
+  giraizquierda :offset avanza 80 giraderecha 120 avanza 39 forma3
+  giraderecha 180+:offset avanza 52 giraderecha 90 avanza 46
+fin
+
+para forma3
+  giraizquierda :offset avanza 80 giraderecha 137.88 avanza 60 giraderecha 90 avanza 52
+fin
+
+para pintar :angulo
+  haz "offset 90*(1+coseno :angulo)
+  poncolorlapiz gris cuatri poncolorlapiz verde forma0 forma1
+  refrescar espera 15 limpia
+fin
+
+para cuatri
+  subelapiz ponxy 0 50 ponrumbo -150 bajalapiz
+  avanza 80 giraderecha 120 avanza 160
+  giraderecha 120 avanza 119.28 giraizquierda 42.12 avanza 60 giraderecha 90
+  avanza 104 giraderecha 90 avanza 106 giraderecha 90 avanza 53 poncolorlapiz 2
+fin

@@ -1,0 +1,63 @@
+# Comando de Inicio: empezar
+para empezar
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz verde subelapiz animacion
+#  Valores de inicio. Deben ser globales
+  haz "a 3.8
+  haz "t 0.2
+  haz "espera 10
+  mensaje [Use los cursores arriba y abajo para ajustar el valor de 'a']
+# titulo
+  poncolorlapiz blanco
+  ponposicion [-160 180] rotula [Grafica de t = a sen t,  con 1 < a < 5]
+  ponposicion [130 180]   rotula [a= 3.8]
+  ponposicion [-184 -186] 
+  repitepara [w -5 5]
+    [ rotula :w avanza 34 ]
+  poncolorlapiz gris
+  ponposicion [-161 -182] bajalapiz
+  repite 4
+      [ avanza 342 giraderecha 90 ]
+  ponrumbo 90
+  repitepara [ y -148 124 34 ]
+     [ subelapiz ponposicion (lista cambiasigno 159 :y)
+       repite 85
+          [ bajalapiz avanza 2 subelapiz avanza 2 ] ]
+#
+  caos
+  detieneanimacion
+fin
+
+para caos
+  ponrumbo 0
+  mientras [cierto]
+     [ haz "x cambiasigno 160
+       repite 86
+         [ haz "t :a*seno (:t*180/pi)
+           subelapiz ponposicion (lista :x cambiasigno 12) bajalapiz
+           poncolorlapiz 1 avanza :t*34 espera :espera refrescar
+           poncolorlapiz 2 retrocede :t*34
+           haz "xx :x+40
+           si :xx> 180
+             [ haz "xx :xx-344 ]
+          subelapiz ponposicion (lista :xx cambiasigno 181) bajalapiz
+          poncolorlapiz 0 avanza 340
+          teclapulsada haz "x :x +4 ] ]
+fin
+
+para teclapulsada
+  si tecla? [
+  haz "char leetecla
+  si :char=-38 [haz "a :a+0.1 haz "pc 7]
+  si :char=-40 [haz "a :a-0.1 haz "pc 7]
+  si :a>5 [haz "a 5 haz "pc 1]
+  si :a<1 [haz "a 1 haz "pc 1]
+  leyenda :a :pc]
+fin
+
+para leyenda :a :pc
+  subelapiz ponposicion [126 184] ponrumbo 90 poncolorlapiz 0 pongrosor 10
+  bajalapiz avanza 56
+  subelapiz ponposicion [130 180] ponrumbo 0 poncolorlapiz :pc pongrosor 1
+  rotula frase [a=] :a
+fin

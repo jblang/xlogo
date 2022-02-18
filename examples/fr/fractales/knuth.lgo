@@ -1,0 +1,29 @@
+# Commande principale: demarrer 6
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise :order
+  donne "pause absolue 11-:order
+  donne "ord arrondi :order/2
+  donne "size 3 * puissance 2 (6-:ord)            # donne size a global value
+fin
+
+pour knuth :order :angle :turn
+  si :order < 1 [tournedroite 45+:turn avance :size tournegauche 45+:turn attends :pause stop]
+  tournedroite 2*:turn+:angle
+  knuth :order-1 2*:turn moins :turn
+  tournedroite 45-3*:turn-:angle avance :size tournegauche 45-:turn+:angle
+  knuth :order-1 0 moins :turn
+  tournedroite :angle
+fin
+
+pour demarrer :order
+  new initialise :order
+  fpos liste moins 190 moins 184
+  fcc jaune baissecrayon
+  knuth :order moins 90 45           # angle -90 turn 45
+fin
+

@@ -1,0 +1,17 @@
+# Commande principale: demarrer
+pour demarrer
+vt fsep 0
+donnees
+fin
+
+pour donnees
+lis [Nombre entier à décomposer :] "n
+si vide? :n [ec "Stoppé\ ! stoptout]
+si :n >9999999 [ec [Ce nombre est trop grand.]]
+si et entier? :n :n>0 [decomposer :n 2 [1]] [ec [Ce nombre n'est pas un entier naturel.] donnees]
+fin
+
+pour decomposer :n :p :facteurs
+si :n<:p [fct 4 tape "Facteurs\ premiers\ =\  fct 1 ec  :facteurs fct 0 ec  "Fin\ de\ recherche. donnees] 
+si egal? reste :n :p 0 [decomposer :n/:p :p md :p :facteurs][si :p = 2 [decomposer :n 3 :facteurs] [decomposer :n :p+2 :facteurs]]
+fin

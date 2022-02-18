@@ -1,0 +1,38 @@
+# Comando de Inicio: empezar
+para empezar
+  inicia
+# Hacemos 1000 intentos
+  repite 1000
+    [ haz "suma lanzar+lanzar
+      pontortuga :suma 
+      avanza 1 ]
+ # indicamos las frecuencias de tirada
+  repitepara [i 2 12]
+    [ pontortuga :i
+  # la ordenada de la tortuga representa el numero de tiradas
+      hazlocal "frecuencia ultimo pos 
+      subelapiz
+      avanza 10 giraizquierda 90
+      avanza 10 giraderecha 90
+      bajalapiz
+      rotula :frecuencia/1000*100 ]
+fin
+
+para lanzar
+  devuelve 1 + azar 6
+fin
+
+para inicia
+  borrapantalla
+  ocultatortuga
+  ponmaximastortugas 16
+  repitepara [i 2 12]
+    [ # coloca la tortuga
+     pontortuga :i ponpos lista -150 + (:i - 2)*30 0
+      # escribe el numero de la tortuga justo debajo
+     subelapiz
+     retrocede 15
+     rotula :i
+     avanza 15
+     bajalapiz ]
+fin

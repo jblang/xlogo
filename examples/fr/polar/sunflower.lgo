@@ -1,0 +1,20 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour drawseed
+  tournegauche 45 baissecrayon repete 4 [recule 7 tournedroite 90]
+  levecrayon tournedroite 45 recule 5 baissecrayon remplis levecrayon         # remplis with jaune
+fin
+
+pour demarrer
+  new fcc jaune
+  repetepour [angle 200 90000 222.5] [         # 222.5=360/1.618
+  donne "radius 0.6 * puissance :angle 0.5
+  origine fixecap :angle avance :radius
+  drawseed]
+fin
+

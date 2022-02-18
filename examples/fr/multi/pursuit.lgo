@@ -1,0 +1,35 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise :n
+  fixemaxtortues :n+2
+  si :n <2 [ecris [need more than one turtle!] stop]
+  repete :n [
+  fixetortue compteur
+  donne "angle compteur*360/:n
+  fcc angcol :angle levecrayon
+  fixexy (190*sin :angle) (190*cos :angle) baissecrayon]
+fin
+
+pour angcol :x
+  donne "r 127.5 *(1+sin (:x))
+  donne "g 127.5 *(1+sin (:x + 120))
+  donne "b 127.5 *(1+sin (:x + 220)) # non 240!
+  retourne phrase liste :r :g :b
+fin
+
+pour demarrer :n
+  new initialise :n
+  tantque [(distance [0 0]) > 2 ] [
+  repete :n [
+  fixetortue compteur donne "mypos pos
+  fixetortue compteur+1
+  si compteur+1>:n [fixetortue 1]
+  fixecap vers :mypos
+  avance 2] ]
+fin
+

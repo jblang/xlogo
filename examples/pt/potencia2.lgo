@@ -1,0 +1,33 @@
+# Esse projeto calcula o valor de um número elevado 
+# a segunda potência e o representa graficamente por
+# meio de um quadrado. É uma forma de demonstrar 
+# geometricamente o cálculo de potência, matéria vista 
+# na quinta série ou sexto ano. O autor criou ele a partir 
+# de pedidos dos professores de matemática de sua escola.
+
+# Escreva a palavra potencia seguida de um número na caixa
+# de comandos para o xLogo. Note que a palavra potencia 
+# (procedimento) está sem acento. Não confunda com a 
+# primitiva potência (que possui acento).
+# Criado por Wagner Donizetti da Silva (wd.silva arroba terra.com.br)
+
+# A mesma idéia com outros comandos:
+aprenda potencia
+ld dt mudeel 1
+#desenha um quadrado
+repita 4 [ pf 150 pd 90]
+#interage com o usuário
+leia [Número para ser elevado ao quadrado] "x
+#cruza :x linhas com :x colunas desenhando x2 quadrados
+pd 90
+repita :x [pf 150/:x pe 90 pf 150 pt 150 pd 90]
+pe 90
+repita :x [pf 150/:x pe 90 pf 150 pt 150 pd 90]
+un centro pt 50 mudef 24
+#rotula (escreve na tela) a entrada do usuário
+ul rotule :x un
+pf 10 mudex (15 * conte :x) + pri pos ul
+rotule "2 un pt 10 mudex 20 + pri pos
+#rotula (escreve na tela) a resposta calculada
+rotule (lista "= potência :x 2)
+fim

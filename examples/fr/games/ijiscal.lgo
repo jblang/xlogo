@@ -1,0 +1,213 @@
+# Commande principale: demarrer
+pour demarrer
+ve vt ct
+fsep 0.7
+reinitialiser
+data
+fin
+
+#-------------------- Données --------------------#
+pour data
+ftc 2
+ftp 24
+fap [1 1]
+fixedecimales 100
+#--------------------
+lis [Entrer l'intervalle générateur sous la forme "m/n":] "ratio
+vt
+si vide? :ratio [stoptout]
+#--------------------
+donne "m0 premembre "/ :ratio
+donne "n0 sp membre "/ :ratio
+si (ou non entier? :m0 non entier? :n0) [data]
+#--------------------
+donne "pgcd1 pgcd :m0 :n0
+donne "m0 :m0/:pgcd1
+donne "n0 :n0/:pgcd1
+#--------------------
+donne "p0 (2*:n0)
+donne "q0 :m0
+donne "pgcd2 pgcd :p0 :q0
+donne "p0 :p0/:pgcd2
+donne "q0 :q0/:pgcd2
+#--------------------
+donne "r (:m0/:n0)
+si (ou (:r >= 2) (:r <= 1)) [vt fct Rouge ec [Le rapport m/n doit être strictement compris entre 1 et 2] fct Noir data]
+#--------------------
+ec (ph [Intervalle générateur :] (mot :m0 "/ :n0) "= ndec (:m0/:n0) 6 )
+#--------------------
+donne "num [1]
+donne "den [1]
+donne "num md (:m0*:p0)/pgcd (:m0*:p0) (:q0*:n0) md :m0 :num
+donne "den md (:n0*:q0)/pgcd (:m0*:p0) (:q0*:n0) md :n0 :den
+#--------------------
+donne "i0 (:m0/:n0) donne "j0 (:p0/:q0)
+donne "intervalles liste :i0 :j0
+si :i0<:j0 
+  [donne "listei md :i0 :listei donne "listej md :j0 :listej echelle :i0 :j0 :intervalles :m0 :n0 :p0 :q0]
+  [donne "listei md :j0 :listei donne "listej md :i0 :listej echelle :j0 :i0 :intervalles :m0 :n0 :p0 :q0]
+fin
+
+pour echelle :i :j :intervalles :m :n :p :q
+donne "intervalles2 []
+#-------------------- Contrôle des grandeurs des variables
+#si :i < :j [] [donne "i1 :j donne "j1 :i donne "i :i1 donne "j :j1]
+#si (:m/:n) < (:p/:q) 
+#	[] 
+#	[donne "p1 :m donne "q1 :n donne "m1 :p donne "n1 :q
+#	 donne "m :m1 donne "n :n1 donne "p :p1 donne "q :q1]
+#--------------------
+si (compte :intervalles) > :max [reperes etiquette (mot :m0 "/ :n0) stoptout]
+#--------------------
+donne "listei []
+donne "listej []
+donne "num []
+donne "den []
+#-------------------- Nombre d'intervalles i et j
+repete (compte :intervalles) 
+[
+si (absolue ((item compteur :intervalles) - :i)) <0.00001 
+	[donne "intervalles2 md :i :intervalles2 
+	donne "listei md :i :listei]
+si (absolue ((item compteur :intervalles) - :j)) <0.00001  
+	[si (:m/:n) < (:p/:q)
+		[donne "intervalles2 md (:j/:i) md :i :intervalles2 
+			donne "listej md :j :listej]
+		[donne "intervalles2 md :i md (:j/:i) :intervalles2 
+			donne "listej md :j :listej]  
+	]	
+]
+#-------------------- Affichage
+si (compte :intervalles) >=:min
+[
+  ec "\ 
+  ec (ph [Échelle à] (compte :intervalles) [degrés.])
+  si (compte :listei) = 1 
+    [ec (ph (compte :listei) [intervalle i =](mot :m "/ :n) "= ndec :i 6)]	
+    [ec (ph (compte :listei) [intervalles i =] (mot :m "/ :n) "= ndec :i 6)]
+  si (compte :listej) = 1 
+    [ec (ph (compte :listej) [intervalle j =]  (mot :p "/ :q) "= ndec :j 6)]
+	[ec (ph (compte :listej) [intervalles j =] (mot :p "/ :q) "= ndec :j 6)]
+#-------------------- Répartition des intervalles i et j
+tape [Répartition des intervalles i et j :\  ]
+  repete (compte :intervalles) [
+    si (absolue ((item compteur :intervalles) - :i)) <0.00001 [tape "i tape "\  ]
+    si (absolue ((item compteur :intervalles) - :j)) <0.00001 [tape "j tape "\  ]]
+#  tape ":\  
+#  repete (compte :intervalles) [tape ndec (item compteur :intervalles) 3 tape "\  ]
+  ec "\  
+#-------------------- Echelle en cents
+tape [Échelle en cents :\  ]
+  donne "echelle md 1 []
+  repete (compte :intervalles) [donne "echelle md (der :echelle) * (item compteur :intervalles) :echelle]
+  repete (compte :echelle) [tape ndec (1200*(log (item compteur :echelle))/(log 2)) 0 tape "\  ]
+  ec "\  
+#-------------------- Ratios : numérateurs et dénominateurs
+#-------------------- Contrôle des grandeurs des variables
+si :i < :j [] [donne "i1 :j donne "j1 :i donne "i :i1 donne "j :j1]
+si (:m/:n) < (:p/:q) 
+	[] 
+	[donne "p1 :m donne "q1 :n donne "m1 :p donne "n1 :q
+	 donne "m :m1 donne "n :n1 donne "p :p1 donne "q :q1]
+#--------------------
+donne "num md 1 :num
+donne "den md 1 :den
+tape [Échelle en ratios :\  ]
+tape (ph "1/1 "\   )
+  repete (compte :intervalles)
+    [
+    si (absolue (item compteur :intervalles)) - :i < 0.00001
+      [donne "dernum (der :num) * :m
+       donne "derden (der :den) * :n
+       donne "num md :dernum :num
+       donne "den md :derden :den
+       tape (mot :dernum/(pgcd :dernum :derden) "/ :derden/(pgcd :dernum :derden)) tape "\  ]
+      [donne "dernum (der :num) * :p
+       donne "derden (der :den) * :q
+       donne "num md :dernum :num
+       donne "den md :derden :den
+       tape (mot :dernum/(pgcd :dernum :derden) "/ :derden/(pgcd :dernum :derden)) tape "\  ]
+      ]
+ec "\  
+#--------------------
+donne "rayon :rayon + :largeur
+graphique :echelle :i :j :intervalles 
+]
+#--------------------
+si :i < (:j/:i)   [donne "i2 :i donne "j2 (:j/:i)][donne "i2 (:j/:i) donne "j2 :i]
+si :m/:n < (:p*:n)/(:q*:m)
+  [echelle :i2 :j2 :intervalles2 :m :n (:p*:n)/(pgcd (:p*:n) (:q*:m)) (:q*:m)/(pgcd (:p*:n) (:q*:m))]
+  [echelle :i2 :j2 :intervalles2           (:p*:n)/(pgcd (:p*:n) (:q*:m)) (:q*:m)/(pgcd (:p*:n) (:q*:m)) :m :n]
+fin
+
+#-------------------- Outils
+pour premembre :element :ensemble
+donne "premembre " 
+repete (compte :ensemble) - (compte membre :element :ensemble)
+ [donne "premembre (mot :premembre item compteur :ensemble)]
+retourne :premembre
+fin
+
+pour pgcd :a :b
+si (reste :a :b)=0 [retourne :b][retourne pgcd :b reste :a :b]
+fin
+
+pour ndec :a :ndec
+donne "grand (arrondi (puissance 10 :ndec) * :a)
+donne "petit (puissance 10 (moins :ndec)) * :grand
+retourne :petit
+fin
+#-------------------- Fin d'outils
+
+#-------------------- Représentation graphique --------------------#
+pour graphique :echelle :i :j :intervalles
+fcc Noir
+ftc 2
+cercle :rayon
+cercle :rayon + :largeur
+fixecap 0
+lc av :rayon 
+av :largeur/2 fcc Grisclair bc remplis
+lc av :largeur/2 bc fcc Noir re :largeur
+lc origine
+repete (compte :intervalles) 
+    [fixecap 360*(log item compteur sp :echelle)/(log 2)
+    lc av :rayon 
+    fcc Noir
+    si compteur = (compte :intervalles) [lc] [bc]
+    av :largeur
+    si (absolue ((item compteur :intervalles) - :j)) < 0.000001 [re :largeur/2 tg 90 lc av 4 fcc Gris bc remplis] []
+    lc origine
+    fcc Noir
+    ]
+fin
+
+pour reperes
+ftc 1 
+fcc Noir
+fixecap 0
+repete 12 [fixecap (compteur - 1)*360/12 lc av (:rayon+:largeur) bc av :largeur/2 lc origine]
+fin
+#-------------------- Fin de représentation graphique --------------------#
+
+pour reinitialiser
+donne "i 0
+donne "j 0
+donne "m 0
+donne "n 0
+donne "p 0
+donne "q 0
+donne "listei []
+donne "listej []
+donne "intervalles []
+donne "echelle []
+#-------------------- Rayon du cercle intérieur vide
+donne "rayon0 32
+donne "rayon :rayon0
+#-------------------- Largeur des couronnes
+donne "largeur 24
+#-------------------- Nombre minimal de degrés
+donne "min 2
+#-------------------- Nombre maximal de degrés
+donne "max 15
+fin

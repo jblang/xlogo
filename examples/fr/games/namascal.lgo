@@ -1,0 +1,276 @@
+# Commande principale: demarrer
+pour demarrer
+ftd [1200 800]
+ve
+fsep 0.8
+fcfg Blanc #16
+# Police de caractères : Dialog plain, fixenompolice 103
+# Police de caractères : Deja vu sans mono, fixenompolice 84
+# Police de caractères : Courier New Gras
+fixenompolice 69
+vt ct
+data
+cercle_vide
+etiquette "NAMA↔SCAL
+menu
+fin
+
+pour menu
+guibouton "denommer "Échelle\ numérique\ →\ Nom
+ guiposition "denommer (liste 212 212)
+ guiaction "denommer [simplifier]
+ guidessine "denommer
+guibouton "denombrer "Nom\ →\ Échelle\ numérique
+ guiposition "denombrer (liste 212 187)
+ guiaction "denombrer [denombrer]
+ guidessine "denombrer
+guibouton "sauvegarder "Sauvegarder\ l'image
+ guiposition "sauvegarder (liste 212 162)
+ guiaction "sauvegarder [sauvegarder :gamme]
+ guidessine "sauvegarder
+guibouton "placer "Echelle\ en\ cents
+ guiposition "placer (liste 212 137)
+ guiaction "placer [placer]
+ guidessine "placer
+fin
+
+#-------------------- Échelle numérique → Nom
+
+pour ajuster :nombre
+retourne :nombre * puissance 2 tronque (:exposant-(tronque (log :nombre)/(log 2)))
+fin
+
+pour attribuer :nombre
+retourne item 1+(mod (arrondi :nombre) :nlettres) :lettres
+fin
+
+pour nommer :nombre
+retourne attribuer ajuster :nombre
+fin
+
+pour baptiser :echelle
+donne "gamme "
+donne "nb (compte :echelle)
+repete :nb [donne "gamme mot :gamme (nommer (item compteur :echelle))]
+graphique :echelle
+fin
+
+pour simplifier
+lis [Liste des fréquences de l'échelle :] "serie
+vt
+si vide? :serie [demarrer]
+si (der :serie) = 2*( prem :serie) [donne "serie sd :serie]
+simplifier0 :serie [] arrondi rac (prem :serie)
+fin
+
+pour simplifier0 :liste :simple :q
+si :q = 1 [donne "simple :liste baptiser :simple stop]
+repete (compte :liste) 
+  [si (reste (item compteur :liste) :q) = 0 
+    [donne "simple md ((item compteur :liste)/:q) :simple]
+  ]
+si (compte :simple) = (compte :liste) 
+  [baptiser :simple stop] 
+  [donne "simple [] simplifier0 :liste [] :q-1]
+fin
+
+
+#-------------------- Nom → Échelle numérique --------------------#
+
+pour numeriser :lettre
+si membre? :lettre :lettres 
+	[repete :nlettres 
+		[si :lettre = (item compteur :lettres) 
+			[retourne (:nlettres -1) + compteur stop] 
+			[] 
+		] 
+	]
+fin
+
+pour croissant :echelle3
+donne "echelle4 md prem :echelle3 []
+donne "nb3 compte sp :echelle3
+repete :nb3 [si (item compteur (sp :echelle3)) > der :echelle4 [donne "echelle4 md (item compteur (sp :echelle3)) :echelle4]
+[donne "echelle4 md 2*(item compteur (sp :echelle3)) :echelle4]]
+retourne :echelle4
+fin
+
+pour epeler :mot
+epeler0 :mot []
+fin
+
+pour epeler0 :mot :gamme0
+donne "ncar compte :mot
+si :ncar = 0 [donne "gamme1 :gamme0 stop]
+
+si (:ncar >= 5) [
+si (membre? (mot (prem :mot) (item 2 :mot) (item 3 :mot) (item 4 :mot) (item 5 :mot)) :lettres) 
+  [donne "gamme0  md (mot (prem :mot) (item 2 :mot) (item 3 :mot) (item 4 :mot) (item 5 :mot)) :gamme0 epeler0 (sp sp sp sp sp :mot) :gamme0] [
+si (membre? (mot (prem :mot) (item 2 :mot) (item 3 :mot) (item 4 :mot)) :lettres) 
+  [donne "gamme0  md (mot (prem :mot) (item 2 :mot) (item 3 :mot) (item 4 :mot) ) :gamme0 epeler0 (sp sp sp sp :mot) :gamme0] [
+si (membre? (mot (prem :mot) (item 2 :mot) (item 3 :mot)) :lettres) 
+  [donne "gamme0 md (mot (prem :mot) (item 2 :mot) (item 3 :mot)) :gamme0 epeler0 (sp sp sp :mot) :gamme0] [
+si (membre? (mot (prem :mot) (item 2 :mot)) :lettres) 
+  [donne "gamme0 md (mot (prem :mot) (item 2 :mot) ) :gamme0 epeler0 (sp sp :mot) :gamme0] [
+epeler0 (sp :mot) md (prem :mot) :gamme0]]]]]
+
+si (:ncar >= 4) [
+si (membre? (mot (prem :mot) (item 2 :mot) (item 3 :mot) (item 4 :mot)) :lettres) 
+  [donne "gamme0  md (mot (prem :mot) (item 2 :mot) (item 3 :mot) (item 4 :mot) ) :gamme0 epeler0 (sp sp sp sp :mot) :gamme0] [
+si (membre? (mot (prem :mot) (item 2 :mot) (item 3 :mot)) :lettres) 
+  [donne "gamme0 md (mot (prem :mot) (item 2 :mot) (item 3 :mot)) :gamme0 epeler0 (sp sp sp :mot) :gamme0] [
+si (membre? (mot (prem :mot) (item 2 :mot)) :lettres) 
+  [donne "gamme0 md (mot (prem :mot) (item 2 :mot) ) :gamme0 epeler0 (sp sp :mot) :gamme0] [
+epeler0 (sp :mot) md (prem :mot) :gamme0]]]]
+
+si (:ncar >= 3) [
+si (membre? (mot (prem :mot) (item 2 :mot) (item 3 :mot)) :lettres) 
+  [donne "gamme0  md (mot (prem :mot) (item 2 :mot) (item 3 :mot)) :gamme0 epeler0 (sp sp sp :mot) :gamme0] [
+si (membre? (mot (prem :mot) (item 2 :mot)) :lettres) 
+  [donne "gamme0 md (mot (prem :mot) (item 2 :mot)) :gamme0 epeler0 (sp sp :mot) :gamme0] [
+epeler0 (sp :mot) md (prem :mot) :gamme0]]]
+
+si (:ncar >= 2) [
+si (membre? (mot (prem :mot) (item 2 :mot)) :lettres) 
+  [donne "gamme0 md (mot (prem :mot) (item 2 :mot)) :gamme0 epeler0 (sp sp :mot) :gamme0] [
+epeler0 (sp :mot) md (prem :mot) :gamme0]]
+
+si (:ncar >= 1) [
+donne "gamme0 md (prem :mot) :gamme0 epeler0 (sp :mot) :gamme0]
+fin
+
+
+pour denombrer
+donne "echelle0 []
+lis [Nom de l'échelle :] "gamme
+si vide? :gamme [vt stoptout]
+vt
+epeler :gamme
+donne "gamme0 :gamme1
+donne "nb (compte :gamme0)
+donne "echelle0 []
+repete :nb [donne "echelle0 md numeriser (item compteur :gamme0) :echelle0]
+simplifier0 (croissant :echelle0) [] (prem :echelle0)
+donne "gamme :gamme
+donne "echelle croissant :echelle0
+fin
+
+#-------------------- Représentation graphique --------------------#
+pour graphique :echelle
+cercle_vide
+cercle_harmonique :echelle
+stop
+fin
+
+pour cercle_vide
+origine
+nettoie
+ftc 2
+repete 12 [lc av :d+(:i/2) fcc 0 cercle 3 remplis re :d+(:i/2) td 360/12]
+fcc 0 cercle :d+(:i/2)
+fcc :clair remplis
+repete 12 [lc av :r-(:i/2) fcc 0 cercle 3 remplis re :r-(:i/2) td 360/12]
+fcc 0 cercle :r-(:i/2)
+fcc :fonce remplis
+fcc 0
+repete 12 [lc av :r-(:i/2) bc av (:l+1)*:i lc re :d+(:i/2) td 360/12]
+fin
+
+pour cercle_harmonique :echelle
+si (der :echelle) = 2* (prem :echelle) [donne "echelle :echelle] [donne "echelle md 2*(prem :echelle) :echelle]
+repete (compte :echelle) [
+donne "q (item compteur :echelle)/(prem :echelle)
+donne "l (log :q)/(log 2)
+donne "d :r+(:l*:i)
+donne "n 12*((log :q)/(log 2))
+fixecap 360*(log :q)/(log 2)
+ftc 1
+fcc 7 bc av :d
+fcc 1 etiquette item compteur :echelle
+lc re :d]
+fcc 0
+ftp 42 fixecap 0 lc fpos liste 0 0 bc etiquette :gamme
+ftp 32 fixecap 0 lc fpos liste 0 moins 250 bc etiquette :echelle
+ec (ph :gamme ":  :echelle)
+stop
+fin
+
+pour sauvegarder :gamme
+si :gamme = "  [sauveimage (mot "namascal ".png) (liste (-212) 212 212 (-212))
+ec "Image\ sauvegardée] [
+sauveimage (mot :gamme ".png) (liste (-212) 212 212 (-212))
+ec "Image\ sauvegardée
+]
+fin
+
+pour data
+fap [1 1]
+ftp 32
+donne "i tp
+donne "r 5*:i
+donne "l 1
+donne "d :r+:i
+donne "clair (liste 200 200 200)
+donne "fonce (liste 128 128 128)
+donne "lettres [
+y y, y: y. y' y', y': y'. yh yh, yh: yh. yh' yh', yh': yh'. yy yy, yy: yy. yy' yy', yy': yy'. yyh yyh, yyh: yyh. yyh' yyh', yyh': yyh'. q q, q: q. q' q', q': q'. qh qh, qh: qh. qh' qh', qh': qh'. qq qq, qq: qq. qq' qq', qq': qq'. qqh qqh, qqh: qqh. qqh' qqh', qqh': qqh'. m m, m: m. m' m', m': m'. mh mh, mh: mh. mh' mh', mh': mh'. mm mm, mm: mm. mm' mm', mm': mm'. mmh mmh, mmh: mmh. mmh' mmh', mmh': mmh'. f f, f: f. f' f', f': f'. fh fh, fh: fh. fh' fh', fh': fh'. ff ff, ff: ff. ff' ff', ff': ff'. ffh ffh, ffh: ffh. ffh' ffh', ffh': ffh'. u u, u: u. u' u', u': u'. uh uh, uh: uh. uh' uh', uh': uh'. uu uu, uu: uu. uu' uu', uu': uu'. uuh uuh, uuh: uuh. uuh' uuh', uuh': uuh'. v v, v: v. v' v', v': v'. vh vh, vh: vh. vh' vh', vh': vh'. vv vv, vv: vv. vv' vv', vv': vv'. vvh vvh, vvh: vvh. vvh' vvh', vvh': vvh'. p p, p: p. p' p', p': p'. ph ph, ph: ph. ph' ph', ph': ph'. pp pp, pp: pp. pp' pp', pp': pp'. pph pph, pph: pph. pph' pph', pph': pph'. b b, b: b. b' b', b': b'. bh bh, bh: bh. bh' bh', bh': bh'. bb bb, bb: bb. bb' bb', bb': bb'. bbh bbh, bbh: bbh. bbh' bbh', bbh': bbh'. o o, o: o. o' o', o': o'. oh oh, oh: oh. oh' oh', oh': oh'. oo oo, oo: oo. oo' oo', oo': oo'. ooh ooh, ooh: ooh. ooh' ooh', ooh': ooh'. ĉ ĉ, ĉ: ĉ. ĉ' ĉ', ĉ': ĉ'. ĉh ĉh, ĉh: ĉh. ĉh' ĉh', ĉh': ĉh'. ĉĉ ĉĉ, ĉĉ: ĉĉ. ĉĉ' ĉĉ', ĉĉ': ĉĉ'. ĉĉh ĉĉh, ĉĉh: ĉĉh. ĉĉh' ĉĉh', ĉĉh': ĉĉh'. n n, n: n. n' n', n': n'. nh nh, nh: nh. nh' nh', nh': nh'. nn nn, nn: nn. nn' nn', nn': nn'. nnh nnh, nnh: nnh. nnh' nnh', nnh': nnh'. c c, c: c. c' c', c': c'. ch ch, ch: ch. ch' ch', ch': ch'. cc cc, cc: cc. cc' cc', cc': cc'. cch cch, cch: cch. cch' cch', cch': cch'. r r, r: r. r' r', r': r'. rh rh, rh: rh. rh' rh', rh': rh'. rr rr, rr: rr. rr' rr', rr': rr'. rrh rrh, rrh: rrh. rrh' rrh', rrh': rrh'. t t, t: t. t' t', t': t'. th th, th: th. th' th', th': th'. tt tt, tt: tt. tt' tt', tt': tt'. tth tth, tth: tth. tth' tth', tth': tth'. ñ ñ, ñ: ñ. ñ' ñ', ñ': ñ'. ñh ñh, ñh: ñh. ñh' ñh', ñh': ñh'. ññ ññ, ññ: ññ. ññ' ññ', ññ': ññ'. ññh ññh, ññh: ññh. ññh' ññh', ññh': ññh'. d d, d: d. d' d', d': d'. dh dh, dh: dh. dh' dh', dh': dh'. dd dd, dd: dd. dd' dd', dd': dd'. ddh ddh, ddh: ddh. ddh' ddh', ddh': ddh'. a a, a: a. a' a', a': a'. ah ah, ah: ah. ah' ah', ah': ah'. aa aa, aa: aa. aa' aa', aa': aa'. aah aah, aah: aah. aah' aah', aah': aah'. ŝ ŝ, ŝ: ŝ. ŝ' ŝ', ŝ': ŝ'. ŝh ŝh, ŝh: ŝh. ŝh' ŝh', ŝh': ŝh'. ŝŝ ŝŝ, ŝŝ: ŝŝ. ŝŝ' ŝŝ', ŝŝ': ŝŝ'. ŝŝh ŝŝh, ŝŝh: ŝŝh. ŝŝh' ŝŝh', ŝŝh': ŝŝh'. s s, s: s. s' s', s': s'. sh sh, sh: sh. sh' sh', sh': sh'. ss ss, ss: ss. ss' ss', ss': ss'. ssh ssh, ssh: ssh. ssh' ssh', ssh': ssh'. z z, z: z. z' z', z': z'. zh zh, zh: zh. zh' zh', zh': zh'. zz zz, zz: zz. zz' zz', zz': zz'. zzh zzh, zzh: zzh. zzh' zzh', zzh': zzh'. w w, w: w. w' w', w': w'. wh wh, wh: wh. wh' wh', wh': wh'. ww ww, ww: ww. ww' ww', ww': ww'. wwh wwh, wwh: wwh. wwh' wwh', wwh': wwh'. ç ç, ç: ç. ç' ç', ç': ç'. çh çh, çh: çh. çh' çh', çh': çh'. çç çç, çç: çç. çç' çç', çç': çç'. ççh ççh, ççh: ççh. ççh' ççh', ççh': ççh'. e e, e: e. e' e', e': e'. eh eh, eh: eh. eh' eh', eh': eh'. ee ee, ee: ee. ee' ee', ee': ee'. eeh eeh, eeh: eeh. eeh' eeh', eeh': eeh'. x x, x: x. x' x', x': x'. xh xh, xh: xh. xh' xh', xh': xh'. xx xx, xx: xx. xx' xx', xx': xx'. xxh xxh, xxh: xxh. xxh' xxh', xxh': xxh'. l l, l: l. l' l', l': l'. lh lh, lh: lh. lh' lh', lh': lh'. ll ll, ll: ll. ll' ll', ll': ll'. llh llh, llh: llh. llh' llh', llh': llh'. j j, j: j. j' j', j': j'. jh jh, jh: jh. jh' jh', jh': jh'. jj jj, jj: jj. jj' jj', jj': jj'. jjh jjh, jjh: jjh. jjh' jjh', jjh': jjh'. ĵ ĵ, ĵ: ĵ. ĵ' ĵ', ĵ': ĵ'. ĵh ĵh, ĵh: ĵh. ĵh' ĵh', ĵh': ĵh'. ĵĵ ĵĵ, ĵĵ: ĵĵ. ĵĵ' ĵĵ', ĵĵ': ĵĵ'. ĵĵh ĵĵh, ĵĵh: ĵĵh. ĵĵh' ĵĵh', ĵĵh': ĵĵh'. k k, k: k. k' k', k': k'. kh kh, kh: kh. kh' kh', kh': kh'. kk kk, kk: kk. kk' kk', kk': kk'. kkh kkh, kkh: kkh. kkh' kkh', kkh': kkh'. i i, i: i. i' i', i': i'. ih ih, ih: ih. ih' ih', ih': ih'. ii ii, ii: ii. ii' ii', ii': ii'. iih iih, iih: iih. iih' iih', iih': iih'. g g, g: g. g' g', g': g'. gh gh, gh: gh. gh' gh', gh': gh'. gg gg, gg: gg. gg' gg', gg': gg'. ggh ggh, ggh: ggh. ggh' ggh', ggh': ggh'. ĝ ĝ, ĝ: ĝ. ĝ' ĝ', ĝ': ĝ'. ĝh ĝh, ĝh: ĝh. ĝh' ĝh', ĝh': ĝh'. ĝĝ ĝĝ, ĝĝ: ĝĝ. ĝĝ' ĝĝ', ĝĝ': ĝĝ'. ĝĝh ĝĝh, ĝĝh: ĝĝh. ĝĝh' ĝĝh', ĝĝh': ĝĝh'. ĥ ĥ, ĥ: ĥ. ĥ' ĥ', ĥ': ĥ'. ĥh ĥh, ĥh: ĥh. ĥh' ĥh', ĥh': ĥh'. ĥĥ ĥĥ, ĥĥ: ĥĥ. ĥĥ' ĥĥ', ĥĥ': ĥĥ'. ĥĥh ĥĥh, ĥĥh: ĥĥh. ĥĥh' ĥĥh', ĥĥh': ĥĥh'.
+]
+donne "nlettres compte :lettres
+# soit "lettres0 [] repete :nlettres [si (mod (compteur-1) 4) = 0 [donne "lettres0 md item compteur :lettres :lettres0]] donne "lettres :lettres0
+#soit "lettres0 [] repete :nlettres [si (mod (compteur-1) 2) = 0 [donne "lettres0 md item compteur :lettres :lettres0]] donne "lettres :lettres0
+donne "nlettres compte :lettres
+ec (ph "Les :nlettres [caractères utilisés dans les noms des échelles :])
+ec :lettres
+donne "exposant arrondi ((log :nlettres)/(log 2))
+donne "gamme "
+donne "echelle []
+donne "intervalles_acceptes (liste 3/2 4/3 5/4 6/5 7/6 8/7 7/5 10/7 17/12 24/17 13/9 18/13 45/32 64/45)
+fin
+
+#-------------------- Emplacements en cents --------------------#
+
+pour placer
+cercle_vide
+etiquette "NAMA↔SCAL
+lis [Entrez les degrés exprimés en "cents" de 0 à 1200 :] "degres
+vt
+si vide? :degres [stoptout]
+si (prem :degres) = 0 [] [donne "degres mp 0 :degres]
+si (der :degres) = 1200 [donne "degres sd :degres] 
+donne "debut 10
+donne "fin 64
+echelles :debut :degres :fin
+
+fin
+
+pour echelles :debut :degres :fin
+donne "gamme " 
+si :debut > :fin [stopanimation ec "Fin\ de\ recherche. stoptout] 
+soit "u :debut
+#--------------------
+#si (compte :degres) = 6 [soit "o arrondi (:u * puissance 2 (item 2 :degres)/1200) soit "w arrondi (:u * puissance 2 (item 3 :degres)/1200) soit "a arrondi (:u * puissance 2 (item 4 :degres)/1200) soit "h arrondi (:u * puissance 2 (item 5 :degres)/1200) soit "e arrondi (:u * puissance 2 (item 6 :degres)/1200) soit "i arrondi (:u * puissance 2 1) si (et membre? (:a/:u) :intervalles_acceptes membre? (:h/:o) :intervalles_acceptes membre? (:e/:w) :intervalles_acceptes membre? (:i/:a) :intervalles_acceptes) [soit "echelle (ph :u :o :w :a :h :e)] [echelles :debut+2 :degres :fin]]
+#--------------------
+#si (compte :degres) = 7 [soit "y arrondi (:u * puissance 2 (item 2 :degres)/1200) soit "o arrondi (:u * puissance 2 (item 3 :degres)/1200) soit "w arrondi (:u * puissance 2 (item 4 :degres)/1200) soit "a arrondi (:u * puissance 2 (item 5 :degres)/1200) soit "h arrondi (:u * puissance 2 (item 6 :degres)/1200) soit "e arrondi (:u * puissance 2 (item 7 :degres)/1200) si (et membre? (:a/:u) :intervalles_acceptes membre? (2*:u/:y) :intervalles_acceptes membre? (:h/:o) :intervalles_acceptes membre? (:e/:w) :intervalles_acceptes membre? (:i/:a) :intervalles_acceptes) [soit "echelle (ph :u :y :o :w :a :h :e)] [echelles :debut+2 :degres :fin]]
+#--------------------
+#[
+soit "echelle []
+repete (compte :degres) [donne "echelle md arrondi (:u * puissance 2 ((item compteur :degres)/1200)) :echelle]
+#]
+soit "nb (compte :echelle)
+
+repete (:nb) [donne "gamme mot :gamme (nommer (item compteur :echelle))]
+#--------------------
+animation
+graphique :echelle
+rafraichis
+#--------------------
+attends 3
+donne "gamme " 
+donne "echelle []
+echelles :debut+2 :degres :fin
+#] 
+#[echelles :debut+2 :degres :fin]
+fin
+
+pour test :u :o :w :a :h :e :i :debut :degres :fin
+fin

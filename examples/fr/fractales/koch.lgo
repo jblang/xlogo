@@ -1,0 +1,28 @@
+# Commande principale: demarrer 3
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise
+  levecrayon fpos [-160 -90] baissecrayon
+fin
+
+pour kout :level :side
+  fixecap 30 repete 3 [koch :level :side tournedroite 120]
+fin
+
+pour koch :level :side
+  si :level < 1 [
+  avance :side stop]
+  koch :level-1 :side/3 tournegauche 60
+  koch :level-1 :side/3 tournedroite 120
+  koch :level-1 :side/3 tournegauche 60
+  koch :level-1 :side/3
+fin
+
+pour demarrer :level
+  new fcc 7 initialise kout :level 320
+fin
+

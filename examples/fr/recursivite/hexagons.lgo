@@ -1,0 +1,27 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour hue :angle
+  donne "red arrondi 127*(1+cos :angle)
+  donne "green arrondi 127*(1+cos(120+:angle))
+  donne "blue arrondi 127*(1+cos(240+:angle))
+  retourne phrase liste :red :green :blue
+fin
+
+pour hexagon :side
+  si :side < 12 [stop]
+  recule :side tournedroite 60
+  repete 6 [fcc hue 3*distance [0 0]
+  baissecrayon avance :side levecrayon
+  tournegauche 60 hexagon :side/2]
+  tournegauche 60 avance :side
+fin
+
+pour demarrer
+  new tournedroite 30 hexagon 100
+fin
+

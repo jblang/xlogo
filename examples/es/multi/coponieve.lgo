@@ -1,0 +1,34 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+  mientras ["cierto] [
+    pontortuga 0 centro avanza 32 limpia
+    haz "paridad 1 haz "borde "cierto
+    repitepara [n 1 12] [
+      pontortuga :n subelapiz centro
+      ponrumbo 15+(:n * 30)    # ponrumbo 60 * redondea (:n/2)
+      avanza 32 bajalapiz]
+        mientras [:borde] [
+        repite 16 [coponieve] ]
+    espera 222]
+fin
+
+para prueba
+  pontortuga 0
+  giraizquierda :dir avanza :long
+  si (distancia [0 0]) >180 [
+    retrocede :long giraderecha :dir devuelve "cierto] [devuelve "falso]
+fin
+
+para coponieve
+  haz "dir 60 * (azar 6)
+  haz "long 1+azar 32
+  si prueba [haz "borde "falso alto]
+  repitepara [n 1 12] [
+    pontortuga :n
+    poncolorlapiz 6.5 + (:paridad/2) # 6 o 7
+    giraizquierda :paridad * :dir avanza :long
+    haz "paridad cambiasigno 1 * :paridad]
+fin

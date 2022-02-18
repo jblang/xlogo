@@ -1,0 +1,38 @@
+# Commande principale: demarrer
+pour new
+    # Initialise  les couleurs pour l'écran, le crayon de la tortue
+  init ftd [400 400] cachetortue
+  fcfg noir fcc vert levecrayon animation
+fin
+
+pour initialise :theta
+  donne "r 400*sin (2*:theta)
+  donne "a :r*sin :theta
+  donne "b :r*cos :theta
+  donne "x 0 donne "y 0
+fin
+
+pour starmorph
+  donne "col1 absolue (:col1-3)
+  donne "col2 absolue (:col2-3)
+  repetepour [theta 0 90 0.5] [
+  initialise :theta
+  fixecap 0 levecrayon origine tournedroite :theta
+  repete 9 [
+  avance :a tournegauche 140
+  avance :b tournegauche 140
+  donne "x :x + item 1 pos
+  donne "y :y + item 2 pos]
+  fixexy moins :x/9 moins :y/9
+  fixecap 0 baissecrayon tournedroite :theta
+  repete 9 [
+  fcc :col1 avance :a tournegauche 140
+  fcc :col2 avance :b tournegauche 140]
+  rf attends 10 nettoie]
+fin
+
+pour demarrer
+  new ftc 2 donne "col1 1 donne "col2 2
+  tantque [vrai] [starmorph]
+fin
+

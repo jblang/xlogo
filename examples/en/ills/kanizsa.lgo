@@ -1,0 +1,32 @@
+# Main Command: Go 3
+# Kanizsa Illusion by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to go :order
+  New SetPW 2
+  Make "Angle 180-(360/:Order)
+  Repeat :Order [
+    Forward 140 Dart :Angle 30 Arch 360-:Angle 30 
+    Forward 10 Fill Back 10 
+    SetPC Black Dart :Angle 30 SetPC Green
+    Back 140 Left 180/:Order
+    Forward 140 Dart :Angle Item :Order [0 0 78 56 44 32]
+    Back 140 Left 180/:Order]
+end
+
+to dart :angle :size
+  # dart drawn tp
+  Right :Angle/2 PenDown Back :Size PenUp Forward :Size
+  Left :Angle PenDown Back :Size PenUp Forward :Size Right :Angle/2
+end
+
+to arch :angle :radius
+  # symmetrical arc drawn relative to turtle heading
+  Arc :Radius Heading-:Angle/2 Heading+:Angle/2
+end

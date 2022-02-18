@@ -1,0 +1,36 @@
+# Main Command: Go
+# Rainbow by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to rainbow
+  SetPW 10     # big pen
+  Make "Cols [1 13 3 2 4 15]
+  For [N 1 6] [
+    SetPC Item :N :Cols
+    Arch 180 (180-12*:N) Wait 30]
+end
+
+to arch :angle :radius
+  # symmetrical arc drawn relative to turtle heading
+  Arc :Radius Heading-:Angle/2 Heading+:Angle/2
+end
+
+to go
+  New Rainbow
+end
+
+# alternative procedure
+
+to rainbow_alt
+  SetPW 10     # big pen 
+  Make "Cols [Red Orange Yellow Green Blue Purple]
+  For [N 1 6] [
+    SetPC Run Item :N :Cols
+    Arch 180 (180-12*:N) Wait 30]
+end

@@ -1,0 +1,22 @@
+# Main Command: Go
+# Color Names by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to go
+  New SetFontSize 24
+  Make "Cols [Red Green Blue Yellow Purple Brown White Gray]
+  Make "X 60
+  For [Y 100 -140 -25] [
+    Make "X Minus :X
+    SetXY :X :Y
+    Make "ColName Pick :Cols
+    SetPC Run Sentence Pick :Cols [ ]
+    SetX (First Pos) - (LabelLength :ColName)/2 - :Y/2
+    Label :ColName]
+end

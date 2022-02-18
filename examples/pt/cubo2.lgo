@@ -1,0 +1,119 @@
+# Esse projeto desenha um cubo.
+# Escreva vai na caixa de comandos para o xLogo desenhar um cubo animado.
+# Com os recursos 3D disponíveis desde a versão 0.9.92, é 
+# possível criar imagens bem mais interessantes e complexas:
+# Criado por Bertrand Carette
+
+
+aprenda quadrado
+mudecordolápis amarelo
+#define cada uma das arestas da secção transversal
+iniciepolígono repita 4 [parafrente 400 paradireita 90] terminepolígono
+fim
+
+aprenda um
+# desenha o contorno
+quadrado
+# desloca a tat ao centro do quadrado
+usenada paradireita 90 parafrente 200 paraesquerda 90 parafrente 200 uselápis
+# desenha o ponto
+mudecordolápis azul pontos
+# retorna à posição inicial
+usenada paratrás 200 paraesquerda 90 parafrente 200 paradireita 90 uselápis
+fim
+
+aprenda dois
+# desenha o contorno
+quadrado
+# desloca a tat ao centro do quadrado
+usenada paradireita 90 parafrente 200 paraesquerda 90 parafrente 200 uselápis
+# desenha os pontos
+mudecordolápis azul usenada paradireita 45 parafrente 130 uselápis pontos
+usenada paratrás 260 uselápis pontos
+# retorna à posição inicial 
+usenada parafrente 130 paraesquerda 45 paratrás 200 paraesquerda 90 parafrente 200 paradireita 90 uselápis
+fim
+
+aprenda três
+# desenha o contorno
+quadrado
+# desloca a tat ao centro do quadrado
+usenada paradireita 90 parafrente 200 paraesquerda 90 parafrente 200 uselápis
+# desenha os pontos
+mudecordolápis azul pontos
+usenada paradireita 45 parafrente 130 uselápis pontos
+usenada paratrás 260 uselápis pontos
+# retorna à posição inicial 
+usenada parafrente 130 paraesquerda 45 paratrás 200 paraesquerda 90 parafrente 200 paradireita 90 uselápis
+fim
+aprenda quatro
+# desenha o contorno
+quadrado
+# desloca a tat ao centro do quadrado
+usenada paradireita 90 parafrente 90 paraesquerda 90 parafrente 70 uselápis
+# desenha os pontos
+mudecordolápis azul pontos
+usenada parafrente 260 uselápis pontos
+usenada paratrás 330 paradireita 90 parafrente 220 paraesquerda 90 parafrente 70 uselápis
+
+mudecordolápis azul pontos
+usenada parafrente 260 uselápis pontos
+
+# retorna à posição inicial
+usenada paratrás 330 paraesquerda 90 parafrente 310 paradireita 90 uselápis
+fim
+
+aprenda cinco
+# desenha o contorno
+quadrado
+# desloca a tat ao centro do quadrado
+usenada paradireita 90 parafrente 200 paraesquerda 90 parafrente 200 uselápis
+# desenha os pontos
+mudecordolápis azul pontos
+usenada paradireita 45 parafrente 130 uselápis pontos
+usenada paratrás 260 uselápis pontos
+
+usenada parafrente 130 paraesquerda 90 parafrente 130 uselápis pontos
+usenada paratrás 260 uselápis pontos
+
+# retorna à posição inicial
+usenada parafrente 130 paradireita 45 paratrás 200 paraesquerda 90 parafrente 200 paradireita 90 uselápis
+fim
+
+aprenda seis
+# desenha o contorno
+quadrado
+# desloca a tat ao centro do quadrado
+
+usenada paradireita 90 parafrente 90 paraesquerda 90 parafrente 70 uselápis
+# desenha os pontos
+mudecordolápis azul pontos
+usenada parafrente 130 uselápis pontos
+usenada parafrente 130 uselápis pontos
+
+usenada paratrás 330 paradireita 90 parafrente 220 paraesquerda 90 parafrente 70 uselápis
+
+mudecordolápis azul pontos
+usenada parafrente 130 uselápis pontos
+usenada parafrente 130 uselápis pontos
+
+# retorna à posição inicial
+usenada paratrás 330 paraesquerda 90 parafrente 310 paradireita 90 uselápis
+fim
+aprenda pontos
+usenada levantenariz 90 parafrente 1 baixenariz 90 uselápis
+iniciepolígono circ 50 terminepolígono
+usenada levantenariz 90 paratrás 1 baixenariz 90 uselápis
+fim
+
+aprenda vai
+logo3d limpedesenho mudecordofundo 0
+um usenada paradireita 90 parafrente 400 paraesquerda 90 uselápis rolepd 90
+três usenada paradireita 90 parafrente 400 paraesquerda 90 uselápis rolepd 90
+seis usenada paradireita 90 parafrente 400 paraesquerda 90 uselápis rolepd 90
+quatro usenada paradireita 90 parafrente 400 paraesquerda 90 rolepd 90
+paradireita 90 parafrente 400 rolepd 90 paradireita 90
+uselápis cinco usenada rolepd 180 paraesquerda 90 parafrente 400 paradireita 90
+levantenariz 90 parafrente 400 baixenariz 90 uselápis dois
+mostrepolígono
+fim

@@ -1,0 +1,47 @@
+# Main Command: Go
+# Haiku by Guy Walker
+# www.logoarts.co.uk
+
+to new
+# set default screen, pen and turtle 
+ResetAll SetScreenSize [400 400] HideTurtle 
+SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init
+Make "AdjList [calm cool tiny new fresh early first light soft sudden]
+Make "NounList [showers dawn dew moon evening stars mist blossoms sun leaves snow breeze buds flowers trees]
+Make "VerbList [fall open close greet serenade blow pile swim float catch hold fade]
+Make "Adj :AdjList
+Make "Noun :NounList
+Make "Verb :VerbList
+end
+
+to go
+New Init SetFontSize 22
+SetPos [-180 102]
+Label (List PickAdj PickAdj PickNoun PickVerb) Wait 30 
+SetPos [-180 70]
+Label (List Pick [in with of so through on] 
+  PickAdj PickNoun PickVerb "and) Wait 30 
+SetPos [-180 38]
+Label (List PickVerb "the PickAdj PickAdj PickNoun)
+end
+
+to picknoun
+Make "Selection Pick :Noun
+Make "Noun Remove :Selection :Noun
+Output :Selection
+end
+
+to pickadj
+Make "Selection Pick :Adj
+Make "Adj Remove :Selection :Adj
+Output :Selection
+end
+
+to pickverb
+Make "Selection Pick :Verb
+Make "Verb Remove :Selection :Verb
+Output :Selection
+end

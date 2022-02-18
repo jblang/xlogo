@@ -1,0 +1,1083 @@
+# Commande principale: demarrer
+pour demarrer
+ve vt ct fsep 0.95
+ct
+fixetaillecrayon 5
+ftp 12
+guibouton "bouton "Consulter\ l'oracle
+guiposition "bouton [-80 0]
+guidessine "bouton
+guiaction "bouton [vt ec (ph "Jour\ : date "Heure\ : heure ) ec [] ve ct fixetaillecrayon 5 ftp 12 lc fpos [0 75] tirage]
+fin
+
+pour tirage
+fsep 0.3
+donne "a difference 12 ((1 + hasard 2) + (1 + hasard 2) + (1 + hasard 2))
+donne "b difference 12 ((1 + hasard 2) + (1 + hasard 2) + (1 + hasard 2))
+donne "c difference 12 ((1 + hasard 2) + (1 + hasard 2) + (1 + hasard 2))
+donne "d difference 12 ((1 + hasard 2) + (1 + hasard 2) + (1 + hasard 2))
+donne "e difference 12 ((1 + hasard 2) + (1 + hasard 2) + (1 + hasard 2))
+donne "f difference 12 ((1 + hasard 2) + (1 + hasard 2) + (1 + hasard 2))
+valeurs
+donne "hexagramme1 :g + (:h + (:i + (:j + (:k + :l))))
+donne "hexagramme2 :m + (:n + (:o + (:p + (:q + :r))))
+lc av 100
+si egal? :hexagramme1 :hexagramme2 [trace_simple fct noir fsty "italique tape ph ph "Hexagramme "unique ": hexagramme_1 fct bleu fsty "italique ec [Il n'y a pas de traits mutables.]  stop]
+fct noir fsty "italique
+tape ph ph ph "Premier "hexagramme ": " 
+hexagramme_1
+fct noir
+fsty "italique
+tape ph ph ph "Second "hexagramme ": " 
+hexagramme_2
+trace_double
+
+fin
+
+pour traits_mutables
+fct bleu
+fsty "italique
+si ou egal? :a 6 egal? :a 9 [ec [Le trait 1 est mutable.]]
+si ou egal? :b 6 egal? :b 9 [ec [Le trait 2 est mutable.]]
+si ou egal? :c 6 egal? :c 9 [ec [Le trait 3 est mutable.]]
+si ou egal? :d 6 egal? :d 9 [ec [Le trait 4 est mutable.]]
+si ou egal? :e 6 egal? :e 9 [ec [Le trait 5 est mutable.]]
+si ou egal? :f 6 egal? :f 9 [ec [Le trait 6 est mutable.]]
+fsty "aucun
+fin
+
+pour valeurs
+si egal? :a 6 [donne "g 0 donne "m 1]
+si egal? :a 7 [donne "g 1 donne "m 1]
+si egal? :a 8 [donne "g 0 donne "m 0]
+si egal? :a 9 [donne "g 1 donne "m 0]
+si egal? :b 6 [donne "h 0 donne "n 2]
+si egal? :b 7 [donne "h 2 donne "n 2]
+si egal? :b 8 [donne "h 0 donne "n 0]
+si egal? :b 9 [ donne "h 2 donne "n 0]
+si egal? :c 6 [donne "i 0 donne "o 4]
+si egal? :c 7 [donne "i 4 donne "o 4]
+si egal? :c 8 [donne "i 0 donne "o 0]
+si egal? :c 9 [donne "i 4 donne "o 0]
+si egal? :d 6 [donne "j 0 donne "p 8]
+si egal? :d 7 [donne "j 8 donne "p 8]
+si egal? :d 8 [donne "j 0 donne "p 0]
+si egal? :d 9 [donne "j 8 donne "p 0]
+si egal? :e 6 [donne "k 0 donne "q 16]
+si egal? :e 7 [donne "k 16 donne "q 16]
+si egal? :e 8 [donne "k 0 donne "q 0]
+si egal? :e 9 [donne "k 16 donne "q 0]
+si egal? :f 6 [donne "l 0 donne "r 32]
+si egal? :f 7 [donne "l 32 donne "r 32]
+si egal? :f 8 [donne "l 0 donne "r 0]
+si egal? :f 9 [donne "l 32 donne "r 0]
+fin
+
+pour trace_double
+ct
+si egal? :a 6 [yin_mutable]
+si egal? :a 7 [yang]
+si egal? :a 8 [yin]
+si egal? :a 9 [yang_mutable]
+si egal? :b 6 [yin_mutable]
+si egal? :b 7 [yang]
+si egal? :b 8 [yin]
+si egal? :b 9 [yang_mutable]
+si egal? :c 6 [yin_mutable]
+si egal? :c 7 [yang]
+si egal? :c 8 [yin]
+si egal? :c 9 [yang_mutable]
+si egal? :d 6 [yin_mutable]
+si egal? :d 7 [yang]
+si egal? :d 8 [yin]
+si egal? :d 9 [yang_mutable]
+si egal? :e 6 [yin_mutable]
+si egal? :e 7 [yang]
+si egal? :e 8 [yin]
+si egal? :e 9 [yang_mutable]
+si egal? :f 6 [yin_mutable]
+si egal? :f 7 [yang]
+si egal? :f 8 [yin]
+si egal? :f 9 [yang_mutable]
+fin
+
+pour trace_simple
+ct
+si egal? :a 7 [yang_nonmutable]
+si egal? :a 8 [yin_nonmutable]
+si egal? :b 7 [yang_nonmutable]
+si egal? :b 8 [yin_nonmutable]
+si egal? :c 7 [yang_nonmutable]
+si egal? :c 8 [yin_nonmutable]
+si egal? :d 7 [yang_nonmutable]
+si egal? :d 8 [yin_nonmutable]
+si egal? :e 7 [yang_nonmutable]
+si egal? :e 8 [yin_nonmutable]
+si egal? :f 7 [yang_nonmutable]
+si egal? :f 8 [yin_nonmutable]
+fin
+
+pour yin_mutable
+fcc rouge
+lc bc etiquette [mutable] tg 90 lc av 34
+bc av 55 lc av 34 bc av 55 lc re 178 td 180 
+fcc noir 
+av 34 bc av 144 lc re 178 tg 90 av 17 
+fin
+
+pour yang
+fcc noir
+bc tg 90 lc av 34 bc av 144 lc re 178 td 180 
+fcc noir 
+av 34 bc av 144 lc re 178 tg 90 av 17 
+fin
+
+pour yin
+fcc noir
+bc tg 90 lc av 34 bc av 55 lc av 34 bc av 55 lc re 178 td 180 
+fcc noir 
+av 34 bc av 55 lc av 34 bc av 55 lc re 178 tg 90 av 17 
+fin
+
+pour yang_mutable
+fcc rouge
+bc etiquette [mutable] tg 90 lc av 34
+bc av 144 lc re 178 td 180 
+fcc noir 
+av 34 bc av 55 lc av 34 bc av 55 lc re 178 tg 90 av 17 
+fin
+
+pour yin_nonmutable
+fcc noir
+bc tg 90 lc av 34 bc av 55 lc av 34 bc av 55 lc re 178 td 90 av 17
+fin
+
+pour yang_nonmutable
+fcc noir
+bc tg 90 lc av 34 bc av 144 lc re 178 td 90 av 17
+fin
+
+pour hexagramme_1
+donne "hexagramme 1
+exec mot "oracle :hexagramme1
+fin
+
+pour hexagramme_2
+donne "hexagramme 2
+exec mot "oracle :hexagramme2
+fin
+
+pour oracle0
+fsty  "gras ec [Hexagramme n°2, Le réceptif.]
+fsty  "aucun
+ec [Pour le moment, il est préférable de ne pas prendre d'initiatives, car ce qui vous est profitable arrivera au moment opportun. Soyez prêt, au contraire, à suivre, avec humilité et courage, quelqu'un qui a plus de force que vous ou davantage de pouvoir de décision. Soyez prudent et prévoyant et laissez s'exprimer votre sensibilité qui est supérieure à votre pensée rationnelle.]
+si egal? :hexagramme 2 [stop]
+fct rouge
+si egal? somme :hexagramme1 :hexagramme2 63 [ec [TOUS LES TRAITS SONT MUTABLES. Vous gagnez la puissance de la durée en vous tenant fermement à ce qui est juste. Les résultats de votre action seront remarquablement stables.] stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Évitez d'avancer, même si cela vous est possible, et revenez sur vos initiatives. Si vous persistez dans votre attitude, vous risquez un gros ennui. Il vous suffit simplement de patienter : le moment de l'action arrivera.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Si vous vous comportez avec beaucoup de sincérité envers vous-même sans emprunter des attitudes qui ne vous sont pas propres, vous pouvez être certain d'atteindre ce que vous désirez. La nature doit suivre son cours sans être forcée.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Soyez persévérant et faites votre devoir, même si pour le moment cela ne vous semble pas gratifiant. Le succès et la reconnaissance viendront en temps voulu. Insister maintenant et se mettre trop en évidence serait une grave erreur.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Soyez discret et réservé en toute circonstance. Gardez vos secrets et ne divulguez pas ceux que que vous connaissez des autres. De même, évitez de vous opposer à qui que ce soit, et gardez votre avis pour vous.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Discrétion et modération dans le comportement. Ne vous mettez pas en évidence, même si vous pensez posséder un certain pouvoir sur les autres. Votre chance réside dans votre modestie, qui doit rester entière, surtout quand vous vous sentez supérieur.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Soyez conscient de ce que vous êtes capable de faire et ne vous fixez pas d'objectifs supérieurs à vos forces. Si vous restez à votre place, vos capacités seront reconnues; si vous prétendez à un poste supérieur, vous risquez d'essuyer un camouflet.]] ec []
+fin
+
+pour oracle1
+fsty "gras ec [Hexagramme n° 24, Le retour.]
+fsty "aucun ec [L'hexagramme indique un tournant décisif et chanceux, quelles que soient les difficultés rencontrées qui ont pu vous empêcher d'agir pendant un certain temps. Ne vous découragez pas et soyez confiant, mais adoptez une attitude prudente et pleine de sagesse en toute circonstance.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Il est nécessaire, parfois, d'agir en opposition avec la droiture qui devrait inspirer toutes nos actions. Cependant, dès que l'on s'est rendu compte de son erreur, il faut revenir sur ses pas et y remédier.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Quel que soit le type de changement que l'on ait à effectuer, il est nécessaire d'agir avec la plus grande conscience. Mettez de côté toute forme d'orgueil et comportez-vous comme les personnes que vous estimez ou comme celles qui, d'une certaine façon, peuvent vous servir d'exemple.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vous n'êtes pas très persévérant dans vos décisions et vous risquez donc de vous faire du mal, ainsi qu'aux autres. Mais si vous vous en apercevez, vous pouvez reprendre, sans aucun ennui, la voie toute droite que vous avez momentanément abandonnée.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Si vous vous apercevez que vous êtes en train de faire fausse route, poussé hors de l'ornière par ceux qui vous accompagnent, soyez à nouveau capable d'agir seul et continuez pour votre compte sans avoir besoin des autres.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Comportez-vous correctement et honnêtement, bien que vous aussi vous ayez commis une erreur. Il ne vous reste plus qu'à faire amende honorable en reconnaissant votre tort. Cela ne vous attirera aucun ennui, car votre bonne foi sera reconnue.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Si vous persistez dans vos erreurs et continuez à faire fausse route, vous allez obligatoirement au-devant de gros ennuis. S'il est encore temps, changez d'attitude et n'allez pas à l'encontre de l'ordre naturel des choses.]] ec [] 
+fin
+
+pour oracle2
+fsty "gras ec [Hexagramme n° 7, L'armée.]
+fsty "aucun ec [Quelle que soit la situation que vous devez affronter, essayez d'en découvrir les côtés cachés qui peuvent s'avérer les plus forts et les plus dangereux. Agissez avec conscience et décision. Ne faites appel aux décisions d'autrui que si vous avez une pleine confiance en eux et si vous ne pouvez vraiment pas agir seul, avec l'aide de votre amour propre.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne prenez pas de décisions et n'agissez pas sans avoir auparavant envisagé tous les aspects du problème. Vous devez également établir une méthode, sinon vous risquez de faire échouer vos projets. Vous êtes discipliné et conscient de ce que vous allez faire.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Il faut du courage, de la résolution et du bon sens pour affronter les problèmes qui vous assaillent. Il faudra cependant respecter les désirs et la sensibilité des autres. Si vous n'agissez que pour votre propre compte, vous ferez mauvaise figure et vous n'obtiendrez rien.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vous risquez de prendre des décisions que vous n'êtes pas capable d'évaluer. En agissant ainsi, vous annulerez tous les précédents bénéfices et vous courez à l'échec. Mais si vous vous arrêtez à temps et que vous réfléchissez à fond, vous serez capable d'agir au mieux.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Revenez sur vos décisions et vos idées avant qu'il ne soit trop tard. Pour le moment, il n'y a aucune chance pour que vous obteniez ce qui vous tient à cœur. Soyez certain que vous ne subirez aucun préjudice. Au contraire, le succès est possible par la suite.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Vous avez peut-être perdu une bataille, mais pas la guerre. Profitez de la relative faiblesse de celui qui vous combat pour reprendre vos forces et mener une contre-attaque. Ce sera le moment de prendre le dessus.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Ce n'est pas parce que quelqu'un vous aide ou vous a aidé qu'il faut vous acoquiner avec lui pour autant ; chacun doit rester à sa place, et une confiance excessive pourrait se traduire par un manque de respect. Vous devez surtout être très attentif dans le cadre du travail.]] ec [] 
+fin
+
+pour oracle3
+fsty "gras ec [Hexagramme n° 19, L'approche.]
+fsty "aucun ec [Quand tout va bien, qu'il s'agisse des sentiments, des affaires, des finances ou d'autres choses, on a tendance à vivre comme si l'avenir n'allait nous réserver que du bien-être. C'est au contraire le moment où il faut activer toutes vos défenses et ne rien négliger, si vous voulez éviter un changement néfaste.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Quel que soit le problème, la tendance générale va vers l'amélioration. Laissez-vous porter par cette vague favorable, sans trop réfléchir. Cependant, n'agissez qu'au bon moment.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Suivez votre voie, même si parfois des doutes vous rongent. Pour le moment il faut continuer sans vous arrêter et faire ce que les situations demandent. Vous verrez plus tard. Pendant ce temps, soyez courageux, honnête et persévérant.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Il arrive souvent que le succès, quel que soit son degré d'importance, conduise à l'orgueil. C'est ce qui est en train de vous arriver sans que vous ne vous en rendiez compte. Il faut au contraire que vous réfléchissiez sur vos attitudes et que vous les corrigiez rapidement, avec discrétion.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. C'est le moment de vous rapprocher de quelqu'un qui connaît bien ce qui vous intéresse. Si vous trouvez la bonne personne, soyez certain qu'elle vous fera du bien. Il se peut également que quelqu'un revienne en surmontant tous les obstacles.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Vous êtes tellement patient que vous êtes capable de côtoyer des personnes qui peuvent vous aider en leur laissant le choix de leurs interventions. Tout laisse présager des décisions avisées et respectueuses de votre personnalité, si vous n'intervenez pas par des conseils inutiles.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Agissez dans l'intérêt d'autrui, ne pensez pas qu'à vous-même et à ce qui vous préoccupe. La période est favorable, car vous démontrez toujours de la sagesse, quoi qu'il puisse se passer demain. Donnez aux autres ce que vous savez et ils vous en seront reconnaissants.]] ec [] 
+fin
+
+pour oracle4
+fsty "gras ec [Hexagramme n° 15, L'humilité.]
+fsty "aucun ec [Adoptez une attitude modeste en toute circonstance et contentez-vous de peu. Si vous souhaitez obtenir quelque chose auquel vous tenez ou bien surmonter des difficultés momentanées, la meilleure attitude à adopter est de ne pas vous faire remarquer. Cela ne signifie pas un échec, mais au contraire une réussite dans ce que vous vous étiez fixé, en y mettant toute l'autodiscipline nécessaire. Restez calme au milieu de l'orage.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. N'agissez pas sous la poussée de l'orgueil si vous voulez résoudre facilement un problème. Vous ne feriez que compliquer les choses. De même, ne créez pas d'intrigues pour mettre en valeur votre personnalité et ne vous exposez pas trop.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Il ne faut pas que votre modestie ne soit qu'une façade qui dissimule une autre façon d'être. Soyez vous-même, soyez humble et vous en sortirez vainqueur. La route que vous aurez à parcourir ne sera pas trop difficile et conduira loin.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vous commencez à entrevoir le succès, mais cela ne signifie pas que vous devez déjà crier victoire. C'est même le moment où il faut agir le moins possible, en laissant la vie suivre son cours. Soyez délicat avec celui qui peut encore vous aider.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Être modeste ne signifie pas refuser les responsabilités ni ignorer ce qu'il est nécessaire de faire. Avancez et prenez les engagements qui s'imposent sans a priori. Intéressez-vous à ceux qui vous entourent.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Soyez impartial et évitez de heurter la sensibilité des autres par des paroles déplacées. De même, ne prenez pas pour argent comptant tout ce que l'on veut vous faire croire. Soyez sévère mais juste.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Il est nécessaire que vous commenciez à mettre de l'ordre en vous-même et dans les relations avec vos proches. Ne recherchez pas la faute dans le comportement des autres, mais examinez attentivement vos torts.]] ec [] 
+fin
+
+pour oracle5
+fsty "gras ec [Hexagramme n° 36, L'obscurcissement de la lumière]
+fsty "aucun ec [Dans une période comme celle-là où rien de ce que vous faites n'apporte de résultats positifs, il faut absolument que votre comportement soit très sérieux et conscient. C'est également le moment de dissimuler vos qualités qui, en l'état actuel des choses, ne peuvent pas être comprises ; votre solidité intérieure doit cependant rester intacte.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Période très difficile d'incompréhension entre les personnes avec lesquelles vous êtes en rapport. Malgré le sérieux de vos intentions, vous ne savez pas quoi faire et quelle direction prendre. Il est cependant nécessaire d'agir, au besoin contre l'avis des autres.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Agissez suivant votre sens du devoir, qui ne doit jamais vous quitter. Il existe des difficultés, et elles sont difficiles à surmonter, mais vous devez le faire. Des incompréhensions et des médisances entraîneront des problèmes dans vos relations. Soyez patient.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vous devez combattre l'adversité qui vous tracasse, mais vous devez agir avec circonspection et sans trop d'agressivité, même si vous rencontrez votre ennemi. Autrement, les ennuis seraient plus importants que prévu.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vous comprendrez que votre ennemi n'a aucune envie de trouver un accord et d'arrêter de vous faire la guerre. À l'heure actuelle, vous avez tout ce qu'il vous faut pour vous comporter le mieux possible. Ce qui, dans les faits, doit se traduire par une rapide marche arrière.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Soyez doublement prudent en cette période et faites semblant de ne pas comprendre ce qui se trame autour de vous. Soyez ferme dans vos convictions, mais, extérieurement, faites en sorte que personne ne comprenne ce que vous avez l'intention de faire dès que vous le pourrez.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Le pire est arrivé, mais, précisément, l'amélioration est déjà en cours. celui qui a fait du mal (ce peut être vous) en paiera les conséquences. Ne soyez pas désespéré et consolez-vous en pensant que l'adversité ne dure pas éternellement.]] ec [] 
+fin
+
+pour oracle6
+fsty "gras ec [Hexagramme n° 46, La poussée vers le haut.]
+fsty "aucun ec [Quelle que soit la chose que vous désirez obtenir, vous ne devez pas vous presser. Vous ne devez pas non plus vous reposer sur vos lauriers. L'hexagramme conseille un effort constant pour atteindre le succès, en accumulant peu à peu une expérience et de petits succès qui créeront une base solide et inattaquable.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. L'action est sous de très bons auspices, car elle est approuvée par votre entourage et par ceux que vous voulez atteindre. Avancez alors dans la direction désirée avec beaucoup de tact et de modestie. L'affinité avec la personne qui est située au-dessus de vous est à la base de la réussite.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Ayez foi en vous-même et dans ce que vous croyez, et la chance vous sourira. Ce qui est important, c'est la sincérité des intentions plus que la forme. Cependant, si vous réussissez aussi à vous montrer délicat, vous n'en tirerez que du bien.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Les obstacles que vous avez trouvés sur votre route sont maintenant surmontés, et vous êtes en train d'atteindre votre but. Est-ce bien celui que vous désiriez ou n'est-ce qu'une illusion ? Quoi qu'il en soit, ne perdez pas de temps et profitez de ce que vous avez déjà acquis.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. C'est un succès brillant et durable. Ce que vous désirez, vous l'atteindrez avec le temps et grâce à votre entourage. Le mérite en reviendra surtout à une personne qui vous a permis d'entrer dans un milieu particulier.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Continuez lentement et inexorablement vers l'objectif que vous vous êtes fixé. Si le succès vous sourit, ne vous enorgueillissez pas pour autant et ne vous laissez pas gagner par l'enthousiasme. Vous risqueriez de manquer une étape et d'effacer tout ce que vous avez fait jusqu'à présent.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Ne soyez pas aveugle et ne vous laissez pas entraîner par vos ambitions. Vivez votre vie avec une participation attentive et franchissez tous les échelons avec calme, conscience et cohérence. Sinon, vous risqueriez de vous tromper et de confondre vos objectifs.]] ec [] 
+fin
+
+pour oracle7
+fsty "gras ec [Hexagramme n° 11, La paix.]
+fsty "aucun ec [Le moment de la paix arrive ou est déjà arrivé. Les forces négatives ne peuvent plus nuire car le terrain ne s'y prête plus. Les divergences éventuelles s'atténuent et les voies de l'unité et de la compréhension prennent le dessus. Il est cependant important de s'entourer de personnes adaptées à cette attitude et de décider des actes à poser en choisissant avec soin le moment et les priorités. La paix régnera même parmi ceux qui dans le passé n'ont pas réussi à trouver un accord.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Conservez vos critères et programmez toutes vos actions avec beaucoup de soin. Entourez-vous de gens dont la sensibilité est proche de la vôtre et évitez de parler de vos affaires avec quelqu'un que vous ne connaissez pas très bien. Ne vous laissez pas abuser.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Agissez car le moment est favorable, mais ne suivez pas simplement un instinct égoïste. Dans le même temps, sachez profiter des personnes ou des situations qui ne semblent pas importantes. Vous pouvez en retirer du positif.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne vous reposez pas sur vos lauriers, même si la période est favorable, mais soyez vigilant pour que le danger ne surgisse pas à l'improviste. La sagesse consiste à être méthodique et à ne pas se surestimer ni à surestimer les situations.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Restez proche de celui qui a besoin de vous ou qui a une position inférieure, pas par opportunisme, mais par véritable solidarité et conviction. Faites un effort pour comprendre la réalité des autres.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Soyez disponible sans dresser de barrières inutiles et choisissez les personnes indépendamment de leur situation. Des avancements sont envisageables, mais vous devez rester modeste et ne pas vous croire supérieur aux autres.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Opposez une résistance passive devant les attaques acharnées dont vous serez l'objet. Ne vous laissez pas déprimer par un sentiment de culpabilité.]] ec [] 
+fin
+
+pour oracle8
+fsty "gras ec [Hexagramme n° 16, L'enthousiasme.]
+fsty "aucun ec [Votre enthousiasme vous permettra d'avoir autour de vous des personnes qui pourront vous aider. Cependant ne faites rien d'excessif afin que la ferveur qui vous habite ne se transforme pas en stress. Cette flamme doit réchauffer et non brûler. Votre action doit être en harmonie avec le moment que vous vivez et avec les personnes qui sont autour de vous. Si vous réussissez à canaliser suffisamment vos forces et à vous comprendre profondément, vous éviterez tout danger.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne soyez arrogant avec personne. Ne vantez pas vos mérites dans un but particulièrement égoïste, ne vendez pas la peau de l'ours avant de l'avoir tué. Vous ne feriez qu'aggraver votre cas et iriez au-devant d'un gros échec.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Attendez le bon moment avant d'agir, quelle que soit la façon dont vous devez le faire. Ne vous laissez pas attirer par des illusions, mais comportez-vous rationnellement et avec fermeté en cherchant à prendre conscience de ce qui vous attend.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne vous reposez pas sur vos lauriers, et ne demandez pas des autres ce que vous êtes parfaitement capable de faire. Dans le même temps, sachez trouver le bon moment pour vous rapprocher de ceux qui peuvent vous apporter ce que vous voulez. Ne tergiversez pas.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Votre enthousiasme influencera les personnes qui sont autour de vous et qui vous estiment. Agissez avec détermination et faites confiance aux autres. Vous réussirez à rassembler autour de vous ceux qui, d'une façon ou d'une autre, peuvent vous soutenir.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Vous avez toujours l'impression que le moment de la fin, de la rupture ou du malheur est arrivé. Au contraire, oubliez ces impressions, car la situation est telle que vous allez surmonter tous vos ennuis. Aussi ne soyez pas abattu et suivez votre route.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Même si votre enthousiasme a été trop excessif et pas assez réaliste, vous pouvez encore rattraper la situation en essayant de voir crûment la réalité. De cette façon, vous pourrez réparer les erreurs commises.]] ec [] 
+fin
+
+pour oracle9
+fsty "gras ec [Hexagramme n° 51, L'éveilleur, l'ébranleur, le tonnerre.]
+fsty "aucun ec [Des circonstances mettent vos nerfs à l'épreuve et vous obligent à penser que vous ne pourrez jamais affronter ce qui est devant vous. Cependant ce sont ces circonstances qui vous conduiront à vous dominer et à dominer votre destin. Souvent les choses sont meilleures que ce que l'on voit, et leur aspect négatif ou effrayant n'est que le reflet de notre difficulté à les comprendre. De tels moments sont très utiles pour mettre de l'ordre dans notre vie. Reposez-vous sur votre intégrité morale, sur vos capacités de résistance. L'expérience se dénouera de façon positive et bénéfique.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Vous connaîtrez une grande frayeur dans un premier temps à cause d'un événement qui vous prend par surprise et auquel vous n'étiez pas préparé. Mais après votre première réaction, vous tirerez profit de l'expérience que vous viendrez de vivre.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Acceptez la défaite qui provient d'une situation où vous êtes en position de faiblesse et repliez-vous sur vous-même. Dès que cette circonstance sera passée, et sans faire quoi que ce soit, ce qui vous appartient vous reviendra et vous retrouverez l'équilibre.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. N'acceptez pas passivement les coups du destin ou les décisions des autres, si vous ne voulez pas succomber sous leur poids. Réagissez énergiquement et vous pourrez renverser en votre faveur ce qui dans un premier temps n'était que tracas.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vous serez obligé de ne rien faire pour ne pas aggraver ultérieurement la situation. D'autre part, le destin a créé un bouleversement qui devait de toute façon se produire. Mais, pour le moment, toute action serait inutile. Il vaut mieux remettre cela à plus tard.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Vous êtes sans arrêt soumis aux coups du destin et vous n'avez même plus le temps de respirer. En tout cas, vous devez agir pour faire face aux situations qui continuent à se modifier. Choisissez la voie du compromis et de la modération.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Quand les situations sont trop irrégulières et que l'on craint le pire, la meilleure réponse est l'immobilité totale, tant que les choses ne sont pas complètement claires.]] ec [] 
+fin
+
+pour oracle10
+fsty "gras ec [Hexagramme n° 40, La libération.]
+fsty "aucun ec [Les difficultés qui vous barraient la route sont maintenant résolues et, même si vous ne vous sentez pas encore capable de vous en dégager, la voie est libre. Oubliez les torts, véritables ou supposés, qui vous ont attristé. Le moment est venu de vous libérer de ce qui vous impliquait auparavant, car vous êtes maintenant capable de redécouvrir le goût de ce que vous avez cru perdu ou de survoler des choses dont vous vous apercevez qu'elles ne valent pas la peine qu'on s'y agrippe.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Les difficultés se sont finalement dissipées et vous récupérez toute votre énergie physique et psychique. Actuellement il n'est pas nécessaire de parler beaucoup. Vous devez simplement accepter la situation et garder une attitude réservée.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Vous pouvez enfin exaucer votre désir de tranquillité si vous vous comportez avec sagesse et si vos objectifs sont clairs. Vous vaincrez aisément vos éventuels opposants.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Même si vous avez atteint le but que vous vous étiez fixé, il ne faut pas pour autant vous en vanter exagérément ou adopter des attitudes peu équilibrées. Vous ne feriez qu'inciter ceux qui agissent par mauvaise foi à vous faire mal.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vous vous êtes laissé entraîner dans des situations ou des amitiés qui se passent mal et qui ne vous font pas honneur. Si vous ne modifiez pas profondément votre façon d'agir, vous risquez de faire fuir les personnes valables qui peuvent vous être d'une grande aide.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Vous devez apprendre à vous détacher de quelqu'un ou d'un élément qui se présente assez négativement. Ce ne sera ni simple ni facile, mais vous devez faire tout votre possible pour y arriver. Seules la lucidité et la détermination peuvent vous apporter la fortune.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Vous devez avoir le courage de briser les difficultés qui se dressent entre vous et vos désirs. Ces difficultés seront vaincues : il suffit simplement d'attendre le bon moment.]] ec [] 
+fin
+
+pour oracle11
+fsty "gras ec [Hexagramme n° 54, L'épousée.]
+fsty "aucun ec [Les rencontres se font et se défont continuellement, les choses deviennent intéressantes, puis banales. En réalité, tout ce qui n'a pas été éclairci dans le passé redevient actuel tant que ce qui a été bâti par erreur n'est pas détruit. C'est ce qui délivre finalement l'homme de ses souffrances. C'est le moment de reconnaître le côté superficiel de la vie et de vous y adapter. Il est inutile de vous opposer à cette réalité ni d'essayer de prendre des initiatives pour l'arrêter. Cela ne servirait à rien.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Soyez prêt à n'être qu'un personnage de second plan dans une situation qui vous concerne. En agissant ainsi, sans prétendre à rien de plus, vous atteindrez vos buts et obtiendrez l'estime de tous.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Vous êtes gagné par un peu de tristesse, car vous ne réussissez plus à obtenir ce que vous aviez précédemment. Il faut maintenant vous en contenter, car toute initiative serait inutile. Demeurez, au contraire, fidèle à vos principes et acceptez une période provisoire de dépression.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vous devez vous contenter de ce que vous auriez refusé autrefois. Mais actuellement, il n'y a rien d'autre à faire. D'autre part, en acceptant la situation, vous n'avancerez pas beaucoup. Faites alors appel à votre dignité.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vos projets subissent actuellement un grand retard et cela vous inquiète beaucoup. Il vous faut au contraire de la patience, car, même si votre projet ne vous apporte pas beaucoup de satisfaction, vous réussirez à le mener à bien.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Acceptez d'obtenir moins que ce que vous pensiez. Il peut être également profitable de savoir s'adapter à des situations peu agréables. Tout réside dans votre sens de l'honneur et dans votre façon de réagir. Tact et courtoisie sont indispensables.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Un comportement superficiel ou simplement destiné à satisfaire la forme plus que le fond ne peut rien apporter de bon. La situation est défavorable sous tous ses aspects, aussi parce que vous n'êtes pas assez sincère.]] ec [] 
+fin
+
+pour oracle12
+fsty "gras ec [Hexagramme n° 62, La prépondérance du petit.]
+fsty "aucun ec [Quand on ne possède pas l'énergie suffisante pour accomplir une œuvre, il faut, sans perdre de vue le sens de ce que l'on fait, s'arrêter sur ce qui apparaît petit par rapport à ce que l'on désire. C'est avec la modération qu'on arrive à dominer les choses. Contentez-vous pour le moment de petits riens. Grâce à la restriction, vous pouvez obtenir les résultats désirés.]
+si egal? :hexagramme 2 [stop] 
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne faites rien sans préparation. Il faut patienter et vous en tenir à ce qui est déjà consolidé tant que le moment d'apporter des changements n'est pas encore venu. N'agissez pas avant que la période ne s'y prête.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Restez modeste et contentez-vous de rester à côté de celui qui a la sensibilité la plus proche de la vôtre, même s'il a un rôle moins important que les autres. Contentez-vous de ce qui se présente. Vous en retirerez des bénéfices.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Soyez attentif à votre comportement, même si vous savez avoir raison. Il y a toujours des ennemis dans l'ombre. Prenez soin des détails auxquels vous ne donnez pas toujours d'importance.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Restez ferme intérieurement et souple extérieurement. Ce n'est ni le moment d'agir ni celui de parler. Les difficultés sont trop importantes et vous n'avez pas la force suffisante.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Au premier abord on pourrait croire que la situation s'améliore, mais ce n'est qu'une impression. Même si vous avez les idées claires, vous ne pouvez pas encore les exposer. Essayez de rencontrer des personnes qui puissent vous aider.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. La période est difficile, mais vous voulez quand même mettre vos idées en avant. En agissant ainsi, vous ne ferez que donner un coup d'épée dans l'eau et vous créer des ennuis. Arrêtez-vous sur les détails.]] ec [] 
+fin
+
+pour oracle13
+fsty "gras ec [Hexagramme n° 55, L'abondance, la plénitude.]
+fsty "aucun ec [Toutes les conditions existent pour que la situation vous apporte de grandes satisfactions. C'est précisément au moment où vous pensez avoir atteint ce que vous désirez que commence le déclin. Ne vous reposez pas sur vos lauriers, ne vous laissez pas non plus gagner par le pessimisme. Il existe en toute chose des cycles naturels contre lesquels il n'y a rien à faire. Essayez tout au plus d'anticiper la période négative.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Agissez, surtout si vous êtes en compagnie de personnes qui pensent comme vous. Ne vous reposez pas trop, car les problèmes peuvent toujours remonter à la surface. Ne suivez pas aveuglément les autres, mais appuyez-vous sur votre fermeté morale.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Soyez tranquille : la sincérité et la confiance seront rétablies. Vous partagerez les mêmes buts que d'autres personnes qui, cependant, ont tendance à vous freiner. Vous reprendrez votre route au bon moment.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vous vous sentez empêché d'agir à cause de certaines situations qui vous semblent impossibles à démêler. Il y a certainement beaucoup d'envie autour de vous, mais, avec de la bonne volonté, vous réussirez à éclaircir les choses et à éviter les ennuis.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vous avez suffisamment d'énergie pour emprunter la voie que vous désirez suivre. Il faut cependant agir de façon très équilibrée pour ne pas créer plus d'ennuis qu'autre chose.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Soyez prêt à accueillir les suggestions de ceux qui veulent votre bien. La modestie vous servira. Une période de sérénité pleine de joie sera particulièrement positive pour vos rapports.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Vous ne voulez écouter les conseils de personne, pas même ceux des personnes qui vous sont chères. Les résultats seront entièrement négatifs et il sera trop tard pour prendre des mesures. Essayez de vous assagir.]] ec [] 
+fin
+
+pour oracle14
+fsty "gras ec [Hexagramme n° 32, La durée.]
+fsty "aucun ec [Montrez-vous constant et persévérant, même si parfois une certaine souplesse dans le comportement peut s'avérer utile. Cela ne signifie pas qu'il faut perdre de vue vos propres buts. La rigidité ne peut entraîner que des obstacles. Restez fidèle à votre chemin, mais sachez adapter votre comportement et vos idées à la réalisation de votre objectif.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Si vous voulez faire durer longtemps ce qui vous intéresse, considérez-le sous tous ses aspects. Ce n'est que par une action lente et constante que vous pourrez atteindre ce qui vous tient à cœur. Ne forcez pas les choses.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Même si vous avez l'impression qu'il faut agir tout de suite, ne le faites que si le moment est opportun, car toute action prématurée n'apporterait rien de bon. Restez ferme sur vos principes pour pouvoir agir au bon moment.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Si vous ne voulez pas aller au-devant de grosses désillusions ou essuyer une honte publique, ne vous laissez pas emporter par des états d'âme changeants et agités. Ceux qui vous aiment s'éloigneraient rapidement.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vous vous trompez de trajectoire. Les résultats que vous désirez ne se trouvent pas là où vous vous dirigez. Dans un cas semblable, même la constance devient inutile.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Si votre devoir consiste à prendre des décisions, vous devez le faire sans rigidité et, le cas échéant, en changeant votre manière de vous comporter. Si au contraire votre devoir est d'attendre les décisions d'autrui, ne changez pas.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Si vous continuez à vous agiter sans raisons, si vous changez subitement d'opinion ou si vous êtes la proie de vos angoisses, vous ne pouvez rien espérer de positif. Vous ne ferez qu'avancer dans le vide et provoquer des ennuis.]] ec [] 
+fin
+
+pour oracle15
+fsty "gras ec [Hexagramme n° 34, La puissance du grand.]
+fsty "aucun ec [C'est une période positive où votre énergie est au service de vos intentions. Mais il importe que votre pouvoir ne s'exprime que dans ce qui est juste, car tout abus se répercute sur celui qui l'a commis. Veillez à ne pas en faire plus que nécessaire et arrêtez-vous au bon moment. Poursuivez calmement dans la voie où vous êtes engagé mais sans rien entreprendre qui ne soit tout à fait correct.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne continuez pas sur une voie qui se révèle être de plus en plus fausse. Vous avez trop confiance en vous et avez tendance à écraser les autres par la force de vos décisions. Contrôlez-vous.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Les choses vont pour le mieux, mais vous risquez de ternir votre succès à cause d'un orgueil déplacé. Soyez plus humble et disponible et évitez de trop parler de vos succès. Vous ne vous attireriez que du négatif.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Soyez conscient des difficultés. La sagesse consiste à savoir attendre des temps meilleurs, en renonçant ou limitant momentanément la lutte.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Les difficultés sont en train de se démêler et vous commencez à sentir un plus grand sentiment de liberté. Si vous persévérez dans la bonne direction et continuez à assumer vos responsabilités, les obstacles tomberont.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. C'est peut-être le moment d'abandonner la lutte ou de renoncer à d'inutiles entêtements. La tension retombe et votre agressivité s'estompe. C'est le moment de réfléchir soigneusement à ce qu'il faut faire.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Vous devez avoir le courage de briser les difficultés qui se dressent entre vous et vos désirs. Ces difficultés seront vaincues : il suffit simplement d'attendre le bon moment.]] ec [] 
+fin
+
+pour oracle16
+fsty "gras ec [Hexagramme n° 8, La solidarité, l'union.]
+fsty "aucun ec [Si vous voulez agir seul et que vous n'en avez pas la force, vous connaîtrez sans aucun doute l'échec. Si vous joignez vos qualités à celles des autres, vous comprendrez parfaitement les autres. S'il y a des traits mobiles, la réponse sera donnée par l'hexagramme résultant, sinon il vous faudra consulter une nouvelle fois l'oracle.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ce n'est qu'avec la franchise et la loyauté que vous réussirez à surmonter vos problèmes. Les mots, les discussions seront inutiles. Seule comptera la sincérité des résolutions issues de votre comportement et qui vous porteront certainement chance.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. La dignité et la fermeté en toute occasion vous attireront la sympathie des autres. Unissez-vous avec quelqu'un qui a la même noblesse d'intentions que vous et ne cherchez pas d'appuis en flattant ceux que vous considérez comme supérieurs à vous. Vous n'en tireriez que des ennuis.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vous commettez l'erreur de vous mettre en relation avec quelqu'un qui n'est ni sérieux ni correct. Ne vous joignez qu'aux personnes qui semblent être de la même sensibilité que vous.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Si vous connaissez quelqu'un que vous considérez comme un sage, n'hésitez pas à en recevoir des conseils. Mettez-vous du côté des personnes compétentes.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Il y a une porte de sortie dans ce fatras où vous vous risquez de vous trouver. Si vous n'en profitez pas, vous allez commettre des erreurs sans fin, qui risquent de nuire à votre réputation. Soyez spontané en toute circonstance.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Rien ne va comme vous l'auriez voulu, et c'est en grande partie votre faute. Vous ne réussissez pas à garder une ligne de conduite. C'est dommage. Cela vous servira d'expérience.]] ec []
+fin
+
+pour oracle17
+fsty "gras ec [Hexagramme n° 3, La difficulté initiale.]
+fsty "aucun ec [Tout ce qui est sur le point de naître comporte fatigue et souffrance. La naissance crée également du désordre parce que l'on n'est pas encore sûr de ce qui se passera après. Il est conseillé de demander de l'aide à celui qui en sait plus que vous. Ne vous isolez pas.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Des difficultés se présentent à vous, mais elles ne seront pas insurmontables si vous savez choisir l'aide dont vous avez besoin. Il faut agir par personne interposée en tentant tout ce qu'il est possible de faire.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Les obstacles et les difficultés semblent augmenter. La solution est à portée de main, mais cela coûterait trop cher en terme de liberté personnelle. Réfléchissez bien et prenez des décisions en connaissance de cause.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne campez pas sur une position qui est mauvaise depuis le début, persévérant ne veut pas dire têtu. Vous devez attendre des temps meilleurs, mais aussi revenir sur les positions que vous pensiez avoir conquises. Réexaminez tout.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Même si votre orgueil tente de vous empêcher de réclamer et d'accepter l'aide d'autrui, vous devez absolument agir avec beaucoup d'humilité et avoir conscience de vos limites. Le triomphe viendra et vous pourrez alors montrer qui vous êtes.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Vous n'êtes pas compris et vos actions encore moins. Ne vous découragez pas et gardez confiance en vos possibilités. En avançant à petits pas, vous réussirez à obtenir ce qui vous est dû.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Vous n'avez pas suffisamment évalué les difficultés et vous ne savez pas comment en sortir. Rassemblez toutes vos forces pour repartir à zéro. Vous trouverez la bonne voie.]] ec []
+fin
+
+pour oracle18
+fsty "gras ec [Hexagramme n° 29, L'insondable, l'eau.] 
+fsty "aucun ec [Comme l'eau court en suivant les lois de la gravitation, votre vie suit son cours. Il y a parfois des passages tortueux et la ligne droite n'est pas toujours le plus court chemin : la situation que vous vivez est difficile, mais vous ne devez pas renoncer à l'action. Utilisez l'expérience que vous êtes en train d'acquérir pour avancer comme il convient et exploiter chaque possibilité, si mince soit-elle. Soyez très prudent avec les personnes qui sont en contact avec vous, car il existe un risque de duperie. Les intérêts d'autrui se heurtent sans doute aux vôtres.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. À force de vivre au milieu des difficultés, vous risquez de ne plus les voir. Soyez donc sur vos gardes. Comportez-vous avec droiture, même si cela peut sembler difficile.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Ne soyez pas prêt à tout pour sortir d'une situation difficile. Contentez-vous de petits pas qui vous serviront à l'avenir. Il est inutile de vous agiter.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Même si vous avez l'impression d'être au fond du gouffre, arrêtez-vous et ne prenez pas de décisions. Vous aurez bientôt une porte de sortie, mais ce n'est pas encore le moment.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Il n'y a pas de grandes choses en vue. Acceptez l'aide qu'on vous propose sans cérémonie. Soyez simple et clair. Essayez de bien comprendre la situation.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Il ne vous est pas permis de faire grand-chose. Cependant, ne vous immobilisez pas en attendant les événements, mais suivez une voie de moindre résistance. C'est de cette façon que vous éviterez le danger.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Pour le moment, aucune solution n'est possible. Vous vous sentez désarmé devant le danger et incapable de prendre une décision. Patientez jusqu'à ce que cette période noire se termine.]] ec []
+fin
+
+pour oracle19
+fsty "gras ec [Hexagramme n° 60, La limitation.]
+fsty "aucun ec [L'hexagramme prône la modération et le bon sens. La voie du cœur ne doit pas trop s'éloigner de celle de la raison, tandis que la raison doit pouvoir compter sur un cœur fort, qui résiste à l'adversité. Il ne faut cependant pas adopter des restrictions inutiles, mais suivre un modus vivendi où les droits et les devoirs ont été bien définis.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. La discrétion doit être à la base de votre comportement. Vous pouvez également prendre des initiatives ou décider de ce qu'il faut faire, mais cela ne doit jamais empiéter sur le domaine de quelqu'un d'autre. Soyez donc très prudent dans vos paroles et dans vos actes.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Il y a un moment pour la réflexion et un moment pour  Vous allez vous trouver dans ce dernier cas, et il est inutile d'hésiter. Si vous vous montrez indécis et que vous ne prenez pas les bonnes décisions, vous ne ferez rien d'autre que créer d'autres malentendus et d'autres difficultés.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Il faut vous imposer des règles de comportement qui ne doivent absolument pas être transgressées. Ainsi vous ne devez pas être excessif dans vos dépenses ni dans vos distractions, puis accuser les autres. Soyez conscient de vos erreurs si vous voulez y remédier.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Quand on décide de s'imposer quelques limites nécessaires, cela ne peut nous apporter que du bien, en plus de la réalisation de nos objectifs. L'action à tout prix risque seulement d'épuiser votre énergie qui pourrait être mieux utilisée.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Avant d'attendre des autres des limitations de toute sorte, il faut apprendre à vous limiter vous-même. De cette façon, l'exemple que vous donnez conduit les autres à vous imiter sans efforts ni reproches. C'est ainsi que vous pouvez atteindre ce que vous désirez.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Il faut savoir restreindre les limitations des autres. Il faut par contre être prêt à les accepter entièrement pour soi : ce n'est qu'à ce prix que l'on peut surmonter les périodes de difficultés et résoudre les problèmes.]] ec []
+fin
+
+pour oracle20
+fsty "gras ec [Hexagramme n° 39, L'obstacle.]
+fsty "aucun ec [Il est plus facile de penser que ce sont les autres qui rendent les choses difficiles. Recherchez si la faute ne vient pas de vous. Revoyez votre comportement. Ce que vous faites est-il juste ou non ? Vous avez peut-être commis une erreur. Demander conseil à quelqu'un peut être avantageux, même si cela semble vous détourner de votre but. La sagesse peut demander de faire marche arrière et de revoir attentivement vos objectifs.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Évitez d'agir et repliez-vous en bon ordre. Il ne s'agit pas de renoncer au but que vous vous êtes fixé, mais seulement d'atteindre un moment plus favorable à l'action.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Votre sens du devoir vous empêchera ou vous obligera certainement à faire quelque chose. Si c'est difficile pour vous-même, cela peut être nécessaire à l'intérêt général. La conscience tranquille sera votre récompense.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne pensez pas uniquement à suivre égoïstement votre ligne, en dépit des difficultés. Vous devez aussi penser aux autres et dans cette période une action dangereuse serait néfaste pour tous.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Gardez-vous d'agir seul, car vos forces ne sont pas suffisantes. Il vaut mieux vous arrêter, voire reculer. Vous pouvez aussi rechercher les personnes qui, dans une telle circonstance, sont aptes à vous soutenir.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. N'ayez pas peur, vous avez toute la force nécessaire pour combattre d'éventuels adversaires ou surmonter les difficultés du moment. Sans compter que de nombreuses personnes sont prêtes à vous aider et à agir en communion d'idées avec vous.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. S'il n'y avait que vous et vos besoins, vous pourriez être tranquille et heureux en restant au-dessus de la mêlée, mais il est nécessaire que vous apportiez aux autres votre contribution à une situation. Vous en serez récompensé.]] ec []
+fin
+
+pour oracle21
+fsty "gras ec [Hexagramme n° 63, Après l'accomplissement.]
+fsty "aucun ec [Il faut que vous soyez extrêmement diplomate si vous ne voulez pas voir s'envoler ce que vous avez déjà atteint. Montrez-vous très prudent et clairvoyant pour être capable d'affronter l'imprévu. Choisissez la voie du milieu, la modération.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Au milieu de l'enthousiasme général, il est nécessaire que vous gardiez votre calme et que vous ne vous laissiez pas trop impliquer. Ayez présent à l'esprit que si vous réussissez à ne pas commettre d'actions excessives, vous pourrez éviter des ennuis ou des conséquences désagréables.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. N'espérez pas obtenir à tout prix ce qu'il n'est pas possible d'obtenir pour le moment. Si vous avez la patience d'attendre, vous récupérerez sans effort ce qui vous revient. Mais, pour le moment, vous n'avez pas assez de soutien autour de vous.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Pendant cette période particulière, l'expansion n'est pas conseillée. Il est préférable de rester ferme sur vos positions ou de demander du réconfort et du soutien à ceux qui ont plus de force ou de sagesse que vous. Évitez de faire confiance à des gens sans loyauté.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Il se peut qu'un problème que vous avez tendance à ignorer se présente à vous. Cela pourrait aussi être le début d'une période de déchéance. Il vous faut donc tout analyser, en essayant de découvrir ce qui se trame.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Ne vous inquiétez pas si quelqu'un autour de vous se comporte de façon voyante ou fait des cadeaux importants avec peut-être l'intention d'attirer votre attention. N'essayez pas de l'imiter, car votre sincérité comptera davantage.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Ne vous montrez pas orgueilleux de ce que cous avez accompli et n'attendez pas de compliments des autres. Soyez plutôt très réservé, ne vous vantez pas et tenez-vous prêt à affronter encore quelques difficultés.]] ec []
+fin
+
+pour oracle22
+fsty "gras ec [Hexagramme n° 48, Le puits.]
+fsty "aucun ec [Puisez vos ressources en vous, dans les profondeurs de votre âme, allez à l'essentiel. Nourrissez-vous-en, ne vous effondrez pas en cours de route. Ce qui semble vous limiter est au service de votre libération. Ceux qui apparaissent comme les responsables de vos limites, sont en vérité les compagnons de route les plus qualifiés pour vous libérer.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne puisez pas vos ressources dans des situations ou des personnages négatifs, si vous ne voulez pas tomber rapidement dans une solitude que vous ne souhaitez pas. Essayez d'activer vos forces spirituelles de façon à trouver d'autres raisons de vivre.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Vous avez en vous tout ce qu'il faut pour que les choses aillent bien, mais, par manque d'énergie et parce que vous êtes mal entouré, vous vous dispersez dans des choses futiles. Si vous continuez ainsi, vous ne ferez rien de bon.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Il y a de très belles choses en vous et autour de vous. Pourquoi ne vous en apercevez-vous pas ? C'est dommage, car elles seraient source d'un grande richesse. Essayez de forcer votre réserve en apprenant à voir et à communiquer.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vous ne pouvez rien faire, si ce n'est réveiller votre grande force intérieure ainsi que vos qualités. S'il s'agit de travail, faites en sorte d'apprendre de nouvelles techniques. Il s'agit d'une période qu'il faut consacrer à soi et non aux autres.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Vous avez toutes les qualités nécessaires pour prendre la direction des opérations. Les autres ont beaucoup à apprendre de vous, mais vous n'avez pas le courage d'adopter un tel comportement. Cherchez donc quelqu'un de plus fort et de plus déterminé que vous qui vous aide à vous manifester.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Ce trait indique une grande ouverture sur la vie et sur les gens. Tout le monde aura ce dont il a besoin. Votre devoir est d'aider les autres à trouver un sens à leur vie. Vous en recevrez en retour de grands avantages.]] ec []
+fin
+
+pour oracle23
+fsty "gras ec [Hexagramme n° 5, L'attente.]
+fsty "aucun ec [L'heure du succès va bientôt arriver, mais il ne faut pas brusquer le cours des choses, car ce n'est pas encore le moment. Quelque chose se manifestera spontanément, mais ne restez pas inactif : nourrissez votre esprit, qui doit être le plus attentif possible en prévision d'une action qui doit survenir au bon moment. La période d'attente doit être féconde, et non passive.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne vous exposez pas. Attendez avec patience que quelque chose bouge. Pendant ce temps, pensez avec calme et pondération à ce que vous ferez quand le moment sera venu. Restez ferme dans vos convictions tout en vous maintenant à l'écart.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Vous entendrez des commérages sur vous ou sur d'autres personnes. Restez calme et n'accordez pas d'attention à ce type de communication. Votre sagesse et votre tranquillité prendront le meilleur sur tous et sur tout.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vous auriez dû faire quelque chose avant. Maintenant ce n'est plus possible. Essayez de contourner les difficultés en changeant d'objectif ou en vous faisant aider par quelqu'un qui en sait plus que vous.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. La solution de la situation est difficile dans l'état actuel des choses. Affrontez-la avec courage et rigueur, tout en évitant d'attribuer les fautes à droite et à gauche.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Vous réussirez à surmonter les difficultés grâce à votre personnalité qui doit rester ferme et constante. Cela vous permettra de faire les avancées nécessaires et de vous réserver un peu de repos.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Même si la situation est embarrassante, vous pouvez vous en sortir avec l'aide de quelqu'un ou de quelque chose qui se présentera de façon un peu étrange. Gardez les yeux ouverts et sachez reconnaître vos appuis.]] ec []
+fin
+
+pour oracle24
+fsty "gras ec [Hexagramme n° 45, Le rassemblement, le recueillement.]
+fsty "aucun ec [Un travail a été accompli, les rôles ont été distribués et la voie choisie est la bonne. Il faut admettre alors que chacun doit suivre son penchant. N'oubliez pas cependant que quelque chose d'imprévu peut toujours survenir. Tenez-vous prêt à cette éventualité en préparant les armes qui sont à votre disposition. Cela vous donnera une tranquillité intérieure et extérieure.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Vous n'arrivez pas à vous débarrasser de toutes les personnes qui sont autour de vous et encore moins à suivre une ligne de conduite bien précise. Quand vous aurez l'impression de ne pas y arriver, adressez-vous avec confiance à la personne que vous estimez.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Laissez les choses se dérouler naturellement car, en ce moment cela vous sera favorable. Ne vous opposez pas au cours naturel des événements, même si cela doit vous coûter un petit sacrifice.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. N'essayez pas de vous introduire d'un coup dans une situation ou dans un milieu déjà occupé par de nombreuses personnes, car vous vous sentiriez isolé. Tissez plutôt des rapports avec des gens qui ont du poids et du pouvoir, même si cela doit vous gêner.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Essayez de vous entourer de personnes qui ont le même objectif que vous et agissez avec elles dans un but commun. Ainsi, il vous sera beaucoup plus facile d'atteindre ce que vous désirez et vous n'aurez en retour aucun désagrément.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Beaucoup de vos proches n'ont pas une confiance totale en vous, ne se sentent pas en harmonie avec vous. Montrez-vous plus correct et disponible : ils reviendront sur leur opinion et s'uniront à vous sans aucune méfiance.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Moment de peine, car vos bonnes intentions et votre désir d'union ne sont non seulement pas compris, mais ils peuvent aussi être tournés en dérision. C'est justement la douleur que vous manifesterez qui fera changer la situation.]] ec []
+fin
+
+pour oracle25
+fsty "gras ec [Hexagramme n° 17, La suite.]
+fsty "aucun ec [N'agissez pas à tout prix, n'essayez pas de dominer les autres, car vous ne feriez qu'alimenter l'esprit de révolte. Il est préférable de suivre celui qui, en ce moment, semble le plus fort ou le plus intéressant. Il ne faut pas, du reste, vous empêcher de donner quelques conseils qui, en fin de compte, changeront la situation et donneront envie aux autres de vous suivre. Adaptez-vous aux situations sans vous fatiguer par des prises de position mal venues ou des intransigeances déplacées. Soyez souple, mais gardez votre pureté. Vous réussirez à surmonter les difficultés.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne soyez pas volontairement rigide, mais au contraire disponible aux expériences des autres. Sortez de votre milieu habituel, fréquentez d'autres personnes et écoutez leurs avis avec beaucoup d'attention. Cela peut vous être utile pour consolider les vôtres.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Ne restez plus attaché à des idées ou à des pensées qui ont fait leur temps. C'est le moment de mûrir et de faire une belle progression en adoptant de nouveaux comportements et idéaux. Vous aurez peut-être de nouveaux maîtres de référence.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Tout le monde sait qu'il est toujours douloureux de se détacher de personnes ou d'idéaux qui ont beaucoup compté. D'un autre côté, la période appelle des changements qui vous permettront d'atteindre plus facilement ce qui vous tient à cœur.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Suivez la voie que vous vous êtes imposé avec sincérité et avec beaucoup de conviction, mais ne faites pas confiance à ceux qui ne vous flattent que pour en tirer des bénéfices. Éloignez ces gens qui ne peuvent que vous nuire]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Observez le ciel et suivez votre étoile. Regardez votre cœur et suivez vos intuitions. Celui qui est juste et honnête ne pourra qu'atteindre les lieux du bonheur. Soyez persévérant et ne visez que le bien. Vous serez récompensé.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Même si votre route vous a conduit assez loin et que vous avez atteint un poste de prestige, n'oubliez pas ceux qui vous sont liés et les responsabilités que vous avez envers eux. Soyez sincère, honnête, doux et bon, et on vous le rendra.]] ec []
+fin
+
+pour oracle26
+fsty "gras ec [ Hexagramme n° 47, L'accablement, l'épuisement.] 
+fsty "aucun ec [C'est une période très difficile. Ce peut être le signe de la fin d'un amour ou d'une relation. Cela peut aussi signifier un manque d'enthousiasme ou de force. Il convient de rester le plus ferme et le plus cohérent possible envers vous-même jusqu'à ce que cette période négative soit passée. Ne vous fiez qu'à votre propre façon de voir : le temps viendra où quelqu'un vous soutiendra.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Vous devez absolument surmonter le sentiment d'impuissance que vous éprouvez devant les situations défavorables. Même si pour le moment il n'y a pas grand-chose à faire pour cela, il est très important que vous ne perdiez pas espoir et que vous regardiez vers l'avenir.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. On se trouve dans un accablement intérieur, alors qu'à l'extérieur tout va bien. On ne voit aucune issue, pourtant une aide viendra.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vous ne savez pas quoi faire. Vous avancez et reculez sans idées précises, en vous appuyant sur des choses peu solides. En continuant ainsi, vous ne faites qu'aggraver la situation.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vous avancez avec trop de prudence et, dans ces circonstances, il y en a qui profitent de vous en vous mettant mal à l'aise. Votre force intérieure connaîtra un sursaut et vous corrigerez cette erreur en atteignant le but fixé.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Personne ne vous aide, pas même celui qui aurait le devoir de le faire. Aussi vous laissez-vous gagner par le découragement. Recueillez-vous, au contraire ; soyez patient et faites de petits sacrifices. Les choses s'amélioreront peu à peu.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Vous restez accablé par des liens qui pourtant se laissent rompre facilement. L'accablement touche à sa fin, mais on reste encore influencé par la situation antérieure. Dès qu'on a une vue claire, vous parviendrez à vous défaire de l'accablement.]] ec []
+fin
+
+pour oracle27
+fsty "gras ec [Hexagramme n° 58, Le joyeux, le serein, le lac.]
+fsty "aucun ec [L'hexagramme conseille la modération et la sérénité en toute chose, la joie non excessive, le travail méthodique et calme, les plaisirs parcimonieux. Il conseille également un choix avisé d'amis qui devront vous ressembler le plus possible.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Soyez en accord avec vous-même : c'est la règle de base pour être en accord avec son prochain et, dans le même temps, ne pas subir son influence. La deuxième règle, c'est d'agir sans égoïsme, sans inimitiés ou sympathies préconçues.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Vous fréquentez des personnes qui ne vous ressemblent pas et avec lesquelles vous risquez d'être entraîné à vivre de façon irréfléchie. Cependant, vous ne pouvez le faire que si vous restez fidèle à vous-même, tout en étant conscient de ces dangers.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vous devez trouver en vous la sérénité, sans aller chercher ailleurs de grandes choses qui s'avéreraient vides et déplacées. Mais si au contraire vous agissez sans critère et sans discrimination, vous allez sans aucun doute à l'encontre de gros ennuis.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Si vous recherchez des distractions qui ne sont pas conformes à votre nature, vous risquez de graves ennuis. Si vous hésitez à choisir, c'est également défavorable. Il faut que votre cœur et votre esprit voient le caractère nocif de ces distractions.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Ne croyez pas tous les gens que vous rencontrez, ne suivez pas les mauvais conseils qui peuvent avoir l'apparence de la bonne foi : ils ne feraient que vous nuire. Soyez sur vos gardes.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Si vous courez après des choses inutiles ou si vous suivez des personnes négatives, vous perdrez le contrôle de votre vie. Reprenez-vous en main pendant qu'il en est encore temps.]] ec []
+fin
+
+pour oracle28
+fsty "gras ec [Hexagramme n° 31, L'influence.]
+fsty "aucun ec [L'hexagramme indique une réussite dans toutes les unions, dans tous les rapports basés sur l'attirance réciproque. Il convient ici d'accepter la dépendance qui nous lie aux autres. L'égoïsme est banni et vous n'agissez que pour le bien commun. Les sentiments sont exaltants et n'apportent que des choses belles et agréables.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Gardez pour vous la décision que vous voulez prendre car moins les autres se rendront compte de ce que vous avez l'intention de faire, plus votre action, quand elle se produira, sera couronnée de succès. Prenez aussi vos distances avec vos ennemis.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Ne bougez pas, ne faites rien. Dans cette période, n'importe quelle action vous nuirait, car elle serait dictée par une impulsivité néfaste. Essayez de bien comprendre ce qui vous angoisse.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne suivez pas vos instincts ou votre impulsion. Ne vous fiez pas à tous ceux qui vous entourent et n'essayez pas non plus de les ramener à vos arguments. C'est une période délicate.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Soyez certain que toutes vos intentions soient dictées par la pureté du cœur. Ainsi vous n'aurez pas besoin de convaincre les autres de votre bonne foi : ce sont eux qui viendront vers vous.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Si vos intentions restent fermes, vous pouvez faire face aux difficultés sans vous laisser influencer ni influencer les autres.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Vous parlez peut-être trop, ou vous faites confiance à des gens qui ne font que parler des autres ou qui cherchent à vous convaincre de quelque chose. Cela ne changera rien, soyez donc plus réservé.]] ec []
+fin
+
+pour oracle29
+fsty "gras ec [Hexagramme n° 49, La révolution, la mue.]
+fsty "aucun ec [Vous allez vous trouver subitement face à un changement total. Ces événements en apparence imprévus se préparaient en fait depuis longtemps. Pour chaque changement, il faut savoir aussi bien ce que l'on perd que ce que l'on gagne. Demandez-vous si ce qui est en train de changer satisfait vos besoins et comment, et dans quelle mesure vous êtes prêt à accueillir les changements qui représentent l'aboutissement de ce que vous avez voulu et fait auparavant.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Vous ne devez rien faire, car vous vous tromperiez de période et de façon de faire. Adoptez une attitude modérée et soyez disponible. Pour le moment, vous pouvez encore trouver des solutions de compromis.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Soyez prêt à accepter ou promouvoir les modifications nécessaires. Il ne reste plus qu'à passer à l'action directe et à changer, peut-être grâce aux autres.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Avant de prendre des décisions, vous devez être sûr qu'elles sont nécessaires. Cette confirmation peut venir des autres, mais surtout en vous posant des questions sur une personne impliquée dans votre situation. Vous ne vous tromperez pas.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. N'agissez pas simplement en étant poussé par la subjectivité. Réfléchissez objectivement, sinon cela ne servira à rien et n'apportera que de la confusion.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Continuez votre chemin, vous serez certainement dans le vrai et vous aurez l'estime de ceux qui vous entourent. Vous n'avez besoin de personne, car vous seul savez ce qu'il est nécessaire de faire.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Les changements que vous attendez sont inférieurs à ceux que vous espériez. Il est conseillé de ne pas agir plus à fond. N'essayez pas de façonner les autres à votre image.]] ec []
+fin
+
+pour oracle30
+fsty "gras ec [Hexagramme n° 28, La prépondérance du grand.]
+fsty "aucun ec [Trop d'excès ont été commis. Aller au-delà des limites peut conduire au désastre. Il faudra une grande énergie pour vous sortir indemne de cette période négative. Cela exige une réelle supériorité. Tenez bon, ne vous découragez pas.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Soyez prudent car le danger est élevé. N'agissez pas sans avoir au préalable évalué toutes les possibilités qui se présentent.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Malgré la difficulté de la situation, vous êtes sur la bonne voie. Il est cependant nécessaire de vous renforcer, ainsi une nouvelle énergie pourra s'exprimer et vous aider à réaliser ce qui vous intéresse.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne vous comportez pas avec arrogance, prenez conseil des autres, sinon les autres ne vous suivront plus et ne vous apporteront plus leur aide.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Assurez-vous de l'appui de collaborateurs sans abuser de votre pouvoir. N'agissez pas en vue d'intérêts personnels, ce serait une source d'humiliation.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Vous essayez de renouveler quelque chose dans votre vie, mais sans véritable engagement personnel, et cet engagement sera infructueux.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Renoncez à ce que vous avez l'intention de faire, ce serait au-dessus de vos forces. Vous risquez d'épuiser votre énergie et de ne rien obtenir.]] ec []
+fin
+
+pour oracle31
+fsty "gras ec [Hexagramme n° 43, La percée, la résolution.]
+fsty "aucun ec [L'hexagramme conseille de passer l'éponge sur votre problème, même si cela doit entraîner quelques sacrifices. N'essayez pas de faire un habit avec des chiffons, mais confectionnez-en un nouveau. Prenez la résolution de rompre avec les anciennes conditions, de les changer ; adaptez-les aux nouvelles circonstances, avec force et bienveillance, mais sans compromis avec ce qui est mauvais et sans violence. Progressez dans le bien.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne vous montrez pas téméraire, dosez vos efforts et agissez seulement quand vous êtes sûr que vos actes vont à leur but.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Restez calme et froid devant le danger à venir. Ne sous-évaluez pas cependant les forces négatives. Soyez donc sur vos gardes, tout en étant conscient de vos forces.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Votre bonne foi ne sera pas facilement reconnue, car seul l'aspect extérieur de votre comportement sera apparent. En fait, vous êtes obligé de faire semblant d'accepter des personnes ou des situations négatives que vous refusez intérieurement.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. L'obstination n'est pas adaptée à la situation. Il vaudrait mieux laisser les choses suivre leur cours sans intervenir. Votre entêtement risque de vous empêcher d'écouter ce conseil.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Ne vous donnez pas vaincu, poursuivez selon votre idée sans vous laisser détourner de votre chemin.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Ne croyez pas la victoire assurée. Il reste encore du mauvais à extirper. Ne négligez pas de le faire : le danger vient de ce que tout semble gagné, alors qu'il reste des germes de mal d'où peuvent naître de nouveaux malheurs. De même, éliminez complètement les défauts qui minent votre caractère : un nouveau mal pourrait en sortir.]] ec []
+fin
+
+pour oracle32
+fsty "gras ec [Hexagramme n° 23, L'éclatement.]
+fsty "aucun ec [Il n'y a pas d'avantage à entreprendre quoi que ce soit. Tranquillité et patience sont nécessaires. L'hexagramme indique l'effritement des situations difficiles. Vous devez rester en place et attendre que les difficultés soient passées. Sur le plan affectif, l'hexagramme n'est pas favorable et indique une relation qui se termine et qu'il est presque impossible de voir redémarrer. Sur le plan du travail, il y a un risque de faillite, de perte de travail ou d'autres difficultés de ce genre. Ne prenez aucune initiative.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. La situation est négative. Il n'y a autour de vous que des personnes fausses et prêtes à vous faire du mal. Méfiez-vous de tout le monde, mais restez ferme dans vos intentions en attendant que le pire soit passé.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Préparez-vous à faire marche arrière en toute circonstance, car la situation; n'est pas bonne du tout. Ne vous fiez même pas à ceux qui semblent être vos amis. C'est en effet le moment d'employer la plus grande souplesse et de ne pas vous montrer trop obstiné.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Même si vous êtes protégé par quelqu'un ou par quelque chose, il vaut mieux rompre tous vos rapports ; il convient également de ne vous fier qu'à votre jugement sans appel et à votre intégrité morale. La solitude est préférable à la compagnie de gens que vous n'estimez pas.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Malheureusement, il n'y a rien à faire, si ce n'est d'accepter ce que le destin vous réserve, si douloureux soit-il. Cette période ne laisse présager que des désillusions. Gardez votre esprit ferme et attendez que la tourmente soit passée.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Une fois que le pire est passé, il faut accepter que quelqu'un vous donne la main pour résoudre les problèmes qui subsistent. Il est important de ne pas prendre de décisions seul, mais de suivre avec beaucoup de dévouement la voie tracée par d'autres. Cela ne vous apportera que du bien.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Les problèmes sont en train de se résoudre et la situation s'améliore. Les difficultés surmontées vous donneront de l'expérience et, avec elle, la sagesse et une nouvelle vision des choses. Le mal disparaîtra et tout ira mieux]] ec []
+fin
+
+pour oracle33
+fsty "gras ec [Hexagramme n° 27, Les commissures des lèvres, la nourriture]
+fsty "aucun ec [Tout ce qui sort de vous et entre en vous doit être examiné avec attention. N'acceptez pas tout ce qui vous est présenté. Ni les paroles qui sortent de la bouche ni la nourriture qui y entre ne doivent dépasser la mesure.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne donnez pas libre cours à votre avidité et à votre envie : cela vous porterait préjudice et n'attirerait de la part des autres que dérision et mépris. Essayez de retrouver votre essence.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Gardez un comportement digne, ne demandez pas d'aide aux autres, surtout si ces personnes vous sont supérieures en quelque chose. Pour le moment, ne vous fiez qu'à vous-même et en vos propres forces.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne passez pas d'un besoin à un autre, d'une satisfaction des sens à une autre : vous gâcheriez votre vie et n'apporteriez rien de bon à votre situation.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Regardez autour de vous pour trouver une aide, tournez-vous vers les autres : vous serez écouté si votre besoin n'a pas de fondements égoïstes. Ainsi vous ne commettrez pas d'erreurs.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. À l'heure actuelle, vous ne pouvez pas réaliser tout seul de grandes choses. Il est déconseillé d'agir, mais renforcez-vous et suivez la voie tracée par d'autres. Demandez conseil. Soyez conscient de votre dépendance et ne vous mettez pas en avant.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. On vous considère comme quelqu'un d'important et vous servez d'exemple. C'est une lourde responsabilité. Agissez pour le mieux dans l'intérêt de tous.]] ec []
+fin
+
+pour oracle34
+fsty "gras ec [Hexagramme n° 4, La folie juvénile.]
+fsty "aucun ec [Il existe un risque d'erreurs dues principalement à de l'incompétence dans le secteur concerné. Il est préférable de surseoir à tout ce que vous avez en tête pour le moment. Faites-vous aider, essayez d'en savoir davantage.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Si vous rencontrez des difficultés avec les autres, n'adoptez pas une attitude accusatrice ou vexatoire. Ayez un comportement correct et non vindicatif.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. La tolérance est nécessaire dans les rapports avec les autres. La courtoisie, la gentillesse et le sens des responsabilités peuvent être une voie vers la réalisation de ce que vous désirez. Unissez la force intérieure à la réserve extérieure.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. N'imitez pas celui qui semble plus fort que vous. Cette erreur pourrait vous conduire hors du bon chemin. Ne soyez pas servile, respectez ce qui fait votre personnalité.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. L'obstination et l'immaturité n'apportent que des malheurs ou des humiliations. Si cela concerne d'autres personnes, laissez-les comprendre seules que leur comportement amène l'humiliation.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Fiez-vous sans prétention et comme avec innocence à quelqu'un qui peut vous enseigner quelque chose.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Ne manquez pas à vos devoirs et ne vous laissez pas tromper. Fuyez tout acte de violence : ce serait inutile et dommageable. Évitez d'offenser quelqu'un qui s'est mal comporté envers vous.]] ec []
+fin
+
+pour oracle35
+fsty "gras ec [Hexagramme n° 41, La diminution.]    
+fsty "aucun ec [Ici, la meilleure façon d'atteindre vos objectifs, c'est de ne pas posséder la plénitude de vos moyens. Il faut savoir profiter d'un manque plutôt que d'un excès. Acceptez de renoncer à de petites choses, cela peut vous servir à une reprise et à une amélioration. Sur le plan affectif, la rupture d'un rapport est possible ; les sentiments s'affaiblissent et ne redeviendront que difficilement vivaces et agréables.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne soyez prêt à aider les autres que si vous êtes capable de supporter un tel poids. De même, n'acceptez de l'aide des autres que si cela ne leur porte pas préjudice. En tout cas, soyez très attentif et délicat envers votre prochain.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Ne renoncez jamais à votre personnalité et à vos principes, même quand vous avez affaire à quelqu'un qui vous est supérieur. Ce n'est que comme cela que vous serez utile à tous les deux. Un comportement différent apporterait certainement des ennuis.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Il vaut mieux être seul que mal accompagné. On a toujours la possibilité de rencontrer quelqu'un de meilleur. Évitez des situations de jalousie qui peuvent naître quand plusieurs empruntent le même chemin. Soyez prudent.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Défaites-vous de certains de vos défauts qui empêchent des personnes même bien intentionnées de venir vers vous. Vous libérerez les amis bien disposés d'une pression intérieure et ferez qu'ils s'approcheront de vous avec une hâte d'autant plus grande, ce qui entraînera une joie réciproque.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Si votre destin comprend un peu de chance, c'est le moment de le vérifier. Soyez tranquille, car vous obtiendrez certainement ce que vous avez désiré. Toutes les prédictions sont excellentes.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. N'agissez pas selon votre seul intérêt. Pour favoriser la chance, il est nécessaire que vous ne pensiez pas qu'à vous-même. Ainsi vos actions ne nuiront à personne.]] ec []
+fin
+
+pour oracle36
+fsty "gras ec [Hexagramme n° 52, L'immobilisation, la montagne.]
+fsty "aucun ec [Refermez-vous sur vous et veillez à préserver votre tranquillité intérieure. Ne prenez pas d'initiative : profitez-en pour effectuer une profonde recherche intérieure. Quand vous parvenez à la paix intérieure, vous pouvez vous tourner vers le monde extérieur et, comprenant les lois des phénomènes, vous pourrez y conformer votre conduite. Si vous agissez à partir d'une telle profondeur vous ne commettrez pas de fautes.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne bougez absolument pas, restez immobile tant que vous n'avez pas trouvé la bonne voie, ce qui, pour le moment est impossible. Ne vous laissez pas entraîner par les événements et gardez votre calme. Soyez persévérant dans vos intentions.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Il est préférable de ne pas vous reposer sur des personnes qui peuvent être de mauvaise foi. C'est ce qui est en train de vous arriver. Si vous vouliez aller contre cette réalité, vous en seriez empêché par l'élan pris désormais par ce type de relation.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Contrôlez la rage qui est dans votre cœur, mais ne vous imposez pas un repos obtenu par la contrainte. La paix doit naître et s'étendre de façon naturelle à partir d'un état de recueillement intérieur. La bonne voie est celle du milieu. N'usez pas de violence envers vous-même.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vous êtes sur la bonne voie pour atteindre la paix du cœur et la libération de vos tensions. Ne faites pas marche arrière, même si le chemin est long, car vous ne serez en paix avec vous-même et avec le monde qu'après l'avoir entièrement parcouru.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Vous risquez actuellement de dire des choses que vous regretterez, surtout si elles sont liées à la vie des autres. Parlez et agissez prudemment. Fuyez les médisances et ne leur donnez pas de crédit quand elles vous sont rapportées. Parlez en connaissance de cause.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Vous avez atteint la sérénité ou une situation de tout repos. Grâce à vos efforts, vous avez atteint l'objectif que vous vous étiez fixé. Cette expérience devrait vous récompenser.]] ec []
+fin
+
+pour oracle37
+fsty "gras ec [Hexagramme n° 22, La grâce.]
+fsty "aucun ec [Vous ne pouvez prétendre à de grands changements dans votre vie. Soyez délicat et soignez votre aspect. Cela vous aidera à vivre et à surmonter les difficultés, même si cela ne règle pas tous vos problèmes. Ne tentez pas de résoudre les gros problèmes, mais affrontez-les en surface.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Soyez sûr de votre fait et suivez votre voie sans demander l'aide de personne. Vous serez ainsi davantage en sécurité et pourrez affronter tranquillement vos problèmes.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Votre apparence extérieure exerce une grande fascination sur les autres, mais si votre âme n'est pas belle, l'échec sera tôt ou tard au rendez-vous. Prenez donc soin de votre esprit et ne négligez pas votre intégrité morale.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne vous endormez pas sur vos lauriers, ne vous laissez pas aller à la paresse. Montrez-vous persévérant et correct dans vos actes pour conserver ce que vous avez obtenu.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Choisissez la simplicité, même si cela semble vous apporter des déceptions. Des événements inattendus et positifs vous aideront à retrouver ce que vous désirez.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. N'ayez pas peur d'être incompris, vous êtes à la hauteur de la situation et vous serez bien accueilli. L'important, c'est que vous soyez sincère et que vous restiez simple.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Usez de simplicité. Le clinquant n'est d'aucune utilité. Dans vos relations, laissez transparaître la pureté de votre âme. L'élégance suprême ne consiste pas à orner extérieurement les matériaux, mais à leur donner une forme simple et pratique.]] ec []
+fin
+
+pour oracle38
+fsty "gras ec [Hexagramme n° 18, Le travail sur ce qui est corrompu.]
+fsty "aucun ec [Le moment est propice pour corriger vos erreurs. Ne vous occupez pas des réactions des autres. Le travail d'amélioration a de fortes chances de réussir, car il est en harmonie avec les possibilités de l'heure. Il convient de prendre le temps de réfléchir correctement aux causes des erreurs et de veiller à vous engager de façon sûre dans la voie nouvelle, résolument et énergiquement.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Attention aux mauvaises habitudes. Pour le moment elles ne sont pas profondément enracinées. Il est encore aisé d'y porter remède. Mais ne négligez pas le danger et ne prenez pas les choses à la légère. Ne campez pas sur vos positions et changez tout ce qu'il est possible de changer.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Remédiez aux erreurs en douceur. Elles sont dues plus à de la faiblesse qu'à de la méchanceté. Il convient alors d'avoir certains égards, une certaine délicatesse en portant remède. Ne vous montrez pas trop cassant afin de ne pas blesser par de la brusquerie.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne montrez pas trop d'énergie pour porter remède aux fautes du passé : cela pourrait engendrer de la mauvaise humeur et de petits désaccords, mais sans gravité. Mais mieux vaut une énergie en excès qu'en défaut.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vous avez laissé les choses aller trop loin, et cela commence à créer des problèmes. Agissez maintenant avant qu'il ne soit trop tard.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Les erreurs sont dues à des fautes passées. Vous n'avez pas la force d'y remédier seul. Vous allez trouver de l'aide et pourrez ainsi apporter des changements et opérer une réforme profonde.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Prenez du recul et regardez la réalité avec plus de détachement. Vous pouvez faire du travail sur vous et préparer un avenir meilleur.]] ec []
+fin
+
+pour oracle39
+fsty "gras ec [Hexagramme n° 26, Le pouvoir d'apprivoisement du grand.]
+fsty "aucun ec [Utilisez votre expérience pour entrer au cœur des problèmes et en comprendre l'essence. Agissez, progressez et agrandissez vos horizons, afin de dépasser votre condition actuelle et enrichir votre personnalité. Il est temps d'agir maintenant. Vos efforts rencontreront une réponse positive. Ayez l'audace d'aller au-delà de ce qui est familier et confortable.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Votre action rencontre des oppositions. Avancer malgré tout ne serait pas positif. Attendez que la voie soit libre.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Pour l'instant, contentez-vous d'attendre. De cette manière, la force s'accumule et prépare une action qui conduira à un progrès énergique.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. La route s'ouvre, l'obstruction cesse. Alliez-vous à des personnes qui vont dans la même direction que vous. Protégez-vous contre des dangers éventuels qui peuvent survenir, soyez prêt à affronter une attaque imprévue.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Contrôlez vos réactions pour éviter les prises de positions trop véhémentes. Il est plus aisé de tuer dans l'œuf d'éventuelles difficultés avant qu'elles aient pris trop d'ampleur.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Suivre ses instincts peut faire perdre le sens de la mesure et la vision objective de la réalité. Agissez avec diplomatie pour atteindre les buts auxquels vous vouliez parvenir par une action violente.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Le temps de la victoire sur toutes les oppositions est venu. La force accumulée grâce aux obstacles se fraie un chemin et remporte le succès. Vous obtenez l'approbation générale.]] ec []
+fin
+
+pour oracle40
+fsty "gras ec [Hexagramme n° 35, Le progrès.]
+fsty "aucun ec [Tout s'améliore et de grandes satisfactions sont en vue. Ce que vous désirez va être couronné de succès, mais consolidez toutefois vos bases. Tout doit être exécuté en plein jour. Cet hexagramme illustre une progression qui va au-devant de vos espérances et qui vous permet d'améliorer l'état des choses tout en vous améliorant vous-même. Parfois la progression n'est possible que lorsque les choses viennent vers vous. Vous n'avez rien à craindre tant que votre lucidité intérieure se maintient.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. En un temps où tout pousse au progrès, on se trouve encore dans l'incertitude, ne sachant pas si, en progressant, on ne va pas s'exposer à être rejeté en arrière. Continuez avec simplicité à marcher dans la bonne direction : cela apporte finalement le succès. Ne vous efforcez pas d'être reconnu à tout prix, mais restez abandonné et joyeux, sans colère.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Vous êtes triste car votre progression subit un arrêt. Une union importante se trouve empêchée. Soyez persévérant car, avec douceur, cette personne vous fera éprouver un grand bonheur.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. D'autres personnes vous soutiennent dans votre effort pour avancer. Le manque d'autonomie et d'indépendance ne sera pas gênant, car ces personnes seront en harmonie avec vous.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. La prétention d'amasser beaucoup de biens est porteuse de danger, car la période met tout en lumière et vous seriez démasqué.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Dans un temps de progrès, il ne convient pas de se reprocher de ne pas avoir utilisé ce temps pour se procurer tous les avantages possibles. Soyez désintéressé. Ne prenez pas à cœur la perte et le gain. Ce sont là choses secondaires.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Il y aurait danger à progresser en usant d'agressivité. Une attitude de ce genre, surtout envers des personnes qui ne sont pas des proches, aboutirait à une humiliation. Évitez un tel comportement et vous atteindrez votre but.]] ec []
+fin
+
+pour oracle41
+fsty "gras ec [Hexagramme n° 21, Mordre au travers.]
+fsty "aucun ec [Lorsqu'un obstacle s'oppose à la réunion, mordre énergiquement au travers crée le succès. La situation est si difficile que seule une prise de position déterminée voire violente peut permettre d'en sortir. Il peut s'agir d'une coupure nette, douloureuse mais nécessaire. Vous ne pourrez résoudre votre problème qu'en tranchant les racines du mal. Mais pour que cela se passe bien il importe d'allier à un esprit de décision une grande douceur d'âme : il faut que l'on comprenne que la décision de mordre l'obstacle n'est due qu'à la situation et non à une dureté de cœur.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Une petite erreur a été commise. Ce n'est pas grave pour le moment, mais évitez de poursuivre dans cette voie si vous ne voulez pas que les problèmes grandissent.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Ne vous laissez pas emporter par la colère en faisant payer aux autres le mal qu'ils ont fait. Attention à ne pas aller trop loin, même s'il vous paraît juste de corriger la faute.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Le problème a des racines lointaines, il s'agit d'une vieille affaire, et l'on s'y heurte à des difficultés. On s'attire une haine empoisonnée à s'occuper de cette histoire. Mais c'est une réaction normale. Il ne faut pas s'en inquiéter.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Il y a de grosses difficultés à vaincre. Si on reconnaît les difficultés et que l'on persévère, on parvient au succès.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Usez de modération et d'objectivité. Soyez impartial. Demeurez toutefois conscient des dangers que votre situation vous fait courir.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. On court à l'échec, si l'on reste sourd aux avertissements. En s'obstinant dans cette attitude, on accumulera les fautes et l'humiliation en découlera à coup sûr.]] ec []
+fin
+
+pour oracle42
+fsty "gras ec [Hexagramme n° 64, Avant l'accomplissement.]
+fsty "aucun ec [Le changement est préparé, mais pas encore accompli. La confusion doit laisser la place à l'ordre, mais il faut avancer prudemment, car rien n'est encore joué. Calme intérieur, réflexion et circonspection sont indispensables pour réussir.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Évitez toute hâte, toute précipitation. Cela mènerait à l'échec et à l'humiliation. Demeurez réservé et gardez le sens de la mesure.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Le temps d'agir n'est pas venu. Prenez patience tout en développant les forces nécessaires pour aller de l'avant. La patience est de la force contenue. Ne vous endormez pas et gardez présent votre but. Les choses vont alors s'améliorer.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ce serait l'heure d'agir, mais vous n'en avez pas la force, et toute tentative de votre part serait vouée à l'échec. Trouvez de l'aide et créez une nouvelle situation. Avec vos auxiliaires, vous pourrez faire le pas décisif. Alors l'accomplissement sera possible.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. C'est le moment d'agir. Affermissez votre résolution et ne doutez plus. La période est favorable et votre action sera couronnée de succès.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. La victoire est remportée et tous les doutes sont surmontés. Vous avez gagné l'estime générale. Et le contraste avec la période précédente vous permet d'apprécier davantage votre réussite.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. À la veille d'une réussite assurée, vous pouvez déjà fêter la victoire, et cela n'est pas blâmable. Mais gardez-vous de la démesure : vous pourriez perdre ce que la situation avait de favorable.]] ec []
+fin
+
+pour oracle43
+fsty "gras ec [Hexagramme n° 38, L'opposition.]
+fsty "aucun ec [Quand les intérêts ne concordent pas, il n'est pas possible d'entreprendre quelque chose d'important. L'opposition met au jour des avis différents et complémentaires. C'est en prenant conscience de la valeur de la complémentarité qu'on peut résoudre les conflits en douceur et arriver à faire une bonne synthèse. Il est important que chacun garde sa personnalité.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Il est vain de vouloir créer l'unité de force. On n'obtiendrait que le résultat contraire. Les choses s'arrangeront d'elles-mêmes. Toutefois, restez prudent : des personnes qui ne vous conviennent pas peuvent venir vers vous, mais n'essayez pas de les écarter de force : vous ne recueilleriez que leur hostilité. Supportez-les patiemment. Ils se retireront d'eux-mêmes.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. L'imprévu fera bien les choses : une rencontre fortuite vous permettra de vous mettre d'accord avec une personne avec laquelle vous n'aviez pas pu vous entendre auparavant.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Restez ferme dans vos convictions, même si la situation est difficile et pleine d'obstacles. Restez alliés à des personnes de confiance : en dépit d'un mauvais début, tout se terminera bien.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Ne vous isolez pas, même si vous pensez qu'il n'y a que des personnes malveillantes. Observez autour de vous : quelqu'un en qui vous pouvez faire confiance est là pour vous aider. Vous triompherez ainsi de l'isolement et le succès viendra.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Il vous est difficile de reconnaître la personne qui vous est favorable, mais celle-ci se fraie un chemin vers vous. Pour celui à qui ce compagnon se montre dans sa nature véritable, c'est un devoir que d'aller à sa rencontre et de travailler avec lui.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. L'isolement est causé par des malentendus qui vous font méconnaître votre ami. Vous risquez d'accuser quelqu'un qui n'est pas en faute et d'adopter une attitude de défense contre lui. Il convient de reconnaître votre erreur et de vous débarrasser de vos doutes.]] ec []
+fin
+
+pour oracle44
+fsty "gras ec [Hexagramme n° 56, Le voyageur.]
+fsty "aucun ec [L'hexagramme indique des situations d'instabilité. Éloignement et séparation,tel est le lot du voyageur. Soyez prudent et réservé, ne vous mettez pas en avant. Ne vous laissez pas emprisonner. Soyez intérieurement juste et ferme, bâtissez votre propre abri. Ce que vous apprendrez de votre voyage a comme objectif la liberté et l'affranchissement de toute dépendance.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne soyez pas trop disponible et uniquement pour faire plaisir aux autres, car vous risquez de perdre en dignité et en crédibilité. La courtoisie est nécessaire, mais ne doit jamais vous obliger à adopter des attitudes serviles.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Ayez confiance en vos possibilités et ne vous tracassez pas. Vous rencontrerez certainement une personne plus jeune qui vous aidera et vous tranquillisera. Gardez votre dignité.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne vous retranchez pas derrière votre orgueil en maltraitant ceux qui vous ont aidé jusqu'à maintenant. Vous courez un danger. En effet, vous perdriez la confiance de ceux qui pouvaient vous aider et ne pourriez plus compter sur personne.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Même si vous n'avez rien à déplorer, vous êtes sur vos gardes, de peur de perdre ce que vous avez obtenu si difficilement, et votre anxiété fait que vous ne vous sentez pas à votre aise.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Regardez autour de vous et vous réussirez à voir quelque chose dont vous tirerez profit. Votre faculté d'adaptation et un comportement plein de diplomatie vous permettront de trouver des amis et une sphère d'action.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Ne soyez pas distrait et imprévoyant. Vous risquez de perdre quelque chose d'important. Adaptez-vous à la situation, sinon vous risquez d'essuyer un échec.]] ec []
+fin
+
+pour oracle45
+fsty "gras ec [Hexagramme n° 30, Ce qui s'attache, le feu.]
+fsty "aucun ec [Pour briller, il faut vous attacher à un élément qui nourrisse votre clarté. Celle-ci devrait s'attacher à ce qui est juste. En vous soumettant aux puissances harmonieuses de l'univers, vous obtiendrez la réussite et votre place dans le monde. Votre force et votre patience vous serviront à atteindre votre but. L'hexagramme est d'une grande luminosité, mais il contient le risque d'une passion excessive.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne vous laissez pas emporter par l'agitation de la vie, conservez votre calme intérieur. Vous parviendrez à la clarté nécessaire pour affronter la situation.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Le soleil brille dans une lumière dorée. Cela ne pourrait pas aller mieux. N'essayez pas d'en faire plus qu'il ne serait permis, ce sont la modération et l'action harmonieuse qui vous conduiront au succès.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. La situation est un peu précaire et pourrait signifier l'arrivée de problèmes et d'éléments négatifs. Ne vous laissez pas entraîner dans des états d'âme excessifs, débridés ou déprimés. Remettez-vous-en au destin.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Ne vous laissez pas embraser comme un feu de paille. Ne consumez pas inutilement vos énergies. Vous n'obtiendriez qu'un succès éphémère.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Il n'est pas négatif de laisser libre cours à votre chagrin : si vous vous efforcez de garder votre clarté intérieure, une observation objective et lucide de la situation vous permettra de trouver votre sagesse.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Dans l'œuvre de perfectionnement de soi, il importe d'extirper les mauvaises habitudes, tout en tolérant celles qui sont inoffensives. Une ascèse trop rude ne mènerait à rien de bon.]] ec []
+fin
+
+pour oracle46
+fsty "gras ec [Hexagramme n° 50, Le chaudron.]
+fsty "aucun ec [L'hexagramme vous invite à donner à votre vie d'autres objectifs que ceux de l'argent, de l'alimentation et des plaisirs. Il s'agit de mettre votre vie en accord avec votre destinée. Les prévisions sont favorables si on laisse les choses se développer sans égoïsme et sans hâte. Sur le plan affectif, l'hexagramme est le signe d'un lien et d'un accord très fort entre deux êtres.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Si vous acceptez de faire table rase du passé et de recommencer à zéro, dans un acte de purification, vous parviendrez à un stade où vous agirez de façon fructueuse. Votre personnalité sera alors reconnue.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Vous susciterez l'envie, mais ce n'est pas dangereux. Plus vous vous limiterez à des tâches positives, moins les envieux auront de prise sur vous.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vos qualités ne sont pas encore reconnues. C'est un obstacle pour votre action. Continuez cependant à cultiver vos talents : bientôt tous les obstacles disparaîtront.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vous ne vous sentez pas de taille à mener à bien votre entreprise. Si vous n'y consacrez pas toutes vos forces, l'exécution de l'œuvre échouera certainement.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Comportez-vous avec modestie, et vous trouverez les personnes qui coopéreront avec vous. Il importe que vous vous mainteniez dans cette disposition d'abnégation intérieure.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Tout est favorable, mais acceptez les conseils. Si vous devez vous-même en donner, faites-le avec tact, douceur et pureté intérieure, en respectant la personne qui vous écoute.]] ec []
+fin
+
+pour oracle47
+fsty "gras ec [Hexagramme n° 14, Le grand avoir. ]
+fsty "aucun ec [Cet hexagramme est bénéfique. La période est favorable : si, conscient de votre valeur, vous vous comportez néanmoins avec modestie, vous verrez le succès venir à vous. Le soleil met tout en lumière : les qualités et les défauts. Agissez de manière correcte et modeste, et vous pouvez être certain d'obtenir ce que vous désirez.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Vous avez commencé à obtenir ce que vous désirez, mais il reste des difficultés à vaincre. Demeurez conscient de celles-ci et vous surmonterez tout risque d'orgueil et de prodigalité.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Donnez-vous la chance d'avoir l'aide de personnes compétentes et efficaces, qui sont à la hauteur de la tâche. Le succès sera ainsi assuré.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Débarrassez-vous de toute disposition mesquine et égoïste. N'essayez pas de garder tout pour vous. Ce serait une erreur.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Il serait dangereux de vous laisser aller à l'envie égoïste de ressembler à autrui. Ne faites aucun effort dans ce sens.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. La situation est très favorable. Votre sincérité vous concilie votre entourage. Soyez attentif cependant à ce que votre bienveillance ne vous attire pas l'insolence d'autrui et ne nuise à votre dignité.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Demeurez modeste dans l'abondance et la puissance, soyez généreux et aidez les autres. Vous serez ainsi sous des influences positives qui ne vous apporteront que des satisfactions.]] ec []
+fin
+
+pour oracle48
+fsty "gras ec [Hexagramme n° 20, La contemplation, la vue.]
+fsty "aucun ec [On ne peut pas prêcher un comportement correct sans l'appliquer à soi, ni enseigner sans avoir approfondi le sujet auparavant. Il importe que le charisme s'accompagne de l'acquisition de la sagesse. C'est une grande responsabilité que d'être un exemple pour les autres. Entrez en contact profond avec vous-même : par ce recueillement, votre vision du cours naturel des choses sera plus clair et plus objectif, et votre intuition se développera. Vous aurez une vue d'ensemble de la situation et votre influence s'exercera davantage sur les autres par votre simple existence. Dans le domaine affectif, l'hexagramme indique une profonde entente intellectuelle débouchant sur un sentiment d'amour véritable : les partenaires se connaissant bien, il n'y aura par suite aucune mauvaise surprise.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Le conseil donné est d'user de discernement dans le regard que vous portez sur la situation.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Ouvrez votre regard, élargissez votre vision. Essayez de vous mettre à la place des autres pour juger plus objectivement.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Orientez votre regard vers l'intérieur de vous-même. Par l'introspection, essayez de mieux vous connaître, plus objectivement. Faites un examen approfondi de vos actes et tentez de percevoir les causes de vos comportements.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Donnez votre confiance à une personne capable de vous aider à voir la situation telle qu'elle est. Donnez-lui carte blanche.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Examinez les résultats de vos actions. Vous pourrez en toute objectivité juger votre conduite, en évitant toute tendance à vous culpabiliser.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Il est temps, maintenant d'avoir plus de distance et de détachement vis-vis des événements que vous vivez. Vous pourrez en tirer toutes les leçons qui s'imposent.]] ec []
+fin
+
+pour oracle49
+fsty "gras ec [Hexagramme n° 42, L'augmentation.]
+fsty "aucun ec [Le temps de l'accroissement, de la croissance est venu. Mettez-le à profit pour entreprendre les actions qui vous tiennent à cœur. C'est le moment de l'enrichissement, de la mise en valeur. La période vous est favorable, aussi construisez votre vie fermement et lucidement. Profitez-en pour vous préparer aux périodes moins favorables ou de stagnation qui suivront. Il convient d'utiliser cette période pour vous améliorer, imiter ce qui vous semble bon chez les autres et vous défaire de ce qui est mauvais en vous. Les qualités de votre personnalité ainsi s'accroîtront. D'un point de vue affectif, les choses iront bien au début. Il y a cependant un risque de perdre la personne aimée par la suite. Interrogez-vous lucidement sur votre relation et sur les possibilités d'une véritable union.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. La période est très favorable pour réaliser ou démarrer des projets importants.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Faites que ce bonheur qui vous échoit ne vous tourne pas la tête, utilisez-le avec beaucoup de compréhension pour le bien de tous et cultivez votre force intérieure.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Vos expériences malheureuses peuvent vous servir. Vous acquerrez ainsi une autorité intérieure qui vous donnera de l'influence sur les autres.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Soyez prêt à servir de médiateur ou, en cas de besoin, ayez vous-même recours à un intermédiaire qui puisse apporter son aide. Ce sera bénéfique pour tout le monde.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Aidez les autres sans compter ni questionner. Votre attitude sera récompensée et vous gagnerez la confiance de ceux que vous aurez aidés.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Ne soyez pas impulsif. Le conseil est de vous calmer, vous recentrer avant d'agir ou de parler, afin que vous gardiez le soutien de vos amis et alliés : ainsi personne ne pourra vous nuire.]] ec []
+fin
+
+pour oracle50
+fsty "gras ec [Hexagramme n° 59, La dissolution.]
+fsty "aucun ec [L'hexagramme indique ici le besoin de dissoudre l'égoïsme qui sépare. Toutes les occasions de faire un travail commun sont bénéfiques. De même, sur le plan affectif, il est possible que l'égoïsme empêche un rapport serein et agréable dans votre relation. On peut prévoir un éloignement bénéfique, après lequel vous pourrez repartir sur de nouvelles bases.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Soyez prudent. Dès que vous vous apercevez que des malentendus sont en train de naître, prenez immédiatement des mesures pour dissiper les incompréhensions et les méfiances réciproques.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Dissipez toute attitude visant à vous isoler des autres, par misanthropie ou par mauvaise humeur. Cultivez la bienveillance.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Dissipez toute attitude visant à mettre des barrières entre vous et les autres. Placez votre but hors de vous dans une cause plus altruiste.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Si vous renoncez momentanément à ce qui est proche, vous gagnerez ce qui est éloigné. Prenez du recul par rapport au groupe et élargissez votre point de vue.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. La période est difficile. Une pensée positive ou stimulante peut constituer une véritable libération.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Évitez le danger — pour vous mais aussi pour les autres — en les aidant à partir avant que le danger arrive, ou à les tenir à distance d'un danger déjà présent ou encore à sortir d'un danger qui les a déjà assaillis.]] ec []
+fin
+
+pour oracle51
+fsty "gras ec [Hexagramme n° 61, La vérité intérieure.]
+fsty "aucun ec [Essayez d'acquérir une parfaite liberté intérieure, de vous libérer de vos préjugés pour trouver la voie menant aux autres. Rendez-vous intérieurement proches de vos interlocuteurs, et cette compréhension vous donnera de l'influence. En procédant ainsi, toutes vos actions seront couronnées de succès. Dans le domaine affectif, c'est un sentiment intense qui vous implique beaucoup et qui grandit, parce qu'il est fondé sur la compréhension, l'estime et la sincérité.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Ne comptez que sur vous, gardez votre autonomie intérieure et soyez ferme et prêt en vous-même.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Votre influence s'exerce facilement, grâce à votre bonne humeur, la sincérité et la sympathie qui émanent de vous. Cela se produit naturellement. Ne forcez rien.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Être proche des autres vous fait ballotter de la joie au chagrin, si votre centre de gravité dépend d'eux. Il est sans doute difficile de changer cela pour le moment.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Renoncez à ce qui vous prive de votre liberté intérieure. Suivez votre voie sans vous soucier des avis des autres. Restez modeste, cependant.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. La force de votre caractère vous permettra d'être suivi par votre entourage.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. On a pu avoir confiance dans vos paroles, mais cela ne durera pas toujours. Il y a danger à trop croire dans le pouvoir de la parole.]] ec []
+fin
+
+pour oracle52
+fsty "gras ec [Hexagramme n° 53, Le développement, le progrès graduel.]
+fsty "aucun ec [Vous connaissez actuellement une période d'amélioration et vous arriverez au but que vous vous étiez fixé. Il faut veiller à procéder suivant une progression harmonieuse. Soyez persévérant. La précipitation ne mènerait à rien de bon. Le développement progressif est nécessaire à la formation de la personnalité propre. Toute influence fondée sur l'agitation ne serait que de courte durée. Dans le domaine affectif, le sentiment qui vous envahit doucement et tranquillement aura de plus en plus de consistance et deviendra essentiel pour votre vie. Vous épouserez certainement la personne que vous aimez. Si vous êtes déjà marié, vous consoliderez votre rapport. Vous allez au-devant d'une période de grande sérénité et de compréhension.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Avancez prudemment, afin de ne pas commettre d'erreurs. Ne vous inquiétez pas des critiques qu'on pourrait vous faire. Ne vous découragez pas. Les difficultés font que vous vous gardez d'une hâte excessive : votre progrès sera couronné de succès.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Vous avez obtenu un premier résultat positif. C'est encourageant, et cela génère une certaine allégresse. Pensez à partager votre bonheur avec d'autres.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Évitez d'aller trop loin. Ne forcez rien, laissez les choses se dérouler à leur rythme, sans précipitation. Ne recherchez pas le combat de vous-même, contentez-vous de rester à votre place et de défendre votre position.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. La situation n'est pas idéale, mais vous pouvez la rendre plus confortable et y trouver votre compte, grâce à votre souplesse et à votre intelligence.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Dans une situation de supériorité, on peut être facilement isolé. Les résultats ne seront pas tout de suite positifs, mais l'évolution naturelle des choses vous fera reconnaître et conduira inévitablement au succès.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Le but est atteint. L'œuvre est achevée. Ce trait est l'indice d'une bonne fortune. Vous serez certainement regardé comme un modèle.]] ec []
+fin
+
+pour oracle53
+fsty "gras ec [Hexagramme n° 37, La famille, le clan.]
+fsty "aucun ec [Il convient que vous soyez bien à votre place, que vous assumiez vos responsabilités et que vous jouiez votre rôle. La structure, l'organisation est ici très importante. Sur le plan affectif, l'union est placée sous de très bons auspices. Il est important de donner du poids à la famille. Si vous êtes déjà marié, il existe une possibilité d'agrandissement de la famille, avec une nouvelle naissance.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Des positions nettes et fermes doivent être prises dès le début. Si vous attendez trop, vous ne pourriez plus corriger les défauts.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. N'allez pas au-delà de votre rôle, ne recherchez rien par des moyens violents. Limitez-vous à l'accomplissement des devoirs existants.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Le juste milieu entre rigidité et relâchement est la meilleure chose et permet une liberté de mouvement dans un cadre bien défini, mais si la liberté ne peut être comprise, la sévérité est préférable à une trop grande faiblesse.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Ce trait est un signe de chance qui indique que la prospérité vient d'une bonne gestion, sérieuse et équilibrée. C'est valable pour un groupe, mais aussi pour la direction de soi-même et de ses propres biens.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. N'essayez pas de vous faire craindre. Au contraire, il convient de montrer qu'on peut avoir confiance en vous, que vous agissez dans l'intérêt de tous. Votre influence alors sera juste.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Si vous êtes placé dans un poste élevé, il convient que vous sachiez assumer pleinement vos responsabilités.]] ec []
+fin
+
+pour oracle54
+fsty "gras ec [Hexagramme n° 57, Le doux, le pénétrant.]
+fsty "aucun ec [Prenez le temps comme moyen d'action. Une action non préparée ne provoque que répulsion, mais si votre intention est expliquée clairement et de manière douce et continue, elle pénètre dans l'âme de l'autre et fait sa place, de sorte qu'il vous est ensuite aisé d'agir. Il vous faut un but clairement perçu, car seule une influence pénétrante agissant toujours dans la même direction parvient à un résultat. Il faut chercher en soi la force d'être patient.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Luttez contre l'indécision et les doutes. Prenez une résolution forte, c'est l'attitude qui vous convient ici. Une discipline résolue est préférable au relâchement.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Des influences négatives d'ennemis cachés sont à craindre. Essayez de les mettre en lumière : elles perdront ainsi leur pouvoir, qui provenait de leur anonymat, et il vous sera possible de les contrer.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Cessez de ruminer les mêmes réflexions. Vous avez déjà examiné la situation à fond. Il est temps de passer à l'action. Une réflexion répétée trop longtemps mène au doute et vous empêcherait d'agir.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Utilisez votre expérience passée, cultivez la modestie, tout en menant une activité énergique : vous obtiendrez une grande réussite.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Il vous faut prendre une direction nouvelle : certains changements, certaines améliorations sont à opérer. Ces réformes doivent être préparées avec une réflexion longue et attentive. Lorsqu'elles donneront leurs fruits, faites encore un examen de leur portée effective.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Ne faites rien si la force de combattre les influences négatives vous manque. Si vous essayez, cela serait en votre défaveur et l'état des choses empirerait.]] ec []
+fin
+
+pour oracle55
+fsty "gras ec [Hexagramme n° 9, Le pouvoir d'apprivoisement du petit.]
+fsty "aucun ec [L'heure des grandes actions n'est pas encore venue. Il reste des obstacles sur la route. Mais on peut commencer les travaux d'approche. Pour le moment vous ne pouvez agir que dans les petites choses, mais restez confiant et ne perdez pas de vue votre objectif. La situation n'est pas défavorable. Elle permet de prévoir le succès final.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Vouloir obtenir quelque chose par la force n'amènera rien de satisfaisant ni de durable. Sentez-vous libre d'avancer et de reculer. Soyez vous-même, suivez votre vraie nature et n'allez pas au-delà de vos forces.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. L'avancée est impossible, pour le moment. N'hésitez pas à vous arrêter ou à rebrousser chemin afin de ne pas vous exposer inutilement.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Des difficultés internes empêchent d'avancer. Les discussions peuvent tourner en querelles, et le résultat n'est pas favorable.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. En présence d'une puissance supérieure à la vôtre, conservez une attitude de vérité désintéressée et n'hésitez pas à donner des conseils dans le sens de la justice et du droit : cela causera une impression favorable et vos efforts parviendront à leur but.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Loyauté, fidélité et solidarité sont les vertus que ce trait mutable vous conseille. Cela vous mènera à d'heureux et fructueux échanges avec les personnes dont les qualités compléteront les vôtres.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Des résultats ont été obtenus patiemment. Néanmoins, soyez très prudent, car la stabilité des acquis est parfois illusoire. Il serait dangereux de vous vanter de ce succès ou essayer d'aller plus loin. Contentez-vous pour l'instant de vos résultats.]] ec []
+fin
+
+pour oracle56
+fsty "gras ec [Hexagramme n° 12, La stagnation.]
+fsty "aucun ec [En un tel moment, il vous est impossible d'agir, et toute aide vous fait défaut. Soyez sur vos gardes et méfiez-vous de ce que l'on vous propose. Des propositions alléchantes peuvent cacher un réel danger pour vous. Ne mordez pas à l'hameçon et gardez-vous de toute initiative.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Aucune initiative n'est favorable. Retirez-vous à temps de l'action. Mettez-vous à l'abri et conseillez ceux de votre bord d'en faire autant.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Ne vous mêlez pas à ceux qui seraient prêts à n'importe quelle bassesse ou flatterie pour arriver à leurs fins. Restez ferme dans vos principes.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Des moyens injustes ont été employés pour accéder à une situation non méritée. On peut ressentir en soi une humiliation secrète. C'est le début d'un changement vers le mieux.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. La fin de la stagnation approche. La personne idéale qui pourrait mettre fin aux obstructions existe, et son action est favorisée, mais n'importe qui ne peut pas s'improviser acteur de ce rôle.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. La stagnation touche à sa fin. Mais restez prudent jusqu'au bout. Ne criez pas victoire. N'oubliez pas le danger, même quand vous êtes en sécurité. C'est ce qui vous permettra de consolider votre succès.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Les actions sont nécessaires pour que les blocages prennent fin. Toute initiative dans ce sens est favorisée. Aucun obstacle n'est éternel, mais il ne faut pas se contenter d'attendre sa disparition. Il faut agir.]] ec []
+fin
+
+pour oracle57
+fsty "gras ec [Hexagramme n° 25, L'innocence, l'inattendu.]
+fsty "aucun ec [Suivez votre intuition, votre nature originelle dans ce qu'elle a de plus pur et n'agissez que d'une manière désintéressée. Ne calculez pas. La solution peut venir à l'improviste, de ce que vous n'attendiez pas. Ainsi tout s'éclaircira.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Suivez les élans les plus spontanés de votre cœur, sans arrière-pensées. Vous atteindrez votre but à coup sûr.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Agissez non pour vous mais pour l'action elle-même, sans penser au résultat, de manière désintéressée, en vous accordant tout le temps nécessaire. C'est de cette façon que le succès viendra.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Par négligence ou par naïveté, vous risquez de perdre un acquis. Redoublez de prudence. Ne donnez pas votre confiance inconsidérément.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Les avis des autres ne sont ici d'aucune utilité. Restez fidèle à votre ligne de conduite. Vous n'avez rien à perdre.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. La difficulté vient de l'extérieur et partira comme elle est venue. Les choses vont s'arranger d'elles-mêmes.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. N'allez pas contre le destin. Ce n'est pas le moment d'agir. Attendez calmement, patiemment que la situation s'arrange d'elle-même. Toute action serait vouée à l'échec.]] ec []
+fin
+
+pour oracle58
+fsty "gras ec [Hexagramme n° 6, Le conflit.]
+fsty "aucun ec [Dans la situation où vous êtes, préférez toujours un arrangement à l'amiable, même en faisant des compromis, plutôt qu'un conflit ouvert. Quelqu'un peut sans doute vous aider à atténuer la controverse. Ne vous lancez pas dans une entreprise périlleuse, le moment n'est pas favorable.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Il vaut mieux conclure le plus rapidement possible l'affaire, même si elle n'en est qu'à ses débuts. Ne laissez pas le conflit s'intensifier : ainsi, la querelle aura moins de force et tout finira bien.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Il n'est pas honteux de se retirer devant un adversaire plus fort. Ainsi vous épargnez votre entourage, qui ne sera pas entraîné dans le conflit.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne cherchez pas à agir pour en retirer un honneur quelconque : la chose à faire peut très bien être accomplie par un autre. Ce qui vous appartient vraiment ne pourra pas vous être enlevé.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. La lutte est inégale. Retirez-vous et remettez-vous-en au destin. Vous trouverez la paix en changeant d'attitude intérieure et en renonçant au conflit.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Vous pouvez en toute confiance soumettre votre contestation devant votre arbitre, car celui-ci est juste. Si vous avez raison, l'arbitre prononcera le jugement en votre faveur.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Même si un jugement a été prononcé en votre faveur, vous allez encore rencontrer des difficultés. Vous devrez en prendre votre parti et essayer de vivre du mieux que vous pouvez ces attaques continuelles.]] ec []
+fin
+
+pour oracle59
+fsty "gras ec [Hexagramme n° 10, La marche.]
+fsty "aucun ec [Des êtres de conditions ou de puissances différentes sont en présence. Seul le tact, le sens de la bonne façon de se comporter, non blessante, peut faire accepter au fort la présence du faible. Vous pouvez évoluer au milieu du danger à condition d'observer les bons usages dans votre démarche : la voie du succès est la rectitude morale et la meilleure arme est celle de la courtoisie.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Progressez avec humilité. La situation de départ est modeste, mais n'essayez pas de viser trop haut, car l'arrogance vous serait néfaste. Restez simple et satisfait de ce que vous avez déjà accompli : votre œuvre sera appréciée.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Suffisez-vous à vous-même, et ne demandez rien à personne. Tenez-vous loin de l'agitation. Vous éviterez les ennuis.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Soyez lucide : n'allez pas vous lancer dans une entreprise dont la conduite serait au-delà de vos forces ou de vos possibilités.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Vous avez suffisamment de force pour aller de l'avant, mais restez prudent. La forte détermination intérieure alliée à la prudence est assurée du succès.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Avancez résolument tout en restant conscient du danger. L'action ne sera profitable que si à chaque pas que vous faites vous avez une conscience très claire du lieu où vous mettez les pieds.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. L'œuvre est achevée. C'est le moment du bilan : réexaminez la démarche que vous avez suivie et les conséquences de votre action. Tirez-en vous-même les leçons. Vous êtes seul juge des fruits de vos actes.]] ec []
+fin
+
+pour oracle60
+fsty "gras ec [Hexagramme n° 33, La retraite.]
+fsty "aucun ec [Les forces hostiles avancent. N'essayez pas de combattre, c'est inutile. Se retirer constitue ici et maintenant la meilleure stratégie. Vous évitez ainsi de vous affaiblir, et de cette retraite viendra votre victoire : restez très attentif aux signes, et vous percevrez quand il conviendra d'agir. Aussi n'agissez que très ponctuellement, simplement pour retarder l'avancée de l'adversaire sur des points isolés de résistance. Soyez tranquille et confiant. Le moment de l'action principale va arriver.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Arrêtez-vous : n'entreprenez aucune action, pour l'instant. C'est ici la meilleure façon d'échapper au danger.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Le trait montre une personne faible qui s'attache fermement à une personne plus forte qu'elle. Comme ce qu'elle veut est juste, cette situation lui est avantageuse.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Une alliance avec des personnes qui ne vous plaisent pas mais qui peuvent vous aider est sans doute nécessaire, même si cela n'est pas très agréable.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Il est maintenant nécessaire de rompre des liens avec des personnes qui vous sont un frein. Faites cette opération le plus délicatement possible, car ces personnes en souffriront évidemment. Mais n'hésitez pas, même si cette séparation est difficile, car ce sera mieux pour vous.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. C'est le moment juste pour vous retirer. Soyez inébranlable dans votre détermination, mais mettez-y des formes. La douceur fera mieux accepter votre décision.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. La résolution de vous détacher s'est imposée à vous. Vous vous sentez désormais libre et tranquille dans la décision que vous avez prise et c'est pourquoi vous pouvez déjà avoir une vision claire de la suite de votre chemin.]] ec []
+fin
+
+pour oracle61
+fsty "gras ec [Hexagramme n° 13, La communauté avec les hommes.]
+fsty "aucun ec [Bannissez tout esprit égoïste. Pensez plus au bien-être général qu'au votre propre. L'action d'un groupe est favorisée, si les objectifs sont clairs et respectent les personnalités de chacun. Quelqu'un dont le charisme réunit autour de lui les énergies de tous est peut-être nécessaire, ainsi qu'une bonne organisation.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Les buts doivent être clairs pour chacun. Rien ne doit rester dans l'ombre. Les tenants et les aboutissants doivent être connus de tous. Les arrangements secrets apportent l'infortune.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Départissez-vous de tout esprit de clan : un égoïsme de ce genre peut être ici la cause d'un échec. Ne rejetez personne.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. La méfiance mutuelle entre les partenaires mine la base du groupe. Tant que l'esprit de complot demeurera, rien de bon ne pourra arriver. La situation peut rester bloquée ainsi très longtemps.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Le moment de la réconciliation approche. Mais les difficultés sont encore trop grandes. Ne gâchez pas tout par des initiatives prématurées.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Deux êtres unis de cœur sont séparés par les contingences de la vie, des obstacles les empêchent de se rapprocher, mais ils demeurent fidèles l'un à l'autre. Ils finiront par triompher des obstacles et se rencontrer, quels que soient les combats qu'ils devront mener, et leur joie pourra enfin éclater.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Il y a une distance entre les membres du groupe. L'union n'est donc pas totale. Mais la situation n'est finalement pas trop mauvaise.]] ec []
+fin
+
+pour oracle62
+fsty "gras ec [Hexagramme n° 44, Venir à la rencontre.]
+fsty "aucun ec [Vous êtes mis en présence d'un élément négatif mais séducteur. Il vous faut prendre des décisions rapides pour ne pas le laisser prendre du pouvoir sur vous. Prenez conscience de ce fait en toute lucidité : peut-être votre propre attitude a-t-elle permis à cet élément d'approcher de vous ? Veillez à ce que le contrôle de la situation ne vous échappe pas. L'affrontement vous sera même profitable : vous verrez ainsi plus clairement votre position.]
+si egal? :hexagramme 2 [stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Agissez dès maintenant pour que l'élément négatif ne prenne pas d'ampleur. Méfiez-vous de lui, malgré son apparence insignifiante, et débarrassez-vous-en.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. Gardez l'élément douteux sous contrôle et ne le laissez pas contacter les autres. Cela pourrait être fâcheux, car il pourrait les contaminer ou leur faire du tort.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ne vous laissez pas séduire par l'élément négatif. Il y a danger. Soyez lucide et, après avoir examiné clairement la situation, prenez une ferme décision et agissez.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. Ne négligez pas certaines personnes qui ne vous sembleraient pas très importantes. Gardez de bonnes relations avec elles : vous allez peut-être avoir besoin de leur aide.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. Si vous avez pensé à la protection de plus faibles, le destin vous est maintenant favorable.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Une rencontre peut vous blesser. On peut vous faire des reproches, par exemple de dureté, d'individualisme. Cela sera gênant, mais sans gravité.]] ec []
+fin
+
+pour oracle63
+fsty "gras ec [Hexagramme n° 1, Le créateur.]
+fsty "aucun ec [La puissance est en vous. Le temps joue en votre faveur. Persévérez donc avec confiance. Votre action sera couronnée de succès et riche en fruits, mais il ne convient pas qu'elle s'accomplisse au détriment des autres. Procédez donc avec sagesse, bienveillance, justice et persévérance. Rien ne pourra résister à l'action que vous mènerez dans cet esprit. Le résultat sera puissant et durable.]
+si egal? :hexagramme 2 [stop]
+fct rouge
+si egal? :hexagramme1 + :hexagramme2 63 [ec [TOUS LES TRAITS SONT MUTABLES. Dans votre action, joignez de la douceur à votre force de décision. C'est ainsi que vous réussirez.]stop]
+traits_mutables
+fct rouge
+si ou egal? :a 6 egal? :a 9 [ec [TRAIT 1. Patience. L'heure de l'action ne tardera pas, mais n'agissez pas encore. Ne gaspillez pas vos forces prématurément. Soyez tranquille et confiant.]]
+si ou egal? :b 6 egal? :b 9 [ec [TRAIT 2. La période commence à vous être favorable. Vos qualités vont être reconnues. N'hésitez pas à aller à la rencontre d'une personne de confiance dont l'aide et l'influence sera déterminante.]]
+si ou egal? :c 6 egal? :c 9 [ec [TRAIT 3. Ce trait indique une grande activité et des affaires florissantes. Ne vous laissez pas emporter par l'ambition, les illusions. Parmi toutes les personnes qui viennent à vous, faites un tri soigneux. Restez lucide et prudent.]]
+si ou egal? :d 6 egal? :d 9 [ec [TRAIT 4. C'est le moment de décider d'agir ou non. Ayez confiance : laissez-vous guider par votre intuition profonde, et vous trouverez le meilleur chemin.]]
+si ou egal? :e 6 egal? :e 9 [ec [TRAIT 5. La situation vous est profitable, le succès est assuré. D'importantes rencontres en affinité avec vos objectifs sont en vue.]]
+si ou egal? :f 6 egal? :f 9 [ec [TRAIT 6. Une ambition démesurée risque de vous isoler et de tout compromettre. La chute peut être brutale. N'allez pas au-delà de vos forces.]] ec []
+fin
+
+pour accueil :n
+ct
+si :n > 10 [stop]
+lc av 150
+fixealignementpolice [1 1]
+fcc hasard 8 ftp 20 etiquette [Dr.\ Alliag]
+attends 10
+lc re 50
+fcc hasard 8 ftp 20 etiquette [Y\ I\ \ \ K\ I\ N\ G]
+attends 10 
+re 100
+accueil :n + 1
+fin

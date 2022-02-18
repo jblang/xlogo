@@ -1,0 +1,30 @@
+# Commande principale: demarrer
+pour demarrer
+vt fsep 0
+donnees
+fin
+
+pour donnees
+lis [Calcul du PGCD de ces deux nombres :] "nombres
+si vide? :nombres [ec "Stoppé\ ! stoptout]
+si (compte :nombres) = 2 [pgcd premier :nombres dernier :nombres 2 1] [ec [Entrez deux nombres entiers.] données]
+fin
+
+pour pgcd :m :n :p :pgcd
+vt fct 4 tape (ph premier :nombres "\ =  :m "×\  ) 
+fct 1 ec :pgcd
+fct 4  tape (ph dernier :nombres "\ =  :n "×\  )  
+fct 1 ec :pgcd
+fct 4 tape "PGCD\ =\  
+fct 1 ec :pgcd
+fct 0 ec  "Recherche\ en\ cours. 
+si ou :p>:m :p>:n [
+vt fct 4 tape (ph premier :nombres "\ =  :m "×\  ) 
+fct 1 ec :pgcd
+fct 4  tape (ph dernier :nombres "\ =  :n "×\  )  
+fct 1 ec :pgcd
+fct 4 tape "PGCD\ =\  
+fct 1 ec :pgcd
+fct 0 ec  "Fin\ de\ recherche. donnees] 
+si et egal? (reste :m :p) 0 egal? (reste :n :p) 0 [pgcd (:m/:p) (:n/:p) :p :p*:pgcd] [pgcd :m :n :p+1 :pgcd]
+fin

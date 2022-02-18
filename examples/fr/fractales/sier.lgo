@@ -1,0 +1,38 @@
+# Commande principale: demarrer 5
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise :order
+  donne "size 112 / puissance (rac 2) :order            # donne size a global value
+  donne "d puissance 2 tronque (1+0.5*(:order+1))
+  donne "h puissance 2 tronque (1+0.5*(:order)) donne "h :h-1
+  donne "dist (:h*:size) + (:d * (:size / rac 2))
+fin
+
+pour peano :order :parity
+  si :order < 1 [stop]       # ie si = 0
+  tournedroite :parity*90
+  peano :order-1 moins :parity avance :size
+  peano :order-1 :parity avance :size
+  peano :order-1 moins :parity
+  tournegauche :parity*90
+fin
+
+pour demarrer :order
+  new
+  initialise :order
+  fpos liste moins :dist/2 moins (:dist/2-(:size / rac 2))
+  fcc vert baissecrayon
+  repete 4 [sierpinski :order 1 tournedroite 45 avance :size tournedroite 45]
+  levecrayon origine fcc rougefonce baissecrayon remplis            # remplis curve
+fin
+
+pour sierpinski :order :parity
+  si :order < 1 [avance :size stop]       # ie si = 0
+  tournedroite :parity*45 sierpinski :order-1 moins :parity tournegauche :parity*45 avance :size
+  tournegauche :parity*45 sierpinski :order-1 moins :parity tournedroite :parity*45
+fin
+

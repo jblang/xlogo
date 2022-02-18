@@ -1,0 +1,85 @@
+# Comando de Inicio: reloj
+para reloj
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde
+  subelapiz ocultatortuga animacion
+#
+  dibujaesfera
+  haz "hora elemento 1 hora
+  haz "min elemento 2 hora
+  haz "seg elemento 3 hora
+  empieza
+fin
+
+para dibujaesfera
+# Dibuja los 12 numeros en color azul
+  poncolorlapiz 4 ponfuente 36
+  ponrumbo 30 subelapiz
+  repite 12 [
+    avanza 120
+# El rotulo debe centrarse ligeramente
+    haz "x primero pos
+    ponx (primero pos) - 0.5*largoetiqueta contador
+# La tortuga debe mirar hacia arriba
+    haz "viejo.rumbo rumbo
+    ponrumbo 0
+    rotula contador
+# Tortuga a la posicion y rumbo anterior
+    ponrumbo :viejo.rumbo ponx :x
+# Vuelta al centro
+    retrocede 120 giraderecha 30 ]
+  centro pony 15
+  poncolorlapiz verde
+fin
+
+para agujahoraria :hora :min
+  pongrosor 5 ponrumbo (:hora+:min/60) * 30
+  bajalapiz avanza 50 subelapiz
+  retrocede 50
+fin
+
+para agujaminutera :min
+  pongrosor 2 ponrumbo :min * 6
+  bajalapiz avanza 100 subelapiz
+  retrocede 100
+fin
+
+para agujasegundera :seg
+  pongrosor 1 ponrumbo :seg * 6
+  bajalapiz avanza 100 subelapiz
+  retrocede 100
+fin
+
+para actualizar
+# Pedimos la hora al PC
+  haz "nhora elemento 1 hora
+  haz "nmin elemento 2 hora
+  haz "nseg elemento 3 hora
+# Borramos la aguja anterior y redibujamos la nueva
+  agujasegundera :seg
+  si no iguales? :min :nmin
+   [ agujaminutera :min
+    si no iguales? :hora :nhora
+     [ agujahoraria :hora :min
+      goma agujahoraria :hora :min
+      ponlapiz agujahoraria :nhora :min]
+    goma agujaminutera :min
+    ponlapiz agujaminutera :nmin ]
+  goma agujasegundera :seg
+  ponlapiz agujasegundera :nseg
+#
+  haz "hora :nhora
+  haz "min :nmin
+  haz "seg :nseg
+fin
+
+para empieza
+# Recursivo para estar siempre funcionando
+  agujahoraria :hora :min
+  agujaminutera :min
+  agujasegundera :seg
+  refrescar
+  actualizar
+  empieza
+fin

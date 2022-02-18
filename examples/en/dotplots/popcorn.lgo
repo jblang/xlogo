@@ -1,0 +1,33 @@
+# Main Command: Go
+# Popcorn by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to popcorn
+  For [Xn -190 190 10] [
+    For [Y -190 190 10] [
+      SetPC Hue2 :Y
+      Make "X :Xn
+      Repeat 30 [ 
+        Make "Xnew :X - 5 * Sin ((2*:Y) + Tan (6*:Y))
+        Make "Y :Y - 5 * Sin ((2*:X) + Tan (6*:X))
+        Make "X :Xnew
+        Dot List :X :Y ] ] ] 
+end
+
+To Hue2 :Theta
+  # Output RGB hue list from angle :Theta
+  Make "Red Abs 255*Sin :Theta
+  Make "Green Abs 255*Sin (:Theta+120)
+  Make "Blue Abs 255*Sin (:Theta+240)
+  Output (List :Red :Green :Blue)
+End
+
+to go
+  New Popcorn 
+end

@@ -1,0 +1,36 @@
+# Main Command: Go
+# Gingerbread_Man by Guy Walker
+# www.logoarts.co.uk
+
+to new
+# set default screen, pen and turtle 
+ResetAll SetScreenSize [400 400] HideTurtle 
+SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init :n
+Make "Spoiler Pi/10
+Make "X :N +:Spoiler
+Make "Y :N
+SetPC ColAng :N        # comment out for no color
+end
+
+to gbman
+Make "Xnew 1 - :Y + Abs :X
+Make "Ynew :X
+Dot List (:Xnew*34)-84 (:Ynew*34)-84
+Make "X :Xnew
+Make "Y :Ynew
+end
+
+to colang :angle
+Make "Green Integer 127.5*:Angle - 255
+Output ( List 255 :Green 0 )
+end
+
+to go
+New
+For [N 2 4 0.05] [Init :N
+Repeat 1000 [GBMan]]
+Print "Done
+end

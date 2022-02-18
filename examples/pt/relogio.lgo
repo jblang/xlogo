@@ -1,0 +1,93 @@
+# Esse projeto desenha um relógio de ponteiros 
+# funcional na janela de desenhos do xLogo.
+
+# Escreva relogio na caixa de comandos para 
+# dar início ao relógio. O relógio só para de 
+# funcionar se você clicar no botão "pare" do xLogo.
+# Criado por Bertrand Carette
+
+aprenda relogio
+ld dt
+mostrador
+atr "sec 0
+atr "min 0
+atr "heu 0
+inicia
+fim
+
+aprenda mostrador
+mudecl 4 mudedç 30
+un atr "rep 0
+repita 12 [
+  atr "rep :rep+1
+  pf 120
+  atr "x pri pos
+  atr "y ult pos
+  mudex :x -12
+  mudey :y +12
+  atr "fcap dç
+  mudedç 0
+  rotule :rep
+  mudedç :fcap
+  atr "x pri pos
+  atr "y ult pos
+  mudex :x +12
+  mudey :y -12
+  pt 120
+  pd 30
+  ]
+mudedç 0 mudecl 0
+fim
+
+aprenda ponteirohora :heu
+mudeel 5
+mudedç :heu * 30
+ul pf 50 un pt 50
+fim
+
+aprenda ponteirominuto :min
+mudeel 2
+mudedç :min * 6
+ul pf 100 un pt 100
+fim
+
+aprenda ponteirosegundo :sec
+mudeel 1
+mudedç :sec * 6
+ul pf 100 un pt 100
+fim
+
+aprenda atualize
+atr "nheu elem 1 tempo
+atr "nmin elem 2 tempo
+atr "nsec elem 3 tempo
+ponteirosegundo :sec
+se não saoiguais? :min :nmin [
+  ponteirominuto :min
+  se não sãoiguais? :heu :nheu [ponteirohora :heu ub
+  ponteirohora :heu lp ponteirohora :nheu]
+ub ponteirominuto :min lp ponteirominuto :nmin
+  ]
+ub  ponteirosegundo :sec lp ponteirosegundo :nsec
+atr "heu :nheu
+atr "min :nmin
+atr "sec :nsec
+fim
+
+aprenda inicia
+ponteirohora :heu
+ponteirominuto :min
+ponteirosegundo :sec
+atualize
+inicia
+fim
+
+aprenda info
+# -------------------------------------------------
+# escreva 'relogio' para iniciar
+# clique no botão 'pare' para terminar
+# B.Carette (bertrand.carette "arroba" laposte.net)
+# modificado por Alexandre R. Soares
+# -------------------------------------------------
+
+fim

@@ -1,0 +1,73 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise
+  # initialise starting speeds et coordinate lists
+  donne "dx ranspeed donne "dy ranspeed
+  donne "p 0 donne "q 0
+  donne "ex ranspeed donne "ey ranspeed
+  donne "r 0 donne "s 0
+  donne "pp [ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+  donne "qp [ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+  donne "rp [ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+  donne "sp [ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+fin
+
+pour drawline
+  # move pour point pq et draw a line pour point rs
+  donne "p :p+:dx donne "q :q+:dy
+  si :p > 180 [donne "dx moins ranspeed]
+  si :p < -180 [donne "dx ranspeed]
+  si :q > 180 [donne "dy moins ranspeed]
+  si :q < -180 [donne "dy ranspeed]
+  levecrayon fixexy :p :q
+  donne "pp md premier pos :pp
+  donne "qp md dernier pos :qp
+  donne "r :r+:ex donne "s :s+:ey
+  si :r > 180 [donne "ex moins ranspeed]
+  si :r < -180 [donne "ex ranspeed]
+  si :s > 180 [donne "ey moins ranspeed]
+  si :s < -180 [donne "ey ranspeed]
+  baissecrayon fixexy :r :s
+  donne "rp md premier pos :rp
+  donne "sp md dernier pos :sp
+fin
+
+pour eraseline
+  # move pour point pq et draw a noir line pour point rs
+  levecrayon
+  fixexy (premier :pp) (premier :qp)
+  baissecrayon fcc 0
+  fixexy (premier :rp) (premier :sp)
+  donne "pp saufpremier :pp
+  donne "qp saufpremier :qp
+  donne "rp saufpremier :rp
+  donne "sp saufpremier :sp
+fin
+
+pour ranspeed
+  # return a hasard speed between 4 et 13
+  retourne 4 + hasard 10
+fin
+
+pour angcol :x
+  # return rgb color liste
+  donne "red 127.5 *(1+sin :x)
+  donne "gre 127.5 *(1+sin (:x + 120))
+  donne "blu 127.5 *(1+sin (:x + 220))
+  retourne phrase liste :red :gre :blu
+fin
+
+pour demarrer
+  new initialise
+  tantque [vrai] [
+  fcc angcol :p+:q+:r+:s
+  drawline
+  eraseline
+  attends 4]
+fin
+

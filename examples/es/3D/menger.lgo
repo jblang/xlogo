@@ -1,0 +1,83 @@
+# Comando de Inicio: esponja 2
+para esponja :p
+  borrapantalla ocultatortuga
+  perspectiva poncolorpapel 0
+  haz "contador 0 
+  menger 800 :p
+  tipea [ Numero de cubos: ] escribe :contador
+  vistapoligono
+fin
+
+para cubo :l
+  si :contador=10000
+    [ vistapoligono ]
+  haz "contador :contador+1
+# color de las caras laterales
+  hazlocal "colores [amarillo magenta cyan azul]
+# caras laterales
+  repite 4
+    [ poncolorlapiz ejecuta elemento contador :colores
+      cuadrado :l giraderecha 90
+      avanza :l giraizquierda 90
+      balanceaderecha 90 ]
+# Base
+  poncolorlapiz rojo cabeceaabajo 90
+  cuadrado :l cabeceaarriba 90
+  avanza :l cabeceaabajo 90
+  poncolorlapiz verde
+  cuadrado :l cabeceaarriba 90 retrocede :l
+fin
+
+para cuadrado :c
+  empiezapoligono
+    repite 4 [avanza :c giraderecha 90]
+  finpoligono
+fin
+
+# esponja de Menger
+# p: profundidad de la recursividad
+# l: lado del cubo total
+para menger :l :p
+  si :p=0
+   [ cubo :l ]
+   [ hazlocal "p :p-1
+     hazlocal "l :l/3
+# cara anterior
+     repite 3
+       [ menger :l :p avanza :l ]
+     retrocede 3*:l giraderecha 90
+     avanza :l giraizquierda 90
+     menger :l :p
+     avanza 2*:l
+     menger :l :p
+     retrocede 2*:l giraderecha 90
+     avanza :l giraizquierda 90
+     repite 3
+        [ menger :l :p avanza :l ]
+     retrocede 3*:l
+# Hacia la derecha
+    cabeceaabajo 90 avanza :l cabeceaarriba 90
+    menger :l :p
+    avanza 2*:l
+    menger :l :p
+    retrocede 2*:l cabeceaabajo 90
+    avanza :l cabeceaarriba 90
+    repite 3
+      [ menger :l :p avanza :l ]
+    retrocede 3*:l giraizquierda 90
+    avanza :l giraderecha 90
+    menger :l :p
+    avanza 2*:l
+    menger :l :p
+    retrocede 2*:l giraizquierda 90
+    avanza :l giraderecha 90
+    repite 3
+      [menger :l :p avanza :l]
+    retrocede 3*:l cabeceaabajo 90
+    retrocede :l cabeceaarriba 90
+    menger :l :p
+    avanza 2*:l
+    menger :l :p
+    retrocede 2*:l cabeceaabajo 90
+    retrocede :l cabeceaarriba 90 ]
+fin

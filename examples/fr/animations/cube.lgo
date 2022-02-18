@@ -1,0 +1,50 @@
+# Commande principale: demarrer
+pour new
+    # Initialise  les couleurs pour l'écran, le crayon de la tortue
+  init ftd [400 400] cachetortue
+  fcfg noir fcc vert levecrayon animation
+fin
+
+pour initialise
+  donne "anglex 0
+  donne "angley 0
+  donne "anglez 0
+  donne "m compte :color
+fin
+
+pour draw
+  tantque [vrai] [
+  donne "n 1
+  donne "anglex :anglex+5
+  donne "angley :angley+7
+  donne "anglez :anglez+3
+  repete :m [
+  donne "xd item :n :shapex
+  donne "yd item :n :shapey
+  donne "zd item :n :shapez
+  donne "zx :xd*(cos :anglez) - :yd*(sin :anglez) - :xd
+  donne "zy :xd*(sin :anglez) + :yd*(cos :anglez) - :yd
+  donne "yx (:xd+:zx)*(cos :angley) - :zd*(sin :angley) - (:xd+:zx)
+  donne "yz (:xd+:zx)*(sin :angley) + :zd*(cos :angley) - :zd
+  donne "xy (:yd+:zy)*(cos :anglex) - (:zd+:yz)*(sin :anglex) - (:yd+:zy)
+  donne "xz (:yd+:zy)*(sin :anglex) + (:zd+:yz)*(cos :anglex) - (:zd+:yz)
+  donne "z :zd + (:xz+:yz)
+  donne "x (:xd + (:yx+:zx))*((:z+300)/295)
+  donne "y (:yd + (:zy+:xy))*((:z+300)/295)
+  fpos liste :x :y
+  fcc item :n :color cercle 4+(:z+200)/50 donne "n :n+1]
+  rf nettoie attends 15]
+fin
+
+pour 3dshape
+  # cube
+  donne "shapex [80 -80 -80 80 80 -80 -80 80]
+  donne "shapey [80 80 -80 -80 -80 -80 80 80]
+  donne "shapez [80 80 80 80 -80 -80 -80 -80]
+  donne "color [1 1 2 2 3 3 6 6]
+fin
+
+pour demarrer
+  new 3dshape initialise draw
+fin
+

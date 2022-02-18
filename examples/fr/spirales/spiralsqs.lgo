@@ -1,0 +1,20 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour square :size
+  si :size < 1 [stop]         # stop when size too small
+  repete 4 [avance :size tournegauche 90 attends 10]         # draw a square
+  avance :size tournedroite 30 attends 40
+  square :size*0.9         # do again with smaller size
+fin
+
+pour demarrer
+  new fcc blanc
+  fpos [-46 -210] fixecap -30 baissecrayon
+  square 92         # begin with a square of size 92
+fin
+

@@ -1,0 +1,50 @@
+# Comando de Inicio: empezar 6
+para empezar :n
+# Inicializamos pantalla, papel, tortuga, ...
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  ponmaximastortugas :n+2
+  si :n <2 [escribe [Se necesita mas de una tortuga!] alto]
+  repite :n [
+    pontortuga contador
+    haz "angulo contador*360/:n
+    poncolorlapiz angcol :angulo subelapiz
+    ponxy (190*seno :angulo) (190*coseno :angulo) bajalapiz]
+#
+  mientras [(distancia [0 0]) > 2 ] [
+  repite :n [
+  pontortuga contador haz "mipos posicion
+  pontortuga contador+1
+  si contador+1>:n [pontortuga 1]
+  ponrumbo hacia :mipos
+  avanza 2] ]
+fin
+
+para vagar
+  subelapiz avanza 3 giraizquierda (6-azar 12) testborde
+fin
+
+para borde.ext
+  poncolorlapiz 7 bajalapiz pongrosor 42
+  avanza 36 retrocede 72 avanza 36
+fin
+
+para borde.int
+  poncolorlapiz 0 bajalapiz pongrosor 36
+  avanza 36 retrocede 72 avanza 36
+fin
+
+para testborde
+  si (primero posicion) > 260 [ponx -260 alto]
+  si (primero posicion) < -260 [ponx 260 alto]
+  si (ultimo posicion) > 260 [pony -260 alto]
+  si (ultimo posicion) < -260 [pony 260 alto]
+fin
+
+para angcol :x
+  haz "r 127.5 *(1+seno (:x))
+  haz "g 127.5 *(1+seno (:x + 120))
+  haz "b 127.5 *(1+seno (:x + 220)) # no 240!
+  devuelve frase lista :r :g :b
+fin

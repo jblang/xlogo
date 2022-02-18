@@ -1,0 +1,25 @@
+# Comando de Inicio: empezar
+para empezar
+  repitepara [angulo 158 176 2] [        # repite 10 veces
+  nuevo poncolorlapiz verde bajalapiz
+  espera 5 espiral 1 :angulo espera 200]  # empezamos con espiral de lado 1
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para espiral :long :angulo
+  poncolorlapiz color :long        # color de lapiz depende de long. de linea
+  si :long > 390        # si linea muy larga ...
+   [avanza :long/2 alto]        # dibuja media linea y alto
+  avanza :long giraizquierda :angulo    # dibuja linea y rota angulo fijado
+  espiral :long+4 :angulo       # repite, pero 4 pixels mas largo
+fin
+
+para color :long
+  haz "green redondea :long/1.62   # verde depende de long.
+  devuelve frase lista 0 :green 0        # rojo y azul fijados en 0
+fin

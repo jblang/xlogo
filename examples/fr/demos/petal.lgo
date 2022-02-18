@@ -1,0 +1,22 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour curve
+  repete 15 [avance 5 tournedroite 6]
+  donne "col abs :col-17      # alternate between colors 2 et 15
+  fcc :col
+  repete 15 [avance 5 tournedroite 6]
+fin
+
+pour demarrer
+  new donne "col 2
+  repetepour [n 1 7] [
+  levecrayon fpos [-50 -30] baissecrayon nettoie
+  repete 8 [tournedroite 45 repete :n [curve tournedroite 90 attends 5]]
+  attends 128]
+fin
+

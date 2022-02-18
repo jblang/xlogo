@@ -1,0 +1,41 @@
+# Comando de Inicio: sierpinski 5
+para sierpinski :p
+  reponetodo perspectiva borrapantalla
+  poncolorpapel 0 ocultatortuga poncolorlapiz 6
+  sier :p 1000
+  vistapoligono
+fin
+
+para sier :p :long
+ hazlocal "p :p-1
+ hazlocal "long :long / 2
+ si :p > 0
+   [ repite 3
+      [ sier :p :long avanza :long*2 giraderecha 120 ]
+     balanceaizquierda :angulo giraderecha 60 avanza :long
+     giraizquierda 60 balanceaderecha :angulo 
+     sier :p :long
+     balanceaizquierda :angulo giraderecha 60 retrocede :long
+     giraizquierda 60 balanceaderecha :angulo ]
+#
+ si :p = 0
+   [ piramide 2*:long ]
+fin
+
+para tri :a
+  empiezapoligono
+    repite 3
+      [avanza :a giraderecha 120]
+  finpoligono
+fin
+
+para piramide :a
+  haz "angulo arcocoseno 1/3
+# Base triangular
+  tri :a
+# caras laterales
+  repite 3
+    [ balanceaizquierda :angulo
+      tri :a
+      balanceaderecha :angulo avanza :a giraderecha 120 ]
+fin

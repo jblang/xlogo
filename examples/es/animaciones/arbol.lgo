@@ -1,0 +1,26 @@
+# Comando de Inicio: empezar
+para empezar
+  reponetodo
+  ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz verde animacion
+  subelapiz retrocede 150 bajalapiz
+  repitepara [angulo 0 180 4]       # angulo desde 0 hasta 180
+    [ limpia arbol 100 :angulo refrescar espera 20]
+  detieneanimacion
+fin
+
+para arbol :long :angulo
+  si :long < 10                # Detiene la recursion si long es corto
+    [alto]
+  pongrosor :long/9        # Reduce el grosor al menguar la rama
+  poncolorlapiz arbolcol :long        # Color de la rama depende de la longitud
+  avanza :long giraizquierda :angulo/2
+  arbol :long*0.71 :angulo giraderecha :angulo    # arbol con rama 29% menor
+  arbol :long*0.71 :angulo giraizquierda :angulo/2
+  subelapiz retrocede :long bajalapiz        # Vuelve al punto de partida
+fin
+
+para arbolcol :long
+  haz "color redondea 2.5*(100-:long)        # color depende de long
+  devuelve frase lista 255 :color 0              # rojo si vale 255 y azul si vale 0
+fin

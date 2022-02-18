@@ -1,0 +1,25 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde
+  subelapiz ocultatortuga
+#
+  ponposicion [-100 -160]
+  haz "collist [Negro Rojo Verde Amarillo Azul Magenta Cyan
+     Blanco Gris Grisclaro Rojooscuro Verdeoscuro Azuloscuro
+     Naranja Rosa Violeta Marron]
+  repite 17 [paleta contador avanza 20]
+fin
+
+para paleta :col
+  poncolorlapiz gris bajalapiz
+  repite 2 
+   [ avanza 12 giraderecha 90
+     avanza 32 giraderecha 90]
+  subelapiz avanza 1 giraderecha 90 avanza 16
+  poncolorlapiz :col-1 haz "nombre colorlapiz rellena
+  avanza 24 giraizquierda 90 poncolorlapiz blanco
+  rotula ( lista (:col-1) elemento :col :collist "\[ " :nombre "\] )
+  giraderecha 90 retrocede 40 giraizquierda 90 retrocede 1
+fin

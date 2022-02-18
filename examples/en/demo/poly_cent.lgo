@@ -1,0 +1,23 @@
+# Main Command: Go
+# Polygons (Centre) by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to go
+  New For [N 3 9] [
+    Polygon :N 384 Wait 30]
+end
+
+to polygon :n :wide
+  # polygon of 'N' sides drawn from centre (tp)
+  Make "Side :Wide *Sin 180/:N     # length of one side
+  Right 180/:N Back :Wide/2 Right 90-180/:N PenDown
+  Repeat :N 
+    [Forward :Side Left 360/:N]
+  PenUp Left 90-180/:N Forward :Wide/2 Left 180/:N     # return to centre
+end

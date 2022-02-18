@@ -1,0 +1,58 @@
+# Comando de Inicio: empezar
+para empezar
+  mientras ["cierto] [
+    nuevo inicializar leyenda
+    poncolorlapiz blanco dibujabrazos 0
+    espera 60 poncolorlapiz negro dibujabrazos 0
+    poncolorlapiz blanco inviertelapiz
+    noria espera 60
+    #  haz "w :w+180 dibujabrazos 0 dibujabrazos 0 noria
+    espera 180]
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+fin
+
+para inicializar
+  haz "r elige [1 2]
+  haz "s (elige [-1 1]) * elige [3 5 7]
+  haz "t (elige [-1 1]) * elige [ 11 13 17 19 23]
+  haz "v elige [0 180]
+  haz "w elige [0 180]
+fin
+
+para leyenda
+# Muestra encabezado y pie de pagina
+  poncolorlapiz blanco
+  ponposicion [-190 184] rotula [Muchas norias]
+  ponposicion [-190 -190] rotula ( lista "rst "= :r :s :t )
+  ponposicion [110 -190] rotula ( lista "stp "= :v :w )
+fin
+
+para angcol :theta
+  haz "red abs 255 *coseno (:theta)
+  haz "gre abs 255 *coseno (:theta + 120)
+  haz "blu abs 255 *coseno (:theta + 240)
+  devuelve (lista :red :gre :blu)
+fin
+
+para dibujabrazos :angulo
+  pontortuga 0 subelapiz ponposicion [0 0] bajalapiz
+  ponrumbo 0 giraizquierda :r*:angulo avanza 102
+  ponrumbo 0 giraizquierda (:s*:angulo) +:v avanza 51
+  ponrumbo 0 giraizquierda (:t*:angulo) +:w avanza 34
+  haz "mypos posicion
+fin
+
+para noria
+  pontortuga 1 subelapiz ponposicion :mypos bajalapiz
+  repitepara [angulo 1 360] [
+    dibujabrazos :angulo
+    pontortuga 1
+    poncolorlapiz angcol :angulo
+    ponposicion :mypos
+    espera 2 dibujabrazos :angulo]
+fin

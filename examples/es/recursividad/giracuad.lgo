@@ -1,0 +1,27 @@
+# Comando de Inicio: empezar
+para empezar
+  nuevo giraderecha 6 cuadrado 340
+fin
+
+para nuevo
+# Inicializamos pantalla, lapiz, tortuga, ...
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz 2 subelapiz ocultatortuga
+fin
+
+para cuadrado :lado
+  si :lado < 12 [alto]
+  subelapiz retrocede :lado/2 giraderecha 90 retrocede :lado/2 bajalapiz
+  poncolorlapiz hue 1.4*:lado
+  repite 4 [avanza :lado giraizquierda 90]
+  subelapiz avanza :lado/2 giraizquierda 90 avanza :lado/2 bajalapiz
+  giraizquierda 4
+  cuadrado :lado-8
+fin
+
+para hue :angle
+  haz "red redondea 127*(1+seno :angle)
+  haz "green redondea 127*(1+seno(120+:angle))
+  haz "blue redondea 127*(1+seno(240+:angle))
+  devuelve frase lista :red :green :blue
+fin

@@ -1,0 +1,313 @@
+# Comando de Inicio: empezar
+para empezar
+  nuevo iniciar titulo espera 20
+  caja espera 20 tabs espera 20 dibujabaldosas
+  inform "Bienvenido
+  mientras [cierto] [user]
+fin
+
+para nuevo
+#Inicializa papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para iniciar
+  haz "home [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0]
+  haz "Estilos :home
+  haz "Estilosets [
+      [ [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0] [Clasico] ]
+      [ [a b c d e f g h i j k l m n o 0] [Alfabetico] ]
+      [ [r a t e y o u r m i n d p a l 0] [Cuidado con las a's !] ]
+      [ [i ii iii iv v vi vii viii ix x xi xii xiii xiv xv 0] [Romanos] ]
+      [ [1 2 3 4 5 6 7 8 9 10 11 12 13 15 14 0] [Imposible, 1 inversion] ]
+      [ [qq qr qs qt rq rr rs rt sq sr ss st tq tr ts tt] [Matriz] ] ]
+  haz "Estilosel 1 haz "Estiloset primero (elemento :Estilosel :Estilosets)
+  haz "tabs [ [Salir] [Luces] [Ajedrez] [Estilos] [reset] [Mezclar] ]
+  haz "gridpos falso haz "count 0
+  haz "light? falso haz "cheque? falso
+  haz "Mezclar? falso haz "win? falso
+fin
+
+para titulo
+  # tipea header
+  poncolorlapiz blanco ponfuente 18
+  ponposicion [-180 174] rotula [Puzzle del 15]
+fin
+
+para tabs
+  repitepara [m -1 4] [
+  ponposicion screenpos lista :m 5
+  poncolorlapiz gris cuadrado 34 11 avanza 14 poncolorlapiz [102 102 102] rellena
+  haz "lab elemento (:m+2) :tabs
+  poncolorlapiz blanco ponfuente 12
+  ponx (primero posicion) -1 - ((le :lab)/2) pony (ultimo posicion)
+  rotula :lab espera 4]
+fin
+
+para caja
+  centro
+  poncolorlapiz [153 51 51] cuadrado 226 40 rellena
+  poncolorlapiz [222 51 51] pongrosor 2 cuadrado 225 38 pongrosor 1
+  poncolorlapiz negro cuadrado 226 35 cuadrado 214 14 cuadrado 214 19
+  poncolorlapiz [222 51 51] pongrosor 2 cuadrado 213 17 pongrosor 1
+  poncolorlapiz verdeoscuro rellena
+fin
+
+para square :side :corner
+  # square + side drawn from centre (tp)
+  retrocede (:side/2)+:corner giraderecha 90 retrocede :side/2 bajalapiz
+  repite 4 [avanza :side curve :corner] subelapiz
+  avanza :side/2 giraizquierda 90 avanza (:side/2)+:corner
+fin
+
+para curve :corner
+  haz "step 0.175*:corner
+  giraizquierda 5 repite 8 [avanza :step giraizquierda 10]
+  avanza :step giraizquierda 5
+fin
+
+para dibujabaldosas
+  repitepara [n 0 3] [
+  repitepara [m 0 3] [
+  drawtile lista :m :n espera 4] ]
+fin
+
+para drawtile :gridmn
+  # draw tile at cuadricula posicion
+  ponposicion screenpos :gridmn
+  haz "num tilenumber :gridmn
+  poncolorlapiz verdeoscuro rellenazona # borra tile
+  si no (:num = 0) [
+  haz "icon elemento :num :Estiloset
+  poncolorlapiz negro cuadrado 34 12
+  si y :cheque? oddtile :num [
+  poncolorlapiz [0 102 204] haz "rim [0 153 255] ] [
+  poncolorlapiz [0 153 204] haz "rim [0 204 255] ]
+  rellena
+  poncolorlapiz negro cuadrado 34 7
+  poncolorlapiz :rim pongrosor 2 cuadrado 33 10 pongrosor 1
+  si y :light? (:num = tileid :gridmn) [
+  poncolorlapiz [204 255 255] ] [poncolorlapiz [0 0 51] ]
+  ponfuente 36
+  ponx (primero posicion) -1 - ((le :icon)/2) pony (ultimo posicion) - 14
+  rotula :icon]
+fin
+
+para oddtile :num
+  haz "odd miembro :num [2 4 5 7 10 12 13 15]
+  si :odd = falso [devuelve falso] [devuelve cierto]
+fin
+
+para tilenumber :gridmn
+  devuelve elemento tileid :gridmn :Estilos
+fin
+
+para tileid :gridmn
+  devuelve 1+(primero :gridmn)+4*(ultimo :gridmn)
+fin
+
+para screenpos :gridmn
+  # return x y screen posicion
+  haz "x ((primero :gridmn)*60) - 90
+  haz "y cambiasigno (((ultimo :gridmn)*60) - 90)
+  devuelve lista :x :y
+fin
+
+para user
+  haz "input leeraton # espera repitepara mouse input
+  haz "mousegp gridd posraton
+  haz "nuevogp :mousegp
+  si no overEstilos :mousegp [
+    haz "nuevogp falso] [
+  si (tilenumber :mousegp) = 0 [
+    haz "nuevogp falso] ]
+  si overtabs :mousegp [
+    haz "nuevogp :mousegp]
+  si :input = 0 [
+    si :nuevogp = :gridpos [alto]
+    si no (:gridpos = falso) [
+      poncolorlapiz negro ponposicion screenpos :gridpos cuadrado 34 12 ]
+    si no (:nuevogp = falso) [
+      poncolorlapiz amarillo ponposicion screenpos :nuevogp cuadrado 34 12 ]
+    haz "gridpos :nuevogp ]
+  si :input = 1 [
+    si :nuevogp = falso [alto]
+  si overtabs :mousegp [
+    ejecuta elemento (2+(primero :nuevogp)) :tabs ] [
+      haz "blankpos blankneigh :nuevogp
+      si :blankpos = falso [alto]
+      Estiloswap :nuevogp :blankpos
+      si no :win? [counter]
+      haz "gridpos falso
+      si y :Mezclar? (:Estilos = :home) [
+        haz "win? cierto halo inform [!! won !!]] ] ]
+fin
+
+para gridd :msepos
+  # return cuadricula posicion from posraton
+  haz "m redondea ((primero :msepos)+90) / 60
+  haz "n redondea ((cambiasigno (ultimo :msepos))+90) / 60
+  devuelve lista :m :n
+fin
+
+para overtiles :gridmn
+  # return cierto si over tile area, else falso
+  si o o o ((primero :gridmn)>3) ((primero :gridmn)<0)
+      ((ultimo :gridmn)>3) ((ultimo :gridmn)<0) [
+    devuelve falso] [devuelve cierto]
+fin
+
+para overtabs :gridmn
+  # return cierto si over tabs area, else falso
+  si o o ((primero :gridmn)>4) ((primero :gridmn)<-1) (no (ultimo :gridmn)=5) [
+    devuelve falso] [devuelve cierto]
+fin
+
+para blankneigh :gridmn
+  #return posicion of blank neighbour, else falso
+  haz "tile falso
+  repite 4 [
+    haz "j truncar seno 90*contador haz "k truncar coseno 90*contador
+    haz "m (primero :gridmn) +:j haz "n (ultimo :gridmn) +:k
+    si (overEstilos lista :m :n) [
+      si (0 =tilenumber lista :m :n) [haz "tile lista :m :n] ] ]
+  devuelve :tile
+fin
+
+para tileswap :tile1 :tile2
+  haz "num1 tilenumber :tile1
+  haz "num2 tilenumber :tile2
+  haz "tiles reemplaza :tiles (tileid :tile1) :num2
+  haz "tiles reemplaza :tiles (tileid :tile2) :num1
+  drawtile :tile1
+  drawtile :tile2
+fin
+
+para salir
+  inform [Gracias por jugar!]
+  detienetodo
+fin
+
+para lights
+  haz "light? no :light?
+  dibujabaldosas
+fin
+
+para chequer
+  haz "cheque? no :cheque?
+  dibujabaldosas
+fin
+
+para tiles
+  haz "tilesel :tilesel+1
+  si :tilesel > (cuenta :tilesets) [haz "tilesel 1]
+  haz "tileset primero (elemento :tilesel :tilesets)
+  dibujabaldosas
+  si no :win? [inform ultimo (elemento :tilesel :tilesets)]
+fin
+
+para reset
+  resetcounter
+  haz "Mezclar? falso
+  haz "Estilos [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+  dibujabaldosas
+  haz "Estilos :home
+  dibujabaldosas
+fin
+
+para shuffle
+  resetcounter
+  haz "shuffle? cierto
+  repite 16 [
+    haz "swap1 picktile
+    haz "swap2 :swap1
+    mientras [:swap1=:swap2] [haz "swap2 picktile]
+    tileswap :swap1 :swap2]
+fin
+
+para picktile
+  haz "tile lista azar 4 azar 4
+  mientras [ (tilenumber :tile) = 0] [haz "tile lista azar 4 azar 4]
+  devuelve :tile
+fin
+
+para counter
+# increment counter
+  poncolorlapiz negro pongrosor 18
+  ponposicion [170 180] bajalapiz ponx 188 subelapiz pongrosor 1
+  ponposicion [164 174] ponfuente 12 poncolorlapiz blanco
+  haz "count :count+1 rotula :count
+fin
+
+para resetcounter
+  poncolorlapiz negro pongrosor 18
+  ponposicion [170 180] bajalapiz ponx 188 subelapiz pongrosor 1
+  haz "count 0
+  si :win? [haz "win? falso halo inform ultimo (elemento :Estilosel :Estilosets)]
+fin
+
+para inform :info
+  ponposicion [-100 -138]
+  poncolorlapiz [153 51 51] pongrosor 20
+  bajalapiz ponx 100 subelapiz pongrosor 1
+  si :win? [poncolorlapiz amarillo] [poncolorlapiz negro] ponfuente 18
+  ponposicion lista cambiasigno((le :info)/2) cambiasigno 144
+  rotula :info
+fin
+
+para halo
+  si :win? [poncolorlapiz amarillo] [poncolorlapiz negro]
+  centro repitepara [size 45 55 5] [cuadrado 227 :size]
+fin
+
+para luces
+  haz "light? no :light?
+  dibujabaldosas
+fin
+
+para ajedrez
+  haz "cheque? no :cheque?
+  dibujabaldosas
+fin
+
+para cuadrado :side :corner
+  # cuadrado + side drawn from centre (tp)
+  retrocede (:side/2)+:corner giraderecha 90 retrocede :side/2 bajalapiz
+  repite 4 [avanza :side curve :corner] subelapiz
+  avanza :side/2 giraizquierda 90 avanza (:side/2)+:corner
+fin
+
+para overestilos :gridmn
+  # return cierto si over tile area, else falso
+  si o o o ((primero :gridmn)>3) ((primero :gridmn)<0)
+      ((ultimo :gridmn)>3) ((ultimo :gridmn)<0) [
+    devuelve falso] [devuelve cierto]
+fin
+
+para estiloswap :tile1 :tile2
+  haz "num1 tilenumber :tile1
+  haz "num2 tilenumber :tile2
+  haz "Estilos reemplaza :Estilos (tileid :tile1) :num2
+  haz "Estilos reemplaza :Estilos (tileid :tile2) :num1
+  drawtile :tile1
+  drawtile :tile2
+fin
+
+para estilos
+  haz "Estilosel :Estilosel+1
+  si :Estilosel > (cuenta :Estilosets) [haz "Estilosel 1]
+  haz "Estiloset primero (elemento :Estilosel :Estilosets)
+  dibujabaldosas
+  si no :win? [inform ultimo (elemento :Estilosel :Estilosets)]
+fin
+
+para mezclar
+  resetcounter
+  haz "Mezclar? cierto
+  repite 16 [
+    haz "swap1 picktile
+    haz "swap2 :swap1
+    mientras [:swap1=:swap2] [haz "swap2 picktile]
+    Estiloswap :swap1 :swap2]
+fin

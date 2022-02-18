@@ -1,0 +1,21 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert baissecrayon enroule cachetortue
+fin
+
+pour roam
+  fcc angcol avance 8 tournegauche (30-hasard 60)
+fin
+
+pour angcol
+  donne "red arrondi 127*(1+cos (120+cap))
+  donne "green arrondi 127*(1+cos cap)
+  retourne phrase liste :red :green 0
+fin
+
+pour demarrer
+  new repete 32000 [roam]
+fin
+

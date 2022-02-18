@@ -1,0 +1,38 @@
+# Comando de Inicio: sierpinski 4
+para sierpinski :p
+  reponetodo borrapantalla perspectiva poncolorpapel 0 
+  sier :p 500
+  vistapoligono
+fin
+
+para sier :p :long
+  hazlocal "p :p - 1
+  hazlocal "long :long / 2
+   si :p > 0
+    [ repite 2
+       [ sier :p :long
+         avanza :long
+         sier :p :long
+         avanza :long giraderecha 90 avanza :long * 2 giraderecha 90 ]
+      giraderecha 45 cabeceaarriba 45 avanza :long cabeceaabajo 45
+      giraizquierda 45 sier :p :long giraderecha 45 cabeceaarriba 45
+      retrocede :long cabeceaabajo 45 giraizquierda 45 ]
+   si :p = 0
+     [ piramide 2*:long ]
+fin
+
+para piramide :a
+  ocultatortuga
+# Base cuadrada
+  poncolorlapiz 6
+  empiezapoligono
+      repite 4 [avanza :a giraderecha 90]
+  finpoligono
+# Caras laterales
+  repite 4
+    [ giraderecha 45 cabeceaarriba 45
+      empiezapoligono
+        avanza :a retrocede :a cabeceaabajo 45
+        giraizquierda 45 avanza :a
+      finpoligono giraderecha 90 ]
+fin

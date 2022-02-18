@@ -1,0 +1,37 @@
+# Commande principale: demarrer 4
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise :order
+  donne "side (3*puissance 2 :order) - 1           # centre curve
+  donne "size 380/:side           # donne size a global value
+fin
+
+pour wi :order :angle
+  si :order < 1 [avance :size stop]            # ie si = 0
+  tournedroite :angle
+  iw :order moins :angle
+  tournegauche :angle avance :size tournegauche :angle
+  iw :order moins :angle
+  tournedroite :angle
+fin
+
+pour iw :order :angle
+  tournedroite :angle
+  wi :order-1 moins :angle
+  avance :size/2 tournegauche 2*:angle avance :size/2
+  wi :order-1 moins :angle
+  tournedroite :angle
+fin
+
+pour demarrer :order
+  new initialise :order
+  fpos liste moins 190 (moins 190)+:size/2
+  fcc jaune baissecrayon
+  repete 4 [wi :order 45 avance :size/2 tournedroite 90 avance :size/2]
+  levecrayon origine fcc bleufonce baissecrayon remplis            # comment out repetepour no fills
+fin
+

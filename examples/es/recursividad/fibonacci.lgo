@@ -1,0 +1,37 @@
+# Comando de Inicio: empezar
+para empezar
+  nuevo poncolorlapiz cyan
+  haz "fibblist [1 1 2 3 5 8 13 21 34 55 89]
+# quita el primer termino (o unos pocos) de fibblist
+  fibb cuenta :fibblist
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+fin
+
+para fibb :orden
+  haz "lado elemento :orden :fibblist
+  cuadrado :lado
+  si :orden = 1 [alto]
+  haz "lado2 elemento (:orden-1) :fibblist
+  hazlocal "dist (:lado+:lado2)/2
+  repite 4 [
+    retrocede :dist giraderecha 90 retrocede :dist
+    si (ultimo encuentracolor posicion) = 0 [fibb :orden-1]
+    avanza :dist giraizquierda 90 avanza :dist
+    giraderecha 90]
+fin
+
+para cuadrado :lado
+# cuadrado se dibuja desde centro y luego se rellena
+  haz "lado :lado-1   # se resta 1 para ajustar lado
+  retrocede :lado/2 giraderecha 90 retrocede :lado/2 bajalapiz
+  repite 4
+   [ avanza :lado giraizquierda 90]
+  subelapiz
+  avanza :lado/2 giraizquierda 90 avanza :lado/2
+  si :lado > 1 [rellena]
+fin

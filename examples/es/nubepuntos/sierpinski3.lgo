@@ -1,0 +1,19 @@
+# Comando de Inicio: empezar 4
+para empezar :orden
+# Inicializamos la pantalla, el lapiz, la tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  haz "lado (:orden-2)*180
+  haz "frac 1/(:orden-1)
+  haz "ang 360/:orden
+  repite 10000      # repite 10000 veces
+     [sier :orden :lado :frac :ang]
+fin
+
+para sier :orden :lado :frac :ang
+  haz "angulo :ang*(azar :orden) # elige vertice
+  ponx :frac * ((primero posicion) +:lado*seno :angulo)
+  pony :frac * ((ultimo posicion) +:lado*coseno :angulo)
+  bajalapiz avanza 0 subelapiz # dibuja pixel
+fin

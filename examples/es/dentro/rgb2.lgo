@@ -1,0 +1,24 @@
+# Comando de Inicio: empezar
+para rgb1
+  haz "red [127.5 *(1+seno :x)]
+  haz "gre [127.5 *(1+seno (:x + 120))]
+  haz "blu [127.5 *(1+seno (:x + 220))]  # no 240!
+fin
+
+para rgb2
+  haz "red [abs 255 *seno :x]
+  haz "gre [abs 255 *seno (:x + 120)]
+  haz "blu [abs 255 *seno (:x + 240)]
+fin
+
+para rgb3
+  haz "red [127 *((seno :x) + abs seno :x)]
+  haz "gre [127 *((seno :x + 120) + abs seno :x + 120)]
+  haz "blu [127 *((seno :x + 240) + abs seno :x + 240)]
+fin
+
+para rgb4
+  haz "red [abs 255 *seno (:x/2)]
+  haz "gre [abs 255 *seno (:x/2 + 120)]
+  haz "blu [abs 255 *seno (:x/2 + 240)]
+fin

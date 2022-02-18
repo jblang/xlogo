@@ -1,0 +1,75 @@
+# Main Command: Go
+# Tangle Curves by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to tangle :n
+  Make "LengthNew 16
+  Fit2Screen :N :LengthNew     # comment out to skip curve optimisation
+  Wash Display :N :Xcent :Ycent :LengthNew
+  SetXY :Xcent :Ycent PenDown
+  For (List "I 0 :N) [
+    SetPC AngCol :I :N
+    SetH Function :I :N Forward :LengthNew]
+  PenUp 
+end
+
+to fit2screen :n :length
+  Home
+  Make "Xmax 0 Make "Xmin 0
+  Make "Ymax 0 Make "Ymin 0
+  For (List "I 0 :N) [
+    SetH Function :I :N Forward :Length
+    If (X) > :Xmax [Make "Xmax X]
+    If (X) < :Xmin [Make "Xmin X]
+    If (Y) > :Ymax [Make "Ymax Y]
+    If (Y) < :Ymin [Make "Ymin Y] ]
+  Make "Xsize :Xmax + Abs :Xmin
+  Make "Ysize :Ymax + Abs :Ymin
+  If :Xsize=:Ysize | :Xsize>:Ysize
+    [Make "Size :Xsize] [Make "Size :Ysize]
+  Make "Scale 360/:Size
+  Make "LengthNew :Length*:Scale
+  If ((Abs (:LengthNew - :Length))>:Length/10) [
+    Make "Length :LengthNew Fit2Screen :N :Length]
+  Make "Xcent Minus (:Xmax + :Xmin)/2
+  Make "Ycent Minus (:Ymax + :Ymin)/2
+end
+
+to function :i :n
+  Output (360*(Power :I 3)/:N)-90
+end
+
+to display :n :xcent :ycent :lengthnew
+  # write header and footer info
+  SetH 0 SetPC White
+  SetPos [-190 184] Label [Tangle Curve]
+  SetPos [150 184] Label :N
+  SetPos [-190 -190] Label List Round :Xcent Round :Ycent
+  SetPos [150 -190] Label Round :LengthNew
+end
+
+to angcol :i :n
+  Make "Green Round 255*(Sin 180*:I/:N)
+  Output ( List 255 :Green 0 )
+end
+
+to go
+  # draw random tangle curves
+  New Forever [Tangle Random 2048 Wait 88]
+end
+
+to goc
+  # draw tangle curves of order 1 to 2048
+  New For [N 1 2048] [Tangle :N Wait 100]
+end
+
+to gox :n
+  # draw a specific tangle curve of order N
+  New Tangle :N
+end

@@ -1,0 +1,18 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour sier
+  donne "corner choix [ [190 -180] [-190 -180] [0 160] ]        # choose corner
+  fixecap vers :corner       # turn pour face corner
+  avance (distance :corner)/2        # move half way vers corner
+  baissecrayon avance 0 levecrayon        # plot pixel
+fin
+
+pour demarrer
+  new repete 10000 [sier]        # repete 10000 times
+fin
+

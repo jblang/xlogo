@@ -1,0 +1,132 @@
+# Comando de Inicio: horreo 600
+#
+para horreo :lado
+#
+# Dibujaremos un horreo usando como subprocedimientos
+#   una piramide truncada que, a su vez, llama a trapecio
+# Construiremos varios primas como piramides truncadas
+#   de lados iguales y agulos diedros de 90 grados para no
+#   necesitar muchos procedimientos
+#
+  borrapantalla perspectiva pongrosor 4
+# Vamos a controlar siempre desde donde empezamos
+   hazlocal "xini coordenadax
+   hazlocal "yini coordenaday
+   hazlocal "zini coordenadaz
+#  Suelo, un cuadrado verde
+  poncolorlapiz verdeoscuro
+  subelapiz ponxyz (:xini-:lado) (:yini-:lado) :zini
+  bajalapiz
+  trapecio :lado*2 :lado*2 :lado*2
+# Vamos colos cuatro pegoyos
+  subelapiz ponxyz (:xini-5*:lado/12) (:yini-5*:lado/12) :zini bajalapiz
+  poncolorlapiz gris
+  repite 4
+   [ troncopiramide :lado/6 :lado/6 :lado/12 :lado/12 :lado/4
+     subelapiz
+       avanza 5*:lado/6 giraderecha 90
+     bajalapiz ]
+# Vamos con les cuatro mueles
+  subelapiz ponxyz (:xini-5*:lado/12) (:yini-5*:lado/12) :yini+:lado/4 bajalapiz
+  repite 4         # Son prismas
+    [ troncopiramide :lado/6 :lado/6 :lado/6 :lado/6 :lado/36
+      subelapiz
+        avanza 5*:lado/6 giraderecha 90
+      bajalapiz ]
+# Ahora ye'l turno los trabes
+  poncolorlapiz [105 85 50] # Un marron oscuro
+  subelapiz ponxyz (:xini-3*:lado/8) (:yini-:lado/2) :zini+:lado*5/18 bajalapiz
+  repite 4         # Tambien son prismas
+    [ troncopiramide :lado :lado/12 :lado :lado/12 :lado/12
+      subelapiz
+        avanza 21*:lado/24 giraderecha 90 retrocede 3*:lado/24
+      bajalapiz ]
+# La construccion sigue coles colondres => Prisma de base cuadrada
+  poncolorlapiz marron
+  subelapiz ponxyz (:xini-5*:lado/12) (:yini-5*:lado/12) :zini+:lado*13/36 bajalapiz
+  troncopiramide 5*:lado/6 5*:lado/6 5*:lado/6 5*:lado/6 :lado/3
+# Unos adornos
+  adornoshorreo :lado
+# Ahora toca el teyau => Piramide
+  poncolorlapiz rojo
+  subelapiz ponxyz (:xini-:lado/2) (:yini-:lado/2) coordenadaz + :lado/3 bajalapiz
+  troncopiramide :lado :lado 1 1 :lado/5
+# Y la subidona, varios prismas pegaos
+  subelapiz ponxyz (:xini-:lado/2.5) (:yini+:lado/2) :zini bajalapiz
+  poncolorlapiz [110 110 110]
+  repite 8
+    [ troncopiramide :lado/12 :lado/5 :lado/12 :lado/5 :lado*contador/24
+      subelapiz
+        giraderecha 90 avanza :lado/24 giraizquierda 90
+      bajalapiz ]
+  subelapiz ponxyz :xini :yini :zini bajalapiz
+  vista3D
+fin
+
+para troncopiramide :largog :anchog :largop :anchop :altura
+# Para dibujar la tapa, necesitamos saber donde empezamos
+  hazlocal "xini coordenadax
+  hazlocal "yini coordenaday
+  hazlocal "zini coordenadaz
+#
+  hazlocal "lado2 (:largoG-:largop)/2
+    si (:lado2 = 0) 
+     [ hazlocal "phi 90 ]
+     [ hazlocal "phi arctg (:altura/:lado2) ]
+  haz "lado2 :altura/seno :phi
+#
+  hazlocal "lado1 (:anchoG-:anchop)/2
+    si (:lado1 = 0) 
+     [ hazlocal "gamma 90 ]
+     [ hazlocal "gamma arctg (:altura/:lado1) ]
+  haz "lado1 :altura/seno :gamma
+#
+  trapecio :largoG :largoG :anchoG
+  repite 2
+    [ balanceaizquierda :gamma
+         trapecio :largoG :largop :lado1
+      balanceaderecha :gamma avanza :largoG giraderecha 90
+      balanceaizquierda :phi 
+         trapecio :anchoG :anchop :lado2
+      balanceaderecha :phi avanza :anchoG giraderecha 90 ]
+   subelapiz
+     ponxyz :xini :yini :zini+:altura
+     avanza (:anchoG-:anchop)/2 giraderecha 90
+     avanza (:largoG-:largop)/2 giraizquierda 90
+   bajalapiz
+   trapecio :largop :largop :anchop
+   subelapiz ponxyz :xini :yini :zini bajalapiz
+fin
+
+para trapecio :base :tapa :altura
+  empiezapoligono
+    hazlocal "semi (:base-:tapa)/2
+    si (:semi = 0) 
+     [ hazlocal "alpha 90 ]
+     [ hazlocal "alpha arctg (:altura/:semi) ]
+    hazlocal "lado raizcuadrada (:altura*:altura + :semi*:semi)
+    avanza :base giraderecha 180 - :alpha
+    avanza :lado giraderecha :alpha
+    avanza :tapa giraderecha :alpha
+    avanza :lado giraderecha 180-:alpha
+  finpoligono
+fin
+
+para adornoshorreo :lado
+# Van la puerta y unos adornos poles colondres
+  poncolorlapiz negro # [50 0 0]
+  subenariz 90
+    repite 4
+      [ repite 20
+           [ empiezalinea avanza :lado/3 finlinea
+             retrocede :lado/3
+             giraderecha 90 avanza :lado/24 giraizquierda 90 ]
+        balanceaderecha 90 ]
+    poncolorlapiz [50 0 0]
+    subelapiz
+       bajanariz 90 avanza (5.05*:lado/6) giraderecha 90
+       avanza (:lado/3) giraizquierda 90 subenariz 90
+     bajalapiz
+     trapecio 0.25*:lado 0.25*:lado :lado/6
+  bajanariz 90
+fin

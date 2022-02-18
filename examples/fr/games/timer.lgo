@@ -1,0 +1,94 @@
+# Commande principale: demarrer
+pour demarrer
+fsep 0.95 ve 
+fixeinstrument 11
+animation
+fcfg 16 vt ct
+ftc 3
+ftpt 20
+fap [1 1]
+lis [Durée en minutes (1 nombre) ou heures minutes (2 nombres) ou heures minutes secondes (3 nombres) :] "duree
+vt
+si mot? :duree [donne "duree (liste 0 :duree 0)] [
+si (compte :duree) = 2 [donne "duree md 0 :duree] [
+si (compte :duree) > 3 [demarrer]]]
+donne "dh prem :duree
+donne "dm item 2 :duree
+donne "ds der :duree
+si :ds >= 60 [donne "dm (:dm + quotient :s 60) donne "ds (reste :ds 60)]
+si :dm >= 60 [donne "dh (:dh + quotient :dm 60) donne "dm (reste :dm 60)]
+si :dh >= 24 [demarrer]
+donne "duree (liste :dh :dm :ds)
+donne "ta heure
+donne "h (item 1 :ta) + (item 1 :duree) 
+donne "m (item 2 :ta) + (item 2 :duree) 
+donne "s (item 3 :ta) + (item 3 :duree) 
+si :s >= 60 [donne "m (:m + reste :s 60) donne "s (quotient :s 60)]
+si :m >= 60 [donne "h (:h + reste :m 60) donne "m (quotient :m 60)]
+donne "tb (liste :h :m :s)
+donne "cycle 0
+affichage :dh :dm :ds :cycle
+rafraichis
+alarme
+timer :ta :cycle
+fin
+
+pour timer :now :n
+donne "hnow prem :now
+donne "mnow item 2 :now
+donne "snow der :now
+donne "hb :h
+donne "mb :m
+donne "sb :s
+si :sb < :snow [donne "sb (:sb + 60) donne "mb (:mb - 1)]
+si :mb < :mnow [donne "mb (:mb + 60) donne "hb (:hb - 1)]
+si :hb < :hnow [donne "hb (:hb + 24)]
+donne "dh (:hb - :hnow)
+donne "dm (:mb - :mnow)
+donne "ds (:sb - :snow)
+nettoie
+affichage :dh :dm :ds :n
+rafraichis
+si (et (:dh = 0) (:dm = 0) (:ds = 0)) 
+[donne "cycle :n+1 
+affichage 0 0 0 :cycle
+rafraichis 
+vt ec (ph "Cycles\ accomplis\ : :cycle)
+attends 60 
+affichage prem :duree item 2 :duree der :duree :cycle
+rafraichis 
+alarme] 
+[attends 50 
+timer heure :n]
+fin
+
+pour alarme
+donne "ta heure
+efseq signal joue
+donne "h (item 1 :ta) + (item 1 :duree) 
+donne "m (item 2 :ta) + (item 2 :duree) 
+donne "s (item 3 :ta) + (item 3 :duree) 
+si :s >= 60 [donne "s (:s - 60) donne "m (:m + 1)]
+si :m >= 60 [donne "m (:m - 60) donne "h (:h + 1)]
+donne "tb (liste :h :m :s)
+timer :ta :cycle
+fin
+
+pour signal
+#sequence [:-- 3 sol do :- do]
+jouemp3 "iaw.mp3
+fin
+
+pour affichage :dh :dm :ds :n
+nettoie 
+lc 
+fpos [0 0]
+fcc 0 cercle 210 
+fcc 13 remplis
+si :dm < 10 [donne "dm mot "0 :dm]
+si :ds < 10 [donne "ds mot "0 :ds]
+donne "affichage (mot :dh ": :dm ": :ds)
+fpos liste (-10) 0
+fcc 7 ftp 96 etiquette :affichage
+lc fpos liste 0 (-100) ftp 60 etiquette :n
+fin

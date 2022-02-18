@@ -1,0 +1,19 @@
+# Main Command: Go
+# Hering by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to go
+  New SetPC Yellow PenDown
+  Repeat 2 [
+    Left 20 Repeat 29 [Forward 300 Back 300 Left 5]
+  Left 15]
+  SetPC Red SetPW 3 
+  PenUp SetPos [-60 -200] PenDown Forward 400
+  PenUp SetPos [60 -200] PenDown Forward 400
+end

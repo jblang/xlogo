@@ -1,0 +1,129 @@
+# Commande principale: demarrer
+pour demarrer
+ve fsep 0.95 vt
+fcfg [255 255 255]
+stopgrille fixezoom 0.25
+ftd [3000 3000] 
+fixequalitedessin 1
+origine ct bc fcc 0 cercle 500 lc av 5 bc remplis
+fixetaillepolice 80 lc
+fap [1 1]
+fpos [0 160]
+fcc 2 etiquette "Ondine\ 4 
+lc re 160
+fcc 5 etiquette "Créateur\ de\ disques  
+lc re 80
+etiquette "photosoniques  lc re 160
+fixetaillepolice 56
+fcc 7 etiquette "©\ A.E.H.\ /\ Dr.\ Alliag 
+lc re 80 
+etiquette "2001
+attends 120
+nettoie lc origine
+bc ftc 5 fcc 0 repete 4 [av 60 re 60 td 90] cercle 30
+donnees
+donne "couronnes compte :frequences
+donne "cases compte :timbre
+donne "i 1 donne "j 0
+donne "units units
+donne "gr 0.47*premier tailledessin
+donne "pr 240
+donne "pas (:gr-:pr)/:couronnes
+disque
+terminer
+fin
+
+pour units
+repete :cases [donne "j :j + (item :i :timbre) donne "i :i+1]
+retourne :j
+fin
+
+pour ent :x
+si :x = arrondi :x [retourne :x] [retourne arrondi (:x + 0.5)]
+fin
+
+pour disque
+donne "couronne :couronnes
+repete :couronnes [couronne donne "couronne :couronne-1]
+fin
+
+pour couronne
+ec (ph [Ecriture du disque en cours. Couronne] (:couronnes - :couronne+1) "/ :couronnes)
+donne "frequence item :couronne :frequences
+si egal? :frequence 0 [stop]
+donne "patterns ent :frequence
+donne "anglepattern 360/:frequence
+donne "pattern 0
+donne "capdebut 0
+repete :patterns [pattern donne "pattern :pattern+1]
+fin
+
+pour pattern
+donne "case 1
+si (:cases*:frequence) > 200
+[repete :cases [casedroite donne "case :case + 1 donne "capdebut :capdebut + :secteur]]
+[repete :cases [casecourbe donne "case :case + 1 donne "capdebut :capdebut + :secteur]]
+fin
+
+pour casedroite
+donne "secteur :anglepattern*(item :case :timbre)/:units
+donne "capfin :capdebut + :secteur
+donne "capmilieu (:capdebut+:capfin)/2
+si cap > 360 [stop]
+si egal? reste :case 2 0
+[
+fixecap :capdebut
+lc av :pr + (:couronne-1)*:pas donne "a pos
+bc av :pas
+td (90 + :secteur/2)
+av 2*(:pr + :couronne*:pas)*sin(:secteur/2)
+td (90 + :secteur/2) donne "b pos
+av :pas
+td (90 - :secteur/2)
+av 2*(:pr + (:couronne-1)*:pas)*sin(:secteur/2)
+fixecap vers :b
+lc av (distance :b)/2
+bc remplis
+fixecap :capmilieu av :pas/2 re :pas
+lc origine]
+[stop]
+fin
+
+pour casecourbe
+donne "secteur :anglepattern*(item :case :timbre)/:units
+donne "capfin :capdebut + :secteur
+donne "capmilieu (:capdebut+:capfin)/2
+si cap > 360 [stop]
+si egal? reste :case 2 0
+[
+fixecap :capdebut
+lc av :pr + (:couronne-1)*:pas
+bc av :pas
+lc origine
+fixecap :capfin
+lc av :pr + (:couronne-1)*:pas
+bc av :pas
+ct lc origine
+arc :pr + :couronne*:pas :capdebut :capfin
+arc :pr + (:couronne-1)*:pas :capdebut :capfin
+fixecap :capmilieu
+lc av :pr + (:couronne-1)*:pas + :pas/2
+bc remplis
+lc origine]
+[stop]
+fin
+
+pour terminer
+ec [Disque terminé.]
+lis [Nom du disque :] "nom_du_disque
+lc origine av 100 
+etiquette :nom_du_disque
+vt
+ec (ph "Fréquences\ : :frequences)
+tape (ph "Timbre\ : :timbre)
+fin
+
+pour donnees
+lis [Liste des fréquences :] "frequences
+lis [Code du timbre :] "timbre
+fin

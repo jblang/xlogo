@@ -1,0 +1,63 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour tangle :n
+  donne "lengthnew 16
+  optimise :n :lengthnew        # comment out pour skip curve optimisation
+  nettoie display :n :xcent :ycent :lengthnew
+  fixexy :xcent :ycent baissecrayon
+  repetepour phrase liste "i 0 :n [
+  fcc angcol :i :n
+  fixecap function :i :n avance :lengthnew]
+  levecrayon
+fin
+
+pour optimise :n :length
+  origine
+  donne "xmax 0 donne "xmin 0
+  donne "ymax 0 donne "ymin 0
+  repetepour phrase liste "i 0 :n [
+  fixecap function :i :n avance :length
+  si (item 1 pos) > :xmax [donne "xmax item 1 pos]
+  si (item 1 pos) < :xmin [donne "xmin item 1 pos]
+  si (item 2 pos) > :ymax [donne "ymax item 2 pos]
+  si (item 2 pos) < :ymin [donne "ymin item 2 pos] ]
+  donne "xsize :xmax + abs :xmin
+  donne "ysize :ymax + abs :ymin
+  si :xsize=:ysize | :xsize>:ysize
+  [donne "size :xsize] [donne "size :ysize]
+  donne "scale 360/:size
+  donne "lengthnew :length*:scale
+  si ((abs (:lengthnew - :length))>:length/10) [
+  donne "length :lengthnew optimise :n :length]
+  donne "xcent moins (:xmax + :xmin)/2
+  donne "ycent moins (:ymax + :ymin)/2
+fin
+
+pour function :i :n
+  retourne (360*(puissance :i 3)/:n)-90
+fin
+
+pour display :n :xcent :ycent :lengthnew
+  # tape header et footer info
+  fixecap 0 fcc blanc
+  fpos [-190 184] etiquette [tangle curve]
+  fpos [150 184] etiquette :n
+  fpos [-190 -190] etiquette liste arrondi :xcent arrondi :ycent
+  fpos [150 -190] etiquette arrondi :lengthnew
+fin
+
+pour angcol :i :n
+  donne "green arrondi 255*(sin 180*:i/:n)
+  retourne phrase liste 255 :green 0
+fin
+
+pour demarrer
+  # draw hasard tangle curves
+  new tantque [vrai] [tangle hasard 2048 attends 88]
+fin
+

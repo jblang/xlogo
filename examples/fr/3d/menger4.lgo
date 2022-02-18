@@ -1,0 +1,66 @@
+# Commande principale: eponge 3
+# :a :b :c :d faces latérales
+# :e dessous
+# :f dessus
+pour cube :l :a :b :c :d :e :f
+fcc jaune si :a=1  [carre :l] td 90 av  :l tg 90 rd 90
+fcc magenta si :b=1  [carre :l] td 90 av  :l tg 90 rd 90
+fcc cyan si :c=1  [carre :l] td 90 av  :l tg 90 rd 90
+fcc bleu si :d=1  [carre :l] td 90 av  :l tg 90 rd 90
+# Dessous
+fcc rouge pique 90 si :e=1 [carre :l] cabre 90
+av :l pique 90 fcc vert si :f=1 [carre :l] cabre 90 re :l
+fin
+
+pour carre :c
+donne "compteur :compteur+1
+polydef
+repete 4 [av :c td 90]
+polyfin
+fin
+
+# Eponde de Menger 
+# p: profondeur de récursivité
+# l: Longueur du grand cube.
+pour menger :l :p :a :b :c :d :e :f
+si :p=0 [cube :l :a :b :c :d :e :f] [
+  soit "p :p-1  
+  soit "l :l/3
+  #face avant
+menger :l :p 1 0 0 1 1 0 av :l
+menger :l :p 1 1 1 1 0 0 av :l
+menger :l :p 1 0 0 1 10 1 av :l 
+re 3*:l td 90 av :l tg 90
+menger :l :p 1 0 1 0 1 1  av 2*:l menger :l :p 1 0 1 0 1 1
+re 2*:l td 90 av :l tg 90
+menger :l :p 1 1 0 0 1 0 av :l
+menger :l :p 1 1 1 1 0 0 av :l
+menger :l :p 1 1 0 0 0 1 av :l 
+re 3*:l  #Côté droit 
+ pique 90 av :l cabre 90
+
+
+
+ 
+menger :l :p  0 1 0 1 1 1   av 2*:l menger :l :p  0 1 0 1 1 1 re 2*:l
+  pique 90 av :l cabre 90 
+menger :l :p 0 1 1 0 1 0 av :l
+menger :l :p 1 1 1 1 0 0 av :l
+menger :l :p 0 1 1 0 0 1 av :l 
+re 3*:l  tg 90 av :l td 90
+menger :l :p 1 0 1 0 1 1 av 2*:l menger :l :p 1 0 1 0 1 1 
+re 2*:l  tg 90 av :l td 90
+menger :l :p 0 0 1 1 1 0 av :l
+menger :l :p 1 1 1 1 0 0 av :l
+menger :l :p 0 0 1 1 0 1 av :l 
+ re 3*:l  pique 90 re :l cabre 90
+ menger :l :p  0 1 0 1 1 1 av 2*:l menger :l :p 0 1 0 1 1 1 re 2*:l
+ pique 90 re :l cabre 90
+]
+fin
+
+pour eponge :p
+ve ct donne "compteur 0 perspective fcfg 0 menger 800 :p 1 1 1 1 1 1  
+tape [Nombre de carres: ] ec :compteur 
+vue3d
+fin

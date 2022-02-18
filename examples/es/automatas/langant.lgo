@@ -1,0 +1,29 @@
+# Comando de Inicio: empezar
+para empezar
+  nuevo pongrosor 4
+  repite 10700 [nextstep]
+fin
+
+para nuevo
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+#  Activa esta linea para probar el segundo ejemplo
+#
+#  inviertelapiz
+fin
+
+para nextstep
+  haz "col elemento 2 encuentracolor posicion
+  poncolorlapiz angcol bajalapiz avanza 0 subelapiz
+  si :col = 0 [giraizquierda 90 avanza 6 alto]
+  si :col = 255 [giraderecha 90 avanza 6]
+fin
+
+para angcol
+  haz "num elemento 1 encuentracolor posicion
+  haz "red :num + 0.2 * (255-:num)
+  haz "green 255 - elemento 2 encuentracolor posicion
+# cambia :red por 0 para que la imagen sea en blanco y negro
+  devuelve frase lista :red :green 0 
+fin

@@ -1,0 +1,24 @@
+# Main Command: Go
+# Herman Spiral by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To Curve :Parity
+  # draw curved line 
+  PenDown Repeat 11 [
+    SetPW RepCount/1.8
+    Forward 20 Right :Parity *(RepCount+5) ]
+  Forward 3 PenUp
+End
+
+To Go
+  New SetSC [0 0 32] SetPC [196 256 256]
+  Repeat 36 [
+    Home Right 10*RepCount Curve 1
+    Home Left 10*RepCount Curve Minus 1]
+End

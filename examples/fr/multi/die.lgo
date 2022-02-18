@@ -1,0 +1,41 @@
+# Commande principale: demarrer
+pour lancer
+soit "somme 0
+repete :des [
+   soit "somme :somme+1 +hasard 6
+ ]
+retourne :somme
+fin
+
+pour initialise
+  ve ct fixemaxtortues :max+1
+  repetepour ph liste "i :min :max [ 
+      # On place la tortue
+      fixetortue :i fpos liste (:min-:max)/2*30+(:i-:min)*30 0
+      # On ecrit le numéro de la tortue juste en dessous 
+      lc re 15 etiquette :i av 15 bc 
+  ]
+fin
+
+pour demarrer
+lis [Nombre de des:] "des
+si non nombre? :des [ec [Le nombre rentre n'est pas valide!] stop]
+donne "min :des
+donne "max 6*:des
+lis [Nombre de lancers à effectuer] "tirages
+si non nombre? :tirages [ec [Le nombre rentre n'est pas valide!] stop]
+initialise
+# On effectue 1000 tentatives
+repete :tirages [
+  fixetortue lancer av 1
+]
+# On affiche les frequences de tirage
+repetepour ph liste "i :min :max [
+  fixetortue :i
+  # L'ordonnee de la tortue represente le nombre de tirages
+  soit "effectif dernier pos 
+  # On arrondit à 0,1
+  lc av 10 tg 90 av 10 td 90 bc etiquette (arrondi :effectif/:tirages*1000)/10
+]
+fin
+

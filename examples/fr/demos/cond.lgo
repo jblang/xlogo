@@ -1,0 +1,55 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour box
+  fcc 8 fpos [-200 -199]
+  baissecrayon repete 4 [avance 399 tournedroite 90] levecrayon
+fin
+
+pour probe
+  donne "centre ranpoint
+  donne "a "ok donne "radius 0
+    repete 40 [
+    si :a = "abort [stop]
+    donne "num :radius + 24
+    donne "angle 360/ :num
+      repete :num [
+      fpos :centre tournedroite :angle
+      avance :radius
+        #setpc 2 baissecrayon avance 1 levecrayon
+      si test > 64 [donne "a "abort stop] ]
+    donne "radius :radius + 1]
+  si :radius > 6 [fpos :centre blob :radius-2]
+fin
+
+pour blob :radius
+  fcc [51 51 51] mycircle :radius
+  fcc bleu baissecrayon remplis levecrayon
+  fixecap 315 avance :radius/2
+  fcc cyan ftc :radius/3
+  point pos ftc 1
+fin
+
+pour ranpoint
+  retourne liste (hasard 390)-195 (hasard 390)-195
+fin
+
+pour test
+  retourne item 3 trouvecouleur pos
+fin
+
+pour mycircle :radius
+  levecrayon avance :radius tournedroite 92 baissecrayon
+  repete 90 [avance 2*pi*:radius/90 tournedroite 4]
+  levecrayon tournegauche 92 recule :radius
+fin
+
+pour demarrer
+  new box fixeformecrayon 1
+  repete 5000 [probe]
+fin
+

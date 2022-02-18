@@ -1,0 +1,20 @@
+# Comando de Inicio: empezar
+para empezar
+  nuevo menguacuadrado 194
+fin
+
+para nuevo
+# Inicializamos pantalla, lapiz, tortuga, ...
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz 2 subelapiz ocultatortuga
+fin
+
+para menguacuadrado :lado
+  si :lado < 24 [alto]
+  retrocede :lado/2 giraderecha 90 retrocede :lado/2
+  repite 4
+   [ poncolorlapiz frase lista 0 redondea :lado+61 0
+    bajalapiz avanza :lado subelapiz giraizquierda 90
+    menguacuadrado :lado/2]
+  avanza :lado/2 giraizquierda 90 avanza :lado/2
+fin

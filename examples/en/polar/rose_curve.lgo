@@ -1,0 +1,51 @@
+# Main Command: Go
+# Rose Curves by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to spiral :angle
+  # Rose curve
+  Make "Radius 40 + 150*Sin(6*:Angle)
+  Output P2R :Radius :Angle
+end
+
+to p2r :radius :angle
+  Make "X :Radius * Cos :Angle
+  Make "Y :Radius * Sin :Angle
+  Output List :X :Y
+end
+
+to go
+  New SetPC Yellow
+  For [Angle 0 360] [
+  SetPos Spiral :Angle PenDown]
+end
+
+to spiral1 :angle
+  # Rose curve 2
+  Make "Radius Absolute 40 + 150*Sin(6*:Angle)
+  Output P2R :Radius :Angle
+end
+
+to spiral2 :angle
+  # Rose curve 3
+  Make "Radius 40 + Absolute 150*Sin(6*:Angle)
+  Output P2R :Radius :Angle
+end
+
+to spiral3 :angle
+  # Carioid
+  Make "Radius 90 * (1+Sin :Angle)
+  Output P2R :Radius :Angle
+end
+
+to spiral4 :angle
+  # Freeths Nephroid
+  Make "Radius 60*(1+2*Sin :Angle)
+  Output P2R :Radius :Angle 
+end

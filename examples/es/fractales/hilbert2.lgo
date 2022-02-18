@@ -1,0 +1,40 @@
+# Comando de Inicio: empezar 5
+para empezar :nivel
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga 
+#
+  haz "lado 96/(potencia 2 :nivel)        # variable global
+  haz "paso pi * :lado / 10   # variable global para girar en los vertices
+  subelapiz ponxy cambiasigno :lado 0 bajalapiz
+#
+  repite 2 [c1 :nivel 1 c2 :nivel 1]
+fin
+
+para c1 :nivel :paridad
+  si :nivel < 1 [giro :paridad alto] 
+  c2 :nivel-1 cambiasigno :paridad
+  c2 :nivel-1 :paridad
+  c1 :nivel-1 :paridad
+  recto :nivel-1 cambiasigno :paridad
+fin
+
+para c2 :nivel :paridad
+  si :nivel < 1 [giro :paridad alto] 
+  recto :nivel-1 cambiasigno :paridad
+  c2 :nivel-1 :paridad
+  c1 :nivel-1 :paridad
+  c1 :nivel-1 cambiasigno :paridad
+fin
+
+para recto :nivel :paridad
+  si :nivel < 1 [avanza 2*:lado alto] 
+  c2 :nivel-1 cambiasigno :paridad
+  c2 :nivel-1 :paridad
+  c1 :nivel-1 :paridad
+  c1 :nivel-1 cambiasigno :paridad
+fin
+
+para giro :paridad
+  avanza :lado giraderecha :paridad*90 avanza :lado
+fin

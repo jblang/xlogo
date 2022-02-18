@@ -1,0 +1,34 @@
+# Comando de Inicio: empezar 7
+para empezar :orden
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  ponposicion [-192 -190] poncolorlapiz marron bajalapiz
+  grate :orden 90 380 380
+fin
+
+para grate :orden :angulo :ancho :alto
+  si :orden < 1 [cuadrado :angulo :ancho :alto alto]      # o sea, si = 0
+  giraderecha :angulo
+  grate :orden-1 cambiasigno :angulo :alto/4 :ancho
+  avanza :alto/8
+  grate :orden-1 :angulo :alto/4 :ancho
+  avanza :alto/8
+  grate :orden-1 cambiasigno :angulo :alto/4 :ancho
+  giraizquierda :angulo
+fin
+
+para cuadrado :angulo :ancho :alto
+  avanza :ancho dos :angulo :ancho :alto-1
+fin
+
+para dos :angulo :ancho :alto
+  si :alto < 1 [alto]      # o sea, si = 0
+  giraderecha :angulo avanza 1
+  giraderecha :angulo avanza :ancho
+  giraizquierda :angulo
+  si :alto > 0 [ avanza 1]
+  giraizquierda :angulo avanza :ancho
+  dos :angulo :ancho :alto -2
+fin

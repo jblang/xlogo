@@ -1,0 +1,31 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour gridpos :i :j :size
+  donne "x (:i/(0.5*:size))-1
+  donne "y (:j/(0.5*:size))-1
+  donne "rect function :x :y
+  retourne liste 180*premier :rect 180*dernier :rect
+fin
+
+pour function :x :y
+  retourne liste :x :y   #unchanged
+fin
+
+pour demarrer
+  new fcc vert
+  donne "size 19     #increase (eg 29) repetepour finer grid
+  repetepour [l 0 1] [
+  repetepour phrase liste "i 0 :size [levecrayon
+  repetepour phrase liste "j 0 :size [
+  si :l=0 [     #vertical lines
+  fpos gridpos :i :j :size baissecrayon]
+  si :l=1 [     #horizontal lines
+  fpos gridpos :j :i :size baissecrayon]
+  ]]]
+fin
+

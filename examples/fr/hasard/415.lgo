@@ -1,0 +1,64 @@
+# Commande principale: demarrer 25 37
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour cycles :ia2 :sa :ll
+  donne "a pos
+  baissecrayon repete 720 [
+  avance :ll tournedroite :ia2 donne "ia2 :ia2+:sa
+  si et pos = :a cap = 0         # si returned pour start
+  [retourne compteur] ]
+  retourne 666         # curve never closed
+fin
+
+pour optimise :ia :sa :ll :cy
+  donne "ia3 :ia
+  levecrayon origine
+  donne "xmax 0 donne "xmin 0
+  donne "ymax 0 donne "ymin 0
+  repete :cy [avance :ll tournedroite :ia3 donne "ia3 :ia3+:sa
+  si (item 1 pos) > :xmax [donne "xmax item 1 pos]
+  si (item 1 pos) < :xmin [donne "xmin item 1 pos]
+  si (item 2 pos) > :ymax [donne "ymax item 2 pos]
+  si (item 2 pos) < :ymin [donne "ymin item 2 pos] ]
+  donne "xsize :xmax + abs :xmin
+  donne "ysize :ymax + abs :ymin
+  si :xsize=:ysize | :xsize>:ysize
+  [donne "size :xsize] [donne "size :ysize]
+  donne "scale 360/:size
+  donne "lengthnew :ll*:scale
+  si ((abs (:lengthnew - :ll))>:ll/10) [
+  donne "ll :lengthnew optimise :ia :sa :ll :cy]
+  donne "xcent moins arrondi (:xmax + :xmin) / 2
+  donne "ycent moins arrondi (:ymax + :ymin) / 2
+fin
+
+pour display :ia :sa :linelength :cy
+  origine fcc blanc
+  fpos [-192 184] etiquette [happy wanderer]
+  fpos [74 184] etiquette phrase [initial angle] :ia
+  fpos [94 168] etiquette phrase [step angle] :sa
+  fpos [-192 -176] etiquette phrase [steps] :cy
+  fpos [-192 -190] etiquette phrase [line length] arrondi :linelength
+  fpos [80 -190] etiquette liste "centre liste :xcent :ycent
+fin
+
+pour angcol
+  donne "red 255*sin cap/2
+  retourne phrase liste :red 255 0
+fin
+
+pour demarrer :ia :sa
+  new fcc gris
+  donne "ll 15         # default line length
+  donne "cy cycles :ia :sa :ll
+  optimise :ia :sa :ll :cy
+  new display :ia :sa :lengthnew :cy
+  fixexy :xcent :ycent fixecap 0 baissecrayon
+  cercle 2         # cercle starting pos
+  repete :cy [fcc angcol avance :lengthnew tournedroite :ia donne "ia :ia+:sa]
+fin
+

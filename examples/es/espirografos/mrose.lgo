@@ -1,0 +1,23 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+# 
+  poncolorlapiz cyan
+  repitepara [c 2 16]
+    [ limpia mrose :c espera 100 ]
+fin
+
+para mrose :c
+  haz "t 0 haz "s 0
+  haz "angulo 360 / :c
+  repite (:c-1)
+   [ repitepara (frase "contador :s :c)
+     [ subelapiz
+       ponxy 190*seno (:angulo * :s) 190*coseno (:angulo * :s)
+       bajalapiz
+       ponxy 190*seno (:angulo * :contador) 190*coseno (:angulo * :contador)
+       haz "t :t+1 espera 1]
+     haz "s :s+1]
+fin

@@ -1,0 +1,22 @@
+# Main Command: Go
+# Spiral Squares by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to square :size
+  If :Size < 1 [Stop]     # stop when size too small
+  Repeat 4 [Forward :Size Left 90 Wait 10]     # draw a square
+  Forward :Size Right 30 Wait 40
+  Square :Size*0.9     # do again with smaller size 
+end
+
+to go
+  New SetPC White
+  SetPos [-46 -210] SetH -30 PenDown
+  Square 92     # begin with a square of size 92
+end

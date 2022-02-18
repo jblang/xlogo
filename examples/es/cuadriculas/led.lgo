@@ -1,0 +1,56 @@
+# Comando de Inicio: anuncio [XLogo  se anuncia con luces L.E.D.]
+para anuncio :x
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz verde subelapiz animacion
+# Lista global, display
+  haz "display [] haz "line []
+  repite 11 [haz "line ponultimo 0 :line]
+  repite 12 [haz "display ponultimo :line :display]
+#
+  pie.pagina :x ponformalapiz 1
+  haz "long long.mensaje :x
+# Acaba cuando se haya dibujado todo el mensaje
+  repitepara frase lista "n 0 :long [
+# Actualiza la lista quitando el primer y agregando el ultimo elemento
+  haz "display menosprimero ponultimo scan :n-190 :display
+  dibujar :display
+  refrescar espera 12]    # espera ajusta la velocidad de desplazamiento
+  detieneanimacion
+fin
+
+para pie.pagina :x
+# Muestra el valor de :x como pie de pagina
+  ponposicion [-190 -186]
+  pongrosor 11 ponrumbo 90 poncolorlapiz azuloscuro bajalapiz avanza 378
+  subelapiz ponposicion [-190 -190] poncolorlapiz blanco
+  pongrosor 1 ponrumbo 0 rotula :x
+fin
+
+para dibujar :display
+# dibuja cuadricula de led's en el color correcto
+  repitepara [n 1 12] [
+  repitepara [m 1 11] [
+  haz "col elemento :m elemento :n :display
+  poncolorlapiz frase lista :col 36 36
+  pongrosor 24 punto lista :n*32-210 :m*33-187] ]
+fin
+
+para scan :n
+# crea la lista con los pixeles de la linea en pie.pagina
+  haz "line []
+  repitepara [m 1 11] [
+  haz "col encuentracolor lista :n :m-192
+  haz "line ponultimo (elemento 1 :col) :line ]
+# dibuja el texto en verde en pie.pagina
+  poncolorlapiz verde pongrosor 1 punto lista :n cambiasigno 192
+  devuelve :line
+fin
+
+para long.mensaje :x
+# calcula la longitud del mensaje lista :x
+  haz "long 0
+  repitepara frase lista "n 1 cuenta :x [
+  haz "long :long + largoetiqueta elemento :n :x]
+  devuelve 9 + :long + 4*cuenta :x
+fin

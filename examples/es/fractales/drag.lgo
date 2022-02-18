@@ -1,0 +1,46 @@
+# Comando de Inicio: empezar 7
+para empezar :orden
+  nuevo
+  inicializar :orden leyenda :orden
+  ponposicion [-108 0] poncolorlapiz verde bajalapiz
+  giraderecha (45 *:orden)+90           # orientaciones similares de las curvas
+  dragon :orden 1
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400] poncalidaddibujo 1 
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para inicializar :orden
+# haz tam y angulo variables globales
+  haz "tam 11*potencia (raizcuadrada 2) (9-:orden)
+  haz "angulo 90
+fin
+
+para leyenda :orden
+# Muestra encabezado y nivel de curva
+  poncolorlapiz blanco
+  ponposicion [-190 184] rotula frase [Curva dragon de nivel] :orden
+fin
+
+para dragon :orden :paridad
+  si :orden < 1 [avanza :tam alto]      # o sea, si = 0
+  dragon :orden-1 1
+  giraizquierda :paridad*:angulo # giraizquierda o giraderecha :angulo grados
+  dragon :orden-1 cambiasigno 1
+fin
+
+para empieza
+  nuevo animacion
+  repitepara [orden 0 11] [
+  limpia    # Comenta este "limpia" para ver las curvas superpuestas
+  inicializar :orden leyenda :orden
+  ponposicion [-108 0]
+  poncolorlapiz 1 + resto :orden 2 bajalapiz            # rojo o verde
+  giraderecha (45 *:orden)+90      # orientaciones similares de las curvas
+  dragon :orden 1
+  refrescar espera 80 subelapiz centro]
+  detieneanimacion
+fin

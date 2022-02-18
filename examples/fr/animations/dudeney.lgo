@@ -1,0 +1,47 @@
+# Commande principale: demarrer
+pour new
+    # Initialise  les couleurs pour l'écran, le crayon de la tortue
+  init ftd [400 400] cachetortue
+  fcfg noir fcc vert levecrayon animation
+fin
+
+pour sqtri
+  levecrayon fixexy 0 50 fixecap -150 baissecrayon
+  avance 80 tournedroite 120 avance 160
+  tournedroite 120 avance 119.28 tournegauche 42.12 avance 60 tournedroite 90
+  avance 104 tournedroite 90 avance 106 tournedroite 90 avance 53 fcc 2
+fin
+
+pour shape0
+  levecrayon fixexy 0 50 fixecap -42.12 baissecrayon
+  avance 52 tournedroite 90 avance 45.5 tournedroite 42.12
+  avance 41 tournedroite 120 avance 80
+fin
+
+pour shape1
+  levecrayon fixexy 0 50 fixecap -150-:offset baissecrayon
+  avance 80 tournedroite 120 avance 80 shape2
+  tournedroite 180+:offset avance 60.5 tournedroite 90 avance 52
+fin
+
+pour shape2
+  tournegauche :offset avance 80 tournedroite 120 avance 39 shape3
+  tournedroite 180+:offset avance 52 tournedroite 90 avance 46
+fin
+
+pour shape3
+  tournegauche :offset avance 80 tournedroite 137.88 avance 60 tournedroite 90 avance 52
+fin
+
+pour paint :angle
+  donne "offset 90*(1+cos :angle)
+  fcc gris sqtri fcc vert shape0 shape1
+  rf attends 15 nettoie
+fin
+
+pour demarrer
+  new tantque [vrai] [
+  repetepour [angle 0 180 9] [paint :angle]
+  repetepour [angle 180 0 -9] [paint :angle]]
+fin
+

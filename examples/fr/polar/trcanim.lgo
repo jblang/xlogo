@@ -1,0 +1,39 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour p2r :radius :angle
+  donne "x :radius * cos :angle
+  donne "y :radius * sin :angle
+  retourne liste :x :y
+fin
+
+pour angcol :theta
+  donne "red absolue 255*cos :theta
+  retourne phrase liste :red 0 255
+fin
+
+pour spiral :angle :twist
+  # twisted rose curves
+  donne "radius 180*sin(4*:angle)
+  donne "angle :angle + 20*sin :twist*:angle
+  ftc width :angle :radius            #comment out repetepour plain pen
+  fcc angcol 30 + 3*:angle
+  fpos p2r :radius :angle baissecrayon attends 2
+fin
+
+pour width :angle :radius
+  fixecap vers p2r :radius :angle
+  retourne 2*(1.5+sin (45 + 2*cap))
+fin
+
+pour demarrer
+  new
+  repetepour [twist 0 24] [
+  repetepour [angle 0 360] [
+  spiral :angle :twist] attends 100 nettoie]
+fin
+

@@ -1,0 +1,32 @@
+# Commande principale: demarrer 7
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise :level
+  donne "size 180/(puissance 2 :level)        #global value
+  levecrayon fixexy (:size/2)-180 (:size/2)-180
+  fixecap 90 baissecrayon
+fin
+
+pour hilbert :level :parity
+  si :level < 0 [stop]
+  tournegauche :parity*90
+  hilbert :level-1 0-:parity
+  avance :size
+  tournedroite :parity*90
+  hilbert :level-1 :parity
+  avance :size
+  hilbert :level-1 :parity
+  tournedroite :parity*90
+  avance :size
+  hilbert :level-1 0-:parity
+  tournegauche :parity*90
+fin
+
+pour demarrer :level
+  new fcc 2 initialise :level hilbert :level 1
+fin
+

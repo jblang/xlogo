@@ -1,0 +1,18 @@
+# Main Command: Go 30
+# Cardioid 2 by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To Go :Order
+  New
+  Forward 40 Make "Radius 70
+  Repeat Abs :Order [
+    Forward :Radius
+    Circle (Distance List 0 40+:Radius)
+    Back :Radius Right (360/:Order) Wait 8]
+End

@@ -1,0 +1,461 @@
+# Commande principale: demarrer
+#Profator 3.4
+pour demarrer
+ve fsep 1
+ct vt
+fixetailledessin [2000 1500]
+fcfg [40 40 40]
+fcc [255 255 0] 
+ftpt 20 ct
+donne "pointdepart [-450 100]
+donne "vers []
+donne "titre [ P R O F A T O R\  ]
+donne "version [3.4]
+#---------- Nombre de quatrains à tirer ----------
+donne "n 1
+#-------------------------------------------------
+titre
+fin
+
+pour titre
+fsep 1 ct
+lc fpos [0 0] bc  
+ftc 5 fap [1 1] tg 0 ftp 42 etiquette :titre
+lc re 50 ftp 36 etiquette :version av 50
+ftc 3  
+lc av 25 td 90 bc 
+av 0.6 * longueuretiquette :titre td 90  
+av 100 td 90  
+av 1.2 * longueuretiquette :titre td 90  
+av 100 td 90  
+av 0.6 * longueuretiquette :titre
+tg 90
+rafraichis 
+stopanimation
+fsep 1
+attends 180 
+guibouton "bouton "Lancer
+guiposition "bouton liste -50 ( -150)
+guidessine "bouton
+fsep 1
+guiaction "bouton [repete :n [profator attends 120]]
+fin
+
+pour profator
+nettoie lc fpos :pointdepart
+exec choix [
+[proposition1 retourchariot proposition1 retourchariot proposition1 retourchariot proposition1 retourchariot]
+[proposition1 retourchariot proposition1 retourchariot proposition1 retourchariot proposition5 retourchariot] 
+[proposition1 retourchariot proposition1 retourchariot proposition2 retourchariot proposition3 retourchariot] 
+[proposition1 retourchariot proposition1 retourchariot proposition3 retourchariot proposition4 retourchariot]
+[proposition1 retourchariot proposition1 retourchariot proposition5 retourchariot proposition1 retourchariot] 
+[proposition1 retourchariot proposition2 retourchariot proposition3 retourchariot proposition1 retourchariot]
+[proposition1 retourchariot proposition2 retourchariot proposition3 retourchariot proposition5 retourchariot]
+[proposition1 retourchariot proposition3 retourchariot proposition4 retourchariot proposition1 retourchariot]
+[proposition1 retourchariot proposition3 retourchariot proposition4 retourchariot proposition5 retourchariot]
+[proposition1 retourchariot proposition5 retourchariot proposition1 retourchariot proposition1 retourchariot] 
+[proposition1 retourchariot proposition5 retourchariot proposition1 retourchariot proposition5 retourchariot] 
+[proposition1 retourchariot proposition5 retourchariot proposition3 retourchariot proposition4 retourchariot]
+[proposition2 retourchariot proposition3 retourchariot proposition1 retourchariot proposition1 retourchariot]
+[proposition2 retourchariot proposition3 retourchariot proposition1 retourchariot proposition5 retourchariot]
+[proposition2 retourchariot proposition3 retourchariot proposition2 retourchariot proposition3 retourchariot] 
+[proposition2 retourchariot proposition3 retourchariot proposition3 retourchariot proposition4 retourchariot]
+[proposition2 retourchariot proposition3 retourchariot proposition5 retourchariot proposition1 retourchariot]
+[proposition3 retourchariot proposition4 retourchariot proposition1 retourchariot proposition1 retourchariot]
+[proposition3 retourchariot proposition4 retourchariot proposition1 retourchariot proposition5 retourchariot]
+[proposition3 retourchariot proposition4 retourchariot proposition2 retourchariot proposition3 retourchariot] 
+[proposition3 retourchariot proposition4 retourchariot proposition3 retourchariot proposition4 retourchariot]
+[proposition3 retourchariot proposition4 retourchariot proposition5 retourchariot proposition1 retourchariot]
+[proposition5 retourchariot proposition1 retourchariot proposition1 retourchariot proposition1 retourchariot]
+[proposition5 retourchariot proposition1 retourchariot proposition5 retourchariot proposition1 retourchariot]]
+ec "\  
+fin
+
+#---------- Propositions ----------
+
+pour proposition1
+exec choix [
+[nominal virgule adverbe virgule transitif nominal]
+[nominal virgule adverbe virgule indirect nominal]
+[nominal transitif nominal]
+[nominal indirect nominal]
+[nominal virgule transitif3 nominal virgule intransitif]
+[nominal virgule indirect3 nominal virgule intransitif]
+[nominal intransitif adverbe]
+[nominal adverbe adjectif intransitif]
+[nominal etat adjectif]
+[nominal etat adverbe adjectif]
+[commun genitif intransitif adverbe]
+[nominal intransitif3 virgule nominal intransitif]
+[nominal intransitif adverbe]
+[nominal intransitif preposition nominal]
+[preposition nominal virgule nominal intransitif] ]
+syntaxe :vers
+fin
+
+pour proposition2
+exec choix [
+[transitif3 nominal virgule nominal transitif]
+[nominal virgule preposition nominal virgule transitif]
+[nominal virgule adverbe virgule transitif]
+[nominal transitif]
+[commun genitif virgule adverbe virgule transitif]
+[nominal intransitif3 virgule adverbe virgule transitif]
+[nominal intransitif3 transitif]
+[nominal virgule adverbe virgule transitif]
+[preposition nominal virgule nominal transitif]
+[subordination nominal transitif]
+[subordination commun genitif transitif]
+[subordination nominal virgule adverbe virgule transitif]
+[subordination2 nominal transitif2]
+[subordination2 commun genitif transitif2]
+[subordination2 nominal virgule adverbe virgule transitif2]]
+syntaxe :vers
+fin
+
+pour proposition3
+exec choix [
+[nominal virgule voire nominal ponctuation]
+[nominal etat3 adjectif]
+[nominal etat3 adverbe adjectif]
+[nominal transitif3 nominal]
+[nominal indirect3 nominal]
+[nominal virgule adverbe virgule transitif3 nominal]
+[nominal virgule adverbe virgule indirect3 nominal]
+[nominal intransitif3]
+[nominal intransitif3 adverbe]
+[nominal relative]]
+syntaxe :vers
+fin
+
+pour proposition4
+exec choix [
+[etat adjectif virgule voire adjectif ponctuation]
+[etat adjectif adverbe] 
+[etat adjectif preposition nominal] 
+[etat adverbe adjectif virgule voire adjectif ponctuation] 
+[etat adverbe adjectif preposition nominal]
+[etat adverbe adjectif] 
+[intransitif adverbe preposition nominal] 
+[intransitif preposition nominal]
+[intransitif preposition commun genitif]
+[intransitif preposition nominal] 
+[adverbe virgule transitif nominal]
+[adverbe virgule indirect nominal]
+[adverbe virgule transitif commun genitif]
+[adverbe virgule indirect commun genitif]
+[transitif nominal]
+[indirect nominal]
+[transitif nominal adverbe adjectif]
+[indirect nominal adverbe adjectif]
+[transitif commun genitif]
+[indirect nominal adverbe adjectif]]
+syntaxe :vers
+fin
+
+pour proposition5
+exec choix [
+[dater]
+[adverbe preposition nominal]
+[adverbe preposition commun genitif]
+[intransitif3 adverbe preposition nominal]
+[intransitif3 adverbe]
+[intransitif3 preposition nominal]
+[intransitif3 preposition commun genitif]
+[transitif3 adverbe nominal]
+[transitif3 adverbe commun genitif]
+[transitif3 nominal]
+[indirect3 nominal]
+[transitif3 commun genitif]
+[indirect3 commun genitif]
+[transitif3 nominal preposition nominal]
+[indirect3 nominal preposition nominal]
+[nominal etat3 adverbe adjectif]
+[preposition nominal intransitif3]
+[preposition nominal]
+[preposition nominal coordination nominal]
+[preposition nominal intransitif3 adverbe]
+[preposition nominal intransitif3]
+[preposition nominal transitif3 nominal]
+[preposition nominal indirect3 nominal]
+[subordination nominal etat adjectif]
+[subordination nominal intransitif adverbe]
+[subordination nominal intransitif]
+[subordination nominal transitif nominal]
+[subordination nominal indirect nominal]
+[subordination2 nominal etat2 adjectif]
+[subordination2 nominal intransitif2 adverbe]
+[subordination2 nominal intransitif2]
+[subordination2 nominal transitif2 nominal]
+[subordination2 nominal indirect2 nominal]
+[dater]]
+syntaxe :vers
+fin
+
+#---------- Fin propositions ----------
+
+pour syntaxe :vers
+exec choix [ 
+[jouemp3 "http://xlogo.tuxfamily.org/fr/html/examples-fr/snd/typewriter.mp3] 
+[jouemp3 "http://xlogo.tuxfamily.org/fr/html/examples-fr/snd/typewriter_1.mp3] 
+[jouemp3 "http://xlogo.tuxfamily.org/fr/html/examples-fr/snd/typewriter_2.mp3] 
+[jouemp3 "http://xlogo.tuxfamily.org/fr/html/examples-fr/snd/typewriter_3.mp3] 
+[jouemp3 "http://xlogo.tuxfamily.org/fr/html/examples-fr/snd/typewriter_4.mp3]] 
+contracter :vers 
+stopmp3
+efv [:vers]
+stop] 
+fin
+
+#---------- Contracteur ----------
+
+pour contracter :sentence
+contractera :sentence []
+fin
+
+pour contractera :versa :versb
+donne "nvers compte :versa attends 2
+si :nvers = 0 [contracter0 :versb [] stop]
+si vide? :versa  [contracter0 :versb [] stop] [
+si :nvers = 1 [contracter0 (md prem :versa :versb) [] stop ] [
+donne "i prem :versa
+donne "j item 2 :versa
+si (compte :j) < 4 [contractera sp :versa md :i :versb] [
+si (mot der sd :j der :j) = "_à [contractera mp "à sp sp :versa md (sd sd :j) md :i :versb] [
+si (mot der sd sd :j der sd :j der :j) = "_de [contractera mp "de sp sp :versa md (sd sd sd :j) md :i :versb] [
+si non vide? :versa [contractera sp :versa md :i :versb]]]]]]
+fin
+
+pour contracter0 :vers0 :vers1
+donne "nvers compte :vers0 attends 2
+si :nvers = 0 [contracter1 :vers1 [] stop] [
+si (compte :vers0) = 1 [contracter1 (md prem :vers0 :vers1) [] stop ] [
+donne "i prem :vers0
+si (compte :i) < 4 [contracter0 sp :vers0 md :i :vers1] [
+si (mot der sd :i der :i) = "_à [contracter0 sp :vers0 md "à md (sd sd :i) :vers1] [
+si (mot der sd sd :i der sd :i der :i) = "_de [contracter0 sp :vers0 md "de md (sd sd sd :i) :vers1] [
+si (mot der sd sd sd :i der sd sd :i der sd :i der :i) = "_que [contracter0 sp :vers0  md "que md (sd sd sd sd :i) :vers1] [
+contracter0 sp :vers0 md :i :vers1]]]]]]
+fin
+
+pour contracter1 :vers2 :vers3
+donne "nvers compte :vers2 attends 2
+si :nvers = 0 [contracter1 :vers3 [] stop] [
+si (compte :vers2) = 1 [contracter2 (md prem :vers2 :vers3) [] stop] [
+donne "i prem :vers2
+donne "j item 2 :vers2
+si et (ou (:i = "le) (:i = "la)) (ou (prem :j) = "A (prem :j) = "a (prem :j) = "Â (prem :j) = "â (prem :j) = "E (prem :j) = "e (prem :j) = "É (prem :j) = "é (prem :j) = "È (prem :j) = "è (prem :j) = "Ê (prem :j) = "ê (prem :j) = "I (prem :j) = "i (prem :j) = "Î (prem :j) = "î (prem :j) = "O (prem :j) = "o (prem :j) = "U (prem :j) = "u  (prem :j) = "H (prem :j) = "h  (prem :j) = "Œ (prem :j) = "œ) [contracter1 sp sp :vers2 md (mot "l' :j) :vers3] [
+si et (:i = "ce) (ou (prem :j) = "A (prem :j) = "a (prem :j) = "Â (prem :j) = "â (prem :j) = "E (prem :j) = "e (prem :j) = "É (prem :j) = "é (prem :j) = "È (prem :j) = "è (prem :j) = "Ê (prem :j) = "ê (prem :j) = "I (prem :j) = "i (prem :j) = "Î (prem :j) = "î (prem :j) = "O (prem :j) = "o (prem :j) = "U (prem :j) = "u  (prem :j) = "H (prem :j) = "h (prem :j) = "Œ (prem :j) = "œ) [contracter1 sp :vers2 md "cet :vers3] [
+si et (:i = "sa) (ou (prem :j) = "A (prem :j) = "a (prem :j) = "Â (prem :j) = "â (prem :j) = "E (prem :j) = "e (prem :j) = "É (prem :j) = "é (prem :j) = "È (prem :j) = "è (prem :j) = "Ê (prem :j) = "ê (prem :j) = "I (prem :j) = "i (prem :j) = "Î (prem :j) = "î (prem :j) = "O (prem :j) = "o (prem :j) = "U (prem :j) = "u  (prem :j) = "H (prem :j) = "h (prem :j) = "Œ (prem :j) = "œ) [contracter1 sp :vers2 md "son :vers3] [
+si et (ou :i = "lorsque :i = "puisque :i = "quoique) (ou :j = "il :j = "elle :j = "on :j = "un :j = "une) [contracter1 sp sp :vers2 md (mot sd :i "' :j) :vers3] [
+contracter1 sp :vers2 md :i :vers3]]]]]]
+fin
+
+pour contracter2 :vers4 :vers5
+donne "nvers compte :vers4 attends 2
+si :nvers = 0 [donne "versus :vers5 efvs dactylo :versus ec :versus  stop] [
+si (compte :vers4) = 1 [donne "i prem :vers4 
+si (prem :i) = "° [contracter2 sp :vers4 md (sp :i) :vers5] [
+si (ou :i = ", :i = "…) [contracter2 sp :vers4 md (mot (der :vers5) :i) sd :vers5] [
+donne "versus (md prem :vers4 :vers5) efvs dactylo :versus ec :versus  stop]]] [
+donne "i prem :vers4 
+donne "j item 2 :vers4
+si (prem :j) = "° [contracter2 sp sp :vers4 md (sp :j) md :i :vers5] [
+si et (:i = "de) (ou (prem :j) = "A (prem :j) = "a (prem :j) = "Â (prem :j) = "â (prem :j) = "E (prem :j) = "e (prem :j) = "É (prem :j) = "é (prem :j) = "È (prem :j) = "è (prem :j) = "Ê (prem :j) = "ê (prem :j) = "I (prem :j) = "i (prem :j) = "Î (prem :j) = "î (prem :j) = "O (prem :j) = "o (prem :j) = "U (prem :j) = "u  (prem :j) = "H (prem :j) = "h (prem :j) = "Œ (prem :j) = "œ)  [contracter2 sp sp :vers4 md mot "d' :j :vers5] [
+si (ou :j = ", :j = "…) [contracter2 sp sp :vers4 md (mot :i :j) :vers5] [
+si et (:i = "de) (:j = "le) [contracter2 sp sp :vers4 md "du :vers5] [
+si et (:i = "de) (:j = "les) [contracter2 sp sp :vers4 md "des :vers5] [
+si et (:i = "à) (:j = "le) [contracter2 sp sp :vers4 md "au :vers5] [
+si et (:i = "à) (:j = "les) [contracter2 sp sp :vers4 md "aux :vers5] [
+si et (:i = "jusqu'à) (:j = "le) [contracter2 sp sp :vers4 md "jusqu'au :vers5] [
+si et (:i = "jusqu'à) (:j = "les) [contracter2 sp sp :vers4 md "jusqu'aux :vers5] [
+si et (:i = "que) (ou (prem :j) = "A (prem :j) = "a (prem :j) = "Â (prem :j) = "â (prem :j) = "E (prem :j) = "e (prem :j) = "É (prem :j) = "é (prem :j) = "È (prem :j) = "è (prem :j) = "Ê (prem :j) = "ê (prem :j) = "I (prem :j) = "i (prem :j) = "Î (prem :j) = "î (prem :j) = "O (prem :j) = "o (prem :j) = "U (prem :j) = "u  (prem :j) = "H (prem :j) = "h (prem :j) = "Œ (prem :j) = "œ) [contracter2 sp sp :vers4 md mot "qu' :j :vers5] [
+si (prem :i) = "° [contracter2 sp :vers4 md (sp :i) :vers5] [
+si (ou :i = ", :i = "…) [contracter2 sp :vers4 md (mot (der :vers5) :i) sd :vers5] [
+contracter2 sp :vers4 md :i :vers5]]]]]]]]]]]]]]
+fin
+
+#---------- Fin contracteur ----------
+
+pour efvs
+efv ["vers1 "vers2 "vers3 "vers4 "vers5]
+fin
+
+#---------- Composition ----------
+
+pour dactylo :vers6
+si vide? :vers6 [efv ["vers6] stop]
+epeler prem :vers6
+dactylo sp :vers6 
+fin
+
+pour epeler :mot
+si (compte :mot) = 0 [lc fixex (x+20) bc stop] 
+fcc [255 255 0] ftp 20
+etiquette (ph "\  prem :mot) lc fixex (x+15) bc 
+attends 5
+epeler sp :mot 
+fin
+
+pour retourchariot
+lc fpos ph prem :pointdepart (y-50) bc
+donne "vers []
+fin
+
+#---------- Fin composition ----------
+
+#---------- Raccourcis ----------
+
+pour nominal
+exec choix [
+[commun_m][commun_m adjectif_m][commun_m adjectif]
+[commun_f][commun_f adjectif_f][commun_f adjectif]
+[propre][propre adjectif]]
+fin
+
+pour commun
+exec choix [
+[commun_m][commun_m adjectif_m][commun_m adjectif]
+[commun_f][commun_f adjectif_f][commun_f adjectif]]
+fin
+
+pour genitif
+exec [donne "vers md "de :vers nominal]
+fin
+
+pour relative
+exec choix [
+[que nominal transitif]
+[que nominal transitif adverbe]
+[qui intransitif preposition nominal]
+[qui intransitif adverbe preposition nominal]
+[qui transitif nominal]
+[qui transitif adverbe nominal]
+[avec_qui nominal intransitif]
+[avec_qui nominal intransitif adverbe]
+[avec_qui nominal transitif nominal]
+[avec_qui nominal transitif adverbe nominal]]
+fin
+
+#----------Vocabulaire----------
+
+pour virgule
+donne "vers md choix [, ] :vers
+fin
+
+pour ponctuation
+donne "vers md choix [! ? … ] :vers
+fin
+
+
+pour propre
+donne "vers md choix [666 Albion Alexandrie Alger Anubis Archimède Ariane Athèna Aphrodite Athènes Baal Bacon Bagdad Bahia Bangkok Baphomet Basile\ Valentin Bastet Bénarès Bérenger\ Saunière Berlin Bodhgaya Byzance Caracas Carthage ceci cela celui‑ci celui‑là celle‑ci celle‑là César Chronos Chypre Colombo Constantinople Dame\ Pernelle Delhi Delphes Dieu Dharamsala Dublin Edimbourg Einstein Éleusis Éphèse François\ d'Assise Fulcanelli Gandhi Hercule Hermaphrodite Hermès Horus Icare Isis Istamboul Jérémie Jérusalem Judas Jung Jupiter Kaboul Karachi Krishna Lao-Tseu Latone Le\ Caire Lepsos Lhassa Londres Lutèce Madrid Marrakesh Mars Mercure Merlin Mexico Moïse Mozart Neptune Newton Nicolas\ Flamel Nostradamus Odin Œdipe Orffyreus Orphée Osiris Paracelse Paris Pégase Pékin Phaéton Phébus Pilate Platon Pluton Prague Procuste Pythagore quelqu'un quelque\ chose Râ Rio Rome Saint‑Germain Saint\ Louis Saint‑Pétersboug San\ Francisco São\ Paulo Saturne Shambala Sigmund\ Freud Solyme Téhéran Thésée Tokyo Toth Thulé Uranus Vénus Zarathoustra ] :vers
+fin
+
+pour commun_m
+donne "vers md choix [°hachish °haillon °hâle °halètement °halo °handicap °harcèlement °haricot °harnais °harpon °hasard °haut °hérisson °héros °hiéroglyphe °hiérophante °hippy abbé abîme Achéron acteur affrontement Africain agenda agneau aïeul aigle air alchimiste amandier amant Américain ami amour amoureux an anathème ancêtre androgyne âne ange animal Antarctique arbre arc arc‑en‑ciel arche archéologue architecte Arctique argent art artiste ascéte ascétisme Asiatique astrologue astronome Atlantique atome augure autel auteur automne avenir avocat azur baiser bas bassin bateleur berceau bijou biographe biologiste bœuf bonheur bonnet botaniste Bouddha bras calme capital cavalier cèdre centaure centre cercle cerveau champ chant chaos chariot charme chat chemin cheval chevalier cheveu chien chimiste chœur choryphée ciel ciel cinéma citron clochard cochon cœur col collège collègue combat coquelicot complexe conciliateur conseil continent coroplaste corps corset couperet courant couteau crâne créateur cri crime cristal crocodile croissant cyclone dalai‑lama Danemark danger danseur dard dattier délice démon dernier désastre désert destin devoir diable diamant dieu disciple dragon dramaturge droit druide duc échec échiquier éclair effet effort égrégore empereur encens enfant enfer ennemi ensemble époux ermitage ermite esclave esprit essieu été être Européen exemple explorateur Extrême‑Orient fantasme fantôme féminin feu figuier fils fixe flanc fleuve flot fond fondement fou foyer frémissement frère frimas front fruit géant génie géographe géologue géomètre geste goupil goût grand\ personnage granit graveur griffon groupe guerrier gymnosophiste habit habitant hémisphère herboriste héritage héritier hippopotame hiver homme homme\ de\ bien homme\ de\ science homoncule honnête\ homme horizon horloger hortensia hôte humain inconsolé iceberg îlot intérêt intérieur inutile Islam Japon jardin jeu jeu\ d'échecs jeune jeune\ homme jeûne joueur jour joyau jugement karma khan labyrinthe langage Latium laurier législateur lien limon lion livre loup lotus luth lycée lys maître malaise malheur marbre marché marionnettiste masculin mat médecin mensonge mercure métal miel Minotaure miracle moine mois moment monde mont moteur mouton mouvement Moyen-Orient mur musicien myrte mystère naufrage navire néant nid Nil Occident océan Océanien œil oiseau olivier Olympe or oracle orage oranger ordre orfèvre Orient Oriental ouvrier pain palais palimpseste pampre pape papier papillon papyrus paquebot paradis parchemin passager passé pays peintre pendu pendule père péristyle pervers peuple phénix philosophe physicien pied plateau planetarium poème poète pôle pommier porc port portique portrait Potala pouvoir présage présent prêtre prince principe printemps Proche‑Orient Profator programme programmeur progrès prolétaire prophète psaume psychiatre psychologue puits quai quatrain raisin rameau ramier ras‑de‑marée rat réacteur réalisateur rebelle référendum regard régime règne remords renard reptile rêve rocher roi royaume rubis ruisseau Russe sable sablier sacrifice sage salaire sanctuaire sang santal saphir satellite saule savant scarabée sculpteur secret seigneur sémiologue serpent seuil sexe siècle signe singe sociologue soir sol soleil soleil\ couchant soleil\ levant sommeil soufi soufisme souffle soufre soupir souverain sphinx stade succès supplice sycomore taureau temple temps ténébreux théâtre Tibet tigre Titan tombeau torrent tourbillon tourment tremblement\ de\ terre triangle tribut tronc tyran univers usage utile vagabond vaisseau Vatican vautour véhicule vengeur verbe veuf vide vieil\ homme vieillard vieux visage vitriol voile vol voleur volatil volcan voyage voyageur lièvre ] md choix [le le le le le un un un un un ce ce tout chaque quelque son son certain tel] :vers
+fin
+
+pour commun_f
+donne "vers md choix [°haine °hantise °harpe °hauteur °hiérarchie °hiérogamie °horde °hotte °housse °hutte °yourte abondance absence accusation acidité Afrique alchimie amande ambre âme amie Amérique amertume amoureuse année arabesque arche archéologie architecture ardeur argile attention Asie astrologie astronomie astrophysique aura auréole avarie banque barque bête bière biographie biologie botanique bouche Camarde carte cause cendre cérémonie chaloupe chanson chatte chienne chimie Chine chose chouette clarté clavicule clé colline colonne comédie coque confiance conque conquête consonne consultation couche coupe cour croisière croix danse date datte déesse dégénérescence dent Dernière diagonale doctrine douceur douleur druidesse eau écharde écharpe école écorce Égypte émeraude enchanteresse enfant ennemie épée épouse esclave Espagne éternité étoile Europe famine fée félicité fidélité figue figurine fille finance fleur foi fondation fontaine force forêt fortune foudre foule France géologie géométrie géographie glace gloire gravure Grèce grotte guerre haleine harmonie hégémonie hélice herbe héroïne heure hibernation histoire horloge horreur hostilité humanité humeur humilité île image immensité impératrice incantation infidélité inutilité Islande Italie ivresse Judée jument justice lame langue lèvre liberté licorne linguistique loi louve lucidité lumière lune lutte lyre machine main maison maison‑Dieu maîtresse mandorle mandragore mathématique matière maxime médecine méditation mélancolie mélodie mer mère messe montagne montre mort morte multitude Muse musique myrrhe nature nécessité nef neige neutralité noblesse noce noirceur noix note nouvelle Nouvelle\ France Nouvelle\ York nuit oasis obscurité Océanie ombre onde opulence orbite orchidée oreille origine paix pâleur papesse paupière peinture pendule perle personne Phénicie philosophie phrase physique pierre pierre\ précieuse pitié plaine planète plante plèbe poésie poire pomme porte pourpre pratique prédilection Première présence presse prêtresse prophétesse prophétie psalmodie psychiatrie psychologie puissance pureté Pythie race rage réaction recherche reine renarde réussite révolte révolution richesse rive robe roche romance rose rose\ trémière roue roue\ de\ fortune rougeur rue Russie sagesse sainte sainteté saison salamandre sculpture semence sémiologie sentinelle serrure sibylle Sicile silhouette sirène sociologie sœur soie source souveraine sphère spirale table tempérance ténèbre tentation terre tête tour tragédie tragi‑comédie traversée treille Treizième tresse tribu troupe truie tyrannie utilité vache vacuité vagabonde vague valeur vallée veine vérité vertu veuve victime victoire vie vierge vigne voie voix voûte voyageuse voyelle ] md choix [la la la la la une une une une une cette cette toute chaque quelque sa sa certaine telle] :vers
+fin
+
+pour adjectif
+donne "vers md choix [à\ l'abandon à\ l'agonie à\ venir accusatoire acide admirable adorable adultère agile agréable alchimique amnésique androgyne angélique antarctique antique âpre aquatique arbitraire arctique aride asiatique atlantique auguste austère authentique autoritaire autre aveugle aviaire avide azur bancaire basique biblique bizarre blanchâtre blême bleuâtre budgétaire calme canonique capillaire capitaliste catastrophique célèbre céleste chaotique charismatique chimique cinquième civique classique comble commode complémentaire complexe complice compréhensible connaissable contraire convenable coriace corruptible courbe crédible cruciforme cupide curviligne cynique d'air d'eau de\ bois de\ bon\ augure de\ fer de\ feu de\ marbre de\ mauvais\ augure de\ pierre débile debout décuple défavorable démocratique d'émeraude dérisoire d'or d'argent de\ fer de\ feu de\ glace de\ cendre de\ sable de\ terre de\ pierre désertique désirable despotique deuxième dextre difforme digne dissemblable diurne dix‑huitième dix‑neuvième dix‑septième dixième double douzième dramatique drôle durable écarlate efficace effroyable égalitaire égoïste électrique émeraude en\ abolition en\ absence en\ alerte en\ attache en\ blessure en\ cendres en\ clarté en\ colère en\ défaite en\ délire en\ déroute en\ diagonale en\ écriture en\ étourdissement en\ éveil en\ exil en\ feu en\ gloire en\ groupe en\ guerre en\ hibernation en\ invocation en\ lumière en\ majesté en\ masse en\ nombre en\ opposition en\ paix en\ perdition en\ présence en\ renaissance en\ ruine en\ sang en\ sécurité en\ sommeil en\ succès en\ tribu en\ troupe en\ victoire en\ vie énorme éphémère erratique ésotérique de\ l'est éthérique étrange exemplaire exotique exsangue extraordinaire extrême faible fantasmatique fantasque fantastique fantôme farouche faste favorable femelle fertile fidèle filiforme flexible fragile frénétique frivole fugace funèbre funeste gigantesque gestionnaire glaciaire grandiose grégaire habile hébraïque hellénique hérétique hermaphrodite hermétique hiératique hippie historique honnête honorable hostile huitième humaniste humble humide ignoble illustre imaginaire imbécile immense immobile immuable impénétrable imperceptible impérissable impie implacable impossible imputrescible inaliénable inaltérable incendiaire incolore incommode inconnaissable incroyable indigne indomptable ineffable inégalitaire inéluctable inerte inestimable infâme infantile infidèle infime infirme inflammable influençable insaisissable insoluble insondable insoutenable instable insulaire intangible intense intérimaire intime inutile invalide invariable inviolable invisible involontaire invraisemblable irascible irraisonnable islamique israélite italique jaunâtre jaune judaïque judiciaire lâche lamentable légiste légitime leste libertaire liberticide limpide linéaire liturgique logique louche lucide ludique lunaire magique magnifique maigre malade mâle maléfique malhabile malingre malléable maritime marron maussade mauve mécanique médiocre médiumnique mercantile mercenaire métallique méthodique minable mince minime minuscule mobile moderne modeste monarchique monétaire multiple nécessaire néfaste négligeable neutre neuvième noble nocturne noirâtre nomade du\ nord notable nucléaire oblique occulte océanique octuple oligarchique onirique onzième opiniâtre orange ordinaire orphique oubliable de\ l'ouest pacifique paisible pâle parallèle parmi\ d'autres patibulaire pauvre pavide pécuniaire perpendiculaire philosophique piètre pitoyable planétaire plastique poétique polaire polymorphe populaire possible pourpre précaire preste prévisible primaire prioritaire probable prolétaire prophétique propice propre prospère psychiatrique psychique psychosomatique psychopathe psychologique psychotique psychédélique pugnace pusillanime putrescible quadruple quatorzième quatrième quinzième raisonnable rapide rare réactionnaire rebelle rectiligne réfutable respectable révolutionnaire riche robuste rose rouge rougeâtre rude russe sale salutaire sans\ fin sans\ fond sans\ force sauvage secondaire séculaire sécuritaire sédentaire seizième semblable sénestre sénile sensible septième septuple serviable serviable sévère sextuple similaire simple sinistre sixième solaire solidaire solide solitaire soluble sombre sommaire somptuaire sordide souple soviétique sphérique stellaire sublime du\ sud supplémentaire suprême symbolique systématique tabou tacite taciturne tangible téméraire tendre terrestre thaumaturgique théologique théorique tiède timide torride tragique traître treizième triple triste troisième trouble tyrannique ultime unanime unique utile utilitaire utopique vague valable valide variable vaste velléitaire vendable vénérable verdâtre véritable vétuste veule vide vierge vingt‑deuxième vingt‑et‑unième vingtième viride visible vivace volage volontaire vraisemblable vulnérable] :vers
+fin
+
+pour adjectif_m
+donne "vers md choix [abandonné aboli absent absolu abusif actif actuel adhésif adoptif adoré aérien affectif affirmatif affirmatif âgé agité agressif ailé alternatif altier amer américain ami amical ancien animal annuel approximatif argenté argileux armé artériel artificiel attaché attentif attractif austral automnal batailleur bien‑aimé blanc bleu boréal boueux brillant brisé brûlant brun caché captif chanceux charmant charmeur chaud chétif chinois cicatriciel civilisé clair collectif collégial commémoratif commun communicatif commutatif compréhensif confiant confidentiel confus consécutif consolé constellé consultatif contemplatif content continental continuel contractuel convulsif coopératif corrélatif corrosif couché couronné couvert craintif criminel décisif découvert déçu déductif défensif définitif descriptif désert désolé digestif directif dissuasif distinctif divin doré doux droit dubitatif éclos écrit effectif électif élogieux engourdi ennemi ensanglanté épais essentiel estival éteint éternel étourdi étranger européen évasif éventuel évocateur excellent excessif exclusif exécutif existant expéditif explicatif explosif exponentiel expressif fatal fatigant faux fécond féminin fermé fictif figuratif filial fin financier fini fleuri fondamental fort fortuné fou fraternel froid fugitif furtif glacial global glorieux graduel grand gustatif habituel haineux hâtif heureux hivernal humain immatériel immortel impératif improductif imprudent impulsif impur inactif inattentif incisif incliné inconsolé indien indigné individuel indompté inductif inexistant inexpressif infernal infini ingrat inhumain innocent inoffensif inondé insensé instinctif intellectuel intempestif interrogatif intuitif inventif invoqué irrité japonais jauni juif lacté laïc lascif latin léger législatif lent ligneux limitatif lucratif majestueux maladif malheureux masculin massif matériel maternel mécontent méditatif mensuel mercuriel minéral ministériel mondial mort mortel muet mutuel naïf naissant narratif négatif nocif noir non‑violent nouveau nuptial nutritif objectif obscur occidental offensif officiel oisif olfactif opératif oppressif oriental original originel orphelin oublié ouvert paradoxal pardonné particulier partiel passager passé passif paternel payé péjoratif penché pensif perdant perdu perpétuel persuasif pestilentiel petit philosophal pieux plaintif plébiscité ponctuel portatif positif possessif pourri poussif précieux présent primitif printanier privatif productif progressif prohibitif prudent puissant pur qualitatif quantitatif querelleur radioactif rajeuni réactif rébarbatif récréatif régressif relatif religieux reposant répressif reproductif reptilien républicain répulsif rétrospectif révérenciel rituel sacré sacrificiel sain saint sanglant secret sédatif sélectif sensitif sensuel seul sexuel significatif solennel souffrant souriant souverain spatial spécial spéculatif spirituel sportif subjectif subsersif substantiel subtil sud‑américain suggestif superficiel supplétif tardif ténébreux textuel tibétain torrentiel trahi tremblant troublant universel usuel vagabond vaincu vainqueur végétal végétatif vendu véniel vermeil vert veuf vibrant victorieux vieilli vieux vif violent violet virtuel visuel vivant voilé volatil vomitif vrai ] :vers
+fin
+
+pour adjectif_f
+donne "vers md choix [abandonnée abolie absente absolue abusive active actuelle adhésive adoptive adorée aérienne affective affirmative affirmative âgée agitée agressive ailée alternative altière amère américaine amicale amie ancienne animale annuelle approximative argentée argileuse armée artérielle artificielle attachée attentive attractive australe automnale batailleuse bien‑aimée blanche bleue boréale boueuse brillante brisée brûlante brune cachée captive chanceuse charmante charmeuse chaude chétive chinoise cicatricielle civilisée claire collective collégiale commémorative commune communicative commutative compréhensive confiante confidentielle confuse consécutive consolée constellée consultative contemplative contente continentale continuelle contractuelle convulsive coopérative corrélative corrosive couchée couronnée couverte craintive criminelle décisive découverte déçue déductive défensive définitive descriptive déserte désolée digestive directive dissuasive distinctive divine dorée douce droite dubitative éclose écrite effective élective élogieuse engourdie ennemie ensanglantée épaisse essentielle estivale éteinte éternelle étourdie étrangère européenne évasive éventuelle évocatrice excellente excessive exclusive exécutive existante expéditive explicative explosive exponentielle expressive fatale fatigante fausse féconde féminine fermée fictive figurative filiale financière fine finie fleurie folle fondamentale forte fortunée fraternelle froide fugitive furtive glaciale globale glorieuse graduelle grande gustative habituelle haineuse hâtive heureuse hivernale humaine immatérielle immortelle impérative improductive imprudente impulsive impure inactive inattentive incisive inclinée inconsolée indienne indignée individuelle indomptée inductive inexistante inexpressive infernal infinie ingrate inhumaine innocente inoffensive inondée insensée instinctive intellectuelle intempestive interrogative intuitive inventive invoquée irritée japonaise jaunie juive lactée laïque lascive latine légère législative lente ligneuse limitative lucrative majestueuse maladive malheureuse masculine massive matérielle maternelle mécontente méditative mensuelle mercurielle minérale ministérielle mondiale morte mortelle muette mutuelle naissante naïve narrative négative nocive noire non‑violente nouvelle nuptiale nutritive objective obscure occidentale offensive officielle oisive olfactive opérative oppressive orientale originale originelle orpheline oubliée ouverte paradoxale pardonnée particulière partielle passagère passée passive paternelle payée péjorative penchée pensive perdante perdue perpétuelle persuasive pestilentielle petite philosophale pieuse plaintive plébiscitée ponctuelle portative positive possessive pourrie poussive précieuse présente primitive printanière privative productive progressive prohibitive prudente puissante pure qualitative quantitative querelleuse radioactive rajeunie réactive rébarbative récréative régressive relative religieuse reposant répressive reproductive reptilienne républicaine répulsive rétrospective révérencielle rituelle sacrée sacrificielle saine sainte sanglante secrète sédative sélective sensitive sensuelle seule sexuelle significative solennelle souffrante souriante souveraine spatiale spéciale spéculative spirituelle sportive subjective subsersive substantielle subtile sud‑américaine suggestive superficielle supplétive tardive ténébreuse textuelle tibétaine torrentielle trahie tremblante troublante universelle usuelle vagabonde vaincue végétale végétative vendue vénielle vermeille verte veuve vibrante victorieuse vieille vieillie violente violette virtuelle visuelle vivant vive voilée volatile vomitive vraie ] :vers
+fin
+
+pour adverbe
+donne "vers md choix [à\ la\ hâte à\ nouveau à\ peine à\ perte\ de\ vue à\ proximité à\ quoi\ bon! absolument abusivement activement actuellement admirablement adorablement affectivement affirmativement affirmativement agilement agréablement agressivement ainsi alchimiquement alors alternativement anciennement annuellement approximativement artificiellement attentivement au\ ciel au\ commencement au\ moins aujourd'hui aussi autrement avantageusement avec\ certitude avec\ douceur avec\ rudesse avec\ succès avidement bien bientôt bizarrement célestement cependant chaotiquement chaudement chimiquement classiquement collectivement collégialement comment? concrètement confidentiellement consécutivement continuellement contrairement convenablement craintivement d'un\ coup dangereusement dans\ longtemps de\ nouveau défavorablement définitivement déjà demain depuis\ toujours dérisoirement deux\ fois différemment difficilement directivement distinctivement divinement doucement dramatiquement du\ moins durablement effectivement effroyablement eh\ quoi! élogieusement en\ bas en\ cachette en\ confiance en\ défaite en\ guerre en\ haut en\ paix en\ vain encore enfin éphémèrement essentiellement éternellement étrangement évasivement éventuellement exagérément excessivement excessivement exclusivement expéditivement exponentiellement extraordinairement extrêmement facilement faiblement farouchement favorablement fictivement follement fragilement fraternellement froidement fugitivement funestement globalement graduellement guère habilement habituellement hâtivement hélas! heureusement hier honnêtement honorablement humainement ici immensément immuablement impérativement imperceptiblement implacablement impulsivement inattentivement incisivement individuellement indomptablement ineffablement inéluctablement infimement infiniment innocemment instinctivement intellectuellement intempestivement intensément interrogativement intimement intuitivement invariablement inversement jadis là‑bas lâchement lamentablement lascivement légèrement légitimement lentement logiquement loin longtemps lucrativement magnifiquement maintenant majestueusement mal malheureusement massivement matériellement maternellement médiocrement même mensuellement méthodiquement modestement moins mondialement mutuellement naguère naïvement négativement noblement nocivement non! nouvellement nullement objectivement occultement officiellement oisivement opiniâtrement ordinairement où? oui! ouvertement par\ degrés par\ hasard paradoxalement parallèlement parfois partiellement partout passagèrement passivement paternellement pauvrement péjorativement perpendiculairement perpétuellement peu philosophiquement pitoyablement plaintivement plus plus\ longtemps poétiquement ponctuellement positivement pour\ jamais pourquoi? poussivement précairement presque probablement progressivement prophétiquement proprement purement qualitativement quand? quantitativement quoi? raisonnablement rapidement rarement régulièrement relativement respectablement rétrospectivement richement rituellement rudement sacrément saintement salement sans\ aide sans\ fin sans\ force sans\ gloire sans\ péril sélectivement semblablement sensiblement sensuellement sérieusement seulement sévèrement sexuellement significativement simplement solennellement solidairement solidement solitairement sommairement soudain souvent spirituellement subitement subjectivement subversivement substantiellement superbement superficiellement suprêmement symboliquement systématiquement tacitement tangiblement tardivement tellement tendrement textuellement théoriquement torrentiellement toujours tout\ près tragiquement triomphalement tristement trois\ fois ultérieurement ultimement un\ instant un\ jour un\ peu un\ peu\ moins un\ peu\ plus unanimement une\ seule\ fois uniquement universellement usuellement vaguement véniellement vertement victorieusement violemment virtuellement visiblement vite vivement vraiment ] :vers
+fin
+
+pour transitif
+donne "vers md choix [abaisse abandonne accoste achève agite aime ajoute anime appelle attache atteint attend balotte berce blesse boit brave brise calcule célèbre cherche choisit coagule connaît console contrôle coupe craint déchire dégravit demande dénigre dépasse dépose dérange développe discute dispose dissout dit divise donne ébranle écoute égale élève émeut énerve engloutit enlève entend entoure épie éprouve estime établit éteint étreint étudie examine explique exploite extrait fabrique façonne fait ferme finit frappe génère gravit habite happe illustre immerge impose imprime incline inonde inspire insulte interroge juge lave lève lit livre loue manque marque martèle meut module multiplie nettoie noircit observe ouvre parcourt passe perce perd plaque porte possède précède précipite prédit propose protège ramène ranime réchauffe reconnaît rectifie redresse refroidit refuse remonte rencontre renverse renvoie répand reprend respecte ressème retourne réunit revêt révise sacrifie salit sent sépare se\ rappelle sert soustrait suit suscite termine tient touche tourne transmet traverse trompe troue trouve unit utilise vainc vend vénère vise visite visse voit] :vers
+fin
+
+pour transitif2
+donne "vers md choix [abaisse abandonne accoste achève agite aime ajoute anime appelle attache atteigne attende balotte berce blesse boive brave brise calcule célèbre cherche choisisse coagule connaisse console contrôle coupe craigne déchire dégravisse demande dénigre dépasse dépose dérange développe dise discute dispose dissolve divise donne ébranle écoute égale élève émeuve énerve engloutisse enlève entende entoure épie éprouve estime établisse éteigne étreigne étudie examine explique exploite extraie fabrique façonne fasse ferme finisse frappe génère gravisse habite happe illustre immerge impose imprime incline inonde inspire insulte interroge juge lave lève lise livre loue manque marque martèle meuve module multiplie nettoie noircisse observe ouvre parcoure passe perce perde plaque porte possède précède précipite prédise propose protège ramène ranime réchauffe reconnaisse rectifie redresse refroidisse refuse remonte rencontre renverse renvoie répande reprenne respecte ressème retourne réunisse revête révise sacrifie salisse sente sépare se\ rappelle serve soustraie suive suscite termine tienne touche tourne transmette traverse trompe troue trouve unisse utilise vainque vende vénère vise visite visse voie] :vers
+fin
+
+pour transitif3
+donne "vers md choix [abaissant abandonnant accostant achevant agitant aimant ajoutant animant appelant attachant atteignant attendant balottant berçant blessant bravant brisant buvant calculant célébrant cherchant choisissant coagulant connaissant consolant contrôlant coupant craignant déchirant dégravissant demandant dénigrant dépassant déposant dérangeant développant disant discutant disposant dissolvant divisant donnant ébranlant écoutant égalant élevant émouvant énervant engloutissant enlevant entendant entourant épiant éprouvant estimant établissant éteignant étreignant étudiant examinant expliquant exploitant extrayant fabriquant façonnant faisant fermant finissant frappant générant gravissant habitant happant illustrant immergeant imposant imprimant inclinant inondant inspirant insultant interrogeant jugeant lavant levant lisant livrant louant manquant marquant martelant modulant mouvant multipliant nettoyant noircissant observant ouvrant parcourant passant perçant perdant plaquant portant possédant précédant précipitant prédisant proposant protégeant ramenant ranimant réchauffant reconnaissant redressant rectifiant refroidissant refusant remontant rencontrant renversant renvoyant répandant reprenant respectant ressémant retournant réunissant revêtant révisant sacrifiant salissant sentant séparant se\ rappelant servant soustrayant suivant suscitant tenant terminant touchant tournant transmettant traversant trompant trouant trouvant unissant utilisant vainquant vendant vénérant visant visitant vissant voyant] :vers
+fin
+
+pour intransitif
+donne "vers md choix [agit apparaît arrive attend augmente avance bouillonne brille calcule chancèle commence crie croît déborde décline décroît défaille demeure dépasse descend diminue discute disparaît dispose dort échoue éclate éclôt émerge entre existe fait\ fortune figure flotte frémit fuit gèle gémit grandit manque marche médite meurt monte naît nettoie œuvre pâlit parle penche pénètre pense pleure plonge prie progresse prospère raisonne rayonne recommence rectifie recule réfléchit régresse renaît reparaît répond repose résonne réussit rêve revient rit s'accoude s'accroît s'allie s'arrête s'assied s'avance s'échoue s'écrit s'effondre s'effraie s'emballe s'en\ va s'enfuit s'enivre s'épaissit s'épanche s'éteint s'évapore s'exprime s'immerge s'imprime s'incline s'inonde sait saute se\ baisse se\ couvre se\ déroule se\ fige se\ froisse se\ grave se\ hâte se\ lève se\ mêle se\ meut se\ penche se\ perd se\ retourne se\ rouvre se\ soumet se\ souvient se\ tait se\ tourne sombre souffre sourit succombe sursaute tombe tourne travaille tremble tressaille triomphe veille vient vibre vit] :vers
+fin
+
+pour intransitif2
+donne "vers md choix [agisse apparaisse arrive attende augmente avance bouillonne brille calcule chancèle commence crie croisse déborde décline décroisse défaille demeure dépasse descende diminue discute disparaisse dispose dorme échoue éclate éclose émerge entre existe fasse\ fortune figure flotte frémisse fuie gèle gémisse grandisse manque marche médite meure monte naisse nettoie œuvre pâlisse parle penche pénètre pense pleure plonge prie progresse prospère raisonne rayonne recommence rectifie recule réfléchisse régresse renaisse reparaisse réponde repose résonne réussisse rêve revienne rie s'accoude s'accroisse s'allie s'arrête s'asseye s'avance s'échoue s'écrive s'effondre s'effraie s'emballe s'en\ aille s'enfuie s'enivre s'épaississe s'épanche s'éteigne s'évapore s'exprime s'immerge s'imprime s'incline s'inonde sache se\ baisse se\ couvre se\ déroule se\ fige se\ froisse se\ grave se\ hâte se\ lève se\ mêle se\ meuve se\ penche se\ perde se\ retourne se\ rouvre se\ soumette se\ souvienne se\ taise se\ tourne sombre souffre sourie succombe sursaute tombe tourne travaille tremble tressaille triomphe veille vienne vibre vive] :vers
+fin
+
+pour intransitif3
+donne "vers md choix [agissant apparaissant arrivant attendant augmentant avançant bouillonnant brillant calculant chancelant commençant débordant déclinant décroissant défaillant demeurant dépassant descendant diminuant discutant disparaissant disposant dormant échouant éclatant éclosant émergeant entrant existant faisant\ fortune figurant flottant frémissant fuyant gelant gémissant grandissant manquant marchant méditant montant mourant naissant nettoyant œuvrant pâlissant parlant penchant pénétrant pensant pleurant plongeant priant progressant prospérant raisonnant rayonnant rectifiant reculant réfléchissant régressant renaissant reparaissant reposant résonnant réussissant revenant riant s'accoudant s'accroissant s'alliant s'arrêtant s'asseyant s'avançant s'échouant s'écrivant s'effondrant s'effrayant s'emballant s'en\ allant s'enfuyant s'enivrant s'épaississant s'épanchant s'éteignant s'évaporant s'exprimant s'immergeant s'imprimant s'inclinant s'inondant sautant se\ baissant se\ couvrant se\ déroulant se\ figeant se\ froissant se\ gravant se\ hâtant se\ levant se\ mêlant se\ mouvant se\ perdant se\ retournant se\ rouvrant se\ soumettant se\ souvenant se\ taisant se\ tournant sombrant sombrant souffrant souffrant souriant souriant succombant succombant sursautant tombant tournant travaillant tremblant triomphant venant vibrant vivant] :vers
+fin
+
+pour indirect
+donne "vers md choix [arrive_à met\ fin_à obéit_à pardonne_à part\ pour parvient_à profite_à profite_de provient_de répond_à revient_de s'allie_à s'implique\ dans s'incline\ devant s'offre_à se\ donne_à se\ réfère_à se\ rend_à se\ souvient_de succède_à va_à vient_de ] :vers
+fin
+
+pour indirect2
+donne "vers md choix [aille_à arrive_à mette\ fin_à obéisse_à pardonne_à parte\ pour parvienne_à profite_à profite_de provienne_de réponde_à revienne_de s'allie_à s'implique\ dans s'incline\ devant s'offre_à se\ donne_à se\ réfère_à se\ rende_à se\ souvienne_de succède_à vienne_de ] :vers
+fin
+
+pour indirect3
+donne "vers md choix [allant_à arrivant_à mettant\ fin_à obéissant_à pardonnant_à partant\ pour parvenant_à profitant_à profitant_de provenant_de répondant_à revenant_de s'alliant_à s'impliquant\ dans s'inclinant\ devant s'offrant_à se\ donnant_à se\ référant_à se\ rendant_à se\ souvenant_de succédant_à venant_de ] :vers
+fin
+
+pour etat
+donne "vers md choix [a\ l'air demeure devient est n'a\ pas\ l'air n'est\ pas ne\ demeure\ pas ne\ devient\ pas ne\ paraît\ pas ne\ reste\ pas ne\ se\ considère\ pas ne\ se\ fait\ pas ne\ se\ rend\ pas ne\ se\ trouve\ pas ne\ semble\ pas paraît reste se\ considère se\ fait se\ rend se\ tient se\ trouve semble] :vers
+fin
+
+pour etat2
+donne "vers md choix [ait\ l'air demeure devienne soit n'ait\ pas\ l'air ne\ soit\ pas ne\ demeure\ pas ne\ devienne\ pas ne\ paraisse\ pas ne\ reste\ pas ne\ se\ considère\ pas ne\ se\ fasse\ pas ne\ se\ rende\ pas ne\ se\ trouve\ pas ne\ semble\ pas paraisse reste se\ considère se\ fasse se\ rende se\ tienne se\ trouve semble] :vers
+fin
+
+pour etat3
+donne "vers md choix [ayant\ l'air demeurant devenant étant n'ayant\ pas\ l'air n'étant\ pas ne\ demeurant\ pas ne\ devenant\ pas ne\ paraissant\ pas ne\ restant\ pas ne\ se\ considérant\ pas ne\ se\ faisant\ pas ne\ se\ rendant\ pas ne\ se\ trouvant\ pas ne\ semblant\ pas paraissant restant se\ considérant se\ faisant se\ rendant se\ tenant se\ trouvant semblant] :vers
+fin
+
+pour subordination
+donne "vers md choix [à\ mesure_que à\ tel\ point_que ainsi alors alors\ même_que alors_que après_que après\ quoi après\ tout attendu_que au\ fur\ et\ à\ mesure_que au\ moment\ où au\ point_que au\ reste aujourd'hui aussi aussi\ longtemps_que aussitôt_que avant\ le\ moment\ où bientôt bref c'est\ pourquoi car cependant comme d'ailleurs d'autant\ plus_que d'autre\ part de\ même_que de\ sorte_que demain depuis_que dès\ lors dès\ lors_que dès_que désormais donc du\ moins du\ moment\ où du\ moment_que du\ reste en\ conséquence en\ effet en\ même\ temps_que en\ revanche en\ somme en\ sorte_que enfin ensuite et et puis étant\ donné_que hier jusque‑là longtemps lorsque maintenant maintenant_que mais même\ si néanmoins or ou\ au\ contraire ou\ bien par\ conséquent par\ quoi par\ suite parce_que parfois partout pendant_que pourtant puis puisque quand quand\ bien\ même quand\ même sans\ quoi sauf\ si seulement\ si si si\ bien_que si\ ce\ n'est_que sitôt_que sous\ prétexte_que tandis_que tant_que toujours toutefois toutes\ les\ fois_que une\ fois_que voici_que voilà_que vu_que] :vers
+fin
+
+pour subordination2
+donne "vers md choix [à\ condition_que à\ moins_que à\ supposé_que afin_que avant_que bien_que de\ crainte_que de\ façon_que de\ manière_que de\ peur_que de\ sorte_que en\ admettant_que en\ attendant_que encore_que jusqu'à\ ce_que pour\ peu_que pour_que pourvu_que quoique sans\ que] :vers
+fin
+
+pour que
+donne "vers md "que :vers
+fin
+
+pour qui
+donne "vers md "qui :vers
+fin
+
+pour avec_qui
+donne "vers md choix [à\ cause\ de\ qui à\ côté\ de\ qui à\ défaut\ de\ qui à\ droite\ de\ qui à\ gauche\ de\ qui à\ l'aide\ de\ qui à\ l'encontre\ de\ qui à\ part\ qui à\ partir\ de\ qui à\ qui à\ travers\ qui à\ travers\ qui ainsi\ que\ qui après\ qui au‑delà\ de\ qui au‑dessous\ de\ qui au‑dessus\ de\ qui au‑devant\ de\ qui au\ bas\ de\ qui au\ bord\ de\ qui au\ cœur\ de\ qui au\ moyen\ de\ qui au\ nom\ de\ qui au\ prix\ de\ qui au\ sujet\ de\ qui auprès\ de\ qui avant\ qui avec\ qui avec\ qui chez\ qui comme\ qui contre\ qui contre\ qui d'après\ qui dans\ qui de\ qui depuis\ qui derrière\ qui dès\ qui devant\ qui dominant\ qui dont du\ côté\ de\ qui durant\ qui en\ présence\ de\ qui en\ qui en\ qui en\ raison\ de\ qui envers\ qui excepté\ qui faute\ de\ qui fors\ qui grâce\ à\ qui où par‑delà\ qui par‑dessous\ qui par‑dessus\ qui par\ qui par\ qui pendant\ qui pour\ qui pour\ qui près\ de\ qui près\ de\ qui sans\ qui selon\ qui sous‑tendant\ qui sous\ qui sous\ qui suivant\ qui sur\ qui sur\ qui vers\ qui vers\ qui vis‑à‑vis\ de\ qui] :vers
+fin
+
+pour voire
+donne "vers md choix [à\ l'inverse_de ainsi_que c'est‑à‑dire comme donc ensuite mais\ aussi mais\ encore mais\ non ou ou\ bien ou\ même par\ suite peut-être puis sans\ doute voire] :vers
+fin
+
+pour coordination
+donne "vers md choix [avec et ou ou\ bien sans mais\ aussi ainsi_que] :vers
+fin
+
+pour preposition
+donne "vers md choix [à à\ cause_de à\ côté_de à\ défaut_de à\ droite_de à\ gauche_de à\ l'aide_de à\ l'encontre_de à\ la\ fin_de à\ part à\ partir_de à\ travers ainsi_que après au\ bas_de au\ bord_de au\ centre_de au\ cœur_de au\ début_de au‑delà_de au‑dessous_de au‑dessus_de au‑devant_de au\ moyen_de au\ nom_de auprès_de au\ prix_de au\ sujet_de avant avec chez comme contre dans d'après d'où de depuis derrière dès devant dominant du\ côté_de durant en en\ l'année_de en\ présence_de en\ raison_de envers excepté faute_de fors grâce_à hormis hors_de jouxtant jusqu'à loin_de malgré moyennant outre par par‑delà par‑dessous par‑dessus pendant pendant\ le\ mois_de pour précédant près_de prétextant proche_de sans sauf selon sous sous‑tendant suivant sur touchant vers via vis‑à‑vis_de] :vers
+fin
+
+pour dater
+donne "vers md choix [de\ feu de\ terre de\ fer d'eau de\ bois] md choix [lièvre dragon serpent cheval mouton singe oiseau chien cochon rat bœuf tigre] md choix [le le] md choix [en\ l'année_de en\ l'année_de en\ l'année_de en\ l'année_de jusqu'à\ l'année_de avant\ l'année_de après\ l'année_de à\ partir\ de\ l'année_de]:vers
+fin

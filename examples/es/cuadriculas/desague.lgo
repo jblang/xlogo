@@ -1,0 +1,48 @@
+# Comando de Inicio: empezar 15
+para empezar :ord
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  ponformalapiz 1 haz "orden :ord inicializar :orden
+  ponposicion poscuad centrand centrand
+  proplapiz punto posicion
+  mientras [:contador < (:total-1)] [
+    ponposicion poscuad azar :orden azar :orden
+    si ((primero encuentracolor posicion) = 0) [
+      ponrumbo 90 * azar 4 avanza :celltam
+    si ((primero encuentracolor posicion) = 1) [
+      retrocede :celltam poncolorlapiz [1 0 0] pongrosor 4 punto posicion
+      proplapiz bajalapiz avanza :celltam subelapiz
+      haz "contador :contador+1]]]
+fin
+
+para inicializar :orden
+# Variables globales
+  haz "total potencia :orden 2
+  haz "celltam 380/:orden
+  haz "offset (0.5*:celltam)-190
+  haz "lado 180/:orden
+  haz "colpaso 255/:total
+  haz "contador 0
+fin
+
+para poscuad :m :n
+# Devuelve la posicion x y en pantalla
+  haz "x (:n*:celltam) + :offset
+  haz "y (:m*:celltam) + :offset
+  devuelve lista :x :y
+fin
+
+para proplapiz
+# Fija grosor y color de lapiz
+  pongrosor :lado
+  haz "col 255 - 0.75*(:contador * :colpaso)
+  poncolorlapiz ( lista 1 :col 255 )
+fin
+
+para centrand
+# Posicion aleatoria en tercio central de cuadricula
+  haz "3orden redondea :orden/3
+  devuelve :3orden + azar :3orden
+fin

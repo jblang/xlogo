@@ -1,0 +1,24 @@
+# Main Command: Go
+# Random_Lines by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to ranpoint
+  SetXY (Random 340)-170 (Random 380)-190
+end
+
+to labxy
+  SetPC White Label Pos
+end
+
+to go
+  New SetFontJustify [1 1] LabXY
+  SetPenWidth 2 PenDown Repeat 12 [
+  SetPC (1+Random 6) RanPoint LabXY Wait 30]
+  SetPC (1+Random 6) Home
+end

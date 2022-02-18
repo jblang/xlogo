@@ -1,0 +1,343 @@
+# Cria uma calculadora com as operações básicas. Totalmente funcional.
+# Escreva a palavra tela na caixa de comandos, dê enter e usa essa calculadora.
+# Enviado por Alan Cézar Faria Araújo (alanacfa arroba hotmail.com)
+
+aprenda tela
+#inicia a calculadora
+atr "abc 115
+atr "bca 50
+atr "acb 23
+atr "bac 78
+atr "x 1
+atr "y 0
+atr "a 0
+atr "b 1
+atr "c 0
+atr "d []
+atr "e []
+atr "f []
+atr "g []
+atr "h []
+atr "i []
+atr "j []
+atr "k []
+atr "l []
+atr "p 0
+atr "q 0
+atr "xy 0
+atr "op [+]
+atr "v 0
+atr "var 0
+ld
+dt
+un mudexy -150 170
+mudeel 3
+ul
+repita 4 [pd 90 pf 300]
+un mudexy -155 175
+ul
+repita 4 [pd 90 pf 310]
+repita 5 [un centro
+pd 180 pf :abc pd 90 pf :bca
+ul
+execute [botão]
+atr "bca :bca-45]
+atr "abc 70
+atr "bca 50
+repita 5 [un centro
+pd 180 pf :abc pd 90 pf :bca
+ul
+execute [botão]
+atr "bca :bca-45
+]
+atr "bca 5
+repita 3 [un centro
+mudef 15
+un pd 180 pf :abc-10 pd 90 pf :bca+60 pd 90
+atr "bca :bca-45
+rotule :x
+atr "x :x+1]
+atr "abc 25
+atr "bca 50
+repita 5 [un centro
+pd 180 pf :abc pd 90 pf :bca
+ul
+execute [botão]
+atr "bca :bca-45]
+atr "abc 20
+atr "bca 50
+repita 5 [un centro
+pd 180 pt :abc pd 90 pf :bca
+ul
+execute [botão]
+atr "bca :bca-45]
+atr "bca 5
+repita 3 [un centro
+mudef 15
+un pd 180 pf :abc-5 pd 90 pf :bca+60 pd 90
+atr "bca :bca-45
+rotule :x
+atr "x :x+1]
+repita 4 [un centro
+pf :acb pe 90 pf 132 pd 90
+execute [botão]
+atr "acb :acb-45]
+atr "bca 5
+repita 3 [un centro
+mudef 15
+pf 30 pe 90 pf :bca+60 pd 90
+atr "bca :bca-45
+rotule :x
+atr "x :x+1]
+atr "acb 65
+repita 3 [un centro
+pf :acb pe 90 pf :bac pd 90
+execute [botão2]
+atr "bac :bac-75]
+un pf 50 pe 90 pf 205 pd 90
+mudeel 2
+ul
+repita 2 [pf 20 pd 30 pf 2 pd 30 pf 2 pd 30 pf 260 pd 30 pf 2 pd 30 pf 2 pd 30]
+un centro
+pd 180 pf 105 pd 90 pf 65 pd 90
+rotule [0]
+pe 90 pf 61 pd 90
+rotule [M+]
+un centro
+pd 180 pf 105 pd 90 pf 65 pd 90
+pd 90 pf 40 pe 90
+rotule [+/-]
+pd 90 pf 50 pe 90
+rotule [,]
+pd 90 pf 45 pe 90
+rotule [+]
+pd 90 pf 45 pe 90
+rotule [=]
+un centro
+pd 180 pf 60 pd 90 pf 126 pd 90
+rotule [M-]
+un centro
+pd 180 pf 60 pe 90 pf 70 pe 90
+rotule [-]
+pd 90 pf 42 pe 90
+rotule [%]
+un centro
+pd 180 pf 15 pd 90 pf 128 pd 90
+rotule [MR]
+un centro
+pd 180 pf 15 pe 90 pf 70 pe 90
+rotule [*]
+pd 90 pf 43 pe 90
+rotule [x²]
+un centro
+pf 30 pe 90 pf 128 pd 90
+rotule [MC]
+un centro
+pf 30 pd 90 pf 70 pe 90
+rotule [/]
+pd 90 pf 38 pe 90
+rotule [x½]
+un centro
+pf 73 pe 90 pf 53 pd 90
+mudef 20
+rotule [«]
+mudef 18
+pd 90 pf 68 pd 90 pf 2 pe 180
+rotule [CE]
+pd 90 pf 80 pe 90
+rotule [C]
+execute [clique]
+fim
+
+aprenda botão
+ul
+mudeel 2
+repita 4 [pf 25 pd 30 pf 2 pd 30 pf 2 pd 30]
+fim
+
+aprenda botão2
+mudeel 2
+ul
+repita 2 [pf 25 pd 30 pf 2 pd 30 pf 2 pd 30 pf 55 pd 30 pf 2 pd 30 pf 2 pd 30]
+fim
+
+aprenda clique
+atr "mouse leiamouse
+atr "x elem 1 posmouse
+atr "y elem 2 posmouse
+se :mouse=1 & :x>-80 & :x<-48 & :y>-115 & :y<-84 [atr "y 0 execute [chipset]]
+se :mouse=1 & :x>-35 & :x<-2 & :y>-115 & :y<-84 []
+se :mouse=1 & :x>10 & :x<42 & :y>-115 & :y<-84 []
+se :mouse=1 & :x>58 & :x<88 & :y>-115 & :y<-84 [atr "var 1 atr "op [+] execute [termos]]
+se :mouse=1 & :x>100 & :x<132 & :y>-115 & :y<-84 [execute [result]]
+se :mouse=1 & :x>-80 & :x<-48 & :y>-70 & :y<-38 [atr "y 1 execute [chipset]]
+se :mouse=1 & :x>-35 & :x<-2 & :y>-70 & :y<-38 [atr "y 2 execute [chipset]]
+se :mouse=1 & :x>10 & :x<42 & :y>-70 & :y<-38 [atr "y 3 execute [chipset]]
+se :mouse=1 & :x>58 & :x<88 & :y>-70 & :y<-38 [atr "var 1 atr "op [*] execute [termos]]
+se :mouse=1 & :x>100 & :x<132 & :y>-70 & :y<-38 []
+se :mouse=1 & :x>-80 & :x<-48 & :y>-24 & :y<8 [atr "y 4 execute [chipset]]
+se :mouse=1 & :x>-35 & :x<-2 & :y>-24 & :y<8 [atr "y 5 execute [chipset]]
+se :mouse=1 & :x>10 & :x<42 & :y>-24 & :y<8 [atr "y 6 execute [chipset]]
+se :mouse=1 & :x>58 & :x<88 & :y>-24 & :y<8 [atr "var 1 atr "op [*] execute [termos]]
+se :mouse=1 & :x>100 & :x<132 & :y>-24 & :y<8 []
+se :mouse=1 & :x>-80 & :x<-48 & :y>20 & :y<52 [atr "y 7 execute [chipset]]
+se :mouse=1 & :x>-35 & :x<-2 & :y>20 & :y<52 [atr "y 8 execute [chipset]]
+se :mouse=1 & :x>10 & :x<42 & :y>20 & :y<52 [atr "y 9 execute [chipset]]
+se :mouse=1 & :x>58 & :x<88 & :y>20 & :y<52 [atr "var 1 atr "op [/] execute [termos]]
+se :mouse=1 & :x>100 & :x<132 & :y>20 & :y<52 []
+se :mouse=1 & :x>-134 & :x<-102 & :y>-115 & :y<-84 []
+se :mouse=1 & :x>-134 & :x<-102 & :y>-70 & :y<-38 []
+se :mouse=1 & :x>-134 & :x<-102 & :y>-24 & :y<8 []
+se :mouse=1 & :x>-134 & :x<-102 & :y>20 & :y<52 []
+se :mouse=1 & :x>-80 & :x<-17 & :y>64 & :y<95 []
+se :mouse=1 & :x>-4 & :x<55 & :y>64 & :y<95 []
+se :mouse=1 & :x>70 & :x<122 & :y>64 & :y<95 [execute [tela]]
+execute [clique]
+fim
+
+
+aprenda chipset
+#chipset do programa
+atr "z 0
+atr "a 0
+se :var=1 [
+mudecl 7
+rotule :xy
+mudecl 0
+atr "d []
+atr "e []
+atr "f []
+atr "g []
+atr "h []
+atr "i []
+atr "j []
+atr "k []
+atr "l []
+atr "xy 0
+atr "var 0
+execute [display]]
+se :q=1 [
+mudecl 7
+rotule :xy
+mudecl 0
+atr "a 0
+atr "d []
+atr "e []
+atr "f []
+atr "g []
+atr "h []
+atr "i []
+atr "j []
+atr "k []
+atr "l []
+atr "xy 0
+atr "var 0
+atr "q 0
+execute [display]]
+execute [display]
+fim
+
+aprenda result
+#Processador do programa
+se :z=1 [] [atr "z 1
+se :op= [+] [
+execute [casas]
+mudexy 110-9*:p 120
+mudecl 7 rotule :xy
+mudecl 0
+atr "xy :o+:xy
+execute [casas]
+mostre :p
+mudexy 110-9*:p 120
+rotule :xy
+atr "q 1]
+se :op= [/] [
+execute [casas]
+mudexy 110-9*:p 120
+mudecl 7 rotule :xy
+mudecl 0
+atr "xy :o/:xy
+execute [casas]
+mudexy 110-9*:p 120
+rotule :xy
+atr "q 1]
+se :op= [*] [
+execute [casas]
+mudexy 110-9*:p 120
+mudecl 7 rotule :xy
+mudecl 0
+atr "xy :o*:xy
+execute [casas]
+mudexy 110-9*:p 120
+rotule :xy
+atr "q 1]
+se :op= [-] [
+execute [casas]
+mudexy 110-9*:p 120
+mudecl 7 rotule :xy
+mudecl 0
+atr "xy :o-:xy
+execute [casas]
+mudexy 110-9*:p 120
+rotule :xy
+atr "q 1]]
+execute [clique]
+fim
+
+aprenda termos
+#memória ram
+atr "o :xy
+fim
+
+aprenda display
+#placa de vídeo do programa
+se :d=[] [atr "d :y atr "xy :d execute [casas] mudexy 110-9*:p 120
+rotule :d
+atr "xy :d
+atr "a 1] [se :e=[] [se :a=1 [] [execute [casas] mudexy 110-9*:p 120 mudecl 7 rotule :xy mudecl 0
+atr "e :y
+atr "xy :d*10+:e
+execute [casas]  mudexy 110-9*:p 120
+rotule :xy]] [se :f=[] [execute [casas] mudexy 110-9*:p 120 mudecl 7 rotule :xy mudecl 0
+atr "f :y
+atr "xy :d*100+:e*10+:f
+execute [casas]  mudexy 110-9*:p 120
+rotule :xy] [se :g= [] [execute [casas] mudexy 110-9*:p 120 mudecl 7 rotule :xy mudecl 0
+atr "g :y
+atr "xy :d*1000+:e*100+:f*10+:g
+execute [casas]  mudexy 110-9*:p 120
+rotule :xy] [se :h= [] [execute [casas] mudexy 110-9*:p 120 mudecl 7 rotule :xy mudecl 0
+atr "h :y
+atr "xy :d*10000+:e*1000+:f*100+:g*10+:h
+execute [casas]  mudexy 110-9*:p 120
+rotule :xy] [se :i= [] [execute [casas] mudexy 110-9*:p 120 mudecl 7 rotule :xy mudecl 0
+atr "i :y
+atr "xy :d*100000+:e*10000+:f*1000+:g*100+:h*10+:i
+execute [casas]  mudexy 110-9*:p 120
+rotule :xy] [se :j= [] [execute [casas] mudexy 110-9*:p 120 mudecl 7 rotule :xy mudecl 0
+atr "j :y
+atr "xy :d*1000000+:e*100000+:f*10000+:g*1000+:h*100+:i*10+:j
+execute [casas]  mudexy 110-9*:p 120
+rotule :xy] [se :k= [] [execute [casas] mudexy 110-9*:p 120 mudecl 7 rotule :xy mudecl 0
+atr "k :y
+atr "xy :d*10000000+:e*1000000+:f*100000+:g*10000+:h*1000+:i*100+:j*10+:k
+execute [casas]  mudexy 110-9*:p 120
+rotule :xy]]]]]]]]
+execute [clique]
+fim
+
+aprenda casas
+#conta quantas casas o número exibido atualmente no display tem
+atr "p 0
+atr "v :xy
+se :v<0 [menos :v atr "p :p+1]
+enquanto [:v>1] [atr "v :v/10 atr "p :p+1]
+atr "v :xy
+repita 20 [se éinteiro? :v [] [atr "v :v*10 atr "p :p+1]]
+fim
+
+aprenda informacoes
+#Coltec - UFMG
+#Alan Cezar Faria Araújo - 2009
+#Contato: alanacfa "arroba" hotmail.com
+fim

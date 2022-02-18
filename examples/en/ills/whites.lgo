@@ -1,0 +1,34 @@
+# Main Command: Go
+# Whites by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to rectangle :width :height
+  # rectangle (width x height) drawn from centre (tx)
+  PenUp Back :Height/2 Right 90 Back :Width/2
+  PenDown Repeat 2 [ 
+    Forward :Width Left 90 Forward :Height Left 90 ] 
+  PenUp Forward :Width/2 Left 90 Forward :Height/2
+end
+
+to go
+  New
+  Make "Col1 [0 0 64] Make "Col2 [255 255 96]
+  SetSC :Col1 SetPC :Col2
+  SetPos [0 -125] Repeat 4 [
+    Rectangle 399 49 Fill Forward 100]
+  Wait 60 SetPC Gray
+  SetPos [-90 0] Rectangle 61 361 FillZone
+  SetPos [90 0] Rectangle 61 361 FillZone
+  Wait 120 SetPC :Col1
+  SetPos [-90 -175] Repeat 4 [
+    Rectangle 80 49 FillZone Forward 100]
+  SetPC :Col2
+  SetPos [90 -125] Repeat 4 [
+    Rectangle 80 49 FillZone Forward 100]
+end

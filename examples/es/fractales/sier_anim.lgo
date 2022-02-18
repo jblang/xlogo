@@ -1,0 +1,46 @@
+# Comando de Inicio: empezar 6
+para empezar :orden
+  nuevo :orden
+#
+  ponxy -:dist/2 (- (:dist/2-(:lado / raizcuadrada 2)))
+  poncolorlapiz verde bajalapiz
+  repite 4
+    [ sierpinski :orden 1
+      giraderecha 45 avanza :lado giraderecha 45]
+  subelapiz centro
+  poncolorlapiz rojooscuro bajalapiz rellena   # rellenamos la curva
+fin
+
+para sierpinski :orden :paridad
+  si :orden < 1 [avanza :lado alto]       # o sea, si = 0
+  giraderecha :paridad*45
+  sierpinski :orden-1 cambiasigno :paridad
+  giraizquierda :paridad*45 avanza :lado
+  giraizquierda :paridad*45
+  sierpinski :orden-1 cambiasigno :paridad
+  giraderecha :paridad*45
+fin
+
+para nuevo :orden
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  haz "lado 112 / potencia (raizcuadrada 2) :orden   # varable global
+  haz "d potencia 2 truncar (1+0.5*(:orden+1))
+  haz "h potencia 2 truncar (1+0.5*(:orden)) haz "h :h-1
+  haz "dist (:h*:lado) + (:d * (:lado / raizcuadrada 2))
+fin
+
+para empieza
+  repitepara [orden 0 10]
+    [ nuevo :orden animacion
+      ponxy -:dist/2 (-(:dist/2-(:lado / raizcuadrada 2)))
+      poncolorlapiz verde bajalapiz
+      repite 4
+        [ sierpinski :orden 1
+          giraderecha 45 avanza :lado giraderecha 45]
+      subelapiz centro poncolorlapiz rojooscuro bajalapiz rellena
+      refrescar espera 80 subelapiz centro]
+  detieneanimacion
+fin

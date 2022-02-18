@@ -1,0 +1,21 @@
+# Commande principale: demarrer
+pour demarrer
+# On initialise le nombre recherche et le nombre de coups
+donne "nombre hasard 32
+donne "compteur 0
+boucle
+fin
+
+pour boucle
+lis [proposez un nombre] "essai
+si nombre? :essai[
+  # Si la valeur rentrée est bien un nombre 
+  si :nombre=:essai[ec ph ph [vous avez gagné en ] :compteur+1 [coup(s)]][
+    si :essai>:nombre [ec [Plus petit]][ec [Plus grand]]
+    donne "compteur :compteur+1
+    boucle
+  ]
+]
+[ecris [Vous devez rentrer un nombre valide!] boucle]
+fin
+

@@ -1,0 +1,397 @@
+# Para dois jogadores. Clique sobre a célula que deseje marcar. 
+# Vence o que completar uma linha (diagonal, vertical ou horizontal).
+
+# Um clássico. Para iniciar, escreva jogo na janela de comandos e dê enter.
+# Enviado por Alan Cézar Faria Araújo (alanacfa arroba hotmail.com)
+
+aprenda tela
+#faz a tela principal do programa
+limpedesenho
+mudef 12
+un
+mudef 12
+se :leia2=1 [] [
+mudepos [-80 -77]
+rotule [Player 1:]
+mudepos [-80 -92]
+rotule [Player 2:]
+atr "leia2 1]
+dt
+un mudepos [-58 100]
+mudenft 22
+mudepl 1
+mudef 18
+rotule [Jogo da Velha]
+se :valor2=0 [atr "valor2 1 atr "valor 0 atr "valor3 [Player 1]] [atr
+"valor2 0 atr "valor 1 atr "valor3 [Player 2]]
+mudef 12
+mudepos [-10 -77]
+rotule [Começe ]
+mudepos [40 -77]
+rotule :valor3
+mudef 18
+atr "cod 0
+atr "cod2 0
+atr "cod3 0
+atr "cod4 0
+atr "cod5 0
+atr "cod6 0
+atr "cod7 0
+atr "cod8 0
+atr "cod9 0
+atr "regra 0
+atr "regra1 0
+atr "regra2 0
+atr "regra3 0
+atr "regra4 0
+atr "regra5 0
+atr "regra6 0
+atr "regra7 0
+atr "regra8 0
+atr "regra9 0
+un centro
+un pf 140 pd 90 ul pf 115 pd 90
+repita 3 [pf 240 pd 90] pf 130
+un centro
+un pf 150 pd 90 ul pf 125 pd 90
+repita 3 [pf 260 pd 90] pf 150
+un centro
+mudeel 5 #espessura da linha
+un pf 30 pe 90 pf 60 pd 90 pd 90
+repita 2 [ul pf 40 pe 90 pf 40 pt 40 pd 90]
+repita 2 [pf 40 pt 40 pd 90 pf 40 pe 90]
+pe 90 pf 40 pe 90 pf 40 pe 90 pf 40 pt 40 pd 90 pf 40 pt 40 pd 90 pf 40
+mudef 12
+un centro #volta ao centro
+execute [comando]
+fim
+
+aprenda clique
+atr "mouse leiamouse
+atr "x elem 1 posmouse
+atr "y elem 2 posmouse
+se :mouse=1 & :x>-60 & :x<-20 & :y>30 & :y<70 [lol]
+se :mouse=1 & :x>-20 & :x<20 & :y>30 & :y<70 [lol2]
+se :mouse=1 & :x>20 & :x<60 & :y>30 & :y<70 [lol3]
+se :mouse=1 & :x>20 & :x<60 & :y>-10 & :y<30 [lol4]
+se :mouse=1 & :x>-20 & :x<20 & :y>-10 & :y<30 [lol5]
+se :mouse=1 & :x>-60 & :x<-20 & :y>-10 & :y<30 [lol6]
+se :mouse=1 & :x>-60 & :x<-20 & :y>-50 & :y<-10 [lol7]
+se :mouse=1 & :x>-20 & :x<20 & :y>-50 & :y<-10 [lol8]
+se :mouse=1 & :x>20 & :x<60 & :y>-50 & :y<-10 [lol9]
+execute [clique]
+fim
+
+aprenda lol
+se :cod=1 [msg [Espaço já utilizado]] [
+atr "cod 1
+se :valor=0
+[
+mudepos [-40 30] pf 20 circ 10 atr "valor 1 atr "regra 1 execute [comando]]
+[mudepos [-50 40]
+mudef 30
+rotule [X]
+mudef 18
+mudenft 22
+atr "valor 0 atr "regra 2 execute [comando]]]
+fim
+
+aprenda lol2
+se :cod2=1 [msg [Espaço já utilizado]] [
+atr "cod2 1
+se :valor=0
+[
+mudepos [1 30] pf 20 circ 10 atr "valor 1  atr "regra2 1 execute [comando]
+] [mudepos [-10 40]
+mudef 30
+rotule [X]
+mudef 18
+mudenft 22
+atr "valor 0  atr "regra2 2 execute [comando]]]
+fim
+
+aprenda rali
+se étecla? [atr "car leiacar se :car=-37 [pe 90]
+se :car=-39 [pd 90]
+se :car=57 [pd 45]
+se :car=-38 [pf 10]
+se :car=-40 [pt 10]]
+rali
+fim
+
+aprenda lol3
+se :cod3=1 [msg [Espaço já utilizado]] [
+atr "cod3 1
+se :valor=0
+[
+mudepos [40 50] circ 10 atr "valor 1 atr "regra3 1 execute [comando]
+] [mudepos [31 40]
+mudef 30
+rotule [X]
+mudef 18
+mudenft 22
+atr "valor 0 atr "regra3 2 execute [comando]]]
+fim
+
+aprenda lol4
+se :cod4=1 [msg [Espaço já utilizado]] [
+atr "cod4 1
+se :valor=0
+[
+mudepos [40 10] circ 10 atr "valor 1  atr "regra4 1 execute [comando]
+] [mudepos [31 0]
+mudef 30
+rotule [X]
+mudef 18
+mudenft 22
+atr "valor 0  atr "regra4 2 execute [comando]]]
+fim
+
+aprenda lol5
+se :cod5=1 [msg [Espaço já utilizado]] [
+atr "cod5 1
+se :valor=0
+[
+mudepos [0 10] circ 10 atr "valor 1  atr "regra5 1 execute [comando]
+] [mudepos [-10 0]
+mudef 30
+rotule [X]
+mudef 18
+mudenft 22
+atr "valor 0  atr "regra5 2 execute [comando]]]
+fim
+
+aprenda lol6
+se :cod6=1 [msg [Espaço já utilizado]] [
+atr "cod6 1
+se :valor=0
+[
+mudepos [-40 10] circ 10 atr "valor 1  atr "regra6 1 execute [comando]
+] [mudepos [-50 0]
+mudef 30
+rotule [X]
+mudef 18
+mudenft 22
+atr "valor 0  atr "regra6 2 execute [comando]]]
+fim
+
+aprenda lol7
+se :cod7=1 [msg [Espaço já utilizado]] [
+atr "cod7 1
+se :valor=0
+[
+mudepos [-40 -30] circ 10 atr "valor 1 atr "regra7 1  execute [comando]
+] [mudepos [-50 -40]
+mudef 30
+rotule [X]
+mudef 18
+mudenft 22
+atr "valor 0  atr "regra7 2 execute [comando]]]
+fim
+
+aprenda lol8
+se :cod8=1 [msg [Espaço já utilizado]] [
+atr "cod8 1
+se :valor=0
+[
+mudepos [0 -30] circ 10 atr "valor 1 atr "regra8 1  execute [comando]
+] [mudepos [-10 -40]
+mudef 30
+rotule [X]
+mudef 18
+mudenft 22
+atr "valor 0  atr "regra8 2 execute [comando]]]
+fim
+
+aprenda lol9
+se :cod9=1 [msg [Espaço já utilizado]] [
+atr "cod9 1
+se :valor=0
+[
+mudepos [40 -30] circ 10 atr "valor 1  atr "regra9 1 execute [comando]
+] [mudepos [31 -40]
+mudef 30
+rotule [X]
+mudef 18
+mudenft 22
+atr "valor 0 atr "regra9 2  execute [comando]]]
+fim
+
+aprenda comando
+execute [pontos]
+execute [regra10]
+execute [velha]
+execute [clique]
+#execute [rali]
+fim
+
+aprenda regra
+se :regra2=1 [se :regra3=1 [execute [leia2] execute [espera] execute
+[mensagem2]]]
+se :regra6=1 [se :regra7=1 [execute [leia3] execute [espera] execute
+[mensagem2]]]
+se :regra5=1 [se :regra9=1 [execute [leia4] execute [espera] execute
+[mensagem2]]]
+fim
+
+aprenda regra10
+se :regra=1 [regra]
+se :regra=2 [regra2]
+se :regra3=1 [regra3]
+se :regra3=2 [regra4]
+se :regra5=1 [regra5]
+se :regra5=2 [regra6]
+se :regra7=1 [regra7]
+se :regra7=2 [regra8]
+fim
+
+aprenda regra2
+se :regra2=2 [se :regra3=2 [execute [leia2] execute [espera] execute
+[mensagem3]]]
+se :regra6=2 [se :regra7=2 [execute [leia3] execute [espera] execute
+[mensagem3]]]
+se :regra5=2 [se :regra9=2 [execute [leia4] execute [espera] execute
+[mensagem3]]]
+fim
+
+aprenda mensagem2
+msg [Player 1 Venceu]
+atr "pontos :pontos+1
+atr "leia2 0
+execute [tela]
+#atr "pontos [:pontos+1]
+fim
+
+aprenda regra3
+se :regra4=1 [se :regra9=1 [execute [leia5] execute [espera] execute
+[mensagem2]]]
+se :regra5=1 [se :regra7=1 [execute [leia6] execute [espera] execute
+[mensagem2]]]
+fim
+
+aprenda regra5
+se :regra2=1 [se :regra8=1 [execute [leia7] execute [espera] execute
+[mensagem2]]]
+se :regra6=1 [se :regra4=1 [execute [leia8] execute [espera] execute
+[mensagem2]]]
+fim
+
+aprenda regra7
+se :regra8=1 [se :regra9=1 [execute [leia9] execute [espera] execute
+[mensagem2]]]
+fim
+
+aprenda mensagem3
+msg [Player 2 Venceu]
+atr "pontos2 :pontos2+1
+atr "leia2 0
+execute [tela]
+fim
+
+aprenda regra4
+se :regra4=2 [se :regra9=2 [execute [leia5] execute [espera] execute
+[mensagem3]]]
+se :regra5=2 [se :regra7=2 [execute [leia6] execute [espera] execute
+[mensagem3]]]
+fim
+
+aprenda regra6
+se :regra2=2 [se :regra8=2 [execute [leia7] execute [espera] execute
+[mensagem3]]]
+se :regra6=2 [se :regra4=2 [execute [leia8] execute [espera] execute
+[mensagem3]]]
+fim
+
+aprenda regra8
+se :regra8=2 [se :regra9=2 [execute [leia9] execute [espera] execute
+[mensagem3]]]
+fim
+
+aprenda velha
+se :cod=1 [se :cod2=1 [se :cod3=1 [se :cod4=1 [se :cod5=1 [se :cod6=1 [se
+:cod7=1 [se :cod8=1 [se :cod9=1 [msg [Deu Velha :D] atr "leia2 0 execute
+[tela]]]]]]]]]]
+fim
+
+aprenda pontos
+mudef 12
+mudepos [-30 -77]
+rotule :pontos
+mudepos [-30 -92]
+rotule :pontos2
+mudef 18
+fim
+
+aprenda jogo
+atr "valor2 0
+atr "pontos 0
+atr "pontos2 0
+atr "leia2 0
+execute [tela]
+fim
+
+aprenda leia2
+un centro
+mudepos [-55 50]
+ul pd 90 pf 110
+un centro
+fim
+
+aprenda leia3
+un centro
+mudepos [-40 65]
+ul pd 180 pf 110
+un centro
+fim
+
+aprenda leia4
+un centro
+mudepos [-52 62]
+ul pd 135 pf 145
+un centro
+fim
+
+aprenda espera
+espere 60
+fim
+
+aprenda leia5
+un centro
+mudepos [40 65]
+ul pd 180 pf 110
+un centro
+fim
+
+aprenda leia6
+un centro
+mudepos [50 62]
+ul pe 135 pf 145
+un centro
+fim
+
+aprenda leia7
+un centro
+mudepos [0 65]
+ul pd 180 pf 110
+un centro
+fim
+
+aprenda leia8
+un centro
+mudepos [-55 10]
+ul pd 90 pf 110
+un centro
+fim
+
+aprenda leia9
+un centro
+mudepos [-55 -30]
+ul pd 90 pf 110
+un centro
+fim
+
+aprenda informacoes
+#Coltec - UFMG
+#Alan Cezar Faria Araújo - Primeiro ano
+#Contato: alanacfa "arroba" hotmail.com
+fim

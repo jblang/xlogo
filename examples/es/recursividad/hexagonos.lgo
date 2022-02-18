@@ -1,0 +1,26 @@
+# Comando de Inicio: empezar
+para empezar
+  nuevo giraderecha 30 hexagono 100
+fin
+
+para nuevo
+# Inicializamos pantalla, lapiz, tortuga, ...
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz 2 subelapiz ocultatortuga
+fin
+
+para hexagono :lado
+  si :lado < 12 [alto]
+  retrocede :lado giraderecha 60
+  repite 6 [poncolorlapiz hue 3*distancia [0 0]
+  bajalapiz avanza :lado subelapiz
+  giraizquierda 60 hexagono :lado/2]
+  giraizquierda 60 avanza :lado
+fin
+
+para hue :angulo
+  haz "red redondea 127*(1+seno :angulo)
+  haz "green redondea 127*(1+seno(120+:angulo))
+  haz "blue redondea 127*(1+seno(240+:angulo))
+  devuelve frase lista :red :green :blue
+fin

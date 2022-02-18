@@ -1,0 +1,132 @@
+# Commande principale: demarrer
+
+pour demarrer
+fsep 0.1
+vt ct
+data
+lis [Show tunings with the following ratios (separated by a space only — no comma, no colon, no dot):] "ratios
+vt
+si vide? :ratios [stoptout]
+si mot? :ratios [donne "ratios mp :ratios []]
+ec (ph [Searching for tunings with:] :ratios)
+ec "--------------------
+rechercher :ratios 1 :tunings :contenus
+fin
+
+pour redemarrer
+data
+ec "--------------------
+lis [Show tunings including the following ratios:] "ratios
+ec "--------------------
+si vide? :ratios [stoptout]
+si mot? :ratios [donne "ratios mp :ratios []]
+ec (ph [Searching for tunings with:] :ratios)
+ec "--------------------
+rechercher :ratios 1 :tunings :contenus
+fin
+
+pour rechercher :ratios :n :tunings :contenus
+si :n > (compte :ratios) [redemarrer]
+si vide? :tunings [ec [No tuning available.] redemarrer]
+donne "ntunings (compte :tunings)
+donne "selection []
+donne "echelles []
+donne "ratio (item :n :ratios)
+#--------------------
+repete :ntunings [
+donne "tune (item compteur :tunings)
+donne "contenu (item compteur :contenus)
+si (membre? :ratio :contenu) [donne "selection (md :tune :selection) donne "echelles (md :contenu :echelles)]]
+#--------------------
+si vide? :selection [ec [No tuning available.] redemarrer]
+si (:n+1) > (compte :ratios) 
+[repete compte :selection [ec (ph sp(item compteur :selection) "--- "\[ (item compteur :echelles) "\] )]]
+si (:n+1) <= (compte :ratios)
+[rechercher :ratios  (:n+1) :selection :echelles] 
+[redemarrer]
+fin
+
+pour data
+donne "tuning " 
+donne "tune " 
+donne "ratios []
+donne "ratio " 
+donne "selection []
+donne "echelles []
+#-----------------------------------------
+donne "semantic_12 [135/128 9/8 32/27 5/4 4/3 45/32 3/2 128/81 5/3 16/9 15/8 2/1]
+donne "22_shrutis [256/243 135/128 16/15 10/9 9/8 32/27 6/5 5/4 81/64 4/3 27/20 45/32 64/45 3/2 128/81 8/5 5/3 27/16 16/9 9/5 15/8 256/135 243/128 2/1]
+donne "semantic_36 [81/80 25/24 135/128 16/15 10/9 9/8 256/225 75/64 32/27 6/5 100/81 5/4 81/64 320/243 4/3 27/20 25/18 45/32 64/45 40/27 3/2 243/160 25/16 128/81 8/5 400/243 5/3 27/16 225/128 16/9 9/5 50/27 15/8 256/135 160/81 2/1]
+donne "semantic_45 [81/80 25/24 135/128 16/15 27/25 800/729 10/9 9/8 256/225 75/64 32/27 1/1 6/5 243/200 100/81 5/4 81/64 32/25 320/243 4/3 27/20 25/18 45/32 1/1 64/45 36/25 40/27 3/2 243/160 25/16 128/81 8/5 81/50 400/243 5/3 1/1 27/16 128/75 225/128 16/9 9/5 729/400 50/27 15/8 256/135 48/25 160/81 2/1]
+donne "semantic_48 [81/80 25/24 135/128 16/15 27/25 800/729 10/9 9/8 256/225 75/64 32/27 6/5 243/200 100/81 5/4 81/64 32/25 320/243 4/3 27/20 512/375 25/18 45/32 64/45 36/25 375/256 40/27 3/2 243/160 25/16 128/81 8/5 81/50 400/243 5/3 27/16 128/75 225/128 16/9 9/5 729/400 50/27 15/8 256/135 48/25 125/64 160/81 2/1]
+donne "semantic_53_sym [81/80 128/125 25/24 135/128 16/15 27/25 800/729 10/9 9/8 256/225 144/125 75/64 32/27 6/5 243/200 100/81 5/4 81/64 32/25 125/96 320/243 4/3 27/20 512/375 25/18 45/32 64/45 36/25 375/256 40/27 3/2 243/160 192/125 25/16 128/81 8/5 81/50 400/243 5/3 27/16 128/75 125/72 225/128 16/9 9/5 729/400 50/27 15/8 256/135 48/25 125/64 160/81 2/1]
+donne "ahir_bhairav_c [101/96 19/18 17/16 5/4 4/3 43/32 3/2 5/3 127/72 16/9 43/24 2/1]
+donne "bhairav_5 [135/128 16/15 5/4 5/4 4/3 1/1 3/2 128/81 8/5 15/8 2/1 2/1]
+donne "bhairav_17 [17/16 16/15 5/4 301/240 4/3 1/1 3/2 51/32 8/5 15/8 241/128 2/1]
+donne "bhairavi_19 [19/18 9/8 32/27 19/16 4/3 45/32 3/2 128/81 19/12 16/9 57/32 2/1]
+donne "bhatiyar_5 [135/128 16/15 5/4 81/64 4/3 45/32 3/2 5/3 27/16 15/8 256/135 2/1]
+donne "bhavani_5 [135/128 16/15 32/27 6/5 45/32 64/45 3/2 128/81 8/5 16/9 9/5 2/1]
+donne "bhavapriya [17/16 273/256 19/16 307/256 45/32 361/256 3/2 51/32 205/128 16/9 57/32 2/1]
+donne "chandrakaus_5 [1/1 135/128 10/9 81/64 81/64 4/3 45/32 128/81 128/81 5/3 5/3 2/1]
+donne "coherent_shrutis [19/18 9/8 19/16 5/4 4/3 45/32 3/2 19/12 5/3 16/9 15/8 2/1]
+donne "darbari_5 [1/1 9/8 32/27 6/5 4/3 9/8 3/2 128/81 8/5 16/9 9/5 2/1]
+donne "gayakapriya [1/1 9/8 19/16 115/96 5/4 3/2 3/2 19/12 51/32 15/8 361/192 2/1]
+donne "jog [1/1 19/16 6/5 5/4 4/3 43/32 3/2 3/2 16/9 43/24 15/8 2/1]
+donne "kalyana_c [64/57 9/8 5/4 64/51 45/32 24/17 3/2 256/153 57/34 15/8 32/17 2/1]
+donne "kanakangi [17/16 9/8 9/8 4/3 4/3 3/2 3/2 19/12 5/3 5/3 2/1 2/1]
+donne "kidarvani [1/1 9/8 19/16 6/5 4/3 9/8 3/2 8/5 16/9 9/5 15/8 2/1]
+donne "kirvanti_c [1/1 9/8 19/16 6/5 64/45 57/40 3/2 51/32 8/5 15/8 303/160 2/1]
+donne "lalit_c [20/19 17/16 5/4 24/19 4/3 17/12 27/19 30/19 51/32 15/8 36/19 2/1]
+donne "madhuvanti_c [143/128 143_128 9/8 19/16 153/128 613/512 45/32 3/2 107/64 27/16 57/32 15/8 2/1]
+donne "marva_c [20/19 17/16 5/4 24/19 1/1 45/32 27/19 5/3 32/19 15/8 36/19 2/1]
+donne "nila_c [17/16 16/15 19/15 19/15 4/3 4/3 8/5 8/5 101/60 101/60 19/10 2/1]
+donne "purvi_c [101/96 19/18 5/4 121/96 45/32 17/12 3/2 101/64 19/12 15/8 91/48 2/1]
+donne "satara [3/4 9/8 3/4 5/4 43/32 3/4 3/2 3/4 27/16 3/4 15/8 2/1]
+donne "shri_rag_c [20/19 161/152 191/152 24/19 107/76 27/19 3/2 30/19 19/12 575/304 36/19 2/1]
+donne "todi_c [20/19 161/152 45/38 19/16 215/152 27/19 3/2 30/19 1935/1216 2297/1216 36/19 2/1]
+donne "amlak [1/1 45/38 19/16 91/76 107/76 27/19 455/304 3/2 30/19 575/304 36/19 2/1]
+donne "aslan [10889/10240 697/640 6073/5120 1555/1280 3387/2560 3689/2560 1889/1280 4115/2560 8963/5120 2295/1280 4999/2560 2/1]
+donne "bala_sem_sem [162/125 15625/13824 15625/10368 162/125 125/96 216/125 15625/10368 2/1 125/108 125/72 15625/6912 2/1]
+donne "byzantine_5 [27/25 625/576 3888/3125 5/4 20736/15625 4/3 3/2 100/81 625/384 27648/15625 16/9 2/1]
+donne "didymus_5 [6561/6250 9/8 6/5 3888/3125 4374/3125 45/32 3/2 8/5 5/3 9/5 5832/3125 2/1]
+donne "harmonics [13/12 7/6 5/4 4/3 17/12 3/2 19/12 5/3 7/4 11/6 23/12 2/1]
+donne "indian_quarters [10/9 9/8 256/225 144/125 4/3 4/3 3/2 3/2 5/3 27/16 128/75 2/1]
+donne "kleismean [21/20 28/25 448/375 5/4 75/56 7/5 3/2 196/125 375/224 25/14 15/8 2/1]
+donne "mohajira_to_slendro [21/20 9/8 6/5 49/40 4/3 7/5 3/2 8/5 49/30 9/5 11/6 2/1]
+donne "mougi_c [19/17 9/8 19/16 6/5 45/32 24/17 3/2 57/32 9/5 15/8 32/17 2/1]
+donne "napolitan_5_l [256/243 16/15 32/27 6/5 4/3 27/20 3/2 5/3 27/16 15/8 256/135 2/1]
+donne "romios [1/1 143/128 19/16 4/3 171/128 271/192 3/2 5/3 911/512 43/24 15/8 2/1]
+donne "semantix_12 [27/25 9/8 7/6 100/81 4/3 25/18 3/2 81/50 42/25 7/4 50/27 2/1]
+donne "semantix_semantic [27/25 9/8 243/200 100/81 4/3 25/18 3/2 81/50 400/243 729/400 50/27 2/1]
+donne "siamese_7_qedo [105/104 560/507 39/35 128/105 35/26 1664/1225 52/35 3/2 105/64 280/169 507/280 2/1]
+donne "slendro_cloud [2/1 729/640 729/320 675/512 675/256 3/2 3/1 243/160 243/80 225/128 225/64 2/1]
+donne "slendro_sequence [81/80 8/7 125/108 75/64 250/189 75/56 189/125 49/32 3969/2560 7/4 567/320 2/1]
+donne "thaï_17l_tetrac [193/175 75/68 17/14 1277/1050 75/56 11269/8400 112/75 4607/2800 288/175 2901/1600 136/75 2/1]
+donne "thaï_reversible [109/100 167/150 243/200 92/75 67/50 203/150 112/75 1973/1200 329/200 29/16 136/75 2/1]
+donne "tsaharuk_12a [755/696 296/261 273/232 107/87 4/3 755/522 3/2 755/464 148/87 819/464 107/58 2/1]
+donne "tsaharuk_12d [166/153 9/8 20/17 188/153 4/3 47/34 3/2 83/51 27/16 30/17 94/51 2/1]
+donne "bala_ribbon [25/24 9/8 6/5 13/10 4/3 83/60 3/2 8/5 26/15 9/5 39/20 2/1]
+donne "daghboc [269/256 4521/4096 75989/65536 39/32 689/512 11581/8192 95/64 25/16 105/64 1765/1024 29665/16384 2/1]
+donne "hemififth_schismatic [326/325 9/8 378/325 60/49 81/64 135/98 3/2 504/325 27/16 90/49 243/128 2/1]
+donne "lagunaga [1595/1536 2209/2048 461/384 1915/1536 663/512 369/256 2299/1536 9551/6144 443/256 115/64 1911/1024 2/1]
+donne "secor_septimal [357/320 183/160 4081/3200 209/160 11663/8000 239/160 1225/800 5333/3200 683/400 7/4 3123/1600 2/1]
+donne "semantix_36 [49/48 25/24 200/189 27/25 54/49 9/8 8/7 7/6 25/21 243/200 100/81 63/50 9/7 21/16 4/3 49/36 25/18 567/400 36/25 72/49 3/2 49/32 14/9 100/63 81/50 81/49 42/25 12/7 7/4 25/14 49/27 50/27 189/100 27/14 96/49 2/1]
+donne "sixth_of_sixth [14/13 49/45 75/64 32/27 295/196 49/38 45/32 49/32 5/3 49/27 160/81 2/1]
+donne "tsaharuk_17 [1/1 91/87 755/696 296/261 296/261 273/232 107/87 107/87 37/29 4/3 4/3 321/232 755/522 3/2 3/2 91/58 755/464 148/87 148/87 819/464 107/58 107/58 111/58 2/1]
+donne "tsaharuk_24 [28/27 59/56 35/32 9/8 7/6 32/27 59/48 5/4 35/27 4/3 112/81 59/42 35/24 3/2 14/9 128/81 59/36 27/16 7/4 16/9 59/32 15/8 35/18 2/1]
+donne "krems_5 [135/128 9/8 75/64 5/4 4/3 45/32 25/16 405/256 225/128 15/8 125/64 2/1]
+donne "mougi_gliss [32/27 6/5 81/64 40/27 3/2 243/160 25/16 128/81 8/5 27/16 243/128 2/1]
+donne "passage_secret [10/9 9/8 256/225 75/64 320/243 4/3 40/27 3/2 143/160 25/16 225/128 2/1]
+donne "ragismatic [648/625 28/25 729/625 768/625 864/625 7/5 896/625 972/625 1024/625 2187/1250 1152/625 2/1]
+donne "whole_tones [10/9 9/8 5/4 81/64 45/32 64/45 3/2 128/81 8/5 16/9 9/5 2/1]
+donne "eratosthenes [135/128 19/18 1215/1024 19/16 5/4 45/32 3/2 405/256 19/12 15/8 243/128 2/1]
+donne "kleisma [648/625 25/24 6/5 3888/3125 5/4 36/25 23328/15625 3/2 5/3 216/125 125/72 2/1]
+donne "pramana_shruti [10/9 9/8 5/4 81/64 4/3 45/32 3/2 5/3 27/16 15/8 243/128 2/1]
+donne "ragisma [128/125 648/625 729/625 768/625 800/625 864/625 972/625 1000/625 1024/625 2187/1250 1152/625 2/1]
+donne "schisma [3/2 9/8 27/16 81/64 1024/729 45/32 256/243 128/81 32/27 16/9 4/3 2/1]
+donne "semantic_axis_19 [1/1 28/27 672/625 125/112 125/112 125/108 6/5 56/45 4032/3125 75/56 75/56 25/18 36/25 112/75 112/75 3125/2016 45/28 5/3 216/125 224/125 224/125 625/336 27/14 2/1]
+donne "yantra [35/32 9/8 39/32 315/256 1365/1024 4095/2048 3/2 13/8 105/64 455/256 117/64 2/1]
+#--------------------
+donne "tunings ["semantic_12 "22_shrutis "semantic_36 "semantic_45 "semantic_48 "semantic_53_sym "ahir_bhairav_c "bhairav_5 "bhairav_17 "bhairavi_19 "bhatiyar_5 "bhavani_5 "bhavapriya "chandrakaus_5 "coherent_shrutis "darbari_5 "gayakapriya "jog "kalyana_c "kanakangi "kidarvani "kirvanti_c "lalit_c "madhuvanti_c "marva_c "nila_c "purvi_c "satara "shri_rag_c "todi_c "amlak "aslan "bala_sem_sem "byzantine_5 "didymus_5 "harmonics "indian_quarters "kleismean "mohajira_to_slendro "mougi_c "napolitan_5_l "romios "semantix_12 "semantix_semantic "siamese_7_qedo "slendro_cloud "slendro_sequence "thaï_17l_tetrac "thaï_reversible "tsaharuk_12a "tsaharuk_12d "bala_ribbon "daghboc "hemififth_schismatic "lagunaga "secor_septimal "semantix_36 "sixth_of_sixth "tsaharuk_17 "tsaharuk_24 "krems_5 "mougi_gliss "passage_secret "ragismatic "whole_tones "eratosthenes "kleisma "pramana_shruti "ragisma "schisma "semantic_axis_19 "yantra]
+donne "contenus  (liste :semantic_12 :22_shrutis :semantic_36 :semantic_45 :semantic_48 :semantic_53_sym :ahir_bhairav_c :bhairav_5 :bhairav_17 :bhairavi_19 :bhatiyar_5 :bhavani_5 :bhavapriya :chandrakaus_5 :coherent_shrutis :darbari_5 :gayakapriya :jog :kalyana_c :kanakangi :kidarvani :kirvanti_c :lalit_c :madhuvanti_c :marva_c :nila_c :purvi_c :satara :shri_rag_c :todi_c :amlak :aslan :bala_sem_sem :byzantine_5 :didymus_5 :harmonics :indian_quarters :kleismean :mohajira_to_slendro :mougi_c :napolitan_5_l :romios :semantix_12 :semantix_semantic :siamese_7_qedo :slendro_cloud :slendro_sequence :thaï_17l_tetrac :thaï_reversible :tsaharuk_12a :tsaharuk_12d :bala_ribbon :daghboc :hemififth_schismatic :lagunaga :secor_septimal :semantix_36 :sixth_of_sixth :tsaharuk_17 :tsaharuk_24 :krems_5 :mougi_gliss :passage_secret :ragismatic :whole_tones :eratosthenes :kleisma :pramana_shruti :ragisma :schisma :semantic_axis_19 :yantra)
+fin

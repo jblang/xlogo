@@ -1,0 +1,224 @@
+# Comando de Inicio: horreo 600
+para horreo :lado
+  borrapantalla
+  perspectiva
+  pongrosor 4
+#  Suelu
+  poncolorlapiz verdeoscuro
+  subelapiz ponxyz (-:lado) (-:lado) 0
+  bajalapiz
+  cuadrado :lado*2
+# Vamos colos cuatro pegoyos
+  subelapiz ponxyz (-5*:lado/12) (-5*:lado/12) 0 bajalapiz
+  repite 4
+     [ pegoyu :lado/6
+       subelapiz
+         avanza 5*:lado/6 giraderecha 90
+       bajalapiz ]
+# Vamos con les cuatro mueles
+  subelapiz ponxyz (-5*:lado/12) (-5*:lado/12) :lado*0.24 bajalapiz
+  repite 4
+     [ muela :lado/6
+       subelapiz
+         avanza 5*:lado/6 giraderecha 90
+       bajalapiz ]
+# Ahora ye'l turno los trabes
+  subelapiz ponxyz (-3*:lado/8) (-:lado/2) :lado*0.26 bajalapiz
+  trabe :lado :lado/12
+  subelapiz ponxyz (7*:lado/24) (-:lado/2) :lado*0.26 bajalapiz
+  trabe :lado :lado/12
+  giraderecha 90
+  subelapiz ponxyz (-:lado/2) (-7*:lado/24) :lado*0.26 bajalapiz
+  trabe :lado :lado/12
+  subelapiz ponxyz (-:lado/2) (3*:lado/8) :lado*0.26 bajalapiz
+  trabe :lado :lado/12
+# La construccion sigue coles colondres
+  subelapiz ponxyz (-5*:lado/12) (-5*:lado/12) :lado*0.345 bajalapiz
+  ponorientacion [0 0 0]
+  colondres 5*:lado/6 :lado/3
+# Ahora toca el teyau
+  teyau :lado 2*:lado/3
+# Y la puerta
+  puerta :lado
+# Tamos acabando: la subidona
+  subidona :lado
+# Probamos el testu:
+  poncolorlapiz negro
+  pongrosor 5
+  ponfuente 50
+  subelapiz ponxyz 0.5*largoetiqueta [Horreo Asturiano] :lado/2 0.9*:lado
+  ponorientacion [180 270 0]
+  bajalapiz
+  definetexto rotula [Horreo Asturiano] fintexto
+#
+#  Vemoslo too
+#
+  vista3d
+fin
+
+para cuadrado :lado
+ # Grabamos los vertices del cuadrao
+   empiezapoligono
+   repite 4 [ avanza :lado giraderecha 90 ]
+   finpoligono
+fin
+
+para rectangulo :base :altura
+ # Grabamos los vertices del rectangulo
+   empiezapoligono
+   repite 2 [ avanza :base giraderecha 90 avanza :altura giraderecha 90]
+   finpoligono
+fin
+
+para pegoyu :base
+  poncolorlapiz gris
+# La base del pegoyu
+  cuadrado :base
+# Les "paredes" del pegoyu
+  repite 4
+    [ # giraderecha 45 
+      balanceaderecha 9.4
+      subenariz arcotangente 6
+      pared :base
+      bajanariz arcotangente 6 # giraizquierda 45 
+      balanceaizquierda 9.4
+      avanza :base giraderecha 90 ]
+fin
+
+para pared :base
+  hazlocal "angulo arcocoseno (1.0/6.0)
+  definepoligono
+  avanza 1.5*:base
+  giraderecha :angulo
+  avanza :base/2
+  giraderecha :angulo
+  avanza 1.5*:base
+  giraderecha 180 - :angulo
+  avanza :base
+  giraderecha 180 - :angulo
+  finpoligono
+fin
+
+para muela :base
+  poncolorlapiz gris
+  hazlocal "posicion posicion
+  hazlocal "orientacion orientacion
+  cuadrado :base
+  balanceaizquierda 90
+  repite 4 
+    [ rectangulo :base :base/6
+      avanza :base bajanariz 90 ]
+  giraderecha 90 avanza :base/6 subenariz 90
+  giraderecha 180
+  cuadrado :base
+  subelapiz 
+  ponposicion :posicion
+  ponorientacion :orientacion
+fin
+
+para trabe :base :altura
+  poncolorlapiz [105 85 50] # Un marron oscuro
+  hazlocal "posicion posicion
+  hazlocal "orientacion orientacion
+  repite 4
+    [ rectangulo :base :altura
+      giraderecha 90 avanza :altura giraizquierda 90 balanceaizquierda 90 ]
+  subenariz 90 cuadrado :altura bajanariz 90
+  avanza :base 
+  subenariz 90 cuadrado :altura bajanariz 90
+  ponposicion :posicion
+  ponorientacion :orientacion
+fin
+
+para colondres :base :altura
+#  poncolorlapiz marron
+  cuadrado :base
+  balanceaizquierda 90
+  repite 4 
+    [ rectangulo :base :altura
+      si 0 = resto contador 2 
+        [ poncolorlapiz [200 100 0] ]
+        [ poncolorlapiz [100 50 0] ]
+      avanza :base bajanariz 90 ]
+fin
+
+para teyau :base :altura
+# Son cuatro caras
+##  Cara 1
+  poncolorlapiz rojo
+  definepoligono
+    ponxyz (-:base/2) (-:base/2) :altura
+    ponxyz (-:base/2) (:base/2) :altura
+    ponxyz 0 0 :altura+:base/5
+  finpoligono
+##  Cara 2
+  poncolorlapiz rojooscuro
+  definepoligono
+    ponxyz (-:base/2) (:base/2) :altura
+    ponxyz (:base/2) (:base/2) :altura
+    ponxyz 0 0 :altura+:base/5
+  finpoligono
+##  Cara 3
+  poncolorlapiz rojo
+  definepoligono
+    ponxyz (:base/2) (:base/2) :altura
+    ponxyz (:base/2) (-:base/2) :altura
+    ponxyz 0 0 :altura+:base/5
+  finpoligono
+##  Cara 4
+  poncolorlapiz rojooscuro
+  definepoligono
+    ponxyz (:base/2) (-:base/2) :altura
+    ponxyz (-:base/2) (-:base/2) :altura
+    ponxyz 0 0 :altura+:base/5
+  finpoligono
+fin
+
+para puerta :lado
+  poncolorlapiz [50 0 0]
+  subelapiz ponxyz (-:lado/12) (5.1*:lado/12) :lado*0.345
+    ponorientacion [ 0 90 0 ] bajalapiz
+  rectangulo 0.25*:lado :lado/6
+fin
+
+para subidona :lado
+  subelapiz ponxyz :lado/2.75 5.5*:lado/12 0
+    ponorientacion [ 0 90 0 ] bajalapiz
+  poncolorlapiz [110 110 110]
+  definepoligono
+    repite 8
+    [ avanza :lado/24 giraizquierda 90
+      avanza :lado/24 giraderecha 90 ]
+  giraizquierda 90 avanza :lado/12
+  ponz 0 ponxyz :lado/2.75 5.5*:lado/12 0
+  finpoligono
+#
+  subelapiz ponxyz :lado/2.75 6.5*:lado/12 0
+    ponorientacion [ 0 90 0 ] bajalapiz
+  poncolorlapiz [110 110 110]
+  definepoligono
+    repite 8
+    [ avanza :lado/24 giraizquierda 90
+      avanza :lado/24 giraderecha 90 ]
+  giraizquierda 90 avanza :lado/12
+  ponz 0 ponxyz :lado/2.75 6.5*:lado/12 0
+  finpoligono
+#
+  subelapiz ponxyz :lado/2.75 5.5*:lado/12 0
+    ponorientacion [ -90 0 0 ] bajalapiz
+    repite 8
+    [ rectangulo :lado/12 :lado/24
+      giraderecha 90 avanza :lado/24 ponorientacion [ 0 0 0 ]
+      rectangulo :lado/12 (-:lado/24)
+      giraizquierda 90 avanza :lado/24 ponorientacion [ -90 0 0 ] ]
+   ponorientacion [ 0 0 -90 ] 
+   cuadrado :lado/12
+   avanza :lado/12
+   hazlocal "posicion posicion
+   definepoligono
+    ponz 0
+    pony 6.5*:lado/12
+    ponz ultimo :posicion
+    pony elemento 2 :posicion
+   finpoligono
+fin

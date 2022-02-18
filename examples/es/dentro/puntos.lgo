@@ -1,0 +1,11 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde
+  subelapiz ocultatortuga
+#
+  repite 4000
+   [ poncolorlapiz elige [1 2 3 6]
+     punto lista (azar 390)-195 (azar 390)-195 ]
+fin

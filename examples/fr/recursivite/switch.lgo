@@ -1,0 +1,32 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise
+  levecrayon origine tournedroite 90 recule 160 baissecrayon
+fin
+
+pour tree :size
+  avance 40
+  si :size < 2 [recule 40 stop]
+  tournegauche 90 avance :size tournedroite 90 tree 0.5*:size
+  tournegauche 90 recule :size*2 tournedroite 90 tree 0.5*:size
+  tournedroite 90 recule :size tournegauche 90 recule 40
+fin
+
+pour elec :size
+  avance 40
+  si :size < 2 [avance 20 stop]
+  fixecap choix [0 180] avance :size
+  fixecap 90 elec 0.5*:size
+fin
+
+pour demarrer
+  new initialise fcc [128 128 128] tree 96
+  donne "color 1 repete 7 [initialise fcc :color elec 96
+  donne "color :color + 1 attends 60]
+fin
+

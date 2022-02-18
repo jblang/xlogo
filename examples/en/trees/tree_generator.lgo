@@ -1,0 +1,38 @@
+# Main Command: Go
+# Tree Generator by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to treecol :length
+  Make "Green Round 2.5*(100-:Length)     # green depends on length
+  Output ( List 255 :Green 0 )     # red set to 255 and blue to 0
+end
+
+to tree :length
+  If :Length< 10 [Blossom Stop]     # ends recursion if branch too small
+  SetPW :Length/9     # reduce pen width as branch length gets smaller
+  SetPC TreeCol :Length     # branch color depends on length
+  LocalMake "Angle Pick [24 32 40 48 56 64 72]
+  LocalMake "TreeAngle :Angle*Pick [0.25 0.375 0.5 0.625 0.75] 
+  Forward :Length
+  Left :TreeAngle
+  Tree :Length * Pick [0.7 0.75 0.8] Right :Angle
+  Tree :Length * Pick [0.7 0.75 0.8] Left :Angle
+  Right :TreeAngle
+  PenUp Back :Length PenDown     # return to starting point
+end
+
+to blossom
+  Make "myPenCol PenColor Make "myHeading Heading
+  SetPC 6 SetH 180
+  Forward 5 Back 5 SetPC :myPenCol SetH :myHeading
+end
+
+to go
+  Repeat 99 [  New Back 160 PenDown Tree 80 Wait 200]
+end

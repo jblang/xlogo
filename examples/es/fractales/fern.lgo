@@ -1,0 +1,26 @@
+# Comando de Inicio: empezar
+para empezar
+#
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  ponposicion [-50 -170] bajalapiz helecho 440
+fin
+
+para hue :angulo
+  # verde desde 187 hasta 252
+  haz "green 0.18*:angulo + 187
+  devuelve (frase 215 :green 88)
+fin
+
+para helecho :tam
+  si :tam < 5 [alto]
+  poncolorlapiz hue rumbo
+  avanza :tam / 20
+  giraizquierda 80 helecho :tam * 0.3
+  giraderecha 82 avanza :tam / 20
+  giraderecha 80 helecho :tam * 0.3
+  giraizquierda 78 helecho :tam * 0.9
+  giraizquierda 2 retrocede :tam / 20
+  giraizquierda 2 retrocede :tam / 20
+fin

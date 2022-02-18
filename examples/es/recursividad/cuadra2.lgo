@@ -1,0 +1,30 @@
+# Comando de Inicio: empezar 4
+para empezar :orden
+  nuevo poncolorlapiz cyan
+  haz "lado 96        # reemplaza 128 por 96 para razon aurea
+  ponposicion lista cambiasigno :lado/2 cambiasigno :lado/2 giraizquierda 90
+  repitecuadrado :orden :lado
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+fin
+
+para repitecuadrado :orden :lado
+  si :orden < 0 [alto]
+  giraderecha 180
+  repite 4 [
+    pongrosor :orden+1      # comenta para lineas finas
+    bajalapiz avanza :lado subelapiz giraizquierda 90 espera 1
+    repitecuadrado :orden-1 :lado/1.618034]
+     # para razon aurea reemplaza 2 por 1.618034
+  rellenacuadrado   # comenta para no rellenar cuadrados
+  giraizquierda 180
+fin
+
+para rellenacuadrado
+  poncolorlapiz verdeoscuro giraizquierda 45 avanza 5 rellena
+  retrocede 5 giraderecha 45 poncolorlapiz cyan
+fin

@@ -1,0 +1,42 @@
+# Main Command: Go
+# Snowflake by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to check
+  SetTurtle 0
+  Left :Dir Forward :Length
+  If (Distance [0 0]) >180 [
+    Back :Length Right :Dir Output "True] [Output "False]
+end
+
+to snowflake
+  Make "Dir 60 * (Random 6)
+  Make "Length 1+Random 32
+  If Check [Make "Edge "False Stop]
+  For [N 1 12] [
+    SetTurtle :N
+    SetPC 6.5 + (:Parity/2)   # 6 or 7
+    Left :Parity * :Dir Forward :Length
+    Make "Parity Minus 1 * :Parity] 
+end
+
+to go
+  New
+  # SetPC Red PenDown   # comment in to see check turtle 0
+  Forever [
+    SetTurtle 0 Home Forward 32 Wash
+    Make "Parity 1 Make "Edge "True
+    For [N 1 12] [
+      SetTurtle :N PenUp Home
+      SetH 15+(:N * 30)     # SetHeading 60 * Round (:N/2)
+      Forward 32 PenDown] 
+      While [:Edge] [ 
+      Repeat 16 [Snowflake] ]
+    Wait 240] 
+end

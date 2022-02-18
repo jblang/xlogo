@@ -1,0 +1,33 @@
+# Commande principale: demarrer 7
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise :order
+  donne "size 96      # donne size et roothalf global values
+  donne "roothalf 1/rac 2
+fin
+
+pour display :order
+# tape header title et curve level
+  fcc blanc
+  fpos [-190 184] etiquette phrase [antenna tree level] :order
+fin
+
+pour tree :order :size
+  si :order < 1 [stop]      # ie si = 0
+  ftc :order avance :size tournegauche 90
+  tree :order-1 :roothalf*:size
+  ftc :order tournegauche 90 avance 2*:size tournegauche 90
+  tree :order-1 :roothalf*:size
+  ftc :order tournegauche 90 avance :size
+fin
+
+pour demarrer :order
+  new initialise :order display :order
+  origine tournedroite 90 fcc vert baissecrayon
+  tree :order :size
+fin
+

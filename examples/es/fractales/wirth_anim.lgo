@@ -1,0 +1,52 @@
+# Comando de Inicio: empezar 4
+para empezar :orden
+  nuevo inicializar :orden
+  ponposicion lista cambiasigno 190 (cambiasigno 190)+:lado/2
+  poncolorlapiz amarillo bajalapiz
+  repite 4
+    [ wi :orden 45 avanza :lado/2
+      giraderecha 90 avanza :lado/2]
+  subelapiz centro poncolorlapiz azuloscuro bajalapiz rellena 
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para inicializar :orden
+  haz "side (3*potencia 2 :orden) - 1 # centramos curva
+  haz "lado 380/:side           # variable global
+fin
+
+para wi :orden :angulo
+  si :orden < 1 [avanza :lado alto]            # o sea, si = 0
+  giraderecha :angulo
+  iw :orden cambiasigno :angulo
+  giraizquierda :angulo avanza :lado giraizquierda :angulo
+  iw :orden cambiasigno :angulo
+  giraderecha :angulo
+fin
+
+para iw :orden :angulo
+  giraderecha :angulo
+  wi :orden-1 cambiasigno :angulo
+  avanza :lado/2 giraizquierda 2*:angulo avanza :lado/2
+  wi :orden-1 cambiasigno :angulo
+  giraderecha :angulo
+fin
+
+para empieza
+  nuevo animacion
+  repitepara [orden 0 5]
+    [ limpia inicializar :orden
+      ponxy -190 (-190)+:lado/2
+      poncolorlapiz amarillo bajalapiz
+     repite 4
+       [ wi :orden 45
+         avanza :lado/2 giraderecha 90 avanza :lado/2]
+     subelapiz centro poncolorlapiz azuloscuro bajalapiz rellena
+     refrescar espera 80 subelapiz centro]
+  detieneanimacion
+fin

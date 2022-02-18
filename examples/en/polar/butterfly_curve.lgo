@@ -1,0 +1,52 @@
+# Main Command: Go
+# Butterfly_Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to title
+  # write header title and footer equation 
+  SetPC White
+  SetPos [-190 184] Label [Butterfly Curve]
+  SetPos [-190 -190]
+  Label [R= e^Cos theta -2*Cos 4*theta +Sin theta/12^5]
+end
+
+to drawcurve
+  # draw polar curve
+  For [Theta 0 360 2] [ 
+    SetPos PtoR (56*Curve :Theta)  :Theta
+    SetPC Hue 3*:Theta PenDown Wait 1]
+end
+
+To PtoR :RadDist :Theta
+  # convert polar to rectangular co-ordinates
+  LocalMake "X :RadDist *Sin :Theta
+  LocalMake "Y :RadDist *Cos :Theta
+  Output List :X :Y
+End
+
+To Hue :Theta
+  # Output RGB hue list from angle :Theta
+  Make "Red Round 127.5*(1+Sin :Theta)
+  Make "Green Round 127.5*(1+Sin (:Theta+120))
+  Make "Blue Round 127.5*(1+Sin (:Theta+240))
+  Output (List :Red :Green :Blue)
+End
+
+to curve :theta
+  # return distance from origin
+  Output (Power 2.7 (Cos :Theta)) -(2*Cos(4*:Theta))
+  +(Power Sin(:Theta/12) 5)
+  #  Output (1-Abs Minus Sin (6*:Theta)) + 2*Cos (2*:Theta)
+  # Output 3*Sqrt Abs Sin 3*:Theta
+end
+
+to go
+  New SetPW 2
+  Title DrawCurve
+end

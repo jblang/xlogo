@@ -1,0 +1,47 @@
+# Comando de Inicio: empezar
+para empezar
+  repite 12
+    [nuevo ruedas leyenda spir  espera 200]
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para spir
+  ponposicion xycurva 0 bajalapiz
+  repitepara [t 0 360]
+     [poncolorlapiz angcol :t ponposicion xycurva :t]
+fin
+
+para ruedas
+  haz "r elige [80 90 100 110 120]
+  haz "s 160-:r
+  haz "a (1 + azar 9)
+  haz "b (1 + azar 9)
+  haz "c (1 + azar 9)
+  haz "d (1 + azar 9)
+fin
+
+para leyenda
+# Muestra el encabezado y pie
+  poncolorlapiz blanco
+  ponposicion [-190 184] rotula "Espirografo
+  ponposicion [-190 -190] rotula (frase "abcd= :a :b :c :d)
+  ponposicion [110 -190] rotula frase lista "rs= :r :s
+fin
+
+para angcol :theta
+  haz "red abs 255 *coseno (:theta)
+  haz "gre abs 255 *coseno (:theta + 120)
+  haz "blu abs 255 *coseno (:theta + 240)
+  devuelve frase lista :red :gre :blu
+fin
+
+para xycurva :t
+  haz "x :r*(seno :a*:t) + :s*(seno :b*:t)
+  haz "y :r*(coseno :c*:t) + :s*(coseno :d*:t)
+  devuelve (lista :x :y)
+fin

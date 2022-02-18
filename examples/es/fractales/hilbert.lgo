@@ -1,0 +1,33 @@
+# Comando de Inicio: empezar 5
+para empezar :nivel
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz 2
+  subelapiz ocultatortuga
+#
+  haz "tam 180/(potencia 2 :nivel) # variable global
+  subelapiz ponxy (:tam/2)-180 (:tam/2)-180
+  ponrumbo 90 bajalapiz
+#
+   hilbert :nivel 1
+fin
+
+para hilbert :nivel :paridad
+  si :nivel < 0 [alto]
+  giraizquierda :paridad*90
+  hilbert :nivel-1 0-:paridad
+  avanza :tam
+  giraderecha :paridad*90
+  hilbert :nivel-1 :paridad
+  avanza :tam
+  hilbert :nivel-1 :paridad
+  giraderecha :paridad*90
+  avanza :tam
+  hilbert :nivel-1 0-:paridad
+  giraizquierda :paridad*90
+fin
+
+para hilberts :max
+  repitepara (frase "nivel 1 :max)
+   [ empezar :nivel espera 60]
+fin

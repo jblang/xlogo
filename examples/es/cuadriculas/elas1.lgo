@@ -1,0 +1,27 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  haz "lado 19     # aumenta este valor (p.e. 29) para malla mas estrecha
+  repitepara [l 0 1] [
+  repitepara frase lista "i 0 :lado [subelapiz
+  repitepara frase lista "j 0 :lado [
+  si :l=0 [     # lineas verticales
+  ponposicion pos.cuad :i :j :lado bajalapiz]
+  si :l=1 [     # lineas horizontales
+  ponposicion pos.cuad :j :i :lado bajalapiz]
+  ]]]
+fin
+
+para pos.cuad :i :j :lado
+  haz "x (:i/(0.5*:lado))-1
+  haz "y (:j/(0.5*:lado))-1
+  haz "rect funcion :x :y
+  devuelve lista 180*primero :rect 180*ultimo :rect
+fin
+
+para funcion :x :y
+  devuelve lista :x :y   # Sin cambios
+fin

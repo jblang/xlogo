@@ -1,0 +1,43 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour stick :w
+  fcc [255 102 51]  # orange
+  tournedroite 90 baissecrayon avance 7
+  si (item :w :binlist) = 0 [levecrayon]
+  avance 9 baissecrayon avance 7
+  levecrayon recule 23 tournegauche 90 avance 5
+fin
+
+pour hex :m :n
+  donne "binlist []
+  donne "count (8*:m)+:n
+  dectobin :count 32
+  fcc 7 etiquette :count avance 14
+  repetepour [w 1 6] [stick :w]
+fin
+
+pour grid
+  repetepour [m 0 7][
+  repetepour [n 0 7][
+  donne "x :n*48-182
+  donne "y :m*48-188
+  fixexy :x :y hex :m :n]]
+fin
+
+pour dectobin :num :c
+  si :c < 1 [stop]
+  si :num > :c | (:num=:c) [donne "binlist md 1 :binlist
+  dectobin :num-:c :c/2]
+  si :num < :c [donne "binlist md 0 :binlist
+  dectobin :num :c/2]
+fin
+
+pour demarrer
+  new grid
+fin
+

@@ -1,0 +1,31 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  pontortuga 1       # una tortuga sigue a otra
+  centro poncolorlapiz 5
+  ponposicion [0 190] pontortuga 0 bajalapiz
+#
+  inviertelapiz       # Dibujaremos con lapiz invertido
+  haz "r 90 haz "s 60 haz "t 40
+  repitepara [q 0 360 4]
+    [ haz "rang :q haz "sang 3*:q + 90
+      haz "tang cambiasigno 2*:q -90
+      spir :r :rang :s :sang :t :tang
+      poncolorlapiz 1 circulo 2
+      haz "a posicion
+      pontortuga 1 poncolorlapiz 11 ponposicion :a bajalapiz
+      pontortuga 0
+      si :q=360 [poncolorlapiz 1 circulo 1 alto]
+      espera 10
+      spir :r :rang :s :sang :t :tang ]
+fin
+
+para spir :r :rang :s :sang :t :tang
+  subelapiz centro poncolorlapiz blanco bajalapiz circulo 2
+  giraizquierda :rang avanza :r circulo 2
+  giraizquierda :sang avanza :s circulo 2
+  giraizquierda :tang avanza :t
+fin

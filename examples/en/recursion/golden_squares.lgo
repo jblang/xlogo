@@ -1,0 +1,38 @@
+# Main Command: Go
+# Golden Squares by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to fibb :order
+  Make "Side Item :Order :FibbList
+  Square :Side
+  If :Order = 1 [Stop]
+  Make "Side2 Item (:Order-1) :FibbList
+  LocalMake "Dist (:Side+:Side2)/2
+  Repeat 4 [
+    Back :Dist Right 90 Back :Dist 
+    If (Last FindColor Pos) = 0 [Fibb :Order-1]
+    Forward :Dist Left 90 Forward :Dist 
+    Right 90]
+end
+
+to square :side
+  # square drawn from centre (TP) then filled
+  Make "Side :Side-1   # subtract 1 for correct size
+  Back :Side/2 Right 90 Back :Side/2 PenDown
+  Repeat 4 [Forward :Side Left 90] PenUp
+  Forward :Side/2 Left 90 Forward :Side/2
+  If :Side > 1 [Fill] 
+end
+
+to go
+  New SetPC Cyan
+  Make "FibbList [1 1 2 3 5 8 13 21 34 55 89]
+  # remove the first term (or first few terms) of FibbList 
+  Fibb Count :FibbList
+end

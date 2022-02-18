@@ -1,0 +1,17 @@
+# Comando de Inicio: kam
+para kam
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde
+  ocultatortuga
+#
+  haz "angulo 74.5
+  repitepara [orbita 0.2 1.5 0.05] [
+    haz "x :orbita/3 haz "y :orbita/3
+    repite 300 [
+      haz "x2y (potencia :x 2)-:y
+      haz "xnew :x * (cos :angulo) + :x2y * sen :angulo
+      haz "y :x * (sen :angulo) - :x2y * cos :angulo
+      haz "x :xnew
+      punto lista :x*300 :y*300 ] ]
+fin

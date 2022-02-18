@@ -1,0 +1,247 @@
+# Commande principale: demarrer
+
+pour demarrer
+ftd [2000 1000] stopgrille
+origine ve ct fsep 0.45
+vt fcfg 16 ftc 32
+ftp 20 fap [1 1] ftpt 14 lc
+initialiser (liste "clair "clair1 "obscur "obscur0 "obscur1 "date)
+donne "n_flux 0
+donne "ordre "¨aáàâäãāåąæ@bcçćĉčdeéèêëěęfgĝhĥiíìîïĩīĭįjĵklłmnñňoóòôöőõøœpqrŕřsśŝšßtuúùûüũūŭůųvwxyzžżAÁÀÂÄÃĀÅĄÆBCÇĆĈČDEÉÈÊËĚĘFGĜHĤIÎÏĨĪĬĮJĴKLŁMNÑŇOÔÖŐØŒPQRŔŘSŚŜŠTUÚÙÛÜŨŪŬŮŲVWXYZŽŻ'’-_,.;:!?"«»0123456789+*×/^=€$£%&|°{}– 
+
+guibouton "janus "\ Janus\ \ 
+ guiposition "janus [-116 150]
+ guiaction "janus [janus]
+ guidessine "janus
+
+guibouton "clefs "Serrure
+ guiposition "clefs [11 150]
+ guiaction "clefs [clef]
+ guidessine "clefs
+
+guibouton "crypter "\ \ Crypter\ \ 
+ guiposition "crypter [-140 100]
+ guiaction "crypter [coder]
+ guidessine "crypter
+
+guibouton "decrypter "Déchiffrer
+ guiposition "decrypter [11 100]
+ guiaction "decrypter [decoder]
+ guidessine "decrypter
+
+guibouton "affichage "Affichage
+ guiposition "affichage [-60 50]
+ guiaction "affichage [memoire]
+ guidessine "affichage
+
+fsep 0.45 
+fin
+
+pour initialiser :proclist
+repete compte :proclist [donne (item compteur :proclist) " ]
+fin
+
+pour aujourdhui
+donne "mois item 2 date si :mois < 10 [donne "mois mot "0 :mois]
+donne "jour prem date si :jour < 10 [donne "jour mot "0 :jour]
+donne "clef (mot der date :mois :jour)
+fin
+
+pour janus
+donne "alphabet "+ABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789
+donne "nombre_de_caracteres compte :alphabet
+aujourdhui
+#texte_generateur
+#--------------------
+lis [aaaammjj] "clef0
+vt
+donne "clef prem ph :clef0 "_
+si :clef = "  [aujourdhui]
+si (ou (compte :clef)<8 (compte :clef)>8 ) [vt ec [Vous devez entrer un nombre à 8 chiffres.] stop demarrer]
+donne "numero_du_mois (10 * (item 5 :clef) + (item 6 :clef))
+donne "numero_du_jour (10 * (item 7 :clef) + (item 8 :clef))
+si (ou :numero_du_mois < 1 :numero_du_mois > 12) [vt ec [Erreur sur le mois !] stop demarrer]
+si (ou :numero_du_jour < 1 :numero_du_jour > 31) [vt ec [Erreur sur le jour !] stop demarrer]
+#--------------------
+#frep "Xlogo/Programmes
+donne "date :clef
+donne "n_flux (:n_flux + 1)
+ouvreflux :n_flux "generator.txt
+repete :numero_du_mois [donne "clair lisligneflux :n_flux]
+fermeflux :n_flux
+#--------------------
+desespacer2 :clair donne "clair1 :sans_espacement
+
+donne "valclef [] repete (compte :clef) [donne "valclef md valeur (item compteur :clef) :valclef]
+donne "prec :clef
+donne "date :clef
+vt
+ec ph [Date :] :date
+ec "--------------------
+ec :clair
+ec "--------------------
+ec [Clef du jour :]
+coder2 :prec :clair1 " 
+donne "clef :clef1
+vt 
+affiche_clef
+ec "--------------------
+ec "
+ec "--------------------
+donne "clair " 
+donne "clair1 " 
+donne "obscur " 
+donne "obscur0 " 
+donne "obscur1 " 
+fin
+
+pour clef
+lis [Entrer votre clef :] "clef
+vt si :clef = "  [stoptout]
+si liste? :clef [desespacer :clef donne "clef :sans_espacement]
+vt
+affiche_clef
+stop
+fin
+
+pour affiche_clef
+fpos [0 200] fcc cf bc tg 90 av (prem tailledessin)/2 re (prem tailledessin) lc fcc 0 origine
+fpos [0 200] etiquette :clef origine
+ec (ph :date "Clef: :clef)
+fin
+
+pour valeur :lettre
+donne "valcar 1
+si (ou :lettre = "‒ :lettre = "— :lettre = "―) [donne "lettre "–] 
+si :lettre = car 40 [donne "lettre "{] 
+si :lettre = car 41 [donne "lettre "}] 
+repete :nombre_de_caracteres [si :lettre = (item compteur :alphabet) [donne "valcar compteur stop]]
+retourne modulo :valcar :nombre_de_caracteres
+fin
+
+pour valeur2 :mot2
+donne "j2 0
+repete (compte :mot2) [donne "j2 :j2 + ((item compteur :valclef) * valeur (item compteur :mot2))]
+retourne :j2
+fin
+
+pour modul :n
+si (modulo :n :nombre_de_caracteres) = 0 [retourne :nombre_de_caracteres] [retourne modulo :n :nombre_de_caracteres]
+fin
+
+pour extraire
+desespacer ph :sentence :clef
+donne "sentence :sans_espacement
+donne "ncar compte :ordre
+donne "reorganisation " 
+repete :ncar [si membre? (item compteur :ordre) :sentence [donne "reorganisation mot :reorganisation item compteur :ordre]]
+donne "alphabet :reorganisation
+donne "nombre_de_caracteres compte :alphabet
+fin
+
+pour desespacer :ms1
+donne "ms2 " 
+repete (compte :ms1) [donne "ms2 (mot :ms2 item compteur :ms1 "¨)]
+traiter sd :ms2
+donne "sans_espacement :texte1
+fin
+
+pour traiter :texte
+donne "texte1 " 
+repete compte :texte [
+si (item compteur :texte) = car 40 [donne "texte1 mot :texte1 "{] [
+si (item compteur :texte) = car 41 [donne "texte1 mot :texte1 "}] [
+si (ou (item compteur :texte) = "‒ (item compteur :texte) = "– (item compteur :texte) ="— (item compteur :texte) = "―) [donne "texte1 mot :texte1 "–]
+ [donne "texte1 mot :texte1 item compteur :texte]]]]
+fin
+
+pour desespacer2 :ms1
+donne "ms2 " 
+repete (compte :ms1) [donne "ms2 (mot :ms2 item compteur :ms1 "+)]
+donne "sans_espacement sd :ms2
+fin
+
+pour espacer :ms3
+donne "ms4 " 
+repete (compte :ms3) [si (item compteur :ms3) = "¨ [donne "ms4 mot :ms4 "\ ] [donne "ms4 mot :ms4 (item compteur :ms3)]]
+donne "avec_espacement :ms4
+fin
+
+pour coder
+lis [Texte à crypter :] "clair
+vt
+si vide? :clair [vt stoptout]
+si mot? :clair [donne "clair sd liste :clair "¨]
+desespacer :clair
+donne "clair1 :sans_espacement
+donne "sentence :clair1 extraire
+donne "valclef [] repete (compte :clef) [donne "valclef md valeur (item compteur :clef) :valclef]
+donne "obscur "  donne "obscur0 "  donne "obscur1 "  
+donne "prec :clef
+vt ec [Cryptage en cours...]
+repete (compte :clair1) [
+donne "i modul ((valeur2 :prec) + (valeur item compteur :clair1))
+donne "suiv item :i :alphabet
+si (modulo compteur  5) = 0 [tape :suiv tape "\ ] [tape :suiv]
+si (modulo compteur  5) = 0 [donne "obscur (mot :obscur :suiv "\ )] [donne "obscur mot :obscur :suiv]
+donne "prec mot (sp :prec) prem :suiv
+]
+donne "obscur (mot :obscur "\ \\ )
+donne "complement 0
+donne "corpus (mot :obscur :clef)
+repete compte :alphabet [si membre? (item compteur :alphabet) :corpus [][donne "complement :complement+1 si (modulo :complement 5) = 0 [donne "obscur (mot :obscur item compteur :alphabet "\ )][donne "obscur (mot :obscur item compteur :alphabet)]]]
+si (der :obscur) = "\\ [donne "obscur sd :obscur][donne "obscur :obscur]
+memoire stoptout
+fin
+
+pour coder2 :prec :clair1 :obscur
+repete (compte :clair1) [
+donne "i modul ((valeur2 :prec) + (valeur item compteur :clair1))
+donne "suiv item :i :alphabet
+tape :suiv
+donne "obscur mot :obscur :suiv
+donne "prec mot (sp :prec) prem :suiv
+]
+donne "clef1 :obscur
+fin
+
+pour decoder
+lis [Texte à déchiffrer :] "obscur
+vt
+si vide? :obscur [vt stoptout]
+si liste? :obscur [donne "obscur1 "  repete compte :obscur [donne "obscur1 mot :obscur1 item compteur :obscur] donne "obscur1 :obscur1] [donne "obscur1 :obscur]
+memoire
+donne "sentence :obscur1 extraire
+donne "valclef [] repete (compte :clef) [donne "valclef md valeur (item compteur :clef) :valclef]
+donne "clair "  donne "clair1 "  
+donne "prec :clef
+vt ec [Déchiffrement en cours...]
+si (compte :obscur) = 0 [memoire stoptout]
+repete compte :obscur1 [
+si (item compteur :obscur1) = "\\ [memoire stoptout]
+donne "i modul ((valeur item compteur :obscur1) - (valeur2 :prec))
+donne "suiv item :i :alphabet
+si :suiv = "¨ [tape "\  donne "clair mot :clair "\  ] [
+si :suiv = "{ [tape "\(  donne "clair mot :clair "\(  ] [
+si :suiv = "} [tape "\)  donne "clair mot :clair "\) ] 
+[tape :suiv donne "clair mot :clair :suiv]]]
+donne "prec mot sp :prec item compteur :obscur1
+]
+memoire stoptout
+fin
+
+pour memoire
+vt
+si variable? "clef [affiche_clef][ec " ]
+ec "--------------------
+ec :clair
+ec "--------------------
+ec :obscur
+fin
+
+pour vers_du_mois
+ouvreflux :n_flux "generator.txt
+repete :numero_du_mois [donne "clair lisligneflux :n_flux]
+fermeflux :n_flux
+ec :clair
+fin

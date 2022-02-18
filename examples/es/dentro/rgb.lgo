@@ -1,0 +1,57 @@
+# Comando de Inicio: empezar
+para empezar
+  nuevo rgb muestra eje dibuja
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+fin
+
+para rgb
+  haz "red [abs 255 *seno (:x/2)]
+  haz "gre [abs 255 *seno (:x/2 + 120)]
+  haz "blu [abs 255 *seno (:x/2 + 240)]
+fin
+
+para muestra
+  poncolorlapiz blanco ponposicion [-180 150]
+  rotula [Paleta de color RGB o RVA]
+  ponposicion [-180 147]
+  giraderecha 90 bajalapiz
+  avanza largoetiqueta [Paleta de color RGB o RVA]
+  subelapiz giraizquierda 90
+  ponposicion [-170 100] poncolorlapiz rojo
+  rotula frase "red= :red
+  ponposicion [-170 80] poncolorlapiz verde
+  rotula frase "grn= :gre
+  ponposicion [-170 60] poncolorlapiz azul
+  rotula frase "blu= :blu
+fin
+
+para eje
+  poncolorlapiz blanco ponposicion [-180 0] bajalapiz
+  ponposicion [-180 -86] ponposicion [181 -86] subelapiz
+  ponposicion [-190 8] rotula "255
+  ponposicion [-192 -88] rotula "0
+  ponposicion [184 -88] rotula "x
+  ponposicion [-182 -104]
+  repitepara [a 0 360 60] [rotula :a giraderecha 90 avanza 58 giraizquierda 90]
+fin
+
+para dibuja
+  repitepara [x 0 360] [
+  haz "r ejecuta :red
+  haz "g ejecuta :gre
+  haz "b ejecuta :blu
+  poncolorlapiz ( lista :r 0 0 ) punto lista :x-180 :r/3-85
+  poncolorlapiz ( lista 0 :g 0 ) punto lista :x-180 :g/3-85
+  poncolorlapiz ( lista 0 0 :b ) punto lista :x-180 :b/3-85
+  poncolorlapiz ( lista :r :g :b ) espectro :x]
+fin
+
+para espectro :x
+  ponxy :x-180 cambiasigno 130 bajalapiz pony -160 subelapiz
+  ponxy 140 150 ponrumbo :x pongrosor 2 bajalapiz avanza 30 subelapiz pongrosor 1
+fin

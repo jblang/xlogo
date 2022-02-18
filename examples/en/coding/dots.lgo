@@ -1,0 +1,21 @@
+# Main Command: Go
+# Dots by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To Jump :Side
+  # set turtle to random position within square of size side
+  SetXY (Random :Side) - :Side/2 (Random :Side) - :Side/2
+End
+
+To Go
+  New
+  Repeat 4000 [
+    SetPC Pick [1 2 3 6]
+    Jump 390 Dot Pos]
+End

@@ -1,0 +1,40 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos lapiz, papel y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  poncolorlapiz [102 153 255] superficie
+  haz "enlinea 0 poncolorlapiz negro
+  pongrosor 2  # comenta esta linea para grietas finas
+  mientras [:enlinea < 36] [grieta]
+  colorea
+fin
+
+para superficie
+  ponposicion [-190 -190]
+  bajalapiz repite 4 [avanza 380 giraderecha 90] subelapiz
+  centro rellena
+fin
+
+para grieta
+  haz "punto punto.azar ponposicion :punto
+  si 0=(elemento 3 encuentracolor posicion) [haz "enlinea :enlinea+1 alto]
+  ponrumbo azar 360
+  mientras [255=(elemento 3 encuentracolor posicion)] [retrocede 1]
+  haz "pos.ant posicion ponposicion :punto
+  mientras [255=(elemento 3 encuentracolor posicion)] [avanza 1]
+  bajalapiz ponposicion :pos.ant subelapiz
+fin
+
+para punto.azar
+  devuelve lista (azar 360)-180 (azar 360)-180
+fin
+
+para colorea
+  repite 48
+   [ ponposicion punto.azar
+     si 255=(elemento 3 encuentracolor posicion)
+      [ poncolorlapiz ( lista 0 azar (truncar 127 + azar 100) 255 )
+        rellena ] ]
+fin

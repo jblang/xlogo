@@ -1,0 +1,13 @@
+# Esse projeto desenha uma árvore binária.
+# Escreva arvore (seguida de um número) na caixa de comandos para
+# o xLogo desenhar uma árvore com a altura dada pelo número.
+# Criado por Bertrand Carette
+
+aprenda arvore :dist
+  se :dist < 5 [pare]
+  pf :dist pd 30
+  arvore :dist - 10
+  pe 60
+  arvore :dist - 10
+  pd 30 pt :dist
+fim

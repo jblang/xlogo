@@ -1,0 +1,44 @@
+# Main Command: Go
+# Henon_Curves by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init
+  Make "X 0 Make "Y Minus 0.2
+  Make "XScale 128 Make "YScale 440
+  Make "Alpha 1.4 Make "Beta 0.3 
+end
+
+to angcol :theta
+  Make "Red Abs 255 *Cos (:Theta)
+  Make "Gre Abs 255 *Cos (:Theta + 120)
+  Make "Blu Abs 255 *Cos (:Theta + 240)
+  Output (List :Red :Gre :Blu)
+end
+
+to hénon
+  Make "Xnew 1 - :Alpha*(Power :X 2) + :Y
+  Make "Y :Beta * :X
+  Make "X :Xnew 
+  Dot List (:X*:XScale) (:Y*:YScale)
+end
+
+to go
+  New Init2
+  Repeat 4000 [
+    # SetPC AngCol Integer RepCount/10    # comment in for color
+    Hénon]
+end
+
+# for a second type of curve
+
+to init2
+  Make "X 0 Make "Y 0
+  Make "XScale 40 Make "YScale 40
+  Make "Alpha 0.2 Make "Beta 0.9991
+end

@@ -1,0 +1,25 @@
+# Comando de Inicio: empezar 6
+para empezar :orden
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  haz "lado 0       # Variable global
+  haz "x (( redondea :orden/2)-1)
+  repitepara (frase "n 0 :x-1)
+     [haz "lado :lado + potencia 3 :n]
+  haz "lado 1+(3*:lado)
+  haz "lado 190/:lado
+#
+  ponposicion [-190 -190] poncolorlapiz amarillo bajalapiz
+  peano :orden 1
+fin
+
+para peano :orden :paridad
+  si :orden < 1 [alto]       # ie si = 0
+  giraderecha :paridad*90
+  peano :orden-1 cambiasigno :paridad avanza :lado
+  peano :orden-1 :paridad avanza :lado
+  peano :orden-1 cambiasigno :paridad
+  giraizquierda :paridad*90
+fin

@@ -1,0 +1,36 @@
+# Commande principale: demarrer 7
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour square :angle :width :height
+  avance :width two :angle :width :height-1
+fin
+
+pour two :angle :width :height
+  si :height < 1 [stop]      # ie si = 0
+  tournedroite :angle avance 1 tournedroite :angle avance :width tournegauche :angle
+  si :height > 0 [ avance 1]
+  tournegauche :angle avance :width
+  two :angle :width :height -2
+fin
+
+pour grate :order :angle :width :height
+  si :order < 1 [square :angle :width :height stop]      # ie si = 0
+  tournedroite :angle
+  grate :order-1 moins :angle :height/4 :width
+  avance :height/8
+  grate :order-1 :angle :height/4 :width
+  avance :height/8
+  grate :order-1 moins :angle :height/4 :width
+  tournegauche :angle
+fin
+
+pour demarrer :order
+  new
+  fpos [-192 -190] fcc marron baissecrayon
+  grate :order 90 380 380
+fin
+

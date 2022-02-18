@@ -1,0 +1,46 @@
+# Comando de Inicio: empezar
+para empezar
+  nuevo inicializar
+  blancmange
+  dibuja
+fin
+
+para nuevo
+# Inicializar papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+fin
+
+para inicializar
+# creamos lista vacia
+  haz "y [ ]
+  repite 257 [ haz "y ponultimo 0 :y ]
+fin
+
+para leyenda
+# Titulo en la parte superior
+  poncolorlapiz blanco subelapiz
+  ponposicion [-190 180] rotula [Curva Blancmange]
+fin
+
+para blancmange
+# Calculamos alturas
+  haz "indice 256
+  repitepara [n 1 8] [
+    repitepara (lista "m 1 256 :indice) [
+      haz "media ((elemento :m :y) + elemento (:m + :indice ) :y) / 2
+      haz "y reemplaza :y (:m+:indice/2) (:indice + :media) ]
+    haz "indice :indice / 2 ]
+fin
+
+para dibuja
+# Dibuja curvas con los valores de lista
+  haz "indice 256
+  repitepara [n 1 8] [
+    limpia leyenda
+    subelapiz ponposicion [-127 -100] bajalapiz poncolorlapiz rosa
+    repitepara (lista "p 1 257 :indice)
+       [ponposicion lista :p-128 (elemento :p :y) / 2 -100]
+    haz "indice :indice / 2
+  espera 80]
+fin

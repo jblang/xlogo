@@ -1,0 +1,48 @@
+# Comando de Inicio: empezar 3
+para empezar :nivel
+  nuevo
+# 
+  haz "lado 105/(potencia 1.81 :nivel)        # variable global
+  subelapiz ponxy cambiasigno :lado/2 cambiasigno 170
+  bajalapiz giraizquierda 30
+  doblar :nivel 1 1 giraderecha 60 avanza :lado giraderecha 60
+  doblar :nivel 1 cambiasigno 1 giraderecha 60 avanza :lado
+  subelapiz centro poncolorlapiz [48 48 48] espera 30
+  rellena  # comenta para no rellenar
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz amarillo
+  subelapiz ocultatortuga
+fin
+
+para doblar :nivel :paridad :dir
+  si :nivel < 1 [avanza :lado giraderecha :paridad*60 avanza :lado alto]
+  giraderecha :dir* cambiasigno :paridad*30
+  doblar :nivel-1 cambiasigno :paridad :dir
+  girar :paridad*(60+:dir*30)
+  doblar :nivel-1 cambiasigno :paridad cambiasigno :dir
+  girar :paridad*(60-:dir*30)
+  doblar :nivel-1 cambiasigno :paridad :dir
+  giraderecha :dir* :paridad*30
+fin
+
+para girar :angulo
+  giraderecha :angulo avanza :lado giraderecha :angulo
+fin
+
+para empezar2
+  nuevo ponformalapiz 1
+  haz "cols [4 1 11 9 15 3]
+  repitepara [nivel 0 5] [
+    haz "lado 105/(potencia 1.81 :nivel)
+    pongrosor 6-:nivel poncolorlapiz elemento (:nivel+1) :cols
+    subelapiz ponxy cambiasigno :lado/2 cambiasigno 160 ponrumbo 0
+    retrocede elemento (:nivel+1) [-17 0 7 9 8 5]
+    bajalapiz giraizquierda 30        # fudge factor
+    doblar :nivel 1 1 giraderecha 60 avanza :lado giraderecha 60
+    doblar :nivel 1 cambiasigno 1 giraderecha 60 avanza :lado
+    espera 90]
+fin

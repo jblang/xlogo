@@ -1,0 +1,36 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour spir :r :rang :s :sang :t :tang
+  levecrayon origine fcc blanc baissecrayon cercle 2
+  tournegauche :rang avance :r cercle 2
+  tournegauche :sang avance :s cercle 2
+  tournegauche :tang avance :t
+fin
+
+pour initialise
+  fixetortue 1       #follow tortue
+  origine fcc 5
+  levecrayon fpos [0 190]
+  fixetortue 0 baissecrayon
+fin
+
+pour demarrer
+  new initialise ic       #inverted paint pen
+  #make "r 90 donne "s 60 donne "t 40
+  #make "r 108 donne "s 54 donne "t 27
+  donne "r 90 donne "s 60 donne "t 40
+  repetepour [q 0 360 4] [
+  donne "rang :q donne "sang 3*:q + 90 donne "tang moins 2*:q -90
+  spir :r :rang :s :sang :t :tang
+  fcc 1 cercle 2
+  donne "a pos
+  fixetortue 1 fcc 11 fpos :a baissecrayon fixetortue 0
+  si :q=360 [fcc 1 cercle 1 stop] attends 10
+  spir :r :rang :s :sang :t :tang]
+fin
+

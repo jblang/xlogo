@@ -1,0 +1,16 @@
+# Main Command: Go
+# Sine Wave by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to go
+  New
+  For [X 180 540 6] [
+    SetXY (:X - 360) (150* Sine :X) - 16
+    PenDown Forward 32 PenUp]
+end

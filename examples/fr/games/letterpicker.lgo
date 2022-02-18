@@ -1,0 +1,33 @@
+# Commande principale: demarrer
+pour demarrer
+fsep 0.15
+ct
+texter
+claver
+fin
+
+pour decrypter :texte :cle :clair
+repete (compte :texte) [
+donne "clair (mot :clair (item (prem :cle) item compteur :texte))
+donne "cle sp md (prem :cle) :cle]
+si (compte :cle) = 1 
+  [ec (ph "\[  :cle "\] :clair)  donne "cle sp (md ((prem :cle) + 1) :cle) donne "clair " decrypter :texte :cle :clair ]
+  [ec (ph "\[  :cle0 "\] :clair) claver]
+fin
+
+pour texter
+donne "texte []
+lis [Entrer les vers. Type verses.] "texte0
+si liste? :texte0  [donne "texte :texte0] [donne "texte (md "texte0 :texte)]
+vt
+repete (compte :texte) [ec item compteur :texte]
+fin
+
+pour claver
+donne "cle []
+lis [Entrer la clef en séparant les nombres. Enter the key, interspacing numbers.] "cle0
+si vide? :cle0 [stoptout]
+si liste? :cle0 [donne "cle :cle0] [donne "cle (md :cle0 :cle)]
+donne "clair " 
+decrypter :texte :cle :clair
+fin

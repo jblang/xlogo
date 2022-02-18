@@ -1,0 +1,43 @@
+# Main Command: Go 5
+# Dragon Curve (Round Corner) by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init :order
+  # make Size and Angle global values
+  Make "Size 11*Power (SqRt 2) (9-:Order)
+  Make "Angle 90
+  Make "Step 0.025*Pi * :Size Make "Ang :Angle/10 
+end
+
+to display :order
+  # write header title and curve level
+  SetPC White
+  SetPos [-190 184] Label Sentence [Dragon Curve Order] :Order
+end
+
+to dragon :order :parity
+  If :Order < 1 [Stop]     # ie if = 0
+  Dragon :Order-1 1
+  Turn :Parity*:Ang     # turn left or right :Angle degrees
+  Dragon :Order-1 Minus 1
+end
+
+to go :order
+  New
+  Init :Order Display :Order
+  SetPos [-108 0] SetPC Green PenDown
+  Right (45 *:Order)+90     # similar orientations of curves
+  Forward :Size/2 Dragon :Order 1 Forward :Size/2
+end
+
+to turn :a
+  Left :A/2
+  Repeat 9 [Forward :Step Left :A]
+  Forward :Step Left :A/2
+end

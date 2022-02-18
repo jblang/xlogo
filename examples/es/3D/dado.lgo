@@ -1,0 +1,147 @@
+# Comando de Inicio: dado
+para dado
+  borrapantalla perspectiva
+  uno
+  subelapiz
+     giraderecha 90 avanza 400 giraizquierda 90
+  bajalapiz balanceaderecha 90 
+  tres
+  subelapiz
+    giraderecha 90 avanza 400 giraizquierda 90
+  bajalapiz balanceaderecha 90 
+  seis
+  subelapiz
+    giraderecha 90 avanza 400 giraizquierda 90
+  bajalapiz balanceaderecha 90 
+  cuatro
+  subelapiz
+   giraderecha 90 avanza 400 giraizquierda 90  balanceaderecha 90 
+   giraderecha 90 avanza 400 bd 90 giraderecha 90
+  bajalapiz
+  cinco
+  subelapiz
+     balanceaderecha 180 giraizquierda 90 avanza 400 giraderecha 90 
+     subenariz 90 avanza 400  bajanariz 90
+  bajalapiz
+  dos
+  vistapoligono
+fin
+
+para cuadrado
+  poncolorlapiz amarillo
+# Guardamos los vertices del cuadrado
+  empiezapoligono
+    repite 4
+      [avanza 400 giraderecha 90]
+  finpoligono
+fin
+
+para puntos
+  subelapiz subenariz 90 avanza 1 bajanariz 90  bajalapiz
+  empiezapoligono circulo 50 finpoligono
+  subelapiz subenariz 90 retrocede 1 bajanariz 90 bajalapiz
+fin
+
+para uno
+# trazado de las aristas
+  cuadrado 
+# llevamos la tortuga al centro del cuadrado
+  subelapiz giraderecha 90 avanza 200 giraizquierda 90 avanza 200 bajalapiz
+# punto
+  poncolorlapiz azul
+  puntos
+# vuelta a la posicion inicial
+  subelapiz
+    retrocede 200 giraizquierda 90 avanza 200 giraderecha 90
+  bajalapiz
+fin
+
+para dos
+# trazado de las aristas
+  cuadrado 
+# llevamos la tortuga al centro del cuadrado
+  subelapiz giraderecha 90 avanza 200 giraizquierda 90 avanza 200 bajalapiz
+# puntos
+  poncolorlapiz azul
+  subelapiz giraderecha 45 avanza 130 bajalapiz
+  puntos
+  subelapiz retrocede 260 bajalapiz puntos
+# vuelta a la posicion inicial
+  subelapiz
+    avanza 130 giraizquierda 45 retrocede 200 giraizquierda 90 avanza 200
+   giraderecha 90
+  bajalapiz 
+fin
+
+para tres
+# trazado de las aristas
+  cuadrado 
+# llevamos la tortuga al centro del cuadrado
+  subelapiz giraderecha 90 avanza 200 giraizquierda 90 avanza 200 bajalapiz
+# puntos
+  poncolorlapiz azul puntos
+  subelapiz giraderecha 45 avanza 130 bajalapiz puntos
+  subelapiz retrocede 260 bajalapiz puntos
+# vuelta a la posicion inicial
+  subelapiz
+    avanza 130 giraizquierda 45 retrocede 200 giraizquierda 90 avanza 200 
+    giraderecha 90
+  bajalapiz 
+fin
+
+para cuatro
+# trazado de las aristas
+  cuadrado 
+# llevamos la tortuga al centro del cuadrado
+  subelapiz giraderecha 90 avanza 90 giraizquierda 90 avanza 70 bajalapiz
+# puntos
+  poncolorlapiz azul puntos 
+  subelapiz avanza 260 bajalapiz puntos
+  subelapiz
+    retrocede 330 giraderecha 90 avanza 220 giraizquierda 90 avanza 70
+  bajalapiz puntos 
+  subelapiz avanza 260 bajalapiz puntos
+# vuelta a la posicion inicial
+  subelapiz
+    retrocede 330 giraizquierda 90 avanza 310 giraderecha 90
+  bajalapiz
+fin
+
+para cinco
+# trazado de las aristas
+  cuadrado 
+# llevamos la tortuga al centro del cuadrado
+  subelapiz giraderecha 90 avanza 200 giraizquierda 90 avanza 200 bajalapiz
+# puntos
+  poncolorlapiz azul puntos
+  subelapiz giraderecha 45 avanza 130 bajalapiz puntos
+  subelapiz retrocede 260 bajalapiz puntos
+  subelapiz avanza 130 giraizquierda 90 avanza 130 bajalapiz puntos
+  subelapiz retrocede 260 bajalapiz puntos
+# vuelta a la posicion inicial
+  subelapiz
+    avanza 130 giraderecha 45 retrocede 200 giraizquierda 90
+    avanza 200 giraderecha 90
+  bajalapiz
+fin
+
+para seis
+# trazado de las aristas
+  cuadrado 
+# llevamos la tortuga al centro del cuadrado
+  subelapiz giraderecha 90 avanza 90 giraizquierda 90 avanza 70 bajalapiz
+# puntos
+  poncolorlapiz azul puntos 
+  subelapiz avanza 130 bajalapiz puntos
+  subelapiz avanza 130 bajalapiz puntos
+  subelapiz
+     retrocede 330 giraderecha 90 avanza 220 giraizquierda 90 avanza 70
+  bajalapiz
+  puntos 
+  subelapiz avanza 130 bajalapiz puntos
+  subelapiz avanza 130 bajalapiz puntos
+# vuelta a la posicion inicial
+  subelapiz
+    retrocede 330 giraizquierda 90 avanza 310 giraderecha 90
+  bajalapiz
+fin

@@ -1,0 +1,53 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour spir
+  fpos xycurve 0 baissecrayon
+  repetepour [t 0 5000] [fcc angcol :t fpos xycurve :t]
+fin
+
+pour xycurve :t
+  donne "kk :k * puissance :e ( moins 0.00015 * :t )
+  donne "x :kk*((cos ((:f1*:t) + :p1 )) + (cos ((:f2*:t) + :p2 )))
+  donne "y :kk*((cos ((:f3*:t) + :p3 )) + (cos ((:f4*:t) + :p4 )))
+  retourne (liste :x :y)
+fin
+
+pour initialise
+  donne "k 90
+  donne "e 2.718
+  donne "f1 tronque 1+ hasard 9
+  donne "f2 tronque 1+ hasard 9
+  donne "f3 tronque 1+ hasard 9
+  donne "f4 tronque 1+ hasard 9
+  donne "p1 tronque hasard 360
+  donne "p2 tronque hasard 360
+  donne "p3 tronque hasard 360
+  donne "p4 tronque hasard 360
+fin
+
+pour display
+  # tape header title et footer values
+  fcc blanc
+  fpos [-190 184] etiquette "harmonograph
+  fpos [-190 -190] etiquette phrase phrase phrase liste
+  "freqs: :f1 :f2 :f3 :f4
+  fpos [34 -190] etiquette phrase phrase phrase liste
+  "phase: :p1 :p2 :p3 :p4
+fin
+
+pour angcol :theta
+  donne "red abs 255 *cos (:theta)
+  donne "gre abs 255 *cos (:theta + 120)
+  donne "blu abs 255 *cos (:theta + 240)
+  retourne phrase liste :red :gre :blu
+fin
+
+pour demarrer
+  repete 12 [new initialise display spir attends 200]
+fin
+

@@ -1,0 +1,18 @@
+# Comando de Inicio: empezar
+para empezar
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  poncolorlapiz amarillo
+  repitepara [angulo 200 90000 222.5]
+# 222.5=360/1.618
+     [ haz "radio 0.6 * raizcuadrada :angulo
+       centro ponrumbo :angulo avanza :radio
+       dibujasemilla]
+fin
+
+para dibujasemilla
+  giraizquierda 45 bajalapiz repite 4 [retrocede 7 giraderecha 90]
+  # rellena de amarillo
+  subelapiz giraderecha 45 retrocede 5 bajalapiz rellena subelapiz
+fin

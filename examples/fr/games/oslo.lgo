@@ -1,0 +1,71 @@
+# Commande principale: demarrer
+pour demarrer
+ct nettoie vt
+accueil 0
+#---------------------------------------
+#Version 1. Le nombre cible est choisi au hasard.
+      donne "but (1 + hasard 50)
+#---------------------------------------
+#Version 2. Le joueur choisit le nombre cible.
+#      lis [Donnez le nombre cible :] "but donne "but :but
+#si vide? :but [demarrer]
+#---------------------------------------
+ftpt 40 fct 2 tape [Nombre à atteindre :\ ]
+fct 1 ec :but
+affichage_depart
+fin
+pour affichage_depart
+fcc 0 etiquette "4
+affichage 4 1 [4]
+fin
+
+pour affichage :n :i :chemin
+nettoie vt
+donne "chemin :chemin
+ftpt 40
+fct 2 tape [Nombre à atteindre :\ ]
+fct 1 ec :but
+fct 4 ec :chemin
+lc fpos [-250 0] bc fcc 0 ftp 60 etiquette :n
+si :n = :but [fcc 1 etiquette :n bravo 0 ]
+donne "car liscar
+si egal? reste :n 2 0 [
+si egal? :car (-38) [ftp 60 affichage (( :n*10)+4) (:i+1) md (( :n*10)+4) :chemin]
+si egal? :car (-39) [ftp 60 affichage ( :n*10) (:i+1) md (:n*10) :chemin]
+si egal? :car (-40) [ftp 60 affichage (:n/2) (:i+1) md (:n/2) :chemin]
+si egal? :car (-37) [ftp 60 affichage dernier sd :chemin (:i-1) sd :chemin]
+]
+[
+si egal? :car (-38) [ftp 60 affichage (( :n*10)+4) (:i+1) md (( :n*10)+4) :chemin]
+si egal? :car (-39) [ftp 60 affichage ( :n*10) (:i+1) md (:n*10) :chemin]
+si egal? :car (-40) [impossible 0 attends 60 ftp 60 affichage :n :i :chemin]
+si egal? :car (-37) [ftp 60 affichage dernier sd :chemin (:i-1) sd :chemin]
+]
+fin
+
+pour bravo :n
+si :n = 12 [stoptout]
+lc fpos [0 0] bc
+fcc hasard :n ftp 60 etiquette [Bravo !]
+attends 10
+bravo :n + 1
+fin
+
+pour impossible :n
+si :n = 12 [stop]
+lc fpos [0 0] bc
+fcc item 1 + reste :n 2 [7 1] ftp 60 etiquette [Non permis !]
+attends 5
+nettoie
+impossible :n + 1
+fin
+
+pour accueil :n
+ct
+si :n > 12 [stop]
+attends 10
+lc fpos [-250 0] bc
+fcc hasard 7 ftp 60 etiquette [J E U \ \ \ d ' O S L O]
+attends 10
+accueil :n + 1
+fin

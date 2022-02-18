@@ -1,0 +1,59 @@
+# Commande principale: demarrer
+pour new
+    # Initialise les valeurs par défaut pour l'écran et la tortue
+  init ftd [400 400] cachetortue
+  fcfg noir fcc vert levecrayon animation
+fin
+
+pour initialise
+  donne "a 3.8 donne "t 0.2       # Valeur de départ
+  donne "delay 10       # Réduire la vitesse
+  message [use the up et down cursor keys pour adjust the value of 'a']
+fin
+
+pour title
+  fcc blanc
+  fpos [-160 180] etiquette [plot of t= a sin t where 1<a<5]
+  fpos [130 180] etiquette [a= 3.8]
+  fpos [-184 -186] repetepour [w -5 5] [etiquette :w avance 34]
+  fcc gris
+  fpos [-161 -182] baissecrayon repete 4 [avance 342 tournedroite 90]
+  fixecap 90 repetepour [y -148 124 34]
+  [levecrayon fpos (liste moins 159 :y)
+  repete 85 [baissecrayon avance 2 levecrayon avance 2]]
+fin
+
+pour chaos
+  fixecap 0
+  tantque [vrai] [donne "x moins 160
+  repete 86 [donne "t :a*sin (:t*180/pi)
+  levecrayon fpos (liste :x moins 12) baissecrayon
+  fcc 1 avance :t*34 attends :delay rf
+  fcc 2 recule :t*34
+  donne "xx :x+40
+  si :xx> 180 [donne "xx :xx-344]
+  levecrayon fpos (liste :xx moins 181) baissecrayon
+  fcc 0 avance 340
+  keyip donne "x :x +4]]
+fin
+
+pour keyip
+  si touche? [
+  donne "char liscar
+  si :char=-38 [donne "a :a+0.1 donne "pc 7]
+  si :char=-40 [donne "a :a-0.1 donne "pc 7]
+  si :a>5 [donne "a 5 donne "pc 1]
+  si :a<1 [donne "a 1 donne "pc 1]
+  score :a :pc]
+fin
+
+pour score :a :pc
+  levecrayon fpos [126 184] fixecap 90 fcc 0 ftc 10
+  baissecrayon avance 56
+  levecrayon fpos [130 180] fixecap 0 fcc :pc ftc 1
+  etiquette phrase [a=] :a
+fin
+
+pour demarrer
+  new initialise title chaos
+fin

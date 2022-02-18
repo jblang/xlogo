@@ -1,0 +1,29 @@
+# Comando de Inicio: empezar
+para empezar
+  repitepara [c 4 2 -1]
+     [ nuevo hilar :c espera 100]
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para hilar :c
+  repitepara (frase "t 0 360 (6-:c))
+    [ poncolorlapiz angcol :t subelapiz
+    # movemos a punto de partida en el circulo
+      ponxy 190*seno :t 190*coseno :t bajalapiz
+    # movemos a punto de llegada en el circulo
+      ponxy 190*seno (:c*:t) 190*coseno (:c*:t)
+      espera 10 ]
+fin
+
+para angcol :t
+  # devuelve lista de rojo, verde, azul
+  haz "rojo 127*(1+coseno :t)
+  haz "verde 127*(1+coseno(120+:t))
+  haz "azul 127*(1+coseno(240+:t))
+  devuelve frase lista :rojo :verde :azul
+fin

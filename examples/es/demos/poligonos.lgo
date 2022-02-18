@@ -1,0 +1,9 @@
+# Comando de Inicio: empezar
+para empezar
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  retrocede 180 giraderecha 90 retrocede 40 bajalapiz
+  repitepara [n 3 14] 
+     [ repite :n [avanza 80 giraizquierda 360/:n] ]
+fin

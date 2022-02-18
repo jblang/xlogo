@@ -1,0 +1,19 @@
+# Comando de Inicio: martin
+para martin
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde
+  subelapiz ocultatortuga
+#
+  haz "x 0 haz "y 0
+  haz "angulo 3.14 # puedes probar 3.1415 o 3.141593 o pi
+    # haz "escala 12 haz "iters 8000
+  haz "escala 7 haz "iters 20000
+  haz "offset 1.8 * :escala
+#
+  repite :iters [
+    haz "xnew :y - seno (:x*180/pi)
+    haz "y :angulo - :x
+    haz "x :xnew
+    punto lista (:x*:escala)-:offset (:y*:escala)-:offset]
+fin

@@ -1,0 +1,52 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400] cachetortue
+  fcfg noir fcc vert levecrayon animation
+fin
+
+pour pie :shots
+  new donne "shotsfired 0 drawland drawsea
+  repete :shots [fire fcc 7 display rf fcc 0 display]
+  fcc 7 display
+fin
+
+pour drawland
+  donne "landshots 0
+  fcc 2 origine cercle 180
+fin
+
+pour drawsea
+  donne "seashots 0
+  fcc 5 fpos [-180 -180]
+  baissecrayon repete 4 [avance 360 tournedroite 90] levecrayon
+fin
+
+pour fire
+  fixexy (hasard 360)-180 (hasard 360)-180
+  si (distance [0 0]) < 180
+  [fcc 3 donne "landshots :landshots+1]
+  si (distance [0 0]) > 180
+  [fcc 6 donne "seashots :seashots+1]
+  donne "shotsfired :shotsfired+1
+  baissecrayon avance 0 levecrayon
+fin
+
+pour display
+  fpos [-67 40]
+  etiquette phrase [coups tirés] :shotsfired
+  fpos [-80 20]
+  etiquette phrase [coup sur l'île] :landshots
+  fpos [-74 0]
+  etiquette phrase [coups dans l'eau] :seashots
+  fpos [-80 -20]
+  etiquette phrase [arrondi de pi] (arrondi
+  (4*:landshots/:shotsfired)*100000) / 100000
+  fpos [-52 -40]
+  etiquette phrase [actual pi] 3.14159
+fin
+
+pour demarrer
+  pie 5001
+fin
+

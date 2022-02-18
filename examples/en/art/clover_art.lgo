@@ -1,0 +1,85 @@
+# Main Command: Go 5
+# Clover Art by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to init :order
+  # global values
+  Make "Board 384
+  GlobalMake "CellSize :Board /:Order
+  GlobalMake "OffSet (:Board -:CellSize) /2
+end
+
+to drawgrid :order
+  # draw CellX x CellY array of squares
+  For (List "CellY 0 :Order -1) [
+    For (List "CellX 0 :Order -1) [
+    SetPos GridPos :CellX :CellY SetH 0
+    SetPC Shuffle [0 128 255]
+    If Even :CellX +:CellY [SetPC Dark PenColor] Square :CellSize Fill
+    SetPC Shuffle [0 128 255]
+    If Even :CellX +:CellY [Left 180 /:Order] [SetPC Dark PenColor] 
+    Clover_Rand :Order 0.9*:CellSize Fill Wait 12] ]
+end
+
+to gridpos :cellx :celly
+  # return X Y screen position
+  Make "PosX (:CellX*:CellSize) -:OffSet
+  Make "PosY (:CellY*:CellSize) -:OffSet
+  Output List :PosX :PosY
+end
+
+to clover_rand :n :size
+  # draw random clover shape of total diameter Size
+  Make "Dist (:Size/2)/(1+Sin (180/:N))
+  PenUp Repeat :N [
+    If Pick [True False] 
+      [Forward :Dist Arch 180*(1+2/:N) (:Size/2)-:Dist]
+      [Forward :Dist Left 180 Arch 180*(1-2/:N) (:Size/2)-:Dist Left 180]
+    Back :Dist Left 360/:N] 
+end
+
+to square :side
+  # square (side x side) drawn from centre (tp)
+  Back :Side/2 Right 90 Back :Side/2 PenDown
+  Repeat 4 [
+    Forward :Side Left 90]
+  PenUp Forward :Side/2 Left 90 Forward :Side/2     # return to centre
+end
+
+to even :num
+  # return True if Num even, else return False 
+  If (Mod :Num 2) = 0 [Output "True] [Output "False]
+end
+
+to arch :angle :radius
+  # symmetrical arc drawn relative to turtle heading
+  Arc :Radius Heading-:Angle/2 Heading+:Angle/2
+end
+
+To Dark :Hue
+  # output rgb list midway between :hue and black
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (First :Hue)/2 :Hue]
+  Output :Hue
+End
+
+to shuffle :mylist
+  # randomly shuffle list order
+  LocalMake "Shuffled [ ] 
+  Repeat Count :myList [
+    LocalMake "Select Pick :myList
+    Make "myList Remove :Select :myList
+    LocalMake "Shuffled LPut :Select :Shuffled]
+  Output :Shuffled
+end
+
+to go :order
+  New Init :Order
+  DrawGrid :Order
+end

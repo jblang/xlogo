@@ -1,0 +1,32 @@
+# Comando de Inicio: artistica2 25
+para artistica2 :orden
+  nuevo inicializar :Orden
+  repite :total
+   [ ponposicion cuad.pos :orden azar contador-1
+     cuadrado giraderecha 90/(:total-1)]
+fin
+
+para nuevo
+# Inicializamos pantalla, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para inicializar :orden
+  haz "total potencia :orden 2
+  haz "celd.tam 360/:orden
+  haz "offset (0.5*:orden)-0.5
+  haz "lado 250/:orden
+fin
+
+para cuad.pos :orden :celdnum
+  haz "x :celd.tam*((resto :celdnum :orden)-:offset)
+  haz "y :celd.tam*((cociente :celdnum :orden)-:offset)
+  devuelve lista :x :y
+fin
+
+para cuadrado
+# Dibujamos cuadrado desde el centro
+  retrocede :lado/2 giraderecha 90 retrocede :lado/2 bajalapiz
+  repite 4 [avanza :lado giraizquierda 90] subelapiz
+fin

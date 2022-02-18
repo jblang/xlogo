@@ -1,0 +1,38 @@
+# Main Command: Go
+# Demo_Star by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To Dust
+  Repeat 256 [Jump 390 Dot Pos]
+End
+
+To Jump :Side
+  # set turtle to random position within square of size side
+  SetXY (Random :Side) - :Side/2 (Random :Side) - :Side/2
+End
+
+To Burst :Spokes :Radius
+  # star burst drawn from centre (tp)
+   Repeat :Spokes [
+    PenDown Forward :Radius
+    PenUp Back :Radius
+    Right 360/:Spokes Wait 2]
+End
+
+To Net
+  For [Angle 0 360 6] [
+    PenUp SetXY 180*Cos :Angle 0
+    PenDown SetXY 0 180*Sin :Angle Wait 4]
+End
+
+To Go
+  New SetPC White Dust
+  Home SetPC Red Burst 40 180
+  SetPC Green Net
+End

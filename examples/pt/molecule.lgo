@@ -1,0 +1,21 @@
+# Esse projeto faz uso dos recursos 3D do xLogo para desenhar uma molécula.
+# Na janela de comandos, escreva logo3d água mostrepolígono.
+
+aprenda água
+ld mudecf preto
+mudecl branco
+iniciepolígono
+repita 90 [círculo 65 rolepd 2]
+terminepolígono
+un pf  150 ul
+mudecl azul
+iniciepolígono
+repita 90 [círculo 130 rolepd 2]
+terminepolígono
+mudedç 104.5
+un pf  150 ul
+mudecl branco
+iniciepolígono
+repita 90 [círculo 65 rolepd 2]
+terminepolígono
+fim

@@ -1,0 +1,23 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  poncolorlapiz 7 polvo poncolorlapiz 1 estrella poncolorlapiz 2 red
+fin
+
+para polvo
+  repite 256 [ punto frase (azar 400)-200 (azar 400)-200 ]
+fin
+
+para estrella
+  ponxy 0 0 bajalapiz        # Centro pantalla
+  repite 40 [avanza 180 ponxy 0 0 giraizquierda 9 espera 4]
+fin
+
+para red
+  repitepara [angulo 0 360 6]
+  [subelapiz ponxy 180*coseno :angulo 0
+  bajalapiz ponxy 0 180*seno :angulo espera 4]
+fin

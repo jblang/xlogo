@@ -1,0 +1,46 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+# Dibujo con una unica figura. Puede cambiarse
+  haz "miforma elige [estrella luna pez]
+  repite 120 [
+ # Comenta la anterior y descomenta esta para mezcla de figuras
+    # haz "miforma elige [estrella luna pez]
+    ponposicion lista (azar 320)-160 (azar 320)-160
+    giraizquierda azar 72
+    poncolorlapiz blanco ejecuta lista :miforma "nada
+    bajalapiz rellenazona
+    poncolorlapiz elige [1 2 3 4 5 6 14 15 16] rellena subelapiz
+    poncolorlapiz negro ejecuta lista :miforma "nada]
+fin
+
+para estrella
+# dibuja estrella desde su centro
+  retrocede 30 giraizquierda 18 bajalapiz
+  repite 5 [
+    avanza 22 giraizquierda 72 avanza 22 giraderecha 144]
+    subelapiz giraderecha 18 avanza 30
+fin
+
+para luna
+  avanza 15
+  arco 25 rumbo+50 rumbo+310
+  avanza 15
+  arco 20 rumbo+90 rumbo+270
+  retrocede 30
+fin
+
+para pez
+  arco 12 rumbo+180 rumbo
+  avanza 12
+  arco 24 rumbo rumbo+180
+  avanza 12
+  arco 12 rumbo rumbo+180
+  retrocede 24
+fin
+
+para nada
+fin

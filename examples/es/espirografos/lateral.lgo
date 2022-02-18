@@ -1,0 +1,65 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde 
+  subelapiz ocultatortuga
+#
+  ponformalapiz 1
+  repite 12 [
+    limpia inicializar leyenda centro
+    spir espera 200]
+fin
+
+para inicializar
+  haz "lados [ ]
+  haz "orden elige [3 4 5 6]
+  haz "tam truncar (340 / potencia :orden 2)
+  haz "angulo 360 / :orden
+  haz "l elige [1 -1]
+  repite (:orden+:l) [
+  haz "lados ponultimo elige [ -5 -4 -3 -2 -1 0 1 2 3 4 5] :lados ]
+fin
+
+para spir
+  haz "elemnum 1
+  repite :orden [
+    repite (:orden + :l) [
+      haz "dist :tam * (elemento :elemnum :lados)
+      cinta :dist espera 6
+      retrocede :dist pin avanza :dist
+      si :elemnum < (:orden + :l)
+        [haz "elemnum :elemnum +1] [haz "elemnum 1]
+      giraderecha :angulo ] ]
+  pin poncolorlapiz rojooscuro pongrosor 1 circulo 2
+fin
+
+para leyenda
+# Muestra encabezado y pie de pagina
+  poncolorlapiz blanco
+  ponposicion [-190 180] rotula "Espirolateral
+  ponposicion [-190 -190] rotula ( lista "orden: :orden :l )
+  ponposicion [52 -190] rotula ( lista "lados: :lados )
+fin
+
+para cinta :dist
+  poncolorlapiz angcol rumbo/2
+  pongrosor 5 bajalapiz avanza :dist
+  subelapiz giraizquierda 90 avanza 3 giraizquierda 90
+  poncolorlapiz negro pongrosor 1 bajalapiz avanza :dist
+  subelapiz giraizquierda 90 avanza 6 giraizquierda 90
+  bajalapiz avanza :dist
+  subelapiz giraizquierda 90 avanza 3 giraderecha 90
+fin
+
+para pin
+  poncolorlapiz rojo pongrosor 11 punto posicion
+  poncolorlapiz rojooscuro pongrosor 1 circulo 5.4
+fin
+
+para angcol :theta
+  haz "red abs 255 *coseno (:theta)
+  haz "gre abs 255 *coseno (:theta + 120)
+  haz "blu abs 255 *coseno (:theta + 240)
+  devuelve (lista :red :gre :blu)
+fin

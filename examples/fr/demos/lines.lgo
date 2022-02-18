@@ -1,0 +1,22 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour ranpoint
+  fixexy (hasard 320)-190 (hasard 360)-180
+fin
+
+pour labxy
+  fcc blanc etiquette pos
+fin
+
+pour demarrer
+  new labxy
+  fixetaillecrayon 2 baissecrayon repete 12 [
+  fcc (1+hasard 6) ranpoint labxy attends 64]
+  fcc (1+hasard 6) origine
+fin
+

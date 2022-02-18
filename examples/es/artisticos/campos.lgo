@@ -1,0 +1,77 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  poncolorlapiz naranja baldosa
+  haz "online 0 poncolorlapiz negro
+  mientras [:online < 64] [rotura]
+  colorea
+fin
+
+para baldosa
+  ponposicion [-190 -190]
+  bajalapiz repite 4 [avanza 380 giraderecha 90] subelapiz
+  centro rellena
+fin
+
+para rotura
+  haz "punto punto.azar ponposicion :punto
+  si 0=(elemento 2 encuentracolor posicion)
+      [haz "online :online+1 alto]
+  haz "poslist neso
+  haz "distv (elemento 1 :poslist) + (elemento 3 :poslist)
+  haz "disth (elemento 2 :poslist) + (elemento 4 :poslist)
+  si (:distv < :disth) [
+  si y ((elemento 2 :poslist) > 6) ((elemento 4 :poslist) > 6)
+    [linea.ver]]
+    [si y ((elemento 1 :poslist) > 6) ((elemento 3 :poslist) > 6)
+      [linea.hor]]
+fin
+
+para nesw
+    #return north east south y west distances
+  haz "poslist []
+  repitepara [n 0 3] [
+  haz "dist 0
+  ponposicion :punto ponrumbo :n*90
+  mientras [255=(elemento 1 encuentracolor posicion)] [
+  haz "dist :dist + 1 avanza 1]
+  haz "poslist ponultimo :dist :poslist]
+  devuelve :poslist
+fin
+
+para punto.azar
+  devuelve lista (azar 360)-180 (azar 360)-180
+fin
+
+para linea.hor
+  ponposicion :punto ponrumbo 90 avanza (elemento 2 :poslist)-1
+  pongrosor truncar :disth/32 bajalapiz retrocede :disth-2 subelapiz
+fin
+
+para linea.ver
+  ponposicion :punto ponrumbo 0 avanza (elemento 1 :poslist)-1
+  pongrosor truncar :distv/32 bajalapiz retrocede :distv-2 subelapiz
+fin
+
+para colorea
+  repite 64 [
+  ponposicion punto.azar
+  si 255=(elemento 1 encuentracolor posicion) [
+    poncolorlapiz ( lista (truncar 100 + azar 127) 127 0 )
+    rellena] ]
+fin
+
+para neso
+# Devuelve la distancia hasta Norte, Este, Sur y Oeste
+  haz "poslist []
+  repitepara [n 0 3]
+   [ haz "dist 0
+     ponposicion :punto ponrumbo :n*90
+     mientras [255=(elemento 1 encuentracolor posicion)]
+       [ haz "dist :dist + 1 avanza 1]
+     haz "poslist ponultimo :dist :poslist]
+  devuelve :poslist
+fin

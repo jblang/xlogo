@@ -1,0 +1,36 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  lineas ponposicion [-185 -140]
+  seccion 228      # empieza con cuadrado de lado 228
+fin
+
+para lineas
+  poncolorlapiz [0 0 128]    # dibuja diagonales en azul
+  subelapiz ponposicion [-185 88]
+  bajalapiz ponposicion [184 -140]
+  subelapiz ponposicion [184 88]
+  bajalapiz ponposicion [43 -140] espera 30
+fin
+
+para seccion :lado
+  si :lado < 2 [alto]         # alto si lado demasiado corto
+  poncolorlapiz 2 cuadrado :lado   # comenta para dibujar solo la curva
+  poncolorlapiz 1 curva :lado         # comenta para dibujar solo los cuadrados
+  seccion :lado*0.618        # Repetimos con un lado mas corto
+fin
+
+para cuadrado :lado
+  repite 4 [avanza :lado giraderecha 90]
+fin
+
+para curva :lado
+  haz "paso :lado*0.0524    # correccion de rumbo pi/60
+  giraderecha 1.5
+# arco de 90 grados y  30 pasos
+  repite 30 [avanza :paso giraderecha 3 espera 4]
+  giraizquierda 1.5
+fin

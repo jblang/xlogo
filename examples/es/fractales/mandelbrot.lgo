@@ -1,0 +1,33 @@
+# Comando de Inicio: empezar 5
+para empezar :orden
+  nuevo
+  haz "lado elemento :orden [24 16 12 8 6 4 3 2 1]
+  pongrosor :lado escribe :lado
+  haz "empieza (truncar :lado/2)-192
+  repitepara (lista "y 0 191 :lado) [
+    repitepara (lista "x :empieza 191 :lado) [
+    poncolorlapiz negro mand (:x/140)-0.7 :y/140
+    ponxy :x :y punto posicion
+    ponxy :x cambiasigno :y punto posicion ] ]
+fin
+
+para nuevo
+# inicializamos papel, lapiz y torutga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+fin
+
+para mand :mp :np
+  haz "m 0 haz "n 0
+  repite 90 [
+    haz "mnuevo (potencia :m 2) - (potencia :n 2) + :mp
+    haz "n (2*:m*:n) + :np
+    haz "m :mnuevo
+    si ((potencia :m 2) + (potencia :n 2)) > 4 [
+      poncolorlapiz col.lapiz contador alto] ]
+fin
+
+para col.lapiz :theta
+  haz "red 255 *seno :theta
+  devuelve ( lista :red 0 0 )
+fin

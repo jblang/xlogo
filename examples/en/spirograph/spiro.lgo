@@ -1,0 +1,63 @@
+# Main Command: Go
+# Spiro by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to spir
+  SetPos XYCurve 0 PenDown
+  For [T 1 360] [SetPC Hue2 :T SetPos XYCurve :T]
+end
+
+to rand
+  Make "R Pick [80 90 100 110 120]
+  Make "S 160-:R 
+  Make "A (1 + Random 9)
+  Make "B (1 + Random 9)
+  Make "C (1 + Random 9)
+  Make "D (1 + Random 9)
+end
+
+to display
+  # write header title and footer values
+  SetPC White 
+  SetPos [-190 184] Label "Spirograph
+  SetPos [-190 -190] Label ( List "ABCD= :A :B :C :D )
+  SetPos [110 -190] Label ( List "RS= :R :S )
+end
+
+To Hue2 :Theta
+  # Output RGB hue list from angle :Theta
+  Make "Red Abs 255*Sin :Theta
+  Make "Green Abs 255*Sin (:Theta+120)
+  Make "Blue Abs 255*Sin (:Theta+240)
+  Output (List :Red :Green :Blue)
+End
+
+to xycurve :t
+  Make "X :R*(Sin :A*:T) + :S*(Sin :B*:T)
+  Make "Y :R*(Cos :C*:T) + :S*(Cos :D*:T)
+  Output (List :X :Y)
+end
+
+to go
+  Repeat 12 [  New Rand Display Spir Wait 200]
+end
+
+to xycurve1 :s :t
+  # spiros
+Make "X :R*(Cos :A*:T) + :S*(Sin :B*:T)
+Make "Y :R*(Sin :C*:T) + :S*(Cos :D*:T)
+Output List :X :Y
+end
+
+to xycurve2 :s :t
+  # flowers -note C & D not used
+Make "X :R*(Cos :A*:T) + :S*(Sin :B*:T)
+Make "Y :R*(Sin :A*:T) + :S*(Cos :B*:T)
+Output List :X :Y
+end

@@ -1,0 +1,33 @@
+# Comando de Inicio: empezar
+para empezar
+  nuevo
+  repitepara [n 2 4 0.05] [inicializar :n
+  repite 1000 [hom.geng]]
+  escribe "Hecho
+fin
+
+para nuevo
+# Inicializamos la pantalla, el lapiz, la tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para inicializar :n
+  haz "aleat raizcuadrada (1-(potencia :n-3 2))/103
+  haz "x :n+:aleat
+  haz "y :n
+  poncolorlapiz colang :n
+fin
+
+para hom.geng
+  haz "xnuevo 1 - :y + abs :x
+  haz "ynuevo :x
+  punto lista (:xnuevo*34)-84 (:ynuevo*34)-84
+  haz "x :xnuevo
+  haz "y :ynuevo
+fin
+
+para colang :angulo
+  haz "green truncar 127.5*:angulo - 255
+  devuelve frase lista 255 :green 0
+fin

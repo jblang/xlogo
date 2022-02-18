@@ -1,0 +1,23 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos pantalla, papel, tortuga, ...
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+  ponposicion [-94 -160] giraderecha 5 bajalapiz
+  haz "angulo 50 arbol 85        # angulo initial: 60 grados y color rojo
+fin
+
+para arbol :long
+  si :long< 10 [alto]        # Fin de recursion si long muy corta
+  pongrosor :long/9        # Reduce grosor lapiz al menguar la rama
+  poncolorlapiz arbolcol :long        # color de rama depende de long
+  avanza :long giraizquierda :angulo/2
+  arbol :long*0.65 giraderecha :angulo        # arbol con rama = 3/4 long
+  arbol :long*0.85 giraizquierda :angulo/2
+  subelapiz retrocede :long bajalapiz        # Volvemos a punto de partida
+fin
+
+para arbolcol :long
+  haz "green redondea 2.5*(100-:long)        # color depende de long
+  devuelve frase lista 255 :green 0        # rojo si vale 0 y amarillo para 255
+fin

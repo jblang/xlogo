@@ -1,0 +1,111 @@
+# Comando de Inicio: empezar
+para empezar
+#
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz verde subelapiz animacion
+# listas globales, 7 piezas del tangram y lista de imagenes
+  haz "tans [[tri1 24] [tri2 24] [tri2 17] [cuad] [par] [tri1 12] [tri2 12]]
+  haz "pics [[inicio] [monigote]]
+  haz "inicio ejecuta (elemento 1 :pics) # global
+  haz "nombrefinal elemento 2 :pics
+  haz "final ejecuta (:nombrefinal) # lista global
+  desliza
+  haz "inicio :final
+  haz "nombrefinal elemento 1 :pics
+  haz "final ejecuta (:nombrefinal) 
+  desliza
+  detieneanimacion
+fin
+
+para inicializar :theta
+  haz "r 400*seno (2*:theta)
+  haz "a :r*seno :theta
+  haz "b :r*coseno :theta
+  haz "x 0 haz "y 0
+fin
+
+para display
+  poncolorlapiz blanco ponrumbo 0
+  ponposicion [-190 184] rotula frase [tangram] :final
+fin
+
+para deslizar
+  repitepara [paso 0 64] [limpia
+  repitepara [n 1 7] [
+  haz "dd :paso / cambiasigno 64
+  ponx delta :n :dd 1
+  pony delta :n :dd 2
+  ponrumbo delta :n :dd 3
+  ejecuta elemento :n :tans]
+  refrescar]
+  display refrescar espera 120
+fin
+
+para delta :n :dd :m
+  haz "diferencia (elemento :m elemento :n :inicio) - (elemento :m elemento :n :final)
+  devuelve (elemento :m elemento :n :inicio) + (:dd*:diferencia)
+fin
+
+para tri1 :lado
+  haz "l :lado*potencia 2 0.5
+  giraderecha 45 retrocede 1.33*:l giraizquierda 45
+  poncolorlapiz frase [ 0 0] :lado * 5 bajalapiz
+  avanza 4*:lado giraderecha 135 avanza 4*:l giraderecha 135 avanza 4*:lado subelapiz
+  giraderecha 135 avanza 1.33*:l bajalapiz rellenazona subelapiz
+  retrocede 1.33*:l giraizquierda 45 poncolorlapiz blanco bajalapiz
+  avanza 4*:lado giraderecha 135 avanza 4*:l giraderecha 135 avanza 4*:lado subelapiz
+fin
+
+para tri2 :lado
+  haz "l :lado*potencia 2 0.5
+  giraderecha 45 retrocede 1.33*:l giraizquierda 45
+  poncolorlapiz frase :lado * 5 [0 0] bajalapiz
+  avanza 4*:lado giraderecha 135 avanza 4*:l giraderecha 135 avanza 4*:lado subelapiz
+  giraderecha 135 avanza 1.33*:l bajalapiz rellenazona subelapiz
+  retrocede 1.33*:l giraizquierda 45
+  poncolorlapiz blanco bajalapiz
+  avanza 4*:lado giraderecha 135 avanza 4*:l giraderecha 135 avanza 4*:lado subelapiz
+fin
+
+para cuad
+  retrocede 34 giraizquierda 45
+  poncolorlapiz [0 108 0] bajalapiz
+  repite 4 [avanza 48 giraderecha 90] subelapiz
+  giraderecha 45 avanza 34 bajalapiz rellenazona subelapiz
+  retrocede 34 giraizquierda 45 poncolorlapiz blanco bajalapiz
+  repite 4 [avanza 48 giraderecha 90] subelapiz
+fin
+
+para par
+  retrocede 24 giraizquierda 90
+  poncolorlapiz verdeoscuro bajalapiz
+  repite 2 [avanza 48 giraderecha 135 avanza 68 giraderecha 45] subelapiz
+  giraderecha 90 avanza 24 bajalapiz rellenazona subelapiz
+  retrocede 24 giraizquierda 90 poncolorlapiz blanco bajalapiz
+  repite 2 [avanza 48 giraderecha 135 avanza 68 giraderecha 45] subelapiz
+fin
+
+para monigote
+  devuelve [[20 -67 0] [0 22 -180] [-30 -90 45] [0 90 20] [58 4 -90] [0 -135 225] [95 -90 180]]
+fin
+
+para dibuja
+  poncolorlapiz blanco ponrumbo 0
+  ponposicion [-190 184] rotula frase [tangram] :nombrefinal
+fin
+
+para inicio
+  devuelve [[-45 0 -135] [0 46 -45] [46 -46 -90] [0 -34 0] [52 17 -45] [-34 -57 135] [24 0 45]]
+fin
+
+para desliza
+  repitepara [paso 0 64] [limpia
+  repitepara [n 1 7] [
+  haz "dd :paso / cambiasigno 64
+  ponx delta :n :dd 1
+  pony delta :n :dd 2
+  ponrumbo delta :n :dd 3
+  ejecuta elemento :n :tans]
+  refrescar]
+  dibuja refrescar espera 120
+fin

@@ -1,0 +1,84 @@
+# Main Command: Go
+# Elastic Grids by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to gridpos :i :j
+  Make "Rect Function :I :J
+  Output List 180*First :Rect 180*Last :Rect
+end
+
+To PtoR :RadDist :Theta
+  # convert polar to rectangular co-ordinates
+  LocalMake "X :RadDist *Sin :Theta
+  LocalMake "Y :RadDist *Cos :Theta
+  Output List :X :Y
+End
+
+To RtoP :X :Y
+  # convert rectangular to polar co-ordinates
+  LocalMake "Dist Sqrt ((Power :X 2) +(Power :Y 2))
+  If :X<0 [Output List :Dist 180 +ATan :Y/:X] [
+    # else :X >0
+    If :Y<0 [Output List :Dist 360 +ATan :Y/:X]
+    [Output List :Dist ATan :Y/:X]]
+  # else :X =0
+  If :Y<=0 [Output List :Dist 270] [Output List :Dist 90]
+End
+
+to function :x :y
+Output List :X :Y   #unchanged
+end
+
+to function2 :x :y
+  If :X< 0 [Make "XSign Minus 1][Make "XSign 1]
+  If :Y< 0 [Make "YSign Minus 1][Make "YSign 1]
+  Make "X Power :X 2
+  Make "Y Power :Y 2
+  Output List :XSign*:X :YSign*:Y
+end
+
+to function3 :x :y
+  Make "X :X + 0.05 * Sin 360* :Y
+  Make "Y :Y + 0.05 * Cos 360* :X
+  Output List :X :Y
+end
+
+to function4 :x :y
+  Make "Polar RtoP :X :Y
+  Make "RadDist First :Polar Make "Theta Last :Polar 
+  If :RadDist <1 [ 
+    Make "RadDist Power :RadDist 0.4]     #change 0.4 to 2
+    Output PtoR :RadDist :Theta 
+end
+
+to function5 :x :y
+  Make "Polar RtoP :X :Y
+  Make "RadDist First :Polar Make "Theta Last :Polar 
+  If :RadDist <1 [ 
+    Make "Theta :Theta- 100*(1-:RadDist)]     #change 100 to 200
+    Output PtoR :RadDist :Theta 
+end
+
+to function6 :x :y
+  Make "Polar RtoP :X :Y
+  Make "RadDist First :Polar Make "Theta Last :Polar 
+  Make "RadDist Power :RadDist 0.4
+  Output PtoR :RadDist :Theta 
+end
+
+to go
+  New
+  Make "Size 19     #increase (eg 29) for finer grid
+  For [L 0 1] [
+    For (List "I Minus 1 1 2/:Size) [PenUp
+      For (List "J Minus 1 1 2/:Size) [
+      If :L=0 [SetPos GridPos :I :J PenDown]     #vertical lines
+      If :L=1 [SetPos GridPos :J :I PenDown]     #horizontal lines
+  ]]]
+end

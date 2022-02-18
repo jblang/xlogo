@@ -1,0 +1,43 @@
+# Comando de Inicio: empezar
+para empezar
+# inicializamos la pantalla, el lapiz, la tortuga, ...
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz verde subelapiz animacion
+# Forma del cubo
+  haz "formax [80 -80 -80 80 80 -80 -80 80]
+  haz "formay [80 80 -80 -80 -80 -80 80 80]
+  haz "formaz [80 80 80 80 -80 -80 -80 -80]
+  haz "color [1 1 2 2 3 3 6 6]
+# Inicializamos los angulos. Globales, no locales
+  haz "angulox 0
+  haz "anguloy 0
+  haz "anguloz 0
+  haz "m cuenta :color
+#
+  dibuja
+  detieneanimacion
+fin
+
+para dibuja
+  mientras [cierto]
+   [ haz "n 1
+     haz "angulox :angulox+5
+     haz "anguloy :anguloy+7
+     haz "anguloz :anguloz+3
+     repite :m
+       [ haz "xd elemento :n :formax
+         haz "yd elemento :n :formay
+         haz "zd elemento :n :formaz
+         haz "zx :xd*(cos :anguloz) - :yd*(sen :anguloz) - :xd
+         haz "zy :xd*(sen :anguloz) + :yd*(cos :anguloz) - :yd
+         haz "yx (:xd+:zx)*(cos :anguloy) - :zd*(sen :anguloy) - (:xd+:zx)
+         haz "yz (:xd+:zx)*(sen :anguloy) + :zd*(cos :anguloy) - :zd
+         haz "xy (:yd+:zy)*(cos :angulox) - (:zd+:yz)*(sen :angulox) - (:yd+:zy)
+         haz "xz (:yd+:zy)*(sen :angulox) + (:zd+:yz)*(cos :angulox) - (:zd+:yz)
+        haz "z :zd + (:xz+:yz)
+        haz "x (:xd + (:yx+:zx))*((:z+300)/295)
+        haz "y (:yd + (:zy+:xy))*((:z+300)/295)
+       ponposicion lista :x :y
+       poncolorlapiz elemento :n :color circulo 4+(:z+200)/50 haz "n :n+1]
+    refrescar limpia espera 15]
+fin

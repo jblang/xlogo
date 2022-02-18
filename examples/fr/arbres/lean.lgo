@@ -1,0 +1,27 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour tree :length
+  si :length< 10 [stop]        # ends recursion si branch length too small
+  ftc :length/9        # reduce pen width as branch length gets smaller
+  fcc treecol :length        # branch color depends on length
+  avance :length tournegauche :angle/2
+  tree :length*0.65 tournedroite :angle        # short branch length
+  tree :length*0.85 tournegauche :angle/2        # long branch length
+  levecrayon recule :length baissecrayon        # return pour starting point
+fin
+
+pour treecol :length
+  donne "green arrondi 2.5*(100-:length)        # vert depends on length
+  retourne phrase liste 255 :green 0        # rouge set pour 255 et bleu pour 0
+fin
+
+pour demarrer
+  new fpos [-94 -160] tournedroite 5 baissecrayon
+  donne "angle 50 tree 85        # initial angle of 50 shown in rouge
+fin
+

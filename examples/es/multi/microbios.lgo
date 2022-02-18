@@ -1,0 +1,36 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos pantalla, papel, tortuga, ...
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz blanco subelapiz animacion
+#
+  ponmaximastortugas 32
+  ponformalapiz 1        # forma redonda de lapiz 
+  repitepara [n 0 31] [pontortuga :n subelapiz
+  ponrumbo 11.25*:n]
+  mientras [cierto] [
+  repitepara [n 0 31] [pontortuga :n vagar borde.ext]
+  repitepara [n 0 31] [pontortuga :n borde.int]
+  refrescar espera 5 limpia]
+fin
+
+para vagar
+  subelapiz avanza 3 giraizquierda (6-azar 12) testborde
+fin
+
+para borde.ext
+  poncolorlapiz 7 bajalapiz pongrosor 42
+  avanza 36 retrocede 72 avanza 36
+fin
+
+para borde.int
+  poncolorlapiz 0 bajalapiz pongrosor 36
+  avanza 36 retrocede 72 avanza 36
+fin
+
+para testborde
+  si (primero posicion) > 260 [ponx -260 alto]
+  si (primero posicion) < -260 [ponx 260 alto]
+  si (ultimo posicion) > 260 [pony -260 alto]
+  si (ultimo posicion) < -260 [pony 260 alto]
+fin

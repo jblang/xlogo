@@ -1,0 +1,19 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour rainbow
+  fixeformecrayon 1 ftc 10      # fat arrondi pen
+  donne "cols [1 13 3 2 4 15]
+  repetepour [n 1 6] [
+  fcc item :n :cols
+  arc (180-12*:n) moins 90 90 ]
+fin
+
+pour demarrer
+  new rainbow
+fin
+

@@ -1,0 +1,26 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour nextstep
+  donne "col item 2 trouvecouleur pos
+  fcc angcol baissecrayon avance 0 levecrayon
+  si :col = 0 [tournegauche 90 avance 6 stop]
+  si :col = 255 [tournedroite 90 avance 6]
+fin
+
+pour angcol
+  donne "num item 1 trouvecouleur pos
+  donne "red :num + 0.2 * (255-:num)
+  donne "green 255 - item 2 trouvecouleur pos
+  retourne phrase liste :red :green 0      # remplace :red with 0 repetepour b&w image
+fin
+
+pour demarrer
+  new ftc 4
+  repete 10700 [nextstep]
+fin
+

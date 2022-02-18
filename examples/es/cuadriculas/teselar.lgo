@@ -1,0 +1,87 @@
+# Comando de Inicio: empezar 2 15
+para empezar :tipo.tesel :dimmatriz
+  reponetodo ptp [400 400]
+  poncolorpapel [0 64 0] poncolorlapiz verde
+  subelapiz ocultatortuga 
+#
+  haz "numero.tesel :tipo.tesel
+  haz "orden :dimmatriz
+  inicializar
+#
+  dibujacuadricula
+  ponposicion [198 198] poncolorlapiz negro rellena
+fin
+
+para inicializar
+  haz "tam.cuad 372/:orden
+  haz "offset :tam.cuad/2 - 185
+  haz "lado :tam.cuad
+fin
+
+para poscuad :m :n
+# devuelve la posicion de pantalla [x y]
+  haz "x (:n*:tam.cuad) + :offset 
+  haz "y (:m*:tam.cuad) + :offset
+  devuelve lista :x :y
+fin
+
+para dibujacuadricula
+# dibuja una matriz de cuadrados (m x n)
+  repitepara (lista "m 0 :orden-1) [
+  repitepara (lista "n 0 :orden-1) [
+  ponposicion poscuad :m :n
+  ponrumbo elige [0 90 180 270]
+  ejecuta palabra "tesel :numero.tesel :lado ] ]
+fin
+
+para tesel1 :lado
+  poncolorlapiz rojo haz "mitad :lado/2
+  arco :mitad rumbo+90 rumbo avanza :mitad
+  bajalapiz retrocede :mitad giraderecha 90 avanza :mitad
+  subelapiz retrocede 1.1*:mitad poncolorlapiz rojooscuro rellena
+fin
+
+para tesel2 :lado
+  poncolorlapiz amarillo pongrosor 2 haz "mitad :lado/2
+  retrocede :mitad giraderecha 90 retrocede :mitad
+  arco :mitad rumbo-90 rumbo
+  avanza :lado giraizquierda 90 avanza :lado
+  arco :mitad rumbo-180 rumbo-90 pongrosor 1 
+fin
+
+para tesel3 :lado
+  poncolorlapiz verde haz "mitad :lado/2
+  avanza :lado arco 1.414*:mitad rumbo+135 rumbo+225 
+  retrocede 2*:lado arco 1.414*:mitad rumbo+315 rumbo+45 
+fin
+
+para tesel4 :lado
+  poncolorlapiz azul haz "mitad :lado/2
+  retrocede :mitad giraderecha 90 retrocede :mitad
+  giraizquierda 27 bajalapiz avanza :lado / 0.89 subelapiz retrocede :lado / 0.89
+  giraizquierda 36 bajalapiz avanza :lado / 0.89 subelapiz retrocede :lado / 0.89
+  giraizquierda 27 avanza :lado giraderecha 90 avanza :mitad
+  bajalapiz avanza :mitad giraderecha 90 avanza :mitad
+  subelapiz giraizquierda 90 retrocede :mitad poncolorlapiz azuloscuro rellena 
+fin
+
+para tesel5 :lado
+  poncolorlapiz rojo haz "mitad :lado/2
+  retrocede :mitad giraderecha 90 retrocede :mitad
+  bajalapiz avanza :lado giraizquierda 90 avanza :lado
+  giraizquierda 135 avanza :lado / 0.71
+  subelapiz giraizquierda 160 avanza 1.1*:mitad poncolorlapiz rojooscuro rellena
+fin
+
+para empieza
+  reponetodo ptp [400 400]
+  poncolorpapel [0 64 0] poncolorlapiz verde
+  subelapiz ocultatortuga 
+  mientras ["cierto] [
+  limpia 
+  haz "numero.tesel 1+azar 5
+  haz "orden 3+azar 12
+  inicializar dibujacuadricula
+  ponposicion [198 198] poncolorlapiz negro rellena
+  espera 200 ]
+fin

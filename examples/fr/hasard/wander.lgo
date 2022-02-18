@@ -1,0 +1,22 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour wander :ia :sa :ll :cy
+  new fcc 7 display :ia :sa origine fcc 2 baissecrayon
+  repete :cy [avance :ll tournedroite :ia donne "ia :ia+:sa]
+fin
+
+pour display :ia :sa
+  fixexy -192 184 etiquette [happy wanderer]
+  fpos [-40 184] etiquette phrase [initial angle] :ia
+  fpos [90 184] etiquette phrase [step angle] :sa
+fin
+
+pour demarrer
+  wander 25 54 15 90
+fin
+

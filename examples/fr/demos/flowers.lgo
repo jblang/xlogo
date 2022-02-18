@@ -1,0 +1,76 @@
+# Commande principale: demarrer
+pour new
+  # set stage pour black, pen pour blanc
+  fcfg noir fcc blanc levecrayon
+  cachetortue stopanimation
+fin
+
+pour arch
+  # draw single 90 degree arc
+  repete 18 [avance 4 tournedroite 5]
+fin
+
+pour oval
+  # draw single oval forme -tp
+  tournegauche 45 arch tournedroite 90
+  arch tournedroite 135 attends 6
+fin
+
+pour base
+  # draw single base -tp
+  tournedroite 90 recule 30 baissecrayon
+  fcc grisclair oval
+  levecrayon avance 30 tournegauche 90
+fin
+
+pour leaf
+  # draw single leaf -tp
+  fcc vert
+  avance 24 oval recule 24
+fin
+
+pour section
+  # draw short stem et 2 leaves
+  tournedroite 45 leaf tournegauche 45 avance 24
+  tournegauche 45 leaf tournedroite 45 avance 24
+fin
+
+pour stem
+  # draw 3 sections
+  fcc vert avance 48
+  repete 3 [section]
+  levecrayon avance 64 baissecrayon
+fin
+
+pour petal
+  # draw single petal -tp
+  fcc rouge oval
+fin
+
+pour flower
+  # draw flower head -tp
+  repete 18 [
+  fcc jaune avance 4
+  petal
+  levecrayon recule 4 baissecrayon
+  tournedroite 20]
+fin
+
+pour plant
+  # draw flower -tp
+  stem flower
+  levecrayon recule 256 baissecrayon
+fin
+
+pour bunch
+  # draw 3 flowers
+  tournegauche 24 baissecrayon
+  repete 3 [plant tournedroite 24]
+fin
+
+pour demarrer
+  # ve et go pour start point
+  new recule 150
+  base bunch
+fin
+

@@ -1,0 +1,22 @@
+# Comando de Inicio: empezar 4 6
+para empezar :orden :acoplado
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  retrocede 192
+  haz "lado 384
+  rejilla :orden :lado :acoplado
+fin
+
+para rejilla :orden :lado :acoplado
+  si :orden < 1
+   [ bajalapiz avanza :lado
+     subelapiz retrocede :lado
+     alto ]
+  avanza :lado/2
+  repite :acoplado
+   [ rejilla :orden-1 :lado/2 :acoplado
+     giraizquierda 360/:acoplado ]
+  retrocede :lado/2
+fin

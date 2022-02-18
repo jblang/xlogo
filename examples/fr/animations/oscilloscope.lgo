@@ -1,0 +1,29 @@
+pour new
+    # Initialise  les couleurs pour l'écran, le crayon de la tortue
+  init ftd [400 400] cachetortue
+  fcfg noir fcc vert levecrayon animation
+fin
+
+pour spir :a
+  donne "t 0 fcc noir baissecrayon
+  repetepour [s 0 360 8] [fpos xycurve :a :s :t
+  repetepour [t 0 360 4] [fcc angcol :t fpos xycurve :a :s :t]
+  rf nettoie]        # put a attends in here si too fast
+fin
+
+pour xycurve :a :s :t
+  donne "x 140*(sin (90+:t))
+  donne "y 140*(cos ((:a*(:t))+:s))+24*sin (:t)
+  retourne liste :x :y
+fin
+
+pour angcol :t
+  donne "green arrondi 127*(1+cos(:t+90))
+  retourne phrase liste 255 :green 100
+fin
+
+pour demarrer
+  new
+  repetepour [a 2 4] [spir :a]
+fin
+

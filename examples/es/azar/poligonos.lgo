@@ -1,0 +1,51 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz verde
+  subelapiz animacion
+#
+  mientras ["cierto] [
+    limpia inicializar leyenda :polia :polib
+    ponposicion lista cambiasigno :lado/2
+   cambiasigno 60 bajalapiz
+   repitepara [offset 0 480 5] [
+     tejer :polia :polib :offset cierto
+     refrescar espera 3
+     poncolorlapiz negro
+     tejer :polia :polib :offset falso]
+   espera 120]
+fin
+
+para inicializar
+  haz "lado 52
+  haz "polia elige [3 4 5 6 7 8 9 10 11 12]
+  haz "polib elige [2 3 4 5 6 7 8]
+  haz "rep mcd :polia :polib
+  haz "rep (:polia/:rep) * :polib
+fin
+
+para leyenda :polia :polib
+# Muestra el encabezado y pie de pagina
+  subelapiz poncolorlapiz blanco ponrumbo 0
+  ponposicion [-190 182] rotula [Tejedor de Poligonos]
+  ponposicion [-190 -190] rotula ( lista "a\ b\ = :polia :polib )
+  ponposicion [134 -190] rotula ( lista "rep\ = :rep )
+fin
+
+para mcd :a :b
+# Devuelve el maximo comun divisor de a y b
+  haz "rem resto :a :b
+  si :rem = 0 [ devuelve :b ] [ devuelve mcd :b :rem ]
+fin
+
+para tejer :polia :polib :offset :dibuja
+  haz "a 90 haz "b 90
+  repite :rep [
+    ponrumbo :a
+    si :dibuja [poncolorlapiz verde] avanza :lado
+    ponrumbo :b + :offset + :a
+    si :dibuja [poncolorlapiz amarillo] avanza :lado
+    haz "a :a-(360/:polia)
+    haz "b :b-(360/:polib) ]
+fin

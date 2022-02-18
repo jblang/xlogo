@@ -1,0 +1,71 @@
+# Comando de Inicio: borrapantalla empezar
+para empezar
+# Ponemos papel negro y lapiz blanco
+  poncolorpapel negro poncolorlapiz blanco subelapiz
+  ocultatortuga 
+  retrocede 150
+  base ramo
+fin
+
+para base
+# dibujamos base sencilla
+  giraderecha 90 retrocede 30 bajalapiz
+  poncolorlapiz grisclaro ovalo
+  subelapiz avanza 30 giraizquierda 90
+fin
+
+para ramo
+# dibujamos  3 flores
+  giraizquierda 24 bajalapiz
+  repite 3 [planta giraderecha 24]
+fin
+
+para arco.simple
+# dibujamos arco de 90 grados
+  repite 18 [avanza 4 giraderecha 5]
+fin
+
+para ovalo
+# dibujamos forma ovalada
+  giraizquierda 45 arco.simple giraderecha 90
+  arco.simple giraderecha 135 espera 6
+fin
+
+para hoja
+# dibujamos hoja sencilla
+  poncolorlapiz verde
+  avanza 24 ovalo retrocede 24
+fin
+
+para seccion
+# dibujamos vastago corto y 2 hojas
+  giraderecha 45 hoja giraizquierda 45 avanza 24
+  giraizquierda 45 hoja giraderecha 45 avanza 24
+fin
+
+para vastago
+# dibujamos 3 secciones
+  poncolorlapiz verde avanza 48
+  repite 3 [seccion]
+  subelapiz avanza 64 bajalapiz
+fin
+
+para petalo
+# dibujamos petalo sencillo
+  poncolorlapiz rojo ovalo
+fin
+
+para flor
+# dibujamos la cabeza de la flor
+  repite 18 [
+  poncolorlapiz amarillo avanza 4
+  petalo
+  subelapiz retrocede 4 bajalapiz
+  giraderecha 20]
+fin
+
+para planta
+# dibujamos la flor
+  vastago flor
+  subelapiz retrocede 256 bajalapiz
+fin

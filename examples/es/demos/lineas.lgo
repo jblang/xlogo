@@ -1,0 +1,18 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+  etiquetaxy
+  pongrosor 2 bajalapiz repite 12 [
+  poncolorlapiz (1+azar 6) punto.aleat etiquetaxy espera 64]
+  poncolorlapiz (1+azar 6) centro
+fin
+
+para punto.aleat
+  ponxy (azar 320)-190 (azar 360)-180
+fin
+
+para etiquetaxy
+  poncolorlapiz blanco rotula posicion
+fin

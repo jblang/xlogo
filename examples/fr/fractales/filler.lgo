@@ -1,0 +1,25 @@
+# Commande principale: demarrer 3
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise :level
+  donne "cellsize (puissance 2 0.5)*(120/(puissance 3 :level))
+  levecrayon fpos [-180 -180] fixecap 45 baissecrayon
+fin
+
+pour curve :level
+  si :level < 0 [avance :cellsize stop]
+  curve :level-1
+  tournegauche 90 curve :level-1
+  repete 3 [tournedroite 90 curve :level-1]
+  repete 3 [tournegauche 90 curve :level-1]
+  tournedroite 90 curve :level-1
+fin
+
+pour demarrer :level
+  new fcc vert initialise :level curve :level
+fin
+

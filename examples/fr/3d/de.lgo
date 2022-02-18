@@ -1,0 +1,114 @@
+# Commande principale: demarrer
+pour carre
+fcc jaune
+#On enregistre chacun des sommets du carré
+polydef repete 4 [av 400 td 90] polyfin
+fin
+
+
+pour un
+# On trace le contour
+carre 
+# On déplace la tortue au centre du carre
+lc td 90 av 200 tg 90 av 200 bc
+# On trace le point
+fcc bleu points
+# Retour position initiale
+lc re 200 tg 90 av 200 td 90 bc
+fin
+
+pour deux
+# On trace le contour
+carre 
+# On déplace la tortue au centre du carre
+lc td 90 av 200 tg 90 av 200 bc
+# On trace les points
+fcc bleu lc td 45 av 130 bc points
+ lc re 260 bc points
+# Retour position initiale
+lc av 130 tg 45 re 200 tg 90 av 200 td 90 bc 
+fin
+
+pour trois
+# On trace le contour
+carre 
+# On déplace la tortue au centre du carre
+lc td 90 av 200 tg 90 av 200 bc
+# On trace les points
+fcc bleu points
+lc td 45 av 130 bc points
+ lc re 260 bc points
+# Retour position initiale
+lc av 130 tg 45 re 200 tg 90 av 200 td 90 bc 
+fin
+pour quatre
+# On trace le contour
+carre 
+# On déplace la tortue au centre du carre
+lc td 90 av 90 tg 90 av 70 bc
+# On trace les points
+fcc bleu points 
+lc av 260 bc points
+lc re 330 td 90 av 220 tg 90 av 70 bc
+
+fcc bleu points 
+lc av 260 bc points
+
+# Retour position initiale
+lc re 330 tg 90 av 310 td 90 bc
+fin
+
+pour cinq
+# On trace le contour
+carre 
+# On déplace la tortue au centre du carre
+lc td 90 av 200 tg 90 av 200 bc
+# On trace les points
+fcc bleu points
+lc td 45 av 130 bc points
+ lc re 260 bc points
+
+lc av 130 tg 90 av 130 bc points
+ lc re 260 bc points
+
+# Retour position initiale
+lc av 130 td 45 re 200 tg 90 av 200 td 90 bc
+fin
+
+pour six
+# On trace le contour
+carre 
+# On déplace la tortue au centre du carre
+
+lc td 90 av 90 tg 90 av 70 bc
+# On trace les points
+fcc bleu points 
+lc av 130 bc points
+lc av 130 bc points
+
+lc re 330 td 90 av 220 tg 90 av 70 bc
+
+fcc bleu points 
+lc av 130 bc points
+lc av 130 bc points
+
+# Retour position initiale
+lc re 330 tg 90 av 310 td 90 bc
+fin
+pour points
+lc cabre 90  av 1  pique 90  bc
+polydef cercle 50 polyfin
+lc cabre 90 re 1 pique 90 bc
+fin
+
+pour demarrer
+perspective ve fcfg 0 
+un lc td 90 av 400 tg 90 bc rd 90 
+trois lc td 90 av 400 tg 90 bc rd 90 
+six lc td 90 av 400 tg 90 bc rd 90 
+quatre lc td 90 av 400 tg 90  rd 90 
+td 90 av 400 rd 90 td 90
+bc cinq lc rd 180 tg 90 av 400 td 90 
+cabre 90 av 400  pique 90 bc deux
+vue3d
+fin

@@ -1,0 +1,62 @@
+# Main Command: Go
+# Twisted Rose Animation by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to drawseed
+  Left 45 PenDown Repeat 4 [Back 7 Right 90] PenUp
+  # Right 45 Back 5 Fill     # fill with yellow
+  # PenDown Forward 16 PenUp     # thin lines
+end
+
+to go
+  New
+  For [Twist 0 24] [ 
+    For [Angle 0 360] [
+      Spiral :Angle :Twist] Wait 100 Wash]
+end
+
+to ptor :raddist :theta
+  # convert polar to rectangular co-ordinates
+  LocalMake "X :RadDist *Sin :Theta
+  LocalMake "Y :RadDist *Cos :Theta
+  Output List :X :Y
+end
+
+to spiral :angle :twist
+  # Twisted Rose Curves
+  Make "Radius 180*Sin(4*:Angle) 
+  Make "Angle :Angle + 20*Sin :Twist*:Angle
+  SetPW Width :Angle :Radius     #comment out for plain pen 
+  SetPC AngCol 30 + 3*:Angle 
+  SetPos P2R :Radius :Angle PenDown Wait 2
+end
+
+to spiral2 :angle
+  # Twisted Rose Curve2
+  Make "Radius 180*Sin(4*:Angle)
+  Make "Angle :Angle + :Radius
+  Output P2R :Radius :Angle 
+end
+
+to spiral3 :angle
+  # Twisted Rose Simple
+  Make "Radius 160*Sin :Angle
+  Make "Angle :Angle + :Radius
+  Output P2R :Radius :Angle 
+end
+
+to angcol :theta
+  Make "Red Absolute 255*Cos :Theta
+  Output ( List :Red 0 255 )
+end
+
+to width :angle :radius
+  SetH Towards PtoR :Radius :Angle
+  Output 2*(1.5+Sin (45 + 2*Heading))
+end

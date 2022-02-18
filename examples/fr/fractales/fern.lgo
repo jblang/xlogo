@@ -1,0 +1,29 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour hue :angle
+  # vert from 187 pour 252
+  donne "green 0.18*:angle + 187
+  retourne phrase liste 215 :green 88
+fin
+
+pour fern :size
+  si :size < 5 [stop]
+  fcc hue cap
+  avance :size / 20
+  tournegauche 80 fern :size * 0.3
+  tournedroite 82 avance :size / 20
+  tournedroite 80 fern :size * 0.3
+  tournegauche 78 fern :size * 0.9
+  tournegauche 2 recule :size / 20
+  tournegauche 2 recule :size / 20
+fin
+
+pour demarrer
+  new fpos [-50 -170] baissecrayon fern 440
+fin
+

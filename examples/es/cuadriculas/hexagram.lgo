@@ -1,0 +1,36 @@
+# Comando de Inicio: empezar
+para empezar
+# Incializamos pantalla, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  repitepara [m 0 7]
+    [ repitepara [n 0 7]
+       [ haz "x :n*48-182
+         haz "y :m*48-188
+         ponxy :x :y hex :m :n ] ]
+fin
+
+para stick :w
+  poncolorlapiz [255 102 51]  # naranja
+  giraderecha 90 bajalapiz avanza 7
+  si (elemento :w :binlist) = 0 [subelapiz]
+  avanza 9 bajalapiz avanza 7
+  subelapiz retrocede 23 giraizquierda 90 avanza 5
+fin
+
+para hex :m :n
+  haz "binlist []
+  haz "contador (8*:m)+:n
+  dec.a.bin :contador 32
+  poncolorlapiz 7 rotula :contador avanza 14
+  repitepara [w 1 6] [stick :w]
+fin
+
+para dec.a.bin :num :c
+  si :c < 1 [alto]
+  si :num > :c | (:num=:c) [haz "binlist ponultimo 1 :binlist
+  dec.a.bin :num-:c :c/2]
+  si :num < :c [haz "binlist ponultimo 0 :binlist
+  dec.a.bin :num :c/2]
+fin

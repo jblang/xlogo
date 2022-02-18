@@ -1,0 +1,27 @@
+# Commande principale: demarrer
+pour new
+  init ftd [400 400] cachetortue
+  fcfg noir fcc vert levecrayon animation
+fin
+
+pour tree :length :angle
+  si :length < 10 [stop]        # Fin de la récursivité si la longueur est trop petite
+  ftc :length/9        # On diminue la largeur du crayon au fur et à mesure que les banches sont plus petites
+  fcc treecol :length        # La couleur de la branche dépend de la longueur
+  avance :length tournegauche :angle/2
+  tree :length*0.71 :angle tournedroite :angle        # arbre avec une branche de rapport 0.71
+  tree :length*0.71 :angle tournegauche :angle/2
+  levecrayon recule :length baissecrayon        # On retourne au point de déart
+fin
+
+pour treecol :length
+  donne "green arrondi 2.5*(100-:length)        # le vert dépend de la longueur
+  retourne phrase liste 255 :green 0        # rouge: 255 et bleu: 0
+fin
+
+pour demarrer
+  new recule 150 baissecrayon
+  repetepour [angle 0 180 4] [       # angle de 0 à 180
+  nettoie tree 100 :angle rf attends 20]
+fin
+

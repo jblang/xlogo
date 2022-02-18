@@ -1,0 +1,41 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde
+  subelapiz ocultatortuga
+#
+  haz "lado 16     # Incrementar (p.e. 32) para cuadricula mas fina
+  dibujarejilla
+fin
+
+para posicionrejilla :i :j
+  haz "vert funcion :i :j
+  haz "green 163-92*menor :i :j poncolorlapiz (lista 0 :green 0)
+  haz "xx 24*((5*:i)-(3*:j))
+  haz "yy 9*((3*:i)+(5*:j)) + (96*:vert) -16
+  devuelve lista :xx :yy
+fin
+
+para funcion :x :y
+  # devuelve 0   # Sin cambios
+  # devuelve ((coseno (90* :x))*( coseno (90* :y)))
+  # devuelve ((coseno (270* :x))*( coseno (270* :y)))
+  devuelve coseno (360* (raizcuadrada ((potencia :x 2) + (potencia :y 2))))
+fin
+
+para dibujarejilla
+  repitepara [l 0 1]
+  [repitepara (lista "i cambiasigno 1 1 2/:lado)
+   [subelapiz
+    repitepara (lista "j cambiasigno 1 1 2/:lado)
+    [si :l=0
+      [ponposicion posicionrejilla :i :j bajalapiz]  # lineas verticales
+     si :l=1
+      [ponposicion posicionrejilla :j :i bajalapiz]  #lineas horizontales
+  ]]]
+fin
+
+para menor :i :j
+  si :i<:j [devuelve :i] [devuelve :j]
+fin

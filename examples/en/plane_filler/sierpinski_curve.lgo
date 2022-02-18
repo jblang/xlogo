@@ -1,0 +1,41 @@
+# Main Command: GoX
+# Sierpinski Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init :order
+  Make "Size 112 / Power (Sqrt 2) :Order     # make Size a global value
+  Make "D Power 2 Integer (1+0.5*(:Order+1))
+  Make "H Power 2 Integer (1+0.5*(:Order)) Make "H :H-1 
+  Make "Dist (:H*:Size) + (:D * (:Size / Sqrt 2)) 
+end
+
+to sierpinski :order :parity
+  If :Order < 1 [Forward :Size Stop]     # ie if = 0
+  Right :Parity*45 Sierpinski :Order-1 Minus :Parity Left :Parity*45
+  Forward :Size
+  Left :Parity*45 Sierpinski :Order-1 Minus :Parity Right :Parity*45
+end
+
+to go :order
+  New Init :Order
+  SetPos List Minus :Dist/2 Minus (:Dist/2-(:Size / Sqrt 2)) PenDown
+  Repeat 4 [Sierpinski :Order 1 Right 45 Forward :Size Right 45]
+  PenUp Home SetPC DarkRed Pendown Fill     # fill curve
+end
+
+to gox
+  New Animation
+  For [Order 0 10] [Wash     # comment out Wash for overlaid curves
+  Init :Order
+  SetPos List Minus :Dist/2 Minus (:Dist/2-(:Size / Sqrt 2)) PenDown
+  Repeat 4 [Sierpinski :Order 1 Right 45 Forward :Size Right 45]
+  PenUp Home SetPC DarkRed Pendown Fill SetPC Green   
+  # comment out above line for no fills
+  Refresh Wait 80 PenUp Home]
+end

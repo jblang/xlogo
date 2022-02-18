@@ -1,0 +1,19 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour rsquare :side
+  si :side < 24 [stop]
+  recule :side/2 tournedroite 90 recule :side/2
+  repete 4 [fcc phrase liste 0 arrondi :side+61 0
+  baissecrayon avance :side levecrayon tournegauche 90 rsquare :side/2]
+  avance :side/2 tournegauche 90 avance :side/2
+fin
+
+pour demarrer
+  new fcc 2 rsquare 194
+fin
+

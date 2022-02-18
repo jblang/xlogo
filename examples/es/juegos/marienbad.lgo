@@ -1,0 +1,563 @@
+# Comando de Inicio: empezar
+para empezar
+  bp bt ot 
+  ptp [600 600]
+  bienvenida 0
+  espera 60
+  bp gi 90 pongrosor 3 poncl 0
+  linea 1 1 3 5 7
+  linea 2 1 3 5 7
+  linea 3 1 3 5 7
+  linea 4 1 3 5 7
+  haz "suerte azar 4
+  si :suerte = 0 [linea 1 1 3 5 7 otra 1 0 1 3 5 7]
+  turnoazar 1 3 5 7
+fin
+
+para turnoazar :a :b :c :d
+  haz "l (1 + azar 4) 
+  si  iguales? (elemento :l fr fr fr :a :b :c :d) 0 [turnoazar :a :b :c :d]
+  otra :l 1 + azar (elemento :l fr fr fr :a :b :c :d) :a :b :c :d
+fin
+
+para bienvenida :n
+  ot
+  si :n > 16 [alto]
+  sl gi 90 av 30 gd 90 av 100
+  poncl azar 8 rotula [Dr. Alliag] 
+  espera 50
+  sl gi 90 av 20 gd 90 re 100
+  poncl azar 8 rotula [M A R I E N B A D]
+  espera 50 
+  gd 90 av 50 gi 90
+  bienvenida :n + 1
+fin
+
+para coincidir
+  bl gd 90 av 40 re 80 av 40 gi 90 sl re 40
+fin
+
+para debutlinea :l
+  sl ponpos lista ((:l * -40) +40) ((:l * -100)+200) 
+fin
+
+para finlinea :l :a :b :c :d
+  haz "n elemento :l fr fr fr :a :b :c :d
+  sl ponpos lista ((:l * -40) +80 + (:n * 40)) ((:l * -100)+200) 
+fin
+
+para linea :l :a :b :c :d
+  debutlinea :l
+  si :l = 1 [repite :a [coincidir] ]
+  si :l = 2 [repite :b [coincidir] ]
+  si :l = 3 [repite :c [coincidir] ]
+  si :l = 4 [repite :d [coincidir] ]
+  re 20
+fin
+
+para puntero :l :a :b :c :d
+  si :l = 0 [haz "l 4 linea 4 :a :b :c :d puntero :l :a :b :c :d]
+  si :l = 5 [haz "l 1 linea 1 :a :b :c :d puntero :l :a :b :c :d]
+  si y :l = 1 :a = 0 [puntero 2 :a :b :c :d]
+  si y :l = 2 :b = 0 [puntero 3 :a :b :c :d]
+  si y :l = 3 :c = 0 [puntero 4 :a :b :c :d]
+  si y :l = 4 :d = 0 [puntero 1 :a :b :c :d]
+  cursor :l :a :b :c :d
+fin
+
+para cursor :l :a :b :c :d
+  finlinea :l :a :b :c :d
+  haz "curs leecar
+  si o :curs =-38 :curs=-224 # Arriba
+     [haz "l :l - 1 subir :l :a :b :c :d linea :l :a :b :c :d] 
+  si o (o (o :curs = -127 :curs=-8 ) :curs = -37 ) :curs = -226 # izquierda o borrar
+     [elevar :l :a :b :c :d]
+  si o :curs = -40 :curs=-225 # Abajo
+      [haz "l :l +1 descender :l :a :b :c :d  linea :l :a :b :c :d]
+  cursor :l :a :b :c :d
+fin
+
+para subir :l :a :b :c :d
+  si :l = 0 [subir 4 :a :b :c :d]
+  si y :l = 1 :a = 0 [subir 4 :a :b :c :d]
+  si y :l = 2 :b = 0 [subir 1 :a :b :c :d]
+  si y :l = 3 :c = 0 [subir 2 :a :b :c :d]
+  si y :l = 4 :d = 0 [subir 3 :a :b :c :d]
+  cursor :l :a :b :c :d
+fin
+
+para descender :l :a :b :c :d
+  si :l = 5 [descender 1 :a :b :c :d]
+  si y :l = 1 :a = 0 [descender 2 :a :b :c :d]
+  si y :l = 2 :b = 0 [descender 3 :a :b :c :d]
+  si y :l = 3 :c = 0 [descender 4 :a :b :c :d]
+  si y :l = 4 :d = 0 [descender 1 :a :b :c :d]
+  cursor :l :a :b :c :d
+fin
+
+para elevar :l :a :b :c :d
+  haz "n elemento :l fr fr fr :a :b :c :d
+  si :n = 0 [esponja :l :a :b :c :d]
+  debutlinea :l
+  goma
+  si :l = 1 [sl re (:a - 1) * 40 bl coincidir haz "a :a - 1]
+  si :l = 2 [sl re (:b - 1) * 40 bl coincidir haz "b :b - 1]
+  si :l = 3 [sl re (:c - 1) * 40 coincidir haz "c :c - 1]
+  si :l = 4 [sl re (:d - 1) * 40 coincidir haz "d :d - 1]
+  esponja :l :a :b :c :d
+fin
+
+para esponja :l :a :b :c :d
+  haz "curs leecar
+  si :curs =10  [respuesta :l :a :b :c :d]
+  si o o o :curs=-37 :curs=-226 :curs=-127 :curs=-8 
+     [elevar :l :a :b :c :d]
+  esponja :l :a :b :c :d
+fin
+
+para respuesta :l :a :b :c :d
+poncl 0
+haz "v  fr fr fr :a :b :c :d
+si :v = fr fr fr 1 3 5 6 [haz "suerte azar 2 si :suerte = 0 [otra 2 1 :a :b :c :d] [otra 1 1 :a :b :c :d]]
+si :v = fr fr fr 1 3 5 5 [otra 2 2 :a :b :c :d]
+si :v = fr fr fr 1 3 5 4 [otra 2 3 :a :b :c :d]
+si :v = fr fr fr 1 3 5 3 [otra 3 4 :a :b :c :d]
+si :v = fr fr fr 1 3 5 2 [otra 3 5 :a :b :c :d]
+si :v = fr fr fr 1 3 5 1 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 1 3 5 0 [otra 3 3 :a :b :c :d]
+si :v = fr fr fr 1 3 4 7 [haz "suerte azar 2 si :suerte = 0 [otra 2 1 :a :b :c :d] [otra 1 1 :a :b :c :d]]
+si :v = fr fr fr 1 3 4 6 [buenturno turnoazar :a :b :c :d]
+si :v = fr fr fr 1 3 4 5 [otra 2 3 :a :b :c :d]
+si :v = fr fr fr 1 3 4 4 [otra 2 2 :a :b :c :d]
+si :v = fr fr fr 1 3 4 3 [otra 3 3 :a :b :c :d]
+si :v = fr fr fr 1 3 4 2 [otra 3 4 :a :b :c :d]
+si :v = fr fr fr 1 3 4 1 [otra 3 1 :a :b :c :d]
+si :v = fr fr fr 1 3 4 0 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 1 3 3 7 [otra 4 6 :a :b :c :d]
+si :v = fr fr fr 1 3 3 6 [otra 4 5 :a :b :c :d]
+si :v = fr fr fr 1 3 3 5 [otra 4 4 :a :b :c :d]
+si :v = fr fr fr 1 3 3 4 [otra 4 3 :a :b :c :d]
+si :v = fr fr fr 1 3 3 3 [otra 4 2 :a :b :c :d]
+si :v = fr fr fr 1 3 3 2 [haz "suerte azar 3 si :suerte = 0 [otra 3 3 :a :b :c :d] si :suerte = 1 [otra 2 3 :a :b :c :d] [otra 4 1 :a :b :c :d]]
+si :v = fr fr fr 1 3 3 1 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 3 3 0 [haz "suerte azar 2 si :suerte = 0 [otra 3 1 :a :b :c :d] [otra 2 1 :a :b :c :d]]
+si :v = fr fr fr 1 3 2 7 [otra 4 7 :a :b :c :d] 
+si :v = fr fr fr 1 3 2 6 [otra 4 6 :a :b :c :d] 
+si :v = fr fr fr 1 3 2 5 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 1 3 2 4 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 3 2 3 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 3 2 2 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 3 2 1 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 3 2 0 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 3 1 7 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 3 1 6 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 3 1 5 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 3 1 4 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 3 1 3 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 3 1 2 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 1 3 1 1 [otra 2 3 :a :b :c :d] 
+si :v = fr fr fr 1 3 1 0 [otra 2 2 :a :b :c :d] 
+si :v = fr fr fr 1 3 0 7 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 1 3 0 6 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 3 0 5 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 3 0 4 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 3 0 3 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 3 0 2 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 3 0 1 [otra 2 2 :a :b :c :d] 
+si :v = fr fr fr 1 3 0 0 [otra 2 3 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 2 5 7 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 5 6 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 2 5 5 [otra 2 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 5 4 [otra 2 2 :a :b :c :d] 
+si :v = fr fr fr 1 2 5 3 [otra 3 5 :a :b :c :d] 
+si :v = fr fr fr 1 2 5 2 [otra 3 4 :a :b :c :d] 
+si :v = fr fr fr 1 2 5 1 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 1 2 5 0 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 1 2 4 7 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 2 4 6 [otra 1 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 4 5 [otra 2 2 :a :b :c :d] 
+si :v = fr fr fr 1 2 4 4 [otra 2 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 4 3 [otra 3 4 :a :b :c :d] 
+si :v = fr fr fr 1 2 4 2 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 1 2 4 1 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 1 2 4 0 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 3 7 [otra 4 7 :a :b :c :d] 
+si :v = fr fr fr 1 2 3 6 [otra 4 6 :a :b :c :d] 
+si :v = fr fr fr 1 2 3 5 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 1 2 3 4 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 2 3 3 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 2 3 2 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 2 3 1 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 3 0 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 2 7 [otra 4 6 :a :b :c :d] 
+si :v = fr fr fr 1 2 2 6 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 1 2 2 5 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 2 2 4 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 2 2 3 [otra 4 2 :a :b :c :d]
+si :v = fr fr fr 1 2 2 2 [otra 4 1 :a :b :c :d]
+si :v = fr fr fr 1 2 2 1 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 2 2 0 [otra 1 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 1 7 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 1 2 1 6 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 2 1 5 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 2 1 4 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 2 1 3 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 1 2 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 2 1 1 [otra 2 2 :a :b :c :d] 
+si :v = fr fr fr 1 2 1 0 [otra 2 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 0 7 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 2 0 6 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 2 0 5 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 2 0 4 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 0 3 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 2 0 2 [otra 1 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 0 1 [otra 2 1 :a :b :c :d] 
+si :v = fr fr fr 1 2 0 0 [otra 2 2 :a :b :c :d] #ganador
+si :v = fr fr fr 1 1 5 7 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 1 5 6 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 1 5 5 [buenturno turnoazar :a :b :c :d]
+si :v = fr fr fr 1 1 5 4 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 1 1 5 3 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 1 1 5 2 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 1 1 5 1 [otra 3 5 :a :b :c :d] 
+si :v = fr fr fr 1 1 5 0 [otra 3 4 :a :b :c :d] 
+si :v = fr fr fr 1 1 4 7 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 1 4 6 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 1 4 5 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 1 4 4 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 1 4 3 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 1 1 4 2 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 1 1 4 1 [otra 3 4 :a :b :c :d] 
+si :v = fr fr fr 1 1 4 0 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 1 1 3 7 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 1 3 6 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 1 3 5 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 1 3 4 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 1 3 3 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 1 3 2 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 1 3 1 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 1 3 0 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 1 2 7 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 1 1 2 6 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 1 2 5 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 1 2 4 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 1 2 3 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 1 2 2 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 1 2 1 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 1 1 2 0 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 1 1 1 7 [otra 4 7 :a :b :c :d] 
+si :v = fr fr fr 1 1 1 6 [otra 4 6 :a :b :c :d] 
+si :v = fr fr fr 1 1 1 5 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 1 1 1 4 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 1 1 3 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 1 1 2 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 1 1 1 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 1 1 0 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 1 0 7 [otra 4 6 :a :b :c :d] 
+si :v = fr fr fr 1 1 0 6 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 1 1 0 5 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 1 0 4 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 1 0 3 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 1 0 2 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 1 0 1 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 1 0 0 [otra 2 1 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 0 5 7 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 0 5 6 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 0 5 5 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 0 5 4 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 0 5 3 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 1 0 5 2 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 1 0 5 1 [otra 3 4 :a :b :c :d] 
+si :v = fr fr fr 1 0 5 0 [otra 3 5 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 0 4 7 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 0 4 6 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 1 0 4 5 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 0 4 4 [otra 1 1 :a :b :c :d] 
+si :v = fr fr fr 1 0 4 3 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 1 0 4 2 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 1 0 4 1 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 1 0 4 0 [otra 3 4 :a :b :c :d] 
+si :v = fr fr fr 1 0 3 7 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 1 0 3 6 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 0 3 5 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 0 3 4 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 0 3 3 [haz "suerte azar 3 si :suerte = 0 [otra 1 1 :a :b :c :d] si :suerte = 1 [otra 4 1 :a :b :c :d] [otra 3 1 :a :b :c :d]]
+si :v = fr fr fr 1 0 3 2 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 0 3 1 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 1 0 3 0 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 1 0 2 7 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 0 2 6 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 0 2 5 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 0 2 4 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 0 2 3 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 0 2 2 [otra 1 1 :a :b :c :d] 
+si :v = fr fr fr 1 0 2 1 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 1 0 2 0 [otra 3 2 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 0 1 7 [otra 4 6 :a :b :c :d] 
+si :v = fr fr fr 1 0 1 6 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 1 0 1 5 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 1 0 1 4 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 1 0 1 3 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 1 0 1 2 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 1 0 1 1 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 1 0 1 0 [otra 3 1 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 0 0 7 [otra 4 7 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 0 0 6 [otra 4 6 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 0 0 5 [otra 4 5 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 0 0 4 [otra 4 4 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 0 0 3 [otra 4 3 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 0 0 2 [otra 4 2 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 0 0 1 [otra 4 1 :a :b :c :d] #ganador 
+si :v = fr fr fr 1 0 0 0 [bravo otra 1 1 :a :b :c :d] #desarma
+si :v = fr fr fr 0 3 5 7 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 3 5 6 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 3 5 5 [otra 2 3 :a :b :c :d]
+si :v = fr fr fr 0 3 5 4 [otra 2 2 :a :b :c :d] 
+si :v = fr fr fr 0 3 5 3 [otra 3 5 :a :b :c :d]
+si :v = fr fr fr 0 3 5 2 [otra 3 4 :a :b :c :d] 
+si :v = fr fr fr 0 3 5 1 [otra 3 3 :a :b :c :d]
+si :v = fr fr fr 0 3 5 0 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 0 3 4 7 [buenturno turnoazar :a :b :c :d]
+si :v = fr fr fr 0 3 4 6 [otra 2 1 :a :b :c :d] 
+si :v = fr fr fr 0 3 4 5 [otra 2 2 :a :b :c :d] 
+si :v = fr fr fr 0 3 4 4 [otra 2 3 :a :b :c :d] 
+si :v = fr fr fr 0 3 4 3 [otra 3 4 :a :b :c :d] 
+si :v = fr fr fr 0 3 4 2 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 0 3 4 1 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 0 3 4 0 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 0 3 3 7 [otra 4 7 :a :b :c :d] 
+si :v = fr fr fr 0 3 3 6 [otra 4 6 :a :b :c :d] 
+si :v = fr fr fr 0 3 3 5 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 0 3 3 4 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 3 3 3 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 3 3 2 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 3 3 1 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 0 3 3 0 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 3 2 7 [otra 4 6 :a :b :c :d] 
+si :v = fr fr fr 0 3 2 6 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 0 3 2 5 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 3 2 4 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 3 2 3 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 3 2 2 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 3 2 1 [buenturno turnoazar :a :b :c :d]
+si :v = fr fr fr 0 3 2 0 [otra 2 1 :a :b :c :d] 
+si :v = fr fr fr 0 3 1 7 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 0 3 1 6 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 3 1 5 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 3 1 4 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 3 1 3 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 3 1 2 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 3 1 1 [otra 2 2 :a :b :c :d] 
+si :v = fr fr fr 0 3 1 0 [otra 2 3 :a :b :c :d] #ganador
+si :v = fr fr fr 0 3 0 7 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 3 0 6 [otra 4 3 :a :b :c :d]
+si :v = fr fr fr 0 3 0 5 [otra 4 2 :a :b :c :d]
+si :v = fr fr fr 0 3 0 4 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 3 0 3 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 3 0 2 [otra 2 1 :a :b :c :d] 
+si :v = fr fr fr 0 3 0 1 [otra 2 3 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 3 0 0 [otra 2 2 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 2 5 7 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 2 5 6 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 0 2 5 5 [otra 2 2 :a :b :c :d] 
+si :v = fr fr fr 0 2 5 4 [otra 2 1 :a :b :c :d] 
+si :v = fr fr fr 0 2 5 3 [otra 3 4 :a :b :c :d] 
+si :v = fr fr fr 0 2 5 2 [otra 3 5 :a :b :c :d] 
+si :v = fr fr fr 0 2 5 1 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 0 2 5 0 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 0 2 4 7 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 2 4 6 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 2 4 5 [otra 2 1 :a :b :c :d] 
+si :v = fr fr fr 0 2 4 4 [otra 2 2 :a :b :c :d] 
+si :v = fr fr fr 0 2 4 3 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 0 2 4 2 [otra 3 4 :a :b :c :d] 
+si :v = fr fr fr 0 2 4 1 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 0 2 4 0 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 0 2 3 7 [otra 4 6 :a :b :c :d] 
+si :v = fr fr fr 0 2 3 6 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 0 2 3 5 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 2 3 4 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 2 3 3 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 2 3 2 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 2 3 1 [buenturno turnoazar :a :b :c :d]
+si :v = fr fr fr 0 2 3 0 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 0 2 2 7 [otra 4 6 :a :b :c :d] 
+si :v = fr fr fr 0 2 2 5 [otra 4 5 :a :b :c :d]
+si :v = fr fr fr 0 2 2 4 [otra 4 4 :a :b :c :d]
+si :v = fr fr fr 0 2 2 3 [otra 4 3 :a :b :c :d]
+si :v = fr fr fr 0 2 2 2 [otra 4 2 :a :b :c :d]
+si :v = fr fr fr 0 2 2 1 [otra 4 1 :a :b :c :d]
+si :v = fr fr fr 0 2 2 0 [buenturno turnoazar :a :b :c :d]
+si :v = fr fr fr 0 2 1 7 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 2 1 6 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 2 1 5 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 2 1 4 [otra 4 1 :a :b :c :d]
+si :v = fr fr fr 0 2 1 3 [buenturno turnoazar :a :b :c :d]
+si :v = fr fr fr 0 2 1 2 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 0 2 1 1 [otra 2 1 :a :b :c :d]
+si :v = fr fr fr 0 2 1 0 [otra 2 2 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 2 0 7 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 0 2 0 6 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 2 0 5 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 2 0 4 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 2 0 3 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 2 0 2 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 2 0 1 [otra 2 2 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 2 0 0 [otra 2 1 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 5 7 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 1 5 6 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 1 5 5 [haz "suerte azar 2 si :suerte = 0 [otra 4 1 :a :b :c :d] [otra 3 1 :a :b :c :d]]
+si :v = fr fr fr 0 1 5 4 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 1 5 3 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 0 1 5 2 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 0 1 5 1 [otra 3 4 :a :b :c :d] 
+si :v = fr fr fr 0 1 5 0 [otra 3 5 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 4 7 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 1 4 6 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 1 4 5 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 1 4 4 [otra 2 1 :a :b :c :d] 
+si :v = fr fr fr 0 1 4 3 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 0 1 4 2 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 0 1 4 1 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 0 1 4 0 [otra 3 4 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 3 7 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 0 1 3 6 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 1 3 5 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 1 3 4 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 1 3 3 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 1 3 2 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 1 3 1 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 0 1 3 0 [otra 3 3 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 2 7 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 1 2 6 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 1 2 5 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 1 2 4 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 1 2 3 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 1 2 2 [otra 2 1 :a :b :c :d] 
+si :v = fr fr fr 0 1 2 1 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 0 1 2 0 [otra 3 2 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 1 7 [otra 4 6 :a :b :c :d] 
+si :v = fr fr fr 0 1 1 6 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 0 1 1 5 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 1 1 4 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 1 1 3 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 1 1 2 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 1 1 1 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 1 1 0 [otra 3 1 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 0 7 [otra 4 7 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 0 6 [otra 4 6 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 0 5 [otra 4 5 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 0 4 [otra 4 4 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 0 3 [otra 4 3 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 0 2 [otra 4 2 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 0 1 [otra 4 1 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 1 0 0 [bravo otra 2 1 :a :b :c :d] #desarma 
+si :v = fr fr fr 0 0 5 7 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 0 5 6 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 0 5 5 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 0 5 4 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 0 0 5 3 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 0 0 5 2 [otra 3 3 :a :b :c :d] 
+si :v = fr fr fr 0 0 5 1 [otra 3 5 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 5 0 [otra 3 4 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 4 7 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 0 4 6 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 0 0 4 5 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 0 4 4 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 0 4 3 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 0 0 4 2 [otra 3 2 :a :b :c :d] 
+si :v = fr fr fr 0 0 4 1 [otra 3 4 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 4 0 [otra 3 3 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 3 7 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 0 3 6 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 0 3 5 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 0 3 4 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 0 3 3 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 0 3 2 [otra 3 1 :a :b :c :d] 
+si :v = fr fr fr 0 0 3 1 [otra 3 3 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 3 0 [otra 3 2 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 2 7 [otra 4 5 :a :b :c :d] 
+si :v = fr fr fr 0 0 2 6 [otra 4 4 :a :b :c :d] 
+si :v = fr fr fr 0 0 2 5 [otra 4 3 :a :b :c :d] 
+si :v = fr fr fr 0 0 2 4 [otra 4 2 :a :b :c :d] 
+si :v = fr fr fr 0 0 2 3 [otra 4 1 :a :b :c :d] 
+si :v = fr fr fr 0 0 2 2 [buenturno turnoazar :a :b :c :d] 
+si :v = fr fr fr 0 0 2 1 [otra 3 2 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 2 0 [otra 3 1 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 1 7 [otra 4 7 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 1 6 [otra 4 6 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 1 5 [otra 4 5 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 1 4 [otra 4 4 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 1 3 [otra 4 3 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 1 2 [otra 4 2 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 1 1 [otra 4 1 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 1 0 [bravo otra 3 1 :a :b :c :d] #desarma
+si :v = fr fr fr 0 0 0 7 [otra 4 6 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 0 6 [otra 4 5 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 0 5 [otra 4 4 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 0 4 [otra 4 3 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 0 3 [otra 4 2 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 0 2 [otra 4 1 :a :b :c :d] #ganador 
+si :v = fr fr fr 0 0 0 1 [bravo otra 4 1 :a :b :c :d] #desarma
+fin
+
+para buenturno
+  ot poncl 0 sl re 100 gd 90 rotula [Buen juego !] 
+  espera 60 goma rotula [Buen   juego !] gi 90 
+fin
+
+para otra :l :x :a :b :c :d
+  ot
+  finlinea :l :a :b :c :d
+  si :x = 0
+    [jugar :l :a :b :c :d]
+    [poncl 1 sl re 100 gd 90 rotula [Dr. Alliag juega...] gi 90]
+debutlinea :l
+  si :l = 1 [sl re (:a - 1) * 40 repite :x [coincidir av 80]]
+  si :l = 2 [sl re (:b - 1) * 40 repite :x [coincidir av 80]]
+  si :l = 3 [sl re (:c - 1) * 40 repite :x [coincidir av 80]]
+  si :l = 4 [sl re (:d - 1) * 40 repite :x [coincidir av 80]]
+  espera 200
+  finlinea :l :a :b :c :d
+  goma sl re 100 gd 90 rotula [Dr. Alliag juega...] gi 90
+  debutlinea :l
+  si :l = 1
+   [sl re (:a - 1) * 40 repite :x [coincidir av 80] haz "a :a - :x]
+  si :l = 2
+   [sl re (:b - 1) * 40 repite :x [coincidir av 80] haz "b :b - :x]
+  si :l = 3
+   [sl re (:c - 1) * 40 repite :x [coincidir av 80] haz "c :c - :x]
+  si :l = 4
+   [sl re (:d - 1) * 40 repite :x [coincidir av 80] haz "d :d - :x]
+  esponja2 :l :a :b :c :d
+  jugar :l :a :b :c :d
+fin
+
+para esponja2 :l :a :b :c :d
+  haz "s (:a + :b) + (:c + :d)
+  si :s = 0
+    [sl re 100 gd 90 poncl 1 rotula [... y se inclina ante usted.] 
+     espera 120 empezar]
+  si :s = 1
+    [sl re 100 gd 90 poncl 1 rotula [... y gana.] espera 120 empezar]
+  si :l = 0 [haz "l 4 linea 4 :a :b :c :d]
+  si :l = 5 [haz "l 1 linea 1 :a :b :c :d]
+  si y :l = 1 :a = 0 [haz "l 2 esponja2 2 :a :b :c :d]
+  si y :l = 2 :b = 0 [haz "l 3 esponja2 3 :a :b :c :d]
+  si y :l = 3 :c = 0 [haz "l 4 esponja2 4 :a :b :c :d]
+  si y :l = 4 :d = 0 [haz "l 1 esponja2 1 :a :b :c :d]
+fin
+
+para jugar :l :a :b :c :d
+  finlinea :l :a :b :c :d
+  ot re 100 gd 90 poncl 4 rotula [Le toca jugar.]
+  espera 60 goma rotula [Le toca jugar.] gi 90
+  poncl 0 mt
+  puntero :l :a :b :c :d
+fin
+
+para bravo
+  ot poncl 0 sl re 100 gd 90
+  rotula [Bravo !]
+  espera 60 goma rotula [Bravo !] gi 90 
+fin

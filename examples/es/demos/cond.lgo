@@ -1,0 +1,50 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  poncolorlapiz 8 ponposicion [-200 -199]
+  bajalapiz repite 4 [avanza 399 giraderecha 90] subelapiz
+#
+  ponformalapiz 1
+  repite 5000 [probe]
+fin
+
+para probe
+  haz "centro punto.aleat
+  haz "a "sigue haz "radio 0
+    repite 40 [
+    si :a = "termina [alto]
+    haz "num :radio + 24
+    haz "angulo 360/ :num
+      repite :num [
+      ponposicion :centro giraderecha :angulo
+      avanza :radio
+        #setpc 2 bajalapiz avanza 1 subelapiz
+      si test > 64 [haz "a "termina alto] ]
+    haz "radio :radio + 1]
+  si :radio > 6 [ponposicion :centro burbuja :radio-2]
+fin
+
+para burbuja :radio
+  poncolorlapiz [51 51 51] mi.circulo :radio
+  poncolorlapiz azul bajalapiz rellena subelapiz
+  ponrumbo 315 avanza :radio/2
+  poncolorlapiz cyan pongrosor :radio/3
+  punto posicion pongrosor 1
+fin
+
+para punto.aleat
+  devuelve lista (azar 390)-195 (azar 390)-195
+fin
+
+para test
+  devuelve elemento 3 encuentracolor posicion
+fin
+
+para mi.circulo :radio
+  subelapiz avanza :radio giraderecha 92 bajalapiz
+  repite 90 [avanza 2*pi*:radio/90 giraderecha 4]
+  subelapiz giraizquierda 92 retrocede :radio
+fin

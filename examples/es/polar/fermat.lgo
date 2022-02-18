@@ -1,0 +1,22 @@
+# Comando de Inicio: empezar
+para empezar
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  poncolorlapiz amarillo
+  repitepara [angulo 0 3600]
+    [ espiral :angulo
+      ponposicion p2r :radio :angulo
+      bajalapiz]
+fin
+
+para p2r :radio :angulo
+  haz "x :radio * coseno :angulo
+  haz "y :radio * seno :angulo
+  devuelve lista :x :y
+fin
+
+para espiral :angulo
+# Espiral de Fermat
+  haz "radio 3*raizcuadrada :angulo
+fin

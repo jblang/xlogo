@@ -1,0 +1,1693 @@
+# Main Command: Go 5 3
+# Tracker by Guy Walker
+# www.logoarts.co.uk
+
+to track :x
+  # write value of :X as footer
+  Make "myPos Pos Make "myHeading Heading Make "myCol PenColor
+  PenUp SetPos [-190 -186] 
+  SetPW 11 SetHeading 90 PenErase Forward 380
+  PenUp SetPos [-190 -190] SetPC White
+  SetPW 1 SetHeading 0 Label :X
+  SetPos :myPos SetHeading :myHeading SetPC :myCol
+end
+# Mesh by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init
+  Make "Centres1 [[30.5 31.5] [22 14] [29 17] 
+  [14.5 9.5] [31.5 29.5] [34.5 29.5] [15 13] [19 13] [25 34] [29 34] 
+  [18.5 8.5] [25.5 15.5] [8.5 17.5] [13.5 17.5] [33.5 33.5]
+  [19 3] [25 3] [3 11] [3 17] [33 19] [33 25] [24.5 9.5] [9.5 11.5] [19.5   18.5] [26.5 21.5] [19.5 25.5] [26.5 28.5] [19.5 32.5] 
+  [4 4] [12 4] [32 4] [32 12] [4 24] [12 24] [4 32] [12 32]]
+  Make "Centres2 [[21.5 14.5] [23 15] [23 17] 
+  [22.5 9.5] [22.5 12.5] [20.5 16.5] [26 14] [26 18] [26 22] [26 26] 
+  [21.5 20.5] [9.5 23.5] [21.5 25.5] [9.5 28.5] [9.5 33.5]
+  [27 3] [33 3] [27 9] [33 9] [10 18] [16 18] 
+  [3.5 11.5] [10.5 11.5] [17.5 11.5] [3.5 18.5] [15.5 24.5] [3.5 25.5] [3.5 32.5] 
+  [4 4] [12 4] [20 4] [32 16] [32 24] [16 32] [24 32] [32 32]]
+end
+
+to drawline
+  For [Y 0 10] [
+    SetXY Minus 188 (:Y*:Side) - 160
+    PenDown Forward 376 PenUp]
+end
+
+to eraseline
+# move to point PQ and draw a black line to point RS
+PenUp
+SetXY (First :Pp) (First :Qp)
+PenDown SetPC Black
+SetXY (First :Rp) (First :Sp)
+Make "Pp ButFirst :Pp 
+Make "Qp ButFirst :Qp
+Make "Rp ButFirst :Rp 
+Make "Sp ButFirst :Sp
+end
+
+to ranspeed
+# return a random speed between 4 and 13
+Output 4 + Random 10
+end
+
+to go :order :mesh
+  New Back 192
+  Make "Size 384
+  Gridd :Order :Size :Mesh
+end
+
+to hue :theta
+  # Output RGB hue list from angle :Theta
+  Make "Red Round 127.5*(1+Sin :Theta)
+  Make "Green Round 127.5*(1+Sin (:Theta+120))
+  Make "Blue Round 127.5*(1+Sin (:Theta+240))
+  Output (List :Red :Green :Blue)
+end
+
+to gridsq :order :side
+  # draw tile at each column x row position
+  LocalMake "Offset (1+:Order)/2
+  For (List "Col 1 :Order) [
+    For (List "Row 1 :Order) [
+      SetXY :Side*(:Col-:Offset) :Side*(:Row-:Offset)
+      Tile :Col :Row :Side] ]
+end
+
+to tile :col :row :side
+  # use global value of :Tile to draw selected tile	
+  Run (Word "Tile :Tile) :Col :Row :Side
+end
+
+to even :num
+  # Output True if Num even, else output False 
+  If (Mod :Num 2) = 0 [Output "True] [Output "False]
+end
+
+to square :side
+  # square (side x side) drawn from centre (tx)
+  LocalMake "Half :Side/2 
+  PenUp Back :Half Right 90 Back :Half
+  PenDown Repeat 4 [ 
+    Forward :Side Left 90] 
+  PenUp Forward :Half Left 90 Forward :Half 
+end
+
+# alternative tile
+
+to tilealt :col :row :side
+  # draw light or dark border square
+  SetH 0 If Even (:Col+:Row) [
+    Left 8 SetPC [0 0 64] Square 0.85*:Side Fill
+    SetPC [229 229 255] Square 0.75*:Side Fill] [    # else
+    Right 8 SetPC [229 229 255] Square 0.85*:Side Fill
+    SetPC [0 0 64] Square 0.75*:Side Fill]
+end
+
+to dust
+  Home Right Random 360 Forward :Max Make "Col 0
+    While [:Max < 182] [ 
+      While [:Col = 0] [
+      SetPC Black Dot Pos  # erase previous dot
+      SetH Towards [ 0 0 ]
+      Left 30 Right Random 420 Forward 1
+      Make "Col Vicinity
+      SetPC Yellow Dot Pos]
+    Make "MaxNew 2 + Distance [ 0 0 ]
+  If :MaxNew > :Max [ Make "Max :MaxNew] 
+  Dust ]
+end
+
+to jump :side
+  # set turtle to random position within square of size side
+  SetXY (Random :Side) - :Side/2 (Random :Side) - :Side/2
+end
+
+to burst :spokes :radius
+  # star burst drawn from centre (tp)
+   Repeat :Spokes [
+    PenDown Forward :Radius
+    PenUp Back :Radius
+    Right 360/:Spokes Wait 2]
+end
+
+to net
+  For [Angle 0 360 6] [
+    PenUp SetXY 180*Cos :Angle 0
+    PenDown SetXY 0 180*Sin :Angle Wait 4]
+end
+
+to star :size
+  # global values
+  Forward (:Size/2)/Cos 18
+  Right 162 PenDown
+  Repeat 5 [Forward :Size Right 144]
+  PenUp Left 162 Back (:Size/2)/Cos 18
+end
+
+to picknoun
+Make "Selection Pick :Noun
+Make "Noun Remove :Selection :Noun
+Output :Selection
+end
+
+to pickadj
+Make "Selection Pick :Adj
+Make "Adj Remove :Selection :Adj
+Output :Selection
+end
+
+to pickverb
+Make "Selection Pick :Verb
+Make "Verb Remove :Selection :Verb
+Output :Selection
+end
+
+to lens :size
+  # lens shape drawn from centre (tp)
+  Repeat 2 [
+    Back :Size/2 Arch 90 :Size/1.414
+    Forward :Size/2 Left 180]
+end
+
+to arch :angle :radius
+  # symmetrical arc drawn relative to turtle heading
+  Arc :Radius Heading-:Angle/2 Heading+:Angle/2
+end
+
+to pebble :wide :high
+  # pebble shape drawn from centre (tp)
+  LocalMake "Diff Abs :Wide-:High
+  If :Wide > :High
+    [LocalMake "Rad :High/2 LocalMake "Vert 0 LocalMake "Horiz :Diff]
+    [LocalMake "Rad :Wide/2 LocalMake "Vert :Diff LocalMake "Horiz 0]
+  PenUp Back :High/2 Right 90 Back :Horiz/2 PenDown
+  Repeat 2 [
+    Forward :Horiz LeftArc 90 :Rad Forward :Vert LeftArc 90 :Rad]
+  PenUp Forward :Horiz/2 Left 90 Forward :High/2     # return to centre
+end
+
+to leftarc :angle :radius
+  # arc drawn relative to turtle position
+  If :Radius <0 [Stop]
+  PenUp Right 90 Back :Radius
+  If :Angle <0 
+    [Arc :Radius Heading Heading-:Angle Left :Angle]
+    [Left :Angle Arc :Radius Heading Heading+:Angle]
+  Forward :Radius Left 90 PenDown 
+end
+
+to polygon :n :wide
+  # polygon of 'N' sides drawn from centre (tp)
+  Make "Side :Wide *Sin 180/:N     # length of one side
+  Right 180/:N Back :Wide/2 Right 90-180/:N PenDown
+  Repeat :N 
+    [Forward :Side Left 360/:N]
+  PenUp Left 90-180/:N Forward :Wide/2 Left 180/:N     # return to centre
+end
+
+to rainbow
+  SetPW 10     # big pen
+  Make "Cols [1 13 3 2 4 15]
+  For [N 1 6] [
+    SetPC Item :N :Cols
+    Arch 180 (180-12*:N) Wait 30]
+end
+
+# alternative procedure
+
+to rainbow_alt
+  SetPW 10     # big pen 
+  Make "Cols [Red Orange Yellow Green Blue Purple]
+  For [N 1 6] [
+    SetPC Run Item :N :Cols
+    Arch 180 (180-12*:N) Wait 30]
+end
+
+to ranpoint
+  SetXY (Random 340)-170 (Random 380)-190
+end
+
+to labxy
+  SetPC White Label Pos
+end
+
+to function :x :y
+  # Output 0   # flat plane 
+  # Output 96*(Cos (90* :X))*(Cos (90* :Y))
+  # Output 64*(Cos (270* :X))*(Cos (270* :Y))
+  # Output 8*Cos 900*Sqrt ((Power :X 2)+(Power :Y 2))
+  Output 96*Cos 360*Sqrt ((Power :X 2)+(Power :Y 2))
+end
+
+to display :order
+  # write header title and curve level
+  SetPC White
+  SetPos [-190 180] Label Sentence [Pentagon Fractal] :Order
+end
+
+to vicinity
+  # check occupation of surrounding pixels
+  # return '1' if neighbouring dust is present
+  For [I -1 1] [
+    For [J -1 1] [
+    Make "R Item 1 FindColor List :I+X :J+Y 
+    If :R = 255 [Output 1] ] ]
+  Output 0
+end
+
+to gbman
+Make "Xnew 1 - :Y + Abs :X
+Make "Ynew :X
+Dot List (:Xnew*34)-84 (:Ynew*34)-84
+Make "X :Xnew
+Make "Y :Ynew
+end
+
+to colang :angle
+Make "Green Integer 127.5*:Angle - 255
+Output ( List 255 :Green 0 )
+end
+
+to fern :size
+  If :Size < 5 [Stop]
+  SetPC Hue Heading
+  Forward :Size / 20
+  Left 80 Fern :Size * 0.3
+  Right 82 Forward :Size / 20
+  Right 80 Fern :Size * 0.3
+  Left 78 Fern :Size * 0.9
+  Left 2 Back :Size / 20
+  Left 2 Back :Size / 20
+end
+
+to map :a :b :c :d :e :f
+Make "Xnew (:a*:X) + (:b*:Y) + :c
+Make "Y (:d*:X) + (:e*:Y) + :f
+Make "X :Xnew
+end
+
+to scale :xory
+# XorY are in the range 0 to 1, we need -200 to 200
+Output (400*:XorY)-200
+end
+
+to angcol :theta
+  Make "Red Abs 255 *Cos (:Theta)
+  Make "Gre Abs 255 *Cos (:Theta + 120)
+  Make "Blu Abs 255 *Cos (:Theta + 240)
+  Output (List :Red :Gre :Blu)
+end
+
+to hénon
+  Make "Xnew 1 - :Alpha*(Power :X 2) + :Y
+  Make "Y :Beta * :X
+  Make "X :Xnew 
+  Dot List (:X*:XScale) (:Y*:YScale)
+end
+
+# for a second type of curve
+
+to init2
+  Make "X 0 Make "Y 0
+  Make "XScale 40 Make "YScale 40
+  Make "Alpha 0.2 Make "Beta 0.9991
+end
+
+to fit2screen :a :b :c :cycle
+Make "X 0 Make "Y 0
+Make "Xmax 0 Make "Xmin 0
+Make "Ymax 0 Make "Ymin 0 
+Repeat :Cycle [HopAlong :A :B :C
+  If :X > :Xmax [Make "Xmax :X]
+  If :X < :Xmin [Make "Xmin :X]
+  If :Y > :Ymax [Make "Ymax :Y]
+  If :Y < :Ymin [Make "Ymin :Y] ]
+Make "Xsize :Xmax + Abs :Xmin 
+Make "Scale 380/:XSize 
+Make "Xcent Minus (:Xmax + :Xmin) / 2
+Make "Ycent Minus (:Ymax + :Ymin) / 2
+end
+
+to hop :a :b :c :cycle
+Make "X 0 Make "Y 0
+Repeat 180 [
+  SetPC Hue2 RepCount
+  Repeat Integer :Cycle/180 [HopAlong :A :B :C
+    Dot List :Scale*(:X+:XCent) :Scale*(:Y+:YCent) ] ]
+end
+
+to hopalong :a :b :c
+Make "Xnew :Y-((Sign :X)*Sqrt (Abs (:B*:X-:C)))
+# Make "Xnew :Y-((Sign :X)*Abs((Sine :X)*(Cos :B)+:C-:X*Sine (:A+:B+:C)))    # 3-ply fractal 
+Make "Y :A-:X
+Make "X :Xnew 
+end
+
+to sign :num
+# return sign (-1 or 1) of number 
+If :Num < 0 [Output Minus 1] [Output 1] 
+end
+
+to hue2 :theta
+  # Output RGB hue list from angle :Theta
+  Make "Red Abs 255*Sin :Theta
+  Make "Green Abs 255*Sin (:Theta+120)
+  Make "Blue Abs 255*Sin (:Theta+240)
+  Output (List :Red :Green :Blue)
+end
+
+to gox
+  New DrawBoard Title Wait 40 SetPW 2
+Make "Tour [00 21 40 61 73 65 77 56 75 63 71 50 31 10 02 14 06 27 46 67 55 76 64 52 33 54 35 47 26 07 15 03 11 30 51 70 62 74 66 45 57 36 17 05 13 01 20 41 60 72 53 32 24 43 22 34 42 23 44 25 37 16 04 12 00]
+Repeat Count :Tour [
+  Make "Cell Item RepCount :Tour
+  SetPC Red SetPos Gridd First :Cell Last :Cell
+  SetPC Black cLabel RepCount-1 PenDown Wait 20]
+  # return to first cell and border in yellow 
+SetPC Red Make "Cell Item 1 :Tour 
+SetPos Gridd First :Cell Last :Cell
+SetPC Yellow PenUp Square 32
+end
+
+to kam
+  Make "Angle 74.5
+  For [Orbit 0.2 1.5 0.05] [
+    Make "X :Orbit/3 Make "Y :Orbit/3
+    Repeat 300 [
+      Make "X2Y (Power :X 2)-:Y
+      Make "Xnew :X * (Cos :Angle) + :X2Y * Sin :Angle
+      Make "Y :X * (Sin :Angle) - :X2Y * Cos :Angle
+      Make "X :Xnew
+      Dot List :X*300 :Y*300 ] ]
+end
+
+to mand :mp :np
+  Make "M 0 Make "N 0 Make "Count 0
+  Repeat 90 [
+    Make "Mnew (Power :M 2) - (Power :N 2) + :Mp
+    Make "N (2*:M*:N) + :Np
+    Make "M :Mnew
+    Make "Count :Count + 1
+    If ((Power :M 2) + (Power :N 2)) > 4 [
+      SetPC PenCol :Count Stop] ]
+end
+
+to pencol :m :n
+Make "Red Round :N*:ColStep
+Make "Gre Round :M*:ColStep
+Output (List :Red :Gre 0)
+end
+
+to martin
+  Repeat :Iters [
+    Make "Xnew :Y - Sin (:X*180/pi)
+    Make "Y :Angle - :X
+    Make "X :Xnew
+    Dot List (:X*:Scale)-:Offset (:Y*:Scale)-:Offset]
+end
+
+to pie :shots
+  Make "ShotsFired 0 DrawLand DrawSea
+  Repeat :Shots [
+    Fire SetPC White Display Refresh SetPC Black Display]
+  SetPC White Display
+end
+
+to drawland
+  Make "LandShots 0
+  SetPC Green Home Circle 180
+end
+
+to drawsea
+  Make "SeaShots 0
+  SetPC Magenta SetPos [-180 -180]
+  PenDown Repeat 4 [Forward 360 Right 90] PenUp
+end
+
+to fire
+  SetXY (Random 360)-180 (Random 360)-180
+  If (Distance [0 0]) < 180
+    [SetPC 3 Make "LandShots :LandShots+1]
+  If (Distance [0 0]) > 180
+    [SetPC 6 Make "SeaShots :SeaShots+1]
+  Make "ShotsFired :ShotsFired+1 
+  PenDown Forward 0 PenUp
+end
+
+to popcorn
+  For [Xn -190 190 10] [
+    For [Y -190 190 10] [
+      SetPC Hue2 :Y
+      Make "X :Xn
+      Repeat 30 [ 
+        Make "Xnew :X - 5 * Sin ((2*:Y) + Tan (6*:Y))
+        Make "Y :Y - 5 * Sin ((2*:X) + Tan (6*:X))
+        Make "X :Xnew
+        Dot List :X :Y ] ] ] 
+end
+
+to sier :order :size :frac :ang
+  Make "Angle :Ang*(Random :Order)   # choose random corner
+  SetX :Frac * ((First Pos) +:Size*Sin :Angle)
+  SetY :Frac * ((Last Pos) +:Size*Cos :Angle)
+  PenDown Forward 0 PenUp   # plot pixel
+end
+
+to blancmange
+  # calculate heights
+  Make "Index 256
+  For [N 1 8] [
+    For (List "M 1 256 :Index) [
+      Make "Average ((Item :M :Y) + Item (:M + :Index ) :Y) / 2
+      Make "Y SetItem :Y (:M+:Index/2) (:Index + :Average) ]
+    Make "Index :Index / 2 ]
+end
+
+to draw :centres
+  For [Size 1 8] [
+    Repeat :Size [
+      SetPC Item :Size [1 2 3 8 12 13 15 16]
+      Make "Centre First :Centres
+      SetXY 10*((First :Centre)-18) Minus 10*((Last :Centre)-18)
+      Square 10*:Size-PenWidth    # exact size
+      SetPC Light PenColor Fill 
+      If :Size>1 [SetPC Black Back 5 Right 90 Back 3 Left 90 Label :Size]     Wait 6
+    Make "Centres ButFirst :Centres]]
+end
+
+to c_curve :order
+  If :Order < 1 [Forward :Size Stop]  # ie if = 0
+  Right 45 
+  C_Curve :Order-1
+  Left 90
+  C_Curve :Order-1
+  Right 45 
+end
+
+to chiral :order :side
+  If :Order < 0 [Stop] 
+  Back :Side/2 Left 90 Forward :Side/2 Right 90
+  # SetPC (List :Side :Side :Side)     # comment in for shaded squares
+  Square :Side
+  Forward :Side Chiral :Order-1 :Side/2
+  Right 90 Forward :Side Chiral :Order-1 :Side/2
+  Right 90 Forward :Side Chiral :Order-1 :Side/2
+  Right 90 Forward :Side/2 Right 90 Forward :Side/2
+end
+
+to gasket :side :order
+  If :Order < 1 [Stop]  # ie if = 0
+  Repeat 4 [myShape :Side :Order Right 90]
+  myFill :Side :Order
+end
+
+to myshape :side :order
+  Gasket :Side/3 :Order-1
+  Forward :Side/3
+  Gasket :Side/3 :Order-1
+  Forward 2*:Side/3
+end
+
+to myfill :side :order
+  PenUp Right 45 Forward 0.7*:Side
+  SetPC :Order Fill
+  Back 0.7*:Side Left 45 PenDown SetPC [0 0 1]
+end
+
+to kout :level :side
+  SetH 0 Repeat 4 [Koch :Level :Side Right 90]
+end
+
+to kin :level :side
+  SetH 90 Repeat 4 [Koch :Level :Side Left 90]
+end
+
+to koch :level :side
+  If :Level < 1 [Forward :Side Stop]
+  Koch :Level-1 :Side/4 Left 90
+  Koch :Level-1 :Side/4 Right 90
+  Koch :Level-1 :Side/4 Right 90
+  Koch :Level-1 :Side/4 
+  Koch :Level-1 :Side/4 Left 90
+  Koch :Level-1 :Side/4 Left 90 
+  Koch :Level-1 :Side/4 Right 90 
+  Koch :Level-1 :Side/4
+end
+
+to kcurve :level :side
+  SetH 0 Repeat 4 [Koch :Level :Side Right 90]
+end
+
+to bend :level :parity :dir
+  If :Level < 1 [Forward :Size Right :Parity*60 Forward :Size Stop] 
+  Right :Dir* Minus :Parity*30 
+  Bend :Level-1 Minus :Parity :Dir
+  Turn :Parity*(60+:Dir*30)
+  Bend :Level-1 Minus :Parity Minus :Dir
+  Turn :Parity*(60-:Dir*30)
+  Bend :Level-1 Minus :Parity :Dir
+  Right :Dir* :Parity*30
+end
+
+to turn :n
+  Make "BallsList Run [Thing Word "Ring :N]
+  If :Step < 0 [Make "Dir Minus 1] [Make "Dir 1]
+  SetPC Orange Light :N :Dir SetPC [74 51 0] Light :N Minus 1 * :Dir
+  TurnRing :N :Dir
+  Make "Step :Step - :Dir
+  If (:Step = 0) [
+  SetPC [74 51 0] Light :N :Dir If Check [Win] ]
+end
+
+to sphinx :order :size :parity
+  If :Order < 1 [Stop]  # ie if = 0
+  SetPW :Order Forward 3*:Size Left 180 
+  Sphinx :Order-1 :Size/2 Minus :Parity
+  SetPW :Order Left 180 Forward 3*:Size Left 180
+  Sphinx :Order-1 :Size/2 Minus :Parity
+  SetPW :Order Right :Parity*60 Forward :Size
+  Sphinx :Order-1 :Size/2 :Parity
+  SetPW :Order Forward 3*:Size 
+  Left :Parity*120 Forward 2*:Size
+  Right :Parity*60 Forward 2*:Size Left 180
+  Sphinx :Order-1 :Size/2 Minus :Parity
+  SetPW :Order Right :Parity*120 
+  Forward 2*:Size Left :Parity*120
+end
+
+to gridd :order :size :mesh
+  If :Order < 1 [PenDown Forward :Size PenUp Back :Size Stop]
+  Forward :Size/2
+  Repeat :Mesh [Gridd :Order-1 :Size/2 :Mesh Left 360/:Mesh]
+  Back :Size/2
+end
+
+to randgrid :order
+  # go to a random grid position 
+  SetPos Gridd Random :Order Random :Order 
+end
+
+to drawgrid
+  For [N 0 3] [
+    For [M 0 3] [
+    DrawTile List :M :N Wait 4] ]
+end
+
+# art procedures
+
+to art1 :order
+  # draw random array of colored squares
+New Init :Order
+Repeat :Total [
+  RandGrid :Order
+  SetPC Hue2 Random 360 Square :Side Fill]
+end
+
+to art2 :order
+  # draw random lines 
+New Init :Order
+SetPC Purple SetPW 3 * Round :CellSize/20
+For (List "M 1 :Order-2) [
+  For (List "N 1 :Order-2) [
+    SetPos Gridd :N :M
+    SetH 90*Random 4
+    PenDown Forward :CellSize PenUp] ]
+end
+
+to art3 :order
+  # draw grid, random filled squares 
+New Init :Order
+Drawgrid :Order
+SetPC DarkRed 
+Repeat :Total [
+  RandGrid :Order Fill]
+end
+
+to art4 :order
+  # draw colour swatches
+New Init :Order
+Make "ColStep 255/(:Order-1)
+For (List "M 0 :Order-1) [
+  For (List "N 0 :Order-1) [
+    SetPos Gridd :M :N
+    SetPC PenCol :M :N
+    Square :Side Fill] ]
+end
+
+to art5 :order
+New Init :Order
+Make "CellList []
+Repeat :Total [Make "RanSq Random :Total
+If Not Member? :RanSq :CellList [
+  SetPos Gridd (Modulo :RanSq :Order) (Quotient :RanSq :Order)
+Square :Side SetPC DarkRed Fill SetPC Green
+Make "CellList Lput :RanSq :CellList]]
+SetPC Red
+For (List "YY 1 :Order-2) [
+  For (List "XX 1 :Order-2) [
+  Make "Count :XX + :Order*:YY
+  If And And And And
+    (Member? :Count :CellList)
+    (Member? :Count+1 :CellList)
+    (Member? :Count-1 :CellList)
+    (Member? :Count+:Order :CellList)
+    (Member? :Count-:Order :CellList)
+    [SetPos Gridd (Modulo :Count :Order) (Quotient :Count :Order) Fill] ] ]
+end
+
+to art6 :order
+New Init :Order
+Repeat :Total [
+  RandGrid :Order
+  Square :Side SetPC DarkRed Fill SetPC Green]
+SetPC Red 
+  For (List "M 1 :Order-2) [
+    For (List "N 1 :Order-2) [
+    SetPos Gridd :M :N
+    If Check4 [PenDown Fill PenUp] ] ]
+end
+
+to check4
+  # return true if square surrounded by 4 squares
+Make "C "True
+If ((First FindColor Pos)=0) [Output "False] 
+Repeat 4 [
+  Forward :CellSize
+  If ((First FindColor Pos)=0) [Make "C "False Stop]
+  Back :CellSize Right 90]
+Output :C
+end
+
+to stick :w
+  SetPC [255 102 51]  # orange 
+  Right 90 PenDown Forward 7 
+  If (Item :W :BinList) = 0 [PenUp]
+  Forward 9 PenDown Forward 7
+  PenUp Back 23 Left 90 Forward 5
+end
+
+to hex :m :n
+  Make "Count (8*:M)+:N
+  Make "BinList  Dec2Bin :Count
+  SetPC White Label :Count Forward 14
+  For [W 3 8] [Stick :W]
+end
+
+to dec2bin :num
+  # convert decimal number Num to an 8 item binary list
+  If :Num >255 [Print [Rule is too large!] Stop]
+  LocalMake "Bin []
+  For [C 7 0 -1] [
+    LocalMake "Bin LPut (Quotient :Num Power 2 :C) :Bin
+    LocalMake "Num :Num -((Power 2 :C) *Last :Bin)]
+  Output :Bin
+end
+
+to footer :x
+  # write value of :X as footer
+  SetPos [-190 -186]
+  SetPW 11 SetH 90 SetPC DarkBlue PenDown Forward 378
+  PenUp SetPos [-190 -190] SetPC White
+  SetPW 1 SetH 0 Label :X
+end
+
+to scan :n
+  # create list from vertical single pixel line in footer 
+  Make "Line [] 
+  For [M 1 11] [
+    Make "Col FindColor List :N :M-192
+    Make "Line LPut (Item 1 :Col) :Line ]
+    # draw a green text underscore in footer
+  SetPC Green SetPW 1 Dot List :N Minus 192
+  Output :Line
+end
+
+to messagelength :x
+  # calculate length of message list :X
+  Make "Length 0
+  For (List "N 1 Count :X) [
+    Make "Length :Length + LabelLength Item :N :X]
+    Output 9 + :Length + 4*Count :X
+end
+
+to drawpath
+  # pick a heading and move forward if OK
+  While [Not :Headings = [ ] ] [
+  SetH Pick :Headings
+  If (Item 2 (FindColor TestPos)) = 0 [ 
+    SetPos TestPos
+    Make "Headings [0 90 180 270]
+  Make "Filled :Filled + 1] [
+  Make "Headings Remove Heading :Headings]
+  DrawPath]
+end
+
+to randomplace
+  SetPos Gridd Random :Order Random :Order
+end
+
+to testpos
+  Output List ((First Pos)+:Side*(Sin Heading)) ((Last Pos)+:Side*(Cos Heading))
+end
+
+to border
+  # fill screen edge
+  SetPC [0 1 0] SetPW 10 SetXY 196 196 SetH 270
+  PenDown Repeat 4 [Forward :Width+15 Left 90] PenUp
+end
+
+to ends
+  SetPC Red SetPW :Side/1.5
+  Dot Gridd 0 0 
+  Dot Gridd :Order-1 :Order-1 
+end
+
+to drawmaze
+  If :Filled = 1 [RandomPlace Dot Pos] [
+  While [Not ((Item 2 (FindColor Pos)) = 255) ] [RandomPlace] ]
+  Make "Headings [0 90 180 270]
+  PenDown DrawPath
+  PenUp SetPC [0 254 0] Dot Pos SetPC Green
+end
+
+to gridpos :m :n
+  # return X Y screen position
+  Make "X (:N*:CellSize) + :OffSet
+  Make "Y (:M*:CellSize) + :OffSet
+  Output List :X :Y
+end
+
+to color :i :j
+  # shade green 
+  Make "Green 163-46*(:I + :J)
+  Output (List 0 :Green 0)
+end
+
+to tile1 :side
+  Left 45 Arch 270 :Side/2 Right 45 Back :Side/2
+  PenDown Forward :Side/2 Right 90 Forward :Side/2
+  PenUp Back 3*:Side/4 SetPC Dark PenColor Fill
+  SetPC :Hue Forward :Side/2 Left 90 Arch 180 :Side/4
+  Forward :Side/8 SetPC Dark Dark PenColor Fill
+end
+
+to tile2 :side
+  Right 45 Kite 1.414*:Side
+  SetPC Dark PenColor Fill PenUp SetPC :Hue
+  Right 45 Forward :Side/2 Left 153.4
+  PenDown Forward :Side /2.7 Right 36.8 Forward :Side /2.7 PenUp
+  Right 150 Forward :Side/4
+  SetPC Dark Dark PenColor Fill
+end
+
+to tile3 :side
+  Right 45 Back 1.414*:Side/4 RightAngTri 1.414*:Side
+  SetPC Dark PenColor Fill SetPC :Hue
+  Right 45 Forward :Side/8 RightAngTri :Side/2
+  SetPC Dark Dark PenColor Fill
+end
+
+to tile4 :side
+  Right 45 Lens 1.414*:Side Left 45
+  SetPC Dark PenColor Fill
+  SetPC :Hue Lens :Side/1.38
+  SetPC Dark Dark PenColor Fill
+end
+
+to tile5 :side
+  Right 45 Back 1.414*:Side/2
+  SetPC Yellow SetPW :Side/10 Arch 90 :Side/2
+  Right 45 SetPW 1 SetPC :FlatCol SetPC Dark PenColor
+  PenDown Repeat 4 [
+    Forward :Side/4 PenUp Forward :Side/2 PenDown
+    Forward :Side/4 Left 90]
+  PenUp Forward :Side/2 Left 90 Forward :Side/2
+  Repeat 2 [
+    Back :Side/2 Arch 180 :Side/4
+    Back :Side/2 Arch 68 0.9*:Side Forward :Side
+    Back :Side/6 FillZone Forward :Side/6 Left 180]
+  SetPC :FlatCol Repeat 2 [
+    Back :Side/2 Arch 180 :Side/4
+    Back :Side/2 Arch 68 0.9*:Side Forward :Side Left 180]
+  Left 135 Back 1.414*:Side/2
+  SetPC Yellow SetPW :Side/10 Arch 90 :Side/2 SetPW 1
+end
+
+to tile6 :side
+  SetPC :FlatCol Back :Side/6 Left 90 PenDown
+  Forward :Side/2 Left 90 Forward :Side/3
+  Left 90 Forward :Side Left 90
+  Forward :Side/3 Left 90 Forward :Side/2
+  PenUp Forward :Side/6 Right 90 Back :Side/6
+  SetPC Dark PenColor Fill Forward :Side/6
+  SetPC Yellow PenDown Forward :Side/6 PenUp
+  Forward :Side/6 Circle :Side/6 SetPC Orange Fill
+end
+
+to tile7 :side
+  If Or (Heading =90) (Heading=270) [Right 26.5] [Right 63.5]
+  Square 0.74*:Side Back 0.37*:Side PenDown
+  Forward 0.37*:Side Right 90 Forward 0.37*:Side
+  PenUp Back :Side/2 SetPC Dark PenColor Fill
+  Right 30 Forward :Side/3
+  SetPC Dark PenColor Fill
+end
+
+to tile8 :side
+  Chevron :Side Chevron :Side/2
+  Forward 3*:Side/8 SetPC Dark PenColor Fill
+  Back :Side/4 SetPC Dark PenColor Fill
+end
+
+to tile9 :side
+  Right 45 Back 1.414 *:Side/6 Left 45 Square 2*:Side/3
+  SetPC Dark PenColor Fill SetPC :Hue
+  Forward :Side/3 PenDown Forward :Side/3
+  Right 45 Back 1.414 *:Side/3 PenUp Forward 1.414 *:Side/3
+  PenDown Right 45 Forward 2*:Side/3 Right 90 Forward 2*:Side/3
+  Right 45 Forward 1.414 *:Side/3 PenUp
+  Right 135 Forward 2*:Side/3 Right 45 PenDown Forward 1.414 *:Side/3
+  PenUp Right 135 Forward :Side/6 Right 90 Forward :Side/12
+  SetPC Dark Dark PenColor Fill Forward 2*:Side/3 Fill
+  Back :Side/6 SetPC Dark PenColor Fill
+end
+
+to tile10 :side
+  Back :Side/2 Right 90 Back :Side/2
+  PenDown Forward :Side Left 90 Forward :Side
+  Left 90 Forward :Side/3 Left 90 Forward 2*:Side/3
+  Right 90 Forward 2*:Side/3 Left 90 Forward :Side/3
+  PenUp Back :Side PenDown Repeat 4 [
+    Forward :Side/3 Left 90] PenUp
+  Left 45 Forward 1.414*:Side/6 SetPC Dark Dark PenColor Fill
+  Forward 2*1.414*:Side/3 SetPC :Hue SetPC Dark PenColor Fill
+end
+
+to tile11 :side
+  Right 90 Forward :Side/3 Left 90 Forward :Side/6
+  Repeat 2 [
+    SetPC Dark Dark PenColor
+    FillPolygon [PD (Pgram :Side/3 2*:Side/3 Minus 1)]
+  SetPC :Hue (Pgram :Side/3 2*:Side/3 Minus 1)
+  Left 90 Forward :Side/2 Left 90
+  SetPC Dark PenColor FillPolygon [PD Pgram 2*:Side/3 2*:Side/3]
+  SetPC :Hue Pgram 2*:Side/3 2*:Side/3
+  Right 90 Forward :Side/6 Left 90 Forward :Side/3]
+end
+
+to tile12 :side
+  Left 90 Forward :Side/4 Right 90 Forward :Side/4
+  Repeat 2 [
+    SetPC Dark Dark PenColor FillPolygon [PD Pgram :Side/2 :Side/2]
+  SetPC :Hue Pgram :Side/2 :Side/2 Right 90 Forward :Side/2 Right 90
+  SetPC Dark PenColor FillPolygon [ PD (Pgram :Side/2 :Side/2 Minus 1)]
+  SetPC :Hue (Pgram :Side/2 :Side/2 Minus 1) Forward :Side/2]
+end
+
+to tile13 :side
+  Arch 180 :Side/2
+  Left :Parity*45 Back 0.7*:Side
+  Arch 90 :Side/2
+end
+
+to tile14 :side
+  Left 45 Repeat 3 [
+    Back :Side/1.414 Arch 90 :Side/2 Forward :Side/1.414 Left 90]
+end
+
+to tile15 :side
+  Back :Side/2 Right 90 Back :Side/2
+  Left 26.6 PenDown Forward 0.895*:Side
+  Right 90 Forward 0.445*:Side PenUp
+  Left 153.4 Forward :Side Left 90
+  Left 63.4 PenDown Forward 0.445*:Side
+  Right 90 Forward 0.895*:Side
+end
+
+to tile16 :side
+  Back :Side/2
+  Left 26.6 PenDown Forward 0.67*:Side
+  Left 90 Forward 0.22*:Side PenUp
+  Right 26.6 Back :Side
+  Right 26.6 PenDown Forward 0.67*:Side
+  Right 90 Forward 0.22*:Side
+end
+
+to tile17 :side
+  Back :Side/2 Right :Parity*90 Back :Side/2
+  Repeat 4 [
+    PenUp Forward :Side/2 PenDown Left :Parity*45
+    Forward 0.71*:Side/2 Right :Parity*90
+    Forward 0.71*:Side/2 Left :Parity*135]
+  Left :Parity*45 Forward 1.1*:Side
+end
+
+to tile18 :side
+  Back :Side/2 Right 90 Back :Side/2
+  Repeat 2 [
+    Forward :Side/3 Left 71.6 PenDown Forward 0.53*:Side
+    PenUp Back 0.53*:Side Right 71.6 Forward :Side/3
+    Left 71.6 PenDown Forward 0.26*:Side PenUp Back 0.26*:Side
+    Right 71.6 Forward :Side/3 Left 90
+    Forward :Side/3 Left 108.4 PenDown Forward 0.26*:Side
+    PenUp Back 0.26*:Side Right 108.4 Forward :Side/3 Left 108.4
+    PenDown Forward 0.53*:Side PenUp Back 0.53*:Side
+    Right 108.4 Forward :Side/3 Left 90 ]
+end
+
+to tile19 :side
+  Forward 0.42*:Side/2 PenDown Back 0.84*:Side/2 PenUp Back 0.58*:Side/2
+  Right 90 Back :Side/2
+  PenDown Left 30 Forward 1.155*:Side/2 Right 60 Forward 1.155*:Side/2
+  PenUp Left 120 Forward :Side Left 120
+  PenDown Forward 1.155*:Side/2 Right 60 Forward 1.155*:Side/2
+end
+
+to tile20 :side
+  Back :Side/2 Arch 180 :Side/2 Forward :Side/2
+  Left :Parity*45 Back 0.71*:Side Arch 90 :Side Forward 0.71*:Side
+  Right :Parity*90 Back 0.71*:Side Left :Parity*30 Arch 30 :Side
+end
+
+to tile21 :side
+  Back :Side/2 Arch 180 :Side/2 Forward :Side/2
+  Left 90 Back :Side/2 Right 45
+  Arch 90 :Side/2 Left 45 Forward :Side
+  Right 135 Arch 90 :Side/2
+end
+
+to tile22 :side
+  Back :Side/2 Left :Parity*45 PenDown
+  Forward 1.42*:Side/2 Right :Parity*135
+  Forward :Side Left :Parity*135
+  Forward 1.42*:Side/2
+end
+
+to tilefill :side
+  # fill with random color
+  SetH 0 Forward 0.2*:Side/2
+  If 64=Item 2 (FindColor Pos) [     # only fill dark green areas
+    SetPC Pick [10 12 [64 0 127]] Fill Wait 4]
+end
+
+to tilegrout :side
+  # add random grout lines
+  If 0=Random 2 [
+    Back :Side/2 Right 90 Back :Side/2
+    PenDown Repeat 4 [Forward :Side Left 90] ]
+end
+
+to chevron :size
+  # chevron shape drawn from centre (tp)
+  PenDown Left 45
+  Forward 1.414*:Size/2 Right 135 Forward :Size/2
+  Right 45 Forward 1.414*:Size/2 Right 90 Forward 1.414*:Size/2
+  Right 45 Forward :Size/2 Right 135 Forward 1.414*:Size/2
+  Left 45 PenUp
+end
+
+to kite :size
+  # kite shape drawn from centre (tp)
+  Back :Size/2 PenDown
+  Left 18.4 Forward :Size/1.26 Right 63.4
+  Forward :Size/2.82 Right 90 Forward :Size/2.82
+  Right 63.4 Forward :Size/1.26
+  PenUp Right 161.6 Forward :Size/2     # return to centre
+end
+
+to pgram :wide :high [ :p 1  ]
+  # parallelogram shape drawn from centre (tp)
+  # default parity of 1, use minus 1 for mirror image
+  LocalMake "Ang ATan :Wide/(:High/2)     # inner angle
+  LocalMake "Len :Wide/ Sin :Ang     # side length
+  Back :High/4 Right :P*:Ang Back :Len/2 PenDown
+  Repeat 2 [
+    Forward :Len Left :P*:Ang Forward :High/2 Left :P*(180-:Ang)]
+  PenUp Forward :Len/2 Left :P*:Ang Forward :High/4     # r2c
+end
+
+to rightangtri :size
+  # right angled triangle drawn from centre (tp)
+  Back :Size/4 Right 45
+  PenDown Forward 1.414*:Size/2
+  Left 135 Forward :Size
+  Left 135 Forward 1.414*:Size/2 PenUp
+  Left 135 Forward :Size/4     # return to centre
+end
+
+to dark :hue
+  # output rgb list midway between :hue and black
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (First :Hue)/2 :Hue]
+  Output :Hue
+end
+
+to grout :size :order
+  # draw centred square grid with :order divisions
+  SetPC [64 64 64] SetPW 1
+  For (List "Point 0 :Size+1 :Size/:Order) [
+    SetXY :Point-:Size/2 :Size/2 SetH 180
+    PenDown Forward :Size PenUp
+    SetXY :Size/2 :Point-:Size/2 SetH 270
+    PenDown Forward :Size PenUp Wait 2]
+end
+
+to path :a :b
+  # draw line or curve between points a and b
+  Make "Diff Abs (:A-:B)
+  SetH 202.5 +45*((:A+:B)/2)
+  If :Diff=4 [
+    Right 90 Forward :Dist Left 180 PenDown Forward 2*:Dist PenUp Stop]
+  If :Diff >4 [Make "Diff 8-:Diff Left 180]
+  Back :Dist/Cos (:Diff*22.5) Arch 180-(:Diff*45) :Dist*Tan (:Diff*22.5)
+end
+
+to shuffle
+  While [Not Number? :S] [
+    Read [
+    Enter shuffle turns. Less than 5 easy, more than 20 hard.] "S]
+    Wait 24 Home SetPC Orange Fill Refresh Wait 24
+      Repeat :S [
+      Rand3
+      Ring :N Make "BallsList Run [Thing Word "Ring :N]
+      Repeat Absolute :Step [Left :Dir*15 UpdateRing :N :Dir]
+    DrawBalls :BallsList Refresh Wait 12] Make "S "SS
+  Home SetPC [74 51 0] Fill Refresh Wait 24
+end
+
+to info
+  SetPC White SetFontJustify [1 1]
+  Home Label :Points 
+  Repeat 8 [
+    Home SetH (RepCount*45)-20
+    Forward 190 SetH 0 Label RepCount-1]
+end
+
+to setpen
+  # set pen width and color
+  SetPW :Side     # + 1 - (:Side* (:Count/:Total))
+  # Comment in the rest of the above line for variable pen widths
+  Make "Col 255 - 0.75*(:Count * :ColStep)
+  SetPC ( List 1 :Col 255 )
+end
+
+to centrand
+  # random position in central third of grid
+  Make "ThOrder Round :Order/3
+  Output :ThOrder + Random :ThOrder
+end
+
+to 3dshape
+    # cube
+  Make "ShapeX [80 -80 -80 80 80 -80 -80 80]
+  Make "ShapeY [80 80 -80 -80 -80 -80 80 80]
+  Make "ShapeZ [80 80 80 80 -80 -80 -80 -80]
+  Make "Color [1 1 2 2 3 3 6 6]
+end
+
+to 3dshape1
+  # tetrahedron
+  Make "ShapeX [0 -80 80 0]
+  Make "ShapeY [-65 -65 -65 65]
+  Make "ShapeZ [80 -50 -50 0]
+  Make "Color [1 2 3 6]
+end
+
+to 3dshape2
+  # diamond
+  Make "ShapeX [80 -80 -80 80 0 0]
+  Make "ShapeY [0 0 0 0 113 -113]
+  Make "ShapeZ [80 80 -80 -80 0 0]
+  Make "Color [2 6 2 6 1 1]
+end
+
+to circ :size
+  If :Size < 5 [Stop] 
+  Circle :Size
+  Repeat :Order [
+    Forward :Size-:K*:Size 
+    Circ :K*:Size 
+    Back :Size-:K*:Size 
+    Left 360/:Order]
+end
+
+to tilebg :col :row :side
+  If Even (:Col+:Row) [SetPC [0 102 153]] [SetPC [153 204 255]]
+  Square :Side-1 Fill Wait 2
+end
+
+to tiledot :col :row :side
+  If X>0 [Make "Col :Col+1]
+  If Y>0 [Make "Row :Row+1]
+  If Even (:Col+:Row) [SetPC Black] [SetPC White]
+  SetPW :Side/2 Dot Pos Wait 3
+end
+
+to tilesq :col :row :side
+  SetPC Gray SetPW :Side/30 Square :Side
+end
+
+to stamp
+  Forward 150 SetPC SC Dot Pos
+  Wait 14
+  SetPC Magenta Dot Pos
+  Back 150 Right 30
+end
+
+to rect :width :height
+  # shaded rectangle (width x height) drawn from centre (tp) and filled
+  Back :Height/2 Right 90 Back :Width/2 PenDown
+  SetPC Black Forward :Width Left 90 Forward :Height Left 90
+  SetPC White Forward :Width Left 90 Forward :Height Left 90
+  PenUp Forward :Width/2 Left 90 Forward :Height/2   # return to centre
+  SetPC [153 0 204] Fill
+end
+
+to rect2 :width :height
+  # shaded pebble shape drawn from centre (tp) and filled
+  LocalMake "Diff Abs :Width-:Height
+  If :Width > :Height [LocalMake "Rad :Height/2 LocalMake "Vert 0 LocalMake "Horiz :Diff]
+                      [LocalMake "Rad :Width/2 LocalMake "Vert :Diff LocalMake "Horiz 0]
+  PenUp Back :Height/2 Right 90 Back :Horiz/2 PenDown
+  SetPC Black Forward :Horiz LeftArc 90 :Rad Forward :Vert LeftArc 45 :Rad
+  SetPC White LeftArc 45 :Rad Forward :Horiz LeftArc 90 :Rad Forward :Vert LeftArc 45 :Rad
+  SetPC Black LeftArc 45 :Rad
+  PenUp Forward :Horiz/2 Left 90 Forward :Height/2   # return to centre
+  SetPC [153 0 204] Fill
+end
+
+to mobius :twist
+  For [Angle 0 359 5] [
+    Home Up :Angle
+    Forward 200 Down 90 LeftRoll :Twist*:Angle
+    Paddle
+    RightRoll :Twist*:Angle Up 90 Back 240 Wait 4]
+end
+
+to paddle
+  # draw perpendicular red/green paddle
+  Right 90 Back 60 
+  SetPW 8 SetPC Red PointStart Dot Pos PointEnd
+  SetPW 1
+  SetPC Red PenDown LineStart Forward 60 LineEnd PenUp
+  SetPC Green PenDown LineStart Forward 60 LineEnd PenUp
+  SetPW 8 SetPC Green PointStart Dot Pos PointEnd
+  Back 60 Left 90
+end
+
+to title
+  # write header
+  SetPC White
+  SetPos [-190 180] Label [Knight's Tour]
+end
+
+to tabs
+  For [M -1 4] [
+    SetPos ScreenPos List :M 5
+    SetPC Gray Button 56 11 Forward 14 SetPC [102 102 102] Fill
+    Make "Lab Item (:M+2) :Tabs
+    SetPC White SetFontSize 12 
+    SetX (First Pos) -1 - ((LabelLength :Lab)/2) SetY (Last Pos)
+    Label :Lab Wait 4]
+end
+
+to box
+  Home
+  SetPC [153 51 51] Button 306 40 Fill
+  SetPC [222 51 51] SetPW 2 Button 301 38 SetPW 1
+  SetPC Black Button 296 35 Button 242 14 Button 252 19
+  SetPC [222 51 51] SetPW 2 Button 247 17 SetPW 1
+  SetPC DarkGreen Fill
+end
+
+to button :size :corner
+  # rounded corner shape drawn from centre (tp)
+  PenUp Forward :Size/2 Left 90 Back :Size/2-:Corner PenDown
+  Repeat 4 [Forward :Size-2*:Corner LeftArc 90 :Corner]
+  PenUp Forward :Size/2-:Corner Right 90 Back :Size/2   # return to centre 
+end
+
+to drawtile :gridmn
+  # draw tile at grid position
+  SetPos ScreenPos :GridMN
+  Make "Num TileNumber :GridMN
+  SetPC DarkGreen Button 58 12 FillZone   # erase tile
+  If Not (:Num = 0) [
+  Make "Icon Item :Num :TileSet
+  SetPC Black Button 58 12
+  If And :Cheque? OddTile :Num [
+  SetPC [0 102 204] Make "Rim [0 153 255] ] [
+  SetPC [0 153 204] Make "Rim [0 204 255] ]
+  Fill
+  SetPC Black Button 48 7
+  SetPC :Rim SetPW 2 Button 53 10 SetPW 1
+  If And :Light? (:Num = TileID :GridMN) [
+  SetPC [204 255 255] ] [SetPC [0 0 51] ]
+  SetFontSize 36 
+  SetX (First Pos) -1 - ((LabelLength :Icon)/2) SetY (Last Pos) - 14
+  Label :Icon]
+end
+
+to oddtile :num
+  Make "Odd Member :Num [2 4 5 7 10 12 13 15]
+  If :Odd = False [Output False] [Output True]
+end
+
+to tilenumber :gridmn
+  Output Item TileID :GridMN :Tiles
+end
+
+to tileid :gridmn
+  Output 1+(First :GridMN)+4*(Last :GridMN)
+end
+
+to screenpos :gridmn
+  # return X Y screen position
+  Make "X ((First :GridMN)*60) - 90
+  Make "Y Minus (((Last :GridMN)*60) - 90)
+  Output List :X :Y
+end
+
+to user
+  Make "Input ReadMouse   # wait for mouse input
+  Make "MouseGP Gridd MousePos
+  Make "NewGP :MouseGP
+  If Not OverTiles :MouseGP [
+    Make "NewGP False] [
+  If (TileNumber :MouseGP) = 0 [
+    Make "NewGP False] ]
+  If OverTabs :MouseGP [
+    Make "NewGP :MouseGP]
+  If :Input = 0 [
+    If :NewGP = :GridPos [Stop]
+    If Not (:GridPos = False) [
+      SetPC Black SetPos ScreenPos :GridPos Button 58 12 ]
+    If Not (:NewGP = False) [
+      SetPC Yellow SetPos ScreenPos :NewGP Button 58 12 ]
+    Make "GridPos :NewGP ]
+  If :Input = 1 [
+    If :NewGP = False [Stop]
+  If OverTabs :MouseGP [
+    Run Item (2+(First :NewGP)) :Tabs ] [
+      Make "BlankPos BlankNeigh :NewGP
+      If :BlankPos = False [Stop]
+      TileSwap :NewGP :BlankPos
+      If Not :Win? [Counter]
+      Make "GridPos False
+      If And :Shuffle? (:Tiles = :Home) [
+      Make "Win? True Halo Inform [!! Won !!]] ] ]
+end
+
+to overtiles :gridmn
+  # return true if over tile area, else false
+  If Or Or Or ((First :GridMN)>3) ((First :GridMN)<0) 
+      ((Last :GridMN)>3) ((Last :GridMN)<0) [
+      Output False] [Output True]
+end
+
+to overtabs :gridmn
+  # return true if over tabs area, else false
+  If Or Or ((First :GridMN)>4) ((First :GridMN)<-1) (Not (Last :GridMN)=5)     [Output False] [Output True]
+end
+
+to blankneigh :gridmn
+  #return position of blank neighbour, else False
+  Make "Tile False
+  Repeat 4 [ 
+    Make "J Int Sin 90*RepCount Make "K Int Cos 90*RepCount 
+    Make "M (First :GridMN) +:J Make "N (Last :GridMN) +:K
+    If (OverTiles List :M :N) [
+      If (0 =TileNumber List :M :N) [Make "Tile List :M :N] ] ]
+  Output :Tile
+end
+
+to tileswap :tile1 :tile2
+  Make "Num1 TileNumber :Tile1
+  Make "Num2 TileNumber :Tile2
+  Make "Tiles SetItem :Tiles (TileID :Tile1) :Num2
+  Make "Tiles SetItem :Tiles (TileID :Tile2) :Num1
+  DrawTile :Tile1
+  DrawTile :Tile2
+end
+
+to quit
+  Inform [Thanks For Playing !]
+  StopAll
+end
+
+to lights
+  Make "Light? Not :Light?
+  DrawGrid
+end
+
+to chequer
+  Make "Cheque? Not :Cheque?
+  DrawGrid
+end
+
+to tiles
+  Make "TileSel :TileSel+1
+  If :TileSel > (Count :TileSets) [Make "TileSel 1]
+  Make "TileSet First (Item :TileSel :TileSets)
+  DrawGrid
+  If Not :Win? [Inform Last (Item :TileSel :TileSets)]
+end
+
+to reset
+  ResetCounter
+  Make "Shuffle? False 
+  Make "Tiles [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+  DrawGrid
+  Make "Tiles :Home
+  DrawGrid
+end
+
+to picktile
+  Make "Tile List Random 4 Random 4
+  While [ (TileNumber :Tile) = 0] [Make "Tile List Random 4 Random 4]
+  Output :Tile
+end
+
+to counter
+  # increment counter
+  SetPC Black SetPW 18
+  SetPos [170 180] PenDown SetX 188 PenUp SetPW 1
+  SetPos [164 174] SetFontSize 12 SetPC White
+  Make "Count :Count+1 Label :Count
+end
+
+to resetcounter
+  SetPC Black SetPW 18
+  SetPos [170 180] PenDown SetX 188 PenUp SetPW 1
+  Make "Count 0
+  If :Win? [Make "Win? False Halo Inform Last (Item :TileSel :TileSets)]
+end
+
+to inform :info
+  SetPos [-100 -138]
+  SetPC [153 51 51] SetPW 20
+  PenDown SetX 100 PenUp SetPW 1
+  If :Win? [SetPC Yellow] [SetPC Black] SetFontSize 18
+  SetPos List Minus((LabelLength :Info)/2) Minus 144
+  Label :Info
+end
+
+to halo
+  If :Win? [SetPC Yellow] [SetPC Black]
+  Home For [Size 315 355 10] [Button :Size 50]
+end
+
+to drawboard
+  SetPC Brown Square 334 SetPC [96 57 19] Fill
+  SetPC Brown Square 310 SetPC [199 178 153] Fill
+  SetPC Brown Repeat 4 [
+  SetH (Repcount*90)-45 Forward 220 PenDown Forward 15 PenUp Home]
+  # label grid numbers 
+  SetPC [64 64 64] Repeat 8 [
+    SetPos Gridd RepCount-1 Minus 1.25
+    Label Character 96+RepCount
+    SetPos Gridd 8.15 RepCount-1
+    Label RepCount]
+  # draw 64 alt colored squares 
+  For (List "N 0 7) [
+    For (List "M 0 7) [
+    SetPos Gridd :M :N 
+    SetPC Brown Square 32 
+    If Even (:M+:N) [SetPC [117 76 36] ] [SetPC [198 156 109] ] Fill ] ]
+end
+
+to resetrings
+  SetPC [74 51 0] C2S Home SetPC Orange PenDown Fill PenUp
+  Refresh Wait 24
+  Repeat 3 [Ring RepCount DeleteRing] Refresh Wait 24
+  Repeat 3 [Ring RepCount DrawBalls Run [Thing Word "Ring RepCount]     Refresh Wait 24]
+  Home SetPC [74 51 0] Fill Refresh Wait 24
+end
+
+to start
+  Make "N 3 Make "NewN 3 Make "Step 0 Make "Dir 0
+  Make "Att "False Make "Reset "False
+  CountDown :CD SetPC Orange Light :N 0 Refresh Wait 24
+end
+
+to deletering
+  SetPC Black SetPW 26 Repeat 24 [
+  Forward 111 Dot Pos Back 111 Right 15]
+end
+
+to drawballs :ring
+  SetPW 24 Repeat 24 [
+  SetPC Item RepCount :Ring
+  Forward 111 Dot Pos Back 111 Right 15]
+  #drawspots
+  Make "myHeading Heading
+  SetHeading 315 Forward 6 SetH :myHeading
+  SetPW 6 SetPC White Repeat 24 [
+  Forward 111 Dot Pos Back 111 Right 15]
+  SetHeading 315 Back 6 SetH :myHeading
+end
+
+to ring :n
+  Home Left :N*120 Forward 64
+end
+
+to light :hue
+  # output rgb list midway between :hue and white
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (255+(First :Hue))/2 :Hue]
+  Output :Hue
+end
+
+to updatering :n :dir
+  Make "A Item :N [2 3 1]
+  Make "B Item :N [3 1 2]
+  Make "ThisList Run [Thing Word "Ring :N] 
+  Make Word "Ring :A SetItem Run [
+    Thing Word "Ring :A] 7 Item (19+:Dir) :ThisList
+  Make Word "Ring :A SetItem Run [
+    Thing Word "Ring :A] 15 Item (11+:Dir) :ThisList
+  Make Word "Ring :B SetItem Run [
+    Thing Word "Ring :B] 11 Item (15+:Dir) :ThisList
+  Make Word "Ring :B SetItem Run [
+    Thing Word "Ring :B] 19 Item (7+:Dir) :ThisList
+  If :Dir = 1
+    [Make Word "Ring :N ButFirst LPut Item 1 :ThisList :ThisList ]
+    [Make Word "Ring :N ButLast FPut Item 24 :ThisList :ThisList]
+end
+
+to gameloop
+  If :Step = 0 [ReadKey Wait 4] [Turn :N]
+  If :Reset [
+  If Check [AllOff Shuffle Start] [
+  Read [New Game? Y-yes N-no] "R
+  If Or :R="y :R = "Y [SetPC [74 51 0]
+  Make "Ring1 :R1 Make "Ring2 :R2 Make "Ring3 :R3
+  AllOff ResetRings Shuffle Start] [Make "Reset "False] ] ]
+end
+
+to attractloop
+  If :Step = 0 [Attract] [Turn :N]
+  If :Reset [
+  Make "Ring1 :Ring1A Make "Ring2 :Ring2A Make "Ring3 :Ring3A
+  AllOff ResetRings Start]
+end
+
+to turnring :n :dir
+  Repeat 5 [
+    DeleteRing Left :Dir*3 DrawBalls :BallsList Refresh 
+    ReadKey Wait 6]
+  UpdateRing :N :Dir
+end
+
+to readkey
+  If Key? [
+    Make "Char ReadChar
+    If EndCountDown? [
+      Make "Reset "True CountDown :CD] [
+      CountDown :CD
+      If :Char = -37 [Make "Step :Step+1]
+      If :Char = -39 [Make "Step :Step-1]
+      If And :Char = -38 :Step = 0 [
+      SetPC [74 51 0] Light :N 0 Make "N 1+Mod (:N-1)+1 3
+      SetPC Orange Light :N 0]
+      If :Char = 32 [Make "Reset "True] ] ]
+end
+
+to attract
+  SetPC [74 51 0] Light :N 0    # turn off
+  Wait 24 Refresh
+  If :Att = "False [
+    Make "Ring1A :Ring1 Make "Ring2A :Ring2 Make "Ring3A :Ring3
+    SetPC White C2S Make "Att "True]
+  Rand3
+end
+
+to c2s
+  Home SetPos List Minus 18 Minus 3 Label [space]
+  SetPos List Minus 19 Minus 13 Label [to start] Refresh
+end
+
+to rand3
+  While [:N = :NewN] [Make "NewN (1+Random 3)] Make "N :NewN
+  Make "Dir (2*Random 2)-1     # minus 1 (cw) or 1 (acw)
+  Make "Step :Dir*(1 + Random 8)
+end
+
+to alloff
+  SetPC [74 51 0] For [N 1 3] [ For [D -1 1] [Light :N :D] ]
+end
+
+to check
+  If And And (:R1 = :Ring1) (:R2 = :Ring2) (:R3 = :Ring3) [Output "True]
+  [Output "False]
+end
+
+to win
+  If Not (:S = "S) [
+    AllOff Wait 24 Repeat 44 [Rand3 SetPC (1+Random 6) Light :N :Dir     Refresh Wait 4]
+  Read [Well Done! Play Again? Y-yes N-no] "R
+  If Or :R="y :R="Y [
+  Make "Ring1 :R1 Make "Ring2 :R2 Make "Ring3 :R3
+  Make "S "S AllOff ResetRings Start] [StopAll] ]
+end
+
+to empty :x :y
+  # Output True if Cell is empty and within board 
+  If And And And (:X>-1) (:X<8) (:Y>-1) (:Y<8) [
+    If ( 0=Item (1+:X+8*:Y) :Free) [Output "True] ]
+  Output "False
+end
+
+to step :xc :yc :count
+  # move to next square and update 'free' list 
+  SetPos Gridd :Xc :Yc PenUp
+  If :Count=0 [SetPC Green Square 32]
+  SetPC Black Label :Count
+  Make "Free Replace :Free (1+:Xc+8*:Yc) 1
+  Write (Word :Xc :Yc "\ )
+  Make "Poss NextPos :Xc :Yc
+  # choose a random next move 
+  If 0<Count :Poss [
+    SetPC Red PenDown 
+    Make "NextPos (Pick :Poss) Wait 20 
+    Step First :NextPos Last :NextPos :Count+1] 
+end
+
+to nextpos :xc :yc
+  # return list of possible next moves 
+  Make "Poss [ ]
+  Repeat 8 [
+    Make "Xn :Xc + Item RepCount :Moves
+    Make "Yn :Yc + Item RepCount+2 :Moves
+    If Empty :Xn :Yn [
+    Make "Poss LPut List :Xn :Yn :Poss] ] 
+  Output :Poss
+end
+
+to nextpos2 :xc :yc
+  # return best list of possible next moves 
+Make "Poss [ ] Make "High 8
+Repeat 8 [
+Make "Xn :Xc + Item RepCount :Moves
+Make "Yn :Yc + Item RepCount+2 :Moves
+If Empty :Xn :Yn [
+
+  Make "PossNo 0
+  Repeat 8 [
+  Make "Xt :Xn + Item RepCount :Moves
+  Make "Yt :Yn + Item RepCount+2 :Moves
+  If Empty :Xt :Yt [
+  Make "PossNo :PossNo + 1] ] 
+
+  If :PossNo < :High [ 
+    Make "Poss [ ] Make "High :PossNo 
+    Make "Poss LPut List :Xn :Yn :Poss ] [
+  If :PossNo = :High [ Make "Poss LPut List :Xn :Yn :Poss ] ] ] ] 
+Output :Poss
+end
+
+to fill_in
+  SetPC DarkBlue Left 22 Forward 5 Fill
+  Back 5 Right 22 SetPC Brown
+end
+
+to pentagon :order :side
+  If :Order < 0 [Stop]
+  Right 180
+  Repeat 5 [
+    PenDown Forward :Side Left 72
+    Pentagon :Order-1 :Side/1.618]
+  PenUp Fill_In
+  Left 180
+end
+
+to spinsquare :side
+  If :Side < 12 [Stop]
+  SetPC Hue 1.4*:Side
+  Square :Side
+  Left 4
+  SpinSquare :Side-8
+end
+
+to rsquare :order :side
+  If :Order < 0 [Stop]
+  Back :Side/2 Right 90 Back :Side/2
+  Repeat 4 [
+    SetPW :Order+1     # comment out for no line widths 
+    PenDown Forward :Side PenUp Left 90 Wait 1
+    RSquare :Order-1 :Side/2]     # Golden Ratio replace 2 with 1.62
+  Forward :Side/2 Left 90 Forward :Side/2
+  FillSquare     # comment out for no fills 
+end
+
+to fillsquare
+  SetPC DarkGreen Left 45 Forward 5 Fill
+  Back 10 Fill Forward 5 Right 45 SetPC Cyan
+end
+
+to cross :size
+  If :Size < 6 [Stop]
+  Repeat 4 [SetPC Hue Distance [0 0] PenDown Back :Size
+  Left 90 PenUp Back :Size PenDown Cross :Size/2
+  PenUp Forward :Size Right 90 Forward :Size Left 90]
+end
+
+to yin :size [ :parity 1  ]
+  # yin shape drawn from centre (tp)
+  # default parity of 1, use minus 1 for mirror image
+  rArc 180 :Size/2 Back :Parity *:Size/4
+  rArc 180 :Size/4 Back :Parity *:Size/2
+  rArc 180 :Size/4 Back :Parity *:Size/4 Left 180
+end
+
+to yinyang :size
+  If :Size < 12 [Stop]
+  Right 15 Repeat 2 [
+    SetPC [0 192 192]
+    Yin :Size Forward :Size/4
+    If :Col = True [SetPC Aqua] [SetPC Leaf]
+    Make "Col Not :Col
+    Fill Wait :Size/6
+    YinYang :Size/2
+    Back :Size/4 Left 180] Left 15
+end
+
+to rarc :angle :radius
+  # clockwise arc drawn relative to turtle heading
+  Arc :Radius Heading :Angle+Heading Right :Angle
+end
+
+to aqua
+  Output [0 128 255]     # return aqua rgb color
+end
+
+to leaf
+  Output [0 255 128]     # return leaf rgb color
+end

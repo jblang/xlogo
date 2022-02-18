@@ -1,0 +1,28 @@
+# Main Command: Go
+# Langtons Ant by Guy Walker
+# www.logoarts.co.uk
+
+to new
+# set default screen, pen and turtle 
+ResetAll SetScreenSize [400 400] HideTurtle 
+SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to nextstep
+Make "Col Item 2 FindColor Pos
+SetPC AngCol Dot Pos
+If :Col = 0 [Left 90 Forward 6 Stop]
+If :Col = 255 [Right 90 Forward 6]
+end
+
+to angcol
+Make "Num Item 1 FindColor Pos
+Make "Red :Num + 0.2 * (255-:Num)
+Make "Green 255 - Item 2 FindColor Pos
+Output ( List :Red :Green 0 )   # replace :Red with 0 for b&w image
+end
+
+to go
+New SetPS 0 SetPW 4
+Repeat 10700 [NextStep]
+end

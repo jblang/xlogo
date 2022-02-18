@@ -1,0 +1,545 @@
+# Commande principale: demarrer
+pour demarrer
+ve vt ct accueil 0
+attends 60
+ve fcfg 7 fcc 0 tg 90 ftc 3 fcc 0
+ligne 1 1 3 5 7
+ligne 2 1 3 5 7
+ligne 3 1 3 5 7
+ligne 4 1 3 5 7
+donne "alea hasard 4
+si :alea = 0 [ligne 1 1 3 5 7 oter 1 0 1 3 5 7]
+coupdehasard 1 3 5 7
+fin
+
+pour coupdehasard :a :b :c :d
+donne "l (1 + hasard 4) 
+si  egal? (item :l ph ph ph :a :b :c :d) 0 [coupdehasard :a :b :c :d]
+oter :l 1 + hasard (item :l ph ph ph :a :b :c :d) :a :b :c :d
+fin
+
+pour accueil :n
+ct
+si :n > 16 [stop]
+lc tg 90 av 30 td 90 av 100
+fcc hasard 8 etiquette [Dr. Alliag] 
+attends 10
+lc tg 90 av 20 td 90 re 100
+fcc hasard 8 etiquette [M A R I E N B A D]
+attends 10 
+td 90 av 50 tg 90
+accueil :n + 1
+fin
+
+pour allumette
+bc td 90 av 40 re 80 av 40 tg 90 lc re 40
+fin
+
+pour debutligne :l
+lc fpos liste ((:l * -40) +40) ((:l * -100)+200) 
+fin
+
+pour finligne :l :a :b :c :d
+donne "n item :l ph ph ph :a :b :c :d
+lc fpos liste ((:l * -40) +80 + (:n * 40)) ((:l * -100)+200) 
+fin
+
+pour ligne :l :a :b :c :d
+debutligne :l
+si :l = 1 [repete :a [allumette] ]
+si :l = 2 [repete :b [allumette] ]
+si :l = 3 [repete :c [allumette] ]
+si :l = 4 [repete :d [allumette] ]
+re 20
+fin
+
+pour precurseur :l :a :b :c :d
+si :l = 0 [donne "l 4 ligne 4 :a :b :c :d precurseur :l :a :b :c :d]
+si :l = 5 [donne "l 1 ligne 1 :a :b :c :d precurseur :l :a :b :c :d]
+si et :l = 1 :a = 0 [precurseur 2 :a :b :c :d]
+si et :l = 2 :b = 0 [precurseur 3 :a :b :c :d]
+si et :l = 3 :c = 0 [precurseur 4 :a :b :c :d]
+si et :l = 4 :d = 0 [precurseur 1 :a :b :c :d]
+curseur :l :a :b :c :d
+fin
+
+pour curseur :l :a :b :c :d
+finligne :l :a :b :c :d
+donne "curs liscar
+si ou :curs =-38 :curs=-224  [donne "l :l - 1 monter :l :a :b :c :d ligne :l :a :b :c :d] #haut
+si ou (ou (ou :curs = -127 :curs=-8 ) :curs = -37 ) :curs = -226 [enlever :l :a :b :c :d] # gauche ou delete
+si ou :curs = -40 :curs=-225 [donne "l :l +1 descendre :l :a :b :c :d  ligne :l :a :b :c :d] #bas
+curseur :l :a :b :c :d
+fin
+
+pour monter :l :a :b :c :d
+si :l = 0 [monter 4 :a :b :c :d]
+si et :l = 1 :a = 0 [monter 4 :a :b :c :d]
+si et :l = 2 :b = 0 [monter 1 :a :b :c :d]
+si et :l = 3 :c = 0 [monter 2 :a :b :c :d]
+si et :l = 4 :d = 0 [monter 3 :a :b :c :d]
+curseur :l :a :b :c :d
+fin
+
+pour descendre :l :a :b :c :d
+si :l = 5 [descendre 1 :a :b :c :d]
+si et :l = 1 :a = 0 [descendre 2 :a :b :c :d]
+si et :l = 2 :b = 0 [descendre 3 :a :b :c :d]
+si et :l = 3 :c = 0 [descendre 4 :a :b :c :d]
+si et :l = 4 :d = 0 [descendre 1 :a :b :c :d]
+curseur :l :a :b :c :d
+fin
+
+pour enlever :l :a :b :c :d
+donne "n item :l ph ph ph :a :b :c :d
+si :n = 0 [tampon :l :a :b :c :d]
+debutligne :l
+gomme
+si :l = 1 [lc re (:a - 1) * 40 bc allumette donne "a :a - 1]
+si :l = 2 [lc re (:b - 1) * 40 bc allumette donne "b :b - 1]
+si :l = 3 [lc re (:c - 1) * 40 allumette donne "c :c - 1]
+si :l = 4 [lc re (:d - 1) * 40 allumette donne "d :d - 1]
+tampon :l :a :b :c :d
+fin
+
+pour tampon :l :a :b :c :d
+donne "curs liscar
+si :curs =10  [reponse :l :a :b :c :d]
+si ou ou ou :curs=-37 :curs=-226 :curs=-127 :curs=-8  [enlever :l :a :b :c :d]
+tampon :l :a :b :c :d
+fin
+
+pour reponse :l :a :b :c :d
+fcc 0
+donne "v  ph ph ph :a :b :c :d
+si :v = ph ph ph 1 3 5 6 [donne "alea hasard 2 si :alea = 0 [oter 2 1 :a :b :c :d] [oter 1 1 :a :b :c :d]]
+si :v = ph ph ph 1 3 5 5 [oter 2 2 :a :b :c :d]
+si :v = ph ph ph 1 3 5 4 [oter 2 3 :a :b :c :d]
+si :v = ph ph ph 1 3 5 3 [oter 3 4 :a :b :c :d]
+si :v = ph ph ph 1 3 5 2 [oter 3 5 :a :b :c :d]
+si :v = ph ph ph 1 3 5 1 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 1 3 5 0 [oter 3 3 :a :b :c :d]
+si :v = ph ph ph 1 3 4 7 [donne "alea hasard 2 si :alea = 0 [oter 2 1 :a :b :c :d] [oter 1 1 :a :b :c :d]]
+si :v = ph ph ph 1 3 4 6 [jolicoup coupdehasard :a :b :c :d]
+si :v = ph ph ph 1 3 4 5 [oter 2 3 :a :b :c :d]
+si :v = ph ph ph 1 3 4 4 [oter 2 2 :a :b :c :d]
+si :v = ph ph ph 1 3 4 3 [oter 3 3 :a :b :c :d]
+si :v = ph ph ph 1 3 4 2 [oter 3 4 :a :b :c :d]
+si :v = ph ph ph 1 3 4 1 [oter 3 1 :a :b :c :d]
+si :v = ph ph ph 1 3 4 0 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 1 3 3 7 [oter 4 6 :a :b :c :d]
+si :v = ph ph ph 1 3 3 6 [oter 4 5 :a :b :c :d]
+si :v = ph ph ph 1 3 3 5 [oter 4 4 :a :b :c :d]
+si :v = ph ph ph 1 3 3 4 [oter 4 3 :a :b :c :d]
+si :v = ph ph ph 1 3 3 3 [oter 4 2 :a :b :c :d]
+si :v = ph ph ph 1 3 3 2 [donne "alea hasard 3 si :alea = 0 [oter 3 3 :a :b :c :d] si :alea = 1 [oter 2 3 :a :b :c :d] [oter 4 1 :a :b :c :d]]
+si :v = ph ph ph 1 3 3 1 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 3 3 0 [donne "alea hasard 2 si :alea = 0 [oter 3 1 :a :b :c :d] [oter 2 1 :a :b :c :d]]
+si :v = ph ph ph 1 3 2 7 [oter 4 7 :a :b :c :d] 
+si :v = ph ph ph 1 3 2 6 [oter 4 6 :a :b :c :d] 
+si :v = ph ph ph 1 3 2 5 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 1 3 2 4 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 3 2 3 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 3 2 2 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 3 2 1 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 3 2 0 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 3 1 7 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 3 1 6 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 3 1 5 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 3 1 4 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 3 1 3 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 3 1 2 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 1 3 1 1 [oter 2 3 :a :b :c :d] 
+si :v = ph ph ph 1 3 1 0 [oter 2 2 :a :b :c :d] 
+si :v = ph ph ph 1 3 0 7 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 1 3 0 6 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 3 0 5 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 3 0 4 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 3 0 3 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 3 0 2 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 3 0 1 [oter 2 2 :a :b :c :d] 
+si :v = ph ph ph 1 3 0 0 [oter 2 3 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 2 5 7 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 5 6 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 2 5 5 [oter 2 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 5 4 [oter 2 2 :a :b :c :d] 
+si :v = ph ph ph 1 2 5 3 [oter 3 5 :a :b :c :d] 
+si :v = ph ph ph 1 2 5 2 [oter 3 4 :a :b :c :d] 
+si :v = ph ph ph 1 2 5 1 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 1 2 5 0 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 1 2 4 7 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 2 4 6 [oter 1 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 4 5 [oter 2 2 :a :b :c :d] 
+si :v = ph ph ph 1 2 4 4 [oter 2 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 4 3 [oter 3 4 :a :b :c :d] 
+si :v = ph ph ph 1 2 4 2 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 1 2 4 1 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 1 2 4 0 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 3 7 [oter 4 7 :a :b :c :d] 
+si :v = ph ph ph 1 2 3 6 [oter 4 6 :a :b :c :d] 
+si :v = ph ph ph 1 2 3 5 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 1 2 3 4 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 2 3 3 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 2 3 2 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 2 3 1 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 3 0 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 2 7 [oter 4 6 :a :b :c :d] 
+si :v = ph ph ph 1 2 2 6 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 1 2 2 5 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 2 2 4 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 2 2 3 [oter 4 2 :a :b :c :d]
+si :v = ph ph ph 1 2 2 2 [oter 4 1 :a :b :c :d]
+si :v = ph ph ph 1 2 2 1 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 2 2 0 [oter 1 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 1 7 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 1 2 1 6 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 2 1 5 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 2 1 4 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 2 1 3 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 1 2 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 2 1 1 [oter 2 2 :a :b :c :d] 
+si :v = ph ph ph 1 2 1 0 [oter 2 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 0 7 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 2 0 6 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 2 0 5 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 2 0 4 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 0 3 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 2 0 2 [oter 1 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 0 1 [oter 2 1 :a :b :c :d] 
+si :v = ph ph ph 1 2 0 0 [oter 2 2 :a :b :c :d] #victoire
+si :v = ph ph ph 1 1 5 7 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 1 5 6 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 1 5 5 [jolicoup coupdehasard :a :b :c :d]
+si :v = ph ph ph 1 1 5 4 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 1 1 5 3 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 1 1 5 2 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 1 1 5 1 [oter 3 5 :a :b :c :d] 
+si :v = ph ph ph 1 1 5 0 [oter 3 4 :a :b :c :d] 
+si :v = ph ph ph 1 1 4 7 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 1 4 6 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 1 4 5 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 1 4 4 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 1 4 3 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 1 1 4 2 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 1 1 4 1 [oter 3 4 :a :b :c :d] 
+si :v = ph ph ph 1 1 4 0 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 1 1 3 7 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 1 3 6 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 1 3 5 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 1 3 4 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 1 3 3 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 1 3 2 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 1 3 1 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 1 3 0 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 1 2 7 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 1 1 2 6 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 1 2 5 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 1 2 4 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 1 2 3 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 1 2 2 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 1 2 1 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 1 1 2 0 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 1 1 1 7 [oter 4 7 :a :b :c :d] 
+si :v = ph ph ph 1 1 1 6 [oter 4 6 :a :b :c :d] 
+si :v = ph ph ph 1 1 1 5 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 1 1 1 4 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 1 1 3 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 1 1 2 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 1 1 1 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 1 1 0 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 1 0 7 [oter 4 6 :a :b :c :d] 
+si :v = ph ph ph 1 1 0 6 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 1 1 0 5 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 1 0 4 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 1 0 3 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 1 0 2 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 1 0 1 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 1 0 0 [oter 2 1 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 0 5 7 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 0 5 6 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 0 5 5 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 0 5 4 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 0 5 3 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 1 0 5 2 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 1 0 5 1 [oter 3 4 :a :b :c :d] 
+si :v = ph ph ph 1 0 5 0 [oter 3 5 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 0 4 7 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 0 4 6 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 1 0 4 5 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 0 4 4 [oter 1 1 :a :b :c :d] 
+si :v = ph ph ph 1 0 4 3 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 1 0 4 2 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 1 0 4 1 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 1 0 4 0 [oter 3 4 :a :b :c :d] 
+si :v = ph ph ph 1 0 3 7 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 1 0 3 6 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 0 3 5 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 0 3 4 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 0 3 3 [donne "alea hasard 3 si :alea = 0 [oter 1 1 :a :b :c :d] si :alea = 1 [oter 4 1 :a :b :c :d] [oter 3 1 :a :b :c :d]]
+si :v = ph ph ph 1 0 3 2 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 0 3 1 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 1 0 3 0 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 1 0 2 7 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 0 2 6 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 0 2 5 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 0 2 4 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 0 2 3 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 0 2 2 [oter 1 1 :a :b :c :d] 
+si :v = ph ph ph 1 0 2 1 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 1 0 2 0 [oter 3 2 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 0 1 7 [oter 4 6 :a :b :c :d] 
+si :v = ph ph ph 1 0 1 6 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 1 0 1 5 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 1 0 1 4 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 1 0 1 3 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 1 0 1 2 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 1 0 1 1 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 1 0 1 0 [oter 3 1 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 0 0 7 [oter 4 7 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 0 0 6 [oter 4 6 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 0 0 5 [oter 4 5 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 0 0 4 [oter 4 4 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 0 0 3 [oter 4 3 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 0 0 2 [oter 4 2 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 0 0 1 [oter 4 1 :a :b :c :d] #victoire 
+si :v = ph ph ph 1 0 0 0 [bravo oter 1 1 :a :b :c :d] #defaite
+si :v = ph ph ph 0 3 5 7 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 3 5 6 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 3 5 5 [oter 2 3 :a :b :c :d]
+si :v = ph ph ph 0 3 5 4 [oter 2 2 :a :b :c :d] 
+si :v = ph ph ph 0 3 5 3 [oter 3 5 :a :b :c :d]
+si :v = ph ph ph 0 3 5 2 [oter 3 4 :a :b :c :d] 
+si :v = ph ph ph 0 3 5 1 [oter 3 3 :a :b :c :d]
+si :v = ph ph ph 0 3 5 0 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 0 3 4 7 [jolicoup coupdehasard :a :b :c :d]
+si :v = ph ph ph 0 3 4 6 [oter 2 1 :a :b :c :d] 
+si :v = ph ph ph 0 3 4 5 [oter 2 2 :a :b :c :d] 
+si :v = ph ph ph 0 3 4 4 [oter 2 3 :a :b :c :d] 
+si :v = ph ph ph 0 3 4 3 [oter 3 4 :a :b :c :d] 
+si :v = ph ph ph 0 3 4 2 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 0 3 4 1 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 0 3 4 0 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 0 3 3 7 [oter 4 7 :a :b :c :d] 
+si :v = ph ph ph 0 3 3 6 [oter 4 6 :a :b :c :d] 
+si :v = ph ph ph 0 3 3 5 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 0 3 3 4 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 3 3 3 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 3 3 2 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 3 3 1 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 0 3 3 0 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 3 2 7 [oter 4 6 :a :b :c :d] 
+si :v = ph ph ph 0 3 2 6 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 0 3 2 5 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 3 2 4 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 3 2 3 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 3 2 2 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 3 2 1 [jolicoup coupdehasard :a :b :c :d]
+si :v = ph ph ph 0 3 2 0 [oter 2 1 :a :b :c :d] 
+si :v = ph ph ph 0 3 1 7 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 0 3 1 6 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 3 1 5 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 3 1 4 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 3 1 3 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 3 1 2 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 3 1 1 [oter 2 2 :a :b :c :d] 
+si :v = ph ph ph 0 3 1 0 [oter 2 3 :a :b :c :d] #victoire
+si :v = ph ph ph 0 3 0 7 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 3 0 6 [oter 4 3 :a :b :c :d]
+si :v = ph ph ph 0 3 0 5 [oter 4 2 :a :b :c :d]
+si :v = ph ph ph 0 3 0 4 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 3 0 3 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 3 0 2 [oter 2 1 :a :b :c :d] 
+si :v = ph ph ph 0 3 0 1 [oter 2 3 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 3 0 0 [oter 2 2 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 2 5 7 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 2 5 6 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 0 2 5 5 [oter 2 2 :a :b :c :d] 
+si :v = ph ph ph 0 2 5 4 [oter 2 1 :a :b :c :d] 
+si :v = ph ph ph 0 2 5 3 [oter 3 4 :a :b :c :d] 
+si :v = ph ph ph 0 2 5 2 [oter 3 5 :a :b :c :d] 
+si :v = ph ph ph 0 2 5 1 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 0 2 5 0 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 0 2 4 7 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 2 4 6 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 2 4 5 [oter 2 1 :a :b :c :d] 
+si :v = ph ph ph 0 2 4 4 [oter 2 2 :a :b :c :d] 
+si :v = ph ph ph 0 2 4 3 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 0 2 4 2 [oter 3 4 :a :b :c :d] 
+si :v = ph ph ph 0 2 4 1 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 0 2 4 0 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 0 2 3 7 [oter 4 6 :a :b :c :d] 
+si :v = ph ph ph 0 2 3 6 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 0 2 3 5 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 2 3 4 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 2 3 3 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 2 3 2 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 2 3 1 [jolicoup coupdehasard :a :b :c :d]
+si :v = ph ph ph 0 2 3 0 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 0 2 2 7 [oter 4 6 :a :b :c :d] 
+si :v = ph ph ph 0 2 2 5 [oter 4 5 :a :b :c :d]
+si :v = ph ph ph 0 2 2 4 [oter 4 4 :a :b :c :d]
+si :v = ph ph ph 0 2 2 3 [oter 4 3 :a :b :c :d]
+si :v = ph ph ph 0 2 2 2 [oter 4 2 :a :b :c :d]
+si :v = ph ph ph 0 2 2 1 [oter 4 1 :a :b :c :d]
+si :v = ph ph ph 0 2 2 0 [jolicoup coupdehasard :a :b :c :d]
+si :v = ph ph ph 0 2 1 7 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 2 1 6 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 2 1 5 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 2 1 4 [oter 4 1 :a :b :c :d]
+si :v = ph ph ph 0 2 1 3 [jolicoup coupdehasard :a :b :c :d]
+si :v = ph ph ph 0 2 1 2 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 0 2 1 1 [oter 2 1 :a :b :c :d]
+si :v = ph ph ph 0 2 1 0 [oter 2 2 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 2 0 7 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 0 2 0 6 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 2 0 5 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 2 0 4 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 2 0 3 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 2 0 2 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 2 0 1 [oter 2 2 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 2 0 0 [oter 2 1 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 5 7 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 1 5 6 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 1 5 5 [donne "alea hasard 2 si :alea = 0 [oter 4 1 :a :b :c :d] [oter 3 1 :a :b :c :d]]
+si :v = ph ph ph 0 1 5 4 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 1 5 3 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 0 1 5 2 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 0 1 5 1 [oter 3 4 :a :b :c :d] 
+si :v = ph ph ph 0 1 5 0 [oter 3 5 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 4 7 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 1 4 6 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 1 4 5 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 1 4 4 [oter 2 1 :a :b :c :d] 
+si :v = ph ph ph 0 1 4 3 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 0 1 4 2 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 0 1 4 1 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 0 1 4 0 [oter 3 4 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 3 7 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 0 1 3 6 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 1 3 5 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 1 3 4 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 1 3 3 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 1 3 2 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 1 3 1 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 0 1 3 0 [oter 3 3 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 2 7 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 1 2 6 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 1 2 5 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 1 2 4 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 1 2 3 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 1 2 2 [oter 2 1 :a :b :c :d] 
+si :v = ph ph ph 0 1 2 1 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 0 1 2 0 [oter 3 2 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 1 7 [oter 4 6 :a :b :c :d] 
+si :v = ph ph ph 0 1 1 6 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 0 1 1 5 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 1 1 4 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 1 1 3 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 1 1 2 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 1 1 1 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 1 1 0 [oter 3 1 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 0 7 [oter 4 7 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 0 6 [oter 4 6 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 0 5 [oter 4 5 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 0 4 [oter 4 4 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 0 3 [oter 4 3 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 0 2 [oter 4 2 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 0 1 [oter 4 1 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 1 0 0 [bravo oter 2 1 :a :b :c :d] #defaite 
+si :v = ph ph ph 0 0 5 7 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 0 5 6 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 0 5 5 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 0 5 4 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 0 0 5 3 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 0 0 5 2 [oter 3 3 :a :b :c :d] 
+si :v = ph ph ph 0 0 5 1 [oter 3 5 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 5 0 [oter 3 4 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 4 7 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 0 4 6 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 0 0 4 5 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 0 4 4 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 0 4 3 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 0 0 4 2 [oter 3 2 :a :b :c :d] 
+si :v = ph ph ph 0 0 4 1 [oter 3 4 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 4 0 [oter 3 3 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 3 7 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 0 3 6 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 0 3 5 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 0 3 4 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 0 3 3 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 0 3 2 [oter 3 1 :a :b :c :d] 
+si :v = ph ph ph 0 0 3 1 [oter 3 3 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 3 0 [oter 3 2 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 2 7 [oter 4 5 :a :b :c :d] 
+si :v = ph ph ph 0 0 2 6 [oter 4 4 :a :b :c :d] 
+si :v = ph ph ph 0 0 2 5 [oter 4 3 :a :b :c :d] 
+si :v = ph ph ph 0 0 2 4 [oter 4 2 :a :b :c :d] 
+si :v = ph ph ph 0 0 2 3 [oter 4 1 :a :b :c :d] 
+si :v = ph ph ph 0 0 2 2 [jolicoup coupdehasard :a :b :c :d] 
+si :v = ph ph ph 0 0 2 1 [oter 3 2 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 2 0 [oter 3 1 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 1 7 [oter 4 7 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 1 6 [oter 4 6 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 1 5 [oter 4 5 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 1 4 [oter 4 4 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 1 3 [oter 4 3 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 1 2 [oter 4 2 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 1 1 [oter 4 1 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 1 0 [bravo oter 3 1 :a :b :c :d] #defaite
+si :v = ph ph ph 0 0 0 7 [oter 4 6 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 0 6 [oter 4 5 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 0 5 [oter 4 4 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 0 4 [oter 4 3 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 0 3 [oter 4 2 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 0 2 [oter 4 1 :a :b :c :d] #victoire 
+si :v = ph ph ph 0 0 0 1 [bravo oter 4 1 :a :b :c :d] #defaite
+fin
+
+pour jolicoup
+ct fcc 0 lc re 100 td 90 etiquette [Joli coup !] attends 60 gomme etiquette [Joli coup !] tg 90 
+fin
+
+pour oter :l :x :a :b :c :d
+ct
+finligne :l :a :b :c :d
+si :x = 0  [jouer :l :a :b :c :d] [fcc 1 lc re 100 td 90 etiquette [Dr. Alliag joue...] tg 90]
+debutligne :l
+si :l = 1 [lc re (:a - 1) * 40 repete :x [allumette av 80]]
+si :l = 2 [lc re (:b - 1) * 40 repete :x [allumette av 80]]
+si :l = 3 [lc re (:c - 1) * 40 repete :x [allumette av 80]]
+si :l = 4 [lc re (:d - 1) * 40 repete :x [allumette av 80]]
+attends 200
+finligne :l :a :b :c :d
+gomme lc re 100 td 90 etiquette [Dr. Alliag joue...] tg 90
+debutligne :l
+si :l = 1 [lc re (:a - 1) * 40 repete :x [allumette av 80] donne "a :a - :x]
+si :l = 2 [lc re (:b - 1) * 40 repete :x [allumette av 80] donne "b :b - :x]
+si :l = 3 [lc re (:c - 1) * 40 repete :x [allumette av 80] donne "c :c - :x]
+si :l = 4 [lc re (:d - 1) * 40 repete :x [allumette av 80] donne "d :d - :x]
+tampon2 :l :a :b :c :d
+jouer :l :a :b :c :d
+fin
+
+pour tampon2 :l :a :b :c :d
+donne "s (:a + :b) + (:c + :d)
+si :s = 0 [lc re 100 td 90 fcc 1 etiquette [... et s'incline devant vous.]  attends 120 demarrer]
+si :s = 1 [lc re 100 td 90 fcc 1 etiquette [... et gagne.] attends 120 demarrer]
+si :l = 0 [donne "l 4 ligne 4 :a :b :c :d]
+si :l = 5 [donne "l 1 ligne 1 :a :b :c :d]
+si et :l = 1 :a = 0 [donne "l 2 tampon2 2 :a :b :c :d]
+si et :l = 2 :b = 0 [donne "l 3 tampon2 3 :a :b :c :d]
+si et :l = 3 :c = 0 [donne "l 4 tampon2 4 :a :b :c :d]
+si et :l = 4 :d = 0 [donne "l 1 tampon2 1 :a :b :c :d]
+fin
+
+pour jouer :l :a :b :c :d
+finligne :l :a :b :c :d
+ct re 100 td 90 fcc 4 etiquette [A vous de jouer.]  attends 60 gomme etiquette [A vous de jouer.] tg 90
+fcc 0 mt
+precurseur :l :a :b :c :d
+fin
+
+pour bravo
+ct fcc 0 lc re 100 td 90 etiquette [Bravo !] attends 60 gomme etiquette [Bravo !] tg 90 
+fin
+

@@ -1,0 +1,41 @@
+# Comando de Inicio: empezar
+para empezar
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  leyenda centro bajalapiz curva 0
+fin
+
+para leyenda
+# Dibuja el encabezado y el pie
+  ponposicion [-190 184] rotula [Una mariposa]
+  ponposicion [-190 -190]
+  rotula [e^cos theta - 2*cos 4*theta + sen theta/12^5]
+fin
+
+para curva :theta
+  # dibuja la curva
+  repitepara [theta 0 3960 2]
+    [ poncolorlapiz angcol 3*:theta
+      ponposicion ptor raddist :theta :theta]
+fin
+
+para ptor :raddist :theta
+# convierte polar en cartesianas
+  haz "x 50*:raddist*seno :theta
+  haz "y (50*:raddist*coseno :theta)-35
+  devuelve lista :x :y
+fin
+
+para raddist :theta
+  # usa la ecuacion de la curva para devolver raddist
+  devuelve (potencia 2.7 (coseno :theta)) -(2*coseno(4*:theta))
+     +(potencia seno(:theta/12) 5)
+fin
+
+para angcol :theta
+  haz "red 127*(1+coseno :theta)
+  haz "green 127*(1+coseno(120+:theta))
+  haz "blue 127*(1+coseno(240+:theta))
+  devuelve frase lista :red :green :blue
+fin

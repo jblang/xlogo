@@ -1,0 +1,47 @@
+# Comando de Inicio: artistica3 25
+para artistica3 :orden
+  nuevo inicializar :Orden
+  haz "lista.celd []
+  repite :total
+    [ haz "cuad.aleat azar :total
+      si no miembro? :cuad.aleat :lista.celd
+        [ ponposicion cuad.pos :orden :cuad.aleat cuadrado
+          haz "lista.celd ponprimero :cuad.aleat :lista.celd ] ]
+  poncolorlapiz rojooscuro haz "contador :orden+1
+  repite :orden-2 
+    [ repite :orden-2
+       [ si (y (miembro? :contador :lista.celd)
+             (miembro? :contador+1 :lista.celd)
+             (miembro? :contador-1 :lista.celd)
+             (miembro? :contador+:orden :lista.celd)
+             (miembro? :contador-:orden :lista.celd) )
+           [ ponposicion cuad.pos :orden :contador
+             bajalapiz rellena subelapiz ]
+         haz "contador :contador+1 ]
+      haz "contador :contador+2 ]
+fin
+
+para nuevo
+# Inicializamos pantalla, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para inicializar :orden
+  haz "total potencia :orden 2
+  haz "celd.tam 360/:orden
+  haz "offset (0.5*:orden)-0.5
+  haz "lado 250/:orden
+fin
+
+para cuad.pos :orden :celdnum
+  haz "x :celd.tam*((resto :celdnum :orden)-:offset)
+  haz "y :celd.tam*((cociente :celdnum :orden)-:offset)
+  devuelve lista :x :y
+fin
+
+para cuadrado
+# Dibujamos cuadrado desde el centro
+  retrocede :lado/2 giraderecha 90 retrocede :lado/2 bajalapiz
+  repite 4 [avanza :lado giraizquierda 90] subelapiz
+fin

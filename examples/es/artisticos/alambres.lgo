@@ -1,0 +1,68 @@
+# Comando de Inicio: empezar
+para empezar
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde
+  subelapiz ocultatortuga 
+#
+  ponformalapiz 1
+  haz "miforma 1+azar 5
+  repite 64 [  
+    haz "miforma 1+azar 5 # comenta para una sola forma
+    haz "mipos lista (azar 320)-160 (azar 320)-160
+    giraizquierda azar 360 
+    poncolorlapiz elige [1 2 4 13 14 15 16]
+    haz "color colorlapiz 
+    pongrosor 4 ponposicion :mipos 
+    poncolorlapiz oscuro :color ejecuta palabra "alambre :miforma
+    ponx (primero :mipos) - 1 pony (ultimo :mipos) + 1 
+    pongrosor 2
+    poncolorlapiz claro :color ejecuta palabra "alambre :miforma
+    ponposicion :mipos
+    poncolorlapiz :color ejecuta palabra "alambre :miforma ]
+fin
+
+para claro :col
+  repitepara [c 1 3]
+    [ hazlocal "color elemento :c :col
+      hazlocal "color :color + 0.5 * (255 - :color)
+      hazlocal "col reemplaza :col :c :color ]
+  devuelve :col
+fin
+
+para oscuro :col
+  repitepara [c 1 3]
+    [ hazlocal "color elemento :c :col
+      hazlocal "color :color - 0.5 * (:color)
+      hazlocal "col reemplaza :col :c :color]
+  devuelve :col
+fin
+
+para alambre1
+  arco 24 rumbo rumbo+340
+fin
+
+para alambre2
+  avanza 18 arco 18 rumbo+180 rumbo+100
+  retrocede 36 arco 18 rumbo+0 rumbo+280
+fin
+
+para alambre3
+  arco 14 rumbo+270 rumbo + 90
+  giraizquierda 90 avanza 14 giraizquierda 90
+  bajalapiz avanza 32 subelapiz
+  retrocede 32 giraizquierda 90 avanza 28 giraderecha 90
+  bajalapiz avanza 36 subelapiz giraizquierda 180
+fin
+
+para alambre4
+  avanza 18 arco 18 rumbo-100 rumbo+180
+  retrocede 36 arco 18 rumbo+100 rumbo
+fin
+
+para alambre5
+  arco 14 rumbo+270 rumbo + 90
+  giraizquierda 90 avanza 14 giraizquierda 90
+  bajalapiz avanza 36 subelapiz
+  retrocede 36 giraizquierda 90 avanza 28 giraderecha 90
+  bajalapiz avanza 32 subelapiz giraizquierda 180
+fin

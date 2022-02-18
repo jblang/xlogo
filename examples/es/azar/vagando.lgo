@@ -1,0 +1,14 @@
+# Comando de Inicio: vagar 0 49 12 2000
+para vagar :ai :pa :ll :nc
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  poncolorlapiz 7 leyenda :ai :pa centro poncolorlapiz 2 bajalapiz
+  repite :nc [avanza :ll giraderecha :ai haz "ai :ai+:pa]
+fin
+
+para leyenda :ai :pa
+  ponxy -192 184 rotula [Vagando felices]
+  ponposicion [-40 184] rotula frase [Angulo inicial ] :ai
+  ponposicion [90 184] rotula frase [Paso del angulo ] :pa
+fin

@@ -1,0 +1,53 @@
+# Comando de Inicio: empezar 5000
+para empezar :disparos
+# Inicializamos la pantalla, el lapiz, la tortuga
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro subelapiz animacion
+#
+  haz "disparoshechos 0
+  dibujaisla dibujamar
+  repite :disparos
+    [ fuego
+      poncolorlapiz 7 leyenda
+      refrescar
+      poncolorlapiz 0 leyenda ]
+  poncolorlapiz 7 leyenda
+  detieneanimacion
+fin
+
+para dibujaisla
+  haz "disparostierra 0
+  poncolorlapiz 2 centro circulo 180
+fin
+
+para dibujamar
+  haz "disparosmar 0
+  poncolorlapiz 5 ponposicion [-180 -180]
+  bajalapiz
+    repite 4 [avanza 360 giraderecha 90]
+  subelapiz
+fin
+
+para fuego
+  ponxy (azar 360)-180 (azar 360)-180
+  si (distancia [0 0]) < 180
+  [poncolorlapiz 3 haz "disparostierra :disparostierra+1]
+  si (distancia [0 0]) > 180
+  [poncolorlapiz 6 haz "disparosmar  :disparosmar +1]
+  haz "disparoshechos :disparoshechos+1
+  bajalapiz avanza 0 subelapiz
+fin
+
+para leyenda
+  ponxy -largoetiqueta [Disparos hechos:] 40
+  rotula frase [Disparos hechos:] :disparoshechos
+  ponxy -largoetiqueta [Cayeron en la isla:] 20
+  rotula frase [Cayeron en la isla:] :disparostierra
+  ponxy -largoetiqueta [Cayeron en el agua:] 0
+  rotula frase [Cayeron en el agua:] :disparosmar
+  ponxy -largoetiqueta [Valor de pi aproximado] (-20)
+  rotula frase [Valor de pi aproximado] (redondea
+  (4*:disparostierra/:disparoshechos)*100000) / 100000
+  ponxy -largoetiqueta [Valor real de pi] (-40)
+  rotula frase [Valor real de pi] pi
+fin

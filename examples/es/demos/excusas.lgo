@@ -1,0 +1,21 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  ponposicion [-180 150]
+  repite 16 [ inicio
+  rotula ( lista contador :palabra1 :palabra2 :palabra3 :palabra4 )
+  retrocede 20 espera 88 ]
+fin
+
+para inicio
+  haz "palabra1 elige [ accessing allocating assessing calculating clearing compacting comparing configuring confirming correcting deleting detecting determining downloading eliminating enabling executing expanding forwarding generating identifying incrementing initialising interpreting not_found preparing processing reading releasing repairing retrieving searching_for terminating transferring tracking updating writing ]
+
+   haz "palabra2 elige [ anticipated asynchronous available bad centralised conflicting corrupt crashed critical damaged default failed fragmented global illegal incompatible incorrect independent integral invalid missing modified multi obsolete out-of-range primary priority purged redundant reserved split suspended tempory terminated unstable unsupported ]
+
+   haz "palabra3 elige [ application binary buffer bus cache compiler control data-base destination device display directory emulator environment feedback group image interpolation interrupt management media memory menu network operator processor program self-test session software system target timing user ]
+
+   haz "palabra4 elige [ activity addresses attributes characters codes commands components contents continuity counters co-ordinates elements errors fields files formats functions information levels modes options over-run procedures profiles protection requests resources routines sectors store structure support threads utilities values variables ]
+fin

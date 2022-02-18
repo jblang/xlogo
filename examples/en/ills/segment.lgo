@@ -1,0 +1,28 @@
+# Main Command: Go
+# Segment by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to segment
+  # Draw a single segment 
+  Arc 150 Heading-20 Heading+20
+  Left 20 Forward 150 PenDown Forward 50 PenUp Back 200
+  Right 40 Forward 150 PenDown Forward 50 PenUp Back 200 Left 20
+  Forward 55 Arc 150 Heading-27 Heading+27
+end
+
+to go
+  New SetPos [-60 -260] Right 27.25
+  Repeat 5 [
+     SetPC Cyan Segment 
+     SetPC [0 128 128] Forward 115 Fill 
+     Make "myHeading Heading
+     SetH 0 SetPC White Label RepCount
+     SetH :myHeading
+     Back 115 Left 7.25]
+end

@@ -1,0 +1,41 @@
+# Comando de Inicio: empezar 6
+para empezar :orden
+#
+  nuevo :orden
+#
+  ponposicion lista cambiasigno 190 cambiasigno 184
+  poncolorlapiz amarillo bajalapiz
+  knuth :orden cambiasigno 90 45 # angulo -90 giro 45
+fin
+
+para nuevo :orden
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  haz "pausa abs 11-:orden
+  haz "ord redondea :orden/2
+  haz "tam 3 * potencia 2 (6-:ord) # haz tam una variable global
+fin
+
+para knuth :orden :angulo :giro
+  si :orden < 1
+     [ giraderecha 45+:giro avanza :tam
+       giraizquierda 45+:giro espera :pausa
+       alto]
+  giraderecha 2*:giro+:angulo
+  knuth :orden-1 2*:giro cambiasigno :giro
+  giraderecha 45-3*:giro-:angulo avanza :tam
+  giraizquierda 45-:giro+:angulo
+  knuth :orden-1 0 cambiasigno :giro
+  giraderecha :angulo
+fin
+
+para knuths
+  haz "cols [3 1 2 4 9]
+  repitepara [orden 2 10 2]
+   [ nuevo :orden
+     pongrosor 11-:orden poncolorlapiz elemento :orden/2 :cols
+     subelapiz ponposicion [-190 -184] bajalapiz
+     knuth :orden cs 90 45]
+fin

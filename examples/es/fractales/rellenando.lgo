@@ -1,0 +1,31 @@
+# Comando de Inicio: empezar 4
+para empezar :orden
+  nuevo
+  ponposicion [-200 -200] poncolorlapiz [0 0 1] bajalapiz
+  rellenando 400 :orden
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+fin
+
+para rellenando :lado :orden
+  si :orden < 1 [alto]      # ie si = 0
+  repite 4 [miforma :lado :orden giraderecha 90]
+  mirelleno :lado :orden
+fin
+
+para miforma :lado :orden
+  rellenando :lado/3 :orden-1
+  avanza :lado/3
+  rellenando :lado/3 :orden-1
+  avanza 2*:lado/3
+fin
+
+para mirelleno :lado :orden
+  subelapiz giraderecha 45 avanza 0.7*:lado
+  poncolorlapiz :orden rellena
+  retrocede 0.7*:lado giraizquierda 45 bajalapiz poncolorlapiz [0 0 1]
+fin

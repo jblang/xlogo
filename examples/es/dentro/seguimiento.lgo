@@ -1,0 +1,12 @@
+para seguimiento :x
+# Muestra el valor de :x como un Pie de pagina
+  haz "mipos posicion
+  haz "mirumbo rumbo
+  haz "micol colorlapiz
+#
+  subelapiz ponposicion [-190 -186]
+    pongrosor 11 ponrumbo 90 goma avanza 380
+  subelapiz ponposicion [-190 -190] poncolorlapiz blanco
+  pongrosor 1 ponrumbo 0 rotula :x
+  ponposicion :mipos ponrumbo :mirumbo poncolorlapiz :micol
+fin

@@ -1,0 +1,34 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise :n
+  donne "spoiler rac (1-(puissance :n-3 2))/103
+  donne "x :n+:spoiler
+  donne "y :n
+  fcc colang :n            # comment out repetepour no color
+fin
+
+pour gbman
+  donne "xnew 1 - :y + abs :x
+  donne "ynew :x
+  point liste (:xnew*34)-84 (:ynew*34)-84
+  donne "x :xnew
+  donne "y :ynew
+fin
+
+pour colang :angle
+  donne "green tronque 127.5*:angle - 255
+  retourne phrase liste 255 :green 0
+fin
+
+pour demarrer
+  new
+  repetepour [n 2 4 0.05] [initialise :n
+  repete 1000 [gbman]]
+  ecris "done
+fin
+

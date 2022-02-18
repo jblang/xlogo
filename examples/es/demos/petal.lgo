@@ -1,0 +1,18 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+  haz "col 2
+  repitepara [n 1 7] [
+  subelapiz ponposicion [-50 -30] bajalapiz limpia
+  repite 8 [giraderecha 45 repite :n [curva giraderecha 90 espera 5]]
+  espera 128]
+fin
+
+para curva
+  repite 15 [avanza 5 giraderecha 6]
+  haz "col abs :col-17      # alterna entre colores 2 y 15
+  poncolorlapiz :col
+  repite 15 [avanza 5 giraderecha 6]
+fin

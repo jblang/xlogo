@@ -1,0 +1,54 @@
+# Main Command: Go
+# Harmonograph by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to spir
+  SetPos XYCurve 0 PenDown
+  For [T 0 5000] [SetPC Hue2 :T SetPos XYCurve :T]
+end
+
+to xycurve :t
+  Make "KK :K * Power :e ( Minus 0.00015 * :T )
+  Make "X :KK*((Cos ((:f1*:T) + :p1 )) + (Cos ((:f2*:T) + :p2 )))
+  Make "Y :KK*((Cos ((:f3*:T) + :p3 )) + (Cos ((:f4*:T) + :p4 )))
+  Output (List :X :Y)
+end
+
+to init
+  Make "K 90
+  Make "e 2.718 
+  Make "f1 Integer 1+ Random 9
+  Make "f2 Integer 1+ Random 9
+  Make "f3 Integer 1+ Random 9
+  Make "f4 Integer 1+ Random 9
+  Make "p1 Integer Random 360
+  Make "p2 Integer Random 360
+  Make "p3 Integer Random 360
+  Make "p4 Integer Random 360
+end
+
+to display
+  # write header title and footer values
+  SetPC White
+  SetPos [-190 184] Label "Harmonograph
+  SetPos [-190 -190] Label ( List "Freqs: :f1 :f2 :f3 :f4 ) 
+  SetPos [34 -190] Label ( List "Phase: :p1 :p2 :p3 :p4 )
+end
+
+To Hue2 :Theta
+  # Output RGB hue list from angle :Theta
+  Make "Red Abs 255*Sin :Theta
+  Make "Green Abs 255*Sin (:Theta+120)
+  Make "Blue Abs 255*Sin (:Theta+240)
+  Output (List :Red :Green :Blue)
+End
+
+to go
+  Repeat 12 [  New Init Display Spir Wait 200]
+end

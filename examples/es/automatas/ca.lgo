@@ -1,0 +1,59 @@
+# Comando de Inicio: empezar 90
+para empezar :norma
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+  haz "grosor 2
+  pongrosor :grosor
+#
+  haz "binlist dec2bin :norma
+  muestra :norma :binlist ponrumbo 90
+  haz "calist [1]
+  repitepara frase frase lista "n 0 191 :grosor [
+  ponxy (0-:n) (150-:n)
+  dibuja :calist
+  haz "calist lineasgte :calist]
+fin
+
+para muestra :norma :binlist
+  poncolorlapiz 7 subelapiz
+  ponposicion [-190 184] rotula [ Automata celular en 1D ]
+  ponposicion [70 184] rotula lista "norma :norma
+  ponposicion [70 170] rotula :binlist
+fin
+
+para dibuja :calist
+  bajalapiz repitepara frase lista "n 1 (cuenta :calist) [
+  poncolorlapiz frase lista 0 (255*elemento :n :calist) 64
+  avanza :grosor]
+  poncolorlapiz 0 avanza 0 subelapiz
+fin
+
+para lineasgte :calist
+  haz "nuevacalist []
+  haz "calist frase :calist [0 0] #add 0 0 para fin
+  haz "ll [0 0 0]
+  repitepara frase lista "n 1 (cuenta :calist) [
+  haz "ll menosprimero ponultimo elemento :n :calist :ll
+# convierte ll en numero decimal
+  haz "x bin2dec :ll
+# convierte x en elemento x de binlist
+  haz "x elemento (8-:x) :binlist
+# agrega x a nuevacalist
+  haz "nuevacalist ponultimo :x :nuevacalist ]
+  devuelve :nuevacalist
+fin
+
+para dec2bin :num
+# convierte :num en 8 elemento lista binaria
+  si :num > 255 [escribe [La norma es demasiado grande!] alto]
+  haz "bin []
+  repitepara [c 7 0 -1] [
+     haz "bin ponultimo (cociente :num potencia 2 :c) :bin
+     haz "num :num-((potencia 2 :c) * ultimo :bin)]
+  devuelve :bin
+fin
+
+para bin2dec :binlist
+# devuelve el valor decimal de lista binaria
+  devuelve (4*elemento 1 :binlist)+(2*elemento 2 :binlist)+(elemento 3 :binlist)
+fin

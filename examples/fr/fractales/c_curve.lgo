@@ -1,0 +1,36 @@
+# Commande principale: demarrer 7
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise :order
+    # donne length et angle global values
+  donne "size 8*puissance (rac 2) (9-:order)
+  donne "angle 90
+fin
+
+pour display :order
+    # tape header title et curve level
+  fcc blanc
+  fpos [-190 184] etiquette phrase [c-curve level] :order
+fin
+
+pour c_curve :order
+  si :order < 1 [avance :size stop]      # ie si = 0
+  tournedroite 45
+  c_curve :order-1
+  tournegauche 90
+  c_curve :order-1
+  tournedroite 45
+fin
+
+pour demarrer :order
+  new
+  initialise :order display :order
+  fpos [-94 0] fcc vert tournedroite 90 baissecrayon
+  c_curve :order
+  # tournedroite 180 c_curve :order            # comment in repetepour double c curve
+fin
+

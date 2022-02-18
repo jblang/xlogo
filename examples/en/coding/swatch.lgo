@@ -1,0 +1,77 @@
+# Main Command: Go
+# Swatches (Light & Dark) by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to init
+  Make "ColList [Red Green Yellow Blue Magenta Cyan
+    Gray Orange Purple Aqua Leaf Lime Rose]
+  Make "Mods [ [Dark Dark] Dark [] Light [Light Light] ]
+end
+
+to swatch :col
+  Right 90 PenDown Forward 32 PenUp
+  Back 32 Left 90 Forward 27
+end
+
+to display
+  # write header title and color names
+  SetPC White
+  Repeat 13 [
+    SetXY 140 27*RepCount -208
+    Label Item RepCount :ColList] 
+  SetPos [-162 176]
+  Label [Dark Dark \ \ \ Dark \ \ \ Color \ \ \ Light \ \ \ Light Light]
+end
+
+To Light :Hue
+  # output rgb list midway between :hue and white
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (255+(First :Hue))/2 :Hue]
+  Output :Hue
+End
+
+To Dark :Hue
+  # output rgb list midway between :hue and black
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (First :Hue)/2 :Hue]
+  Output :Hue
+End
+
+to aqua
+  # return aqua rgb color
+  Output [0 128 255]
+end
+
+to leaf
+  # return leaf rgb color
+  Output [0 255 128]
+end
+
+to lime
+  # return puce pen color
+  Output [128 255 0]
+end
+
+to rose
+  # return puce pen color
+  Output [255 0 128]
+end
+
+to go
+  New SetPS 0 SetPW 18 Init Display
+  Repeat 5 [
+    Make "Mod Item RepCount :Mods
+    SetPos List ((64*RepCount) -238) Minus 175
+    Repeat 13 [
+      Make "PColor Sentence :Mod Item RepCount :ColList 
+      SetPC Run Sentence :PColor [] 
+      # Write :PColor Print List "\ = PenColor
+      Swatch :PColor]
+    Print [] ]
+end

@@ -1,0 +1,23 @@
+# Commande principale: demarrer
+pour demarrer
+vt fsep 0
+donnees
+fin
+
+pour donnees
+lis [Chercher les diviseurs de ce nombre :] "nombre
+si vide? :nombre [stoptout]
+diviseurs :nombre
+fin
+
+pour diviseurs :n
+diviseurs_1 :n 2 [] []
+fin
+
+pour diviseurs_1 :p :i :diviseurs_1 :diviseurs_2
+si :i = rac :p [donne "diviseurs (ph :diviseurs_1 :i :diviseurs_2) fct 0 tape (ph "Diviseurs\ de :p ":\ )  fct 1 ec :diviseurs donnees]
+si :i > rac :p [donne "diviseurs (ph :diviseurs_1 :diviseurs_2)    fct 0 tape (ph "Diviseurs\ de :p ":\ )  fct 1 ec :diviseurs donnees]
+si 0= reste :p :i 
+[diviseurs_1 :p :i+1 md :i :diviseurs_1 mp :p/:i :diviseurs_2] 
+[diviseurs_1 :p :i+1 :diviseurs_1 :diviseurs_2]
+fin

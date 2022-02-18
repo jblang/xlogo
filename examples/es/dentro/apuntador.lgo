@@ -1,0 +1,27 @@
+# Comando de Inicio: apuntador
+para apuntador
+  inviertelapiz
+  subelapiz centro
+  poncolorlapiz blanco
+  ponposicion [-190 184] rotula "Apuntador
+  haz "viejox 201 haz "viejoy 202
+#
+  mientras [cierto]
+    [ haz "ratonx elemento 1 posraton
+      haz "ratony elemento 2 posraton
+      mientras [o (no :ratonx = :viejox) (no :ratony = :viejoy)]
+       [ subelapiz ponxy :viejox cambiasigno 200
+         bajalapiz ponxy :viejox 200
+         subelapiz ponxy cambiasigno 200 :viejoy
+         bajalapiz ponxy 200 :viejoy
+        subelapiz poncolorlapiz colorpapel
+        ponposicion [-190 -190] rotula lista :viejox :viejoy
+        subelapiz poncolorlapiz blanco ponposicion [-190 -190]
+        rotula lista :ratonx :ratony
+        subelapiz ponxy :ratonx cambiasigno 200
+        bajalapiz ponxy :ratonx 200
+        subelapiz ponxy cambiasigno 200 :ratony
+        bajalapiz ponxy 200 :ratony
+        haz "viejox :ratonx
+        haz "viejoy :ratony ] ]
+fin

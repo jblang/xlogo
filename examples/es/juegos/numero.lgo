@@ -1,0 +1,22 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos el numero "oculto" y el contador
+  haz "numero azar 32
+  haz "contador 0
+  jugar
+fin
+
+para jugar
+  leelista [Propon un numero:] "intento
+  si numero? :intento
+    # si el valor es realmente un numero 
+    [ si :numero=:intento
+      [ escribe (frase [Has ganado en ] :contador+1 [intento (s)]) ]
+      [ si :intento>:numero
+         [ escribe [Demasiado grande] ]
+         [ escribe [Demasiado bajo] ] 
+      haz "contador :contador+1
+      jugar ] ]
+  [ mensaje frase :intento [No es un numero!] 
+    jugar ]
+fin

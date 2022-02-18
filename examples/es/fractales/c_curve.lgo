@@ -1,0 +1,30 @@
+# Comando de Inicio: empezar 7
+para empezar :orden
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde
+  pongrosor 3
+  subelapiz ocultatortuga
+#
+  haz "tam 8*potencia (raizcuadrada 2) (9-:orden)
+  haz "angulo 90
+#
+  leyenda :orden
+  ponposicion [-94 0] poncolorlapiz verde giraderecha 90 bajalapiz
+  c_curva :orden
+fin
+
+para leyenda :orden
+# Muestra encabezado y nivel de curva
+  poncolorlapiz blanco
+  ponposicion [-190 184] rotula frase [Nivel de curva C ] :orden
+fin
+
+para c_curva :orden
+  si :orden < 1 [avanza :tam alto]      # o sea, si = 0
+  giraderecha 45
+  c_curva :orden-1
+  giraizquierda 90
+  c_curva :orden-1
+  giraderecha 45
+fin

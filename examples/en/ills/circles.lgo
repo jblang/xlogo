@@ -1,0 +1,73 @@
+# Main Command: Go
+# Circles by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to gridd :m :n
+  # return X Y screen position
+  Make "X (:N*:CellSize) - 180 
+  Make "Y (:M*:CellSize) - 180 
+  Output List :X :Y
+end
+
+to drawgrid
+  # draw M x N array of squares 
+  For (List "N 5 1 Minus 1) [
+    For (List "M 5 1 Minus 1) [
+      SetPos Gridd (:M*:M)/5 (:N*:N)/5 Rect 8*:M 8*:N Left 90
+      SetXY Minus 1*First Pos Last Pos Rect 8*:N 8*:M Left 90
+      SetXY First Pos Minus 1*Last Pos Rect 8*:M 8*:N Left 90
+      SetXY Minus 1*First Pos Last Pos Rect 8*:N 8*:M Left 90 ] ] 
+end
+
+to rect :width :height
+  # shaded rectangle (width x height) drawn from centre (tp) and filled
+  Back :Height/2 Right 90 Back :Width/2 PenDown
+  SetPC Black Forward :Width Left 90 Forward :Height Left 90
+  SetPC White Forward :Width Left 90 Forward :Height Left 90
+  PenUp Forward :Width/2 Left 90 Forward :Height/2   # return to centre
+  SetPC [153 0 204] Fill
+end
+
+to go
+  New
+  For [Ord 2 7] [
+    GlobalMake "Order :Ord Wash
+    Make "K (Sin 180/:Order) / ((Sin 180/:Order)+1)
+    Circ 190 Wait 100]
+end
+
+to rect2 :width :height
+  # shaded pebble shape drawn from centre (tp) and filled
+  LocalMake "Diff Abs :Width-:Height
+  If :Width > :Height [LocalMake "Rad :Height/2 LocalMake "Vert 0 LocalMake "Horiz :Diff]
+                      [LocalMake "Rad :Width/2 LocalMake "Vert :Diff LocalMake "Horiz 0]
+  PenUp Back :Height/2 Right 90 Back :Horiz/2 PenDown
+  SetPC Black Forward :Horiz LeftArc 90 :Rad Forward :Vert LeftArc 45 :Rad
+  SetPC White LeftArc 45 :Rad Forward :Horiz LeftArc 90 :Rad Forward :Vert LeftArc 45 :Rad
+  SetPC Black LeftArc 45 :Rad
+  PenUp Forward :Horiz/2 Left 90 Forward :Height/2   # return to centre
+  SetPC [153 0 204] Fill
+end
+
+to leftarc :angle :radius
+  # arc drawn relative to turtle position, angle & radius positive
+  PenUp Right 90 Back :Radius Left :Angle
+  Arc :Radius Heading Heading+:Angle
+  Forward :Radius Left 90 PenDown
+end
+
+to circ :size
+  If :Size < 5 [Stop] 
+  Circle :Size
+  Repeat :Order [
+    Forward :Size-:K*:Size 
+    Circ :K*:Size 
+    Back :Size-:K*:Size 
+    Left 360/:Order]
+end

@@ -1,0 +1,32 @@
+# Commande principale: demarrer 7 
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise :order
+  donne "total puissance :order 2
+  donne "cellsize 360/:order
+  donne "offset (0.5*:order)-0.5
+  donne "side 250/:order
+fin
+
+pour demarrer :order
+  new initialise :order fcc vert
+  repete :total [
+  fpos gridpos :order compteur-1 square attends 20]
+fin
+
+pour gridpos :order :cellnum
+  donne "x :cellsize*((reste :cellnum :order)-:offset)
+  donne "y :cellsize*((quotient :cellnum :order)-:offset)
+  retourne liste :x :y
+fin
+
+pour square
+  #square drawn from centre
+  recule :side/2 tournedroite 90 recule :side/2 baissecrayon
+  repete 4 [avance :side tournegauche 90] levecrayon
+fin
+

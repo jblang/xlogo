@@ -1,0 +1,52 @@
+# Esse projeto desenha um cubo.
+# Escreva vai na caixa de comandos para o xLogo desenhar um cubo animado.
+# Criado por Bertrand Carette
+
+aprenda cubo :c
+escondetat
+repita 4 [parafrente :c paradireita 90]
+parafrente :c paradireita 45 parafrente :c paradireita 45 parafrente :c
+paradireita 135 parafrente :c paratrás :c paraesquerda 45 parafrente :c
+paradireita 45 parafrente :c paratrás :c paradireita 45 parafrente :c
+paradireita 90 parafrente :c paratrás :c paradireita 45 paratrás :c paraesquerda 45
+fim
+
+aprenda tri_d :c :a
+se :c > 120 [atribua "a 30 t_c :c :a pare]
+cubo :c veranimado espere 50
+limpe paradireita :a
+tri_d :c + 5  :a + 2
+fim
+
+aprenda t_c :c :a
+se :c < 15 [mudedireção 0 tri_d :c :a pare]
+se :a < 10 [atribua "a 30]
+limpe
+cubo :c
+limpe
+paraesquerda :a
+t_c :c - 5 :a - 2
+fim
+
+aprenda mc3d
+# mc3d = mover cubo3d
+limpe
+tri_d 10 30
+fim
+
+aprenda vai
+animado
+mc3d
+pareanimado
+fim
+
+aprenda info
+#
+# escreva vai para começar
+# clique no botão Pare para parar
+#
+# adaptação de plogo
+# por
+# bertrand.carette@laposte.net
+#
+fim

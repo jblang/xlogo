@@ -1,0 +1,18 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos pantalla, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde bajalapiz modovuelta ocultatortuga
+#
+  repite 32000 [vagar]
+fin
+
+para angcol
+  haz "red redondea 127*(1+coseno (120+rumbo))
+  haz "green redondea 127*(1+coseno rumbo)
+  devuelve frase lista :red :green 0
+fin
+
+para vagar
+  poncolorlapiz angcol avanza 8 giraizquierda (30-azar 60)
+fin

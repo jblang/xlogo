@@ -1,0 +1,13 @@
+# Main Command: Go
+# Tracker by Guy Walker
+# www.logoarts.co.uk
+
+to track :x
+  # write value of :X as footer
+  Make "myPos Pos Make "myHeading Heading Make "myCol PenColor
+  PenUp SetPos [-190 -186] 
+  SetPW 11 SetHeading 90 PenErase Forward 380
+  PenUp SetPos [-190 -190] SetPC White
+  SetPW 1 SetHeading 0 Label :X
+  SetPos :myPos SetHeading :myHeading SetPC :myCol
+end

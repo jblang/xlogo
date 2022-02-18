@@ -1,0 +1,20 @@
+# Comando de Inicio: empezar 3
+para empezar :nivel
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde
+  subelapiz ocultatortuga
+#
+  haz "celltam (potencia 2 0.5)*(120/(potencia 3 :nivel))
+  subelapiz ponposicion [-180 -180] ponrumbo 45 bajalapiz
+  curva :nivel
+fin
+
+para curva :nivel
+  si :nivel < 0 [avanza :celltam alto]
+  curva :nivel-1
+  giraizquierda 90 curva :nivel-1
+  repite 3 [giraderecha 90 curva :nivel-1]
+  repite 3 [giraizquierda 90 curva :nivel-1]
+  giraderecha 90 curva :nivel-1
+fin

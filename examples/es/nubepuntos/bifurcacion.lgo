@@ -1,0 +1,37 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+# cambia los valores inicial y final para dibujos mayores
+  haz "inicial 1 haz "final 4
+  haz "paso (:final-:inicial)/360
+#
+  leyenda poncolorlapiz verde
+  haz "x 0.1 haz "k :inicial
+# Hacemos una primera iteracion para eliminar
+# unos puntos "raros" que aparecen al principio
+  repite 128 [
+    haz "xn funcion :k :x
+    haz "x :xn]
+# Iteracion verdadera
+  repitepara (lista "k :inicial :final :paso)
+   [repite 64 [
+      haz "xn funcion :k :x
+      haz "x :xn
+   # calculamos horiz x
+      haz "xh (360/(:final-:inicial))*:k-180-((360/(:final-:inicial))*:inicial)
+      punto lista :xh (360*:x)-180] ]
+fin
+
+para funcion :k :x
+  devuelve :k * :x * (1-:x)
+fin
+
+para leyenda
+# Muestra encabezado y pie
+  subelapiz poncolorlapiz blanco ponrumbo 0
+  ponposicion [-190 182] rotula [Diagrama de bifurcacion]
+  ponposicion [-190 -190] rotula ( lista "k\ = :inicial "to :final )
+fin

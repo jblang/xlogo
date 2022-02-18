@@ -1,0 +1,36 @@
+# Comando de Inicio: empezar
+para empezar
+# set defaults, screen, pen y tortuga
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz verde subelapiz animacion
+#
+  pongrosor 2 haz "col1 1 haz "col2 2
+  mientras [cierto] [starmorph]
+  detieneanimacion
+fin
+
+para inicializar :theta
+  haz "r 400*seno (2*:theta)
+  haz "a :r*seno :theta
+  haz "b :r*coseno :theta
+  haz "x 0 haz "y 0
+fin
+
+para starmorph
+  haz "col1 abs (:col1-3)
+  haz "col2 abs (:col2-3)
+  repitepara [theta 0 90 0.5] [
+  inicializar :theta
+  ponrumbo 0 subelapiz centro giraderecha :theta
+  repite 9 [
+  avanza :a giraizquierda 140
+  avanza :b giraizquierda 140
+  haz "x :x + elemento 1 posicion
+  haz "y :y + elemento 2 posicion]
+  ponxy cambiasigno :x/9 cambiasigno :y/9
+  ponrumbo 0 bajalapiz giraderecha :theta
+  repite 9 [
+  poncolorlapiz :col1 avanza :a giraizquierda 140
+  poncolorlapiz :col2 avanza :b giraizquierda 140]
+  refrescar espera 10 limpia]
+fin

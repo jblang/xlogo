@@ -1,0 +1,221 @@
+# Commande principale: horreo 600
+
+pour horreo :lado
+  videecran fcfg 0
+  perspective
+  fixetaillecrayon 4
+#  sol
+  fixecouleurcrayon vertfonce
+  levecrayon fixexyz (-:lado) (-:lado) 0
+  baissecrayon
+  cuadrado :lado*2
+# vamos con los cuatro pegoyos
+  levecrayon fixexyz (-5*:lado/12) (-5*:lado/12) 0 baissecrayon
+  repete 4
+     [ pegoyu :lado/6
+       levecrayon
+         avance 5*:lado/6 tournedroite 90
+       baissecrayon ]
+# vamos con las cuatro muelas
+  levecrayon fixexyz (-5*:lado/12) (-5*:lado/12) :lado*0.24 baissecrayon
+  repete 4
+     [ muela :lado/6
+       levecrayon
+         avance 5*:lado/6 tournedroite 90
+       baissecrayon ]
+# ahora ecris el turno de los trabes
+  levecrayon fixexyz (-3*:lado/8) (-:lado/2) :lado*0.26 baissecrayon
+  trabe :lado :lado/12
+  levecrayon fixexyz (7*:lado/24) (-:lado/2) :lado*0.26 baissecrayon
+  trabe :lado :lado/12
+  tournedroite 90
+  levecrayon fixexyz (-:lado/2) (-7*:lado/24) :lado*0.26 baissecrayon
+  trabe :lado :lado/12
+  levecrayon fixexyz (-:lado/2) (3*:lado/8) :lado*0.26 baissecrayon
+  trabe :lado :lado/12
+# la construccion sigue por les colondres
+  levecrayon fixexyz (-5*:lado/12) (-5*:lado/12) :lado*0.345 baissecrayon
+  fixeorientation [0 0 0]
+  colondres 5*:lado/6 :lado/3
+# ahora toca el teyau
+  teyau :lado 2*:lado/3
+# et la puerta
+  puerta :lado
+# tamos acabando: la subidona
+  subidona :lado
+#
+#  vémoslo too
+#
+  vue3d
+fin
+
+pour cuadrado :lado
+ # grabamos los vertices del cuadrado
+   polydef
+   repete 4 [ avance :lado tournedroite 90 ]
+   polyfin
+fin
+
+pour rectangulo :base :altura
+ # grabamos los vertices del cuadrado
+   polydef
+   repete 2 [ avance :base tournedroite 90 avance :altura tournedroite 90]
+   polyfin
+fin
+
+pour pegoyu :base
+  fixecouleurcrayon gris
+# la base del pegoyu
+  cuadrado :base
+# las "paredes" del pegoyu
+  repete 4
+    [ # tournedroite 45 
+      roulisdroite 9.4
+      cabre arctangente 6
+      pared :base
+      pique arctangente 6 # tournegauche 45 
+      roulisgauche 9.4
+      avance :base tournedroite 90 ]
+fin
+
+pour pared :base
+  soit "angulo arccosinus (1.0/6.0)
+  polydef
+  avance 1.5*:base
+  tournedroite :angulo
+  avance :base/2
+  tournedroite :angulo
+  avance 1.5*:base
+  tournedroite 180 - :angulo
+  avance :base
+  tournedroite 180 - :angulo
+  polyfin
+fin
+
+pour muela :base
+  fixecouleurcrayon gris
+  soit "posicion pos
+  soit "orientacion orientation
+  cuadrado :base
+  roulisgauche 90
+  repete 4 
+    [ rectangulo :base :base/6
+      avance :base pique 90 ]
+  tournedroite 90 avance :base/6 cabre 90
+  tournedroite 180
+  cuadrado :base
+  levecrayon 
+  fixeposition :posicion
+  fixeorientation :orientacion
+fin
+
+pour trabe :base :altura
+  fixecouleurcrayon [105 85 50] # un marron oscuro
+  soit "posicion pos
+  soit "orientacion orientation
+  repete 4
+    [ rectangulo :base :altura
+      tournedroite 90 avance :altura tournegauche 90 roulisgauche 90 ]
+  cabre 90 cuadrado :altura pique 90
+  avance :base 
+  cabre 90 cuadrado :altura pique 90
+  fixeposition :posicion
+  fixeorientation :orientacion
+fin
+
+pour colondres :base :altura
+  fixecouleurcrayon marron
+  cuadrado :base
+  roulisgauche 90
+  repete 4 
+    [ rectangulo :base :altura
+      si 0 = reste compteur 2 
+        [ fixecouleurcrayon [200 100 0] ]
+        [ fixecouleurcrayon [100 50 0] ]
+      avance :base pique 90 ]
+#  tournedroite 90 avance :altura cabre 90
+#  tournedroite 180
+#  cuadrado :base
+fin
+
+pour teyau :base :altura
+# son cuatro caras
+##  cara 1
+  fixecouleurcrayon rouge
+  polydef
+    fixexyz (-:base/2) (-:base/2) :altura
+    fixexyz (-:base/2) (:base/2) :altura
+    fixexyz 0 0 :altura+:base/5
+  polyfin
+##  cara 2
+  fixecouleurcrayon rougefonce
+  polydef
+    fixexyz (-:base/2) (:base/2) :altura
+    fixexyz (:base/2) (:base/2) :altura
+    fixexyz 0 0 :altura+:base/5
+  polyfin
+##  cara 3
+  fixecouleurcrayon rouge
+  polydef
+    fixexyz (:base/2) (:base/2) :altura
+    fixexyz (:base/2) (-:base/2) :altura
+    fixexyz 0 0 :altura+:base/5
+  polyfin
+##  cara 4
+  fixecouleurcrayon rougefonce
+  polydef
+    fixexyz (:base/2) (-:base/2) :altura
+    fixexyz (-:base/2) (-:base/2) :altura
+    fixexyz 0 0 :altura+:base/5
+  polyfin
+fin
+
+pour puerta :lado
+  fixecouleurcrayon [50 0 0]
+  levecrayon fixexyz (-:lado/12) (5.1*:lado/12) :lado*0.345
+    fixeorientation [ 0 90 0 ] baissecrayon
+  rectangulo 0.25*:lado :lado/6
+fin
+
+pour subidona :lado
+  levecrayon fixexyz :lado/2.75 5.5*:lado/12 0
+    fixeorientation [ 0 90 0 ] baissecrayon
+  fixecouleurcrayon [110 110 110]
+  polydef
+    repete 8
+    [ avance :lado/24 tournegauche 90
+      avance :lado/24 tournedroite 90 ]
+  tournegauche 90 avance :lado/12
+  fixez 0 fixexyz :lado/2.75 5.5*:lado/12 0
+  polyfin
+#
+  levecrayon fixexyz :lado/2.75 6.5*:lado/12 0
+    fixeorientation [ 0 90 0 ] baissecrayon
+  fixecouleurcrayon [110 110 110]
+  polydef
+    repete 8
+    [ avance :lado/24 tournegauche 90
+      avance :lado/24 tournedroite 90 ]
+  tournegauche 90 avance :lado/12
+  fixez 0 fixexyz :lado/2.75 6.5*:lado/12 0
+  polyfin
+#
+  levecrayon fixexyz :lado/2.75 5.5*:lado/12 0
+    fixeorientation [ -90 0 0 ] baissecrayon
+    repete 8
+    [ rectangulo :lado/12 :lado/24
+      tournedroite 90 avance :lado/24 fixeorientation [ 0 0 0 ]
+      rectangulo :lado/12 (-:lado/24)
+      tournegauche 90 avance :lado/24 fixeorientation [ -90 0 0 ] ]
+   fixeorientation [ 0 0 -90 ] 
+   cuadrado :lado/12
+#   tournedroite 180 
+   avance :lado/12
+   soit "posicion pos
+   polydef
+    fixez 0
+    fixey 6.5*:lado/12
+    fixez der :posicion
+    fixey item 2 :posicion
+   polyfin
+fin

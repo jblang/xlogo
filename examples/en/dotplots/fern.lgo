@@ -1,0 +1,60 @@
+# Main Command: Go
+# Fern by Guy Walker
+# www.logoarts.co.uk
+
+to new
+# set default screen, pen and turtle 
+ResetAll SetScreenSize [400 400] HideTurtle 
+SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init :n
+Make "Spoiler Sqrt (1-(Power :N-3 2))/103
+Make "X :N+:Spoiler
+Make "Y :N
+SetPC ColAng :N        # comment out for no color
+end
+
+to gbman
+Make "Xnew 1 - :Y + Abs :X
+Make "Ynew :X
+Dot List (:Xnew*34)-84 (:Ynew*34)-84
+Make "X :Xnew
+Make "Y :Ynew
+end
+
+to colang :angle
+Make "Green Integer 127.5*:Angle - 255
+Output ( List 255 :Green 0 )
+end
+
+to go
+New
+Make "X 0 Make "Y 0    # Global variables
+Repeat 25000 [
+  Make "Prob Random 1000
+  Fern
+  Dot List Scale :X Scale :Y ]
+end
+
+to fern
+If :Prob < 701 [ # 0 to 700 = 70.1%
+Map 0.81 0.07 0.12 Minus 0.04 0.84 0.195 Stop]
+If :Prob < 851 [ # 701 to 850 = 15%
+Map 0.18 Minus 0.25 0.12 0.27 0.23 0.02 Stop]
+If :Prob < 980 [ # 851 to 979 = 12.9%
+Map 0.19 0.275 0.16 0.238 Minus 0.14 0.12 Stop]
+# Else 980 to 999 = 2%
+Map 0.0235 0.087 0.11 0.045 0.1666 0
+end
+
+to map :a :b :c :d :e :f
+Make "Xnew (:a*:X) + (:b*:Y) + :c
+Make "Y (:d*:X) + (:e*:Y) + :f
+Make "X :Xnew
+end
+
+to scale :xory
+# XorY are in the range 0 to 1, we need -200 to 200
+Output (400*:XorY)-200
+end

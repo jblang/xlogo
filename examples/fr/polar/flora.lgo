@@ -1,0 +1,38 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise
+  donne "x (140 - hasard 280)
+  donne "y (140 - hasard 280)
+  donne "t (hasard 360)
+  donne "d choix [2 3 4 5 6 7]
+fin
+
+pour plate
+  recule 156 tournedroite 88 baissecrayon fcc [128 128 128]
+  repete 90 [avance 11 tournegauche 4] levecrayon
+fin
+
+pour flora
+  fcc angcol :t fixexy :x :y baissecrayon
+  repetepour [n 0 360 5] [
+  fixexy :x :y fixecap :n+:t
+  avance 28*(1+cos(:d*:n))]
+  levecrayon
+fin
+
+pour angcol :t
+  donne "red arrondi 127*(1+cos :t)
+  donne "green arrondi 127*(1+cos(120+:t))
+  donne "blue arrondi 127*(1+cos(240+:t))
+  retourne phrase liste :red :green :blue
+fin
+
+pour demarrer
+  new plate repete 16 [initialise flora]
+fin
+

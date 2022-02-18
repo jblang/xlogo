@@ -1,0 +1,22 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise
+  donne "word1 choix [ accessing allocating assessing calculating clearing compacting comparing configuring confirming correcting deleting detecting determining downloading eliminating enabling executing expanding forwarding generating identifying incrementing initialising interpreting not_found preparing processing reading releasing repairing retrieving searching_for terminating transferring tracking updating writing ]
+   donne "word2 choix [ anticipated asynchronous available bad centralised conflicting corrupt crashed critical damaged default failed fragmented global illegal incompatible incorrect independent integral invalid missing modified multi obsolete out-of-range primary priority purged redundant reserved split suspended tempory terminated unstable unsupported ]
+   donne "word3 choix [ application binary buffer bus cache compiler control data-base destination device display repertoire emulator environment feedback group image interpolation interrupt management media memory menu network operator processor program self-test session software system target timing user ]
+   donne "word4 choix [ activity addresses attributes characters codes commands components contents continuity counters co-ordinates elements errors fields cat formats functions information levels modes options over-exec procedures profiles protection requests resources routines sectors store structure support threads utilities values lvars ]
+fin
+
+pour demarrer
+  new fpos [-180 150]
+  repete 16 [ initialise
+  etiquette phrase phrase phrase liste
+  compteur :word1 :word2 :word3 :word4
+  recule 20 attends 88 ]
+fin
+

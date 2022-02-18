@@ -1,0 +1,239 @@
+# Comando de Inicio: empezar
+para empezar
+  nuevo iniciar titulo dibujatablero
+  resetanillos jugar c2s
+  mientras ["cierto]
+    [si fincrono? [attractloop] [ciclojuego] ]
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz blanco 
+  ponformalapiz 1 subelapiz animacion
+fin
+
+para iniciar
+  haz "anillo1 [1 1 1 1 1 1 1 1 1 1 5 5 5 5 5 5 5 5 2 1 1 1 1 1]
+  haz "anillo2 [2 2 2 2 2 2 2 2 2 2 5 5 5 5 5 5 5 5 4 2 2 2 2 2]
+  haz "anillo3 [4 4 4 4 4 4 4 4 4 4 5 5 5 5 5 5 5 5 1 4 4 4 4 4]
+  haz "r1 :anillo1 haz "r2 :anillo2 haz "r3 :anillo3
+  haz "s "s haz "cd 12 # attract mode delay
+fin
+
+para titulo
+  ponposicion lista cambiasigno 45 cambiasigno 185
+  poncolorlapiz blanco rotula [ Anillos hungaros]
+fin
+
+para dibujatablero
+  repite 3
+   [ pongrosor 61 poncolorlapiz [0 0 1]
+     anillo contador circulo 111]
+  repite 3
+   [ pongrosor 33 poncolorlapiz blanco
+      anillo contador circulo 111]
+  repite 3
+   [ pongrosor 31 poncolorlapiz negro
+     anillo contador circulo 111]
+  refrescar espera 32
+  repite 3
+    [ pongrosor 53 poncolorlapiz [0 0 1]
+      anillo contador avanza 58 punto posicion
+      pongrosor 31 poncolorlapiz [74 51 0]
+      punto posicion]
+  pongrosor 1 poncolorlapiz [74 51 0]
+  repite 3 [
+    ilumina contador cambiasigno 1
+    ilumina contador 1]
+  centro rellena
+  refrescar espera 32
+fin
+
+para resetanillos
+  poncolorlapiz [74 51 0] c2s centro
+  poncolorlapiz naranja bajalapiz rellena subelapiz
+  refrescar espera 24
+  repite 3 [ anillo contador borraanillo]
+  refrescar espera 24
+  repite 3
+    [ anillo contador
+      dibujabolas ejecuta [cosa palabra "anillo contador]
+      refrescar espera 24]
+  centro poncolorlapiz [74 51 0]
+  rellena refrescar espera 24
+fin
+
+para jugar
+  haz "n 3 haz "nuevon 3 haz "paso 0 haz "dir 0
+  haz "att "falso haz "reset "falso
+  cronometro :cd poncolorlapiz naranja ilumina :n 0
+  refrescar espera 24
+fin
+
+para borraanillo
+  poncolorlapiz negro pongrosor 26
+  repite 24 [
+    avanza 111 punto posicion
+    retrocede 111 giraderecha 15]
+fin
+
+para dibujabolas :anillo
+  pongrosor 24
+  repite 24 [
+    poncolorlapiz elemento contador :anillo
+    avanza 111 punto posicion retrocede 111
+    giraderecha 15]
+#
+  haz "mirumbo rumbo
+  ponrumbo 315 avanza 6 ponrumbo :mirumbo
+  pongrosor 6 poncolorlapiz blanco
+  repite 24 [
+    avanza 111 punto posicion
+    retrocede 111 giraderecha 15]
+  ponrumbo 315 retrocede 6
+  ponrumbo :mirumbo
+fin
+
+para anillo :n
+  centro giraizquierda :n*120 avanza 64
+fin
+
+para ilumina :n :dir
+  anillo :n giraizquierda :dir*28 avanza 64 rellena refrescar
+  retrocede 64 giraderecha :dir*28
+fin
+
+para actualizaanillo :n :dir
+  haz "a elemento :n [2 3 1]
+  haz "b elemento :n [3 1 2]
+  haz "estalista ejecuta [cosa palabra "anillo :n]
+  haz palabra "anillo :a reemplaza ejecuta [
+    cosa palabra "anillo :a] 7 elemento (19+:dir) :estalista
+  haz palabra "anillo :a reemplaza ejecuta [
+    cosa palabra "anillo :a] 15 elemento (11+:dir) :estalista
+  haz palabra "anillo :b reemplaza ejecuta [
+    cosa palabra "anillo :b] 11 elemento (15+:dir) :estalista
+  haz palabra "anillo :b reemplaza ejecuta [
+    cosa palabra "anillo :b] 19 elemento (7+:dir) :estalista
+  si :dir = 1
+    [haz palabra "anillo :n menosprimero ponultimo
+         elemento 1 :estalista :estalista ]
+    [haz palabra "anillo :n menosultimo ponprimero
+        elemento 24 :estalista :estalista]
+fin
+
+para baraja
+  mientras [no numero? :s]
+   [ leelista [ Dame el numero de giros con que quieres barajar las bolas.
+      Menos de 5: juego facil; mas de 20: juego dificil] "s]
+  espera 24 centro poncolorlapiz naranja rellena refrescar espera 24
+  repite :s [
+    aleat3 anillo :n haz "listabolas ejecuta [cosa palabra "anillo :n]
+    repite abs :paso [giraizquierda :dir*15 actualizaanillo :n :dir]
+    dibujabolas :listabolas refrescar espera 12]
+  haz "s "ss
+  centro poncolorlapiz [74 51 0] rellena refrescar espera 24
+fin
+
+para ciclojuego
+  si :paso = 0 [leeusuario espera 4] [gira :n]
+  si :reset [
+   si comprueba
+     [ fueratodo baraja jugar]
+     [ leelista [Nuevo juego? y-yes n-no] "r
+       si o :r="y :r = "y
+        [ poncolorlapiz [74 51 0]
+          haz "anillo1 :r1 haz "anillo2 :r2 haz "anillo3 :r3
+          fueratodo resetanillos baraja jugar]
+        [haz "reset "falso] ] ]
+fin
+
+para attractloop
+  si :paso = 0 [attract] [gira :n]
+  si :reset
+   [ haz "anillo1 :anillo1a haz "anillo2 :anillo2a haz "anillo3 :anillo3a
+     fueratodo resetanillos jugar]
+fin
+
+para gira :n
+  haz "listabolas ejecuta [cosa palabra "anillo :n]
+  si :paso < 0 [haz "dir cambiasigno 1] [haz "dir 1]
+  poncolorlapiz naranja ilumina :n :dir poncolorlapiz [74 51 0]
+  ilumina :n cambiasigno 1 * :dir
+  giraanillo :n :dir
+  haz "paso :paso - :dir
+  si (:paso = 0)
+    [ poncolorlapiz [74 51 0] ilumina :n :dir si comprueba [ganar] ]
+fin
+
+para giraanillo :n :dir
+  repite 5
+    [ borraanillo giraizquierda :dir*3
+      dibujabolas :listabolas refrescar
+      leeusuario espera 6 ]
+  actualizaanillo :n :dir
+fin
+
+para leeusuario
+  si tecla?
+   [ haz "char leetecla
+     si fincronometro?
+      [ haz "reset "cierto cronometro :cd]
+      [ cronometro :cd
+        si :char = -37 [haz "paso :paso+1]
+        si :char = -39 [haz "paso :paso-1]
+        si y :char = -38 :paso = 0
+          [ poncolorlapiz [74 51 0] ilumina :n 0
+            haz "n 1+resto (:n-1)+1 3
+            poncolorlapiz naranja ilumina :n 0]
+        si :char = 32 [haz "reset "cierto] ] ]
+fin
+
+para attract
+  poncolorlapiz [74 51 0] ilumina :n 0 #gira off
+  espera 24 refrescar
+  si :att = "falso
+   [ haz "anillo1a :anillo1 haz "anillo2a :anillo2 haz "anillo3a :anillo3
+     poncolorlapiz blanco c2s haz "att "cierto]
+  aleat3
+fin
+
+para c2s
+  centro ponposicion [-18 -3] rotula [Espacio]
+  ponposicion [-19 -13] rotula [A jugar] refrescar
+fin
+
+para aleat3
+  mientras [:n = :nuevon]
+    [ haz "nuevon (1+azar 3)]
+  haz "n :nuevon
+  haz "dir (2*azar 2)-1 # cambiasigno 1 (cw) o 1 (acw)
+  haz "paso :dir*(1 + azar 8)
+fin
+
+para fueratodo
+  poncolorlapiz [74 51 0]
+  repitepara [n 1 3]
+    [ repitepara [d -1 1]
+       [ ilumina :n :d] ]
+fin
+
+para comprueba
+  si (y (:r1 = :anillo1) (:r2 = :anillo2) (:r3 = :anillo3))
+    [ devuelve "cierto ]
+    [ devuelve "falso]
+fin
+
+para ganar
+  si no (:s = "s)
+   [ fueratodo espera 24
+     repite 44
+      [ aleat3 poncolorlapiz (1+azar 6)
+        ilumina :n :dir refrescar   espera 4 ]
+     leelista [Bien hecho! Jugar otra vez? y-yes n-no] "r
+     si o :r="Y :r = "y
+       [ haz "anillo1 :r1 haz "anillo2 :r2 haz "anillo3 :r3
+         haz "s "s fueratodo resetanillos jugar]
+       [ detienetodo] ]
+fin

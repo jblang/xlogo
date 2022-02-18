@@ -1,0 +1,39 @@
+# Comando de Inicio: empezar 3
+para empezar :n
+# Inicializa Papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  ponmaximastortugas :n+2 inicializar :n
+  mientras [cierto]
+   [ repite :n
+      [ pontortuga contador haz "mipos posicion
+        pontortuga contador+1
+        si contador+1>:n [pontortuga 1]
+        ocultatortuga ponrumbo hacia :mipos
+        haz "dist distancia :mipos
+        giraizquierda 90 muestratortuga
+       avanza (elemento contador :pesos) /:dist ] ]
+fin
+
+para inicializar :n
+  si :n <2
+   [escribe [Necesito mas de una tortuga!] alto]
+#  haz "pesos [8 -4 2]
+#  haz "pesos [8 -4 24]
+#  haz "pesos [8 -14 11] # neat
+#  haz "pesos [13 -5 -9]
+  haz "pesos [20 -14 8]
+  repite :n [
+  pontortuga contador
+  haz "angulo contador*360/:n
+  poncolorlapiz angcol :angulo subelapiz
+  ponxy (40*seno :angulo) (40*coseno :angulo) bajalapiz]
+fin
+
+para angcol :x
+  haz "r 127.5 *(1+seno (:x))
+  haz "g 127.5 *(1+seno (:x + 120))
+  haz "b 127.5 *(1+seno (:x + 220)) # no 240!
+  devuelve ( lista :r :g :b )
+fin

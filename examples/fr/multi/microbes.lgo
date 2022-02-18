@@ -1,0 +1,42 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400] cachetortue
+  fcfg noir fcc vert levecrayon animation
+fin
+
+pour roam
+  levecrayon avance 3 tournegauche (6-hasard 12) edgetest
+fin
+
+pour oc
+fin
+
+pour oct
+  fcc 7 baissecrayon fixetaillecrayon 42
+  avance 36 recule 72 avance 36
+fin
+
+pour ict
+  fcc 0 baissecrayon fixetaillecrayon 36
+  avance 36 recule 72 avance 36
+fin
+
+pour edgetest
+  si (premier pos) > 260 [fixex -260 stop]
+  si (premier pos) < -260 [fixex 260 stop]
+  si (dernier pos) > 260 [fixey -260 stop]
+  si (dernier pos) < -260 [fixey 260 stop]
+fin
+
+pour demarrer
+  new fixemaxtortues 32
+  fcc blanc fixeformecrayon 1        # arrondi pen forme
+  repetepour [n 0 31] [fixetortue :n levecrayon
+  fixecap 11.25*:n]
+  tantque [vrai] [
+  repetepour [n 0 31] [fixetortue :n roam oct]
+  repetepour [n 0 31] [fixetortue :n ict]
+  rf attends 5 nettoie]
+fin
+

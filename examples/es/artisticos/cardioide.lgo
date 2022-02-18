@@ -1,0 +1,14 @@
+# Comando de Inicio: empezar 48
+para empezar :n
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  haz "radio 70
+  ponXY 0 40
+#
+  repite :n
+    [ avanza :radio
+      circulo distancia lista 0 40 + :radio
+      retrocede :radio giraderecha 360/:n espera 8]
+fin

@@ -1,0 +1,62 @@
+# Esse projeto desenha uma pirâmide.
+# Escreva piramide (seguida de um número) na caixa 
+# de comandos para o xLogo desenhar uma pirâmide.
+# Exemplo: piramide 45
+# Criado por Bertrand Carette
+
+aprenda info
+#
+# Desenha uma pirâmide 3d e a faz girar
+# Adaptado de logoplus
+#
+fim
+
+aprenda corrigeangulo :ang
+se :ang > 360 [saída :ang - 360] [saída :ang]
+fim
+
+aprenda piramide
+animado verd
+atr "altura 100
+atr "beta 20
+atr "alfa 0
+repita 135 [
+  limpedesenho escondetat
+  atr "ax :altura * coseno :alfa
+  atr "ay (seno :beta) * :altura * seno :alfa
+  atr "bx :altura * coseno corrigeangulo (:alfa + 90)
+  atr "by (seno :beta) * :altura * seno corrigeangulo (:alfa + 90)
+  atr "cx :altura * coseno corrigeangulo (:alfa + 180)
+  atr "cy (seno :beta) * :altura * seno corrigeangulo (:alfa + 180)
+  atr "dx :altura * coseno corrigeangulo (:alfa + 270)
+  atr "dy (seno :beta) * :altura * seno corrigeangulo (:alfa + 270)
+  linha 0 123 :ax :ay
+  linha 0 123 :bx :by
+  linha 0 123 :cx :cy
+  linha 0 123 :dx :dy
+  linha :ax :ay :bx :by
+  linha :bx :by :cx :cy
+  linha :cx :cy :dx :dy
+  linha :dx :dy :ax :ay
+  veranimado
+  espere 30
+  atr "alfa :alfa + 1
+  ]
+animado falso
+fim
+
+aprenda linha :x1 :y1 :x2 :y2
+usenada mudexy :x1 :y1
+uselápis mudexy :x2 :y2
+fim
+
+# Com os recursos 3D (a partir da versão 0.9.92) poderíamos tentar:
+aprenda vai
+ld inicielinha mudepos [45 45 120]
+mudepos [0 90 0 ] mudepos [45 45 120]
+mudepos [90 90 0 ] mudepos [45 45 120]
+mudepos [90 0 0 ] mudepos [45 45 120]
+mudepos [ 0 0 0]
+repita 4 [pf 90 pd 90]
+terminelinha
+fim

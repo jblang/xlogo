@@ -1,0 +1,182 @@
+# Commande principale: demarrer
+pour demarrer
+fsep 0.1 vt
+donne "choix hasard 1000
+menu :choix
+fin
+
+pour menu :choix
+guimenu :choix
+  [
+  Outils\ d'exploration\ harmonique
+  Contrôleur\ de\ cohérence\ différentielle
+  Ratios
+  Diviseurs
+  Facteurs\ premiers
+  PGCD\ de\ deux\ nombres
+  Résolution\ d'équations
+  ]
+donne "xmenu 400+(item 1 taillefenetre)
+donne "ymenu item 2 taillefenetre
+guiposition :choix liste :xmenu :ymenu
+guiaction :choix [
+  []
+  [donnees_coherence]
+  [donnees_ratio]
+  [donnees_diviseurs]
+  [donnees_facteurs_premiers]
+  [donnees_pgcd]
+  [donnees_equation]
+  ]
+guidessine :choix
+fin
+
+#-----------------------------------------------------------------
+
+pour donnees_coherence
+lis [Échelle à contrôler :] "gamme 
+si vide? :gamme [ec "Stoppé\ !  stoptout]
+si (der :gamme) = (2* prem :gamme) [donne "gamme sd :gamme]
+donne "echelle :gamme
+donne "nombre_de_degres compte :gamme
+donne "i 1
+repete :nombre_de_degres [donne "gamme md 2*(item :i :gamme) :gamme donne "i :i+1]
+donne "nombre_d_intervalles 0
+intervalles 1 :gamme 1 0 1
+fin
+
+pour intervalles :i :gamme :controle :intervalles_coherents :d
+si :i+:d >2*:nombre_de_degres [si :controle = 0 [fct 11 tape "Nombre\ d'\ intervalles\ cohérents\ :\  fct 1 tape :intervalles_coherents fct 4 ec ph  "\ sur :nombre_d_intervalles
+fct 11 tape "Pourcentage\ de\ cohérence\ :\  fct 1  fixedecimales 2 tape (100*:intervalles_coherents / :nombre_d_intervalles) fct 4 ec  "\ % ]
+ [fct 4 tape ph :echelle ":\  fct 11 ec "Échelle\ entièrement\ cohérente ] donnees_coherence ]
+
+si :d > :nombre_de_degres [intervalles 1 :gamme :controle :intervalles_coherents :d+1]
+si ((item :i+:d :gamme)/(item :i :gamme)) <= 1.5
+[
+si :i > :nombre_de_degres  [intervalles 1 :gamme :controle :intervalles_coherents :d+1]
+ [
+fct 0 tape (ph "Intervalle (item :i :gamme) (item (:i+:d) :gamme) [ : ] )
+donne "n :i donne "p :i+:d
+note abs difference (item :i+:d :gamme) (item :i :gamme) :gamme :controle :n :p :intervalles_coherents :d
+intervalles :i+1 :gamme :controle :intervalles_coherents+1 :d ] ]
+[
+intervalles :i+1 :gamme :controle :intervalles_coherents :d
+]
+fin
+
+pour note :note :gamme :controle :n :p :intervalles_coherents :d
+si :note >= prem :gamme [fct 0 tape  (ph "  [Son différentiel transposé dans l'octave : ] :note "\  ) comparer :note :gamme 1 :controle :n :p :intervalles_coherents :d stop]
+si :note < prem :gamme [donne "dif (:note *2) note :dif :gamme :controle :n :p :intervalles_coherents :d]
+fin
+
+pour comparer :note :gamme :degre :controle :n :p :intervalles_coherents :d
+si :degre > :nombre_de_degres [fct 13 ec "Intervalle\ non\ cohérent  donne "nombre_d_intervalles :nombre_d_intervalles+1 intervalles :n+1 :gamme 0 :intervalles_coherents :d]
+si :note = item :degre :gamme [fct 11 ec ph  "Cohérence\ avec\ le\ degré :degre donne "nombre_d_intervalles :nombre_d_intervalles+1 stop][comparer :note :gamme :degre + 1 :controle :n :p :intervalles_coherents :d]
+fin
+
+#-----------------------------------------------------------------
+
+pour donnees_ratio
+lis [Entrer un nombre compris entre 1 et 2 :] "q
+si vide? :q [ec "Stoppé\ ! stoptout]
+si ou  :q <= 1 :q >=2  [donnees_ratio] [
+lis [Ne pas rechercher au-delà de ce diviseur :] "butoir
+si vide? :butoir [donne "butoir 1000] [donne "butoir :butoir]
+ratio 3 2 :q abs (:q - 1.5)]
+fin
+
+pour ratio :dividende :diviseur :q :intervalle
+si :diviseur >:butoir [fct 0 ec " ec "Fin\ de\ recherche ec " donnees_ratio]
+donne "ratio :dividende/:diviseur
+donne "d abs (:ratio-:q)
+si :d  = 0 [fct 1 tape (ph :dividende "/ :diviseur) fct 0 tape "\ =\  fct 4 tape :ratio fct 0 tape "\ Rapport\ exact\  fct 0 tape "\ Valeur\ en\ cents\ :\  fct 10 ec (tronque 1200000 * ((Log :ratio) / Log 2))/1000 
+fct 0 ec "  ec "Fin\ de\ recherche ec " donnees_ratio] 
+[
+si et (:d < 0.01) (:d < :intervalle)
+ [fixedecimales 10 fct 1 tape (ph :dividende "/ :diviseur) fct 0 tape "\ =\  fct 4 tape :ratio fct 0 tape "\ Différence\ avec\ le\ nombre\ visé\ :\  fct 11 tape :d donne "diviseur :diviseur+1 fct 0 tape "\ Valeur\ en\ cents\ :\  fct 10 ec (tronque 1200000 * ((Log :ratio) / Log 2))/1000
+ratio arrondi (:diviseur*:q) :diviseur :q :d]
+ [donne "diviseur (:diviseur + 1) 
+ratio arrondi (:diviseur * :q) :diviseur :q :intervalle]
+]
+fin
+
+#-----------------------------------------------------------------
+
+pour donnees_facteurs_premiers
+lis [Nombre entier à décomposer :] "n
+si vide? :n [ec "Stoppé\ ! stoptout]
+si :n >9999999 [ec [Ce nombre est trop grand.]]
+si et entier? :n :n>0 [decomposer :n 2 [1]] [ec [Ce nombre n'est pas un entier naturel.] donnees_facteurs_premiers]
+fin
+
+pour decomposer :n :p :facteurs
+si :n<:p [fct 4 tape "Facteurs\ premiers\ =\  fct 1 ec  :facteurs fct 0 ec  "Fin\ de\ recherche. donnees_facteurs_premiers] 
+si egal? reste :n :p 0 [decomposer :n/:p :p md :p :facteurs][si :p = 2 [decomposer :n 3 :facteurs] [decomposer :n :p+2 :facteurs]]
+fin
+
+#-----------------------------------------------------------------
+
+pour donnees_pgcd
+lis [Calcul du PGCD de ces deux nombres :] "nombres
+si vide? :nombres [ec "Stoppé\ ! stoptout]
+si (compte :nombres) = 2 [pgcd premier :nombres dernier :nombres 2 1] [ec [Entrez deux nombres entiers.] données_pgcd]
+fin
+
+pour pgcd :m :n :p :pgcd
+#vt fct 4 tape (ph premier :nombres "\ =  :m "×\  ) 
+#fct 1 ec :pgcd
+#fct 4  tape (ph dernier :nombres "\ =  :n "×\  )  
+#fct 1 ec :pgcd
+#fct 4 tape "PGCD\ =\  
+#fct 1 ec :pgcd
+#fct 0 ec  "Recherche\ en\ cours. 
+si ou :p>:m :p>:n [
+fct 4 tape (ph premier :nombres "\ =  :m "×\  ) 
+fct 1 ec :pgcd
+fct 4  tape (ph dernier :nombres "\ =  :n "×\  )  
+fct 1 ec :pgcd
+fct 4 tape "PGCD\ =\  
+fct 1 ec :pgcd
+fct 0 ec  "Fin\ de\ recherche. donnees_pgcd] 
+si et egal? (reste :m :p) 0 egal? (reste :n :p) 0 [pgcd (:m/:p) (:n/:p) :p :p*:pgcd] [pgcd :m :n :p+1 :pgcd]
+fin
+
+#-----------------------------------------------------------------
+
+pour donnees_diviseurs
+lis [Chercher les diviseurs de ce nombre :] "nombre
+si vide? :nombre [ec "Stoppé\ ! stoptout]
+diviseurs :nombre
+fin
+
+pour diviseurs :n
+diviseurs_1 :n 2 [] []
+fin
+
+pour diviseurs_1 :p :i :diviseurs_1 :diviseurs_2
+si :i = rac :p [donne "diviseurs (ph :diviseurs_1 :i :diviseurs_2) fct 0 tape (ph "Diviseurs\ de :p ":\ )  fct 1 ec :diviseurs donnees_diviseurs]
+si :i > rac :p [donne "diviseurs (ph :diviseurs_1 :diviseurs_2)
+ si vide? :diviseurs [fct 1 ec "Ce\ nombre\ est\ premier\ et\ n'a\ donc\ que\ 1\ et\ lui-même\ comme\ diviseurs.] [ fct 0 tape (ph "Diviseurs\ de :p ":\ )  fct 1 ec :diviseurs] donnees_diviseurs]
+si 0= reste :p :i 
+[diviseurs_1 :p :i+1 md :i :diviseurs_1 mp :p/:i :diviseurs_2] 
+[diviseurs_1 :p :i+1 :diviseurs_1 :diviseurs_2]
+fin
+
+#-----------------------------------------------------------------
+
+pour donnees_equation
+lis [Equation ax^p = bx^q + c. Entrez a, p, b, q et c :] "parametres
+si vide? :parametres  [ec "Stoppé\ ! stoptout]
+donne "a premier :parametres donne "p item 2 :parametres donne "b item 3 :parametres donne "q item 4 :parametres donne "c dernier :parametres
+
+si ou ((compte :parametres)>5) ((compte :parametres)<5) [ec "Il\ faut\ 5\ paramètres donnees_equation]
+equation :a :p :b :q :c ph 0 1000 0
+fin
+pour equation :a :p :b :q :c :intervalle :compteur
+fixedecimales 20
+si :compteur>1500 [ec (ph :a mot "x^ :p "= :b mot "x^ :q "+ :c) ec ph "x\ =  :x ec "Recherche\ terminée donnees_equation]
+donne "x ((premier :intervalle) + (dernier :intervalle))/2
+donne "dif absolue difference (:a * (puissance :x :p)) (:b * (puissance :x :q) + :c)
+si :dif < (0.0000000000000001)
+[ec (ph :a mot "x^ :p "= :b mot "x^ :q "+ :c) ec ph "x\ =  :x ec "Recherche\ terminée donnees_equation] [si (:a * (puissance :x :p))< (:b* (puissance :x :q) + :c) [equation :a :p :b :q :c liste :x dernier :intervalle :compteur+1] [equation :a :p :b :q :c liste premier :intervalle :x :compteur+1]]
+fin

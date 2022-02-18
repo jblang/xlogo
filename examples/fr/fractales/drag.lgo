@@ -1,0 +1,45 @@
+# Commande principale: demarrer 7
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400] fqd 1 
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise :order
+    # donne size et angle global values
+  donne "size 11*puissance (rac 2) (9-:order)
+  donne "angle 90
+fin
+
+pour display :order
+    # tape header title et curve level
+  fcc blanc
+  fpos [-190 184] etiquette phrase [dragon curve level] :order
+fin
+
+pour dragon :order :parity
+  si :order < 1 [avance :size stop]      # ie si = 0
+  dragon :order-1 1
+  tournegauche :parity*:angle            # turn tournegauche ou tournedroite :angle degrees
+  dragon :order-1 moins 1
+fin
+
+pour demarrer :order
+  new
+  initialise :order display :order
+  fpos [-108 0] fcc vert baissecrayon
+  tournedroite (45 *:order)+90           # similar orientations of curves
+  dragon :order 1
+fin
+
+pour gox
+  new animation
+  repetepour [order 0 11] [nettoie            # comment out nettoie repetepour overlaid curves
+  initialise :order display :order
+  fpos [-108 0]
+  fcc 1 + reste :order 2 baissecrayon            # rouge ou vert
+  tournedroite (45 *:order)+90           # similar orientations of curves
+  dragon :order 1
+  rf attends 80 levecrayon origine]
+fin
+

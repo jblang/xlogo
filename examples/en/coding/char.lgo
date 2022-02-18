@@ -1,0 +1,46 @@
+# Main Command: Go 2 1
+# Characters by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to gridd :m :n
+  # return X Y screen position
+  Make "X (:N*:CellSize) - 155 
+  Make "Y (:M*:CellSize) - 165 
+  Output List :X :Y
+end
+
+to drawgrid :page
+  # draw M x N array of squares 
+  For [M 15 0 -1] [
+    For [N 0 15] [
+    SetPos Gridd :M :N
+    Label Char ((((:Page*255)-15)-(16*:M)) + :N) Wait 1 ] ]
+end
+
+to display
+  # write header title and font name
+  SetPC White
+  Make "myFontName FontName SetFontName 1 
+  SetPos [-190 180] Label (Se "Character "Set " " " " :myFontName)
+end
+
+to drawaxis :page
+  SetPC Red
+  For [C 0 15] [
+    Make "YY :C*:CellSize-165
+    SetXY Minus 190 :YY Label ((:Page*255)-15)-:C*16
+    SetXY 162 :YY Label (:Page*255)-:C*16]
+end
+
+to go :fontnumber :page
+  New
+  SetFontName :FontNumber Display 
+  Make "CellSize 20 DrawAxis :Page
+  SetPC Green SetFontName :FontNumber Drawgrid :Page
+end

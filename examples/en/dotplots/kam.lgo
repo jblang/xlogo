@@ -1,0 +1,25 @@
+# Main Command: Go
+# Kam_Torus by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to kam
+  Make "Angle 74.5
+  For [Orbit 0.2 1.5 0.05] [
+    Make "X :Orbit/3 Make "Y :Orbit/3
+    Repeat 300 [
+      Make "X2Y (Power :X 2)-:Y
+      Make "Xnew :X * (Cos :Angle) + :X2Y * Sin :Angle
+      Make "Y :X * (Sin :Angle) - :X2Y * Cos :Angle
+      Make "X :Xnew
+      Dot List :X*300 :Y*300 ] ]
+end
+
+to go
+  New Kam
+end

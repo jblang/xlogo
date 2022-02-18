@@ -1,0 +1,29 @@
+# Commande principale: demarrer
+pour demarrer
+fsep 0 vt
+donnees
+fin
+
+pour donnees
+lis [Entrer un nombre compris entre 1 et 2 :] "q
+si vide? :q [ec "Stoppé\ ! stoptout]
+si ou  :q <= 1 :q >=2  [donnees] [
+lis [Ne pas rechercher au-delà de ce diviseur :] "butoir
+si vide? :butoir [donne "butoir 1000] [donne "butoir :butoir]
+ratio 3 2 :q abs (:q - 1.5)]
+fin
+
+pour ratio :dividende :diviseur :q :intervalle
+si :diviseur >:butoir [fct 0 ec " ec "Fin\ de\ recherche ec " donnees]
+donne "ratio :dividende/:diviseur
+donne "d abs (:ratio-:q)
+si :d  = 0 [fct 1 tape (ph :dividende "/ :diviseur) fct 0 tape "\ =\  fct 4 tape :ratio fct 0 tape "\ Rapport\ exact\  fct 0 tape "\ Valeur\ en\ cents\ :\  fct 10 ec (tronque 120000 * ((Log :ratio) / Log 2))/100 
+fct 0 ec "  ec "Fin\ de\ recherche ec " donnees] 
+[
+si et (:d < 0.01) (:d < :intervalle)
+ [fct 1 tape (ph :dividende "/ :diviseur) fct 0 tape "\ =\  fct 4 tape :ratio fct 0 tape "\ Différence\ avec\ le\ nombre\ visé\ :\  fct 11 tape :d donne "diviseur :diviseur+1 fct 0 tape "\ Valeur\ en\ cents\ :\  fct 10 ec (tronque 120000 * ((Log :ratio) / Log 2))/100
+ratio arrondi (:diviseur*:q) :diviseur :q :d]
+ [donne "diviseur (:diviseur + 1) 
+ratio arrondi (:diviseur * :q) :diviseur :q :intervalle]
+]
+fin

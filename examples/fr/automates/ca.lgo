@@ -1,0 +1,68 @@
+# Commande principale: demarrer 90
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise
+donne "size 2
+fixetaillecrayon :size
+fin
+
+pour display :rule :binlist
+# tape header info
+fcc 7 levecrayon
+fpos [-190 184] etiquette [1d cellular automata]
+fpos [70 184] etiquette liste "rule :rule
+fpos [70 170] etiquette :binlist
+fin
+
+pour draw :calist
+baissecrayon repetepour ph liste "n 1 (compte :calist) [
+fcc ph liste 0 (255*item :n :calist) 64
+avance :size]
+fcc 0 avance 0 levecrayon
+fin
+
+pour nextline :calist
+donne "newcalist []
+donne "calist ph :calist [0 0] #add 0 0 pour fin
+donne "ll [0 0 0]
+repetepour ph liste "n 1 (compte :calist) [
+donne "ll saufpremier md item (:n :calist) :ll
+#convert ll into a decimal number
+donne "x bin2dec :ll
+#convert x pour item x of binlist
+donne "x item (8-:x) :binlist
+#add x pour newcalist
+donne "newcalist md :x :newcalist ]
+retourne :newcalist
+fin
+
+pour dec2bin :num
+# convert :num pour an 8 item binary liste
+si :num > 255 [ec [rule is too large!] stop]
+donne "bin []
+repetepour [c 7 0 -1] [
+donne "bin md (quotient :num puissance 2 :c) :bin
+donne "num :num-((puissance 2 :c) * dernier :bin)]
+retourne :bin
+fin
+
+pour bin2dec :binlist
+#return the decimal value of a 3 bit binary liste
+retourne (4*item 1 :binlist)+(2*item 2 :binlist)+(item 3 :binlist)
+fin
+
+pour demarrer :rule
+new initialise
+donne "binlist dec2bin :rule
+display :rule :binlist fixecap 90
+donne "calist [1]
+repetepour ph ph liste "n 0 191 :size [
+fixexy (0-:n) (150-:n)
+draw :calist
+donne "calist nextline :calist]
+fin
+

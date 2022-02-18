@@ -1,0 +1,27 @@
+# Main Command: Go
+# Revolve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to rhombus
+  SetPC Gray Right 30 Forward 14
+  Left 60 Forward 14
+  SetPC White Left 120 Forward 14
+  Left 60 Forward 14 Left 150
+end
+
+to go
+  New SetSC LightGray SetPC Black
+  SetPW 4 Dot Pos SetPW 1
+  Repeat 36 [
+    Forward 180 Right 120 PenDown 
+    Rhombus PenUp Left 120 Back 180 Left 10]
+  Repeat 30 [
+    Forward 135 Left 300 PenDown 
+    Rhombus PenUp Right 300 Back 135 Left 12] 
+end

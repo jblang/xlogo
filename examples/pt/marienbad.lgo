@@ -1,0 +1,567 @@
+# Você dispõe de palitos de fósforo em 4 fileiras 
+# que contêm respectivamente 1,.3,.5 e 7 unidades. 
+# Cada um dos dois participantes brinca à volta de 
+# papel e retira o número de fósforos desejado sobre 
+# uma mesma linha. (Pode mesmo eliminar toda uma fila). 
+# O perdedor é o que toma o último fósforo.
+
+# Para iniciar o jogo, escreva demarrer na janela de 
+# comandos e dê enter. Quando for sua vez de jogar, 
+# desloque a tartaruga com as teclas "Para cima" e 
+# "Para baixo" a fim de posicionar-se sobre a linha 
+# desejada. Em seguida elimine sucessivamente o número 
+# de fósforos desejado com a tecla "Para a Esquerda" 
+# (ou então com "Delete" ou "Backspace"). Assim que 
+# terminar a jogada, pressione Enter para passar a 
+# vez para o computador.
+
+# PS: É possível vencer, não se desespere!
+# Esse jogo também é conhecido como Nim, é jogado há 
+# muitos séculos e tem importância na teoria matemática.
+
+# Michel Gaillard
+
+aprenda demarrer
+ld lt dt accueil 0
+espere 60
+ld mudecf 7 mudecl 0 pe 90 mudeel 3 mudecl 0
+ligne 1 1 3 5 7
+ligne 2 1 3 5 7
+ligne 3 1 3 5 7
+ligne 4 1 3 5 7
+atr "alea sorteie 4
+se :alea = 0 [ligne 1 1 3 5 7 oter 1 0 1 3 5 7]
+coupdehasard 1 3 5 7
+fim
+
+aprenda coupdehasard :a :b :c :d
+atr "l (1 + sorteie 4)
+se saoiguais? (elem :l sn sn sn :a :b :c :d) 0 [coupdehasard :a :b :c :d]
+oter :l 1 + sorteie (elem :l sn sn sn :a :b :c :d) :a :b :c :d
+fim
+
+aprenda accueil :n
+dt
+se :n > 16 [pare]
+un pe 90 pf 30 pd 90 pf 100
+mudecl sorteie 8 rotule [Dr. Neira]
+espere 10
+un pe 90 pf 20 pd 90 pt 100
+mudecl sorteie 8 rotule [m a r i e n b a d]
+espere 10
+pd 90 pf 50 pe 90
+accueil :n + 1
+fim
+
+aprenda allumette
+ul pd 90 pf 40 pt 80 pf 40 pe 90 un pt 40
+fim
+
+aprenda debutligne :l
+un mudepos lista ((:l * -40) +40) ((:l * -100)+200)
+fim
+
+aprenda finligne :l :a :b :c :d
+atr "n elem :l sn sn sn :a :b :c :d
+un mudepos lista ((:l * -40) +80 + (:n * 40)) ((:l * -100)+200)
+fim
+
+aprenda precurseur :l :a :b :c :d
+se :l = 0 [atr "l 4 ligne 4 :a :b :c :d precurseur :l :a :b :c :d]
+se :l = 5 [atr "l 1 ligne 1 :a :b :c :d precurseur :l :a :b :c :d]
+se e :l = 1 :a = 0 [precurseur 2 :a :b :c :d]
+se e :l = 2 :b = 0 [precurseur 3 :a :b :c :d]
+se e :l = 3 :c = 0 [precurseur 4 :a :b :c :d]
+se e :l = 4 :d = 0 [precurseur 1 :a :b :c :d]
+curseur :l :a :b :c :d
+fim
+
+aprenda curseur :l :a :b :c :d
+finligne :l :a :b :c :d
+atr "curs leiacar
+se ou :curs =-38 :curs=-224 [atr "l :l - 1 monter :l :a :b :c :d ligne :l :a :b :c :d] #haut
+se ou (ou (ou :curs = -127 :curs=-8 ) :curs = -37 ) :curs = -226 [enlever :l :a :b :c :d] # gauche ou delete
+se ou :curs = -40 :curs=-225 [atr "l :l +1 descendre :l :a :b :c :d ligne :l :a :b :c :d] #bas
+curseur :l :a :b :c :d
+fim
+
+
+aprenda ligne :l :a :b :c :d
+debutligne :l
+se :l = 1 [repita :a [allumette] ]
+se :l = 2 [repita :b [allumette] ]
+se :l = 3 [repita :c [allumette] ]
+se :l = 4 [repita :d [allumette] ]
+pt 20
+fim
+
+aprenda monter :l :a :b :c :d
+se :l = 0 [monter 4 :a :b :c :d]
+se e :l = 1 :a = 0 [monter 4 :a :b :c :d]
+se e :l = 2 :b = 0 [monter 1 :a :b :c :d]
+se e :l = 3 :c = 0 [monter 2 :a :b :c :d]
+se e :l = 4 :d = 0 [monter 3 :a :b :c :d]
+curseur :l :a :b :c :d
+fim
+
+aprenda descendre :l :a :b :c :d
+se :l = 5 [descendre 1 :a :b :c :d]
+se e :l = 1 :a = 0 [descendre 2 :a :b :c :d]
+se e :l = 2 :b = 0 [descendre 3 :a :b :c :d]
+se e :l = 3 :c = 0 [descendre 4 :a :b :c :d]
+se e :l = 4 :d = 0 [descendre 1 :a :b :c :d]
+curseur :l :a :b :c :d
+fim
+
+aprenda enlever :l :a :b :c :d
+atr "n elem :l sn sn sn :a :b :c :d
+se :n = 0 [tampon :l :a :b :c :d]
+debutligne :l
+useborracha
+se :l = 1 [un pt (:a - 1) * 40 ul allumette atr "a :a - 1]
+se :l = 2 [un pt (:b - 1) * 40 ul allumette atr "b :b - 1]
+se :l = 3 [un pt (:c - 1) * 40 allumette atr "c :c - 1]
+se :l = 4 [un pt (:d - 1) * 40 allumette atr "d :d - 1]
+tampon :l :a :b :c :d
+fim
+
+aprenda tampon :l :a :b :c :d
+atr "curs leiacar
+se :curs =10 [reponse :l :a :b :c :d]
+se ou ou ou :curs=-37 :curs=-226 :curs=-127 :curs=-8 [enlever :l :a :b :c :d]
+tampon :l :a :b :c :d
+fim
+
+aprenda reponse :l :a :b :c :d
+mudecl 0
+atr "v sn sn sn :a :b :c :d
+se :v = sn sn sn 1 3 5 6 [atr "alea sorteie 2 se :alea = 0 [oter 2 1 :a :b :c :d] [oter 1 1 :a :b :c :d]]
+se :v = sn sn sn 1 3 5 5 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 1 3 5 4 [oter 2 3 :a :b :c :d]
+se :v = sn sn sn 1 3 5 3 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 1 3 5 2 [oter 3 5 :a :b :c :d]
+se :v = sn sn sn 1 3 5 1 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 1 3 5 0 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 1 3 4 7 [atr "alea sorteie 2 se :alea = 0 [oter 2 1 :a :b :c :d] [oter 1 1 :a :b :c :d]]
+se :v = sn sn sn 1 3 4 6 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 3 4 5 [oter 2 3 :a :b :c :d]
+se :v = sn sn sn 1 3 4 4 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 1 3 4 3 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 1 3 4 2 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 1 3 4 1 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 1 3 4 0 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 1 3 3 7 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 1 3 3 6 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 1 3 3 5 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 3 3 4 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 3 3 3 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 3 3 2 [atr "alea sorteie 3 se :alea = 0 [oter 3 3 :a :b :c :d] se :alea = 1 [oter 2 3 :a :b :c :d] [oter 4 1 :a :b :c :d]]
+se :v = sn sn sn 1 3 3 1 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 3 3 0 [atr "alea sorteie 2 se :alea = 0 [oter 3 1 :a :b :c :d] [oter 2 1 :a :b :c :d]]
+se :v = sn sn sn 1 3 2 7 [oter 4 7 :a :b :c :d]
+se :v = sn sn sn 1 3 2 6 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 1 3 2 5 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 1 3 2 4 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 3 2 3 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 3 2 2 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 3 2 1 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 3 2 0 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 3 1 7 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 3 1 6 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 3 1 5 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 3 1 4 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 3 1 3 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 3 1 2 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 1 3 1 1 [oter 2 3 :a :b :c :d]
+se :v = sn sn sn 1 3 1 0 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 1 3 0 7 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 1 3 0 6 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 3 0 5 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 3 0 4 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 3 0 3 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 3 0 2 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 3 0 1 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 1 3 0 0 [oter 2 3 :a :b :c :d] #victoire
+se :v = sn sn sn 1 2 5 7 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 2 5 6 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 2 5 5 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 1 2 5 4 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 1 2 5 3 [oter 3 5 :a :b :c :d]
+se :v = sn sn sn 1 2 5 2 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 1 2 5 1 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 1 2 5 0 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 1 2 4 7 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 2 4 6 [oter 1 1 :a :b :c :d]
+se :v = sn sn sn 1 2 4 5 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 1 2 4 4 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 1 2 4 3 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 1 2 4 2 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 1 2 4 1 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 1 2 4 0 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 1 2 3 7 [oter 4 7 :a :b :c :d]
+se :v = sn sn sn 1 2 3 6 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 1 2 3 5 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 1 2 3 4 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 2 3 3 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 2 3 2 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 2 3 1 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 2 3 0 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 1 2 2 7 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 1 2 2 6 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 1 2 2 5 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 2 2 4 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 2 2 3 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 2 2 2 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 2 2 1 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 2 2 0 [oter 1 1 :a :b :c :d]
+se :v = sn sn sn 1 2 1 7 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 1 2 1 6 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 2 1 5 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 2 1 4 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 2 1 3 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 1 2 1 2 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 2 1 1 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 1 2 1 0 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 1 2 0 7 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 2 0 6 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 2 0 5 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 2 0 4 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 2 0 3 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 2 0 2 [oter 1 1 :a :b :c :d]
+se :v = sn sn sn 1 2 0 1 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 1 2 0 0 [oter 2 2 :a :b :c :d] #victoire
+se :v = sn sn sn 1 1 5 7 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 1 5 6 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 1 5 5 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 1 5 4 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 1 1 5 3 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 1 1 5 2 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 1 1 5 1 [oter 3 5 :a :b :c :d]
+se :v = sn sn sn 1 1 5 0 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 1 1 4 7 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 1 4 6 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 1 4 5 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 1 4 4 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 1 4 3 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 1 1 4 2 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 1 1 4 1 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 1 1 4 0 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 1 1 3 7 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 1 3 6 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 1 3 5 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 1 3 4 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 1 3 3 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 1 3 2 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 1 3 1 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 1 3 0 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 1 2 7 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 1 1 2 6 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 1 2 5 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 1 2 4 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 1 2 3 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 1 2 2 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 1 2 1 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 1 1 2 0 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 1 1 1 7 [oter 4 7 :a :b :c :d]
+se :v = sn sn sn 1 1 1 6 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 1 1 1 5 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 1 1 1 4 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 1 1 3 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 1 1 2 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 1 1 1 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 1 1 0 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 1 0 7 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 1 1 0 6 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 1 1 0 5 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 1 0 4 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 1 0 3 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 1 0 2 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 1 0 1 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 1 0 0 [oter 2 1 :a :b :c :d] #victoire
+se :v = sn sn sn 1 0 5 7 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 0 5 6 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 0 5 5 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 0 5 4 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 0 5 3 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 1 0 5 2 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 1 0 5 1 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 1 0 5 0 [oter 3 5 :a :b :c :d] #victoire
+se :v = sn sn sn 1 0 4 7 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 0 4 6 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 1 0 4 5 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 0 4 4 [oter 1 1 :a :b :c :d]
+se :v = sn sn sn 1 0 4 3 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 1 0 4 2 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 1 0 4 1 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 1 0 4 0 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 1 0 3 7 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 1 0 3 6 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 0 3 5 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 0 3 4 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 0 3 3 [atr "alea sorteie 3 se :alea = 0 [oter 1 1 :a :b :c :d] se :alea = 1 [oter 4 1 :a :b :c :d] [oter 3 1 :a :b :c :d]]
+se :v = sn sn sn 1 0 3 2 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 0 3 1 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 1 0 3 0 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 1 0 2 7 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 0 2 6 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 0 2 5 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 0 2 4 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 0 2 3 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 0 2 2 [oter 1 1 :a :b :c :d]
+se :v = sn sn sn 1 0 2 1 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 1 0 2 0 [oter 3 2 :a :b :c :d] #victoire
+se :v = sn sn sn 1 0 1 7 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 1 0 1 6 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 1 0 1 5 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 1 0 1 4 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 1 0 1 3 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 1 0 1 2 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 1 0 1 1 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 1 0 1 0 [oter 3 1 :a :b :c :d] #victoire
+se :v = sn sn sn 1 0 0 7 [oter 4 7 :a :b :c :d] #victoire
+se :v = sn sn sn 1 0 0 6 [oter 4 6 :a :b :c :d] #victoire
+se :v = sn sn sn 1 0 0 5 [oter 4 5 :a :b :c :d] #victoire
+se :v = sn sn sn 1 0 0 4 [oter 4 4 :a :b :c :d] #victoire
+se :v = sn sn sn 1 0 0 3 [oter 4 3 :a :b :c :d] #victoire
+se :v = sn sn sn 1 0 0 2 [oter 4 2 :a :b :c :d] #victoire
+se :v = sn sn sn 1 0 0 1 [oter 4 1 :a :b :c :d] #victoire
+se :v = sn sn sn 1 0 0 0 [bravo oter 1 1 :a :b :c :d] #defaite
+se :v = sn sn sn 0 3 5 7 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 3 5 6 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 3 5 5 [oter 2 3 :a :b :c :d]
+se :v = sn sn sn 0 3 5 4 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 0 3 5 3 [oter 3 5 :a :b :c :d]
+se :v = sn sn sn 0 3 5 2 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 0 3 5 1 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 0 3 5 0 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 0 3 4 7 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 3 4 6 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 0 3 4 5 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 0 3 4 4 [oter 2 3 :a :b :c :d]
+se :v = sn sn sn 0 3 4 3 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 0 3 4 2 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 0 3 4 1 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 0 3 4 0 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 0 3 3 7 [oter 4 7 :a :b :c :d]
+se :v = sn sn sn 0 3 3 6 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 0 3 3 5 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 0 3 3 4 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 3 3 3 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 3 3 2 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 3 3 1 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 0 3 3 0 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 3 2 7 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 0 3 2 6 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 0 3 2 5 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 3 2 4 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 3 2 3 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 3 2 2 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 3 2 1 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 3 2 0 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 0 3 1 7 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 0 3 1 6 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 3 1 5 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 3 1 4 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 3 1 3 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 3 1 2 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 3 1 1 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 0 3 1 0 [oter 2 3 :a :b :c :d] #victoire
+se :v = sn sn sn 0 3 0 7 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 3 0 6 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 3 0 5 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 3 0 4 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 3 0 3 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 3 0 2 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 0 3 0 1 [oter 2 3 :a :b :c :d] #victoire
+se :v = sn sn sn 0 3 0 0 [oter 2 2 :a :b :c :d] #victoire
+se :v = sn sn sn 0 2 5 7 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 2 5 6 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 0 2 5 5 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 0 2 5 4 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 0 2 5 3 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 0 2 5 2 [oter 3 5 :a :b :c :d]
+se :v = sn sn sn 0 2 5 1 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 0 2 5 0 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 0 2 4 7 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 2 4 6 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 2 4 5 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 0 2 4 4 [oter 2 2 :a :b :c :d]
+se :v = sn sn sn 0 2 4 3 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 0 2 4 2 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 0 2 4 1 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 0 2 4 0 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 0 2 3 7 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 0 2 3 6 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 0 2 3 5 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 2 3 4 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 2 3 3 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 2 3 2 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 2 3 1 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 2 3 0 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 0 2 2 7 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 0 2 2 5 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 0 2 2 4 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 2 2 3 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 2 2 2 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 2 2 1 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 2 2 0 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 2 1 7 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 2 1 6 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 2 1 5 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 2 1 4 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 2 1 3 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 2 1 2 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 0 2 1 1 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 0 2 1 0 [oter 2 2 :a :b :c :d] #victoire
+se :v = sn sn sn 0 2 0 7 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 0 2 0 6 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 2 0 5 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 2 0 4 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 2 0 3 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 2 0 2 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 2 0 1 [oter 2 2 :a :b :c :d] #victoire
+se :v = sn sn sn 0 2 0 0 [oter 2 1 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 5 7 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 1 5 6 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 1 5 5 [atr "alea sorteie 2 se :alea = 0 [oter 4 1 :a :b :c :d] [oter 3 1 :a :b :c :d]]
+se :v = sn sn sn 0 1 5 4 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 1 5 3 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 0 1 5 2 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 0 1 5 1 [oter 3 4 :a :b :c :d]
+se :v = sn sn sn 0 1 5 0 [oter 3 5 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 4 7 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 1 4 6 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 1 4 5 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 1 4 4 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 0 1 4 3 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 0 1 4 2 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 0 1 4 1 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 0 1 4 0 [oter 3 4 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 3 7 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 0 1 3 6 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 1 3 5 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 1 3 4 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 1 3 3 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 1 3 2 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 1 3 1 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 0 1 3 0 [oter 3 3 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 2 7 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 1 2 6 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 1 2 5 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 1 2 4 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 1 2 3 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 1 2 2 [oter 2 1 :a :b :c :d]
+se :v = sn sn sn 0 1 2 1 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 0 1 2 0 [oter 3 2 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 1 7 [oter 4 6 :a :b :c :d]
+se :v = sn sn sn 0 1 1 6 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 0 1 1 5 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 1 1 4 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 1 1 3 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 1 1 2 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 1 1 1 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 1 1 0 [oter 3 1 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 0 7 [oter 4 7 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 0 6 [oter 4 6 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 0 5 [oter 4 5 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 0 4 [oter 4 4 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 0 3 [oter 4 3 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 0 2 [oter 4 2 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 0 1 [oter 4 1 :a :b :c :d] #victoire
+se :v = sn sn sn 0 1 0 0 [bravo oter 2 1 :a :b :c :d] #defaite
+se :v = sn sn sn 0 0 5 7 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 0 5 6 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 0 5 5 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 0 5 4 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 0 0 5 3 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 0 0 5 2 [oter 3 3 :a :b :c :d]
+se :v = sn sn sn 0 0 5 1 [oter 3 5 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 5 0 [oter 3 4 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 4 7 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 0 4 6 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 0 0 4 5 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 0 4 4 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 0 4 3 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 0 0 4 2 [oter 3 2 :a :b :c :d]
+se :v = sn sn sn 0 0 4 1 [oter 3 4 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 4 0 [oter 3 3 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 3 7 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 0 3 6 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 0 3 5 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 0 3 4 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 0 3 3 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 0 3 2 [oter 3 1 :a :b :c :d]
+se :v = sn sn sn 0 0 3 1 [oter 3 3 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 3 0 [oter 3 2 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 2 7 [oter 4 5 :a :b :c :d]
+se :v = sn sn sn 0 0 2 6 [oter 4 4 :a :b :c :d]
+se :v = sn sn sn 0 0 2 5 [oter 4 3 :a :b :c :d]
+se :v = sn sn sn 0 0 2 4 [oter 4 2 :a :b :c :d]
+se :v = sn sn sn 0 0 2 3 [oter 4 1 :a :b :c :d]
+se :v = sn sn sn 0 0 2 2 [jolicoup coupdehasard :a :b :c :d]
+se :v = sn sn sn 0 0 2 1 [oter 3 2 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 2 0 [oter 3 1 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 1 7 [oter 4 7 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 1 6 [oter 4 6 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 1 5 [oter 4 5 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 1 4 [oter 4 4 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 1 3 [oter 4 3 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 1 2 [oter 4 2 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 1 1 [oter 4 1 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 1 0 [bravo oter 3 1 :a :b :c :d] #defaite
+se :v = sn sn sn 0 0 0 7 [oter 4 6 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 0 6 [oter 4 5 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 0 5 [oter 4 4 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 0 4 [oter 4 3 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 0 3 [oter 4 2 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 0 2 [oter 4 1 :a :b :c :d] #victoire
+se :v = sn sn sn 0 0 0 1 [bravo oter 4 1 :a :b :c :d] #defaite
+fim
+
+aprenda jolicoup
+dt mudecl 0 un pt 100 pd 90 rotule [Bela jogada !] espere 60 useborracha rotule [Bela jogada!] pe 90
+fim
+
+aprenda oter :l :x :a :b :c :d
+dt
+finligne :l :a :b :c :d
+se :x = 0 [jouer :l :a :b :c :d] [mudecl 1 un pt 100 pd 90 rotule [Dr. Neira joga...] pe 90]
+debutligne :l
+se :l = 1 [un pt (:a - 1) * 40 repita :x [allumette pf 80]]
+se :l = 2 [un pt (:b - 1) * 40 repita :x [allumette pf 80]]
+se :l = 3 [un pt (:c - 1) * 40 repita :x [allumette pf 80]]
+se :l = 4 [un pt (:d - 1) * 40 repita :x [allumette pf 80]]
+espere 200
+finligne :l :a :b :c :d
+useborracha un pt 100 pd 90 rotule [Dr. Neira joga...] pe 90
+debutligne :l
+se :l = 1 [un pt (:a - 1) * 40 repita :x [allumette pf 80] atr "a :a - :x]
+se :l = 2 [un pt (:b - 1) * 40 repita :x [allumette pf 80] atr "b :b - :x]
+se :l = 3 [un pt (:c - 1) * 40 repita :x [allumette pf 80] atr "c :c - :x]
+se :l = 4 [un pt (:d - 1) * 40 repita :x [allumette pf 80] atr "d :d - :x]
+tampon2 :l :a :b :c :d
+jouer :l :a :b :c :d
+fim
+
+aprenda tampon2 :l :a :b :c :d
+atr "s (:a + :b) + (:c + :d)
+se :s = 0 [un pt 100 pd 90 mudecl 1 rotule [... e passa a vez.] espere 120 demarrer]
+se :s = 1 [un pt 100 pd 90 mudecl 1 rotule [... e vence.] espere 120 demarrer]
+se :l = 0 [atr "l 4 ligne 4 :a :b :c :d]
+se :l = 5 [atr "l 1 ligne 1 :a :b :c :d]
+se e :l = 1 :a = 0 [atr "l 2 tampon2 2 :a :b :c :d]
+se e :l = 2 :b = 0 [atr "l 3 tampon2 3 :a :b :c :d]
+se e :l = 3 :c = 0 [atr "l 4 tampon2 4 :a :b :c :d]
+se e :l = 4 :d = 0 [atr "l 1 tampon2 1 :a :b :c :d]
+fim
+
+aprenda jouer :l :a :b :c :d
+finligne :l :a :b :c :d
+dt pt 100 pd 90 mudecl 4 rotule [sua vez de jogar.] espere 60 useborracha rotule [sua vez de jogar.] pe 90
+mudecl 0 at
+precurseur :l :a :b :c :d
+fim
+
+aprenda bravo
+dt mudecl 0 un pt 100 pd 90 rotule [Bravo !] espere 60 useborracha rotule [Bravo !] pe 90
+fim

@@ -1,0 +1,52 @@
+# Comando de Inicio: empezar
+para empezar
+  repite 12
+    [ nuevo inicializar leyenda spir espera 200]
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+fin
+
+para inicializar
+  haz "k 90
+  haz "e 2.718
+  haz "f1 truncar 1+ azar 9
+  haz "f2 truncar 1+ azar 9
+  haz "f3 truncar 1+ azar 9
+  haz "f4 truncar 1+ azar 9
+  haz "p1 truncar azar 360
+  haz "p2 truncar azar 360
+  haz "p3 truncar azar 360
+  haz "p4 truncar azar 360
+fin
+
+para leyenda
+# Muestra el encabezado y pie
+  poncolorlapiz blanco
+  ponposicion [-190 184] rotula "Armonografo
+  ponposicion [-200 -190] rotula (frase "Frecuencias: :f1 :f2 :f3 :f4)
+  ponposicion [35 -190] rotula (frase "Fase: :p1 :p2 :p3 :p4)
+fin
+
+para spir
+  ponposicion xycurva 0 bajalapiz
+  repitepara [t 0 5000]
+     [poncolorlapiz angcol :t ponposicion xycurva :t]
+fin
+
+para xycurva :t
+  haz "kk :k * potencia :e ( cambiasigno 0.00015 * :t )
+  haz "x :kk*((coseno ((:f1*:t) + :p1 )) + (coseno ((:f2*:t) + :p2 )))
+  haz "y :kk*((coseno ((:f3*:t) + :p3 )) + (coseno ((:f4*:t) + :p4 )))
+  devuelve (lista :x :y)
+fin
+
+para angcol :theta
+  haz "red abs 255 *coseno (:theta)
+  haz "gre abs 255 *coseno (:theta + 120)
+  haz "blu abs 255 *coseno (:theta + 240)
+  devuelve (frase :red :gre :blu)
+fin

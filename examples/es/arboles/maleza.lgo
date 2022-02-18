@@ -1,0 +1,74 @@
+# Comando de Inicio: empezar 5
+para empezar :de
+  haz "profundidad :de
+  nuevo inicializar leyenda :profundidad
+  haz "posiciones [ ]
+  haz "dibujalista [regla]
+  repite :profundidad-1 [ haz "dibujalista genera :dibujalista :regla contador]
+  ponposicion [0 -170]
+  bajalapiz ejecuta :dibujalista
+fin
+
+para nuevo
+# inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para inicializar
+  haz "long 200 haz "delta 0.65 haz "angulo 20
+  haz "regla [ d s m m regla r s p regla r m regla ]
+fin
+
+para leyenda :profundidad
+# Encabezado con titulo, delta, angulo y profundidad
+  poncolorlapiz blanco
+  ponposicion [-190 184] rotula [Curvas con listas]
+  ponposicion [-190 -192] rotula ( lista "regla: :regla )
+  ponposicion [100 184] rotula ( lista "delta: :delta )
+  ponposicion [100 170] rotula ( lista "angulo: :angulo )
+  ponposicion [100 156] rotula ( lista "profundidad: :profundidad )
+fin
+
+para genera :dibujalista :regla :dep
+  haz "nuevalista [ ]
+  repite (cuenta :dibujalista) [
+    haz "esteelemento elemento contador :dibujalista
+    si :esteelemento = "regla [
+      repite (cuenta :regla) [
+        haz "esteelemento2 elemento contador :regla
+        haz "nuevalista ponultimo :esteelemento2 :nuevalista
+        si :esteelemento2 = "d [ haz "nuevalista ponultimo :dep :nuevalista ] ] ]
+    [ haz "nuevalista ponultimo :esteelemento :nuevalista ] ]
+  devuelve :nuevalista
+fin
+
+para d :dep
+  #setpw :profundidad-:dep
+  haz "green redondea 255/ (:profundidad-:dep ) # verde depende de long
+  poncolorlapiz ( lista 255 :green 0 ) # rojo si 255 y azul si 0
+  avanza :long * potencia :delta :dep ponposicion posicion
+fin
+
+para p
+  giraderecha :angulo ponrumbo rumbo
+fin
+
+para m
+  giraizquierda :angulo ponrumbo rumbo
+fin
+
+para s
+  haz "posiciones ponultimo lista posicion rumbo :posiciones
+fin
+
+para r
+  haz "mipos ultimo :posiciones
+  subelapiz ponposicion primero :mipos
+  ponrumbo ultimo :mipos bajalapiz
+  haz "posiciones menosultimo :posiciones
+fin
+
+para regla
+  poncolorlapiz rojo avanza 1
+fin

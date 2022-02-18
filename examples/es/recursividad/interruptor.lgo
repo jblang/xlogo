@@ -1,0 +1,31 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos pantalla, lapiz, tortuga, ...
+  reponetodo ptp [400 400]
+  poncolorpapel negro ocultatortuga
+#
+  inicializar
+  poncolorlapiz [128 128 128] arbol 96
+  repite 7
+    [ inicializar poncolorlapiz contador elec 96
+      espera 60]
+fin
+
+para inicializar
+  subelapiz centro giraderecha 90 retrocede 160 bajalapiz
+fin
+
+para arbol :lado
+  avanza 40
+  si :lado < 2 [retrocede 40 alto]
+  giraizquierda 90 avanza :lado giraderecha 90 arbol 0.5*:lado
+  giraizquierda 90 retrocede :lado*2 giraderecha 90 arbol 0.5*:lado
+  giraderecha 90 retrocede :lado giraizquierda 90 retrocede 40
+fin
+
+para elec :lado
+  avanza 40
+  si :lado < 2 [avanza 20 alto]
+  ponrumbo elige [0 180] avanza :lado
+  ponrumbo 90 elec 0.5*:lado
+fin

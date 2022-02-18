@@ -1,0 +1,52 @@
+# Commande principale: eponge 3
+pour cube :l
+si :compteur=10000 [vue3d]
+donne "compteur :compteur+1
+# Couleur des faces latérales
+soit "couleurs [jaune magenta cyan bleu]
+# faces latérales
+repete 4 [fcc exec item compteur :couleurs carre :l td 90 av  :l tg 90 rd 90]
+# Dessous
+fcc rouge pique 90 carre :l cabre 90
+av :l pique 90 fcc vert carre :l cabre 90 re :l
+fin
+
+pour carre :c
+polydef
+repete 4 [av :c td 90]
+polyfin
+fin
+
+# Eponde de Menger 
+# p: profondeur de récursivité
+# l: Longueur du grand cube.
+pour menger :l :p
+si :p=0 [cube :l] [
+  soit "p :p-1  
+  soit "l :l/3
+  #face avant
+  repete 3 [menger :l :p av :l] re 3*:l
+  td 90 av :l tg 90
+  menger :l :p av 2*:l menger :l :p re 2*:l
+  td 90 av :l tg 90
+  repete 3 [menger :l :p av :l] re 3*:l
+  #Côté droit 
+ pique 90 av :l cabre 90 
+  menger :l :p  av 2*:l menger :l :p re 2*:l
+  pique 90 av :l cabre 90 
+  repete 3 [menger :l :p av :l] re 3*:l
+  tg 90 av :l td 90
+  menger :l :p  av 2*:l menger :l :p re 2*:l
+  tg 90 av :l td 90
+  repete 3 [menger :l :p av :l] re 3*:l
+  pique 90 re :l cabre 90
+  menger :l :p  av 2*:l menger :l :p re 2*:l
+   pique 90 re :l cabre 90
+]
+fin
+
+pour eponge :p
+ve ct donne "compteur 0 perspective fcfg 0 menger 800 :p 
+tape [Nombre de cubes: ] ec :compteur 
+vue3d
+fin

@@ -1,0 +1,46 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour display
+  # tape header title et footer equation
+  fpos [-190 184] etiquette [butterfly curve]
+  fpos [-190 -190]
+  etiquette [e^cos theta -2*cos 4*theta +sin theta/12^5]
+fin
+
+pour curve :theta
+  # draw curve
+  repetepour [theta 0 3960 2]
+  [fcc angcol 3*:theta
+  fpos ptor raddist :theta :theta]
+fin
+
+pour ptor :raddist :theta
+  # convert polar pour rectangular
+  donne "x 50*:raddist*sin :theta
+  donne "y (50*:raddist*cos :theta)-35
+  retourne liste :x :y
+fin
+
+pour raddist :theta
+  # use curve equation pour return raddist
+  retourne (puissance 2.7 (cos :theta)) -(2*cos(4*:theta))
+     +(puissance sin(:theta/12) 5)
+fin
+
+pour angcol :theta
+  # return rgb color liste
+  donne "red 127*(1+cos :theta)
+  donne "green 127*(1+cos(120+:theta))
+  donne "blue 127*(1+cos(240+:theta))
+  retourne phrase liste :red :green :blue
+fin
+
+pour demarrer
+  new display origine baissecrayon curve 0
+fin
+

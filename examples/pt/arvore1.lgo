@@ -1,0 +1,25 @@
+# Esse projeto desenha uma árvore binária.
+# Escreva arvore (seguida de um número) na caixa  de comandos 
+# para o xLogo desenhar uma árvore com a altura dada pelo número.
+# Criado por Bertrand Carette
+
+aprenda arvore :altura
+#
+# exemplo : arvore 150
+#
+mudeel (quociente :altura 10)
+atr "alea sorteie 3
+se :alea = 0 [mudecl 2][se :alea = 1 [mudecl 1][mudecl  3]]
+pf :altura
+se :altura > 5 [
+  pd 30 arvore (quociente :altura 2)
+  pd 30 arvore (quociente :altura 2)
+  pe 90 arvore (quociente :altura 2)
+  pe 30 arvore (quociente :altura 2)
+  pd 60
+  ]
+un
+pt :altura
+ul
+mudeel 1 mudecl 0
+fim

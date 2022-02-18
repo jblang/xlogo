@@ -1,0 +1,25 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour mrose :c
+  donne "t 0 donne "s 0
+  donne "angle 360 / :c
+  repete (:c-1) [
+  repetepour phrase liste "count :s :c [
+  levecrayon
+  fixexy 190*sin (:angle * :s) 190*cos (:angle * :s)
+  baissecrayon
+  fixexy 190*sin (:angle * :count) 190*cos (:angle * :count)
+  donne "t :t+1 attends 1]
+  donne "s :s+1]
+fin
+
+pour demarrer
+  new fcc cyan repetepour [c 2 16] [
+  nettoie mrose :c attends 100]
+fin
+

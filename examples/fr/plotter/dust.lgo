@@ -1,0 +1,38 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour dust
+  origine tournedroite hasard 360 avance :max donne "col 0
+  tantque [:max < 182] [
+  tantque [:col = 0] [
+  fcc noir point pos  # effacenom previous point
+  fixecap vers [ 0 0 ]
+  tournegauche 30 tournedroite hasard 420 avance 1
+  donne "col vicinity
+  fcc jaune point pos]
+  donne "maxnew 2 + distance [ 0 0 ]
+  si :maxnew > :max [ donne "max :maxnew]
+  dust ]
+fin
+
+pour vicinity
+  # check occupation of surrounding pixels
+  # return '1' si neighbouring dust is present
+  repetepour [i -1 1] [
+  repetepour [j -1 1] [
+  donne "r item 1 trouvecouleur liste :i + item 1 pos :j + item 2 pos
+  si :r = 255 [retourne 1] ] ]
+  retourne 0
+fin
+
+pour demarrer
+  new fcc jaune
+  point pos  # draw a seed dust speck
+  donne "max 4
+  dust
+fin
+

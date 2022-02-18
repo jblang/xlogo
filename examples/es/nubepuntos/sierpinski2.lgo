@@ -1,0 +1,25 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos la pantalla, el lapiz, la tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  haz "xcor 0 haz "ycor 0 # inicializamos xcor e ycor a 0
+  repite 10000 [sier] # repite 10000 veces
+fin
+
+para sier
+  haz "vertice azar 3 # elige vertice
+  si :vertice=0
+     [dibuja 190 cambiasigno 180 poncolorlapiz 2]
+  si :vertice=1
+     [dibuja cambiasigno 190 cambiasigno 180 poncolorlapiz 3]
+  si :vertice=2
+     [dibuja 0 160 poncolorlapiz 5]
+fin
+
+para dibuja :xp :yp
+  haz "xcor (:xcor+:xp)/2
+  haz "ycor (:ycor+:yp)/2
+  ponxy :xcor :ycor bajalapiz avanza 0 subelapiz # dibuja pixel
+fin

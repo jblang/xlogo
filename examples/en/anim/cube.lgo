@@ -1,0 +1,72 @@
+# Main Command: Go 7
+# Cubes by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To Init :Order
+  # global values
+  Make "Width 384
+  GlobalMake "Depth :Order   # Cube depth
+  GlobalMake "Side :Width/(:Order+:Depth*0.4)
+  GlobalMake "OffsetX :Side+(:Side*((:Depth-1)*0.4))-(:Width/2)
+  GlobalMake "OffsetY :Side+(:Side*((:Depth-1)*0.35))-(:Width/2)
+End
+
+To Gridd :M :N
+  # return X Y screen position
+  Make "X (:M*:Side) + :OffSetX
+  Make "Y (:N*:Side) + :OffSetY
+  Output List :X :Y
+End
+
+To DrawGrid :Order :Depth
+  # draw M x N array of cubes
+  For (List "M 0 :Order-1) [
+    For (List "N 0 :Order-1) [
+    If 0 = Random :Order [
+      SetPos Gridd :M :N Cube :Side Wait 6] ] ]
+End
+
+To Cube :Side
+  # cube drawn from upper right front corner
+  Make "Col (List 63+Random 127 63+Random 127 63+Random 127)
+  SetPC White PenDown Left 90
+  Repeat 4 [Forward :Side Left 90]
+  FillPoly :Col Right 144
+  Repeat 2 [Forward :Side/2 Left 144 Forward :Side Left 36]
+  FillPoly Light :Col Right 126
+  Repeat 2 [Forward :Side Left 126 Forward :Side/2 Left 54]
+  FillPoly Dark :Col Right 180 PenUp
+End
+
+To FillPoly :Col
+  PenUp Left 45 Forward 4 FillZone SetPC :Col Fill
+  Back 4 Right 45 SetPC White PenDown
+End
+
+To Light :Hue
+  # output rgb list midway between :hue and white
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (255+(First :Hue))/2 :Hue]
+  Output :Hue
+End
+
+To Dark :Hue
+  # output rgb list midway between :hue and black
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (First :Hue)/2 :Hue]
+  Output :Hue
+End
+
+To Go :Order
+  New Init :Order
+  Repeat :Depth [
+    DrawGrid :Order RepCount
+    Make "OffsetX :OffsetX - (Cos 36) * :Side/2
+    Make "OffsetY :OffsetY - (Sin 36) * :Side/2 ]
+End

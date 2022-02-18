@@ -1,0 +1,41 @@
+# Main Command: Go 7
+# Hermann Grid by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To GridSq :Order :Side :Tile
+  # draw tile at each column by row position
+  LocalMake "Offset (1+:Order)/2
+  For (List "Col 1 :Order) [
+    For (List "Row 1 :Order) [
+      SetXY :Side*(:Col-:Offset) :Side*(:Row-:Offset)
+      Run (Word "Tile :Tile) :Col :Row :Side] ]
+End
+
+To TileBg :Col :Row :Side
+  SetPC [33 0 58] Square 0.8*:Side Fill Wait 1
+End
+
+To TileDot :Col :Row :Side
+  SetPC Yellow SetPW 0.2*:Side Dot Pos Wait 1
+End
+
+To Square :Side
+  # square (side x side) drawn from centre (tp)
+  Back :Side/2 Right 90 Back :Side/2 PenDown
+  Repeat 4 [
+    Forward :Side Left 90]
+  PenUp Forward :Side/2 Left 90 Forward :Side/2     # r2c
+End
+
+To Go :Order
+  New SetSC [121 87 39]
+  Make "Side Int (418/(:Order+1))
+  GridSq :Order+1 :Side "Bg Wait 20
+  GridSq :Order :Side "Dot
+End

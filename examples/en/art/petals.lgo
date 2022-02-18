@@ -1,0 +1,24 @@
+# Main Command: Go
+# Petals by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to curve
+  Repeat 15 [Forward 5 Right 6]
+  Make "Col Abs :Col-17   # alternate between colors 2 and 15
+  SetPC :Col
+  Repeat 15 [Forward 5 Right 6]
+end
+
+to go
+  New Make "Col 2
+  For [N 1 7] [
+    PenUp SetPos [-50 -30] PenDown Wash
+    Repeat 8 [Right 45 Repeat :N [Curve Right 90 Wait 5]]
+  Wait 128] 
+end

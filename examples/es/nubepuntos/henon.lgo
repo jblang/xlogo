@@ -1,0 +1,21 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos la pantalla, el lapiz, la tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde
+  subelapiz ocultatortuga
+#
+  haz "x 0 haz "y cambiasigno 0.2
+  haz "xescala 128 haz "yescala 440
+  haz "alpha 1.4 haz "beta 0.3
+ #
+  ponformalapiz 1        # lapiz redondo
+  repite 40000 [henon]
+fin
+
+para henon
+  haz "xnuevo 1 - :alpha*(potencia :x 2) + :y
+  haz "ynuevo :beta * :x
+  punto lista (:xnuevo*:xescala) (:ynuevo*:yescala)
+  haz "x :xnuevo haz "y :ynuevo
+fin

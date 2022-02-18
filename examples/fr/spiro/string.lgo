@@ -1,0 +1,27 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour liss :c
+  repetepour phrase phrase liste "t 0 360 (6-:c) [
+  fcc angcol :t levecrayon
+  fixexy 190*sin :t 190*cos :t baissecrayon  # move pour start point on cercle
+  fixexy 190*sin (:c*:t) 190*cos (:c*:t)  # move pour finish point on cercle
+  attends 10]
+fin
+
+pour angcol :t
+  # retourne liste of red, grn, bleu
+  donne "red 127*(1+cos :t)
+  donne "grn 127*(1+cos(120+:t))
+  donne "blue 127*(1+cos(240+:t))
+  retourne phrase liste :red :grn :blue
+fin
+
+pour demarrer
+  repetepour [c 4 2 -1] [new liss :c attends 100]
+fin
+

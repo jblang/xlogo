@@ -1,0 +1,64 @@
+# Comando de Inicio: empezar 25 37
+para empezar
+# dibuja curvasde "enredo" aleatorias
+  nuevo mientras [cierto] [enredo azar 2048 espera 88]
+fin
+
+para nuevo
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para enredo :n
+  haz "nueva.long 16
+#
+# comentar la linea siguietne para no optimizar la curva
+  optimiza :n :nueva.long
+  limpia leyenda :n :xcent :ycent :nueva.long
+  ponxy :xcent :ycent bajalapiz
+  repitepara frase lista "i 0 :n [
+  poncolorlapiz angcol :i :n
+  ponrumbo funcion :i :n avanza :nueva.long]
+  subelapiz
+fin
+
+para optimiza :n :long
+  centro
+  haz "xmax 0 haz "xmin 0
+  haz "ymax 0 haz "ymin 0
+  repitepara frase lista "i 0 :n [
+  ponrumbo funcion :i :n avanza :long
+  si (elemento 1 posicion) > :xmax [haz "xmax elemento 1 posicion]
+  si (elemento 1 posicion) < :xmin [haz "xmin elemento 1 posicion]
+  si (elemento 2 posicion) > :ymax [haz "ymax elemento 2 posicion]
+  si (elemento 2 posicion) < :ymin [haz "ymin elemento 2 posicion] ]
+  haz "xtam :xmax + abs :xmin
+  haz "ytam :ymax + abs :ymin
+  si :xtam=:ytam | :xtam>:ytam
+  [haz "tam :xtam] [haz "tam :ytam]
+  haz "escala 360/:tam
+  haz "nueva.long :long*:escala
+  si ((abs (:nueva.long - :long))>:long/10) [
+  haz "long :nueva.long optimiza :n :long]
+  haz "xcent cambiasigno (:xmax + :xmin)/2
+  haz "ycent cambiasigno (:ymax + :ymin)/2
+fin
+
+para funcion :i :n
+  devuelve (360*(potencia :i 3)/:n)-90
+fin
+
+para leyenda :n :xcent :ycent :nueva.long
+# Muestra informacion en el encabezado y el pie
+  ponrumbo 0 poncolorlapiz blanco
+  ponposicion [-190 184] rotula [Curva enredada]
+  ponposicion [150 184] rotula :n
+  ponposicion [-190 -190] rotula lista redondea :xcent redondea :ycent
+  ponposicion [150 -190] rotula redondea :nueva.long
+fin
+
+para angcol :i :n
+  haz "green redondea 255*(seno 180*:i/:n)
+  devuelve frase lista 255 :green 0
+fin

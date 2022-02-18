@@ -1,0 +1,32 @@
+# Comando de Inicio: empezar
+para empezar
+  reponetodo ptp [400 400]
+  poncolorpapel negro subelapiz ocultatortuga
+#
+  retrocede 156 giraderecha 88 bajalapiz poncolorlapiz [128 128 128]
+  repite 90 [avanza 11 giraizquierda 4] subelapiz
+#
+  repite 16 [inicializar flora]
+fin
+
+para inicializar
+  haz "x (140 - azar 280)
+  haz "y (140 - azar 280)
+  haz "t (azar 360)
+  haz "d elige [2 3 4 5 6 7]
+fin
+
+para flora
+  poncolorlapiz angcol :t ponxy :x :y bajalapiz
+  repitepara [n 0 360 5] [
+  ponxy :x :y ponrumbo :n+:t
+  avanza 28*(1+coseno(:d*:n))]
+  subelapiz
+fin
+
+para angcol :t
+  haz "red redondea 127*(1+coseno :t)
+  haz "green redondea 127*(1+coseno(120+:t))
+  haz "blue redondea 127*(1+coseno(240+:t))
+  devuelve (frase :red :green :blue)
+fin

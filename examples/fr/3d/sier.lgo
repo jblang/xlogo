@@ -1,0 +1,36 @@
+# Commande principale: sierpinski 5
+pour sier :p :long
+ soit "p :p-1
+ soit "long :long / 2
+ si :p > 0 [
+   # 3 motifs de base
+  repete 3 [sier :p :long av :long*2 td 120]
+    rg :angle    td 60 av :long tg 60 rd :angle 
+    sier :p :long
+    rg :angle td 60 re :long tg 60 rd :angle
+]
+ si :p = 0 [
+  pyramide 2*:long
+]
+fin
+
+
+pour tri :a
+polydef
+repete 3 [av :a td 120]
+polyfin
+fin
+
+pour pyramide :a
+donne "angle acos 1/3
+# triangle du dessous
+tri :a
+# face latérales 
+repete 3 [ rg :angle tri :a rd :angle av :a td 120]
+fin
+
+pour sierpinski :p
+init perspective ve fcfg 0 ct fcc 6
+sier :p 1000
+vue3d
+fin

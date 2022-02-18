@@ -1,0 +1,38 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour section :side
+  si :side < 2 [stop]         # stop when side too short
+  fcc 2 square :side         # comment out repetepour curve only
+  fcc 1 curve :side         # comment out repetepour squares only
+  section :side*0.618        # do again with smaller side
+fin
+
+pour square :side
+  repete 4 [avance :side tournedroite 90]
+fin
+
+pour curve :side
+  donne "step :side*0.0524        # cap correction pi/60
+  tournedroite 1.5
+  repete 30 [avance :step tournedroite 3 attends 4]         # 90 degree arc in 30 steps
+  tournegauche 1.5
+fin
+
+pour lines
+  fcc [0 0 128]         # draw crossed lines in bleu
+  levecrayon fpos [-185 88]
+  baissecrayon fpos [184 -140]
+  levecrayon fpos [184 88]
+  baissecrayon fpos [43 -140] attends 30
+fin
+
+pour demarrer
+  new lines fpos [-185 -140]
+  section 228         # begin with square of side 228
+fin
+

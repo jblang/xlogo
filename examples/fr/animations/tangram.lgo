@@ -1,0 +1,93 @@
+# Commande principale: demarrer
+pour new
+  init ftd [400 400] cachetortue
+  fcfg noir fcc vert levecrayon animation
+fin
+
+pour initialise
+    # Initialise  les couleurs pour l'écran, le crayon de la tortue
+  donne "tans [[tri1 24] [tri2 24] [tri2 17] [squ] [par] [tri1 12] [tri2 12]]
+  donne "pics [[start] [running_man]]
+fin
+
+pour display
+  fcc blanc fixecap 0
+  fpos [-190 184] etiquette phrase [tangram] :endname
+fin
+
+pour slide
+  repetepour [step 0 64] [nettoie
+  repetepour [n 1 7] [
+  donne "dd :step / moins 64
+  fixex delta :n :dd 1
+  fixey delta :n :dd 2
+  fixecap delta :n :dd 3
+  exec item :n :tans]
+  rf]
+  display rf attends 120
+fin
+
+pour delta :n :dd :m
+  donne "differ (item :m item :n :start) - (item :m item :n :end)
+  retourne (item :m item :n :start) + (:dd*:differ)
+fin
+
+pour demarrer
+  new initialise
+  donne "start exec (item 1 :pics) # globale liste
+  donne "endname item 2 :pics
+  donne "end exec (:endname) # globale liste
+  slide
+  donne "start :end
+  donne "endname item 1 :pics
+  donne "end exec (:endname) 
+  slide
+fin
+
+pour tri1 :side
+  donne "l :side*puissance 2 0.5
+  tournedroite 45 recule 1.33*:l tournegauche 45
+  fcc phrase [ 0 0] :side * 5 baissecrayon
+  avance 4*:side tournedroite 135 avance 4*:l tournedroite 135 avance 4*:side levecrayon
+  tournedroite 135 av 1.33*:l bc rempliszone lc
+  recule 1.33*:l tournegauche 45 fcc blanc baissecrayon
+  avance 4*:side tournedroite 135 avance 4*:l tournedroite 135 avance 4*:side levecrayon
+fin
+
+pour tri2 :side
+  donne "l :side*puissance 2 0.5
+  td 45 recule 1.33*:l tournegauche 45
+  fcc ph :side * 5 [0 0] baissecrayon
+  av 4*:side td 135 av 4*:l td 135 av 4*:side levecrayon
+  td 135 av 1.33*:l bc rempliszone lc
+  recule 1.33*:l tournegauche 45
+  fcc blanc baissecrayon
+  av 4*:side td 135 av 4*:l td 135 av 4*:side levecrayon
+fin
+
+pour squ
+  re 34 tg 45
+  fcc [0 108 0] baissecrayon
+  repete 4 [avance 48 td 90] levecrayon
+  td 45 av 34 bc rempliszone lc
+  re 34 tg 45 fcc blanc baissecrayon
+  repete 4 [avance 48 td 90] levecrayon
+fin
+
+pour par
+  re 24 tg 90
+  fcc vertfonce baissecrayon
+  repete 2 [av 48 td 135 av 68 td 45] levecrayon
+  td 90 av 24 bc rempliszone lc
+  re 24 tg 90 fcc blanc baissecrayon
+  repete 2 [av 48 td 135 av 68 td 45] levecrayon
+fin
+
+pour start
+  retourne [[-45 0 -135] [0 46 -45] [46 -46 -90] [0 -34 0] [52 17 -45] [-34 -57 135] [24 0 45]]
+fin
+
+pour running_man
+  retourne [[20 -67 0] [0 22 -180] [-30 -90 45] [0 90 20] [58 4 -90] [0 -135 225] [95 -90 180]]
+fin
+

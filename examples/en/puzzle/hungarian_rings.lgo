@@ -1,0 +1,198 @@
+# Main Command: Go
+# Hungarian Rings by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init
+  Make "Ring1 [1 1 1 1 1 1 1 1 1 1 5 5 5 5 5 5 5 5 2 1 1 1 1 1]
+  Make "Ring2 [2 2 2 2 2 2 2 2 2 2 5 5 5 5 5 5 5 5 4 2 2 2 2 2]
+  Make "Ring3 [4 4 4 4 4 4 4 4 4 4 5 5 5 5 5 5 5 5 1 4 4 4 4 4]
+  Make "R1 :Ring1 Make "R2 :Ring2 Make "R3 :Ring3
+  Make "S "S Make "CD 12   # Attract mode delay
+end
+
+to title
+  SetPos List Minus 45 Minus 185
+  SetPC White Label [Hungarian Rings]
+end
+
+to drawboard
+  Repeat 3 [SetPW 61 SetPC [0 0 1] Ring RepCount Circle 111]
+  Repeat 3 [SetPW 33 SetPC White Ring RepCount Circle 111]
+  Repeat 3 [SetPW 31 SetPC Black Ring RepCount Circle 111]
+  Refresh Wait 32
+  Repeat 3 [SetPW 53 SetPC [0 0 1] Ring RepCount 
+  Forward 58 Dot Pos SetPW 31 SetPC [74 51 0] Dot Pos]
+  SetPW 1 SetPC [74 51 0] Repeat 3 [
+    Light RepCount Minus 1 Light RepCount 1]
+  Home Fill
+  Refresh Wait 32
+end
+
+to resetrings
+  SetPC [74 51 0] C2S Home SetPC Orange PenDown Fill PenUp
+  Refresh Wait 24
+  Repeat 3 [Ring RepCount DeleteRing] Refresh Wait 24
+  Repeat 3 [Ring RepCount DrawBalls Run [Thing Word "Ring RepCount]     Refresh Wait 24]
+  Home SetPC [74 51 0] Fill Refresh Wait 24
+end
+
+to start
+  Make "N 3 Make "NewN 3 Make "Step 0 Make "Dir 0
+  Make "Att "False Make "Reset "False
+  CountDown :CD SetPC Orange Light :N 0 Refresh Wait 24
+end
+
+to deletering
+  SetPC Black SetPW 26 Repeat 24 [
+  Forward 111 Dot Pos Back 111 Right 15]
+end
+
+to drawballs :ring
+  SetPW 24 Repeat 24 [
+  SetPC Item RepCount :Ring
+  Forward 111 Dot Pos Back 111 Right 15]
+  #drawspots
+  Make "myHeading Heading
+  SetHeading 315 Forward 6 SetH :myHeading
+  SetPW 6 SetPC White Repeat 24 [
+  Forward 111 Dot Pos Back 111 Right 15]
+  SetHeading 315 Back 6 SetH :myHeading
+end
+
+to ring :n
+  Home Left :N*120 Forward 64
+end
+
+to light :n :dir
+  Ring :N Left :Dir*28 Forward 64 Fill Refresh
+  Back 64 Right :Dir*28
+end
+
+to updatering :n :dir
+  Make "A Item :N [2 3 1]
+  Make "B Item :N [3 1 2]
+  Make "ThisList Run [Thing Word "Ring :N] 
+  Make Word "Ring :A SetItem Run [
+    Thing Word "Ring :A] 7 Item (19+:Dir) :ThisList
+  Make Word "Ring :A SetItem Run [
+    Thing Word "Ring :A] 15 Item (11+:Dir) :ThisList
+  Make Word "Ring :B SetItem Run [
+    Thing Word "Ring :B] 11 Item (15+:Dir) :ThisList
+  Make Word "Ring :B SetItem Run [
+    Thing Word "Ring :B] 19 Item (7+:Dir) :ThisList
+  If :Dir = 1
+    [Make Word "Ring :N ButFirst LPut Item 1 :ThisList :ThisList ]
+    [Make Word "Ring :N ButLast FPut Item 24 :ThisList :ThisList]
+end
+
+to shuffle
+  While [Not Number? :S] [
+    Read [
+    Enter shuffle turns. Less than 5 easy, more than 20 hard.] "S]
+    Wait 24 Home SetPC Orange Fill Refresh Wait 24
+      Repeat :S [
+      Rand3
+      Ring :N Make "BallsList Run [Thing Word "Ring :N]
+      Repeat Absolute :Step [Left :Dir*15 UpdateRing :N :Dir]
+    DrawBalls :BallsList Refresh Wait 12] Make "S "SS
+  Home SetPC [74 51 0] Fill Refresh Wait 24
+end
+
+to go
+  New Animation
+  Init Title DrawBoard ResetRings Start
+  SetPC White C2S
+  Forever [If EndCountDown? [AttractLoop] [GameLoop] ]
+end
+
+to gameloop
+  If :Step = 0 [ReadKey Wait 4] [Turn :N]
+  If :Reset [
+  If Check [AllOff Shuffle Start] [
+  Read [New Game? Y-yes N-no] "R
+  If Or :R="y :R = "Y [SetPC [74 51 0]
+  Make "Ring1 :R1 Make "Ring2 :R2 Make "Ring3 :R3
+  AllOff ResetRings Shuffle Start] [Make "Reset "False] ] ]
+end
+
+to attractloop
+  If :Step = 0 [Attract] [Turn :N]
+  If :Reset [
+  Make "Ring1 :Ring1A Make "Ring2 :Ring2A Make "Ring3 :Ring3A
+  AllOff ResetRings Start]
+end
+
+to turn :n
+  Make "BallsList Run [Thing Word "Ring :N]
+  If :Step < 0 [Make "Dir Minus 1] [Make "Dir 1]
+  SetPC Orange Light :N :Dir SetPC [74 51 0] Light :N Minus 1 * :Dir
+  TurnRing :N :Dir
+  Make "Step :Step - :Dir
+  If (:Step = 0) [
+  SetPC [74 51 0] Light :N :Dir If Check [Win] ]
+end
+
+to turnring :n :dir
+  Repeat 5 [
+    DeleteRing Left :Dir*3 DrawBalls :BallsList Refresh 
+    ReadKey Wait 6]
+  UpdateRing :N :Dir
+end
+
+to readkey
+  If Key? [
+    Make "Char ReadChar
+    If EndCountDown? [
+      Make "Reset "True CountDown :CD] [
+      CountDown :CD
+      If :Char = -37 [Make "Step :Step+1]
+      If :Char = -39 [Make "Step :Step-1]
+      If And :Char = -38 :Step = 0 [
+      SetPC [74 51 0] Light :N 0 Make "N 1+Mod (:N-1)+1 3
+      SetPC Orange Light :N 0]
+      If :Char = 32 [Make "Reset "True] ] ]
+end
+
+to attract
+  SetPC [74 51 0] Light :N 0    # turn off
+  Wait 24 Refresh
+  If :Att = "False [
+    Make "Ring1A :Ring1 Make "Ring2A :Ring2 Make "Ring3A :Ring3
+    SetPC White C2S Make "Att "True]
+  Rand3
+end
+
+to c2s
+  Home SetPos List Minus 18 Minus 3 Label [space]
+  SetPos List Minus 19 Minus 13 Label [to start] Refresh
+end
+
+to rand3
+  While [:N = :NewN] [Make "NewN (1+Random 3)] Make "N :NewN
+  Make "Dir (2*Random 2)-1     # minus 1 (cw) or 1 (acw)
+  Make "Step :Dir*(1 + Random 8)
+end
+
+to alloff
+  SetPC [74 51 0] For [N 1 3] [ For [D -1 1] [Light :N :D] ]
+end
+
+to check
+  If And And (:R1 = :Ring1) (:R2 = :Ring2) (:R3 = :Ring3) [Output "True]
+  [Output "False]
+end
+
+to win
+  If Not (:S = "S) [
+    AllOff Wait 24 Repeat 44 [Rand3 SetPC (1+Random 6) Light :N :Dir     Refresh Wait 4]
+  Read [Well Done! Play Again? Y-yes N-no] "R
+  If Or :R="y :R="Y [
+  Make "Ring1 :R1 Make "Ring2 :R2 Make "Ring3 :R3
+  Make "S "S AllOff ResetRings Start] [StopAll] ]
+end

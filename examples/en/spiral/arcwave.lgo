@@ -1,0 +1,26 @@
+# Main Command: Go
+# ArcWave by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to wave :size
+  If :Size < 2 [Stop]     # stop when size too small
+  PenUp Back :Size PenDown
+  rArc 10 :Size Forward :Size Wait 10
+  Wave :Size/1.1
+end
+
+to rarc :angle :radius
+  # clockwise arc drawn relative to turtle heading
+  Arc :Radius Heading :Angle+Heading Right :Angle
+end
+
+to go
+  New SetPos [192 -170] SetH 270 PenDown
+  Forward 384 Wave 384
+end

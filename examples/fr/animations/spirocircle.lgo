@@ -1,0 +1,34 @@
+# Commande principale: demarrer
+pour new
+    # Initialise  les couleurs pour l'écran, le crayon de la tortue
+  init ftd [400 400] cachetortue
+  fcfg noir fcc vert levecrayon animation
+fin
+
+pour spir
+  repetepour [r 0 180 4] [
+  donne "s (180-:r) donne "theta 0
+  levecrayon fpos xycurve :r :theta baissecrayon
+  repetepour [theta 2 360 2] [fpos xycurve :r :theta]
+  rf nettoie]        # put a attends in here si too fast
+fin
+
+pour initialise
+  donne "a (1 + hasard 7)
+  donne "b (1 + hasard 5)
+  donne "w moins :w
+fin
+
+pour xycurve :r :theta
+  donne "rota :a*:theta
+  donne "rotb :b*:theta
+  donne "x :r*(sin :rota) + :s*(cos :rotb)*:w
+  donne "y :r*(cos :rota) + :s*(sin :rotb)
+  retourne (liste :x :y)
+fin
+
+pour demarrer
+  new donne "w 1
+  tantque [vrai] [initialise fcc :a spir]
+fin
+

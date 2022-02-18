@@ -1,0 +1,70 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  inicializar
+  mientras [cierto] [
+  poncolorlapiz angcol :p+:q+:r+:s
+  dibujalinea
+  borralinea
+  espera 4]
+fin
+
+para inicializar
+# inicializamos las coordenadas iniciales y las listas de coordinadas
+  haz "dx velo.aleat haz "dy velo.aleat
+  haz "p 0 haz "q 0
+  haz "ex velo.aleat haz "ey velo.aleat
+  haz "r 0 haz "s 0
+  haz "pp [ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+  haz "qp [ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+  haz "rp [ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+  haz "sp [ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]
+fin
+
+para dibujalinea
+# movemos al punto pq y dibujamos una linea hacia el punto rs
+  haz "p :p+:dx haz "q :q+:dy
+  si :p > 180 [haz "dx cambiasigno velo.aleat]
+  si :p < -180 [haz "dx velo.aleat]
+  si :q > 180 [haz "dy cambiasigno velo.aleat]
+  si :q < -180 [haz "dy velo.aleat]
+  subelapiz ponxy :p :q
+  haz "pp ponultimo primero posicion :pp
+  haz "qp ponultimo ultimo posicion :qp
+  haz "r :r+:ex haz "s :s+:ey
+  si :r > 180 [haz "ex cambiasigno velo.aleat]
+  si :r < -180 [haz "ex velo.aleat]
+  si :s > 180 [haz "ey cambiasigno velo.aleat]
+  si :s < -180 [haz "ey velo.aleat]
+  bajalapiz ponxy :r :s
+  haz "rp ponultimo primero posicion :rp
+  haz "sp ponultimo ultimo posicion :sp
+fin
+
+para borralinea
+# movemos al punto pq y dibujamos una linea negra hacia el punto rs
+  subelapiz
+  ponxy (primero :pp) (primero :qp)
+  bajalapiz poncolorlapiz 0
+  ponxy (primero :rp) (primero :sp)
+  haz "pp menosprimero :pp
+  haz "qp menosprimero :qp
+  haz "rp menosprimero :rp
+  haz "sp menosprimero :sp
+fin
+
+para velo.aleat
+# devuelve una velocidad al azar entre 4 y 13
+  devuelve 4 + azar 10
+fin
+
+para angcol :x
+# devuelve una lista de color [RVA]
+  haz "red 127.5 *(1+seno :x)
+  haz "gre 127.5 *(1+seno (:x + 120))
+  haz "blu 127.5 *(1+seno (:x + 220))
+  devuelve frase lista :red :gre :blu
+fin

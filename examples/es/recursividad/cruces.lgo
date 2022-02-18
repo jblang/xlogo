@@ -1,0 +1,28 @@
+# Comando de Inicio: empezar
+para empezar
+  nuevo cruces 90
+fin
+
+para nuevo
+# Inicializamos pantalla, lapiz, tortuga, ...
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+fin
+
+para cruces :lado
+  si :lado < 4 [alto]
+  repite 4
+    [ poncolorlapiz hue distancia [0 0]
+      bajalapiz retrocede :lado giraizquierda 90
+      subelapiz retrocede :lado bajalapiz
+      cruces :lado/2
+      subelapiz avanza :lado giraderecha 90
+      avanza :lado giraizquierda 90]
+fin
+
+para hue :angulo
+  haz "red redondea 127*(1+coseno :angulo)
+  haz "green redondea 127*(1+coseno(120+:angulo))
+  haz "blue redondea 127*(1+coseno(240+:angulo))
+  devuelve frase lista :red :green :blue
+fin

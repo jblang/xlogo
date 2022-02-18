@@ -1,0 +1,61 @@
+# Commande principale: demarrer [XLogo]
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400] cachetortue
+  fcfg noir fcc vert levecrayon animation
+fin
+
+pour initialise
+    # global list, display
+  donne "display [] donne "line []
+  repete 11 [donne "line md 0 :line]
+  repete 12 [donne "display md :line :display]
+fin
+
+pour footer :x
+    # tape value of :x as footer
+  fpos [-190 -186]
+  ftc 11 fixecap 90 fcc bleufonce baissecrayon avance 378
+  levecrayon fpos [-190 -190] fcc blanc
+  ftc 1 fixecap 0 etiquette :x
+fin
+
+pour draw :display
+    # draw grid of led's in correct color
+  repetepour [n 1 12] [
+  repetepour [m 1 11] [
+  donne "col item :m item :n :display
+  fcc phrase liste :col 36 36
+  fixetaillecrayon 24 point liste :n*32-210 :m*33-187] ]
+fin
+
+pour scan :n
+    # create liste from vertical single pixel line in footer
+  donne "line []
+  repetepour [m 1 11] [
+  donne "col trouvecouleur liste :n :m-192
+  donne "line md (item 1 :col) :line ]
+    # draw a vert text underscore in footer
+  fcc vert ftc 1 point liste :n moins 192
+  retourne :line
+fin
+
+pour messagelength :x
+    # calculate length of message liste :x
+  donne "length 0
+  repetepour phrase liste "n 1 compte :x [
+  donne "length :length + le item :n :x]
+  retourne 9 + :length + 4*compte :x
+fin
+
+pour demarrer :x
+  new initialise footer :x fixeformecrayon 1
+  donne "length messagelength :x
+    # stop when whole etiquette length drawn
+  repetepour phrase liste "n 0 :length [
+    # update display liste by removing premier et adding dernier item
+  donne "display saufpremier md scan :n-190 :display
+  draw :display
+  rf attends 12]    # attends heure adjusts scroll speed
+fin
+

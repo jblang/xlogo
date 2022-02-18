@@ -1,0 +1,33 @@
+# Main Command: Go 3
+# Koch4 Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init
+  PenUp SetPos [-110 -110] PenDown
+end
+
+to koch :level :side
+  If :Level < 1 [Forward :Side Stop]
+  Koch :Level-1 :Side/4 Left 90
+  Koch :Level-1 :Side/4 Right 90
+  Koch :Level-1 :Side/4 Right 90
+  Koch :Level-1 :Side/4 
+  Koch :Level-1 :Side/4 Left 90
+  Koch :Level-1 :Side/4 Left 90 
+  Koch :Level-1 :Side/4 Right 90 
+  Koch :Level-1 :Side/4
+end
+
+to kcurve :level :side
+  SetH 0 Repeat 4 [Koch :Level :Side Right 90]
+end
+
+to go :level
+  New SetPC White Init KCurve :Level 220
+end

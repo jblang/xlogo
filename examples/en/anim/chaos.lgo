@@ -1,0 +1,62 @@
+# Main Command: Go
+# Chaos by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to init
+  Make "A 3.8 Make "T 0.2       # starting values
+  Make "Delay 10       # reduce to speed up
+  Message [Use the Up and Down cursor keys to adjust the value of 'a']
+end
+
+to title
+  SetPC White
+  SetPos [-160 180] Label [Plot of t= a Sin t where 1<a<5]
+  SetPos [130 180] Label [a= 3.8]
+  SetPos [-184 -186] For [W -5 5] [Label :W Forward 34]
+  SetPC Gray
+  SetPos [-161 -182] PenDown Repeat 4 [Forward 342 Right 90]
+  SetH 90 For [Y -148 124 34] [ 
+    PenUp SetPos (List Minus 159 :Y) 
+    Repeat 85 [PenDown Forward 2 PenUp Forward 2]]
+end
+
+to chaos
+  SetH 0
+  While ["True] [Make "X Minus 160
+  Repeat 86 [Make "T :A*Sin (:T*180/Pi)
+  PenUp SetPos (List :X Minus 12) PenDown
+  SetPC Red Forward :T*34 Wait :Delay Refresh
+  SetPC Green Back :T*34
+  Make "XX :X+40
+  If :XX> 180 [Make "XX :XX-344]
+  PenUp SetPos (List :XX Minus 181) PenDown
+  SetPC Black Forward 340
+  KeyIP Make "X :X +4]]
+end
+
+to keyip
+  If Key? [
+  Make "Char ReadChar
+  If :Char=-38 [Make "A :A+0.1 Make "PC 7]
+  If :Char=-40 [Make "A :A-0.1 Make "PC 7]
+  If :A>5 [Make "A 5 Make "PC 1]
+  If :A<1 [Make "A 1 Make "PC 1]
+  Score :A :PC]
+end
+
+to score :a :pc
+  PenUp SetPos [126 184] SetH 90 SetPC Black SetPW 10
+  PenDown Forward 56
+  PenUp SetPos [130 180] SetH 0 SetPC :PC SetPW 1
+  Label Sentence [a=] :A
+end
+
+to go
+  New Animation Init Title Chaos
+end

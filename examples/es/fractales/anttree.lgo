@@ -1,0 +1,28 @@
+# Comando de Inicio: empezar 7
+para empezar :orden
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400]
+  poncolorpapel negro poncolorlapiz verde subelapiz ocultatortuga
+#
+  haz "tam 96      # haz tam e invraiz2 globales
+  haz "invraiz2 1/raizcuadrada 2
+#
+ leyenda :orden
+  centro giraderecha 90 poncolorlapiz verde bajalapiz
+  arbol :orden :tam
+fin
+
+para leyenda :orden
+# Muestra el encabezado y el nivel de la curva
+  poncolorlapiz blanco
+  ponposicion [-190 184] rotula frase [Arbol antenna nivel] :orden
+fin
+
+para arbol :orden :tam
+  si :orden < 1 [alto]      # ie si = 0
+  pongrosor :orden avanza :tam giraizquierda 90
+  arbol :orden-1 :invraiz2*:tam
+  pongrosor :orden giraizquierda 90 avanza 2*:tam giraizquierda 90
+  arbol :orden-1 :invraiz2*:tam
+  pongrosor :orden giraizquierda 90 avanza :tam
+fin

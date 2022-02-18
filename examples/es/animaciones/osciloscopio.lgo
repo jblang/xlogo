@@ -1,0 +1,29 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos papel, lapiz y tortuga
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz verde subelapiz animacion
+  repitepara [a 2 4]
+    [spir :a]
+  detieneanimacion
+fin
+
+para spir :a
+  haz "t 0 poncolorlapiz negro bajalapiz
+  repitepara [s 0 360 8]
+    [ponposicion xycurva :a :s :t
+  repitepara [t 0 360 4]
+    [poncolorlapiz angcol :t ponposicion xycurva :a :s :t]
+  refrescar limpia]        # poner "espera" aqui si va demasiado rapido
+fin
+
+para xycurva :a :s :t
+  haz "x 140*(sen (90+:t))
+  haz "y 140*(cos ((:a*(:t))+:s))+24*sen (:t)
+  devuelve lista :x :y
+fin
+
+para angcol :t
+  haz "green redondea 127*(1+cos (:t+90))
+  devuelve frase lista 255 :green 100
+fin

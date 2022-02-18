@@ -1,0 +1,25 @@
+# Commande principale: sierpinski 4
+pour sier :p :long
+ soit "p :p - 1
+soit "long :long / 2
+ si :p > 0 [repete 2 [sier :p :long av :long sier :p :long av :long td 90 av :long * 2 td 90 ] td 45 cabre 45 av :long pique 45 tg 45 sier :p :long td 45 cabre 45 re :long pique 45 tg 45
+]
+ si :p = 0 [pyramide 2*:long ]
+fin
+
+
+pour pyramide :a
+ct
+# carré du dessous
+fcc 6
+polydef
+repete 4 [av :a td 90]
+polyfin
+# face latérales 
+repete 4 [ #fcc 1+compteur
+ td 45 cabre 45  polydef av :a re :a pique 45 tg 45 av :a polyfin td 90]
+fin
+
+pour sierpinski :p
+init ve perspective fcfg 0fcfg 0 sier :p 500 vue3d
+fin

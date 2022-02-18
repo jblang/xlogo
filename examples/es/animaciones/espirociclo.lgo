@@ -1,0 +1,33 @@
+# Comando de Inicio: empezar
+para empezar
+# Inicializamos pantalla, lapiz, tortuga, ...
+  reponetodo ptp [400 400] ocultatortuga
+  poncolorpapel negro poncolorlapiz verde subelapiz animacion
+#
+  haz "w 1
+  mientras [cierto]
+    [ inicializar poncolorlapiz :a spir ]
+  detieneanimacion
+fin
+
+para inicializar
+  haz "a (1 + azar 7)
+  haz "b (1 + azar 5)
+  haz "w cambiasigno :w
+fin
+
+para spir
+  repitepara [r 0 180 4] [
+  haz "s (180-:r) haz "theta 0
+  subelapiz ponposicion xycurva :r :theta bajalapiz
+  repitepara [theta 2 360 2] [ponposicion xycurva :r :theta]
+  refrescar limpia]        # poner "espera"  aqui si va muy rapido
+fin
+
+para xycurva :r :theta
+  haz "rota :a*:theta
+  haz "rotb :b*:theta
+  haz "x :r*(sen :rota) + :s*(cos :rotb)*:w
+  haz "y :r*(cos :rota) + :s*(sen :rotb)
+  devuelve (lista :x :y)
+fin

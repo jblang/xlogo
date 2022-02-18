@@ -1,0 +1,25 @@
+# Commande principale: demarrer
+pour new
+    # set defaults, screen, pen et tortue
+  init ftd [400 400]
+  fcfg noir fcc vert levecrayon cachetortue
+fin
+
+pour initialise
+  donne "x 0 donne "y moins 0.2
+  donne "xscale 128 donne "yscale 440
+  donne "alpha 1.4 donne "beta 0.3
+fin
+
+pour demarrer
+  new initialise fcc vert fixeformecrayon 1        # arrondi pen forme
+  repete 40000 [henon]
+fin
+
+pour henon
+  donne "xnew 1 - :alpha*(puissance :x 2) + :y
+  donne "ynew :beta * :x
+  point liste (:xnew*:xscale) (:ynew*:yscale)
+  donne "x :xnew donne "y :ynew
+fin
+

@@ -1,0 +1,36 @@
+# Main Command: Go
+# Spiro Explorer by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to spir :r :rang :s :sang :t :tang
+  PenUp Home SetPC White PenDown Circle 2
+  Left :Rang Forward :R Circle 2
+  Left :Sang Forward :S Circle 2
+  Left :Tang Forward :T
+end
+
+to init
+  SetTurtle 1     # follow turtle
+  Home SetPC 5 
+  PenUp SetPos [0 190]
+  SetTurtle 0 PenDown
+end
+
+to go
+  New Init PX     # inverted paint pen
+  Make "R 90 Make "S 60 Make "T 40
+  For [Q 0 360 4] [
+    Make "Rang :Q Make "Sang 3*:Q + 90 Make "Tang Minus 2*:Q -90
+    Spir :R :Rang :S :Sang :T :Tang
+    SetPC Red Circle 2
+    Make "A Pos
+    SetTurtle 1 SetPC 11 SetPos :A PenDown SetTurtle 0
+    If :Q=360 [SetPC 1 Circle 1 Stop] Wait 10
+    Spir :R :Rang :S :Sang :T :Tang]
+end
