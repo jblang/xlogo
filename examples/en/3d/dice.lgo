@@ -1,0 +1,130 @@
+# Main Command: go
+# 3D Dice
+
+to square
+    setpencolor yellow
+
+    # record each of the vertices of the square
+    polystart repeat 4 [forward 400 right 90] polyend
+end
+
+
+to one
+    # draw the outline
+    square 
+
+    # move the turtle to the center of the square
+    penup right 90 forward 200 left 90 forward 200 pendown
+
+    # draw the pip
+    setpencolor blue pip
+
+    # return to initial position
+    penup back 200 left 90 forward 200 right 90 pendown
+end
+
+to two
+    # draw the outline
+    square 
+
+    # move the turtle to the center of the square
+    penup right 90 forward 200 left 90 forward 200 pendown
+
+    # draw the pips
+    setpencolor blue penup right 45 forward 130 pendown pip
+    penup back 260 pendown pip
+
+    # return to initial position
+    penup forward 130 left 45 back 200 left 90 forward 200 right 90 pendown 
+end
+
+to three
+    # draw the outline
+    square 
+
+    # move the turtle to the center of the square
+    penup right 90 forward 200 left 90 forward 200 pendown
+
+    # draw the pips
+    setpencolor blue pip
+    penup right 45 forward 130 pendown pip
+    penup back 260 pendown pip
+
+    # return to initial position
+    penup forward 130 left 45 back 200 left 90 forward 200 right 90 pendown 
+end
+
+to four
+    # draw the outline
+    square 
+
+    # move the turtle to the center of the square
+    penup right 90 forward 90 left 90 forward 70 pendown
+
+    # draw the pips
+    setpencolor blue pip 
+    penup forward 260 pendown pip
+    penup back 330 right 90 forward 220 left 90 forward 70 pendown
+    setpencolor blue pip
+    penup forward 260 pendown pip
+    
+    # return to initial position
+    penup back 330 left 90 forward 310 right 90 pendown
+end
+
+to five
+    # draw the outline
+    square 
+
+    # move the turtle to the center of the square
+    penup right 90 forward 200 left 90 forward 200 pendown
+
+    # draw the pips
+    setpencolor blue pip
+    penup right 45 forward 130 pendown pip
+    penup back 260 pendown pip
+    penup forward 130 left 90 forward 130 pendown pip
+    penup back 260 pendown pip
+    
+    # return to initial position
+    penup forward 130 right 45 back 200 left 90 forward 200 right 90 pendown
+end
+
+to six
+    # draw the outline
+    square
+
+    # move the turtle to the center of the square
+    penup right 90 forward 90 left 90 forward 70 pendown
+
+    # draw the pips
+    setpencolor blue pip 
+    penup forward 130 pendown pip
+    penup forward 130 pendown pip
+    penup back 330 right 90 forward 220 left 90 forward 70 pendown
+    setpencolor blue pip
+    penup forward 130 pendown pip
+    penup forward 130 pendown pip
+    
+    # return to initial position
+    penup back 330 left 90 forward 310 right 90 pendown
+end
+
+to pip
+    penup uppitch 90  forward 1  downpitch 90  pendown
+    polystart circle 50 polyend
+    penup uppitch 90 back 1 downpitch 90 pendown
+end
+
+to go
+    resetall
+    3d clearscreen setscreencolor 0
+    one penup right 90 forward 400 left 90 pendown rightroll 90
+    three penup right 90 forward 400 left 90 pendown rightroll 90
+    six penup right 90 forward 400 left 90 pendown rightroll 90
+    four penup right 90 forward 400 left 90  rightroll 90
+    right 90 forward 400 rightroll 90 right 90
+    pendown five penup rightroll 180 left 90 forward 400 right 90
+    uppitch 90 forward 400  downpitch 90 pendown two
+    view3d
+end

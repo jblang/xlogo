@@ -1,0 +1,54 @@
+# Main Command: sponge 3
+# Menger Sponge
+
+to cube :l
+    if :counter=10000 [view3d]
+    globalmake "counter :counter+1
+    # color of the side faces
+    localmake "colors [yellow magenta cyan blue]
+    # side faces
+    repeat 4 [setpencolor run item repcount :colors edge :l right 90 forward  :l left 90 rightroll 90]
+    # dessous
+    setpencolor red downpitch 90 edge :l uppitch 90
+    forward :l downpitch 90 setpencolor green edge :l uppitch 90 back :l
+end
+
+to edge :c
+    polystart
+    repeat 4 [forward :c right 90]
+    polyend
+end
+
+# Menger Sponge
+# p: recursion depth
+# l: lenght of the big cube.
+to menger :l :p
+    if :p=0 [cube :l] [
+        localmake "p :p-1
+        localmake "l :l/3
+        # front face
+        repeat 3 [menger :l :p forward :l] back 3*:l
+        right 90 forward :l left 90
+        menger :l :p forward 2*:l menger :l :p back 2*:l
+        right 90 forward :l left 90
+        repeat 3 [menger :l :p forward :l] back 3*:l
+        # right side
+        downpitch 90 forward :l uppitch 90
+        menger :l :p  forward 2*:l menger :l :p back 2*:l
+        downpitch 90 forward :l uppitch 90
+        repeat 3 [menger :l :p forward :l] back 3*:l
+        left 90 forward :l right 90
+        menger :l :p  forward 2*:l menger :l :p back 2*:l
+        left 90 forward :l right 90
+        repeat 3 [menger :l :p forward :l] back 3*:l
+        downpitch 90 back :l uppitch 90
+        menger :l :p  forward 2*:l menger :l :p back 2*:l
+        downpitch 90 back :l uppitch 90
+    ]
+end
+
+to sponge :p
+    clearscreen hideturtle globalmake "counter 0 3d setscreencolor 0 menger 800 :p 
+    write [name penpaint cubes: ] print :counter 
+    view3d
+end

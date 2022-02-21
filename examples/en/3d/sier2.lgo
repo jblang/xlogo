@@ -1,0 +1,42 @@
+# Main Command: sierpinski 4
+# Sierpenski pyramid with square base
+
+to sier :p :length
+    localmake "p :p - 1
+    localmake "length :length / 2
+    if :p > 0 [
+        repeat 2 [
+            sier :p :length forward :length
+            sier :p :length forward :length
+            right 90 forward :length * 2 right 90
+        ]
+        right 45 uppitch 45
+        forward :length
+        downpitch 45 left 45
+        sier :p :length
+        right 45 uppitch 45
+        back :length
+        downpitch 45 left 45
+    ]
+    if :p = 0 [pyramid 2*:length ]
+end
+
+to pyramid :a
+    hideturtle
+    # bottom square
+    setpencolor 6
+    polystart
+    repeat 4 [forward :a right 90]
+    polyend
+    # side faces
+    repeat 4 [
+        #fcc 1+repcount
+        right 45 uppitch 45
+        polystart forward :a back :a downpitch 45 left 45 forward :a polyend
+        right 90
+    ]
+end
+
+to sierpinski :p
+    resetall clearscreen 3d setscreencolor 0 sier :p 500 view3d
+end

@@ -1,0 +1,65 @@
+# commande principale: sponge 3
+# Menger Sponge
+
+# :a :b :c :d side faces
+# :e underneath
+# :f above
+to cube :l :a :b :c :d :e :f
+    setpencolor yellow if :a=1  [edge :l] right 90 forward  :l left 90 rightroll 90
+    setpencolor magenta if :b=1  [edge :l] right 90 forward  :l left 90 rightroll 90
+    setpencolor cyan if :c=1  [edge :l] right 90 forward  :l left 90 rightroll 90
+    setpencolor blue if :d=1  [edge :l] right 90 forward  :l left 90 rightroll 90
+    # underneath
+    setpencolor red downpitch 90 if :e=1 [edge :l] uppitch 90
+    forward :l downpitch 90 setpencolor green if :f=1 [edge :l] uppitch 90 back :l
+end
+
+to edge :c
+    globalmake "compteur :compteur+1
+    polystart
+    repeat 4 [forward :c right 90]
+    polyend
+end
+
+# Menger Sponge
+# p: recursion depth
+# l: length of big cube.
+to menger :l :p :a :b :c :d :e :f
+    if :p=0 [cube :l :a :b :c :d :e :f] [
+        localmake "p :p-1
+        localmake "l :l/3
+        #face avant
+        menger :l :p 1 0 0 1 1 0 forward :l
+        menger :l :p 1 1 1 1 0 0 forward :l
+        menger :l :p 1 0 0 1 10 1 forward :l
+        back 3*:l right 90 forward :l left 90
+        menger :l :p 1 0 1 0 1 1  forward 2*:l menger :l :p 1 0 1 0 1 1
+        back 2*:l right 90 forward :l left 90
+        menger :l :p 1 1 0 0 1 0 forward :l
+        menger :l :p 1 1 1 1 0 0 forward :l
+        menger :l :p 1 1 0 0 0 1 forward :l
+        back 3*:l  #côté droit
+        downpitch 90 forward :l uppitch 90
+
+        menger :l :p  0 1 0 1 1 1   forward 2*:l menger :l :p  0 1 0 1 1 1 back 2*:l
+        downpitch 90 forward :l uppitch 90
+        menger :l :p 0 1 1 0 1 0 forward :l
+        menger :l :p 1 1 1 1 0 0 forward :l
+        menger :l :p 0 1 1 0 0 1 forward :l
+        back 3*:l  left 90 forward :l right 90
+        menger :l :p 1 0 1 0 1 1 forward 2*:l menger :l :p 1 0 1 0 1 1
+        back 2*:l  left 90 forward :l right 90
+        menger :l :p 0 0 1 1 1 0 forward :l
+        menger :l :p 1 1 1 1 0 0 forward :l
+        menger :l :p 0 0 1 1 0 1 forward :l
+        back 3*:l  downpitch 90 back :l uppitch 90
+        menger :l :p  0 1 0 1 1 1 forward 2*:l menger :l :p 0 1 0 1 1 1 back 2*:l
+        downpitch 90 back :l uppitch 90
+    ]
+end
+
+to sponge :p
+    clearscreen hideturtle globalmake "compteur 0 3d setscreencolor 0 menger 800 :p 1 1 1 1 1 1  
+    write [nombre penpaint edges: ] print :compteur 
+    view3d
+end

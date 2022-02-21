@@ -1,0 +1,232 @@
+# Main Command: horreo 600
+# Draws a https://en.wikipedia.org/wiki/H%C3%B3rreo
+
+to horreo :side
+    clearscreen setscreencolor 0
+    3d
+    setpenwidth 4
+    # sol
+    setpencolor darkgreen
+    penup setxyz (-:side) (-:side) 0
+    pendown
+    square :side*2
+    # draw the four pillars
+    penup setxyz (-5*:side/12) (-5*:side/12) 0 pendown
+    repeat 4 [
+        pillar :side/6
+        penup
+        forward 5*:side/6 right 90
+        pendown
+    ]
+    # draw the four teeth
+    penup setxyz (-5*:side/12) (-5*:side/12) :side*0.24 pendown
+    repeat 4 [
+        staddle :side/6
+        penup
+        forward 5*:side/6 right 90
+        pendown
+    ]
+    # now write the rotation of the beams
+    penup setxyz (-3*:side/8) (-:side/2) :side*0.26 pendown
+    beam :side :side/12
+    penup setxyz (7*:side/24) (-:side/2) :side*0.26 pendown
+    beam :side :side/12
+    right 90
+    penup setxyz (-:side/2) (-7*:side/24) :side*0.26 pendown
+    beam :side :side/12
+    penup setxyz (-:side/2) (3*:side/8) :side*0.26 pendown
+    beam :side :side/12
+    # la construccion sigue por les colondon
+    penup setxyz (-5*:side/12) (-5*:side/12) :side*0.345 pendown
+    setorientation [0 0 0]
+    colondon 5*:side/6 :side/3
+    # ahora toca el roof
+    roof :side 2*:side/3
+    # and the door
+    door :side
+    # tamos acabando: la rise
+    rise :side
+    #
+    #  vémoslo too
+    #
+    view3d
+end
+
+to square :side
+    # record the vertices of the square
+    polystart
+    repeat 4 [ forward :side right 90 ]
+    polyend
+end
+
+to rectangle :base :height
+    # record the vertices of the square
+    polystart
+    repeat 2 [ forward :base right 90 forward :height right 90]
+    polyend
+end
+
+to pillar :base
+    setpencolor gray
+    # the base of the pillar
+    square :base
+    # the walls of the pillar
+    repeat 4
+        [
+            # right 45
+            rightroll 9.4
+            uppitch arctangent 6
+            wall :base
+            downpitch arctangent 6 # left 45
+            leftroll 9.4
+            forward :base right 90
+        ]
+end
+
+to wall :base
+    localmake "angle arccosine (1.0/6.0)
+    polystart
+    forward 1.5*:base
+    right :angle
+    forward :base/2
+    right :angle
+    forward 1.5*:base
+    right 180 - :angle
+    forward :base
+    right 180 - :angle
+    polyend
+end
+
+to staddle :base
+    setpencolor gray
+    localmake "pos position
+    localmake "orient orientation
+    square :base
+    leftroll 90
+    repeat 4 [
+        rectangle :base :base/6
+        forward :base downpitch 90
+    ]
+    right 90 forward :base/6 uppitch 90
+    right 180
+    square :base
+    penup
+    setposition :pos
+    setorientation :orient
+end
+
+to beam :base :height
+    setpencolor [105 85 50] # dark brown
+    localmake "pos position
+    localmake "orient orientation
+    repeat 4 [
+        rectangle :base :height
+        right 90 forward :height left 90 leftroll 90
+    ]
+    uppitch 90 square :height downpitch 90
+    forward :base
+    uppitch 90 square :height downpitch 90
+    setposition :pos
+    setorientation :orient
+end
+
+to colondon :base :height
+    setpencolor brown
+    square :base
+    leftroll 90
+    repeat 4 [
+        rectangle :base :height
+        if 0 = remainder repcount 2
+            [ setpencolor [200 100 0] ]
+            [ setpencolor [100 50 0] ]
+        forward :base downpitch 90
+    ]
+    #  right 90 forward :height uppitch 90
+    #  right 180
+    #  square :base
+end
+
+to roof :base :height
+    # there are four faces
+    ##  face 1
+  setpencolor red
+  polystart
+    setxyz (-:base/2) (-:base/2) :height
+    setxyz (-:base/2) (:base/2) :height
+    setxyz 0 0 :height+:base/5
+  polyend
+    ##  face 2
+  setpencolor darkred
+  polystart
+    setxyz (-:base/2) (:base/2) :height
+    setxyz (:base/2) (:base/2) :height
+    setxyz 0 0 :height+:base/5
+  polyend
+    ##  face 3
+  setpencolor red
+  polystart
+    setxyz (:base/2) (:base/2) :height
+    setxyz (:base/2) (-:base/2) :height
+    setxyz 0 0 :height+:base/5
+  polyend
+    ##  face 4
+  setpencolor darkred
+  polystart
+    setxyz (:base/2) (-:base/2) :height
+    setxyz (-:base/2) (-:base/2) :height
+    setxyz 0 0 :height+:base/5
+  polyend
+end
+
+to door :side
+  setpencolor [50 0 0]
+  penup setxyz (-:side/12) (5.1*:side/12) :side*0.345
+    setorientation [ 0 90 0 ] pendown
+  rectangle 0.25*:side :side/6
+end
+
+to rise :side
+    penup setxyz :side/2.75 5.5*:side/12 0
+    setorientation [ 0 90 0 ] pendown
+    setpencolor [110 110 110]
+    polystart
+    repeat 8 [
+        forward :side/24 left 90
+        forward :side/24 right 90
+    ]
+    left 90 forward :side/12
+    setz 0 setxyz :side/2.75 5.5*:side/12 0
+    polyend
+
+    penup setxyz :side/2.75 6.5*:side/12 0
+    setorientation [ 0 90 0 ] pendown
+    setpencolor [110 110 110]
+    polystart
+    repeat 8 [
+        forward :side/24 left 90
+        forward :side/24 right 90
+    ]
+    left 90 forward :side/12
+    setz 0 setxyz :side/2.75 6.5*:side/12 0
+    polyend
+
+    penup setxyz :side/2.75 5.5*:side/12 0
+    setorientation [ -90 0 0 ] pendown
+    repeat 8 [
+        rectangle :side/12 :side/24
+        right 90 forward :side/24 setorientation [ 0 0 0 ]
+        rectangle :side/12 (-:side/24)
+        left 90 forward :side/24 setorientation [ -90 0 0 ]
+    ]
+    setorientation [ 0 0 -90 ]
+    square :side/12
+    # right 180
+    forward :side/12
+    localmake "pos position
+    polystart
+    setz 0
+    sety 6.5*:side/12
+    setz last :pos
+    sety item 2 :pos
+    polyend
+end

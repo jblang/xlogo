@@ -1,0 +1,38 @@
+# Main Command: sierpinski 5
+# Sierpinski pyramid with triangular base
+
+to sier :p :long
+    localmake "p :p-1
+    localmake "long :long / 2
+    if :p > 0 [
+        # 3 basic patterns
+        repeat 3 [sier :p :long forward :long*2 right 120]
+        leftroll :angle right 60 forward :long left 60 rightroll :angle
+        sier :p :long
+        leftroll :angle right 60 back :long left 60 rightroll :angle
+    ]
+    if :p = 0 [
+        pyramid 2*:long
+    ]
+end
+
+
+to tri :a
+    polystart
+    repeat 3 [forward :a right 120]
+    polyend
+end
+
+to pyramid :a
+    globalmake "angle arccosine 1/3
+    # bottom triangle
+    tri :a
+    # side faces
+    repeat 3 [ leftroll :angle tri :a rightroll :angle forward :a right 120]
+end
+
+to sierpinski :p
+    resetall 3d clearscreen setscreencolor 0 hideturtle setpencolor 6
+    sier :p 1000
+    view3d
+end

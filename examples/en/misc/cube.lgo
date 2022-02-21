@@ -1,0 +1,48 @@
+# Main Command: go
+# from plogo
+# author bertrand.carette@laposte.net
+
+to cube :c
+    ht
+    repeat 4 [fd :c rt 90]
+    fd :c rt 45 fd :c rt 45 fd :c
+    rt 135 fd :c bk :c lt 45 fd :c
+    rt 45 fd :c bk :c rt 45 fd :c
+    rt 90 fd :c bk :c rt 45 bk :c lt 45
+end
+
+to tri_d :c :a
+    if :c > 120 [make "a 30 t_c :c :a stop]
+    cube :c repaint wait 20
+    wash rt :a
+    tri_d :c + 5  :a + 2
+end
+
+to t_c :c :a
+    if :c < 15 [setheading 0 tri_d :c :a stop]
+    if :a < 10 [make "a 30]
+    wash
+    cube :c
+    wash
+    lt :a
+    t_c :c - 5 :a - 2
+end
+
+to mc3d
+    # mc3d = move cube 3d
+    wash
+    tri_d 10 30
+end
+
+to new
+    # set default screen, pen and turtle
+    ResetAll SetScreenSize [600 600] HideTurtle
+    SetSC Black SetPC Green SetPS 1 PenDown
+end
+
+to go
+    new
+    anim
+    mc3d
+    stopanim
+end

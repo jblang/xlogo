@@ -1,0 +1,97 @@
+# Main Command: clock
+# b.carette (bertrand.carette@laposte.net)          
+
+to new
+    # set default screen, pen and turtle
+    ResetAll SetScreenSize [400 400] HideTurtle
+    SetSC White SetPC Black SetPS 1 PenUp
+end
+
+to clock
+    new
+    drawdial
+    make "sec 0
+    make "min 0
+    make "hour 0
+    start
+end
+
+to drawdial
+    setpencolor 4
+    setheading 30
+    penup
+    make "rep 0
+    repeat 12 [
+        make "rep :rep+1
+        fd 120
+        make "x first pos
+        make "y last pos
+        setx :x -12
+        sety :y +12
+        make "fcap heading
+        setheading 0
+        label :rep
+        setheading :fcap
+        make "x first pos
+        make "y last pos
+        setx :x +12
+        sety :y -12
+        bk 120
+        rt 30
+    ]
+    setheading 0
+    setpencolor 0
+end
+
+to drawhour :hour
+    setpw 5
+    setheading :hour * 30
+    pd
+    fd 50
+    pu
+    bk 50
+end
+
+to drawminute :min
+    setpw 2
+    setheading :min * 6
+    pd
+    fd 100
+    pu
+    bk 100
+end
+
+to drawsecond :sec
+    setpw 1
+    setheading :sec * 6
+    pd
+    fd 100
+    pu
+    bk 100
+end
+
+to actualise
+    make "nhour item 1 time
+    make "nmin item 2 time
+    make "nsec item 3 time
+    drawsecond :sec
+    if not equal? :sec :nsec [
+      penerase drawsecond :sec penpaint drawsecond :nsec
+      if not equal? :min :nmin [
+        drawminute :min
+        if not equal? :hour :nhour [drawhour :hour penerase drawhour :hour penpaint drawhour :nhour]
+        penerase drawminute :min penpaint drawminute :nmin
+      ]
+    ]
+    make "hour :nhour
+    make "min :nmin
+    make "sec :nsec
+end
+
+to start
+    drawhour :hour
+    drawminute :min
+    drawsecond :sec
+    actualise
+    start
+end

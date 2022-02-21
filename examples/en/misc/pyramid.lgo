@@ -1,0 +1,51 @@
+# Main Command: go
+# Draw a 3D pyramid with rotation
+
+to new
+    # set default screen, pen and turtle
+    ResetAll SetScreenSize [400 400] HideTurtle
+    SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to fixangle :ang
+    if :ang > 360 [output :ang - 360] [output :ang]
+end
+
+to pyramid
+    anim
+    Make "size 100
+    Make "beta 20
+    Make "alpha 0
+    repeat 135 [
+        clearscreen hideturtle setsc black setpc green
+        Make "ax :size * cosine :alpha
+        Make "ay (sine :beta) * :size * sine :alpha
+        Make "bx :size * cosine fixangle (:alpha + 90)
+        Make "by (sine :beta) * :size * sine fixangle (:alpha + 90)
+        Make "cx :size * cosine fixangle (:alpha + 180)
+        Make "cy (sine :beta) * :size * sine fixangle (:alpha + 180)
+        Make "dx :size * cosine fixangle (:alpha + 270)
+        Make "dy (sine :beta) * :size * sine fixangle (:alpha + 270)
+        line 0 123 :ax :ay
+        line 0 123 :bx :by
+        line 0 123 :cx :cy
+        line 0 123 :dx :dy
+        line :ax :ay :bx :by
+        line :bx :by :cx :cy
+        line :cx :cy :dx :dy
+        line :dx :dy :ax :ay
+        refresh
+        wait 2
+        Make "alpha :alpha + 1
+    ]
+    stopanim
+end
+
+to line :x1 :y1 :x2 :y2
+    penup setxy :x1 :y1
+    pendown setxy :x2 :y2
+end
+
+to go
+    new pyramid
+end

@@ -1,0 +1,22 @@
+to tree :size
+#
+# try  : tree 150
+#
+setpw (quotient :size 10)
+make "alea ran 3 
+if :alea = 0 [setpc 2][if :alea = 1 [setpc 1][setpc  3]]
+fd :size
+if :size>5 [
+  rt 30 tree (quotient :size 2)
+  rt 30 tree (quotient :size 2) 
+  lt 90 tree (quotient :size 2) 
+  lt 30 tree (quotient :size 2) 
+  rt 60
+  ]
+pu
+bk :size
+pd
+setpw 1
+setpc 0
+end
+
