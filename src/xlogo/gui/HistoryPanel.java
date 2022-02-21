@@ -1,6 +1,5 @@
 package xlogo.gui;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.document.HistoricLogoDocument;
@@ -32,9 +31,6 @@ public class HistoryPanel extends JPanel {
     // numéro identifiant la police de
     // l'historique avec "ecris"
     public static int fontPrint = FontPanel.police_id(Config.font);
-    private final ImageIcon ianimation = new FlatSVGIcon("xlogo/icons/cwmCamOn.svg");
-    private final JLabel label_animation = new JLabel(ianimation);
-    private MouseAdapter mouseAdapt;
     private final Color couleur_texte = Color.BLUE;
     private final int taille_texte = 12;
     private final JScrollPane jScrollPane1 = new JScrollPane();
@@ -90,46 +86,24 @@ public class HistoryPanel extends JPanel {
     private void jbInit() throws Exception {
         this.setLayout(borderLayout1);
         historique.setEditable(false);
-        label_animation.setToolTipText(Logo.messages.getString("animation_active"));
         this.add(jScrollPane1, BorderLayout.CENTER);
         jScrollPane1.getViewport().add(historique, null);
     }
 
 
     public void active_animation() {
-        add(label_animation, BorderLayout.WEST);
         DrawPanel.classicMode = DrawPanel.MODE_ANIMATION;
-        mouseAdapt = new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                stop_animation();
-                cadre.getDrawPanel().repaint();
-            }
-        };
-        label_animation.addMouseListener(mouseAdapt);
         validate();
     }
 
     public void stop_animation() {
         DrawPanel.classicMode = DrawPanel.MODE_CLASSIC;
-        remove(label_animation);
-        label_animation.removeMouseListener(mouseAdapt);
         validate();
-    }
-
-    // Change Syntax Highlighting for the editor
-    public void initStyles(int c_comment, int sty_comment, int c_primitive, int sty_primitive,
-                           int c_parenthese, int sty_parenthese, int c_operande, int sty_operande) {
-        dsd.initStyles(Config.syntaxCommentColor, Config.syntaxCommentStyle, Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle,
-                Config.syntaxBracketColor, Config.syntaxBracketStyle, Config.syntaxOperandColor, Config.syntaxOperandStyle);
     }
 
     // Enable or disable Syntax Highlighting
     public void setColoration(boolean b) {
         dsd.setColoration(b);
-    }
-
-    public void changeFont(Font f) {
-        historique.setFont(f);
     }
 
     public void updateText() {

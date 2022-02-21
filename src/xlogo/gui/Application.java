@@ -956,15 +956,18 @@ public class Application extends JFrame {
             if (SwingUtilities.isEventDispatchThread()) {
                 commandLine.setEditable(true);
                 runButton.setEnabled(true);
+                stopButton.setEnabled(false);
             } else {
                 SwingUtilities.invokeLater(() -> {
                     runButton.setEnabled(true);
+                    stopButton.setEnabled(false);
                     commandLine.setEditable(true);
 //						   commande.requestFocus();
                 });
             }
         } else {
             runButton.setEnabled(false);
+            stopButton.setEnabled(true);
             commandLine.setEditable(false);
         }
     }
