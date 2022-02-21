@@ -2,10 +2,10 @@ package xlogo.gui.preferences;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import xlogo.gui.Application;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.utils.Utils;
+import xlogo.gui.Application;
 
 import javax.swing.*;
 import java.awt.*;
@@ -176,35 +176,19 @@ public class GeneralPanel extends JPanel {
 
     class Contenu extends JLabel implements ListCellRenderer {
         private static final long serialVersionUID = 1L;
-        private final ImageIcon[] drapeau;
+        private final ImageIcon[] flag;
 
         Contenu() {
-            drapeau = new ImageIcon[Logo.translationLanguage.length];
-            cree_icone();
+            flag = new ImageIcon[Logo.translationLanguage.length];
+            createIcon();
         }
 
-        void cree_icone() {
+        void createIcon() {
             for (int i = 0; i < Logo.translationLanguage.length; i++) {
-                Image image = null;
-                image = Toolkit.getDefaultToolkit().getImage(Utils.class.getResource("drapeau" + i + ".png"));
-                MediaTracker tracker = new MediaTracker(this);
-                tracker.addImage(image, 0);
-                try {
-                    tracker.waitForID(0);
-                } catch (InterruptedException e1) {
-                }
-                int largeur = image.getWidth(this);
-                int hauteur = image.getHeight(this);
-                double facteur = (double) Config.font.getSize() / (double) hauteur;
-                image = image.getScaledInstance((int) (facteur * largeur), (int) (facteur * hauteur), Image.SCALE_SMOOTH);
-                tracker = new MediaTracker(this);
-                tracker.addImage(image, 0);
-                try {
-                    tracker.waitForID(0);
-                } catch (InterruptedException e1) {
-                }
-                drapeau[i] = new ImageIcon();
-                drapeau[i].setImage(image);
+                FlatSVGIcon icon = Logo.getFlag(i);
+                float factor = (float) 40 / (float) icon.getIconWidth();
+                icon = icon.derive(factor);
+                flag[i] = icon;
 //			drapeau[i]=new ImageIcon(image);
             }
 
@@ -215,7 +199,7 @@ public class GeneralPanel extends JPanel {
             setOpaque(true);
             String s = value.toString();
             setText(s);
-            setIcon(drapeau[index]);
+            setIcon(flag[index]);
             if (isSelected) {
                 setBackground(list.getSelectionBackground());
                 setForeground(list.getSelectionForeground());

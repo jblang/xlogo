@@ -118,6 +118,14 @@ public class Logo {
         return new FlatSVGIcon(Logo.class.getResource("resources/icons/" + name + ".svg"));
     }
 
+    public static FlatSVGIcon getFlag(String name) {
+        return new FlatSVGIcon(Logo.class.getResource("resources/flags/" + name + ".svg"));
+    }
+
+    public static FlatSVGIcon getFlag(int i) {
+        return getFlag(locales[i]);
+    }
+
     /**
      * Sets the selected language for all messages
      *
