@@ -241,9 +241,9 @@ public class Workspace {
             bfr.close();
             sr.close();
             try {
-                app.editor.setAffichable(false);
+                app.editor.setEditable(false);
                 app.editor.setEditorStyledText(new String(sb));
-                app.editor.analyseprocedure();
+                app.editor.analyzeProcedure();
             } catch (Exception e) {
             }
 

@@ -1,6 +1,5 @@
 package xlogo.kernel.perspective;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import xlogo.Logo;
@@ -129,12 +128,12 @@ public class Viewer3D extends JFrame {
         var toolBar = new JToolBar();
         getContentPane().add(toolBar, BorderLayout.NORTH);
 
-        var screenshotButton = new JButton(new FlatSVGIcon("xlogo/icons/screenshot.svg"));
+        var screenshotButton = new JButton(Logo.getIcon("screenshot"));
         screenshotButton.addActionListener(e -> saveScreenshot());
         toolBar.add(screenshotButton);
         toolBar.addSeparator();
 
-        var bulb = new FlatSVGIcon("xlogo/icons/bulb.svg");
+        var bulb = Logo.getIcon("bulb");
         for (var i = 0; i < 4; i++) {
             final var light = lights[i];
             final var label = Integer.toString(i + 1);
@@ -146,7 +145,7 @@ public class Viewer3D extends JFrame {
             toolBar.add(button);
         }
         toolBar.addSeparator();
-        var fogButton = new JButton(new FlatSVGIcon("xlogo/icons/cloud.svg"));
+        var fogButton = new JButton(Logo.getIcon("cloud"));
         fogButton.addActionListener(e -> {
             new FogDialog(this, fog, Logo.messages.getString("3d.fog"));
         });

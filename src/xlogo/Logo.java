@@ -8,6 +8,7 @@
 package xlogo;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -111,6 +112,10 @@ public class Logo {
             }
         });
 
+    }
+
+    public static ImageIcon getIcon(String name) {
+        return new FlatSVGIcon(Logo.class.getResource("resources/icons/" + name + ".svg"));
     }
 
     /**

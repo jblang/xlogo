@@ -1,6 +1,5 @@
 package xlogo.gui.translation;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
 
 import javax.swing.*;
@@ -8,17 +7,15 @@ import java.awt.*;
 
 public class BottomPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    private final UiTranslator tx;
-    private JTabbedPane jt;
+    private final UiTranslator translator;
+    private JTabbedPane tabbedPane;
     private TranslationTable messageTable;
-    private TranslationTable primTable;
+    private TranslationTable primitiveTable;
     private final String id;
     private final String action;
-    private JButton searchButton;
-    private final ImageIcon ichercher = new FlatSVGIcon("xlogo/icons/find.svg");
 
-    protected BottomPanel(UiTranslator tx, String action, String id) {
-        this.tx = tx;
+    protected BottomPanel(UiTranslator translator, String action, String id) {
+        this.translator = translator;
         this.action = action;
         this.id = id;
         initGui();
@@ -26,24 +23,24 @@ public class BottomPanel extends JPanel {
 
     private void initGui() {
         setLayout(new BorderLayout());
-        jt = new JTabbedPane();
-        messageTable = new TranslationTable(tx, action, id, "langage");
-        primTable = new TranslationTable(tx, action, id, "primitives");
-        jt.add(primTable, Logo.messages.getString("primitives"));
-        jt.add(messageTable, Logo.messages.getString("messages"));
-        javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(jt);
+        tabbedPane = new JTabbedPane();
+        messageTable = new TranslationTable(translator, action, id, "langage");
+        primitiveTable = new TranslationTable(translator, action, id, "primitives");
+        tabbedPane.add(primitiveTable, Logo.messages.getString("primitives"));
+        tabbedPane.add(messageTable, Logo.messages.getString("messages"));
+        javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(tabbedPane);
 
         add(scroll, BorderLayout.CENTER);
-        searchButton = new JButton(ichercher);
+        JButton searchButton = new JButton(Logo.getIcon("search"));
         searchButton.setToolTipText(Logo.messages.getString("find"));
-        searchButton.addActionListener(tx);
+        searchButton.addActionListener(translator);
         searchButton.setActionCommand(UiTranslator.SEARCH);
         searchButton.setSize(new java.awt.Dimension(100, 50));
         add(searchButton, BorderLayout.EAST);
     }
 
     protected String getPrimValue(int a, int b) {
-        return primTable.getValue(a, b);
+        return primitiveTable.getValue(a, b);
     }
 
     protected String getMessageValue(int a, int b) {
@@ -55,12 +52,12 @@ public class BottomPanel extends JPanel {
         return this.messageTable;
     }
 
-    protected TranslationTable getPrimTable() {
-        return this.primTable;
+    protected TranslationTable getPrimitiveTable() {
+        return this.primitiveTable;
     }
 
     protected TranslationTable getVisibleTable() {
-        if (jt.getSelectedIndex() == 0) return primTable;
+        if (tabbedPane.getSelectedIndex() == 0) return primitiveTable;
         return messageTable;
     }
 }

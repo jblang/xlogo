@@ -7,7 +7,6 @@
  */
 package xlogo.gui;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.Workspace;
@@ -20,15 +19,7 @@ import java.util.Vector;
 
 public class ProcedureEraser extends JDialog implements ActionListener {
     private static final long serialVersionUID = 1L;
-    private JScrollPane scroll;
-    private JButton deleteButton;
-    private JButton up;
-    private JButton down;
     private JList procedureList;
-    private JLabel allProcedureLabel;
-    private final ImageIcon iup =  new FlatSVGIcon("xlogo/icons/moveUp.svg");
-    private final ImageIcon idown =  new FlatSVGIcon("xlogo/icons/moveDown.svg");
-    private JPanel buttonPanel;
     private Vector<String> list;
     private final Workspace wp;
     private int startupFiles = 0;
@@ -40,17 +31,17 @@ public class ProcedureEraser extends JDialog implements ActionListener {
     }
 
     private void initGui() {
-        up = new JButton(iup);
-        down = new JButton(idown);
+        JButton up = new JButton(Logo.getIcon("moveUp"));
+        JButton down = new JButton(Logo.getIcon("moveDown"));
         up.setActionCommand("up");
         down.setActionCommand("down");
         up.addActionListener(this);
         down.addActionListener(this);
-        buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel();
         buttonPanel.add(up);
         buttonPanel.add(down);
 
-        list = new Vector<String>();
+        list = new Vector<>();
 
         for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
             Procedure proc = wp.getProcedure(i);
@@ -60,9 +51,9 @@ public class ProcedureEraser extends JDialog implements ActionListener {
             }
         }
         procedureList = new JList(list);
-        deleteButton = new JButton(Logo.messages.getString("enlever"));
-        allProcedureLabel = new JLabel(Logo.messages.getString("procedure_list"));
-        scroll = new JScrollPane(procedureList);
+        JButton deleteButton = new JButton(Logo.messages.getString("enlever"));
+        JLabel allProcedureLabel = new JLabel(Logo.messages.getString("procedure_list"));
+        JScrollPane scroll = new JScrollPane(procedureList);
 
         getContentPane().setLayout(new BorderLayout());
         deleteButton.setActionCommand("delete");

@@ -1436,7 +1436,7 @@ public class LaunchPrimitive {
                                     Logo.messages.getString("error.iolecture"));
                         }
                         try {
-                            cadre.editor.analyseprocedure();
+                            cadre.editor.analyzeProcedure();
                             if (!cadre.isNewEnabled())
                                 cadre.setNewEnabled(true);
                         } catch (Exception e3) {
@@ -1564,7 +1564,7 @@ public class LaunchPrimitive {
                     } catch (LogoException e) {
                     }
                     try {
-                        cadre.editor.analyseprocedure();
+                        cadre.editor.analyzeProcedure();
                         cadre.editor.clearText();
                     } catch (Exception e2) {
                     }

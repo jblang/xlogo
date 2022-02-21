@@ -6,7 +6,6 @@
  */
 package xlogo.gui;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.preferences.FontPanel;
@@ -15,7 +14,10 @@ import xlogo.gui.translation.UiTranslator;
 import xlogo.kernel.*;
 import xlogo.kernel.network.NetworkServer;
 import xlogo.kernel.perspective.Viewer3D;
-import xlogo.utils.*;
+import xlogo.utils.ExtensionFilter;
+import xlogo.utils.ImageWriter;
+import xlogo.utils.LogoException;
+import xlogo.utils.Utils;
 
 import javax.help.CSH;
 import javax.help.HelpBroker;
@@ -162,8 +164,7 @@ public class Application extends JFrame {
     }
 
     private JButton createButton(JToolBar parent, String iconName, ActionListener listener) {
-        iconName = "xlogo/icons/" + iconName + ".svg";
-        var button = new JButton(new FlatSVGIcon(iconName));
+        var button = new JButton(Logo.getIcon(iconName));
         button.addActionListener(listener);
         parent.add(button);
         return button;
@@ -173,15 +174,15 @@ public class Application extends JFrame {
         var toolBar = new JToolBar();
         createButton(toolBar, "editSource", e -> showEditor());
         toolBar.addSeparator();
-        runButton = createButton(toolBar, "execute", e -> runMainCommand());
-        stopButton = createButton(toolBar, "suspend", e -> stopAnimation());
+        runButton = createButton(toolBar, "run", e -> runMainCommand());
+        stopButton = createButton(toolBar, "stop", e -> stopAnimation());
         toolBar.addSeparator();
         zoomInButton = createButton(toolBar, "zoomIn", e -> zoomIn());
         zoomOutButton = createButton(toolBar, "zoomOut", e -> zoomOut());
         toolBar.addSeparator();
-        createButton(toolBar, "menu-cut", e -> cut());
+        createButton(toolBar, "cut", e -> cut());
         createButton(toolBar, "copy", e -> copy());
-        createButton(toolBar, "menu-paste", e -> paste());
+        createButton(toolBar, "paste", e -> paste());
         return toolBar;
     }
 
@@ -1011,23 +1012,23 @@ public class Application extends JFrame {
     public void generatePrimitives() {
         kernel.initPrimitive();
         Stack<String> stack = new Stack<>();
-        editor.setAffichable(false);
+        editor.setEditable(false);
         int counter = Config.startupFiles.size();
 
         for (int i = 0; i < counter; i++) {
             String txt = "";
             if (Config.startupFiles.get(i).equals("#####"))
-                editor.setAffichable(true); //on a terminé avec les fichiers de démarrage
+                editor.setEditable(true); //on a terminé avec les fichiers de démarrage
             else {
                 try {
                     txt = Utils.readLogoFile(Config.startupFiles.get(i));
-                    if (!editor.getAffichable()) stack.push(Config.startupFiles.get(i));
+                    if (!editor.isEditable()) stack.push(Config.startupFiles.get(i));
                 } catch (IOException e2) {
                     System.out.println("Problem reading file");
                 }
                 editor.setEditorStyledText(txt);
                 try {
-                    editor.analyseprocedure();
+                    editor.analyzeProcedure();
                 } catch (Exception e3) {
                     System.out.println(e3);
                 }
@@ -1037,7 +1038,7 @@ public class Application extends JFrame {
         }
 
         Config.startupFiles = new ArrayList<>(stack); //On ne garde dans le path que les fichiers de démarrage
-        editor.setAffichable(true);
+        editor.setEditable(true);
         editor.clearText();
     }
 

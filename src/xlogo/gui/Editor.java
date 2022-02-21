@@ -1,6 +1,5 @@
 package xlogo.gui;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.Primitive;
@@ -39,14 +38,12 @@ import java.util.StringTokenizer;
 public class Editor extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
     private final JToolBar menu = new JToolBar(JToolBar.HORIZONTAL);
-    private JButton copier, coller, couper, imprimer, quit, lire, chercher, undo, redo;
-    private boolean affichable = true;
+    private JButton undoButton;
+    private JButton redoButton;
+    private boolean editable = true;
     private JScrollPane scroll;
     private EditorTextFacade textZone;
-    //  private HighlightedTextPane zonedition;
-    private JLabel labelCommand;
     private JTextField mainCommand;
-    private JPanel panelCommand;
 
     private Application cadre;
     private Workspace wp;
@@ -75,7 +72,7 @@ public class Editor extends JFrame implements ActionListener {
         }
     }
 
-    public void analyseprocedure() throws EditeurException {
+    public void analyzeProcedure() throws EditorException {
         String text = textZone.getText();
         text.replaceAll("\t", "  ");
         StringReader sr = new StringReader(text);
@@ -120,7 +117,7 @@ public class Editor extends JFrame implements ActionListener {
                     while (st.hasMoreTokens()) {
                         token = st.nextToken();
                         if (token.startsWith(":")) {
-                            String var = ValidVariable(token);
+                            String var = isValidVariable(token);
                             variables.add(var);
                         }
                         // And finally, optional variables if there are some.
@@ -175,7 +172,7 @@ public class Editor extends JFrame implements ActionListener {
                 // If it's a new procedure
                 Procedure proc;
                 if (id == -1) {
-                    proc = new Procedure(name, variables.size(), variables, optVariables, optVariablesExp, affichable);
+                    proc = new Procedure(name, variables.size(), variables, optVariables, optVariablesExp, editable);
                     proc.instruction = body.toString();
                     proc.comment = comment;
                     wp.procedureListPush(proc);
@@ -193,7 +190,7 @@ public class Editor extends JFrame implements ActionListener {
                 }
                 //	System.out.println(proc.toString());
             }
-//		    On crée les chaînes d'instruction formatées pour chaque procédure et les sauvegardes
+            // On crée les chaînes d'instruction formatées pour chaque procédure et les sauvegardes
             for (int j = 0; j < wp.getNumberOfProcedure(); j++) {
                 Procedure pr = wp.getProcedure(j);
                 pr.decoupe();
@@ -203,10 +200,9 @@ public class Editor extends JFrame implements ActionListener {
                 for (int k = 0; k < pr.variable.size(); k++) {
                     pr.variable_sauve.add(pr.variable.get(k));
                 }
-//					System.out.println(pr.instr);
             }
 
-            if (!defineSentence.equals("") && affichable) {
+            if (!defineSentence.equals("") && editable) {
                 cadre.updateHistory("commentaire", Logo.messages.getString("definir") + " " + defineSentence.substring(0, defineSentence.length() - 2) + ".\n");
                 cadre.updateProcedureEraser();
             }
@@ -214,8 +210,8 @@ public class Editor extends JFrame implements ActionListener {
         }
     }
 
-    private void structureException() throws EditeurException {
-        throw new EditeurException(this, Logo.messages.getString("erreur_editeur"));
+    private void structureException() throws EditorException {
+        throw new EditorException(this, Logo.messages.getString("erreur_editeur"));
     }
 
     // Check if the String st is a comment (starts with "#")
@@ -224,7 +220,7 @@ public class Editor extends JFrame implements ActionListener {
     }
 
     // Check if the String var is a number
-    private void isNumber(String var) throws EditeurException {
+    private void isNumber(String var) throws EditorException {
         try {
             Double.parseDouble(var);
             structureException();
@@ -232,16 +228,16 @@ public class Editor extends JFrame implements ActionListener {
         }
     }
 
-    private void hasSpecialCharacter(String var) throws EditeurException {
+    private void hasSpecialCharacter(String var) throws EditorException {
         StringTokenizer check = new StringTokenizer(var, ":+-*/() []=<>&|", true);
         String mess = Logo.messages.getString("caractere_special_variable") + "\n" + Logo.messages.getString("caractere_special2") + "\n" + Logo.messages.getString("caractere_special3") + " :" + var;
-        if (check.countTokens() > 1) throw new EditeurException(this, mess);
-        if (":+-*/() []=<>&|".indexOf(check.nextToken()) > -1) throw new EditeurException(this, mess);
+        if (check.countTokens() > 1) throw new EditorException(this, mess);
+        if (":+-*/() []=<>&|".indexOf(check.nextToken()) > -1) throw new EditorException(this, mess);
     }
 
     // Check if token is a valid variable
     //  and returns its name
-    private String ValidVariable(String token) throws EditeurException {
+    private String isValidVariable(String token) throws EditorException {
         if (token.length() == 1) structureException();
         String var = token.substring(1);
         isNumber(var);
@@ -249,7 +245,7 @@ public class Editor extends JFrame implements ActionListener {
         return var.toLowerCase();
     }
 
-    private void extractList(StringBuffer sb, String[] args) throws EditeurException {
+    private void extractList(StringBuffer sb, String[] args) throws EditorException {
         String variable = "";
         String expression = "";
         int compteur = 1;
@@ -278,14 +274,11 @@ public class Editor extends JFrame implements ActionListener {
             }
         }
         if (variable.startsWith(":")) {
-            variable = ValidVariable(variable);
+            variable = isValidVariable(variable);
         } else structureException();
         if (compteur != 0) structureException();
         expression = sb.substring(id + 1, id2).trim();
         if (expression.equals("")) structureException();
-	  /*  System.out.println(id+" "+id2);
-	    System.out.println("a"+expression+"a");
-	    System.out.println("a"+variable+"a");*/
         sb.delete(0, id2 + 1);
         // delete unnecessary space
         while (sb.length() != 0 && sb.charAt(0) == ' ') sb.deleteCharAt(0);
@@ -294,27 +287,27 @@ public class Editor extends JFrame implements ActionListener {
     }
 
 
-    private int isProcedure(String mot) throws EditeurException {   // vérifie si mot est une procédure
+    private int isProcedure(String mot) throws EditorException {   // vérifie si mot est une procédure
 // Vérifier si c'est le nom d'une procédure de démarrage
         for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
             Procedure procedure = wp.getProcedure(i);
             if (procedure.name.equals(mot) && procedure.affichable == false)
-                throw new EditeurException(this, mot + " " + Logo.messages.getString("existe_deja"));
+                throw new EditorException(this, mot + " " + Logo.messages.getString("existe_deja"));
         }
 // Vérifier si ce n'est pas un nombre:
         try {
             Double.parseDouble(mot);
-            throw new EditeurException(this, Logo.messages.getString("erreur_nom_nombre_procedure"));
+            throw new EditorException(this, Logo.messages.getString("erreur_nom_nombre_procedure"));
         } catch (NumberFormatException e) {
         }
 // Vérifier tout d'abord si le mot n'est pas une primitive.
         if (Primitive.primitives.containsKey(mot))
-            throw new EditeurException(this, mot + " " + Logo.messages.getString("existe_deja"));
+            throw new EditorException(this, mot + " " + Logo.messages.getString("existe_deja"));
         else {
             //ensuite s'il ne contient pas de caractères spéciaux "\"
             StringTokenizer decoupe = new StringTokenizer("a" + mot + "a", ":\\+-*/() []=<>&|"); //on rajoute une lettre au mot au cas où le caractere spécial se trouve en début ou en fin de mot.
             if (decoupe.countTokens() > 1)
-                throw new EditeurException(this, Logo.messages.getString("caractere_special1") + "\n" + Logo.messages.getString("caractere_special2") + "\n" + Logo.messages.getString("caractere_special3") + " " + mot);
+                throw new EditorException(this, Logo.messages.getString("caractere_special1") + "\n" + Logo.messages.getString("caractere_special2") + "\n" + Logo.messages.getString("caractere_special3") + " " + mot);
         }
         for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
             if (wp.getProcedure(i).name.equals(mot)) return (i);
@@ -326,89 +319,78 @@ public class Editor extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         // Init Toolbar button
-        ImageIcon icopier, icoller, icouper, iimprimer, iquit, ichercher, iundo, iredo, iplay, ilire;
-        ilire = new FlatSVGIcon( "xlogo/icons/menu-saveall.svg" );
-        iquit = new FlatSVGIcon( "xlogo/icons/cancel.svg" );
-        iundo = new FlatSVGIcon( "xlogo/icons/undo.svg" );
-        iredo = new FlatSVGIcon( "xlogo/icons/redo.svg" );
-        icopier = new FlatSVGIcon( "xlogo/icons/copy.svg" );
-        icoller = new FlatSVGIcon( "xlogo/icons/menu-paste.svg" );
-        icouper = new FlatSVGIcon( "xlogo/icons/menu-cut.svg" );
-        ichercher = new FlatSVGIcon( "xlogo/icons/find.svg" );
-        iimprimer = new FlatSVGIcon( "xlogo/icons/print.svg" );
-        iplay = new FlatSVGIcon( "xlogo/icons/execute.svg" );
-        lire = new JButton(ilire);
-        copier = new JButton(icopier);
-        coller = new JButton(icoller);
-        couper = new JButton(icouper);
-        imprimer = new JButton(iimprimer);
-        quit = new JButton(iquit);
-        chercher = new JButton(ichercher);
-        undo = new JButton(iundo);
-        redo = new JButton(iredo);
+        JButton saveButton = new JButton(Logo.getIcon("save"));
+        JButton cancelButton = new JButton(Logo.getIcon("cancel"));
+        JButton cutButton = new JButton(Logo.getIcon("cut"));
+        JButton copyButton = new JButton(Logo.getIcon("copy"));
+        JButton pasteButton = new JButton(Logo.getIcon("paste"));
+        JButton printButton = new JButton(Logo.getIcon("print"));
+        JButton searchButton = new JButton(Logo.getIcon("search"));
+        undoButton = new JButton(Logo.getIcon("undo"));
+        redoButton = new JButton(Logo.getIcon("redo"));
 
         // Init All other components
-        labelCommand = new JLabel(Logo.messages.getString("mainCommand"), iplay, JLabel.LEFT);
+        //  private HighlightedTextPane zonedition;
+        JLabel labelCommand = new JLabel(Logo.messages.getString("mainCommand"), Logo.getIcon("run"), JLabel.LEFT);
         scroll = new JScrollPane();
         if (Config.syntaxHighlightingEnabled) {
             textZone = new EditorTextPane(this);
         } else textZone = new EditorTextArea(this);
 
         mainCommand = new JTextField();
-        panelCommand = new JPanel();
+        JPanel panelCommand = new JPanel();
 
         sf = new ReplaceFrame(this, textZone);
 
+        copyButton.setToolTipText(Logo.messages.getString("menu.edition.copy"));
+        cutButton.setToolTipText(Logo.messages.getString("menu.edition.cut"));
+        pasteButton.setToolTipText(Logo.messages.getString("menu.edition.paste"));
+        printButton.setToolTipText(Logo.messages.getString("imprimer_editeur"));
+        saveButton.setToolTipText(Logo.messages.getString("lire_editeur"));
+        cancelButton.setToolTipText(Logo.messages.getString("quit_editeur"));
+        searchButton.setToolTipText(Logo.messages.getString("find"));
+        undoButton.setToolTipText(Logo.messages.getString("editor.undo"));
+        redoButton.setToolTipText(Logo.messages.getString("editor.redo"));
 
-        copier.setToolTipText(Logo.messages.getString("menu.edition.copy"));
-        couper.setToolTipText(Logo.messages.getString("menu.edition.cut"));
-        coller.setToolTipText(Logo.messages.getString("menu.edition.paste"));
-        imprimer.setToolTipText(Logo.messages.getString("imprimer_editeur"));
-        lire.setToolTipText(Logo.messages.getString("lire_editeur"));
-        quit.setToolTipText(Logo.messages.getString("quit_editeur"));
-        chercher.setToolTipText(Logo.messages.getString("find"));
-        undo.setToolTipText(Logo.messages.getString("editor.undo"));
-        redo.setToolTipText(Logo.messages.getString("editor.redo"));
+        copyButton.setActionCommand(Logo.messages.getString("menu.edition.copy"));
+        cutButton.setActionCommand(Logo.messages.getString("menu.edition.cut"));
+        pasteButton.setActionCommand(Logo.messages.getString("menu.edition.paste"));
+        printButton.setActionCommand(Logo.messages.getString("imprimer_editeur"));
+        saveButton.setActionCommand(Logo.messages.getString("lire_editeur"));
+        cancelButton.setActionCommand(Logo.messages.getString("quit_editeur"));
+        searchButton.setActionCommand(Logo.messages.getString("find"));
+        undoButton.setActionCommand(Logo.messages.getString("editor.undo"));
+        redoButton.setActionCommand(Logo.messages.getString("editor.redo"));
 
-        copier.setActionCommand(Logo.messages.getString("menu.edition.copy"));
-        couper.setActionCommand(Logo.messages.getString("menu.edition.cut"));
-        coller.setActionCommand(Logo.messages.getString("menu.edition.paste"));
-        imprimer.setActionCommand(Logo.messages.getString("imprimer_editeur"));
-        lire.setActionCommand(Logo.messages.getString("lire_editeur"));
-        quit.setActionCommand(Logo.messages.getString("quit_editeur"));
-        chercher.setActionCommand(Logo.messages.getString("find"));
-        undo.setActionCommand(Logo.messages.getString("editor.undo"));
-        redo.setActionCommand(Logo.messages.getString("editor.redo"));
+        undoButton.setEnabled(false);
+        redoButton.setEnabled(false);
 
-        undo.setEnabled(false);
-        redo.setEnabled(false);
+        saveButton.setMnemonic('Q');
+        cancelButton.setMnemonic('C');
 
-        lire.setMnemonic('Q');
-        quit.setMnemonic('C');
-
-        menu.add(lire);
-        menu.add(quit);
+        menu.add(saveButton);
+        menu.add(cancelButton);
         menu.addSeparator();
-        menu.add(imprimer);
+        menu.add(printButton);
         menu.addSeparator();
-        menu.add(undo);
-        menu.add(redo);
+        menu.add(undoButton);
+        menu.add(redoButton);
         menu.addSeparator();
-        menu.add(couper);
-        menu.add(copier);
-        menu.add(coller);
+        menu.add(cutButton);
+        menu.add(copyButton);
+        menu.add(pasteButton);
         menu.addSeparator();
-        menu.add(chercher);
+        menu.add(searchButton);
 
-        imprimer.addActionListener(this);
-        copier.addActionListener(this);
-        couper.addActionListener(this);
-        coller.addActionListener(this);
-        lire.addActionListener(this);
-        quit.addActionListener(this);
-        chercher.addActionListener(this);
-        undo.addActionListener(this);
-        redo.addActionListener(this);
+        printButton.addActionListener(this);
+        copyButton.addActionListener(this);
+        cutButton.addActionListener(this);
+        pasteButton.addActionListener(this);
+        saveButton.addActionListener(this);
+        cancelButton.addActionListener(this);
+        searchButton.addActionListener(this);
+        undoButton.addActionListener(this);
+        redoButton.addActionListener(this);
 
         initMainCommand();
         if (Config.mainCommand.length() < 30) mainCommand.setPreferredSize(new Dimension(150, 20));
@@ -458,7 +440,7 @@ public class Editor extends JFrame implements ActionListener {
             textZone.setActive(false);
             boolean visible = false;
             try {
-                analyseprocedure();
+                analyzeProcedure();
                 this.textZone.setText("");
                 if (null != cadre.tempPath) {
                     Application.path = cadre.tempPath;
@@ -473,10 +455,9 @@ public class Editor extends JFrame implements ActionListener {
                 }
                 if (!cadre.isNewEnabled())
                     cadre.setNewEnabled(true); //Si c'est la première fois qu'on enregistre, on active le menu nouveau
-            } catch (EditeurException ex) {
+            } catch (EditorException ex) {
                 visible = true;
             }
-//			System.out.println(visible);
             setVisible(visible);
             cadre.focusCommandLine();
             if (Config.eraseImage) { //Effacer la zone de dessin
@@ -557,21 +538,13 @@ public class Editor extends JFrame implements ActionListener {
     }
 
     // Enable or disable Syntax Highlighting
-/*	public void setColoration(boolean b){
-		if (textZone.supportHighlighting())
-		((EditorTextPane)textZone).getDsd().setColoration(b);
-	}
-	*/
-    public void setEditorFont(Font f) {
-        textZone.setFont(f);
+
+    public boolean isEditable() {
+        return editable;
     }
 
-    public boolean getAffichable() {
-        return affichable;
-    }
-
-    public void setAffichable(boolean b) {
-        affichable = b;
+    public void setEditable(boolean b) {
+        editable = b;
     }
 
     /**
@@ -586,27 +559,13 @@ public class Editor extends JFrame implements ActionListener {
      * To allow Syntax Highlighting
      */
     public void toTextPane() {
-/*		if (SwingUtilities.isEventDispatchThread()){
-
-		}
-
-
-		try{
-		SwingUtilities.invokeAndWait(new Runnable(){
-			public void run(){*/
-        scroll.getViewport().removeAll();//.remove(textZone.getTextComponent());
+        scroll.getViewport().removeAll();
         String s = textZone.getText();
         textZone = new EditorTextPane(this);
         sf = new ReplaceFrame(this, textZone);
         textZone.ecris(s);
         scroll.getViewport().add(textZone.getTextComponent());
         scroll.revalidate();
-/*			}
-		});
-		}
-		catch(Exception e1){}
-	//	catch(InvocationTargetException e2){}
-*/
     }
 
     /**
@@ -616,20 +575,13 @@ public class Editor extends JFrame implements ActionListener {
      * - Large text to display in the editor
      */
     public void toTextArea() {
-	/*	try{
-		SwingUtilities.invokeAndWait(new Runnable(){
-			public void run(){*/
         String s = textZone.getText();
-        scroll.getViewport().removeAll();//.remove(textZone.getTextComponent());
+        scroll.getViewport().removeAll();
         textZone = new EditorTextArea(this);
         sf = new ReplaceFrame(this, textZone);
         textZone.ecris(s);
         scroll.getViewport().add(textZone.getTextComponent());
         scroll.revalidate();
-/*			}
-		});}
-		catch(Exception e){}
-	*/
     }
 
     public void setEditorStyledText(String txt) {
@@ -642,28 +594,6 @@ public class Editor extends JFrame implements ActionListener {
                 textZone.ecris(txt);
             } else textZone.ecris(txt);
         }
-
-/*		try{
-		textZone.read(new StringReader(txt), null);
-		}
-		catch(IOException e){}
-		while(null!=txt){
-			if (txt.length()>10000){
-				textZone.ecris(txt.substring(0,10000));
-				txt=txt.substring(10000);
-
-			}
-			else {
-
-				txt=null;
-			}
-
-		}
-	*/
-    }
-
-    public void focus_textZone() {
-        textZone.requestFocus();
     }
 
     /**
@@ -695,41 +625,19 @@ public class Editor extends JFrame implements ActionListener {
     }
 
     protected void updateUndoRedoButtons() {
-        redo.setEnabled(textZone.getUndoManager().canRedo());
-        undo.setEnabled(textZone.getUndoManager().canUndo());
+        redoButton.setEnabled(textZone.getUndoManager().canRedo());
+        undoButton.setEnabled(textZone.getUndoManager().canUndo());
     }
 
-    /*String ligne(String texte){       // Extrait la ligne suivante de texte
-      String ligne="";
-      while(curseur<texte.length()){
-        String caractere=texte.substring(curseur,curseur+1);
-        curseur++;
-        if (caractere.equals("\n")) return ligne;
-        else ligne+=caractere;
-
-      }
-      return(ligne);
-    }
-    String mot(String ligne){       // Extrait le mot suivant dans la ligne
-      String mot="";
-      int i=0;
-      while(i<ligne.length()){
-        String caractere=ligne.substring(i,i+1);
-        if (caractere.equals(" ")) {return mot;}
-        else mot+=caractere;
-        i++;
-      }
-      return(mot);
-    }*/
-    class EditeurException extends Exception {   // à générer en cas d'errreur dans la structure
+    class EditorException extends Exception {   // à générer en cas d'errreur dans la structure
         private static final long serialVersionUID = 1L;
         String message;
         Editor editeur;
 
-        EditeurException() {
+        EditorException() {
         }                      // des pour ... fin
 
-        EditeurException(Editor editeur, String message) {        // et des variables
+        EditorException(Editor editeur, String message) {        // et des variables
             this.editeur = editeur;
             MessageTextArea jt = new MessageTextArea(message);
             JOptionPane.showMessageDialog(this.editeur, jt, Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
@@ -744,47 +652,4 @@ public class Editor extends JFrame implements ActionListener {
             editeur.textZone.requestFocus();
         }
     }
-/*	class WriteLongText implements Runnable{
-		String s;
-		WriteLongText(String s){
-			this.s=s;
-		}
-		public void run(){
-			textZone.ecris(s);
-		}
-	}
-
-/*
-    public int print(Graphics g,PageFormat pf, int pi) throws PrinterException{
-
-      int h_imp=(int)pf.getImageableHeight(); //hauteur imprimable sur chaque page
-      java.awt.FontMetrics fm = g.getFontMetrics(this.getFont());
-      int hauteur_texte=fm.getHeight();
-      System.out.println(hauteur_texte);
-
-      if(pi<this.getHeight()/h_imp+1){
-        g.translate((int)pf.getImageableX(),(int)pf.getImageableY()-pi*h_imp);
-       // System.out.println((int)pf.getImageableY()-pi*h_imp);
-        paint(g);
-      return(Printable.PAGE_EXISTS);
-    }
-    else return Printable.NO_SUCH_PAGE;
-  }
-
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*/
 }
