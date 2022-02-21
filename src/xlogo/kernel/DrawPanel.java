@@ -2086,7 +2086,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         updateColorSelection();
         if (enabled3D()) {
             if (cadre.getViewer3D() != null) {
-                cadre.getViewer3D().updateBackGround(couleurfond);
+                cadre.getViewer3D().updateBackground(couleurfond);
             }
         }
         nettoie();

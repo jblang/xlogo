@@ -3,21 +3,17 @@ package xlogo.kernel.perspective;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.universe.SimpleUniverse;
-import xlogo.Config;
 import xlogo.Logo;
-import xlogo.utils.Utils;
 import xlogo.utils.ImageWriter;
+import xlogo.utils.Utils;
 
 import javax.media.j3d.*;
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3d;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 
@@ -31,21 +27,13 @@ import java.awt.image.BufferedImage;
  */
 
 
-public class Viewer3D extends JFrame implements ActionListener {
-    private final static String ACTION_SCREENSHOT = "screenshot";
-    private final static String ACTION_LIGHT0 = "light0";
-    private final static String ACTION_LIGHT1 = "light1";
-    private final static String ACTION_LIGHT2 = "light2";
-    private final static String ACTION_LIGHT3 = "light3";
-    private final static String ACTION_FOG = "fog";
+public class Viewer3D extends JFrame {
     private static final long serialVersionUID = 1L;
     // To store the Light attributes
     private Light[] lights;
     // To store the Fog attributes
     private Fog fog;
     // Gui Components
-    private final ImageIcon iscreenshot = new FlatSVGIcon("xlogo/icons/screen.svg");
-    private JButton screenshot;
     private World3D w3d;
     private Canvas3D canvas3D;
     /**
@@ -59,8 +47,6 @@ public class Viewer3D extends JFrame implements ActionListener {
 
     private BranchGroup backBranchgroup;
     private Background back;
-    private PanelLight panelLight;
-    private PanelFog panelFog;
 
 
     public Viewer3D(World3D w3d, Color c) {
@@ -69,63 +55,37 @@ public class Viewer3D extends JFrame implements ActionListener {
         initGui();
     }
 
-    public void actionPerformed(ActionEvent e) {
-        String cmd = e.getActionCommand();
-        // Take a screenshot
-        if (cmd.equals(Viewer3D.ACTION_SCREENSHOT)) {
-            ImageWriter wi = new ImageWriter(this, null);
-            int id = wi.chooseFile();
-            if (id == JFileChooser.APPROVE_OPTION) {
-                GraphicsContext3D ctx = canvas3D.getGraphicsContext3D();
-                java.awt.Dimension scrDim = canvas3D.getSize();
+    void saveScreenshot() {
+        ImageWriter wi = new ImageWriter(this, null);
+        int id = wi.chooseFile();
+        if (id == JFileChooser.APPROVE_OPTION) {
+            GraphicsContext3D ctx = canvas3D.getGraphicsContext3D();
+            java.awt.Dimension scrDim = canvas3D.getSize();
 
-                // setting raster component
-                Raster ras = new Raster(new Point3f(-1.0f, -1.0f, -1.0f), Raster.RASTER_COLOR, 0, 0, scrDim.width, scrDim.height,
-                        new ImageComponent2D(ImageComponent.FORMAT_RGB, new BufferedImage(scrDim.width, scrDim.height, java.awt.image.BufferedImage.TYPE_INT_RGB)),
-                        null);
-                ctx.readRaster(ras);
-                BufferedImage img = ras.getImage().getImage();
-                wi.setImage(img);
-                wi.start();
-            }
-        }
-        // Click on Button Light1
-        else if (cmd.equals(Viewer3D.ACTION_LIGHT0)) {
-            new LightDialog(this, lights[0], Logo.messages.getString("3d.light") + " 1");
-        }
-        // Click on Button Light2
-        else if (cmd.equals(Viewer3D.ACTION_LIGHT1)) {
-            new LightDialog(this, lights[1], Logo.messages.getString("3d.light") + " 2");
-        }
-        // Click on Button Light3
-        else if (cmd.equals(Viewer3D.ACTION_LIGHT2)) {
-            new LightDialog(this, lights[2], Logo.messages.getString("3d.light") + " 3");
-        }
-        // Click on Button Light4
-        else if (cmd.equals(Viewer3D.ACTION_LIGHT3)) {
-            new LightDialog(this, lights[3], Logo.messages.getString("3d.light") + " 4");
-        }
-        // Click on the Fog Button
-        else if (cmd.equals(Viewer3D.ACTION_FOG)) {
-            new FogDialog(this, fog, Logo.messages.getString("3d.fog"));
-
+            // setting raster component
+            Raster ras = new Raster(new Point3f(-1.0f, -1.0f, -1.0f), Raster.RASTER_COLOR, 0, 0, scrDim.width, scrDim.height, new ImageComponent2D(ImageComponent.FORMAT_RGB, new BufferedImage(scrDim.width, scrDim.height, java.awt.image.BufferedImage.TYPE_INT_RGB)), null);
+            ctx.readRaster(ras);
+            BufferedImage img = ras.getImage().getImage();
+            wi.setImage(img);
+            wi.start();
         }
     }
 
     public void setText() {
         setTitle(Logo.messages.getString("3d.viewer"));
-        panelFog.setText();
-        panelLight.setText();
-
     }
 
     private void initGui() {
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
+        getContentPane().setLayout(new BorderLayout());
 
-        // Creation d'un composant de classe Canvas3D permettant de visualiser une scène 3D
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        int size = Math.min(d.width, d.height) * 2 / 3;
+        setSize(size, size);
+        setLocationRelativeTo(null);
+
         canvas3D = new Canvas3D(SimpleUniverse.getPreferredConfiguration());
-        // Création d'un univers 3D rattaché au composant 3D
         universe = new SimpleUniverse(canvas3D);
 
         // Install the camera at the valid position with correct orientation
@@ -136,8 +96,7 @@ public class Viewer3D extends JFrame implements ActionListener {
         }
         trans.setTranslation(new Vector3d(-w3d.xCamera / 1000, -w3d.yCamera / 1000, -w3d.zCamera / 1000));
         Transform3D rot = new Transform3D();
-        rot.lookAt(new Point3d(-w3d.xCamera / 1000, -w3d.yCamera / 1000, -w3d.zCamera / 1000),
-                new Point3d(0, 0, 0), new Vector3d(0, 1, 0));
+        rot.lookAt(new Point3d(-w3d.xCamera / 1000, -w3d.yCamera / 1000, -w3d.zCamera / 1000), new Point3d(0, 0, 0), new Vector3d(0, 1, 0));
         rot.invert();
         trans.mul(rot);
         tg.setTransform(trans);
@@ -149,12 +108,10 @@ public class Viewer3D extends JFrame implements ActionListener {
         // Create the root of the branch graph
         scene = new BranchGroup();
         branchManager = new BranchManager();
-//		scene.setName("Main Branch");
         // We can add New BranchGroup dynamically in the main scene
         scene.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
         // We can remove BranchGroup dynamically in the main scene
         scene.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
-
 
         // Configure and create background
         createBackground();
@@ -169,31 +126,33 @@ public class Viewer3D extends JFrame implements ActionListener {
         // Rattachement de la scène 3D à l'univers
         universe.addBranchGraph(scene);
 
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = d.width * 9 / 10;
-        int height = d.height * 9 / 10;
-        setSize(width, height);
-        getContentPane().setLayout(new GridBagLayout());
-        screenshot = new JButton(iscreenshot);
-        screenshot.addActionListener(this);
-        screenshot.setMaximumSize(new Dimension(100, 100));
-        screenshot.setActionCommand(Viewer3D.ACTION_SCREENSHOT);
+        var toolBar = new JToolBar();
+        getContentPane().add(toolBar, BorderLayout.NORTH);
 
-        panelLight = new PanelLight(this);
-        panelFog = new PanelFog(this);
+        var screenshotButton = new JButton(new FlatSVGIcon("xlogo/icons/screenshot.svg"));
+        screenshotButton.addActionListener(e -> saveScreenshot());
+        toolBar.add(screenshotButton);
+        toolBar.addSeparator();
 
-        getContentPane().add(canvas3D, new GridBagConstraints(0, 0, 1, 3, 2.0, 1.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
-                0, 0, 0, 0), 0, 0));
-        getContentPane().add(screenshot, new GridBagConstraints(1, 0, 1, 1, 0.1, 0.8,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
-                10, 10, 10, 10), 0, 0));
-        getContentPane().add(panelLight, new GridBagConstraints(1, 1, 1, 1, 0.1, 0.1,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
-                10, 10, 10, 10), 0, 0));
-        getContentPane().add(panelFog, new GridBagConstraints(1, 2, 1, 1, 0.1, 0.1,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
-                10, 10, 10, 10), 0, 0));
+        var bulb = new FlatSVGIcon("xlogo/icons/bulb.svg");
+        for (var i = 0; i < 4; i++) {
+            final var light = lights[i];
+            final var label = Integer.toString(i + 1);
+            var button = new JButton(label, bulb);
+            button.addActionListener(e -> {
+                String title = Logo.messages.getString("3d.light") + " " + label;
+                new LightDialog(this, light, title);
+            });
+            toolBar.add(button);
+        }
+        toolBar.addSeparator();
+        var fogButton = new JButton(new FlatSVGIcon("xlogo/icons/cloud.svg"));
+        fogButton.addActionListener(e -> {
+            new FogDialog(this, fog, Logo.messages.getString("3d.fog"));
+        });
+        toolBar.add(fogButton);
+
+        getContentPane().add(canvas3D, BorderLayout.CENTER);
         setText();
         getContentPane().validate();
     }
@@ -261,31 +220,9 @@ public class Viewer3D extends JFrame implements ActionListener {
         scene.removeAllChildren();
         createBackground();
         initLights();
-/*		Enumeration<Locale> locales=universe.getAllLocales();
-		while(locales.hasMoreElements()){
-			Locale lo=locales.nextElement();
-			Enumeration<BranchGroup> en=lo.getAllBranchGraphs();
-			while(en.hasMoreElements()){
-				BranchGroup bg=en.nextElement();
-//				System.out.println(bg.getName());
-				if (null!=bg.getName()&&bg.getName().equals("Main Branch")){
-					// Detach scene
-					bg.detach();
-					// Delete all nodes
-					bg.removeAllChildren();
-					// create background
-					createBackground(bg);
-					// Add lights
-					addAllLights(bg);
-					// Attach scene
-					lo.addBranchGraph(bg);
-				}
-			}				
-		}*/
-
     }
 
-    public void updateBackGround(Color c) {
+    public void updateBackground(Color c) {
         backgroundColor = new Color3f(c);
         backBranchgroup.detach();
         createBackground();
@@ -333,62 +270,4 @@ public class Viewer3D extends JFrame implements ActionListener {
             scene.addChild(bg);
         }
     }
-
-    class PanelLight extends JPanel {
-        private static final long serialVersionUID = 1L;
-        private JButton[] buttonLights;
-        private final Viewer3D viewer3d;
-
-        PanelLight(Viewer3D viewer3d) {
-            this.viewer3d = viewer3d;
-            initGui();
-        }
-
-        private void initGui() {
-            buttonLights = new JButton[4];
-            setLayout(new GridLayout(2, 2, 10, 10));
-            for (int i = 0; i < 4; i++) {
-                ImageIcon ilight = new ImageIcon(Utils.dimensionne_image("light" + i + ".png", viewer3d));
-                buttonLights[i] = new JButton(ilight);
-                add(buttonLights[i]);
-                buttonLights[i].addActionListener(viewer3d);
-                buttonLights[i].setActionCommand("light" + i);
-            }
-            setText();
-        }
-
-        void setText() {
-            TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("3d.light"));
-            tb.setTitleFont(Config.font);
-            setBorder(tb);
-        }
-    }
-
-    class PanelFog extends JPanel {
-
-        private static final long serialVersionUID = 1L;
-        private JButton buttonFog;
-        private final Viewer3D viewer3d;
-
-        PanelFog(Viewer3D viewer3d) {
-            this.viewer3d = viewer3d;
-            initGui();
-        }
-
-        private void initGui() {
-            ImageIcon ifog = new FlatSVGIcon("xlogo/icons/cloud.svg");
-            buttonFog = new JButton(ifog);
-            buttonFog.setActionCommand(Viewer3D.ACTION_FOG);
-            buttonFog.addActionListener(viewer3d);
-            add(buttonFog);
-            setText();
-        }
-
-        void setText() {
-            TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("3d.fog"));
-            tb.setTitleFont(Config.font);
-            setBorder(tb);
-        }
-    }
-
 }
