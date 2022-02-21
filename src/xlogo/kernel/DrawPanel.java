@@ -1,13 +1,10 @@
 package xlogo.kernel;
 
 import com.sun.j3d.utils.geometry.Text2D;
-import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
+import xlogo.gui.Application;
 import xlogo.gui.preferences.FontPanel;
-import xlogo.kernel.grammar.LogoNumber;
-import xlogo.kernel.grammar.LogoType;
-import xlogo.kernel.grammar.LogoTypeNull;
 import xlogo.kernel.gui.GuiButton;
 import xlogo.kernel.gui.GuiComponent;
 import xlogo.kernel.gui.GuiMap;
@@ -51,7 +48,6 @@ import java.util.*;
  * @author Loïc Le Coq
  */
 public class DrawPanel extends JPanel implements MouseMotionListener, MouseListener {
-    public static final LogoTypeNull nullType = new LogoTypeNull();
     /**
      * Animation mode:
      */
@@ -210,59 +206,11 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     /**
-     * This method is used to draw for primitive "forward"
-     *
-     * @param number LogoType which represents the number of steps to move
-     */
-    protected LogoType av(LogoType number) {
-        if (number.isException()) return number;
-        LogoNumber ln = (LogoNumber) number;
-        return av(ln.getValue());
-
-    }
-
-    /**
-     * This method is used to draw for primitive "backward"
-     *
-     * @param number LogoType which represents the number of steps to move
-     */
-    protected LogoType re(LogoType number) {
-        if (number.isException()) return number;
-        LogoNumber ln = (LogoNumber) number;
-        return av(-ln.getValue());
-
-    }
-
-    /**
-     * This method is used to draw for primitive "right"
-     *
-     * @param number LogoType which represents the number of steps to rotate
-     */
-    protected LogoType td(LogoType number) {
-        if (number.isException()) return number;
-        LogoNumber ln = (LogoNumber) number;
-        return td(ln.getValue());
-
-    }
-
-    /**
-     * This method is used to draw for primitive "left"
-     *
-     * @param number LogoType which represents the number of steps to rotate
-     */
-    protected LogoType tg(LogoType number) {
-        if (number.isException()) return number;
-        LogoNumber ln = (LogoNumber) number;
-        return td(-ln.getValue());
-
-    }
-
-    /**
      * This method is used to draw for primitive "forward" and "backward"
      *
      * @param arg Number of steps
      */
-    protected LogoType av(double arg) {
+    protected void av(double arg) {
         //	Graphics2D g=(Graphics2D)dessin.getGraphics();
 
         oldx = tortue.corX;
@@ -418,7 +366,6 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             }
             montrecacheTortue(true);
         }
-        return DrawPanel.nullType;
     }
 
     /**
@@ -426,7 +373,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      *
      * @param arg The angle to rotate
      */
-    protected LogoType td(double arg) {
+    protected void td(double arg) {
 //		System.out.println(tortue.angle);
         if (tortue.isVisible())
             montrecacheTortue(false);
@@ -443,8 +390,6 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         if (tortue.isVisible())
             montrecacheTortue(true);
         Interpreter.operande = false;
-
-        return DrawPanel.nullType;
     }
 
     /**
