@@ -53,7 +53,7 @@ public class Application extends JFrame {
     private final CommandKeyAdapter commandKeyAdapter = new CommandKeyAdapter();
     private final ArrayList<JMenuItem> menuItems = new ArrayList<>();
     private final JLabel commandLabel = new JLabel();
-    private final JPopupMenu popupMenu = new JPopupMenu();
+    private final EditorPopupMenu popupMenu = new EditorPopupMenu(commandLine);
     public String tempPath = null; // When opening a file
     public boolean error = false;
     boolean stop = false;
@@ -159,10 +159,6 @@ public class Application extends JFrame {
         createMenuItem(helpMenu, "menu.help.about", e -> showAbout());
 
         setJMenuBar(menuBar);
-    }
-
-    private void createPopupMenu() {
-
     }
 
     private JButton createButton(JToolBar parent, String iconName, ActionListener listener) {
