@@ -493,7 +493,7 @@ public class Application extends JFrame {
         frame.setSize(500, 500);
         LicensePane editorPane = new LicensePane();
         editorPane.setEditable(false);
-        String path = "gpl/gpl-";
+        String path = "resources/gpl/gpl-";
         if (english) {
             path += "en";
         } else {
