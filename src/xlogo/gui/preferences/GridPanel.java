@@ -1,6 +1,5 @@
 package xlogo.gui.preferences;
 
-import xlogo.Config;
 import xlogo.Logo;
 
 import javax.swing.*;
@@ -59,12 +58,12 @@ public class GridPanel extends JPanel implements ActionListener {
 
     private void initGui() {
         checkGrid = new JCheckBox(Logo.messages.getString("active_grid"));
-        checkGrid.setSelected(Config.gridEnabled);
+        checkGrid.setSelected(Logo.config.isGridEnabled());
         labelXGrid = new JLabel(Logo.messages.getString("xgrid"));
         labelYGrid = new JLabel(Logo.messages.getString("ygrid"));
-        jtXGrid = new JTextField(String.valueOf(Config.xGridSpacing));
-        jtYGrid = new JTextField(String.valueOf(Config.yGridSpacing));
-        colorPanelGrid = new ColorPanel(new Color(Config.gridColor));
+        jtXGrid = new JTextField(String.valueOf(Logo.config.getXGridSpacing()));
+        jtYGrid = new JTextField(String.valueOf(Logo.config.getYGridSpacing()));
+        colorPanelGrid = new ColorPanel(new Color(Logo.config.getGridColor()));
         setLayout(new GridBagLayout());
         add(checkGrid, new GridBagConstraints(0, 0, 1, 1, 0.3, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -84,11 +83,11 @@ public class GridPanel extends JPanel implements ActionListener {
         add(jtYGrid, new GridBagConstraints(2, 1, 1, 1, 0.25, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(10, 10, 0, 10), 0, 0));
-        labelXGrid.setEnabled(Config.gridEnabled);
-        labelYGrid.setEnabled(Config.gridEnabled);
-        jtXGrid.setEnabled(Config.gridEnabled);
-        jtYGrid.setEnabled(Config.gridEnabled);
-        colorPanelGrid.setEnabled(Config.gridEnabled);
+        labelXGrid.setEnabled(Logo.config.isGridEnabled());
+        labelYGrid.setEnabled(Logo.config.isGridEnabled());
+        jtXGrid.setEnabled(Logo.config.isGridEnabled());
+        jtYGrid.setEnabled(Logo.config.isGridEnabled());
+        colorPanelGrid.setEnabled(Logo.config.isGridEnabled());
 
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("draw_grid"));
         setBorder(tb);

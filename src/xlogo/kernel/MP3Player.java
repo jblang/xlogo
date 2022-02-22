@@ -3,7 +3,6 @@ package xlogo.kernel;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import xlogo.gui.Application;
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
@@ -22,7 +21,7 @@ public class MP3Player extends Thread {
         this.app = app;
         try {
             // Build absolutePath
-            String absolutePath = Utils.SortieTexte(Config.defaultFolder)
+            String absolutePath = Utils.SortieTexte(Logo.config.getDefaultFolder())
                     + File.separator + Utils.SortieTexte(path);
             player = new AdvancedPlayer(new FileInputStream(absolutePath));
         } catch (FileNotFoundException e) {

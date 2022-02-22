@@ -1,7 +1,6 @@
 package xlogo.gui.translation;
 
 import xlogo.gui.Application;
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.SearchFrame;
 import xlogo.utils.Utils;
@@ -68,7 +67,7 @@ public class UiTranslator extends JFrame implements ActionListener {
             this.getContentPane().validate();
         } else if (cmd.equals(UiTranslator.SEND)) {
             String path = "";
-            JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
+            JFileChooser jf = new JFileChooser(Utils.SortieTexte(Logo.config.getDefaultFolder()));
             int retval = jf.showDialog(this, Logo.messages
                     .getString("menu.file.save"));
             if (retval == JFileChooser.APPROVE_OPTION) {

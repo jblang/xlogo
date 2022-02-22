@@ -18,21 +18,12 @@ import java.util.ArrayList;
  *
  */
 public class Config {
-    public static final String VERSION = "1.0.0 beta 2";
-    public static final String WEB_SITE = "github.com/jblang/xlogo";
-    public static final boolean DEBUG = false;
 
-    /**
-     * The quality of drawing
-     */
     public static final int DRAW_QUALITY_NORMAL = 0;
     public static final int DRAW_QUALITY_HIGH = 1;
     public static final int DRAW_QUALITY_LOW = 2;
-    public static int drawQuality = 0;
+    private int drawQuality = 0;
 
-    /**
-     * The selected language
-     */
     public static final int LANGUAGE_FRENCH = 0;
     public static final int LANGUAGE_ENGLISH = 1;
     public static final int LANGUAGE_ARABIC = 2;
@@ -46,246 +37,473 @@ public class Config {
     public static final int LANGUAGE_ITALIAN = 10;
     public static final int LANGUAGE_CATALAN = 11;
     public static final int LANGUAGE_HUNGARIAN = 12;
-    public static int language = 0;
+    private int language = LANGUAGE_ENGLISH;
+
+    public static final int LAF_NATIVE = 0;
+    public static final int LAF_LIGHT = 1;
+    public static final int LAF_DARK = 2;
+    private int lookAndFeel = LAF_DARK;
+
+    private int imageWidth = 1000;
+    private int imageHeight = 1000;
+    private int memoryLimit = 256;
+    private int activeTurtle = 0;
+    private int maxPenWidth = -1;
+    private boolean eraseImage = false;
+    private boolean clearVariables = false;
+    private int maxTurtles = 16;
+    private Color screenColor = Color.WHITE;
+    private Color penColor = Color.BLACK;
+
+    public static final int PEN_SHAPE_SQUARE = 0;
+    public static final int PEN_SHAPE_OVAL = 1;
+    private int penShape = 0;
+
+    private int turtleSpeed = 0;
+    private String startupCommand = "";
+    private String defaultFolder = System.getProperty("user.home");
+    private ArrayList<String> startupFiles = new ArrayList<>();
+    private int syntaxPrimitiveColor = new Color(0, 128, 0).getRGB();
+    private int syntaxPrimitiveStyle = Font.PLAIN;
+    private int syntaxOperandColor = Color.BLUE.getRGB();
+    private int syntaxOperandStyle = Font.PLAIN;
+    private int syntaxCommentColor = Color.GRAY.getRGB();
+    private int syntaxCommentStyle = Font.PLAIN;
+    private int syntaxBracketColor = Color.RED.getRGB();
+    private int syntaxBracketStyle = Font.BOLD;
+    private boolean syntaxHighlightingEnabled = true;
+    private boolean gridEnabled = false;
+    private int xGridSpacing = 20;
+    private int yGridSpacing = 20;
+    private int gridColor = Color.DARK_GRAY.getRGB();
+    private boolean xAxisEnabled = false;
+    private boolean yAxisEnabled = false;
+    private int axisColor = new Color(255, 0, 102).getRGB();
+    private int xAxisSpacing = 30;
+    private int yAxisSpacing = 30;
+    private Font font = new Font("dialog", Font.PLAIN, 12);
+    private int tcpPort = 1948;
+
+    /**
+     * The quality of drawing
+     */
+    public int getDrawQuality() {
+        return drawQuality;
+    }
+
+    public void setDrawQuality(int drawQuality) {
+        this.drawQuality = drawQuality;
+    }
+
+    /**
+     * The selected language
+     */
+    public int getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(int language) {
+        this.language = language;
+    }
 
     /**
      * The selected look and feel for the app
      */
-    public static final int LAF_NATIVE = 0;
-    public static final int LAF_LIGHT = 1;
-    public static final int LAF_DARK = 2;
-    public static int lookAndFeel = LAF_DARK;
+    public int getLookAndFeel() {
+        return lookAndFeel;
+    }
+
+    public void setLookAndFeel(int lookAndFeel) {
+        this.lookAndFeel = lookAndFeel;
+    }
 
     /**
      * The drawing area width
      */
-    public static int imageWidth = 1000;
+    public int getImageWidth() {
+        return imageWidth;
+    }
+
+    public void setImageWidth(int imageWidth) {
+        this.imageWidth = imageWidth;
+    }
 
     /**
      * The drawing area height
      */
-    public static int imageHeight = 1000;
+    public int getImageHeight() {
+        return imageHeight;
+    }
+
+    public void setImageHeight(int imageHeight) {
+        this.imageHeight = imageHeight;
+    }
 
     /**
      * The memory currently allocated to the Java Virtual Machine.
      * This integer has to be increased for example when the main Image in the drawing area is very big.
      */
-    public static int memoryLimit = 256;
+    public int getMemoryLimit() {
+        return memoryLimit;
+    }
 
-    /**
-     * Value for the memory in Prefs tab. Will be written when application will be closed.
-     */
-    public static int newMemoryLimit = 256;
+    public void setMemoryLimit(int memoryLimit) {
+        this.memoryLimit = memoryLimit;
+    }
 
     /**
      * The active turtle's shape
      */
-    public static int activeTurtle = 0; // drawing turtle number
+    public int getActiveTurtle() {
+        return activeTurtle;
+    }
+
+    public void setActiveTurtle(int activeTurtle) {
+        this.activeTurtle = activeTurtle;
+    }
 
     /**
      * Maximum allowed pen size
      */
-    public static int maxPenWidth = -1;  //maximum thickness allowed for the pencil
+    public int getMaxPenWidth() {
+        return maxPenWidth;
+    }
+
+    public void setMaxPenWidth(int maxPenWidth) {
+        this.maxPenWidth = maxPenWidth;
+    }
 
     /**
      * Indicates whether the drawing area has to be cleaned when the editor is left.
      */
-    public static boolean eraseImage = false; //delete the drawing when exiting the editor
+    public boolean isEraseImage() {
+        return eraseImage;
+    }
+
+    public void setEraseImage(boolean eraseImage) {
+        this.eraseImage = eraseImage;
+    }
 
     /**
      * Indicates whether variables are deleted when closing the editor.
      */
-    public static boolean clearVariables = false;
+    public boolean isClearVariables() {
+        return clearVariables;
+    }
+
+    public void setClearVariables(boolean clearVariables) {
+        this.clearVariables = clearVariables;
+    }
 
     /**
      * Max value for the turtles number
      */
-    public static int maxTurtles = 16; // Maximum number of turtles
+    public int getMaxTurtles() {
+        return maxTurtles;
+    }
+
+    public void setMaxTurtles(int maxTurtles) {
+        this.maxTurtles = maxTurtles;
+    }
 
     /**
      * Default screen color: This color is used when the primitive "clearscreen" is used.
      */
-    public static Color screenColor = Color.WHITE;
+    public Color getScreenColor() {
+        return screenColor;
+    }
+
+    public void setScreenColor(Color screenColor) {
+        this.screenColor = screenColor;
+    }
 
     /**
      * Default pen color: This color is used when the primitive "clearscreen" is used.
      */
-    public static Color penColor = Color.BLACK;
+    public Color getPenColor() {
+        return penColor;
+    }
+
+    public void setPenColor(Color penColor) {
+        this.penColor = penColor;
+    }
 
     /**
      * The pen shape
      */
-    public static final int PEN_SHAPE_SQUARE = 0;
-    public static final int PEN_SHAPE_OVAL = 1;
-    public static int penShape = 0;
+    public int getPenShape() {
+        return penShape;
+    }
+
+    public void setPenShape(int penShape) {
+        this.penShape = penShape;
+    }
 
     /**
      * The turtle's speed for drawing <br>
      * Slow: 100
      * Fast: 0
      */
-    public static int turtleSpeed = 0;
+    public int getTurtleSpeed() {
+        return turtleSpeed;
+    }
+
+    public void setTurtleSpeed(int turtleSpeed) {
+        this.turtleSpeed = turtleSpeed;
+    }
 
     /**
      * The command to execute on Startup. <br>
      * Configured in the dialog box "startup files"
      */
-    public static String startupCommand = "";
+    public String getStartupCommand() {
+        return startupCommand;
+    }
+
+    public void setStartupCommand(String startupCommand) {
+        this.startupCommand = startupCommand;
+    }
 
     /**
      * The default folder for the user when the application starts.<br>
      * This folder corresponds to the last opened or saved file in format lgo
      */
-    public static String defaultFolder = System.getProperty("user.home");
+    public String getDefaultFolder() {
+        return defaultFolder;
+    }
+
+    public void setDefaultFolder(String defaultFolder) {
+        this.defaultFolder = defaultFolder;
+    }
 
     /**
      * This Stack contains all startup files
      */
-    public static ArrayList<String> startupFiles = new ArrayList<>();
+    public ArrayList<String> getStartupFiles() {
+        return startupFiles;
+    }
+
+    public void setStartupFiles(ArrayList<String> startupFiles) {
+        this.startupFiles = startupFiles;
+    }
 
     /**
      * Syntax Highlighting: Color for primitives
      */
-    public static int syntaxPrimitiveColor = new Color(0, 128, 0).getRGB();
+    public int getSyntaxPrimitiveColor() {
+        return syntaxPrimitiveColor;
+    }
+
+    public void setSyntaxPrimitiveColor(int syntaxPrimitiveColor) {
+        this.syntaxPrimitiveColor = syntaxPrimitiveColor;
+    }
 
     /**
      * Syntax Highlighting: Style for primitives
      */
-    public static int syntaxPrimitiveStyle = Font.PLAIN;
+    public int getSyntaxPrimitiveStyle() {
+        return syntaxPrimitiveStyle;
+    }
+
+    public void setSyntaxPrimitiveStyle(int syntaxPrimitiveStyle) {
+        this.syntaxPrimitiveStyle = syntaxPrimitiveStyle;
+    }
 
     /**
      * Syntax Highlighting: Color for operands: numbers....
      */
-    public static int syntaxOperandColor = Color.BLUE.getRGB();
+    public int getSyntaxOperandColor() {
+        return syntaxOperandColor;
+    }
+
+    public void setSyntaxOperandColor(int syntaxOperandColor) {
+        this.syntaxOperandColor = syntaxOperandColor;
+    }
 
     /**
      * Syntax Highlighting: Style for operands
      */
-    public static int syntaxOperandStyle = Font.PLAIN;
+    public int getSyntaxOperandStyle() {
+        return syntaxOperandStyle;
+    }
+
+    public void setSyntaxOperandStyle(int syntaxOperandStyle) {
+        this.syntaxOperandStyle = syntaxOperandStyle;
+    }
 
     /**
      * Syntax Highlighting: Color for comments
      */
-    public static int syntaxCommentColor = Color.GRAY.getRGB();
+    public int getSyntaxCommentColor() {
+        return syntaxCommentColor;
+    }
+
+    public void setSyntaxCommentColor(int syntaxCommentColor) {
+        this.syntaxCommentColor = syntaxCommentColor;
+    }
 
     /**
      * Syntax Highlighting: Style for comments
      */
-    public static int syntaxCommentStyle = Font.PLAIN;
+    public int getSyntaxCommentStyle() {
+        return syntaxCommentStyle;
+    }
+
+    public void setSyntaxCommentStyle(int syntaxCommentStyle) {
+        this.syntaxCommentStyle = syntaxCommentStyle;
+    }
 
     /**
      * Syntax Highlighting: Color for brackets
      */
-    public static int syntaxBracketColor = Color.RED.getRGB();
+    public int getSyntaxBracketColor() {
+        return syntaxBracketColor;
+    }
+
+    public void setSyntaxBracketColor(int syntaxBracketColor) {
+        this.syntaxBracketColor = syntaxBracketColor;
+    }
 
     /**
      * Syntax Highlighting: Style for brackets
      */
-    public static int syntaxBracketStyle = Font.BOLD;
+    public int getSyntaxBracketStyle() {
+        return syntaxBracketStyle;
+    }
+
+    public void setSyntaxBracketStyle(int syntaxBracketStyle) {
+        this.syntaxBracketStyle = syntaxBracketStyle;
+    }
 
     /**
      *  Indicates whether syntax Highlighting is enabled
      */
-    public static boolean syntaxHighlightingEnabled = true;
+    public boolean isSyntaxHighlightingEnabled() {
+        return syntaxHighlightingEnabled;
+    }
+
+    public void setSyntaxHighlightingEnabled(boolean syntaxHighlightingEnabled) {
+        this.syntaxHighlightingEnabled = syntaxHighlightingEnabled;
+    }
 
     /**
      * Indicates whether the grid is enabled
      */
-    public static boolean gridEnabled = false;
+    public boolean isGridEnabled() {
+        return gridEnabled;
+    }
+
+    public void setGridEnabled(boolean gridEnabled) {
+        this.gridEnabled = gridEnabled;
+    }
 
     /**
      * The X distance for the grid
      */
-    public static int xGridSpacing = 20;
+    public int getXGridSpacing() {
+        return xGridSpacing;
+    }
+
+    public void setXGridSpacing(int xGridSpacing) {
+        this.xGridSpacing = xGridSpacing;
+    }
 
     /**
      * The Y distance for the grid
      */
-    public static int yGridSpacing = 20;
+    public int getYGridSpacing() {
+        return yGridSpacing;
+    }
+
+    public void setYGridSpacing(int yGridSpacing) {
+        this.yGridSpacing = yGridSpacing;
+    }
 
     /**
      * The grid Color
      */
-    public static int gridColor = Color.DARK_GRAY.getRGB();
+    public int getGridColor() {
+        return gridColor;
+    }
+
+    public void setGridColor(int gridColor) {
+        this.gridColor = gridColor;
+    }
 
     /**
      * Indicates whether the X axis is enabled
      */
-    public static boolean xAxisEnabled = false;
+    public boolean isXAxisEnabled() {
+        return xAxisEnabled;
+    }
+
+    public void setXAxisEnabled(boolean xAxisEnabled) {
+        this.xAxisEnabled = xAxisEnabled;
+    }
 
     /**
      * Indicates whether the Y axis is enabled
      */
-    public static boolean yAxisEnabled = false;
+    public boolean isYAxisEnabled() {
+        return yAxisEnabled;
+    }
+
+    public void setYAxisEnabled(boolean yAxisEnabled) {
+        this.yAxisEnabled = yAxisEnabled;
+    }
 
     /**
      * The axis Color
      */
-    public static int axisColor = new Color(255, 0, 102).getRGB();
+    public int getAxisColor() {
+        return axisColor;
+    }
+
+    public void setAxisColor(int axisColor) {
+        this.axisColor = axisColor;
+    }
 
     /**
      * The X distance between two divisions on the X Axis
      */
-    public static int xAxisSpacing = 30;
+    public int getXAxisSpacing() {
+        return xAxisSpacing;
+    }
+
+    public void setXAxisSpacing(int xAxisSpacing) {
+        this.xAxisSpacing = xAxisSpacing;
+    }
 
     /**
      * The X distance between two divisions on the Y Axis
      */
-    public static int yAxisSpacing = 30;
+    public int getYAxisSpacing() {
+        return yAxisSpacing;
+    }
 
-    /**
-     * This long represents the hour of XLogo starting
-     */
-    public static long startupHour;
+    public void setYAxisSpacing(int yAxisSpacing) {
+        this.yAxisSpacing = yAxisSpacing;
+    }
 
     /**
      * The default font for drawing labels
      */
-    public static Font font = new Font("dialog", Font.PLAIN, 12);
+    public Font getFont() {
+        return font;
+    }
 
-    /**
-     * Color for the border around drawing area
-     */
-    public static Color borderColor = null;
-
-    /**
-     * The image for the border around drawing area
-     */
-    public static String borderImageSelected = "background.png";
-
-    /**
-     * Contains all images added by the user for image border
-     */
-    public static ArrayList<String> userBorderImages = new ArrayList<>();
-
-    /**
-     * The default image defined by default that are included in XLogo
-     */
-    public static String[] includedBorderImages = {"background.png"};
-
-    /**
-     * The main command accessible with the button play in the toolbar
-     */
-    public static String mainCommand = "";
-
-    /**
-     * Indicates whether Xlogo must launch the main Command on XLogo startup
-     */
-    public static boolean autoLaunch = false;
+    public void setFont(Font font) {
+        this.font = font;
+    }
 
     /**
      * TCP Port for robotics and network flows
      */
-    public static int tcpPort = 1948;
-
-    // Disable instantiation
-    private Config() {}
-
-    public static int searchInternalImage(String st) {
-        for (int i = 0; i < includedBorderImages.length; i++) {
-            if (st.equals(includedBorderImages[i])) return i;
-        }
-        return -1;
+    public int getTcpPort() {
+        return tcpPort;
     }
 
+    public void setTcpPort(int tcpPort) {
+        this.tcpPort = tcpPort;
+    }
 }

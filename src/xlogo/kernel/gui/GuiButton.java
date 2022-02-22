@@ -1,7 +1,7 @@
 package xlogo.kernel.gui;
 
+import xlogo.Logo;
 import xlogo.gui.Application;
-import xlogo.Config;
 import xlogo.kernel.Interpreter;
 import xlogo.utils.Utils;
 
@@ -17,9 +17,9 @@ public class GuiButton extends GuiComponent {
         guiObject = new JButton(Utils.SortieTexte(text));
         this.app = app;
         java.awt.FontMetrics fm = app.getGraphics()
-                .getFontMetrics(Config.font);
+                .getFontMetrics(Logo.config.getFont());
         originalWidth = fm.stringWidth(((JButton) (getGuiObject())).getText()) + 50;
-        originalHeight = Config.font.getSize() + 10;
+        originalHeight = Logo.config.getFont().getSize() + 10;
         setSize(originalWidth, originalHeight);
     }
 

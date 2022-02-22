@@ -1,6 +1,5 @@
 package xlogo.gui.translation;
 
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.Utils;
 
@@ -164,7 +163,7 @@ public class FirstPanel extends JPanel implements ActionListener {
                 }
                 int largeur = image.getWidth(this);
                 int hauteur = image.getHeight(this);
-                double facteur = (double) Config.font.getSize() / (double) hauteur;
+                double facteur = (double) Logo.config.getFont().getSize() / (double) hauteur;
                 image = image.getScaledInstance((int) (facteur * largeur), (int) (facteur * hauteur), Image.SCALE_SMOOTH);
                 tracker = new MediaTracker(this);
                 tracker.addImage(image, 0);

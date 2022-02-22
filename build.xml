@@ -110,7 +110,6 @@
         <!-- Delete Used files -->
         <delete includeemptydirs="true">
             <fileset dir="deploy/">
-                <include name="xlogo/**"/>
                 <include name="*.properties"/>
             </fileset>
         </delete>
@@ -121,7 +120,9 @@
                 <attribute name="Main-Class" value="Launcher"/>
             </manifest>
             <fileset dir="deploy/">
-                <include name="**"/>
+                <include name="*.jar"/>
+                <include name="Launcher.class"/>
+                <include name="xlogo/Config.class"/>
             </fileset>
         </jar>
 

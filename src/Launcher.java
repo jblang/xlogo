@@ -6,16 +6,14 @@
  * @author Loïc Le Coq
  */
 
-import org.xml.sax.*;
-import org.xml.sax.helpers.XMLReaderFactory;
+import xlogo.Config;
 
+import java.beans.XMLDecoder;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
-import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 
 /**
@@ -198,36 +196,15 @@ public class Launcher {
      */
     private void readConfig() {
         try {
-            // Try to read XML format (new config file)
-            FileInputStream fr = new FileInputStream(System.getProperty("user.home") + File.separator + ".xlogo");
-            BufferedInputStream bis = new BufferedInputStream(fr);
-            InputStreamReader isr = new InputStreamReader(bis, StandardCharsets.UTF_8);
-            try {
-                XMLReader saxReader = XMLReaderFactory.createXMLReader();
-                saxReader.setContentHandler(new MemoryContentHandler());
-                saxReader.parse(new InputSource(isr));
-            } catch (SAXException e) {
-                // Read the old config file format
-                StringBuilder s = new StringBuilder();
-                FileReader ifr = new FileReader(System.getProperty("user.home") + File.separator + ".xlogo");
-                while (ifr.ready()) {
-                    char[] b = new char[64];
-                    int i = ifr.read(b);
-                    if (i == -1) break;
-                    s.append(new String(b));
-                }
-                StringTokenizer st = new StringTokenizer(s.toString(), "\n");
-                while (st.hasMoreTokens()) {
-                    String element = st.nextToken();
-                    if (element.equals("# memoire")) {
-                        element = st.nextToken();
-                        memory = Integer.parseInt(element);
-                    }
-                }
-            }
+            FileInputStream fis = new FileInputStream(System.getProperty("user.home") + File.separator + ".xlogo");
+            XMLDecoder dec = new XMLDecoder(fis);
+            Config config = (Config) dec.readObject();
+            memory = config.getMemoryLimit();
+            dec.close();
+            fis.close();
         } catch (FileNotFoundException e) {
             System.out.println("No File \".xlogo\". Will create one...");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -298,58 +275,5 @@ public class Launcher {
             }
         }
         return memory;
-    }
-
-    /** this class is a very basic XML parser
-     **/
-    class MemoryContentHandler implements ContentHandler {
-        //   private Locator locator;
-
-        public MemoryContentHandler() {
-            super();
-        }
-
-        public void setDocumentLocator(Locator value) {
-        }
-
-        public void startDocument() {
-        }
-
-        public void endDocument() {
-        }
-
-        public void startPrefixMapping(String prefix, String URI) {
-        }
-
-        public void endPrefixMapping(String prefix) {
-        }
-
-        // Open new Tag
-        public void startElement(String nameSpaceURI, String localName, String rawName, Attributes attributes) {
-            analyzeTag(localName, attributes);
-        }
-
-        // Close tag
-        public void endElement(String nameSpaceURI, String localName, String rawName) throws SAXException {
-        }
-
-        public void characters(char[] ch, int start, int end) throws SAXException {
-        }
-
-        public void ignorableWhitespace(char[] ch, int start, int end) {
-        }
-
-        public void processingInstruction(String target, String data) {
-        }
-
-        public void skippedEntity(String arg0) {
-        }
-
-        private void analyzeTag(String tag, Attributes attributs) {
-            if (tag.equals("memory")) {
-                memory = Integer.parseInt(attributs.getValue(0));
-            }
-        }
-
     }
 }

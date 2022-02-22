@@ -1,7 +1,5 @@
 package xlogo.gui.preferences;
 
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Config;
 import xlogo.Logo;
@@ -46,8 +44,8 @@ public class GeneralPanel extends JPanel {
         buttonGroup2.add(lightLaf);
         buttonGroup2.add(nativeLaf);
 
-        jl_langues.setSelectedIndex(Config.language);
-        jSlider1.setValue(jSlider1.getMaximum() - Config.turtleSpeed);
+        jl_langues.setSelectedIndex(Logo.config.getLanguage());
+        jSlider1.setValue(jSlider1.getMaximum() - Logo.config.getTurtleSpeed());
 
         setLayout(gridBagLayout3);
         jl_langues.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -66,7 +64,7 @@ public class GeneralPanel extends JPanel {
         nativeLaf.setHorizontalTextPosition(SwingConstants.LEFT);
         nativeLaf.setText(Logo.messages.getString("pref.general.nativeLaf"));
         nativeLaf.setVerticalAlignment(SwingConstants.CENTER);
-        switch (Config.lookAndFeel) {
+        switch (Logo.config.getLookAndFeel()) {
             case Config.LAF_LIGHT:
                 lightLaf.setSelected(true);
                 break;
@@ -148,30 +146,19 @@ public class GeneralPanel extends JPanel {
         // Language has changed?
         int indicateur = jl_langues.getSelectedIndex();
 
-        if (indicateur != Config.language && indicateur != -1) {
+        if (indicateur != Logo.config.getLanguage() && indicateur != -1) {
             cadre.changeLanguage(indicateur);
         }
         // Turtle Speed
-        Config.turtleSpeed = jSlider1.getMaximum() - jSlider1.getValue();
-        try { //Look and Feel has changed?
-            if (nativeLaf.isSelected()) {
-                Config.lookAndFeel = Config.LAF_NATIVE;
-                UIManager.setLookAndFeel(UIManager
-                        .getSystemLookAndFeelClassName());
-            } else if (lightLaf.isSelected()) {
-                Config.lookAndFeel = Config.LAF_LIGHT;
-                UIManager
-                        .setLookAndFeel(new FlatLightLaf());
-            } else if (darkLaf.isSelected()) {
-                Config.lookAndFeel =Config.LAF_DARK;
-                UIManager.setLookAndFeel(new FlatDarkLaf());
-            }
-            cadre.changeLookAndFeel();
-        } catch (Exception exc) {
-            System.out.println(exc);
+        Logo.config.setTurtleSpeed(jSlider1.getMaximum() - jSlider1.getValue());
+        if (nativeLaf.isSelected()) {
+            Logo.config.setLookAndFeel(Logo.config.LAF_NATIVE);
+        } else if (lightLaf.isSelected()) {
+            Logo.config.setLookAndFeel(Logo.config.LAF_LIGHT);
+        } else if (darkLaf.isSelected()) {
+            Logo.config.setLookAndFeel(Logo.config.LAF_DARK);
         }
-
-
+        cadre.changeLookAndFeel();
     }
 
     class Contenu extends JLabel implements ListCellRenderer {

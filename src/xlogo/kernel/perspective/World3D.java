@@ -1,6 +1,6 @@
 package xlogo.kernel.perspective;
 
-import xlogo.Config;
+import xlogo.Logo;
 
 public class World3D {
     /**
@@ -52,8 +52,8 @@ public class World3D {
         double x = coord[0];
         double y = coord[1];
         double z = coord[2];
-        coord[0] = screenDistance * x / z + Config.imageWidth / 2;
-        coord[1] = Config.imageHeight / 2 - screenDistance * y / z;
+        coord[0] = screenDistance * x / z + Logo.config.getImageWidth() / 2;
+        coord[1] = Logo.config.getImageHeight() / 2 - screenDistance * y / z;
     }
 
     /**

@@ -9,7 +9,6 @@
 package xlogo.kernel;
 
 import xlogo.gui.Application;
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
@@ -82,7 +81,7 @@ public class Turtle {
     private boolean pendown = true;
     private boolean penReverse = false;
     private boolean visible = true;
-    private int shape = Config.activeTurtle;
+    private int shape = Logo.config.getActiveTurtle();
     private float penWidth = 0; // half of the pen width
 
     {
@@ -94,10 +93,10 @@ public class Turtle {
     public Turtle(Application app) {
         this.app = app;
         fixe_taille_crayon(1);
-        String chemin = "tortue" + Config.activeTurtle + ".png";
-        couleurcrayon = Config.penColor;
-        couleurmodedessin = Config.penColor;
-        if (Config.activeTurtle == 0) {
+        String chemin = "tortue" + Logo.config.getActiveTurtle() + ".png";
+        couleurcrayon = Logo.config.getPenColor();
+        couleurmodedessin = Logo.config.getPenColor();
+        if (Logo.config.getActiveTurtle() == 0) {
             tort = null;
             largeur = 26;
             hauteur = 26;
@@ -129,8 +128,8 @@ public class Turtle {
             hauteur = tort.getHeight(app);
         }
         gabarit = Math.max(hauteur, largeur);
-        corX = Config.imageWidth / 2;
-        corY = Config.imageHeight / 2;
+        corX = Logo.config.getImageWidth() / 2;
+        corY = Logo.config.getImageHeight() / 2;
         angle = Math.PI / 2;
         heading = 0.0;
         pitch = 0;
@@ -141,8 +140,8 @@ public class Turtle {
     }
 
     protected void init() {
-        corX = Config.imageWidth / 2;
-        corY = Config.imageHeight / 2;
+        corX = Logo.config.getImageWidth() / 2;
+        corY = Logo.config.getImageHeight() / 2;
         X = 0;
         Y = 0;
         Z = 0;
@@ -153,8 +152,8 @@ public class Turtle {
         angle = Math.PI / 2;
         pendown = true;
         fixe_taille_crayon(1);
-        couleurcrayon = Config.penColor;
-        couleurmodedessin = Config.penColor;
+        couleurcrayon = Logo.config.getPenColor();
+        couleurmodedessin = Logo.config.getPenColor();
         penReverse = false;
     }
 
@@ -217,8 +216,8 @@ public class Turtle {
 
     public void fixe_taille_crayon(float nb) {
         if (nb < 0) nb = 1;
-        else if (Config.maxPenWidth != -1 && nb > Config.maxPenWidth) nb = 1;
-        if (Config.penShape == 0) crayon = new BasicStroke(nb, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
+        else if (Logo.config.getMaxPenWidth() != -1 && nb > Logo.config.getMaxPenWidth()) nb = 1;
+        if (Logo.config.getPenShape() == 0) crayon = new BasicStroke(nb, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
         else crayon = new BasicStroke(nb, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
         penWidth = nb / 2;
     }
@@ -269,13 +268,13 @@ public class Turtle {
 
     protected double getX() {
         if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_3D) return X;
-        return corX - Config.imageWidth / 2;
+        return corX - Logo.config.getImageWidth() / 2;
 
     }
 
     protected double getY() {
         if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_3D) return Y;
-        return Config.imageHeight / 2 - corY;
+        return Logo.config.getImageHeight() / 2 - corY;
 
     }
 

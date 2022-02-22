@@ -1,6 +1,5 @@
 package xlogo.kernel.network;
 
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.Application;
 
@@ -34,14 +33,14 @@ public class ChatFrame extends JFrame implements ActionListener {
 
     private void initStyle() {
         local = new SimpleAttributeSet();
-        StyleConstants.setFontFamily(local, Config.font.getFamily());
+        StyleConstants.setFontFamily(local, Logo.config.getFont().getFamily());
         StyleConstants.setForeground(local, Color.black);
-        StyleConstants.setFontSize(local, Config.font.getSize());
+        StyleConstants.setFontSize(local, Logo.config.getFont().getSize());
 
         distant = new SimpleAttributeSet();
-        StyleConstants.setFontFamily(distant, Config.font.getFamily());
+        StyleConstants.setFontFamily(distant, Logo.config.getFont().getFamily());
         StyleConstants.setForeground(distant, Color.RED);
-        StyleConstants.setFontSize(distant, Config.font.getSize());
+        StyleConstants.setFontSize(distant, Logo.config.getFont().getSize());
     }
 
     private void initGui() {
@@ -54,12 +53,12 @@ public class ChatFrame extends JFrame implements ActionListener {
         textPane.setBackground(new Color(255, 255, 220));
         this.getContentPane().setLayout(new BorderLayout());
         textField = new JTextField();
-        java.awt.FontMetrics fm = app.getGraphics().getFontMetrics(Config.font);
+        java.awt.FontMetrics fm = app.getGraphics().getFontMetrics(Logo.config.getFont());
         int width = fm.stringWidth(Logo.messages.getString("stop_chat")) + 30;
         if (width < 200) width = 200;
 
         textPane.setPreferredSize(new Dimension(width, 300));
-        textField.setPreferredSize(new Dimension(width, Config.font.getSize() + 10));
+        textField.setPreferredSize(new Dimension(width, Logo.config.getFont().getSize() + 10));
         scroll = new JScrollPane(textPane);
         getContentPane().add(scroll, BorderLayout.CENTER);
         getContentPane().add(textField, BorderLayout.SOUTH);

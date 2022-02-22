@@ -1,6 +1,5 @@
 package xlogo.kernel.perspective;
 
-import xlogo.Config;
 import xlogo.Logo;
 
 import javax.swing.*;
@@ -42,10 +41,10 @@ public class FogDialog extends JDialog implements ActionListener {
 
         ok = new JButton(Logo.messages.getString("pref.ok"));
         refresh = new JButton(Logo.messages.getString("3d.light.apply"));
-        labelType.setFont(Config.font);
-        comboType.setFont(Config.font);
-        ok.setFont(Config.font);
-        refresh.setFont(Config.font);
+        labelType.setFont(Logo.config.getFont());
+        comboType.setFont(Logo.config.getFont());
+        ok.setFont(Logo.config.getFont());
+        refresh.setFont(Logo.config.getFont());
 
         comboType.addActionListener(this);
         comboType.setActionCommand("combo");
@@ -148,7 +147,7 @@ public class FogDialog extends JDialog implements ActionListener {
 
         private void initGui() {
             label = new JLabel(title);
-            label.setFont(Config.font);
+            label.setFont(Logo.config.getFont());
             String st;
             int i = (int) textValue;
             if (i == textValue) {

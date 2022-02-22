@@ -1,6 +1,5 @@
 package xlogo.utils;
 
-import xlogo.Config;
 import xlogo.Logo;
 
 import javax.imageio.ImageIO;
@@ -83,7 +82,7 @@ public class ImageWriter extends Thread {
             setTitle(Logo.messages.getString("titredialogue2"));
             prog.setIndeterminate(true);
             java.awt.FontMetrics fm = owner.getGraphics()
-                    .getFontMetrics(Config.font);
+                    .getFontMetrics(Logo.config.getFont());
             int width = fm.stringWidth(Logo.messages.getString("titredialogue2"));
             setSize(new Dimension(width + 150, 100));
             getContentPane().add(prog);

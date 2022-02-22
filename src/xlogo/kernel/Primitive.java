@@ -7,7 +7,6 @@
 package xlogo.kernel;
 
 import xlogo.gui.Application;
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
@@ -42,7 +41,7 @@ public class Primitive {
     public Primitive(Application app) {
         this.app = app;
         //build treemap for primitives
-        buildPrimitiveTreemap(Config.language);
+        buildPrimitiveTreemap(Logo.config.getLanguage());
     }
 
     public static int isPrimitive(String s) {
@@ -65,7 +64,7 @@ public class Primitive {
      */
     protected String getAllPrimitives() {
         Vector<String> list = new Vector<String>();
-        Locale locale = Logo.getLocale(Config.language);
+        Locale locale = Logo.getLocale(Logo.config.getLanguage());
         ResourceBundle prim = ResourceBundle.getBundle("primitives", locale);
         try {
             BufferedReader bfr = new BufferedReader(
@@ -105,7 +104,7 @@ public class Primitive {
     public void buildPrimitiveTreemap(int id) {
         //	this.exportPrimCSV();
         primitives = new TreeMap<String, String>();
-        Locale locale = Logo.getLocale(Config.language);
+        Locale locale = Logo.getLocale(Logo.config.getLanguage());
         ResourceBundle prim = ResourceBundle.getBundle("primitives", locale);
         try {
             BufferedReader bfr = new BufferedReader(

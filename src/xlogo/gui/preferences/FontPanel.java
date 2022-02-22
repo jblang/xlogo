@@ -1,7 +1,7 @@
 package xlogo.gui.preferences;
 
+import xlogo.Logo;
 import xlogo.gui.Application;
-import xlogo.Config;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,7 +55,7 @@ public class FontPanel extends JPanel implements ActionListener {
         droite.setActionCommand("droite");
         gauche.addActionListener(this);
         droite.addActionListener(this);
-        taille_police.setText(String.valueOf(Config.font.getSize()));
+        taille_police.setText(String.valueOf(Logo.config.getFont().getSize()));
         panneau_taille_police.add(gauche);
         panneau_taille_police.add(taille_police);
         panneau_taille_police.add(droite);
@@ -92,7 +92,7 @@ public class FontPanel extends JPanel implements ActionListener {
         Application.fontId = jl_police.getSelectedIndex();
 
         // Si l'on change la police de l'interface
-        if (!Config.font.equals(font)) {
+        if (!Logo.config.getFont().equals(font)) {
             cadre.changeFont(font, size);
         }
 

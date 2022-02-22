@@ -1,7 +1,7 @@
 package xlogo.gui.preferences;
 
+import xlogo.Logo;
 import xlogo.gui.Application;
-import xlogo.Config;
 import xlogo.utils.Utils;
 
 import javax.swing.*;
@@ -62,12 +62,12 @@ public class TurtlesPanel extends JPanel {
         for (int i = 0; i < 7; i++) {
             if (icone[i].num() != -1) {
                 chemin += i + ".png";
-                Config.activeTurtle = i;
+                Logo.config.setActiveTurtle(i);
                 break;
             }
         }
         if (!chemin.equals("tortue")) {
-            cadre.getKernel().getActiveTurtle().setShape(Config.activeTurtle);
+            cadre.getKernel().getActiveTurtle().setShape(Logo.config.getActiveTurtle());
             cadre.getKernel().change_image_tortue(chemin);
         }
     }
@@ -81,7 +81,7 @@ public class TurtlesPanel extends JPanel {
             ImageIcon ic = new ImageIcon(Utils.class.getResource("tortue"
                     + numero + ".png"));
             this.setIcon(ic);
-            if (numero == Config.activeTurtle)
+            if (numero == Logo.config.getActiveTurtle())
                 setSelected(true);
         }
 

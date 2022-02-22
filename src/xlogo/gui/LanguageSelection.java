@@ -1,7 +1,6 @@
 package xlogo.gui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import xlogo.Config;
 import xlogo.Logo;
 
 import javax.swing.*;
@@ -64,7 +63,7 @@ public class LanguageSelection extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         for (int i = 0; i < boutons.length; i++) {
-            if (boutons[i].isSelected()) Config.language = i;
+            if (boutons[i].isSelected()) Logo.config.setLanguage(i);
         }
         selection_faite = true;
     }

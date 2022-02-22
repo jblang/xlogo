@@ -9,21 +9,20 @@ package xlogo;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 import xlogo.gui.Application;
 import xlogo.gui.LanguageSelection;
 import xlogo.kernel.Animation;
-import xlogo.utils.SimpleContentHandler;
 import xlogo.utils.Utils;
 
 import javax.media.j3d.VirtualUniverse;
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -32,6 +31,8 @@ import java.util.*;
  * @author loic
  */
 public class Logo {
+    public static final String VERSION = "1.0.0 beta 2";
+    public static final String WEB_SITE = "github.com/jblang/xlogo";
     public static final String[] englishLanguage = {"French", "English", "Arabic", "Spanish", "Portuguese", "Esperanto", "German", "Galician", "Asturian", "Greek", "Italian", "Catalan", "Hungarian"};
     public static final String[] locales = {"fr", "en", "ar", "es", "pt", "eo", "de", "gl", "as", "el", "it", "ca", "hu"};
     /**
@@ -39,6 +40,11 @@ public class Logo {
      */
     public static ResourceBundle messages = null;
     public static String[] translationLanguage = new String[13];
+    public static Config config = new Config();
+    static int memoryLimit = config.getMemoryLimit();
+    static long startupHour;
+    static String mainCommand = "";
+    static boolean autoLaunch = false;
     /**
      * The main frame
      */
@@ -56,27 +62,26 @@ public class Logo {
      */
     public Logo() {
         // Read the XML file .xlogo and extract default config
-        readConfig();
+        readConfig(this);
 
         // Overwrite loaded config with command line arguments
         readCommandLineConfig();
 
-        Config.defaultFolder = Utils.rajoute_backslash(Config.defaultFolder);
         if (null == messages)
-            generateLanguage(Config.language); //Au cas où si le fichier de démarrage ne contient rien sur la langue
+            generateLanguage(config.getLanguage()); //Au cas où si le fichier de démarrage ne contient rien sur la langue
         // Initialize frame
         SwingUtilities.invokeLater(() -> {
             frame = new Application();
-
+            frame.changeLookAndFeel();
             frame.setVisible(true);
             //On vérifie que la taille mémoire est suffisante pour créer l'image de dessin
             // Checking that we have enough memory to create the image
-            int memoire_necessaire = Config.imageWidth * Config.imageHeight * 4 / 1024 / 1024;
+            int memoire_necessaire = config.getImageWidth() * config.getImageHeight() * 4 / 1024 / 1024;
             long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
             long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
-            if (total - free + memoire_necessaire > Config.memoryLimit * 0.8) {
-                Config.imageHeight = 1000;
-                Config.imageWidth = 1000;
+            if (total - free + memoire_necessaire > getMemoryLimit() * 0.8) {
+                config.setImageHeight(1000);
+                config.setImageWidth(1000);
             }
             // init frame
             init(frame);
@@ -87,19 +92,19 @@ public class Logo {
 
             // On Enregistre le temps auquel la session a commencé
             // hour when we launch XLogo
-            Config.startupHour = Calendar.getInstance().getTimeInMillis();
+            setStartupHour(Calendar.getInstance().getTimeInMillis());
 
 
             // Command to execute on startup
 
             // If this command is defined from the command line
-            if (Config.autoLaunch) {
-                frame.startAnimation(Utils.decoupe(Config.mainCommand));
-                frame.getHistoryPanel().ecris("normal", Config.mainCommand + "\n");
+            if (autoLaunch) {
+                frame.startAnimation(Utils.decoupe(getMainCommand()));
+                frame.getHistoryPanel().ecris("normal", getMainCommand() + "\n");
             }
             // Else if this command is defined from the Start Up Dialog Box
-            else if (!Config.startupCommand.equals("")) {
-                frame.animation = new Animation(frame, Utils.decoupe(Config.startupCommand));
+            else if (!config.getStartupCommand().equals("")) {
+                frame.animation = new Animation(frame, Utils.decoupe(config.getStartupCommand()));
                 frame.animation.start();
             } else {
                 frame.setCommandEnabled(true);
@@ -175,8 +180,8 @@ public class Logo {
         //Recuperer les fichiers de démarrage correspondant au double clic de souris
         // ou au lancement en ligne de commande
 
-        Config.startupFiles.addAll(Arrays.asList(args));
-        Config.startupFiles.add(0, "#####");
+        config.getStartupFiles().addAll(Arrays.asList(args));
+        config.getStartupFiles().add(0, "#####");
         //try{;
         new Logo();
     }
@@ -208,8 +213,34 @@ public class Logo {
     }
 
     public static String getLocaleTwoLetters() {
-        if (Config.language > -1 && Config.language < locales.length) return locales[Config.language];
+        if (config.getLanguage() > -1 && config.getLanguage() < locales.length) return locales[config.getLanguage()];
         else return "en";
+    }
+
+    /**
+     * Write the Configuration file when the user quits XLogo
+     */
+    public static void writeConfig() {
+        try {
+            FileOutputStream fos = new FileOutputStream(System.getProperty("user.home") + File.separator + ".xlogo");
+            XMLEncoder enc = new XMLEncoder(fos);
+            enc.writeObject(config);
+            enc.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This long represents the hour of XLogo starting
+     */
+    public static long getStartupHour() {
+        return startupHour;
+    }
+
+    public static void setStartupHour(long startupHour) {
+        Logo.startupHour = startupHour;
     }
 
     /**
@@ -221,7 +252,7 @@ public class Logo {
         // on centre la tortue
         // Centering turtle
         Dimension d = frame.scrollPane.getViewport().getViewRect().getSize();
-        Point p = new Point(Math.abs(Config.imageWidth / 2 - d.width / 2), Math.abs(Config.imageHeight / 2 - d.height / 2));
+        Point p = new Point(Math.abs(config.getImageWidth() / 2 - d.width / 2), Math.abs(config.getImageHeight() / 2 - d.height / 2));
         frame.scrollPane.getViewport().setViewPosition(p);
 
         // on affiche la tortue sur la zone de dessin
@@ -240,39 +271,39 @@ public class Logo {
      */
     private void readCommandLineConfig() {
         int i = 0;
-        while (i < Config.startupFiles.size()) {
-            String element = Config.startupFiles.get(i);
+        while (i < config.getStartupFiles().size()) {
+            String element = config.getStartupFiles().get(i);
             // AutoLaunch main Command on startup
             switch (element) {
                 case "-a" -> {
-                    Config.autoLaunch = true;
-                    Config.startupFiles.remove(i);
+                    autoLaunch = true;
+                    config.getStartupFiles().remove(i);
                 }
                 // Choosing language
                 case "-lang" -> {
-                    Config.startupFiles.remove(i);
-                    if (i < Config.startupFiles.size()) {
-                        element = Config.startupFiles.get(i);
+                    config.getStartupFiles().remove(i);
+                    if (i < config.getStartupFiles().size()) {
+                        element = config.getStartupFiles().get(i);
                         for (int j = 0; j < Logo.locales.length; j++) {
                             if (Logo.locales[j].equals(element)) {
-                                Config.language = j;
+                                config.setLanguage(j);
                                 Logo.generateLanguage(j);
                                 break;
                             }
                         }
-                        Config.startupFiles.remove(i);
+                        config.getStartupFiles().remove(i);
                     }
                 }
                 // Memory Heap Size
                 case "-memory" -> {
-                    Config.startupFiles.remove(i);
-                    if (i < Config.startupFiles.size()) {
-                        element = Config.startupFiles.get(i);
+                    config.getStartupFiles().remove(i);
+                    if (i < config.getStartupFiles().size()) {
+                        element = config.getStartupFiles().get(i);
                         try {
                             int mem = Integer.parseInt(element);
-                            Config.memoryLimit = mem;
-                            Config.newMemoryLimit = mem;
-                            Config.startupFiles.remove(i);
+                            config.setMemoryLimit(mem);
+                            memoryLimit = mem;
+                            config.getStartupFiles().remove(i);
 
                         } catch (NumberFormatException ignored) {
                         }
@@ -280,17 +311,17 @@ public class Logo {
                 }
                 // TCP port
                 case "-tcp_port" -> {
-                    Config.startupFiles.remove(i);
-                    if (i < Config.startupFiles.size()) {
-                        element = Config.startupFiles.get(i);
+                    config.getStartupFiles().remove(i);
+                    if (i < config.getStartupFiles().size()) {
+                        element = config.getStartupFiles().get(i);
                         try {
                             int port = Integer.parseInt(element);
                             if (port <= 0) port = 1948;
-                            Config.tcpPort = port;
-                            Config.startupFiles.remove(i);
+                            config.setTcpPort(port);
+                            config.getStartupFiles().remove(i);
 
                         } catch (NumberFormatException e) {
-                            Config.tcpPort = 1948;
+                            config.setTcpPort(1948);
                         }
                     }
                 }
@@ -303,140 +334,49 @@ public class Logo {
 
     /**
      * This method initializes all parameters from the file .xlogo
+     * @param logo
      */
-    private void readConfig() {
+    private static void readConfig(Logo logo) {
         try {
-            // Try to read XML format (new config file)
-            FileInputStream fr = new FileInputStream(System.getProperty("user.home") + File.separator + ".xlogo");
-            BufferedInputStream bis = new BufferedInputStream(fr);
-            InputStreamReader isr = new InputStreamReader(bis, StandardCharsets.UTF_8);
-            try {
-                XMLReader saxReader = XMLReaderFactory.createXMLReader();
-                saxReader.setContentHandler(new SimpleContentHandler());
-                saxReader.parse(new InputSource(isr));
-            } catch (SAXException e) {
-                // Read the old config file format
-                StringBuilder s = new StringBuilder();
-                FileReader ifr = new FileReader(System.getProperty("user.home") + File.separator + ".xlogo");
-                while (ifr.ready()) {
-                    char[] b = new char[64];
-                    int i = ifr.read(b);
-                    if (i == -1) break;
-                    s.append(new String(b));
-                }
-                StringTokenizer st = new StringTokenizer(s.toString(), "\n");
-
-                while (st.hasMoreTokens()) {
-                    String element = st.nextToken();
-
-                    switch (element) {
-                        case "# langue": {
-                            element = st.nextToken();
-                            int id = Integer.parseInt(element);
-                            Config.language = id;
-                            generateLanguage(id);
-                            break;
-                        }
-                        case "# vitesse":
-                            element = st.nextToken();
-                            Config.turtleSpeed = Integer.parseInt(element);
-                            break;
-                        case "# tortue choisie":
-                            element = st.nextToken();
-                            Config.activeTurtle = Integer.parseInt(element);
-                            break;
-                        case "# nb max de tortues":
-                            element = st.nextToken();
-                            Config.maxTurtles = Integer.parseInt(element);
-                            break;
-                        case "# forme crayon":
-                            element = st.nextToken();
-                            Config.penShape = Integer.parseInt(element);
-                            break;
-                        case "# effacer dessin en quittant editeur": {
-                            int id = Integer.parseInt(st.nextToken());
-                            Config.eraseImage = id != 0;
-                            break;
-                        }
-                        case "# epaisseur max crayon":
-                            element = st.nextToken();
-                            Config.maxPenWidth = Integer.parseInt(element);
-                            break;
-                        case "# repertoire par defaut":
-                            Config.defaultFolder = st.nextToken();
-                            File f = new File(Config.defaultFolder);
-                            if (!f.isDirectory()) Config.defaultFolder = System.getProperty("user.home");
-                            break;
-                        case "# a executer au demarrage":
-                            element = st.nextToken();
-                            if (!element.equals("# aucun")) Config.startupCommand = element;
-                            break;
-                        case "# police":
-                            element = st.nextToken();
-                            String nom = element;
-                            element = st.nextToken();
-                            Config.font = new Font(nom, Font.PLAIN, Integer.parseInt(element));
-                            break;
-                        case "# hauteur":
-                            Config.imageHeight = Integer.parseInt(st.nextToken());
-                            break;
-                        case "# largeur":
-                            Config.imageWidth = Integer.parseInt(st.nextToken());
-                            break;
-                        case "# memoire":
-                            element = st.nextToken();
-                            Config.memoryLimit = Integer.parseInt(element);
-                            Config.newMemoryLimit = Integer.parseInt(element);
-                            break;
-                        case "# qualite":
-                            element = st.nextToken();
-                            Config.drawQuality = Integer.parseInt(element);
-                            break;
-                        case "# coloration":
-                            element = st.nextToken();
-                            StringTokenizer sti = new StringTokenizer(element);
-                            if (sti.countTokens() == 9) {
-                                Config.syntaxHighlightingEnabled = Boolean.parseBoolean(sti.nextToken());
-                                Config.syntaxCommentColor = Integer.parseInt(sti.nextToken());
-                                Config.syntaxOperandColor = Integer.parseInt(sti.nextToken());
-                                Config.syntaxBracketColor = Integer.parseInt(sti.nextToken());
-                                Config.syntaxPrimitiveColor = Integer.parseInt(sti.nextToken());
-                                Config.syntaxCommentStyle = Integer.parseInt(sti.nextToken());
-                                Config.syntaxOperandStyle = Integer.parseInt(sti.nextToken());
-                                Config.syntaxBracketStyle = Integer.parseInt(sti.nextToken());
-                                Config.syntaxPrimitiveStyle = Integer.parseInt(sti.nextToken());
-                            }
-                            break;
-                        case "# fichiers de demarrage":
-                            while (st.hasMoreTokens()) {
-                                element = st.nextToken();
-                                if (!element.startsWith("#")) Config.startupFiles.add(element);
-                            }
-                            break;
-                    }
-                }
-            }
-
-        } catch (Exception e) {
+            FileInputStream fis = new FileInputStream(System.getProperty("user.home") + File.separator + ".xlogo");
+            XMLDecoder dec = new XMLDecoder(fis);
+            config = (Config) dec.readObject();
+            memoryLimit = config.getMemoryLimit();
+            dec.close();
+            fis.close();
+       } catch (Exception e) {
             e.printStackTrace();
             try {
-                SwingUtilities.invokeAndWait(() -> select = new LanguageSelection());
-                try {
-                    UIManager.setLookAndFeel(new FlatDarkLaf());
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                }
+                UIManager.setLookAndFeel(new FlatDarkLaf());
+            } catch (UnsupportedLookAndFeelException ex) {
+                ex.printStackTrace();
+            }
+            try {
+                SwingUtilities.invokeAndWait(() -> logo.select = new LanguageSelection());
             } catch (Exception ignored) {
             }
-            while (!select.getSelection_faite()) {
+            while (!logo.select.getSelection_faite()) {
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException ignored) {
                 }
             }
-            select.dispose();
-            generateLanguage(Config.language);
+            logo.select.dispose();
+            generateLanguage(config.getLanguage());
         }
         // Verify that all values are in valid range
     }
+
+    public static int getMemoryLimit() {
+        return memoryLimit;
+    }
+
+    public static String getMainCommand() {
+        return mainCommand;
+    }
+
+    public static void setMainCommand(String mainCommand) {
+        Logo.mainCommand = mainCommand;
+    }
+
 }

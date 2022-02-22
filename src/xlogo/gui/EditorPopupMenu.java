@@ -7,7 +7,6 @@
  */
 package xlogo.gui;
 
-import xlogo.Config;
 import xlogo.Logo;
 
 import javax.swing.*;
@@ -97,7 +96,7 @@ public class EditorPopupMenu extends JPopupMenu implements ActionListener {
         jpopcouper.setText(Logo.messages.getString("menu.edition.cut"));
         jpopcopier.setText(Logo.messages.getString("menu.edition.copy"));
         // Si le langage choisie est l'esperanto, on rajoute les caractères accentués spéciaux au menu
-        if (Config.language == Config.LANGUAGE_ESPERANTO) {
+        if (Logo.config.getLanguage() == Logo.config.LANGUAGE_ESPERANTO) {
             add(separ);
             for (int i = 0; i < jpopcar.length; i++) {
                 add(jpopcar[i]);

@@ -1,6 +1,5 @@
 package xlogo.gui.preferences;
 
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.DrawPanel;
 
@@ -49,7 +48,7 @@ public class SyntaxStylePanel extends JPanel implements ActionListener {
 
         style.setActionCommand("style");
         style.addActionListener(this);
-        int hauteur = Config.font.getSize() + 5;
+        int hauteur = Logo.config.getFont().getSize() + 5;
 //	        jt.setPreferredSize(new Dimension(240,hauteur));
 
         //Lay out the demo.

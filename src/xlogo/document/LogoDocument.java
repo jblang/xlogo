@@ -1,6 +1,6 @@
 package xlogo.document;
 
-import xlogo.Config;
+import xlogo.Logo;
 import xlogo.kernel.Primitive;
 
 import javax.swing.text.*;
@@ -31,15 +31,15 @@ public class LogoDocument extends DefaultStyledDocument {
     private MutableAttributeSet keyword;
     private MutableAttributeSet comment;
     private MutableAttributeSet quote;
-    private boolean coloration_activee = Config.syntaxHighlightingEnabled;
+    private boolean coloration_activee = Logo.config.isSyntaxHighlightingEnabled();
     private boolean colore_parenthese = false;
 
     public LogoDocument() {
         doc = this;
         rootElement = doc.getDefaultRootElement();
         putProperty(DefaultEditorKit.EndOfLineStringProperty, "\n");
-        initStyles(Config.syntaxCommentColor, Config.syntaxCommentStyle, Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle,
-                Config.syntaxBracketColor, Config.syntaxBracketStyle, Config.syntaxOperandColor, Config.syntaxOperandStyle);
+        initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(),
+                Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
     }
 
     public void setColoration(boolean b) {
@@ -49,29 +49,29 @@ public class LogoDocument extends DefaultStyledDocument {
     public void initStyles(int c_comment, int sty_comment, int c_primitive, int sty_primitive,
                            int c_parenthese, int sty_parenthese, int c_operande, int sty_operande) {
         normal = new SimpleAttributeSet();
-        //StyleConstants.setFontFamily(normal, Config.police.getFamily());
+        //StyleConstants.setFontFamily(normal, Logo.config.police.getFamily());
         //StyleConstants.setForeground(normal, Color.black);
-        StyleConstants.setFontSize(normal, Config.font.getSize());
+        StyleConstants.setFontSize(normal, Logo.config.getFont().getSize());
 
         comment = new SimpleAttributeSet();
         StyleConstants.setForeground(comment, new Color(c_comment));
         setBoldItalic(sty_comment, comment);
-        StyleConstants.setFontSize(comment, Config.font.getSize());
+        StyleConstants.setFontSize(comment, Logo.config.getFont().getSize());
 
         keyword = new SimpleAttributeSet();
         StyleConstants.setForeground(keyword, new Color(c_primitive));
         setBoldItalic(sty_primitive, keyword);
-        StyleConstants.setFontSize(keyword, Config.font.getSize());
+        StyleConstants.setFontSize(keyword, Logo.config.getFont().getSize());
 
         quote = new SimpleAttributeSet();
         StyleConstants.setForeground(quote, new Color(c_operande));
         setBoldItalic(sty_operande, quote);
-        StyleConstants.setFontSize(quote, Config.font.getSize());
+        StyleConstants.setFontSize(quote, Logo.config.getFont().getSize());
 
         parenthese = new SimpleAttributeSet();
         StyleConstants.setForeground(parenthese, new Color(c_parenthese));
         setBoldItalic(sty_parenthese, parenthese);
-        StyleConstants.setFontSize(parenthese, Config.font.getSize());
+        StyleConstants.setFontSize(parenthese, Logo.config.getFont().getSize());
     }
 
     void setBoldItalic(int id, MutableAttributeSet sty) {

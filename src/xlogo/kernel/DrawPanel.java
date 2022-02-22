@@ -1,7 +1,6 @@
 package xlogo.kernel;
 
 import com.sun.j3d.utils.geometry.Text2D;
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.Application;
 import xlogo.gui.preferences.FontPanel;
@@ -199,7 +198,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         this.gm = cadre.getKernel().getWorkspace().getGuiMap();
         setLayout(null);
         this.setPreferredSize(new Dimension(
-                (int) (Config.imageWidth * zoom), (int) (Config.imageHeight * zoom)));
+                (int) (Logo.config.getImageWidth() * zoom), (int) (Logo.config.getImageHeight() * zoom)));
         this.cadre = cadre;
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -679,8 +678,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             g.setColor(tortue.couleurcrayon);
             g.setPaintMode();
         }
-        double tmpx = Config.imageWidth / 2 + xCenter;
-        double tmpy = Config.imageHeight / 2 - yCenter;
+        double tmpx = Logo.config.getImageWidth() / 2 + xCenter;
+        double tmpy = Logo.config.getImageHeight() / 2 - yCenter;
         g.translate(tmpx, tmpy);
         g.rotate(-angleRotation);
         g.draw(arc);
@@ -752,32 +751,32 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         g.draw(arc);
         clip();
         if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_WRAP) {
-            if (x + radius > Config.imageWidth && x <= Config.imageWidth) {
-                pt = new Point2D.Double(-Config.imageWidth + x, y);
+            if (x + radius > Logo.config.getImageWidth() && x <= Logo.config.getImageWidth()) {
+                pt = new Point2D.Double(-Logo.config.getImageWidth() + x, y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    arc2D(-Config.imageWidth + x, y, radius, fangle, angle);
+                    arc2D(-Logo.config.getImageWidth() + x, y, radius, fangle, angle);
                 }
             }
             if (x - radius < 0 && x >= 0) {
-                pt = new Point2D.Double(Config.imageWidth + x, y);
+                pt = new Point2D.Double(Logo.config.getImageWidth() + x, y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    arc2D(Config.imageWidth + x, y, radius, fangle, angle);
+                    arc2D(Logo.config.getImageWidth() + x, y, radius, fangle, angle);
                 }
             }
             if (y - radius < 0 && y >= 0) {
-                pt = new Point2D.Double(x, Config.imageHeight + y);
+                pt = new Point2D.Double(x, Logo.config.getImageHeight() + y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    arc2D(x, Config.imageHeight + y, radius, fangle, angle);
+                    arc2D(x, Logo.config.getImageHeight() + y, radius, fangle, angle);
                 }
             }
-            if (y + radius > Config.imageHeight && y <= Config.imageHeight) {
-                pt = new Point2D.Double(x, -Config.imageHeight + y);
+            if (y + radius > Logo.config.getImageHeight() && y <= Logo.config.getImageHeight()) {
+                pt = new Point2D.Double(x, -Logo.config.getImageHeight() + y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    arc2D(x, -Config.imageHeight + y, radius, fangle, angle);
+                    arc2D(x, -Logo.config.getImageHeight() + y, radius, fangle, angle);
                 }
             }
         }
@@ -856,32 +855,32 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         g.draw(arc);
         clip();
         if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_WRAP) {
-            if (x + radius > Config.imageWidth && x <= Config.imageWidth) {
-                pt = new Point2D.Double(-Config.imageWidth + x, y);
+            if (x + radius > Logo.config.getImageWidth() && x <= Logo.config.getImageWidth()) {
+                pt = new Point2D.Double(-Logo.config.getImageWidth() + x, y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    circle2D(-Config.imageWidth + x, y, radius);
+                    circle2D(-Logo.config.getImageWidth() + x, y, radius);
                 }
             }
             if (x - radius < 0 && x >= 0) {
-                pt = new Point2D.Double(Config.imageWidth + x, y);
+                pt = new Point2D.Double(Logo.config.getImageWidth() + x, y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    circle2D(Config.imageWidth + x, y, radius);
+                    circle2D(Logo.config.getImageWidth() + x, y, radius);
                 }
             }
             if (y - radius < 0 && y >= 0) {
-                pt = new Point2D.Double(x, Config.imageHeight + y);
+                pt = new Point2D.Double(x, Logo.config.getImageHeight() + y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    circle2D(x, Config.imageHeight + y, radius);
+                    circle2D(x, Logo.config.getImageHeight() + y, radius);
                 }
             }
-            if (y + radius > Config.imageHeight && y <= Config.imageHeight) {
-                pt = new Point2D.Double(x, -Config.imageHeight + y);
+            if (y + radius > Logo.config.getImageHeight() && y <= Logo.config.getImageHeight()) {
+                pt = new Point2D.Double(x, -Logo.config.getImageHeight() + y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    circle2D(x, -Config.imageHeight + y, radius);
+                    circle2D(x, -Logo.config.getImageHeight() + y, radius);
                 }
             }
         }
@@ -897,8 +896,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         initCoords();
         extractCoords(liste, Utils.primitiveName("drawing.point"));
         coords = toScreenCoord(coords, true);
-//		System.out.println(coords[0]+" "+coords[1]+" "+Config.imageHeight+" "+Config.imageWidth);
-        if (coords[0] > 0 && coords[1] > 0 && coords[0] < Config.imageWidth && coords[1] < Config.imageHeight) {
+//		System.out.println(coords[0]+" "+coords[1]+" "+Logo.config.imageHeight+" "+Logo.config.imageWidth);
+        if (coords[0] > 0 && coords[1] > 0 && coords[0] < Logo.config.getImageWidth() && coords[1] < Logo.config.getImageHeight()) {
             if (tortue.isPenReverse()) {
                 g.setColor(couleurfond);
                 g.setXORMode(tortue.couleurcrayon);
@@ -909,7 +908,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             }
             if (rec == null) rec = new Rectangle2D.Double();
             // High quality
-            if (Config.drawQuality == Config.DRAW_QUALITY_HIGH) {
+            if (Logo.config.getDrawQuality() == Logo.config.DRAW_QUALITY_HIGH) {
                 double width = tortue.getPenWidth();
                 rec.setRect(coords[0] - width + 0.5, coords[1] - width + 0.5,
                         2 * width, 2 * width);
@@ -929,9 +928,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                             2 * width, 2 * width);
                 }
             }
-            if (Config.penShape == Config.PEN_SHAPE_SQUARE) {
+            if (Logo.config.getPenShape() == Logo.config.PEN_SHAPE_SQUARE) {
                 g.fill(rec);
-            } else if (Config.penShape == Config.PEN_SHAPE_OVAL) {
+            } else if (Logo.config.getPenShape() == Logo.config.PEN_SHAPE_OVAL) {
                 if (null == arc) arc = new Arc2D.Double();
                 arc.setArcByCenter(coords[0], coords[1], 0, 0, 360, Arc2D.OPEN);
                 g.draw(arc);
@@ -1116,7 +1115,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             double milieu = (mini + maxi) / 2;
             double nx = oldx + milieu * Math.cos(tortue.angle);
             double ny = oldy - milieu * Math.sin(tortue.angle);
-            if (nx < 0 || nx > Config.imageWidth || ny < 0 || ny > Config.imageHeight)
+            if (nx < 0 || nx > Logo.config.getImageWidth() || ny < 0 || ny > Logo.config.getImageHeight())
                 return trouve_longueur(mini, milieu, oldx, oldy);
             else
                 return trouve_longueur(milieu, maxi, oldx, oldy);
@@ -1132,7 +1131,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     private void trace_enroule(double arg, double oldx, double oldy) {
         boolean re = arg < 0;
-        double diagonale = Math.sqrt(Math.pow(Config.imageWidth, 2) + Math.pow(Config.imageHeight, 2)) + 1;
+        double diagonale = Math.sqrt(Math.pow(Logo.config.getImageWidth(), 2) + Math.pow(Logo.config.getImageHeight(), 2)) + 1;
         double longueur;
         if (re)
             longueur = trouve_longueur(0, -diagonale, oldx, oldy);
@@ -1148,36 +1147,36 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             if (cadre.error)
                 break; //permet d'interrompre avec le bouton stop
             DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_WRAP;
-            if (Config.turtleSpeed != 0) {
+            if (Logo.config.getTurtleSpeed() != 0) {
                 try {
-                    Thread.sleep(Config.turtleSpeed * 5);
+                    Thread.sleep(Logo.config.getTurtleSpeed() * 5);
                 } catch (InterruptedException e) {
                 }
             }
             if (tortue.isVisible())
                 this.montrecacheTortue(false);
             if (re) tortue.heading = (tortue.heading + 180) % 360;
-            if (tortue.corX > Config.imageWidth - 1
+            if (tortue.corX > Logo.config.getImageWidth() - 1
                     && (tortue.heading < 180 && tortue.heading != 0)) {
                 tortue.corX = 0;
-                if (tortue.corY > Config.imageHeight - 1
+                if (tortue.corY > Logo.config.getImageHeight() - 1
                         && (tortue.heading > 90 && tortue.heading < 270))
                     tortue.corY = 0;
                 else if (tortue.corY < 1
                         && (tortue.heading < 90 || tortue.heading > 270))
-                    tortue.corY = Config.imageHeight;
+                    tortue.corY = Logo.config.getImageHeight();
             } else if (tortue.corX < 1 && tortue.heading > 180) {
-                tortue.corX = Config.imageWidth;
-                if (tortue.corY > Config.imageHeight - 1
+                tortue.corX = Logo.config.getImageWidth();
+                if (tortue.corY > Logo.config.getImageHeight() - 1
                         && (tortue.heading > 90 && tortue.heading < 270))
                     tortue.corY = 0;
                 else if (tortue.corY < 1
                         && (tortue.heading < 90 || tortue.heading > 270))
-                    tortue.corY = Config.imageHeight;
-            } else if (tortue.corY > Config.imageHeight - 1)
+                    tortue.corY = Logo.config.getImageHeight();
+            } else if (tortue.corY > Logo.config.getImageHeight() - 1)
                 tortue.corY = 0;
             else if (tortue.corY < 1)
-                tortue.corY = Config.imageHeight;
+                tortue.corY = Logo.config.getImageHeight();
             if (re) tortue.heading = (tortue.heading + 180) % 360;
             if (tortue.isVisible())
                 this.montrecacheTortue(true);
@@ -1205,7 +1204,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     private void trace_ferme(double oldx, double oldy, double arg) throws LogoException {
         boolean re = false;
         double longueur;
-        double diagonale = Math.sqrt(Math.pow(Config.imageWidth, 2) + Math.pow(Config.imageHeight, 2)) + 1;
+        double diagonale = Math.sqrt(Math.pow(Logo.config.getImageWidth(), 2) + Math.pow(Logo.config.getImageHeight(), 2)) + 1;
         if (arg < 0)
             re = true;
         if (re)
@@ -1269,9 +1268,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     protected void perspective() {
         if (!enabled3D()) {
-            Config.xAxisEnabled = false;
-            Config.yAxisEnabled = false;
-            Config.gridEnabled = false;
+            Logo.config.setXAxisEnabled(false);
+            Logo.config.setYAxisEnabled(false);
+            Logo.config.setGridEnabled(false);
             change_image_tortue(cadre, "tortue0.png");
             montrecacheTortue(false);
             DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_3D;
@@ -1315,8 +1314,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
         // Mode2D
         else {
-            coord[0] = Config.imageWidth / 2 + coord[0];
-            coord[1] = Config.imageHeight / 2 - coord[1];
+            coord[0] = Logo.config.getImageWidth() / 2 + coord[0];
+            coord[1] = Logo.config.getImageHeight() / 2 - coord[1];
         }
         return coord;
     }
@@ -1511,9 +1510,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
 
         g.setPaintMode();
-        couleurfond = Config.screenColor;
-        g.setColor(Config.screenColor);
-        g.fillRect(0, 0, Config.imageWidth, Config.imageHeight);
+        couleurfond = Logo.config.getScreenColor();
+        g.setColor(Logo.config.getScreenColor());
+        g.fillRect(0, 0, Logo.config.getImageWidth(), Logo.config.getImageHeight());
         stopRecord2DPolygon();
 
         // Draw Grid
@@ -1550,7 +1549,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         stopRecord2DPolygon();
         g.setPaintMode();
         g.setColor(couleurfond);
-        g.fillRect(0, 0, Config.imageWidth, Config.imageHeight);
+        g.fillRect(0, 0, Logo.config.getImageWidth(), Logo.config.getImageHeight());
 
         drawGrid();
 		/* Réinitialiser les tortues
@@ -1603,7 +1602,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @return true or false
      */
     private boolean meme_couleur(int col1, int col2) {
-/*		if (Config.quality==Logo.QUALITY_HIGH){
+/*		if (Logo.config.quality==Logo.QUALITY_HIGH){
 			int rouge1 = (col1 >> 16) & 0xFF;
 			int vert1 = (col1 >> 8) & 0xFF;
 			int bleu1 = col1 & 0xFF;
@@ -1897,32 +1896,32 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             double left = x - bound.getX();
             double up = y - bound.getY();
             double down = bound.getY() + bound.getHeight() - y;
-            if (x + right > Config.imageWidth && x <= Config.imageWidth) {
-                pt = new Point2D.Double(-Config.imageWidth + x, y);
+            if (x + right > Logo.config.getImageWidth() && x <= Logo.config.getImageWidth()) {
+                pt = new Point2D.Double(-Logo.config.getImageWidth() + x, y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    etiquette2D(-Config.imageWidth + x, y, angle, word);
+                    etiquette2D(-Logo.config.getImageWidth() + x, y, angle, word);
                 }
             }
             if (x - left < 0 && x >= 0) {
-                pt = new Point2D.Double(Config.imageWidth + x, y);
+                pt = new Point2D.Double(Logo.config.getImageWidth() + x, y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    etiquette2D(Config.imageWidth + x, y, angle, word);
+                    etiquette2D(Logo.config.getImageWidth() + x, y, angle, word);
                 }
             }
             if (y - up < 0 && y >= 0) {
-                pt = new Point2D.Double(x, Config.imageHeight + y);
+                pt = new Point2D.Double(x, Logo.config.getImageHeight() + y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    etiquette2D(x, Config.imageHeight + y, angle, word);
+                    etiquette2D(x, Logo.config.getImageHeight() + y, angle, word);
                 }
             }
-            if (y + down > Config.imageHeight && y <= Config.imageHeight) {
-                pt = new Point2D.Double(x, -Config.imageHeight + y);
+            if (y + down > Logo.config.getImageHeight() && y <= Logo.config.getImageHeight()) {
+                pt = new Point2D.Double(x, -Logo.config.getImageHeight() + y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    etiquette2D(x, -Config.imageHeight + y, angle, word);
+                    etiquette2D(x, -Logo.config.getImageHeight() + y, angle, word);
                 }
             }
         }
@@ -2200,10 +2199,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     public void setQuality(int id) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        if (id == Config.DRAW_QUALITY_HIGH) {
+        if (id == Logo.config.DRAW_QUALITY_HIGH) {
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        } else if (id == Config.DRAW_QUALITY_LOW) {
+        } else if (id == Logo.config.DRAW_QUALITY_LOW) {
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         } else { //normal
@@ -2297,7 +2296,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     public void setNumberOfTurtles(int id) {
-        Config.maxTurtles = id;
+        Logo.config.setMaxTurtles(id);
         Turtle[] tampon = tortues.clone();
         tortues = new Turtle[id];
         int borne_sup = Math.min(tampon.length, tortues.length);
@@ -2316,10 +2315,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         AffineTransform t = ((Graphics2D) getGraphics()).getTransform();
         scaleX = t.getScaleX() * 2;
         scaleY = t.getScaleY() * 2;
-        dessin = new BufferedImage((int)(scaleX * Config.imageWidth), (int)(scaleY * Config.imageHeight), BufferedImage.TYPE_INT_RGB);
+        dessin = new BufferedImage((int)(scaleX * Logo.config.getImageWidth()), (int)(scaleY * Logo.config.getImageHeight()), BufferedImage.TYPE_INT_RGB);
         police_etiquette = Application.fontId;
         //		 init all turtles
-        tortues = new Turtle[Config.maxTurtles];
+        tortues = new Turtle[Logo.config.getMaxTurtles()];
         tortues_visibles = new Stack<String>();
         tortue = new Turtle(cadre);
         tortues[0] = tortue;
@@ -2331,18 +2330,18 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
         g = (Graphics2D) dessin.getGraphics();
         g.scale(scaleX, scaleY);
-        couleurfond = Config.screenColor;
-        setQuality(Config.drawQuality);
-        g.setColor(Config.screenColor);
-        g.fillRect(0, 0, Config.imageWidth, Config.imageHeight);
-        g.setColor(Config.screenColor);
+        couleurfond = Logo.config.getScreenColor();
+        setQuality(Logo.config.getDrawQuality());
+        g.setColor(Logo.config.getScreenColor());
+        g.fillRect(0, 0, Logo.config.getImageWidth(), Logo.config.getImageHeight());
+        g.setColor(Logo.config.getScreenColor());
         if (!enabled3D()) {
             drawGrid();
             drawXAxis();
             drawYAxis();
         }
         MediaTracker tracker;
-        if (0 == Config.activeTurtle) {
+        if (0 == Logo.config.getActiveTurtle()) {
             g.setXORMode(couleurfond);
             tortue.drawTriangle();
             g.setColor(tortue.couleurcrayon);
@@ -2355,8 +2354,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 tracker.waitForID(0);
             } catch (InterruptedException e) {
             }
-            if (tracker.checkID(0)) g.drawImage(tortue.tort, Config.imageWidth / 2 - tortue.largeur / 2,
-                    Config.imageHeight / 2 - tortue.hauteur / 2, this);
+            if (tracker.checkID(0)) g.drawImage(tortue.tort, Logo.config.getImageWidth() / 2 - tortue.largeur / 2,
+                    Logo.config.getImageHeight() / 2 - tortue.hauteur / 2, this);
         }
         updateColorSelection();
     }
@@ -2371,7 +2370,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             gui.getGuiObject().setSize((int) (gui.getOriginalWidth() * d),
                     (int) (gui.getOriginalHeight() * d));
             Font f = gui.getGuiObject().getFont();
-            gui.getGuiObject().setFont(f.deriveFont((float) (Config.font.getSize() * d)));
+            gui.getGuiObject().setFont(f.deriveFont((float) (Logo.config.getFont().getSize() * d)));
             double x = gui.getLocation().x / zoom;
             double y = gui.getLocation().y / zoom;
             gui.setLocation((int) (x * d), (int) (y * d));
@@ -2428,14 +2427,14 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
          * 		-------------------------------------
          * */
 
-        double dx = Math.min(r.width, Config.imageWidth * oldZoom) / 2;
-        double dy = Math.min(r.height, Config.imageHeight * oldZoom) / 2;
+        double dx = Math.min(r.width, Logo.config.getImageWidth() * oldZoom) / 2;
+        double dy = Math.min(r.height, Logo.config.getImageHeight() * oldZoom) / 2;
         Point centerView = new Point((int) (p.x + dx), (int) (p.y + dy));
 
         // Dynamically modify the drawing Area size
         setPreferredSize(new java.awt.Dimension(
-                (int) (Config.imageWidth * zoom)
-                , (int) (Config.imageHeight * zoom)));
+                (int) (Logo.config.getImageWidth() * zoom)
+                , (int) (Logo.config.getImageHeight() * zoom)));
 
         SwingUtilities.invokeLater(new PositionJViewport(jv,
                 new Point((int) (centerView.x / oldZoom * zoom - dx),
@@ -2452,19 +2451,19 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * Draw the horizontal axis
      */
     private void drawXAxis() {
-        if (Config.xAxisEnabled) {
-            g.setColor(getTransparencyColor(Config.axisColor, 128));
-            g.drawLine(0, Config.imageHeight / 2, Config.imageWidth, Config.imageHeight / 2);
-            for (int i = Config.imageWidth / 2 % Config.xAxisSpacing; i < Config.imageWidth; i = i + Config.xAxisSpacing) {
-                g.drawLine(i, Config.imageHeight / 2 - 2, i, Config.imageHeight / 2 + 2);
+        if (Logo.config.isXAxisEnabled()) {
+            g.setColor(getTransparencyColor(Logo.config.getAxisColor(), 128));
+            g.drawLine(0, Logo.config.getImageHeight() / 2, Logo.config.getImageWidth(), Logo.config.getImageHeight() / 2);
+            for (int i = Logo.config.getImageWidth() / 2 % Logo.config.getXAxisSpacing(); i < Logo.config.getImageWidth(); i = i + Logo.config.getXAxisSpacing()) {
+                g.drawLine(i, Logo.config.getImageHeight() / 2 - 2, i, Logo.config.getImageHeight() / 2 + 2);
                 g.setFont(new Font("Dialog", Font.PLAIN, 10));
-                String tick = String.valueOf(i - Config.imageWidth / 2);
+                String tick = String.valueOf(i - Logo.config.getImageWidth() / 2);
                 FontMetrics fm = g.getFontMetrics();
                 int back = fm.stringWidth(tick) / 2;
                 // if the both axes are drawn, the zero has to translated
                 // So we don't draw the zero
-                if (i != Config.imageWidth / 2 || !Config.yAxisEnabled)
-                    g.drawString(tick, i - back, Config.imageHeight / 2 + 20);
+                if (i != Logo.config.getImageWidth() / 2 || !Logo.config.isYAxisEnabled())
+                    g.drawString(tick, i - back, Logo.config.getImageHeight() / 2 + 20);
             }
         }
     }
@@ -2473,30 +2472,30 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * Draw the vertical axis
      */
     private void drawYAxis() {
-        if (Config.yAxisEnabled) {
-            g.setColor(getTransparencyColor(Config.axisColor, 128));
-            g.drawLine(Config.imageWidth / 2, 0, Config.imageWidth / 2, Config.imageHeight);
-            for (int i = Config.imageHeight / 2 % Config.yAxisSpacing; i < Config.imageHeight; i = i + Config.yAxisSpacing) {
-                g.drawLine(Config.imageWidth / 2 - 2, i, Config.imageWidth / 2 + 2, i);
+        if (Logo.config.isYAxisEnabled()) {
+            g.setColor(getTransparencyColor(Logo.config.getAxisColor(), 128));
+            g.drawLine(Logo.config.getImageWidth() / 2, 0, Logo.config.getImageWidth() / 2, Logo.config.getImageHeight());
+            for (int i = Logo.config.getImageHeight() / 2 % Logo.config.getYAxisSpacing(); i < Logo.config.getImageHeight(); i = i + Logo.config.getYAxisSpacing()) {
+                g.drawLine(Logo.config.getImageWidth() / 2 - 2, i, Logo.config.getImageWidth() / 2 + 2, i);
                 g.setFont(new Font("Dialog", Font.PLAIN, 10));
-                String tick = String.valueOf(Config.imageHeight / 2 - i);
+                String tick = String.valueOf(Logo.config.getImageHeight() / 2 - i);
                 // If both axes are drawn, zero is translated
-                if (i == Config.imageHeight / 2 && Config.xAxisEnabled)
-                    g.drawString("0", Config.imageWidth / 2 + 10, i - 5);
-                else g.drawString(tick, Config.imageWidth / 2 + 10, i + 5);
+                if (i == Logo.config.getImageHeight() / 2 && Logo.config.isXAxisEnabled())
+                    g.drawString("0", Logo.config.getImageWidth() / 2 + 10, i - 5);
+                else g.drawString(tick, Logo.config.getImageWidth() / 2 + 10, i + 5);
             }
         }
     }
 
     private void drawGrid() {
-        if (Config.gridEnabled) {
+        if (Logo.config.isGridEnabled()) {
             g.setStroke(new BasicStroke(1));
-            g.setColor(getTransparencyColor(Config.gridColor, 100));
-            for (int i = Config.imageWidth / 2 % Config.xGridSpacing; i < Config.imageWidth; i = i + Config.xGridSpacing)
-                g.drawLine(i, 0, i, Config.imageHeight);
+            g.setColor(getTransparencyColor(Logo.config.getGridColor(), 100));
+            for (int i = Logo.config.getImageWidth() / 2 % Logo.config.getXGridSpacing(); i < Logo.config.getImageWidth(); i = i + Logo.config.getXGridSpacing())
+                g.drawLine(i, 0, i, Logo.config.getImageHeight());
 
-            for (int i = Config.imageHeight / 2 % Config.yGridSpacing; i < Config.imageHeight; i = i + Config.yGridSpacing)
-                g.drawLine(0, i, Config.imageWidth, i);
+            for (int i = Logo.config.getImageHeight() / 2 % Logo.config.getYGridSpacing(); i < Logo.config.getImageHeight(); i = i + Logo.config.getYGridSpacing())
+                g.drawLine(0, i, Logo.config.getImageWidth(), i);
         }
     }
 
@@ -2516,7 +2515,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         Graphics2D g2d = (Graphics2D) graph;
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2d.drawImage(dessin, 0, 0, (int) (Config.imageWidth * zoom), (int) (Config.imageHeight * zoom), this);
+        g2d.drawImage(dessin, 0, 0, (int) (Logo.config.getImageWidth() * zoom), (int) (Logo.config.getImageHeight() * zoom), this);
         if (!Animation.execution_lancee && null != selection && cadre.isCommandEditable()) {
             g2d.setColor(colorSelection);
             g2d.fillRect(selection.x, selection.y, selection.width, selection.height);
@@ -2562,7 +2561,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             lissouris = true;
             bouton_souris = ev.getButton();
             Point point = ev.getPoint();
-            possouris = "[ " + (point.x - Config.imageWidth / 2) + " " + (Config.imageHeight / 2 - point.y) + " ] ";
+            possouris = "[ " + (point.x - Logo.config.getImageWidth() / 2) + " " + (Logo.config.getImageHeight() / 2 - point.y) + " ] ";
         }
     }
 
@@ -2588,11 +2587,11 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 int x, y;
                 if (pos.x < viewPosition.x) x = Math.max(0, pos.x);
                 else if (pos.x > viewPosition.x + r.width)
-                    x = Math.min(pos.x - r.width, (int) (Config.imageWidth * zoom - r.width));
+                    x = Math.min(pos.x - r.width, (int) (Logo.config.getImageWidth() * zoom - r.width));
                 else x = viewPosition.x;
                 if (pos.y < viewPosition.y) y = Math.max(0, pos.y);
                 else if (pos.y > viewPosition.y + r.height)
-                    y = Math.min(pos.y - r.height, (int) (Config.imageHeight * zoom - r.height));
+                    y = Math.min(pos.y - r.height, (int) (Logo.config.getImageHeight() * zoom - r.height));
                 else y = viewPosition.y;
                 jv.setViewPosition(new Point(x, y));
             }
@@ -2608,7 +2607,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         lissouris = true;
         bouton_souris = 0;
         Point point = ev.getPoint();
-        possouris = "[ " + (point.x - Config.imageWidth / 2) + " " + (Config.imageHeight / 2 - point.y) + " ] ";
+        possouris = "[ " + (point.x - Logo.config.getImageWidth() / 2) + " " + (Logo.config.getImageHeight() / 2 - point.y) + " ] ";
     }
 
     protected void addToGuiMap(GuiComponent gc) throws LogoException {
@@ -2639,7 +2638,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         } else if (!lowerName.endsWith(".png")) {
             name = name + ".png";
         }
-        name = Config.defaultFolder + File.separator + name;
+        name = Logo.config.getDefaultFolder() + File.separator + name;
         try {
             File f = new File(name);
             ImageIO.write(buffer, format, f);

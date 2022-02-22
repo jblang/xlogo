@@ -8,7 +8,6 @@
 package xlogo.kernel;
 
 import xlogo.gui.Application;
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.HistoryPanel;
 import xlogo.gui.InputFrame;
@@ -279,7 +278,7 @@ public class LaunchPrimitive {
                     try {
                         if (DrawPanel.WINDOW_MODE != DrawPanel.WINDOW_3D) {
                             double x = kernel.getCalculator().numberDouble(param.get(0));
-                            double y = Config.imageHeight / 2 - kernel.getActiveTurtle().corY;
+                            double y = Logo.config.getImageHeight() / 2 - kernel.getActiveTurtle().corY;
                             cadre.getDrawPanel().fpos(x + " " + y);
                         } else
                             cadre.getDrawPanel().fpos(kernel.getCalculator().numberDouble(param.get(0)) + " " + kernel.getActiveTurtle().Y + " "
@@ -292,7 +291,7 @@ public class LaunchPrimitive {
                     try {
                         if (DrawPanel.WINDOW_MODE != DrawPanel.WINDOW_3D) {
                             double y = kernel.getCalculator().numberDouble(param.get(0));
-                            double x = kernel.getActiveTurtle().corX - Config.imageWidth / 2;
+                            double x = kernel.getActiveTurtle().corX - Logo.config.getImageWidth() / 2;
                             cadre.getDrawPanel().fpos(x + " " + y);
                         } else
                             cadre.getDrawPanel().fpos(kernel.getActiveTurtle().X + " " + kernel.getCalculator().numberDouble(param.get(0))
@@ -523,8 +522,8 @@ public class LaunchPrimitive {
                 case 41: // pos
                     Interpreter.operande = true;
                     if (DrawPanel.WINDOW_MODE != DrawPanel.WINDOW_3D) {
-                        double a = kernel.getActiveTurtle().corX - Config.imageWidth / 2;
-                        double b = Config.imageHeight / 2 - kernel.getActiveTurtle().corY;
+                        double a = kernel.getActiveTurtle().corX - Logo.config.getImageWidth() / 2;
+                        double b = Logo.config.getImageHeight() / 2 - kernel.getActiveTurtle().corY;
                         Interpreter.calcul.push("[ " + Calculator.teste_fin_double(a) + " " + Calculator.teste_fin_double(b) + " ] ");
                     } else {
                         Interpreter.calcul.push("[ " + kernel.getActiveTurtle().X + " "
@@ -1173,7 +1172,7 @@ public class LaunchPrimitive {
                             throw new LogoException(cadre, Logo.messages
                                     .getString("error.word"));
                         java.awt.FontMetrics fm = cadre.getGraphics()
-                                .getFontMetrics(Config.font);
+                                .getFontMetrics(Logo.config.getFont());
                         int longueur = fm.stringWidth(liste) + 100;
                         InputFrame inputFrame = new InputFrame(liste, longueur);
                         while (inputFrame.isVisible()) {
@@ -1344,7 +1343,7 @@ public class LaunchPrimitive {
                     }
                     break;
                 case 108: // catalogue
-                    String str = Utils.SortieTexte(Config.defaultFolder);
+                    String str = Utils.SortieTexte(Logo.config.getDefaultFolder());
                     File f = new File(str);
                     String fichier = "";
                     String dossier = "";
@@ -1384,7 +1383,7 @@ public class LaunchPrimitive {
                                     + Logo.messages.getString("error.word"));
                         String chemin = Utils.SortieTexte(liste);
                         if ((new File(chemin)).isDirectory() && !chemin.startsWith("..")) {
-                            Config.defaultFolder = Utils.rajoute_backslash(chemin);
+                            Logo.config.setDefaultFolder(Utils.rajoute_backslash(chemin));
                         } else throw new LogoException(cadre, liste
                                 + " "
                                 + Logo.messages
@@ -1394,7 +1393,7 @@ public class LaunchPrimitive {
                     break;
                 case 110: // repertoire
                     Interpreter.operande = true;
-                    Interpreter.calcul.push("\"" + Config.defaultFolder);
+                    Interpreter.calcul.push("\"" + Logo.config.getDefaultFolder());
                     break;
                 case 111: // sauve
                     try {
@@ -1427,7 +1426,7 @@ public class LaunchPrimitive {
                         if (null == mot)
                             throw new LogoException(cadre, param.get(0) + " "
                                     + Logo.messages.getString("error.word"));
-                        String path = Utils.SortieTexte(Config.defaultFolder) + File.separator + mot;
+                        String path = Utils.SortieTexte(Logo.config.getDefaultFolder()) + File.separator + mot;
                         try {
                             String txt = Utils.readLogoFile(path);
                             cadre.editor.setEditorStyledText(txt);
@@ -1503,7 +1502,7 @@ public class LaunchPrimitive {
                         primitive2D("turtle.fforme");
                         int i = kernel.getCalculator().getInteger(param.get(0)) % 7;
                         if (kernel.getActiveTurtle().id == 0) {
-                            Config.activeTurtle = i;
+                            Logo.config.setActiveTurtle(i);
                         }
                         String chemin = "tortue" + i + ".png";
                         kernel.change_image_tortue(chemin);
@@ -1588,7 +1587,7 @@ public class LaunchPrimitive {
                 case 126: // fixetortue
                     try {
                         int i = Integer.parseInt(param.get(0));
-                        if (i > -1 && i < Config.maxTurtles) {
+                        if (i > -1 && i < Logo.config.getMaxTurtles()) {
                             if (null == cadre.getDrawPanel().tortues[i]) {
                                 cadre.getDrawPanel().tortues[i] = new Turtle(cadre);
                                 cadre.getDrawPanel().tortues[i].id = i;
@@ -1624,7 +1623,7 @@ public class LaunchPrimitive {
                     try {
                         int taille = kernel.getCalculator().getInteger(param.get(0));
                         kernel.getActiveTurtle().police = taille;
-                        Font police = Config.font;
+                        Font police = Logo.config.getFont();
                         cadre.getDrawPanel().setGraphicsFont(police
                                 .deriveFont((float) kernel.getActiveTurtle().police));
                     } catch (LogoException e) {
@@ -1634,11 +1633,11 @@ public class LaunchPrimitive {
                 case 129: // tuetortue
                     try {
                         id = Integer.parseInt(param.get(0));
-                        if (id > -1 && id < Config.maxTurtles) {
+                        if (id > -1 && id < Logo.config.getMaxTurtles()) {
                             // On compte le nombre de tortues à l'écran
                             int compteur = 0;
                             int premier_dispo = -1;
-                            for (int i = 0; i < Config.maxTurtles; i++) {
+                            for (int i = 0; i < Logo.config.getMaxTurtles(); i++) {
                                 if (null != cadre.getDrawPanel().tortues[i]) {
                                     if (i != id && premier_dispo == -1)
                                         premier_dispo = i;
@@ -1790,7 +1789,7 @@ public class LaunchPrimitive {
                         // longueurs
                         // acceptables
                         java.awt.FontMetrics fm = cadre.getGraphics()
-                                .getFontMetrics(Config.font);
+                                .getFontMetrics(Logo.config.getFont());
                         liste = "";
                         String tampon = "";
                         while (st.hasMoreTokens()) {
@@ -1811,7 +1810,7 @@ public class LaunchPrimitive {
                     break;
                 case 144: // date
                     Interpreter.operande = true;
-                    Calendar cal = Calendar.getInstance(Logo.getLocale(Config.language));
+                    Calendar cal = Calendar.getInstance(Logo.getLocale(Logo.config.getLanguage()));
                     int jour = cal.get(Calendar.DAY_OF_MONTH);
                     int mois = cal.get(Calendar.MONTH) + 1;
                     int annee = cal.get(Calendar.YEAR);
@@ -1820,7 +1819,7 @@ public class LaunchPrimitive {
                     break;
                 case 145: // heure
                     Interpreter.operande = true;
-                    cal = Calendar.getInstance(Logo.getLocale(Config.language));
+                    cal = Calendar.getInstance(Logo.getLocale(Logo.config.getLanguage()));
                     int heure = cal.get(Calendar.HOUR_OF_DAY);
                     int minute = cal.get(Calendar.MINUTE);
                     int seconde = cal.get(Calendar.SECOND);
@@ -1832,7 +1831,7 @@ public class LaunchPrimitive {
                     long heure_actuelle = Calendar.getInstance().getTimeInMillis();
                     Interpreter.calcul
                             .push(String
-                                    .valueOf((heure_actuelle - Config.startupHour) / 1000));
+                                    .valueOf((heure_actuelle - Logo.getStartupHour()) / 1000));
                     break;
                 case 147: // debuttemps
                     try {
@@ -2057,7 +2056,7 @@ public class LaunchPrimitive {
                         if (null == mot)
                             throw new LogoException(cadre, param.get(0) + " "
                                     + Logo.messages.getString("error.word"));
-                        liste = Utils.SortieTexte(Config.defaultFolder) + File.separator + Utils.SortieTexte(mot);
+                        liste = Utils.SortieTexte(Logo.config.getDefaultFolder()) + File.separator + Utils.SortieTexte(mot);
                         int ident = kernel.getCalculator().getInteger(param.get(0));
                         if (kernel.flows.search(ident) == -1)
                             kernel.flows.add(new Flow(ident, liste, false));
@@ -2196,9 +2195,9 @@ public class LaunchPrimitive {
                     Interpreter.operande = true;
                     StringBuffer sb = new StringBuffer();
                     sb.append("[ ");
-                    sb.append(Config.imageWidth);
+                    sb.append(Logo.config.getImageWidth());
                     sb.append(" ");
-                    sb.append(Config.imageHeight);
+                    sb.append(Logo.config.getImageHeight());
                     sb.append(" ] ");
                     Interpreter.calcul.push(new String(sb));
                     break;
@@ -2253,13 +2252,13 @@ public class LaunchPrimitive {
                             throw new LogoException(cadre, param.get(0) + " "
                                     + Logo.messages.getString("error.word"));
                         String chemin = "";
-                        if (Config.defaultFolder.endsWith(File.separator))
-                            chemin = Utils.SortieTexte(Config.defaultFolder + mot);
+                        if (Logo.config.getDefaultFolder().endsWith(File.separator))
+                            chemin = Utils.SortieTexte(Logo.config.getDefaultFolder() + mot);
                         else
-                            chemin = Utils.SortieTexte(Config.defaultFolder + Utils.rajoute_backslash(File.separator) + mot);
+                            chemin = Utils.SortieTexte(Logo.config.getDefaultFolder() + Utils.rajoute_backslash(File.separator) + mot);
                         if ((new File(chemin)).isDirectory()) {
                             try {
-                                Config.defaultFolder = Utils.rajoute_backslash((new File(chemin)).getCanonicalPath());
+                                Logo.config.setDefaultFolder(Utils.rajoute_backslash((new File(chemin)).getCanonicalPath()));
                             } catch (NullPointerException e1) {
                             } catch (IOException e2) {
                             }
@@ -2693,8 +2692,8 @@ public class LaunchPrimitive {
                     java.awt.Point p = cadre.scrollPane.getViewport().getViewPosition();
                     Rectangle rec = cadre.scrollPane.getVisibleRect();
                     sb = new StringBuffer();
-                    int x1 = p.x - Config.imageWidth / 2;
-                    int y1 = Config.imageHeight / 2 - p.y;
+                    int x1 = p.x - Logo.config.getImageWidth() / 2;
+                    int y1 = Logo.config.getImageHeight() / 2 - p.y;
                     int x2 = x1 + rec.width - cadre.scrollPane.getVerticalScrollBar().getWidth();
                     int y2 = y1 - rec.height + cadre.scrollPane.getHorizontalScrollBar().getHeight();
                     sb.append("[ ");
@@ -2812,18 +2811,18 @@ public class LaunchPrimitive {
                 case 214: // init resetall
                     Interpreter.operande = false;
                     // resize drawing zone if necessary
-                    if (Config.imageHeight != 1000 || Config.imageWidth != 1000) {
-                        Config.imageHeight = 1000;
-                        Config.imageWidth = 1000;
+                    if (Logo.config.getImageHeight() != 1000 || Logo.config.getImageWidth() != 1000) {
+                        Logo.config.setImageHeight(1000);
+                        Logo.config.setImageWidth(1000);
                         cadre.resizeDrawingZone();
                     }
-                    Config.gridEnabled = false;
-                    Config.xAxisEnabled = false;
-                    Config.yAxisEnabled = false;
+                    Logo.config.setGridEnabled(false);
+                    Logo.config.setXAxisEnabled(false);
+                    Logo.config.setYAxisEnabled(false);
                     cadre.getDrawPanel().origine();
                     cadre.getDrawPanel().setBackgroundColor(Color.WHITE);
                     if (kernel.getActiveTurtle().id == 0) {
-                        Config.activeTurtle = 0;
+                        Logo.config.setActiveTurtle(0);
                     }
                     DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLASSIC;
                     String chemin = "tortue0.png";
@@ -2831,18 +2830,18 @@ public class LaunchPrimitive {
                     cadre.getDrawPanel().fcfg(Color.WHITE);
                     cadre.getDrawPanel().fcc(Color.BLACK);
                     cadre.getDrawPanel().setAnimation(false);
-                    Config.font = new Font("dialog", Font.PLAIN, 12);
+                    Logo.config.setFont(new Font("dialog", Font.PLAIN, 12));
                     kernel.getActiveTurtle().police = 12;
-                    cadre.getDrawPanel().setGraphicsFont(Config.font);
-                    HistoryPanel.fontPrint = FontPanel.police_id(Config.font);
+                    cadre.getDrawPanel().setGraphicsFont(Logo.config.getFont());
+                    HistoryPanel.fontPrint = FontPanel.police_id(Logo.config.getFont());
                     cadre.getHistoryPanel().getDsd().fixepolice(12);
                     cadre.getHistoryPanel().getDsd().fixenompolice(HistoryPanel.fontPrint);
                     cadre.getHistoryPanel().getDsd().fixecouleur(Color.black);
-                    Config.penShape = 0;
-                    Config.drawQuality = 0;
-                    kernel.setDrawingQuality(Config.drawQuality);
+                    Logo.config.setPenShape(0);
+                    Logo.config.setDrawQuality(0);
+                    kernel.setDrawingQuality(Logo.config.getDrawQuality());
                     kernel.setNumberOfTurtles(16);
-                    Config.turtleSpeed = 0;
+                    Logo.config.setTurtleSpeed(0);
                     Kernel.mode_trace = false;
                     DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLASSIC;
                     cadre.getDrawPanel().zoom(1, false);
@@ -2856,12 +2855,12 @@ public class LaunchPrimitive {
                     Interpreter.operande = false;
                     try {
                         int i = kernel.getCalculator().getInteger(param.get(0));
-                        if (i != Config.PEN_SHAPE_OVAL && i != Config.PEN_SHAPE_SQUARE) {
+                        if (i != Logo.config.PEN_SHAPE_OVAL && i != Logo.config.PEN_SHAPE_SQUARE) {
                             String st = Utils.primitiveName("setpenshape") + " " + Logo.messages.getString("error_bad_values");
-                            st += " " + Config.PEN_SHAPE_SQUARE + " " + Config.PEN_SHAPE_OVAL;
+                            st += " " + Logo.config.PEN_SHAPE_SQUARE + " " + Logo.config.PEN_SHAPE_OVAL;
                             throw new LogoException(cadre, st);
                         }
-                        Config.penShape = i;
+                        Logo.config.setPenShape(i);
                         cadre.getDrawPanel().updateAllTurtleShape();
                         cadre.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon);
                     } catch (LogoException e) {
@@ -2869,24 +2868,24 @@ public class LaunchPrimitive {
                     break;
                 case 217: // penshape=fc formecrayon
                     Interpreter.operande = true;
-                    Interpreter.calcul.push(String.valueOf(Config.penShape));
+                    Interpreter.calcul.push(String.valueOf(Logo.config.getPenShape()));
                     break;
                 case 218: // setdrawingquality=fqd fixequalitedessin
                     Interpreter.operande = false;
                     try {
                         int i = kernel.getCalculator().getInteger(param.get(0));
-                        if (i != Config.DRAW_QUALITY_NORMAL && i != Config.DRAW_QUALITY_HIGH && i != Config.DRAW_QUALITY_LOW) {
+                        if (i != Logo.config.DRAW_QUALITY_NORMAL && i != Logo.config.DRAW_QUALITY_HIGH && i != Logo.config.DRAW_QUALITY_LOW) {
                             String st = Utils.primitiveName("setdrawingquality") + " " + Logo.messages.getString("error_bad_values") + " 0 1 2";
                             throw new LogoException(cadre, st);
                         }
-                        Config.drawQuality = i;
-                        kernel.setDrawingQuality(Config.drawQuality);
+                        Logo.config.setDrawQuality(i);
+                        kernel.setDrawingQuality(Logo.config.getDrawQuality());
                     } catch (LogoException e) {
                     }
                     break;
                 case 219: // drawingquality=qd qualitedessin
                     Interpreter.operande = true;
-                    Interpreter.calcul.push(String.valueOf(Config.drawQuality));
+                    Interpreter.calcul.push(String.valueOf(Logo.config.getDrawQuality()));
                     break;
                 case 220: // setturtlesnumber=fmt fixemaxtortues
                     Interpreter.operande = false;
@@ -2903,7 +2902,7 @@ public class LaunchPrimitive {
                     break;
                 case 221: // turtlesnumber=maxtortues
                     Interpreter.operande = true;
-                    Interpreter.calcul.push(String.valueOf(Config.maxTurtles));
+                    Interpreter.calcul.push(String.valueOf(Logo.config.getMaxTurtles()));
 
                     break;
                 case 222: // setscreensize=ftd fixetailledessin
@@ -2933,18 +2932,18 @@ public class LaunchPrimitive {
                             throw new LogoException(cadre, prim
                                     + " " + Logo.messages.getString("n_aime_pas") + liste
                                     + Logo.messages.getString("comme_parametre"));
-                        boolean changement = height != Config.imageHeight;
-                        int tmp_hauteur = Config.imageHeight;
-                        Config.imageHeight = height;
-                        if (width != Config.imageWidth) changement = true;
-                        int tmp_largeur = Config.imageWidth;
-                        Config.imageWidth = width;
-                        if (Config.imageWidth < 100 || Config.imageHeight < 100) {
-                            Config.imageWidth = 1000;
-                            Config.imageHeight = 1000;
+                        boolean changement = height != Logo.config.getImageHeight();
+                        int tmp_hauteur = Logo.config.getImageHeight();
+                        Logo.config.setImageHeight(height);
+                        if (width != Logo.config.getImageWidth()) changement = true;
+                        int tmp_largeur = Logo.config.getImageWidth();
+                        Logo.config.setImageWidth(width);
+                        if (Logo.config.getImageWidth() < 100 || Logo.config.getImageHeight() < 100) {
+                            Logo.config.setImageWidth(1000);
+                            Logo.config.setImageHeight(1000);
                         }
                         if (changement) {
-                            int memoire_necessaire = Config.imageWidth * Config.imageHeight * 4 / 1024 / 1024;
+                            int memoire_necessaire = Logo.config.getImageWidth() * Logo.config.getImageHeight() * 4 / 1024 / 1024;
                             int memoire_image = tmp_hauteur * tmp_largeur * 4 / 1024 / 1024;
                             long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
                             long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
@@ -2957,14 +2956,14 @@ public class LaunchPrimitive {
                              * "+(total-free+memoire_necessaire-memoire_image));
                              * System.out.println();
                              */
-                            if (total - free + memoire_necessaire - memoire_image < Config.memoryLimit * 0.8) {
+                            if (total - free + memoire_necessaire - memoire_image < Logo.getMemoryLimit() * 0.8) {
                                 cadre.resizeDrawingZone();
                             } else {
-                                Config.imageWidth = tmp_largeur;
-                                Config.imageHeight = tmp_hauteur;
+                                Logo.config.setImageWidth(tmp_largeur);
+                                Logo.config.setImageHeight(tmp_hauteur);
                                 long conseil = 64 * ((total - free + memoire_necessaire - memoire_image) / 64) + 64;
                                 if (total - free + memoire_necessaire - memoire_image > 0.8 * conseil) conseil += 64;
-                                if (conseil == Config.memoryLimit) conseil += 64;
+                                if (conseil == Logo.getMemoryLimit()) conseil += 64;
                                 String message = Logo.messages.getString("erreur_memoire") + " " + conseil + "\n" + Logo.messages.getString("relancer");
                                 MessageTextArea jt = new MessageTextArea(message);
                                 JOptionPane.showMessageDialog(cadre, jt, Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
@@ -3059,9 +3058,9 @@ public class LaunchPrimitive {
                                 args[i] = 1;
                             }
                         }
-                        Config.gridEnabled = true;
-                        Config.xGridSpacing = args[0];
-                        Config.yGridSpacing = args[1];
+                        Logo.config.setGridEnabled(true);
+                        Logo.config.setXGridSpacing(args[0]);
+                        Logo.config.setYGridSpacing(args[1]);
                         cadre.getDrawPanel().videecran();
 
                     } catch (LogoException e) {
@@ -3069,7 +3068,7 @@ public class LaunchPrimitive {
                     break;
                 case 230: // stopgrille
                     Interpreter.operande = false;
-                    Config.gridEnabled = false;
+                    Logo.config.setGridEnabled(false);
                     cadre.getDrawPanel().videecran();
                     break;
                 case 231: // stopanimation
@@ -3103,10 +3102,10 @@ public class LaunchPrimitive {
                             throw new LogoException(cadre, name + " "
                                     + Logo.messages.getString("attend_positif"));
                         } else if (nombre < 25) nombre = 25;
-                        Config.xAxisEnabled = true;
-                        Config.xAxisSpacing = nombre;
-                        Config.yAxisEnabled = true;
-                        Config.yAxisSpacing = nombre;
+                        Logo.config.setXAxisEnabled(true);
+                        Logo.config.setXAxisSpacing(nombre);
+                        Logo.config.setYAxisEnabled(true);
+                        Logo.config.setYAxisSpacing(nombre);
                         cadre.getDrawPanel().videecran();
                     } catch (LogoException e) {
                     }
@@ -3121,8 +3120,8 @@ public class LaunchPrimitive {
                             throw new LogoException(cadre, name + " "
                                     + Logo.messages.getString("attend_positif"));
                         } else if (nombre < 25) nombre = 25;
-                        Config.xAxisEnabled = true;
-                        Config.xAxisSpacing = nombre;
+                        Logo.config.setXAxisEnabled(true);
+                        Logo.config.setXAxisSpacing(nombre);
                         cadre.getDrawPanel().videecran();
                     } catch (LogoException e) {
                     }
@@ -3137,15 +3136,15 @@ public class LaunchPrimitive {
                             throw new LogoException(cadre, name + " "
                                     + Logo.messages.getString("attend_positif"));
                         } else if (nombre < 25) nombre = 25;
-                        Config.yAxisEnabled = true;
-                        Config.yAxisSpacing = nombre;
+                        Logo.config.setYAxisEnabled(true);
+                        Logo.config.setYAxisSpacing(nombre);
                         cadre.getDrawPanel().videecran();
                     } catch (LogoException e) {
                     }
                     break;
                 case 237: // stopaxis
-                    Config.xAxisEnabled = false;
-                    Config.yAxisEnabled = false;
+                    Logo.config.setXAxisEnabled(false);
+                    Logo.config.setYAxisEnabled(false);
                     Interpreter.operande = false;
                     cadre.getDrawPanel().videecran();
                     break;
@@ -3169,34 +3168,34 @@ public class LaunchPrimitive {
                     break;
                 case 240: // axiscolor= couleuraxes
                     Interpreter.operande = true;
-                    c = new Color(Config.axisColor);
+                    c = new Color(Logo.config.getAxisColor());
                     Interpreter.calcul.push("[ " + c.getRed() + " " + c.getGreen()
                             + " " + c.getBlue() + " ] ");
 
                     break;
                 case 241: // gridcolor=couleurgrille
                     Interpreter.operande = true;
-                    c = new Color(Config.gridColor);
+                    c = new Color(Logo.config.getGridColor());
                     Interpreter.calcul.push("[ " + c.getRed() + " " + c.getGreen()
                             + " " + c.getBlue() + " ] ");
                     break;
                 case 242: // grid?=grille?
                     Interpreter.operande = true;
-                    if (Config.gridEnabled)
+                    if (Logo.config.isGridEnabled())
                         Interpreter.calcul.push(Logo.messages.getString("vrai"));
                     else
                         Interpreter.calcul.push(Logo.messages.getString("faux"));
                     break;
                 case 243: // xaxis?=axex?
                     Interpreter.operande = true;
-                    if (Config.xAxisEnabled)
+                    if (Logo.config.isXAxisEnabled())
                         Interpreter.calcul.push(Logo.messages.getString("vrai"));
                     else
                         Interpreter.calcul.push(Logo.messages.getString("faux"));
                     break;
                 case 244: // yaxis?=axey?
                     Interpreter.operande = true;
-                    if (Config.yAxisEnabled)
+                    if (Logo.config.isYAxisEnabled())
                         Interpreter.calcul.push(Logo.messages.getString("vrai"));
                     else
                         Interpreter.calcul.push(Logo.messages.getString("faux"));
@@ -3205,11 +3204,11 @@ public class LaunchPrimitive {
                     Interpreter.operande = false;
                     try {
                         if (isList(param.get(0))) {
-                            Config.gridColor = rgb(param.get(0), Utils.primitiveName("setgridcolor")).getRGB();
+                            Logo.config.setGridColor(rgb(param.get(0), Utils.primitiveName("setgridcolor")).getRGB());
                         } else {
                             int coul = kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
                             if (coul < 0) coul += DrawPanel.defaultColors.length;
-                            Config.gridColor = DrawPanel.defaultColors[coul].getRGB();
+                            Logo.config.setGridColor(DrawPanel.defaultColors[coul].getRGB());
                         }
                     } catch (LogoException e) {
                     }
@@ -3218,11 +3217,11 @@ public class LaunchPrimitive {
                     Interpreter.operande = false;
                     try {
                         if (isList(param.get(0))) {
-                            Config.axisColor = rgb(param.get(0), Utils.primitiveName("setaxiscolor")).getRGB();
+                            Logo.config.setAxisColor(rgb(param.get(0), Utils.primitiveName("setaxiscolor")).getRGB());
                         } else {
                             int coul = kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
                             if (coul < 0) coul += DrawPanel.defaultColors.length;
-                            Config.axisColor = DrawPanel.defaultColors[coul].getRGB();
+                            Logo.config.setAxisColor(DrawPanel.defaultColors[coul].getRGB());
                         }
                     } catch (LogoException e) {
                     }
@@ -3700,10 +3699,10 @@ public class LaunchPrimitive {
                                     coord[j] = Integer.parseInt(st.nextToken());
                                     j++;
                                 }
-                                coord[0] += Config.imageWidth / 2;
-                                coord[2] += Config.imageWidth / 2;
-                                coord[1] = Config.imageHeight / 2 - coord[1];
-                                coord[3] = Config.imageHeight / 2 - coord[3];
+                                coord[0] += Logo.config.getImageWidth() / 2;
+                                coord[2] += Logo.config.getImageWidth() / 2;
+                                coord[1] = Logo.config.getImageHeight() / 2 - coord[1];
+                                coord[3] = Logo.config.getImageHeight() / 2 - coord[3];
                                 if (coord[2] < coord[0]) {
                                     int tmp = coord[0];
                                     coord[0] = coord[2];
@@ -3718,21 +3717,21 @@ public class LaunchPrimitive {
                                 coord[3] = coord[3] - coord[1];
                             } catch (NumberFormatException e) {
                                 coord[0] = 0;
-                                coord[2] = Config.imageWidth;
+                                coord[2] = Logo.config.getImageWidth();
                                 coord[1] = 0;
-                                coord[3] = Config.imageHeight;
+                                coord[3] = Logo.config.getImageHeight();
                             }
                         } else {
                             coord[0] = 0;
-                            coord[2] = Config.imageWidth;
+                            coord[2] = Logo.config.getImageWidth();
                             coord[1] = 0;
-                            coord[3] = Config.imageHeight;
+                            coord[3] = Logo.config.getImageHeight();
                         }
                         if (coord[2] == 0 || coord[3] == 0) {
                             coord[0] = 0;
-                            coord[2] = Config.imageWidth;
+                            coord[2] = Logo.config.getImageWidth();
                             coord[1] = 0;
-                            coord[3] = Config.imageHeight;
+                            coord[3] = Logo.config.getImageHeight();
                         }
                         cadre.getDrawPanel().saveImage(word, coord);
                         Interpreter.operande = false;
@@ -3909,7 +3908,7 @@ public class LaunchPrimitive {
             boolean bool = true;
             if (!fichier.endsWith(".lgo"))
                 fichier += ".lgo";
-            String path = Utils.SortieTexte(Config.defaultFolder)
+            String path = Utils.SortieTexte(Logo.config.getDefaultFolder())
                     + File.separator + fichier;
             try {
                 for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
@@ -3956,7 +3955,7 @@ public class LaunchPrimitive {
         else {
             try {
                 pathWord = Utils.SortieTexte(pathWord);
-                File f = new File(Utils.SortieTexte(Config.defaultFolder)
+                File f = new File(Utils.SortieTexte(Logo.config.getDefaultFolder())
                         + File.separator + pathWord);
                 image = ImageIO.read(f);
             } catch (Exception e1) {
@@ -4466,9 +4465,9 @@ public class LaunchPrimitive {
     }
 
     private void delay() {
-        if (Config.turtleSpeed != 0) {
+        if (Logo.config.getTurtleSpeed() != 0) {
             try {
-                Thread.sleep(Config.turtleSpeed * 5);
+                Thread.sleep(Logo.config.getTurtleSpeed() * 5);
             } catch (InterruptedException e) {
             }
         }

@@ -7,7 +7,6 @@
  */
 package xlogo.utils;
 
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.Animation;
 import xlogo.kernel.Calculator;
@@ -262,7 +261,7 @@ public class Utils {
         if (txt.startsWith("# " + Logo.messages.getString("mainCommand"))) {
             int id = txt.indexOf("\n");
             if (id != -1) {
-                Config.mainCommand = txt.substring(("# " + Logo.messages.getString("mainCommand")).length(), id).trim();
+                Logo.setMainCommand(txt.substring(("# " + Logo.messages.getString("mainCommand")).length(), id).trim());
                 txt = txt.substring(id + 1);
             }
         }
@@ -271,8 +270,8 @@ public class Utils {
 
     public static void writeLogoFile(String path, String txt) throws IOException {
         try {
-            if (!Config.mainCommand.trim().equals("")) {
-                String heading = "# " + Logo.messages.getString("mainCommand") + " " + Config.mainCommand + "\n";
+            if (!Logo.getMainCommand().trim().equals("")) {
+                String heading = "# " + Logo.messages.getString("mainCommand") + " " + Logo.getMainCommand() + "\n";
                 txt = heading + txt;
             }
             FileOutputStream f = new FileOutputStream(path);
@@ -294,7 +293,7 @@ public class Utils {
     }
 
     public static String primitiveName(String generic) {
-        Locale locale = Logo.getLocale(Config.language);
+        Locale locale = Logo.getLocale(Logo.config.getLanguage());
         ResourceBundle prim = ResourceBundle.getBundle(
                 "primitives", locale);
         String st = prim.getString(generic);

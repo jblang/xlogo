@@ -1,7 +1,7 @@
 package xlogo.kernel.gui;
 
+import xlogo.Logo;
 import xlogo.gui.Application;
-import xlogo.Config;
 import xlogo.kernel.Interpreter;
 import xlogo.utils.Utils;
 
@@ -25,13 +25,13 @@ public class GuiMenu extends GuiComponent {
         while (st.hasMoreTokens()) {
             item[i] = Utils.SortieTexte(st.nextToken());
             java.awt.FontMetrics fm = app.getGraphics()
-                    .getFontMetrics(Config.font);
+                    .getFontMetrics(Logo.config.getFont());
             originalWidth = Math.max(originalWidth, fm.stringWidth(item[i]));
             i++;
         }
         originalWidth += 50;
         guiObject = new JComboBox(item);
-        originalHeight = Config.font.getSize() + 10;
+        originalHeight = Logo.config.getFont().getSize() + 10;
         setSize(originalWidth, originalHeight);
     }
 

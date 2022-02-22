@@ -1,6 +1,5 @@
 package xlogo.gui;
 
-import xlogo.Config;
 import xlogo.Logo;
 
 import javax.swing.*;
@@ -33,8 +32,8 @@ public class CodeTranslator extends JFrame implements ActionListener {
         setTitle(Logo.messages.getString("menu.tools.translate"));
         setIconImage(Logo.getAppIcon().getImage());
         getContentPane().setLayout(new BorderLayout());
-        sourceLanguageCombo.setSelectedIndex(Config.language);
-        targetLanguageCombo.setSelectedIndex(Config.language);
+        sourceLanguageCombo.setSelectedIndex(Logo.config.getLanguage());
+        targetLanguageCombo.setSelectedIndex(Logo.config.getLanguage());
 
         JPanel sourceLanguagePanel = new JPanel();
         JLabel sourceLanguageLabel = new JLabel(Logo.messages.getString("traduire_de") + " ");

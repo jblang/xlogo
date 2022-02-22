@@ -30,25 +30,25 @@ public class HistoricLogoDocument extends LogoDocument {
 
         //Style normal
         normal = new SimpleAttributeSet();
-        //StyleConstants.setFontSize(normal, Config.police.getSize());
-        //StyleConstants.setFontFamily(normal, Config.police.getName());
+        //StyleConstants.setFontSize(normal, Logo.config.police.getSize());
+        //StyleConstants.setFontFamily(normal, Logo.config.police.getName());
 
         // Style pour l'écriture des erreurs
         erreur = new SimpleAttributeSet();
         //StyleConstants.setForeground(erreur, Color.RED);
-        //StyleConstants.setFontSize(erreur, Config.police.getSize());
-        //StyleConstants.setFontFamily(erreur, Config.police.getName());
+        //StyleConstants.setFontSize(erreur, Logo.config.police.getSize());
+        //StyleConstants.setFontFamily(erreur, Logo.config.police.getName());
 
         //Style pour les commentaires (Vous venez de définir ...)
         commentaire = new SimpleAttributeSet();
         //StyleConstants.setForeground(commentaire, Color.BLUE);
-        //StyleConstants.setFontSize(commentaire, Config.police.getSize());
-        //StyleConstants.setFontFamily(commentaire, Config.police.getName());
+        //StyleConstants.setFontSize(commentaire, Logo.config.police.getSize());
+        //StyleConstants.setFontFamily(commentaire, Logo.config.police.getName());
 
         // Style pour la primitive écris et la primitive tape
         perso = new SimpleAttributeSet();
         //StyleConstants.setForeground(perso, Color.BLACK);
-        //StyleConstants.setFontFamily(perso, Config.police.getName());
+        //StyleConstants.setFontFamily(perso, Logo.config.police.getName());
 
 
     }

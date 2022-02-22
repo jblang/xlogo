@@ -1,6 +1,5 @@
 package xlogo.gui;
 
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.kernel.Primitive;
 import xlogo.kernel.Procedure;
@@ -333,7 +332,7 @@ public class Editor extends JFrame implements ActionListener {
         //  private HighlightedTextPane zonedition;
         JLabel labelCommand = new JLabel(Logo.messages.getString("mainCommand"), Logo.getIcon("run"), JLabel.LEFT);
         scroll = new JScrollPane();
-        if (Config.syntaxHighlightingEnabled) {
+        if (Logo.config.isSyntaxHighlightingEnabled()) {
             textZone = new EditorTextPane(this);
         } else textZone = new EditorTextArea(this);
 
@@ -393,7 +392,7 @@ public class Editor extends JFrame implements ActionListener {
         redoButton.addActionListener(this);
 
         initMainCommand();
-        if (Config.mainCommand.length() < 30) mainCommand.setPreferredSize(new Dimension(150, 20));
+        if (Logo.getMainCommand().length() < 30) mainCommand.setPreferredSize(new Dimension(150, 20));
         panelCommand.add(labelCommand);
         panelCommand.add(mainCommand);
 
@@ -431,7 +430,7 @@ public class Editor extends JFrame implements ActionListener {
             }
             if (null != text && text.length() > 100000) {
                 if (textZone instanceof EditorTextPane) {
-                    Config.syntaxHighlightingEnabled = false;
+                    Logo.config.setSyntaxHighlightingEnabled(false);
                     toTextArea();
                 }
             }
@@ -447,7 +446,7 @@ public class Editor extends JFrame implements ActionListener {
                     cadre.setTitle("XLOGO        " + Application.path);
                     try {
                         File f = new File(cadre.tempPath);
-                        Config.defaultFolder = Utils.rajoute_backslash(f.getParent());
+                        Logo.config.setDefaultFolder(Utils.rajoute_backslash(f.getParent()));
                     } catch (NullPointerException e2) {
                     }
                     cadre.tempPath = null;
@@ -460,7 +459,7 @@ public class Editor extends JFrame implements ActionListener {
             }
             setVisible(visible);
             cadre.focusCommandLine();
-            if (Config.eraseImage) { //Effacer la zone de dessin
+            if (Logo.config.isEraseImage()) { //Effacer la zone de dessin
                 LogoException.lance = true;
                 cadre.error = true;
                 try {
@@ -470,7 +469,7 @@ public class Editor extends JFrame implements ActionListener {
                 cadre.getKernel().vide_ecran();
                 cadre.focusCommandLine();
             }
-            if (Config.clearVariables) {
+            if (Logo.config.isClearVariables()) {
                 // Interrupt any running programs
                 LogoException.lance = true;
                 cadre.error = true;
@@ -483,7 +482,7 @@ public class Editor extends JFrame implements ActionListener {
                 cadre.focusCommandLine();
 
             }
-            Config.mainCommand = mainCommand.getText();
+            Logo.setMainCommand(mainCommand.getText());
 
         }
         // Si on quitte sans enregistrer
@@ -491,7 +490,7 @@ public class Editor extends JFrame implements ActionListener {
             textZone.setActive(false);
             textZone.setText("");
             setVisible(false);
-            if (Config.eraseImage) { //Effacer la zone de dessin
+            if (Logo.config.isEraseImage()) { //Effacer la zone de dessin
                 LogoException.lance = true;
                 cadre.error = true;
                 while (!cadre.isCommandEditable()) {
@@ -525,15 +524,15 @@ public class Editor extends JFrame implements ActionListener {
     }
 
     public void initMainCommand() {
-        mainCommand.setText(Config.mainCommand);
+        mainCommand.setText(Logo.getMainCommand());
     }
 
     // Change Syntax Highlighting for the editor
     public void initStyles(int c_comment, int sty_comment, int c_primitive, int sty_primitive,
                            int c_parenthese, int sty_parenthese, int c_operande, int sty_operande) {
         if (textZone.supportHighlighting()) {
-            ((EditorTextPane) textZone).getDsd().initStyles(Config.syntaxCommentColor, Config.syntaxCommentStyle, Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle,
-                    Config.syntaxBracketColor, Config.syntaxBracketStyle, Config.syntaxOperandColor, Config.syntaxOperandStyle);
+            ((EditorTextPane) textZone).getDsd().initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(),
+                    Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
         }
     }
 
@@ -589,7 +588,7 @@ public class Editor extends JFrame implements ActionListener {
             textZone.ecris(txt);
         } else {
             if (textZone instanceof EditorTextPane) {
-                Config.syntaxHighlightingEnabled = false;
+                Logo.config.setSyntaxHighlightingEnabled(false);
                 toTextArea();
                 textZone.ecris(txt);
             } else textZone.ecris(txt);

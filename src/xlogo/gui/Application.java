@@ -6,6 +6,8 @@
  */
 package xlogo.gui;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.preferences.FontPanel;
@@ -33,8 +35,9 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Stack;
@@ -43,7 +46,7 @@ public class Application extends JFrame {
     private static final double ZOOM_FACTOR = 1.25;
     private static final Stack<String> historyStack = new Stack<>();
     public static String path = null;
-    public static int fontId = FontPanel.police_id(Config.font);
+    public static int fontId = FontPanel.police_id(Logo.config.getFont());
     // Interpreter and drawPanel
     private final Kernel kernel;
     // UI Elements
@@ -200,7 +203,7 @@ public class Application extends JFrame {
         contentPane.add(commandPanel, BorderLayout.SOUTH);
         contentPane.add(splitPane, BorderLayout.CENTER);
 
-        commandLine.setPreferredSize(new Dimension(300, 18 * Config.font.getSize() / 10));
+        commandLine.setPreferredSize(new Dimension(300, 18 * Logo.config.getFont().getSize() / 10));
         commandLine.setAlignmentY(JComponent.CENTER_ALIGNMENT);
         MouseListener popupListener = new PopupListener();
         commandLine.addMouseListener(popupListener);
@@ -211,7 +214,7 @@ public class Application extends JFrame {
         splitPane.add(historyPanel, JSplitPane.RIGHT);
         splitPane.setResizeWeight(0.8);
 
-        drawPanel.setSize(new java.awt.Dimension((int) (Config.imageWidth * DrawPanel.zoom), (int) (Config.imageHeight * DrawPanel.zoom)));
+        drawPanel.setSize(new java.awt.Dimension((int) (Logo.config.getImageWidth() * DrawPanel.zoom), (int) (Logo.config.getImageHeight() * DrawPanel.zoom)));
         scrollPane.getViewport().add(drawPanel);
         scrollPane.getHorizontalScrollBar().setBlockIncrement(5);
         scrollPane.getVerticalScrollBar().setBlockIncrement(5);
@@ -280,7 +283,7 @@ public class Application extends JFrame {
         String[] choice = {Logo.messages.getString("pref.ok"), Logo.messages.getString("pref.cancel")};
         int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("menu.file.quit"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, Logo.getAppIcon(), choice, choice[0]);
         if (val == JOptionPane.OK_OPTION) {
-            writeConfig();
+            Logo.writeConfig();
             System.exit(0);
         }
     }
@@ -303,7 +306,7 @@ public class Application extends JFrame {
                 editor.clearText();
             }
             setNewEnabled(false);
-            Config.mainCommand = "";
+            Logo.setMainCommand("");
 
         } else setNewEnabled(true);
     }
@@ -313,7 +316,7 @@ public class Application extends JFrame {
     }
 
     private void openWorkspace() {
-        JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
+        JFileChooser jf = new JFileChooser(Utils.SortieTexte(Logo.config.getDefaultFolder()));
         String[] ext = {".lgo"};
         jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_logo"), ext));
         int val = jf.showDialog(this, Logo.messages.getString("menu.file.open"));
@@ -343,7 +346,7 @@ public class Application extends JFrame {
         }
         String path = Application.path;
         if (promptName || null == path) {
-            JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
+            JFileChooser jf = new JFileChooser(Utils.SortieTexte(Logo.config.getDefaultFolder()));
             String[] ext = {".lgo"};
             jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_logo"), ext));
 
@@ -357,7 +360,7 @@ public class Application extends JFrame {
                 setTitle(path + " - XLogo");
                 try {
                     File f = new File(path);
-                    Config.defaultFolder = Utils.rajoute_backslash(f.getParent());
+                    Logo.config.setDefaultFolder(Utils.rajoute_backslash(f.getParent()));
                 } catch (NullPointerException ignored) {
                 }
             }
@@ -385,7 +388,7 @@ public class Application extends JFrame {
         RTFEditorKit myRTFEditorKit = new RTFEditorKit();
         StyledDocument myStyledDocument = getHistoryPanel().sd_Historique();
         try {
-            JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
+            JFileChooser jf = new JFileChooser(Utils.SortieTexte(Logo.config.getDefaultFolder()));
             String[] ext = {".rtf"};
             jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_rtf"), ext));
             int val = jf.showDialog(this, Logo.messages.getString("menu.file.save"));
@@ -419,7 +422,7 @@ public class Application extends JFrame {
         var title = pen ? "couleur_du_crayon" : "couleur_du_fond";
         Color color = JColorChooser.showDialog(this, Logo.messages.getString(title), getCanvas().getBackgroundColor());
         if (null != color) {
-            Locale locale = Logo.getLocale(Config.language);
+            Locale locale = Logo.getLocale(Logo.config.getLanguage());
             java.util.ResourceBundle rs = java.util.ResourceBundle.getBundle("primitives", locale);
             var f = rs.getString(pen ? "fcc" : "fcfg");
             f = f.substring(0, f.indexOf(" "));
@@ -467,7 +470,7 @@ public class Application extends JFrame {
     }
 
     private void showAbout() {
-        String message = Logo.messages.getString("message_a_propos1") + Config.VERSION + "\n\n" + Logo.messages.getString("message_a_propos2") + " " + Config.WEB_SITE;
+        String message = Logo.messages.getString("message_a_propos1") + Logo.VERSION + "\n\n" + Logo.messages.getString("message_a_propos2") + " " + Logo.WEB_SITE;
         MessageTextArea jt = new MessageTextArea(message);
         JOptionPane.showMessageDialog(null, jt, Logo.messages.getString("menu.help.about"), JOptionPane.INFORMATION_MESSAGE, Logo.getAppIcon());
     }
@@ -510,8 +513,8 @@ public class Application extends JFrame {
     }
 
     private void runMainCommand() {
-        startAnimation(Utils.decoupe(Config.mainCommand));
-        getHistoryPanel().ecris("normal", Config.mainCommand + "\n");
+        startAnimation(Utils.decoupe(Logo.getMainCommand()));
+        getHistoryPanel().ecris("normal", Logo.getMainCommand() + "\n");
     }
 
     private void stopAnimation() {
@@ -528,151 +531,6 @@ public class Application extends JFrame {
 
     private void zoomOut() {
         getCanvas().zoom(1 / ZOOM_FACTOR * DrawPanel.zoom, true);
-    }
-
-    /**
-     * Write the Configuration file when the user quits XLogo
-     */
-    private void writeConfig() {
-        try {
-            FileOutputStream f = new FileOutputStream(System.getProperty("user.home") + File.separator + ".xlogo");
-            BufferedOutputStream b = new BufferedOutputStream(f);
-            OutputStreamWriter osw = new OutputStreamWriter(b, StandardCharsets.UTF_8);
-            StringBuilder sb = new StringBuilder();
-            int eff;
-            if (Config.eraseImage) eff = 1;
-            else eff = 0;
-            int cle;
-            if (Config.clearVariables) cle = 1;
-            else cle = 0;
-            sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-            sb.append("<xlogo>\n");
-            sb.append("\t<lang value=\"");
-            sb.append(Config.language);
-            sb.append("\"/>\n");
-            sb.append("\t<speed value=\"");
-            sb.append(Config.turtleSpeed);
-            sb.append("\"/>\n");
-            sb.append("\t<tcp_port value=\"");
-            sb.append(Config.tcpPort);
-            sb.append("\"/>\n");
-            sb.append("\t<turtle_shape value=\"");
-            sb.append(Config.activeTurtle);
-            sb.append("\"/>\n");
-            sb.append("\t<max_number_turtle value=\"");
-            sb.append(Config.maxTurtles);
-            sb.append("\"/>\n");
-            sb.append("\t<pen_shape value=\"");
-            sb.append(Config.penShape);
-            sb.append("\"/>\n");
-            sb.append("\t<cleanscreen_leaving_editor value=\"");
-            sb.append(eff);
-            sb.append("\"/>\n");
-            sb.append("\t<clear_variables_closing_editor value=\"");
-            sb.append(cle);
-            sb.append("\"/>\n");
-            sb.append("\t<pen_width_max value=\"");
-            sb.append(Config.maxPenWidth);
-            sb.append("\"/>\n");
-            sb.append("\t<pen_color value=\"");
-            sb.append(Config.penColor.getRGB());
-            sb.append("\"/>\n");
-            sb.append("\t<screen_color value=\"");
-            sb.append(Config.screenColor.getRGB());
-            sb.append("\"/>\n");
-            sb.append("\t<default_directory value=\"");
-            sb.append(Utils.SortieTexte(Config.defaultFolder));
-            sb.append("\"/>\n");
-            sb.append("\t<start_command value=\"");
-            sb.append(Utils.specialCharacterXML(Config.startupCommand));
-            sb.append("\"/>\n");
-            sb.append("\t<font name=\"");
-            sb.append(Config.font.getName());
-            sb.append("\" size=\"");
-            sb.append(Config.font.getSize());
-            sb.append("\"/>\n");
-            sb.append("\t<width value=\"");
-            sb.append(Config.imageWidth);
-            sb.append("\"/>\n");
-            sb.append("\t<height value=\"");
-            sb.append(Config.imageHeight);
-            sb.append("\"/>\n");
-            sb.append("\t<memory value=\"");
-            sb.append(Config.newMemoryLimit);
-            sb.append("\"/>\n");
-            sb.append("\t<quality value=\"");
-            sb.append(Config.drawQuality);
-            sb.append("\"/>\n");
-            sb.append("\t<looknfeel value=\"");
-            sb.append(Config.lookAndFeel);
-            sb.append("\"/>\n");
-            sb.append("\t<syntax_highlighting\n\t\tboolean=\"");
-            sb.append(Config.syntaxHighlightingEnabled);
-            sb.append("\"\n\t\tcolor_commentaire=\"");
-            sb.append(Config.syntaxCommentColor);
-            sb.append("\"\n\t\tcolor_operand=\"");
-            sb.append(Config.syntaxOperandColor);
-            sb.append("\"\n\t\tcolor_parenthesis=\"");
-            sb.append(Config.syntaxBracketColor);
-            sb.append("\"\n\t\tcolor_primitive=\"");
-            sb.append(Config.syntaxPrimitiveColor);
-            sb.append("\"\n\t\tstyle_commentaire=\"");
-            sb.append(Config.syntaxCommentStyle);
-            sb.append("\"\n\t\tstyle_operand=\"");
-            sb.append(Config.syntaxOperandStyle);
-            sb.append("\"\n\t\tstyle_parenthesis=\"");
-            sb.append(Config.syntaxBracketStyle);
-            sb.append("\"\n\t\tstyle_primitive=\"");
-            sb.append(Config.syntaxPrimitiveStyle);
-            sb.append("\">\n\t</syntax_highlighting>\n\t<border_image\n");
-            for (int i = 0; i < Config.userBorderImages.size(); i++) {
-                sb.append("\t\timage" + i + "=\"");
-                sb.append(Config.userBorderImages.get(i));
-                sb.append("\"\n");
-            }
-            if (null != Config.borderColor) {
-                sb.append(">\n\t</border_image>\n\t<border_color\n\t\tvalue=\"");
-                sb.append(Config.borderColor.getRGB());
-                sb.append("\">\n\t</border_color>\n\t<border_image_selected\n\t\tvalue=\"");
-            } else sb.append(">\n\t</border_image>\n\t<border_image_selected\n\t\tvalue=\"");
-            sb.append(Config.borderImageSelected);
-            sb.append("\">\n\t</border_image_selected>\n\t<grid\n\t\tboolean=\"");
-            sb.append(Config.gridEnabled);
-            sb.append("\"\n\t\txgrid=\"");
-            sb.append(Config.xGridSpacing);
-            sb.append("\"\n\t\tygrid=\"");
-            sb.append(Config.yGridSpacing);
-            sb.append("\"\n\t\tgridcolor=\"");
-            sb.append(Config.gridColor);
-            sb.append("\">\n\t</grid>\n\t<axis\n\t\tboolean_xaxis=\"");
-            sb.append(Config.xAxisEnabled);
-            sb.append("\"\n\t\tboolean_yaxis=\"");
-            sb.append(Config.yAxisEnabled);
-            sb.append("\"\n\t\txaxis=\"");
-            sb.append(Config.xAxisSpacing);
-            sb.append("\"\n\t\tyaxis=\"");
-            sb.append(Config.yAxisSpacing);
-            sb.append("\"\n\t\taxiscolor=\"");
-            sb.append(Config.axisColor);
-            sb.append("\">\n\t</axis>\n\t<startup_files\n");
-            int i = 0;
-            while (!Config.startupFiles.isEmpty()) {
-                String att = "\t\tfile" + i + "=\"";
-                sb.append(att);
-                sb.append(Config.startupFiles.remove(Config.startupFiles.size() - 1));
-                sb.append("\"\n");
-                i++;
-            }
-            sb.append(">\n\t</startup_files>\n");
-            sb.append("</xlogo>");
-            osw.write(new String(sb));
-            //	System.out.println(sb);
-            osw.close();
-            b.close();
-            f.close();
-        } catch (IOException e) {
-            System.out.println("write error");
-        }
     }
 
     /**
@@ -758,7 +616,7 @@ public class Application extends JFrame {
      */
 
     public void changeLanguage(int id) {
-        Config.language = id;
+        Logo.config.setLanguage(id);
         Logo.generateLanguage(id);
         updateLocalization();
         kernel.buildPrimitiveTreemap(id);
@@ -774,7 +632,7 @@ public class Application extends JFrame {
      * @param size The font size
      */
     public void changeFont(Font font, int size) {
-        Config.font = font;
+        Logo.config.setFont(font);
         updateLocalization();
         historyPanel.getDsd().change_police_interface(font, size);
     }
@@ -795,7 +653,7 @@ public class Application extends JFrame {
             } catch (InterruptedException ignored) {
             }
 
-            drawPanel.setPreferredSize(new Dimension(Config.imageWidth, Config.imageHeight));
+            drawPanel.setPreferredSize(new Dimension(Logo.config.getImageWidth(), Logo.config.getImageHeight()));
             drawPanel.revalidate();
             drawPanel.initGraphics();
             kernel.initGraphics();
@@ -810,8 +668,17 @@ public class Application extends JFrame {
      * Modify the Look&Feel for the Application
      */
     public void changeLookAndFeel() {
-        SwingUtilities.updateComponentTreeUI(this);
-        SwingUtilities.updateComponentTreeUI(editor);
+        try {
+            switch (Logo.config.getLookAndFeel()) {
+                case Config.LAF_NATIVE -> UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                case Config.LAF_LIGHT -> UIManager.setLookAndFeel(new FlatLightLaf());
+                default -> UIManager.setLookAndFeel(new FlatDarkLaf());
+            }
+            SwingUtilities.updateComponentTreeUI(this);
+            SwingUtilities.updateComponentTreeUI(editor);
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -819,9 +686,9 @@ public class Application extends JFrame {
      * the command line and the History zone
      */
     public void changeSyntaxHighlightingStyle() {
-        editor.initStyles(Config.syntaxCommentColor, Config.syntaxCommentStyle, Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle, Config.syntaxBracketColor, Config.syntaxBracketStyle, Config.syntaxOperandColor, Config.syntaxOperandStyle);
-        commandLine.initStyles(Config.syntaxCommentColor, Config.syntaxCommentStyle, Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle, Config.syntaxBracketColor, Config.syntaxBracketStyle, Config.syntaxOperandColor, Config.syntaxOperandStyle);
-        historyPanel.getDsd().initStyles(Config.syntaxCommentColor, Config.syntaxCommentStyle, Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle, Config.syntaxBracketColor, Config.syntaxBracketStyle, Config.syntaxOperandColor, Config.syntaxOperandStyle);
+        editor.initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
+        commandLine.initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
+        historyPanel.getDsd().initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
     }
 
     /**
@@ -836,7 +703,7 @@ public class Application extends JFrame {
      * Resize the Command line (height)
      */
     public void resizeCommandLine() {
-        commandLine.setPreferredSize(new Dimension(300, Config.font.getSize() * 18 / 10));
+        commandLine.setPreferredSize(new Dimension(300, Logo.config.getFont().getSize() * 18 / 10));
     }
 
     /**
@@ -991,16 +858,16 @@ public class Application extends JFrame {
         kernel.initPrimitive();
         Stack<String> stack = new Stack<>();
         editor.setEditable(false);
-        int counter = Config.startupFiles.size();
+        int counter = Logo.config.getStartupFiles().size();
 
         for (int i = 0; i < counter; i++) {
             String txt = "";
-            if (Config.startupFiles.get(i).equals("#####"))
+            if (Logo.config.getStartupFiles().get(i).equals("#####"))
                 editor.setEditable(true); //on a terminé avec les fichiers de démarrage
             else {
                 try {
-                    txt = Utils.readLogoFile(Config.startupFiles.get(i));
-                    if (!editor.isEditable()) stack.push(Config.startupFiles.get(i));
+                    txt = Utils.readLogoFile(Logo.config.getStartupFiles().get(i));
+                    if (!editor.isEditable()) stack.push(Logo.config.getStartupFiles().get(i));
                 } catch (IOException e2) {
                     System.out.println("Problem reading file");
                 }
@@ -1015,7 +882,7 @@ public class Application extends JFrame {
             }
         }
 
-        Config.startupFiles = new ArrayList<>(stack); //On ne garde dans le path que les fichiers de démarrage
+        Logo.config.setStartupFiles(new ArrayList<>(stack)); //On ne garde dans le path que les fichiers de démarrage
         editor.setEditable(true);
         editor.clearText();
     }

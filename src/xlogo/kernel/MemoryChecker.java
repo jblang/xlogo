@@ -8,7 +8,6 @@
 package xlogo.kernel;
 
 import xlogo.gui.Application;
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.MessageTextArea;
 
@@ -63,7 +62,7 @@ public class MemoryChecker extends Thread {
             long total = Runtime.getRuntime().totalMemory();
             long memoire_utilisee = (total - free) / 1024 / 1024;
 //		System.out.println(memoire_utilisee);
-            if (memoire_utilisee > 0.9 * Config.memoryLimit) {
+            if (memoire_utilisee > 0.9 * Logo.getMemoryLimit()) {
                 cadre.error = true;
                 alive = false;
                 String message = Logo.messages.getString("depassement_memoire");

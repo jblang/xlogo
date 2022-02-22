@@ -1,6 +1,6 @@
 package xlogo.gui;
 
-import xlogo.Config;
+import xlogo.Logo;
 import xlogo.document.LogoDocument;
 
 import javax.swing.*;
@@ -46,7 +46,7 @@ class HighlightedTextPane extends JTextPane implements CaretListener {
 
     public void caretUpdate(CaretEvent e) {
         int pos = e.getDot();
-        if (Config.syntaxHighlightingEnabled) SwingUtilities.invokeLater(new verif_parenthese(pos));
+        if (Logo.config.isSyntaxHighlightingEnabled()) SwingUtilities.invokeLater(new verif_parenthese(pos));
     }
 
     void chercheApres(String content, int pos, String ouv, String fer) {

@@ -1,7 +1,6 @@
 package xlogo.gui.preferences;
 
 import xlogo.gui.Application;
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.MessageTextArea;
 
@@ -23,9 +22,9 @@ public class OptionsPanel extends JPanel {
     private final GridBagLayout gridBagLayout4 = new GridBagLayout();
 
     private final JLabel label_screencolor = new JLabel(Logo.messages.getString("screencolor"));
-    private final ColorPanel b_screencolor = new ColorPanel(Config.screenColor);
+    private final ColorPanel b_screencolor = new ColorPanel(Logo.config.getScreenColor());
     private final JLabel label_pencolor = new JLabel(Logo.messages.getString("pencolor"));
-    private final ColorPanel b_pencolor = new ColorPanel(Config.penColor);
+    private final ColorPanel b_pencolor = new ColorPanel(Logo.config.getPenColor());
     private final JLabel nb_tortues = new JLabel(Logo.messages.getString("nb_tortues"));
     private final JLabel epaisseur_crayon = new JLabel(Logo.messages
             .getString("epaisseur_crayon"));
@@ -38,30 +37,30 @@ public class OptionsPanel extends JPanel {
     private final JLabel dimension_dessin = new JLabel(Logo.messages
             .getString("taille_dessin"));
     private final JPanel taille_dessin = new JPanel();
-    private final JTextField largeur = new JTextField(String.valueOf(Config.imageWidth));
+    private final JTextField largeur = new JTextField(String.valueOf(Logo.config.getImageWidth()));
     private final JLabel labelx = new JLabel("x");
-    private final JTextField hauteur = new JTextField(String.valueOf(Config.imageHeight));
+    private final JTextField hauteur = new JTextField(String.valueOf(Logo.config.getImageHeight()));
     private final JLabel label_memoire = new JLabel(Logo.messages.getString("memoire"));
-    private final JTextField memoire = new JTextField(String.valueOf(Config.newMemoryLimit));
+    private final JTextField memoire = new JTextField(String.valueOf(Logo.config.getMemoryLimit()));
     private final JLabel label_qualite = new JLabel(Logo.messages.getString("qualite_dessin"));
     private final Object[] choix_qualite = {Logo.messages.getString("normal"), Logo.messages.getString("haut"), Logo.messages.getString("bas")};
     private final JComboBox jc_qualite = new JComboBox(choix_qualite);
     private final GridPanel gridPanel = new GridPanel();
     private final AxisPanel axisPanel = new AxisPanel();
     private final JLabel labelTcp = new JLabel(Logo.messages.getString("pref.options.tcp"));
-    private final JTextField textTcp = new JTextField(String.valueOf(Config.tcpPort));
+    private final JTextField textTcp = new JTextField(String.valueOf(Logo.config.getTcpPort()));
 
     protected OptionsPanel(Application cadre) {
         this.cadre = cadre;
 
-        jc.setSelectedIndex(Config.penShape);
-        if (Config.eraseImage)
+        jc.setSelectedIndex(Logo.config.getPenShape());
+        if (Logo.config.isEraseImage())
             effacer_editeur.setSelected(true);
-        if (Config.clearVariables)
+        if (Logo.config.isClearVariables())
             clearVariables.setSelected(true);
-        epaisseur.setText(String.valueOf(Config.maxPenWidth));
-        tortues.setText(String.valueOf(Config.maxTurtles));
-        jc_qualite.setSelectedIndex(Config.drawQuality);
+        epaisseur.setText(String.valueOf(Logo.config.getMaxPenWidth()));
+        tortues.setText(String.valueOf(Logo.config.getMaxTurtles()));
+        jc_qualite.setSelectedIndex(Logo.config.getDrawQuality());
         setLayout(gridBagLayout4);
         taille_dessin.add(largeur);
         taille_dessin.add(labelx);
@@ -141,17 +140,17 @@ public class OptionsPanel extends JPanel {
         try {
             int p = Integer.parseInt(textTcp.getText());
             if (p <= 0) p = 1948;
-            Config.tcpPort = p;
+            Logo.config.setTcpPort(p);
         } catch (NumberFormatException e) {
-            Config.tcpPort = 1948;
+            Logo.config.setTcpPort(1948);
         }
         //pen color
-        Config.penColor = b_pencolor.getValue();
+        Logo.config.setPenColor(b_pencolor.getValue());
         // screencolor
-        Config.screenColor = b_screencolor.getValue();
+        Logo.config.setScreenColor(b_screencolor.getValue());
         // Clear screen when we leave editor?
-        Config.eraseImage = effacer_editeur.isSelected();
-        Config.clearVariables = clearVariables.isSelected();
+        Logo.config.setEraseImage(effacer_editeur.isSelected());
+        Logo.config.setClearVariables(clearVariables.isSelected());
         // Number of turtles
         try {
             int i = Integer.parseInt(tortues.getText());
@@ -162,109 +161,109 @@ public class OptionsPanel extends JPanel {
         // maximum pen width
         try {
             int i = Integer.parseInt(epaisseur.getText());
-            Config.maxPenWidth = i;
+            Logo.config.setMaxPenWidth(i);
             if (cadre.getKernel().getActiveTurtle().getPenWidth() * 2 > i) {
                 cadre.getKernel().getActiveTurtle().fixe_taille_crayon(i);
             }
         } catch (NumberFormatException e1) {
         }
         // pen shape
-        Config.penShape = jc.getSelectedIndex();
+        Logo.config.setPenShape(jc.getSelectedIndex());
         // Quality of drawing
-        Config.drawQuality = jc_qualite.getSelectedIndex();
-        cadre.getKernel().setDrawingQuality(Config.drawQuality);
+        Logo.config.setDrawQuality(jc_qualite.getSelectedIndex());
+        cadre.getKernel().setDrawingQuality(Logo.config.getDrawQuality());
         // Si on redimensionne la zone de dessin
         // Resize drawing zone
         try {
             boolean changement = false;
             int dim = Integer.parseInt(hauteur.getText());
-            if (dim != Config.imageHeight) changement = true;
-            int tmp_hauteur = Config.imageHeight;
-            Config.imageHeight = dim;
+            if (dim != Logo.config.getImageHeight()) changement = true;
+            int tmp_hauteur = Logo.config.getImageHeight();
+            Logo.config.setImageHeight(dim);
             dim = Integer.parseInt(largeur.getText());
-            if (dim != Config.imageWidth) changement = true;
-            int tmp_largeur = Config.imageWidth;
-            Config.imageWidth = dim;
-            if (Config.imageWidth < 100 || Config.imageHeight < 100) {
-                Config.imageWidth = 1000;
-                Config.imageHeight = 1000;
+            if (dim != Logo.config.getImageWidth()) changement = true;
+            int tmp_largeur = Logo.config.getImageWidth();
+            Logo.config.setImageWidth(dim);
+            if (Logo.config.getImageWidth() < 100 || Logo.config.getImageHeight() < 100) {
+                Logo.config.setImageWidth(1000);
+                Logo.config.setImageHeight(1000);
             }
             if (changement) {
-                int memoire_necessaire = Config.imageWidth * Config.imageHeight * 4 / 1024 / 1024;
+                int memoire_necessaire = Logo.config.getImageWidth() * Logo.config.getImageHeight() * 4 / 1024 / 1024;
                 int memoire_image = tmp_hauteur * tmp_largeur * 4 / 1024 / 1024;
                 long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
                 long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
 //				System.out.println("memoire envisagee "+(total-free+memoire_necessaire-memoire_image));
-                if (total - free + memoire_necessaire - memoire_image < Config.memoryLimit * 0.8) {
+                if (total - free + memoire_necessaire - memoire_image < Logo.config.getMemoryLimit() * 0.8) {
                     cadre.resizeDrawingZone();
                 } else {
-                    Config.imageWidth = tmp_largeur;
-                    Config.imageHeight = tmp_hauteur;
-                    largeur.setText(String.valueOf(Config.imageWidth));
-                    hauteur.setText(String.valueOf(Config.imageHeight));
+                    Logo.config.setImageWidth(tmp_largeur);
+                    Logo.config.setImageHeight(tmp_hauteur);
+                    largeur.setText(String.valueOf(Logo.config.getImageWidth()));
+                    hauteur.setText(String.valueOf(Logo.config.getImageHeight()));
                     long conseil = 64 * ((total - free + memoire_necessaire - memoire_image) / 64) + 64;
                     if (total - free + memoire_necessaire - memoire_image > 0.8 * conseil) conseil += 64;
-                    if (conseil == Config.memoryLimit) conseil += 64;
+                    if (conseil == Logo.config.getMemoryLimit()) conseil += 64;
                     String message = Logo.messages.getString("erreur_memoire") + " " + conseil + "\n" + Logo.messages.getString("relancer");
                     MessageTextArea jt = new MessageTextArea(message);
                     JOptionPane.showMessageDialog(this, jt, Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
                 }
             }
         } catch (NumberFormatException e1) {
-            Config.imageWidth = 1000;
-            Config.imageHeight = 1000;
+            Logo.config.setImageWidth(1000);
+            Logo.config.setImageHeight(1000);
         }
-        Config.newMemoryLimit = Integer.parseInt(memoire.getText());
-        if (Config.newMemoryLimit < 64) Config.newMemoryLimit = 64;
+        Logo.config.setMemoryLimit(Integer.parseInt(memoire.getText()));
+        if (Logo.config.getMemoryLimit() < 256) Logo.config.setMemoryLimit(256);
         // Draw the grid and axis
         boolean refresh = false;
         boolean b = gridPanel.gridVisible();
         if (b) {
-            if (Config.gridEnabled == false) {
+            if (Logo.config.isGridEnabled() == false) {
                 refresh = true;
             } else {
-                if (Config.xGridSpacing != gridPanel.getXGrid()
-                        || Config.yGridSpacing != gridPanel.getYGrid()
-                        || Config.gridColor != gridPanel.getGridColor())
+                if (Logo.config.getXGridSpacing() != gridPanel.getXGrid()
+                        || Logo.config.getYGridSpacing() != gridPanel.getYGrid()
+                        || Logo.config.getGridColor() != gridPanel.getGridColor())
                     refresh = true;
             }
-        } else if (Config.gridEnabled == true) {
+        } else if (Logo.config.isGridEnabled() == true) {
             refresh = true;
         }
         b = axisPanel.xAxisVisible();
         if (b) {
-            if (Config.xAxisEnabled == false) refresh = true;
+            if (Logo.config.isXAxisEnabled() == false) refresh = true;
             else {
-                if (Config.xAxisSpacing != axisPanel.getXAxis() ||
-                        Config.axisColor != axisPanel.getAxisColor())
+                if (Logo.config.getXAxisSpacing() != axisPanel.getXAxis() ||
+                        Logo.config.getAxisColor() != axisPanel.getAxisColor())
                     refresh = true;
             }
-        } else if (Config.xAxisEnabled == true) refresh = true;
+        } else if (Logo.config.isXAxisEnabled() == true) refresh = true;
         b = axisPanel.yAxisVisible();
         if (b) {
-            if (Config.yAxisEnabled == false) refresh = true;
+            if (Logo.config.isYAxisEnabled() == false) refresh = true;
             else {
-                if (Config.yAxisSpacing != axisPanel.getYAxis() ||
-                        Config.axisColor != axisPanel.getAxisColor())
+                if (Logo.config.getYAxisSpacing() != axisPanel.getYAxis() ||
+                        Logo.config.getAxisColor() != axisPanel.getAxisColor())
                     refresh = true;
             }
-        } else if (Config.yAxisEnabled == true) refresh = true;
+        } else if (Logo.config.isYAxisEnabled() == true) refresh = true;
         if (refresh) refreshGridAxis();
     }
 
     private void refreshGridAxis() {
         boolean b = gridPanel.gridVisible();
-        Config.gridEnabled = b;
-        Config.xGridSpacing = gridPanel.getXGrid();
-        Config.yGridSpacing = gridPanel.getYGrid();
-        Config.gridColor = gridPanel.getGridColor();
+        Logo.config.setGridEnabled(b);
+        Logo.config.setXGridSpacing(gridPanel.getXGrid());
+        Logo.config.setYGridSpacing(gridPanel.getYGrid());
+        Logo.config.setGridColor(gridPanel.getGridColor());
         b = axisPanel.xAxisVisible();
-        Config.xAxisEnabled = b;
-        Config.xAxisSpacing = axisPanel.getXAxis();
+        Logo.config.setXAxisEnabled(b);
+        Logo.config.setXAxisSpacing(axisPanel.getXAxis());
         b = axisPanel.yAxisVisible();
-        Config.yAxisEnabled = b;
-        Config.yAxisSpacing = axisPanel.getYAxis();
-        Config.axisColor = axisPanel.getAxisColor();
+        Logo.config.setYAxisEnabled(b);
+        Logo.config.setYAxisSpacing(axisPanel.getYAxis());
+        Logo.config.setAxisColor(axisPanel.getAxisColor());
         cadre.getKernel().vide_ecran();
     }
 }

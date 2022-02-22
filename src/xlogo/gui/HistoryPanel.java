@@ -1,6 +1,5 @@
 package xlogo.gui;
 
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.document.HistoricLogoDocument;
 import xlogo.gui.preferences.FontPanel;
@@ -30,7 +29,7 @@ public class HistoryPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     // numéro identifiant la police de
     // l'historique avec "ecris"
-    public static int fontPrint = FontPanel.police_id(Config.font);
+    public static int fontPrint = FontPanel.police_id(Logo.config.getFont());
     private final Color couleur_texte = Color.BLUE;
     private final int taille_texte = 12;
     private final JScrollPane jScrollPane1 = new JScrollPane();
@@ -203,7 +202,7 @@ public class HistoryPanel extends JPanel {
                 RTFEditorKit myRTFEditorKit = new RTFEditorKit();
                 StyledDocument myStyledDocument = getStyledDocument();
                 try {
-                    JFileChooser jf = new JFileChooser(Utils.SortieTexte(Config.defaultFolder));
+                    JFileChooser jf = new JFileChooser(Utils.SortieTexte(Logo.config.getDefaultFolder()));
                     String[] ext = {".rtf"};
                     jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_rtf"), ext));
                     int retval = jf.showDialog(cadre, Logo.messages.getString("menu.file.save"));

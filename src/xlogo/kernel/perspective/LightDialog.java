@@ -1,6 +1,5 @@
 package xlogo.kernel.perspective;
 
-import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.preferences.ColorPanel;
 
@@ -54,10 +53,10 @@ public class LightDialog extends JDialog implements ActionListener {
         panelAngle = new PanelAngle(light.getAngle());
         ok = new JButton(Logo.messages.getString("pref.ok"));
         refresh = new JButton(Logo.messages.getString("3d.light.apply"));
-        labelType.setFont(Config.font);
-        comboType.setFont(Config.font);
-        ok.setFont(Config.font);
-        refresh.setFont(Config.font);
+        labelType.setFont(Logo.config.getFont());
+        comboType.setFont(Logo.config.getFont());
+        ok.setFont(Logo.config.getFont());
+        refresh.setFont(Logo.config.getFont());
 
         comboType.addActionListener(this);
         comboType.setActionCommand("combo");
@@ -182,9 +181,9 @@ public class LightDialog extends JDialog implements ActionListener {
 
         private void initGui() {
             label = new JLabel(Logo.messages.getString("3d.light.angle"));
-            label.setFont(Config.font);
+            label.setFont(Logo.config.getFont());
             angle = new JTextField(String.valueOf(angleValue));
-            angle.setSize(30, Config.font.getSize() + 10);
+            angle.setSize(30, Logo.config.getFont().getSize() + 10);
             add(label);
             add(angle);
         }
@@ -223,7 +222,7 @@ public class LightDialog extends JDialog implements ActionListener {
 
         private void initGui() {
             TitledBorder tb = BorderFactory.createTitledBorder(title);
-            tb.setTitleFont(Config.font);
+            tb.setTitleFont(Logo.config.getFont());
             setBorder(tb);
             sep1 = new JLabel("x");
             sep2 = new JLabel("x");

@@ -1,6 +1,6 @@
 package xlogo.gui;
 
-import xlogo.Config;
+import xlogo.Logo;
 import xlogo.document.CommandLogoDocument;
 
 import javax.swing.*;
@@ -31,7 +31,7 @@ public class CommandLine extends JTextPane implements CaretListener {
 
     public void caretUpdate(CaretEvent e) {
         int pos = e.getDot();
-        if (Config.syntaxHighlightingEnabled) SwingUtilities.invokeLater(new verif_parenthese(pos));
+        if (Logo.config.isSyntaxHighlightingEnabled()) SwingUtilities.invokeLater(new verif_parenthese(pos));
     }
 
     // Teste si le caractère précédent est un backslash
@@ -101,8 +101,8 @@ public class CommandLine extends JTextPane implements CaretListener {
     // Change Syntax Highlighting for the command line
     public void initStyles(int c_comment, int sty_comment, int c_primitive, int sty_primitive,
                            int c_parenthese, int sty_parenthese, int c_operande, int sty_operande) {
-        dlc.initStyles(Config.syntaxCommentColor, Config.syntaxCommentStyle, Config.syntaxPrimitiveColor, Config.syntaxPrimitiveStyle,
-                Config.syntaxBracketColor, Config.syntaxBracketStyle, Config.syntaxOperandColor, Config.syntaxOperandStyle);
+        dlc.initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(),
+                Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
     }
 
     // Enable or disable Syntax Highlighting

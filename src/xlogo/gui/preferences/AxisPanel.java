@@ -1,6 +1,5 @@
 package xlogo.gui.preferences;
 
-import xlogo.Config;
 import xlogo.Logo;
 
 import javax.swing.*;
@@ -65,14 +64,14 @@ public class AxisPanel extends JPanel implements ActionListener {
 
     private void initGui() {
         checkXAxis = new JCheckBox(Logo.messages.getString("active_xaxis"));
-        checkXAxis.setSelected(Config.xAxisEnabled);
+        checkXAxis.setSelected(Logo.config.isXAxisEnabled());
         checkYAxis = new JCheckBox(Logo.messages.getString("active_yaxis"));
-        checkYAxis.setSelected(Config.yAxisEnabled);
+        checkYAxis.setSelected(Logo.config.isYAxisEnabled());
         labelXAxis = new JLabel(Logo.messages.getString("pas"));
         labelYAxis = new JLabel(Logo.messages.getString("pas"));
-        jtXAxis = new JTextField(String.valueOf(Config.xAxisSpacing));
-        jtYAxis = new JTextField(String.valueOf(Config.yAxisSpacing));
-        panelAxisColor = new ColorPanel(new Color(Config.axisColor));
+        jtXAxis = new JTextField(String.valueOf(Logo.config.getXAxisSpacing()));
+        jtYAxis = new JTextField(String.valueOf(Logo.config.getYAxisSpacing()));
+        panelAxisColor = new ColorPanel(new Color(Logo.config.getAxisColor()));
         setLayout(new GridBagLayout());
         add(checkXAxis, new GridBagConstraints(0, 0, 1, 1, 0.3, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -95,11 +94,11 @@ public class AxisPanel extends JPanel implements ActionListener {
         add(panelAxisColor, new GridBagConstraints(0, 2, 1, 1, 0.3, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(10, 10, 10, 10), 0, 0));
-        labelXAxis.setEnabled(Config.xAxisEnabled);
-        labelYAxis.setEnabled(Config.yAxisEnabled);
-        jtXAxis.setEnabled(Config.xAxisEnabled);
-        jtYAxis.setEnabled(Config.yAxisEnabled);
-        panelAxisColor.setEnabled(Config.xAxisEnabled || Config.yAxisEnabled);
+        labelXAxis.setEnabled(Logo.config.isXAxisEnabled());
+        labelYAxis.setEnabled(Logo.config.isYAxisEnabled());
+        jtXAxis.setEnabled(Logo.config.isXAxisEnabled());
+        jtYAxis.setEnabled(Logo.config.isYAxisEnabled());
+        panelAxisColor.setEnabled(Logo.config.isXAxisEnabled() || Logo.config.isYAxisEnabled());
 
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("title_axis"));
         setBorder(tb);
