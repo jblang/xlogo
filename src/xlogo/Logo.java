@@ -316,15 +316,15 @@ public class Logo {
                 saxReader.parse(new InputSource(isr));
             } catch (SAXException e) {
                 // Read the old config file format
-                String s = "";
+                StringBuilder s = new StringBuilder();
                 FileReader ifr = new FileReader(System.getProperty("user.home") + File.separator + ".xlogo");
                 while (ifr.ready()) {
                     char[] b = new char[64];
                     int i = ifr.read(b);
                     if (i == -1) break;
-                    s += new String(b);
+                    s.append(new String(b));
                 }
-                StringTokenizer st = new StringTokenizer(s, "\n");
+                StringTokenizer st = new StringTokenizer(s.toString(), "\n");
 
                 while (st.hasMoreTokens()) {
                     String element = st.nextToken();
@@ -420,11 +420,7 @@ public class Logo {
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    public void run() {
-                        select = new LanguageSelection();
-                    }
-                });
+                SwingUtilities.invokeAndWait(() -> select = new LanguageSelection());
                 try {
                     UIManager.setLookAndFeel(new FlatDarkLaf());
                 } catch (Exception exc) {

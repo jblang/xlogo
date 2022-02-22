@@ -54,7 +54,7 @@ public class Config {
     public static final int LAF_NATIVE = 0;
     public static final int LAF_LIGHT = 1;
     public static final int LAF_DARK = 2;
-    public static int lookAndFeel = 1;
+    public static int lookAndFeel = LAF_DARK;
 
     /**
      * The drawing area width
@@ -70,12 +70,12 @@ public class Config {
      * The memory currently allocated to the Java Virtual Machine.
      * This integer has to be increased for example when the main Image in the drawing area is very big.
      */
-    public static int memoryLimit = 64;
+    public static int memoryLimit = 256;
 
     /**
      * Value for the memory in Prefs tab. Will be written when application will be closed.
      */
-    public static int newMemoryLimit = 64;
+    public static int newMemoryLimit = 256;
 
     /**
      * The active turtle's shape
