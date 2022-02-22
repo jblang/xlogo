@@ -25,7 +25,7 @@
 
     <!-- Version for this Build -->
 
-    <property name="version" value="1.0.0beta2"/>
+    <property name="version" value="1.0.0beta3"/>
 
     <!-- =================================
          default target: deploy
