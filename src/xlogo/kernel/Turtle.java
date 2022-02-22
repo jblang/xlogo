@@ -8,10 +8,10 @@
 
 package xlogo.kernel;
 
-import xlogo.gui.Application;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
+import xlogo.gui.Application;
 import xlogo.utils.LogoException;
-import xlogo.utils.Utils;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
@@ -68,9 +68,9 @@ public class Turtle {
     int police = 12;
     // Image for the turtle
     // If null then draw the triangle
-    Image tort = null;
+    Image image = null;
     GeneralPath triangle;
-    int largeur = 0, hauteur = 0, gabarit = 0;
+    int height = 0, width = 0, template = 0;
     private final Application app;
     private int labelHorizontalAlignment = 0;
     private int labelVerticalAlignment = 0;
@@ -93,41 +93,16 @@ public class Turtle {
     public Turtle(Application app) {
         this.app = app;
         fixe_taille_crayon(1);
-        String chemin = "tortue" + Logo.config.getActiveTurtle() + ".png";
         couleurcrayon = Logo.config.getPenColor();
         couleurmodedessin = Logo.config.getPenColor();
         if (Logo.config.getActiveTurtle() == 0) {
-            tort = null;
-            largeur = 26;
-            hauteur = 26;
+            image = null;
+            height = 26;
+            width = 26;
         } else {
             //ON teste tout d'abord si le chemin est valide
-            if (null == Utils.class.getResource(chemin)) chemin = "tortue1.png";
-            tort = Toolkit.getDefaultToolkit().getImage(Utils.class.getResource(chemin));
-            MediaTracker tracker = new MediaTracker(app);
-            tracker.addImage(tort, 0);
-            try {
-                tracker.waitForID(0);
-            } catch (InterruptedException e1) {
-            }
-            largeur = tort.getWidth(app);
-            hauteur = tort.getHeight(app);
-            double largeur_ecran = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-            // On fait attention à la résolution de l'utilisateur
-            double facteur = largeur_ecran / 1024.0;
-            if ((int) (facteur + 0.001) != 1) {
-                //tort = tort.getScaledInstance((int) (facteur * largeur), (int) (facteur * hauteur), Image.SCALE_SMOOTH);
-                tracker = new MediaTracker(app);
-                tracker.addImage(tort, 0);
-                try {
-                    tracker.waitForID(0);
-                } catch (InterruptedException e1) {
-                }
-            }
-            largeur = tort.getWidth(app);
-            hauteur = tort.getHeight(app);
+            setImage(Logo.config.getActiveTurtle());
         }
-        gabarit = Math.max(hauteur, largeur);
         corX = Logo.config.getImageWidth() / 2;
         corY = Logo.config.getImageHeight() / 2;
         angle = Math.PI / 2;
@@ -158,7 +133,7 @@ public class Turtle {
     }
 
     void drawTriangle() {
-        if (null == tort) {
+        if (null == image) {
             if (null == triangle) {
                 triangle = new GeneralPath();
             } else triangle.reset();
@@ -314,5 +289,33 @@ public class Turtle {
             i++;
         }
         if (i != 2) throw new LogoException(app, list + " " + Logo.messages.getString("pas_argument"));
+    }
+
+    void setImage(int i) {
+        if (i == 0) {
+            image = null;
+            this.height = 26;
+            this.width = 26;
+        } else {
+            FlatSVGIcon svg = Logo.getTurtle(i);
+            if (svg == null) {
+                svg = Logo.getTurtle(1);
+            }
+            float factor = (float) 70 / (float) svg.getIconHeight();
+            this.height = (int)(svg.getIconWidth() * factor);
+            this.width = (int)(svg.getIconHeight() * factor);
+            image = svg.getImage().getScaledInstance(
+                    (int) (this.width * app.getDrawPanel().getScaleX()),
+                    (int) (this.height * app.getDrawPanel().getScaleY()),
+                    Image.SCALE_SMOOTH
+            );
+            MediaTracker tracker = new MediaTracker(app);
+            tracker.addImage(image, 0);
+            try {
+                tracker.waitForID(0);
+            } catch (InterruptedException e1) {
+            }
+        }
+        template = Math.max(this.width, this.height);
     }
 }

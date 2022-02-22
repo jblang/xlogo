@@ -48,7 +48,7 @@ public class Kernel {
     }
 
     public Turtle getActiveTurtle() {
-        return app.getDrawPanel().tortue;
+        return app.getDrawPanel().turtle;
     }
 
     public Calculator getCalculator() {
@@ -75,8 +75,8 @@ public class Kernel {
         return app.getDrawPanel().getBackgroundColor();
     }
 
-    public void change_image_tortue(String chemin) {
-        app.getDrawPanel().change_image_tortue(app, chemin);
+    public void change_image_tortue(int i) {
+        app.getDrawPanel().changeTurtleImage(app, i);
     }
 
     public void initGraphics() {

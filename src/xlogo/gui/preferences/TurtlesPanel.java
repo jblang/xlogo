@@ -1,8 +1,8 @@
 package xlogo.gui.preferences;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
 import xlogo.gui.Application;
-import xlogo.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +18,7 @@ public class TurtlesPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     Application cadre;
     private final ButtonGroup buttonGroup3 = new ButtonGroup(); //Pour les images de tortue
-    private final Icone[] icone = new Icone[7]; //POur les vignettes
+    private final Icon[] icon = new Icon[7]; //POur les vignettes
     private final GridBagLayout gridBagLayout2 = new GridBagLayout();
 
     protected TurtlesPanel(Application cadre) {
@@ -28,66 +28,69 @@ public class TurtlesPanel extends JPanel {
 
     private void initGui() {
         for (int i = 0; i < 7; i++) {
-            icone[i] = new Icone(i);
-            icone[i].setText("");
-            buttonGroup3.add(icone[i]);
+            icon[i] = new Icon(i);
+            icon[i].setText("");
+            buttonGroup3.add(icon[i]);
         }
         setLayout(gridBagLayout2);
 
-        add(icone[5], new GridBagConstraints(2, 1, 1, 1, 1.0,
+        add(icon[5], new GridBagConstraints(2, 1, 1, 1, 1.0,
                 1.0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 new Insets(5, 5, 5, 5), 0, 0));
-        add(icone[3], new GridBagConstraints(0, 1, 1, 1, 1.0,
+        add(icon[3], new GridBagConstraints(0, 1, 1, 1, 1.0,
                 1.0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 new Insets(5, 5, 5, 5), 0, 0));
-        add(icone[4], new GridBagConstraints(1, 1, 1, 1, 1.0,
+        add(icon[4], new GridBagConstraints(1, 1, 1, 1, 1.0,
                 1.0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 new Insets(5, 5, 5, 5), 0, 0));
-        add(icone[2], new GridBagConstraints(2, 0, 1, 1, 1.0,
+        add(icon[2], new GridBagConstraints(2, 0, 1, 1, 1.0,
                 1.0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 new Insets(5, 5, 5, 5), 0, 0));
-        add(icone[1], new GridBagConstraints(1, 0, 1, 1, 1.0,
+        add(icon[1], new GridBagConstraints(1, 0, 1, 1, 1.0,
                 1.0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 new Insets(5, 5, 5, 5), 0, 0));
-        add(icone[6], new GridBagConstraints(0, 2, 1, 1, 1.0,
+        add(icon[6], new GridBagConstraints(0, 2, 1, 1, 1.0,
                 1.0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 new Insets(5, 5, 5, 5), 0, 0));
-        add(icone[0], new GridBagConstraints(0, 0, 1, 1, 1.0,
+        add(icon[0], new GridBagConstraints(0, 0, 1, 1, 1.0,
                 1.0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 new Insets(5, 5, 5, 5), 0, 0));
     }
 
     protected void update() {
-        String chemin = "tortue";
+        int turtle = -1;
         for (int i = 0; i < 7; i++) {
-            if (icone[i].num() != -1) {
-                chemin += i + ".png";
+            if (icon[i].num() != -1) {
+                turtle = i;
                 Logo.config.setActiveTurtle(i);
                 break;
             }
         }
-        if (!chemin.equals("tortue")) {
+        if (turtle != -1) {
             cadre.getKernel().getActiveTurtle().setShape(Logo.config.getActiveTurtle());
-            cadre.getKernel().change_image_tortue(chemin);
+            cadre.getKernel().change_image_tortue(turtle);
         }
     }
 
-    class Icone extends JToggleButton {
+    class Icon extends JToggleButton {
         private static final long serialVersionUID = 1L;
-        private final int numero;
+        private final int number;
 
-        Icone(int numero) {
-            this.numero = numero;
-            ImageIcon ic = new ImageIcon(Utils.class.getResource("tortue"
-                    + numero + ".png"));
-            this.setIcon(ic);
-            if (numero == Logo.config.getActiveTurtle())
+        Icon(int number) {
+            this.number = number;
+            FlatSVGIcon icon = Logo.getTurtle(number);
+            if (icon != null) {
+                float factor = (float) 70 / (float) icon.getIconHeight();
+                icon = icon.derive(factor);
+                this.setIcon(icon);
+            }
+            if (number == Logo.config.getActiveTurtle())
                 setSelected(true);
         }
 
         int num() {
             if (isSelected())
-                return numero;
+                return number;
             return -1;
         }
     }

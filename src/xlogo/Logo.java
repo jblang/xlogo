@@ -76,10 +76,10 @@ public class Logo {
             frame.setVisible(true);
             //On vérifie que la taille mémoire est suffisante pour créer l'image de dessin
             // Checking that we have enough memory to create the image
-            int memoire_necessaire = config.getImageWidth() * config.getImageHeight() * 4 / 1024 / 1024;
+            int memoryRequired = config.getImageWidth() * config.getImageHeight() * 4 / 1024 / 1024;
             long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
             long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
-            if (total - free + memoire_necessaire > getMemoryLimit() * 0.8) {
+            if (total - free + memoryRequired > getMemoryLimit() * 0.8) {
                 config.setImageHeight(1000);
                 config.setImageWidth(1000);
             }
@@ -92,8 +92,7 @@ public class Logo {
 
             // On Enregistre le temps auquel la session a commencé
             // hour when we launch XLogo
-            setStartupHour(Calendar.getInstance().getTimeInMillis());
-
+            startupHour = Calendar.getInstance().getTimeInMillis();
 
             // Command to execute on startup
 
@@ -115,13 +114,19 @@ public class Logo {
     }
 
     public static ImageIcon getIcon(String name) {
-        var path = "resources/icons/" + name + ".svg";
-        return new FlatSVGIcon(Objects.requireNonNull(Logo.class.getResource(path)));
+        var res = Logo.class.getResource("resources/icons/" + name + ".svg");
+        if (res == null)
+            return null;
+        else
+            return new FlatSVGIcon(res);
     }
 
     public static FlatSVGIcon getFlag(String name) {
-        var path = "resources/flags/" + name + ".svg";
-        return new FlatSVGIcon(Objects.requireNonNull(Logo.class.getResource(path)));
+        var res = Logo.class.getResource("resources/flags/" + name + ".svg");
+        if (res == null)
+            return null;
+        else
+            return new FlatSVGIcon(res);
     }
 
     public static FlatSVGIcon getFlag(int i) {
@@ -129,8 +134,15 @@ public class Logo {
     }
 
     public static ImageIcon getAppIcon() {
-        var path = "resources/appicon.png";
-        return new ImageIcon(Objects.requireNonNull(Logo.class.getResource(path)));
+        return new ImageIcon(Objects.requireNonNull(Logo.class.getResource("resources/appicon.png")));
+    }
+
+    public static FlatSVGIcon getTurtle(int i) {
+        var res = Logo.class.getResource("resources/turtles/turtle" + i + ".svg");
+        if (res == null)
+            return null;
+        else
+            return new FlatSVGIcon(res);
     }
 
     /**
@@ -215,32 +227,6 @@ public class Logo {
     public static String getLocaleTwoLetters() {
         if (config.getLanguage() > -1 && config.getLanguage() < locales.length) return locales[config.getLanguage()];
         else return "en";
-    }
-
-    /**
-     * Write the Configuration file when the user quits XLogo
-     */
-    public static void writeConfig() {
-        try {
-            FileOutputStream fos = new FileOutputStream(System.getProperty("user.home") + File.separator + ".xlogo");
-            XMLEncoder enc = new XMLEncoder(fos);
-            enc.writeObject(config);
-            enc.close();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * This long represents the hour of XLogo starting
-     */
-    public static long getStartupHour() {
-        return startupHour;
-    }
-
-    public static void setStartupHour(long startupHour) {
-        Logo.startupHour = startupHour;
     }
 
     /**
@@ -365,6 +351,25 @@ public class Logo {
             generateLanguage(config.getLanguage());
         }
         // Verify that all values are in valid range
+    }
+
+    /**
+     * Write the Configuration file when the user quits XLogo
+     */
+    public static void writeConfig() {
+        try {
+            FileOutputStream fos = new FileOutputStream(System.getProperty("user.home") + File.separator + ".xlogo");
+            XMLEncoder enc = new XMLEncoder(fos);
+            enc.writeObject(config);
+            enc.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static long getStartupHour() {
+        return startupHour;
     }
 
     public static int getMemoryLimit() {

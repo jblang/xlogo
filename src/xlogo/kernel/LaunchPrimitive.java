@@ -1504,8 +1504,7 @@ public class LaunchPrimitive {
                         if (kernel.getActiveTurtle().id == 0) {
                             Logo.config.setActiveTurtle(i);
                         }
-                        String chemin = "tortue" + i + ".png";
-                        kernel.change_image_tortue(chemin);
+                        kernel.change_image_tortue(i);
                     } catch (LogoException e) {
                     }
                     break;
@@ -1593,7 +1592,7 @@ public class LaunchPrimitive {
                                 cadre.getDrawPanel().tortues[i].id = i;
                                 cadre.getDrawPanel().tortues[i].setVisible(false);
                             }
-                            cadre.getDrawPanel().tortue = cadre.getDrawPanel().tortues[i];
+                            cadre.getDrawPanel().turtle = cadre.getDrawPanel().tortues[i];
                             cadre.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon);
                             String police = cadre.getDrawPanel().getGraphicsFont().getName();
                             cadre.getDrawPanel()
@@ -1649,16 +1648,16 @@ public class LaunchPrimitive {
                             if (null != cadre.getDrawPanel().tortues[id]) {
                                 if (compteur > 1) {
                                     int tortue_utilisee = kernel.getActiveTurtle().id;
-                                    cadre.getDrawPanel().tortue = cadre.getDrawPanel().tortues[id];
+                                    cadre.getDrawPanel().turtle = cadre.getDrawPanel().tortues[id];
                                     cadre.getDrawPanel().ct_mt();
-                                    cadre.getDrawPanel().tortue = cadre.getDrawPanel().tortues[tortue_utilisee];
+                                    cadre.getDrawPanel().turtle = cadre.getDrawPanel().tortues[tortue_utilisee];
                                     cadre.getDrawPanel().tortues[id] = null;
                                     if (cadre.getDrawPanel().tortues_visibles.search(String
                                             .valueOf(id)) > 0)
                                         cadre.getDrawPanel().tortues_visibles.remove(String
                                                 .valueOf(id));
                                     if (kernel.getActiveTurtle().id == id) {
-                                        cadre.getDrawPanel().tortue = cadre.getDrawPanel().tortues[premier_dispo];
+                                        cadre.getDrawPanel().turtle = cadre.getDrawPanel().tortues[premier_dispo];
                                         cadre.getDrawPanel()
                                                 .setStroke(kernel.getActiveTurtle().crayon); // on
                                         // adapte
@@ -2825,8 +2824,7 @@ public class LaunchPrimitive {
                         Logo.config.setActiveTurtle(0);
                     }
                     DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLASSIC;
-                    String chemin = "tortue0.png";
-                    kernel.change_image_tortue(chemin);
+                    kernel.change_image_tortue(0);
                     cadre.getDrawPanel().fcfg(Color.WHITE);
                     cadre.getDrawPanel().fcc(Color.BLACK);
                     cadre.getDrawPanel().setAnimation(false);
