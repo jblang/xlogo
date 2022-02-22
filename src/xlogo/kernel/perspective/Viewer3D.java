@@ -4,7 +4,6 @@ import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import xlogo.Logo;
 import xlogo.utils.ImageWriter;
-import xlogo.utils.Utils;
 
 import javax.media.j3d.*;
 import javax.swing.*;
@@ -76,7 +75,7 @@ public class Viewer3D extends JFrame {
 
     private void initGui() {
         //this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
+        setIconImage(Logo.getAppIcon().getImage());
         getContentPane().setLayout(new BorderLayout());
 
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

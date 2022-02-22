@@ -1,9 +1,8 @@
 package xlogo.kernel.network;
 
-import xlogo.gui.Application;
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.utils.Utils;
+import xlogo.gui.Application;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -47,7 +46,7 @@ public class ChatFrame extends JFrame implements ActionListener {
 
     private void initGui() {
         setTitle(Logo.messages.getString("chat"));
-        setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
+        setIconImage(Logo.getAppIcon().getImage());
         dsd = new DefaultStyledDocument();
         textPane = new JTextPane();
         textPane.setDocument(dsd);

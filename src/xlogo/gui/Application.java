@@ -41,6 +41,7 @@ import java.util.Stack;
 
 public class Application extends JFrame {
     private static final double ZOOM_FACTOR = 1.25;
+    private static final Stack<String> historyStack = new Stack<>();
     public static String path = null;
     public static int fontId = FontPanel.police_id(Config.font);
     // Interpreter and drawPanel
@@ -49,8 +50,6 @@ public class Application extends JFrame {
     private final DrawPanel drawPanel;
     private final CommandLine commandLine = new CommandLine(this);
     private final HistoryPanel historyPanel = new HistoryPanel(this);
-    private static final Stack<String> historyStack = new Stack<>();
-    private int historyIndex = 0;
     private final SoundPlayer soundPlayer = new SoundPlayer(this);
     private final CommandKeyAdapter commandKeyAdapter = new CommandKeyAdapter();
     private final ArrayList<JMenuItem> menuItems = new ArrayList<>();
@@ -58,11 +57,12 @@ public class Application extends JFrame {
     private final EditorPopupMenu popupMenu = new EditorPopupMenu(commandLine);
     public String tempPath = null; // When opening a file
     public boolean error = false;
-    boolean stop = false;
     public Editor editor;
     public Animation animation = null;
     public JScrollPane scrollPane = new JScrollPane();
     public JSplitPane splitPane = new JSplitPane();
+    boolean stop = false;
+    private int historyIndex = 0;
     private JButton runButton;
     private JButton stopButton;
     private JButton zoomInButton;
@@ -88,7 +88,7 @@ public class Application extends JFrame {
         editor = new Editor(this);
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         setTitle("XLogo");
-        setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
+        setIconImage(Logo.getAppIcon().getImage());
         createMenuBar();
         createContent();
         updateLocalization();
@@ -145,8 +145,8 @@ public class Application extends JFrame {
 
         var toolsMenu = createMenu("menu.tools");
         menuBar.add(toolsMenu);
-        createMenuItem(toolsMenu, "menu.tools.pencolor", e -> showFontChooser("fcc"));
-        createMenuItem(toolsMenu, "menu.tools.screencolor", e -> showFontChooser("fcfg"));
+        createMenuItem(toolsMenu, "menu.tools.pencolor", e -> showColorChooser(true));
+        createMenuItem(toolsMenu, "menu.tools.screencolor", e -> showColorChooser(false));
         createMenuItem(toolsMenu, "menu.tools.startup", e -> showStartupFiles());
         createMenuItem(toolsMenu, "menu.tools.translate", e -> showCodeTranslator());
         createMenuItem(toolsMenu, "menu.tools.eraser", e -> showProcedureEraser());
@@ -221,42 +221,39 @@ public class Application extends JFrame {
      * Called by the constructor or when language has been modified
      */
     public void updateLocalization() {
-        //		System.out.println(Config.police.getName());
         // Internal text to use for JFileChooser and JColorChooser
-        UIManager.put("FileChooser.cancelButtonText", Logo.messages.getString("pref.cancel"));
-        UIManager.put("FileChooser.cancelButtonToolTipText", Logo.messages.getString("pref.cancel"));
-        UIManager.put("FileChooser.fileNameLabelText", Logo.messages.getString("nom_du_fichier"));
-        UIManager.put("FileChooser.upFolderToolTipText", Logo.messages.getString("dossier_parent"));
-        UIManager.put("FileChooser.lookInLabelText", Logo.messages.getString("rechercher_dans"));
-
-        UIManager.put("FileChooser.newFolderToolTipText", Logo.messages.getString("nouveau_dossier"));
-        UIManager.put("FileChooser.homeFolderToolTipText", Logo.messages.getString("repertoire_accueil"));
-        UIManager.put("FileChooser.filesOfTypeLabelText", Logo.messages.getString("fichier_du_type"));
-        UIManager.put("FileChooser.helpButtonText", Logo.messages.getString("menu.help"));
-
-        UIManager.put("ColorChooser.rgbNameText", Logo.messages.getString("rgb"));
-        UIManager.put("ColorChooser.rgbBlueText", Logo.messages.getString("bleu"));
-        UIManager.put("ColorChooser.rgbGreenText", Logo.messages.getString("vert"));
-        UIManager.put("ColorChooser.rgbRedText", Logo.messages.getString("rouge"));
-
-        UIManager.put("ColorChooser.swatchesNameText", Logo.messages.getString("echantillon"));
-
-        UIManager.put("ColorChooser.hsbNameText", Logo.messages.getString("hsb"));
-        UIManager.put("ColorChooser.hsbBlueText", Logo.messages.getString("hsbbleu"));
-        UIManager.put("ColorChooser.hsbGreenText", Logo.messages.getString("hsbvert"));
-        UIManager.put("ColorChooser.hsbRedText", Logo.messages.getString("hsbrouge"));
-
-        UIManager.put("ColorChooser.swatchesRecentText", Logo.messages.getString("dernier"));
-        UIManager.put("ColorChooser.previewText", Logo.messages.getString("apercu"));
-        UIManager.put("ColorChooser.sampleText", Logo.messages.getString("echantillon_texte"));
-        UIManager.put("ColorChooser.okText", Logo.messages.getString("pref.ok"));
-        UIManager.put("ColorChooser.resetText", Logo.messages.getString("restaurer"));
-        UIManager.put("ColorChooser.cancelText", Logo.messages.getString("pref.cancel"));
-        UIManager.put("ColorChooser.previewText", Logo.messages.getString("apercu"));
-
+        var pairs = new String[][]{
+                {"FileChooser.cancelButtonText", "pref.cancel"},
+                {"FileChooser.cancelButtonToolTipText", "pref.cancel"},
+                {"FileChooser.fileNameLabelText", "nom_du_fichier"},
+                {"FileChooser.upFolderToolTipText", "dossier_parent"},
+                {"FileChooser.lookInLabelText", "rechercher_dans"},
+                {"FileChooser.newFolderToolTipText", "nouveau_dossier"},
+                {"FileChooser.homeFolderToolTipText", "repertoire_accueil"},
+                {"FileChooser.filesOfTypeLabelText", "fichier_du_type"},
+                {"FileChooser.helpButtonText", "menu.help"},
+                {"ColorChooser.rgbNameText", "rgb"},
+                {"ColorChooser.rgbBlueText", "bleu"},
+                {"ColorChooser.rgbGreenText", "vert"},
+                {"ColorChooser.rgbRedText", "rouge"},
+                {"ColorChooser.swatchesNameText", "echantillon"},
+                {"ColorChooser.hsbNameText", "hsb"},
+                {"ColorChooser.hsbBlueText", "hsbbleu"},
+                {"ColorChooser.hsbGreenText", "hsbvert"},
+                {"ColorChooser.hsbRedText", "hsbrouge"},
+                {"ColorChooser.swatchesRecentText", "dernier"},
+                {"ColorChooser.previewText", "apercu"},
+                {"ColorChooser.sampleText", "echantillon_texte"},
+                {"ColorChooser.okText", "pref.ok"},
+                {"ColorChooser.resetText", "restaurer"},
+                {"ColorChooser.cancelText", "pref.cancel"},
+                {"ColorChooser.previewText", "apercu"},
+        };
+        for (var p : pairs) {
+            UIManager.put(p[0], Logo.messages.getString(p[1]));
+        }
         commandLabel.setText(Logo.messages.getString("commande") + "  ");
         menuItems.forEach(i -> i.setText(Logo.messages.getString(i.getActionCommand())));
-
         historyPanel.updateText();
     }
 
@@ -280,9 +277,8 @@ public class Application extends JFrame {
         setVisible(true);
         String message = Logo.messages.getString("quitter?");
         MessageTextArea jt = new MessageTextArea(message);
-        ImageIcon icon = new ImageIcon(Utils.class.getResource("icone.png"));
         String[] choice = {Logo.messages.getString("pref.ok"), Logo.messages.getString("pref.cancel")};
-        int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("menu.file.quit"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, icon, choice, choice[0]);
+        int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("menu.file.quit"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, Logo.getAppIcon(), choice, choice[0]);
         if (val == JOptionPane.OK_OPTION) {
             writeConfig();
             System.exit(0);
@@ -292,9 +288,8 @@ public class Application extends JFrame {
     private void newFile() {
         var wp = kernel.getWorkspace();
         String[] choice = {Logo.messages.getString("pref.ok"), Logo.messages.getString("pref.cancel")};
-        ImageIcon icon = new ImageIcon(Utils.class.getResource("icone.png"));
         MessageTextArea jt = new MessageTextArea(Logo.messages.getString("enregistrer_espace"));
-        int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("enregistrer_espace"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, icon, choice, choice[0]);
+        int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("enregistrer_espace"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, Logo.getAppIcon(), choice, choice[0]);
 
         if (val == JOptionPane.OK_OPTION) {
             wp.deleteAllProcedures();
@@ -363,7 +358,7 @@ public class Application extends JFrame {
                 try {
                     File f = new File(path);
                     Config.defaultFolder = Utils.rajoute_backslash(f.getParent());
-                } catch (NullPointerException e2) {
+                } catch (NullPointerException ignored) {
                 }
             }
         }
@@ -402,8 +397,7 @@ public class Application extends JFrame {
                 myRTFEditorKit.write(myFileOutputStream, myStyledDocument, 0, myStyledDocument.getLength() - 1);
                 myFileOutputStream.close();
             }
-        } catch (IOException e2) {
-        } catch (BadLocationException e3) {
+        } catch (IOException | BadLocationException ignored) {
         }
     }
 
@@ -421,24 +415,19 @@ public class Application extends JFrame {
         printer.start();
     }
 
-    void showFontChooser(String key) {
-        String title = "";
-        if (key.equals("fcfg")) {
-            title = "couleur_du_fond";
-        } else if (key.equals("fcc")) {
-            title = "couleur_du_crayon";
-        }
+    void showColorChooser(boolean pen) {
+        var title = pen ? "couleur_du_crayon" : "couleur_du_fond";
         Color color = JColorChooser.showDialog(this, Logo.messages.getString(title), getCanvas().getBackgroundColor());
         if (null != color) {
             Locale locale = Logo.getLocale(Config.language);
             java.util.ResourceBundle rs = java.util.ResourceBundle.getBundle("primitives", locale);
-            var f = rs.getString(key);
+            var f = rs.getString(pen ? "fcc" : "fcfg");
             f = f.substring(0, f.indexOf(" "));
             updateHistory("commentaire", f + " [" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + "]\n");
-            if (key.equals("fcfg")) {
-                kernel.fcfg(color);
-            } else if (key.equals("fcc")) {
+            if (pen) {
                 kernel.fcc(color);
+            } else {
+                kernel.fcfg(color);
             }
         }
     }
@@ -446,12 +435,10 @@ public class Application extends JFrame {
     void showPreferences() {
         if (editor.isVisible()) showCloseEditor();
         else if (null == preferencesDialog) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    preferencesDialog = new PreferencesDialog(getApp());
-                    preferencesDialog.setBounds(100, 100, 600, 580);
-                    preferencesDialog.setVisible(true);
-                }
+            SwingUtilities.invokeLater(() -> {
+                preferencesDialog = new PreferencesDialog(getApp());
+                preferencesDialog.setBounds(100, 100, 600, 580);
+                preferencesDialog.setVisible(true);
             });
         } else {
             preferencesDialog.requestFocus();
@@ -482,13 +469,12 @@ public class Application extends JFrame {
     private void showAbout() {
         String message = Logo.messages.getString("message_a_propos1") + Config.VERSION + "\n\n" + Logo.messages.getString("message_a_propos2") + " " + Config.WEB_SITE;
         MessageTextArea jt = new MessageTextArea(message);
-        ImageIcon icon = new ImageIcon(Utils.class.getResource("icone.png"));
-        JOptionPane.showMessageDialog(null, jt, Logo.messages.getString("menu.help.about"), JOptionPane.INFORMATION_MESSAGE, icon);
+        JOptionPane.showMessageDialog(null, jt, Logo.messages.getString("menu.help.about"), JOptionPane.INFORMATION_MESSAGE, Logo.getAppIcon());
     }
 
     private void showLicence(boolean english) {
         JFrame frame = new JFrame(Logo.messages.getString("menu.help.licence"));
-        frame.setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
+        frame.setIconImage(Logo.getAppIcon().getImage());
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(500, 500);
         LicensePane editorPane = new LicensePane();
@@ -552,7 +538,7 @@ public class Application extends JFrame {
             FileOutputStream f = new FileOutputStream(System.getProperty("user.home") + File.separator + ".xlogo");
             BufferedOutputStream b = new BufferedOutputStream(f);
             OutputStreamWriter osw = new OutputStreamWriter(b, StandardCharsets.UTF_8);
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             int eff;
             if (Config.eraseImage) eff = 1;
             else eff = 0;
@@ -801,37 +787,29 @@ public class Application extends JFrame {
             animation.setPause(true);
         }
         // resize the drawing image
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
+        SwingUtilities.invokeLater(() -> {
 
-                //DrawPanel.image = new BufferedImage((Config.imageWidth*3)/2, (Config.imageHeight*3)/2, BufferedImage.TYPE_INT_RGB);
-                // 	System.out.println("Total :"+Runtime.getRuntime().totalMemory()/1024+" max "+Runtime.getRuntime().maxMemory()/1024+" Free "+Runtime.getRuntime().freeMemory()/1024);
-                MediaTracker tracker = new MediaTracker(drawPanel);
-                //tracker.addImage(DrawPanel.image, 0);
-                try {
-                    tracker.waitForID(0);
-                } catch (InterruptedException e) {
-                }
-
-                drawPanel.setPreferredSize(new Dimension(Config.imageWidth, Config.imageHeight));
-                drawPanel.revalidate();
-                drawPanel.initGraphics();
-                kernel.initGraphics();
-                //drawPanel.repaint();
-
-                if (null != animation) animation.setPause(false);
+            MediaTracker tracker = new MediaTracker(drawPanel);
+            try {
+                tracker.waitForID(0);
+            } catch (InterruptedException ignored) {
             }
 
+            drawPanel.setPreferredSize(new Dimension(Config.imageWidth, Config.imageHeight));
+            drawPanel.revalidate();
+            drawPanel.initGraphics();
+            kernel.initGraphics();
+            //drawPanel.repaint();
+
+            if (null != animation) animation.setPause(false);
         });
 
     }
 
     /**
      * Modify the Look&Feel for the Application
-     *
-     * @throws Exception
      */
-    public void changeLookAndFeel() throws Exception {
+    public void changeLookAndFeel() {
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(editor);
     }
@@ -899,7 +877,7 @@ public class Application extends JFrame {
      * @param b true or false
      */
     public void setSaveEnabled(boolean b) {
-        fileSaveMenuItem.setEnabled(true);
+        fileSaveMenuItem.setEnabled(b);
     }
 
     /**
@@ -1030,7 +1008,7 @@ public class Application extends JFrame {
                 try {
                     editor.analyzeProcedure();
                 } catch (Exception e3) {
-                    System.out.println(e3);
+                    e3.printStackTrace();
                 }
                 editor.clearText();
                 editor.setVisible(false);
@@ -1238,7 +1216,6 @@ public class Application extends JFrame {
      *
      * @author loic
      */
-
     class PopupListener extends MouseAdapter {
 
         public void mousePressed(MouseEvent e) {

@@ -1804,8 +1804,7 @@ public class LaunchPrimitive {
                         liste = Utils.SortieTexte(liste);
 
                         MessageTextArea jt = new MessageTextArea(liste, cadre.getHistoryPanel().getDsd());
-                        ImageIcon icone = new ImageIcon(Utils.class.getResource("icone.png"));
-                        JOptionPane.showMessageDialog(cadre, jt, "", JOptionPane.INFORMATION_MESSAGE, icone);
+                        JOptionPane.showMessageDialog(cadre, jt, "", JOptionPane.INFORMATION_MESSAGE, Logo.getAppIcon());
 
                     } catch (LogoException e) {
                     }

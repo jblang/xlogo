@@ -3,7 +3,6 @@ package xlogo.gui;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +32,7 @@ public class LanguageSelection extends JFrame implements ActionListener {
 
     public LanguageSelection() {
         super.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
+        setIconImage(Logo.getAppIcon().getImage());
         setTitle("XLOGO");
         JPanel central = new JPanel();
         GridBagLayout gb = new GridBagLayout();

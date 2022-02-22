@@ -397,7 +397,7 @@ public class Editor extends JFrame implements ActionListener {
         panelCommand.add(labelCommand);
         panelCommand.add(mainCommand);
 
-        setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
+        setIconImage(Logo.getAppIcon().getImage());
 
         scroll.setPreferredSize(new Dimension(500, 500));
         this.setTitle(Logo.messages.getString("editeur"));

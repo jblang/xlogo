@@ -2,7 +2,6 @@ package xlogo.gui;
 
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +31,7 @@ public class CodeTranslator extends JFrame implements ActionListener {
 
     public CodeTranslator() {
         setTitle(Logo.messages.getString("menu.tools.translate"));
-        setIconImage(Toolkit.getDefaultToolkit().createImage(Utils.class.getResource("icone.png")));
+        setIconImage(Logo.getAppIcon().getImage());
         getContentPane().setLayout(new BorderLayout());
         sourceLanguageCombo.setSelectedIndex(Config.language);
         targetLanguageCombo.setSelectedIndex(Config.language);

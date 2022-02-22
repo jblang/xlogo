@@ -39,8 +39,7 @@ public class UiTranslator extends JFrame implements ActionListener {
     }
 
     private void initGui() {
-        setIconImage(Toolkit.getDefaultToolkit().createImage(
-                Utils.class.getResource("icone.png")));
+        setIconImage(Logo.getAppIcon().getImage());
         setTitle(Logo.messages.getString("menu.help.translatexlogo"));
         first = new FirstPanel(this);
         getContentPane().add(first);
