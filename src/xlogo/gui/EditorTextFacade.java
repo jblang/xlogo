@@ -161,7 +161,7 @@ public abstract class EditorTextFacade implements Searchable, Printable {
         } else return Printable.NO_SUCH_PAGE;
     }
 
-    protected void actionPrint() {
+    protected void print() {
         Font font = jtc.getFont();
         String txt = jtc.getText();
         jtc.setFont(new Font(font.getFontName(), Font.PLAIN, 10));

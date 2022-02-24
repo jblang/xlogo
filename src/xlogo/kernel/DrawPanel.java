@@ -2142,7 +2142,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             GuiComponent gc = gm.get(id);
             // If gc is a JButton
             if (gc.isButton()) {
-                ((GuiButton) gc).setAction(Utils.decoupe(liste));
+                ((GuiButton) gc).setAction(Utils.formatCode(liste));
                 if (!gc.hasAction()) {
                     ((javax.swing.JButton) gc.getGuiObject()).addActionListener(gc);
                     gc.hasAction = true;
@@ -2495,7 +2495,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.drawImage(dessin, 0, 0, (int) (Logo.config.getImageWidth() * zoom), (int) (Logo.config.getImageHeight() * zoom), this);
-        if (!Animation.execution_lancee && null != selection && cadre.isCommandEditable()) {
+        if (!Animation.executionLaunched && null != selection && cadre.isCommandEditable()) {
             g2d.setColor(colorSelection);
             g2d.fillRect(selection.x, selection.y, selection.width, selection.height);
         }
@@ -2521,7 +2521,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     public void mousePressed(MouseEvent e) {
-        if (!Animation.execution_lancee) {
+        if (!Animation.executionLaunched) {
             selection = new Rectangle();
             origine = new Point(e.getPoint());
             selection.setSize(0, 0);
@@ -2532,7 +2532,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     public void mouseClicked(MouseEvent ev) {
-        if (!Animation.execution_lancee) {
+        if (!Animation.executionLaunched) {
             selection = null;
             origine = null;
             repaint();
@@ -2552,7 +2552,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     // Select an export area
     public void mouseDragged(MouseEvent e) {
-        if (!Animation.execution_lancee && null != selection) {
+        if (!Animation.executionLaunched && null != selection) {
             // First, we test if we need to move the scrollbars
             Point pos = e.getPoint();
             javax.swing.JViewport jv = cadre.scrollPane.getViewport();

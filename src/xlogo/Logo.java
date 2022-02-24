@@ -98,12 +98,12 @@ public class Logo {
 
             // If this command is defined from the command line
             if (autoLaunch) {
-                frame.startAnimation(Utils.decoupe(getMainCommand()));
+                frame.startAnimation(Utils.formatCode(getMainCommand()));
                 frame.getHistoryPanel().ecris("normal", getMainCommand() + "\n");
             }
             // Else if this command is defined from the Start Up Dialog Box
             else if (!config.getStartupCommand().equals("")) {
-                frame.animation = new Animation(frame, Utils.decoupe(config.getStartupCommand()));
+                frame.animation = new Animation(frame, Utils.formatCode(config.getStartupCommand()));
                 frame.animation.start();
             } else {
                 frame.setCommandEnabled(true);

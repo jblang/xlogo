@@ -202,7 +202,7 @@ public class HistoryPanel extends JPanel {
                 RTFEditorKit myRTFEditorKit = new RTFEditorKit();
                 StyledDocument myStyledDocument = getStyledDocument();
                 try {
-                    JFileChooser jf = new JFileChooser(Utils.SortieTexte(Logo.config.getDefaultFolder()));
+                    JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
                     String[] ext = {".rtf"};
                     jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_rtf"), ext));
                     int retval = jf.showDialog(cadre, Logo.messages.getString("menu.file.save"));

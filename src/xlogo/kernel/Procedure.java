@@ -66,7 +66,7 @@ public class Procedure {
                     }
                     // delete comments
                     line = deleteComments(line);
-                    line = Utils.decoupe(line).toString().trim();
+                    line = Utils.formatCode(line).toString().trim();
                     instr.append(line);
                     if (!line.equals("")) {
                         instr.append(" ");
@@ -139,7 +139,7 @@ public class Procedure {
                 }
                 // delete comments
                 //       	line=deleteComments(line);
-                line = Utils.decoupe(line).toString().trim();
+                line = Utils.formatCode(line).toString().trim();
                 sb.append("[ ");
                 sb.append(line);
                 sb.append(" ] ");

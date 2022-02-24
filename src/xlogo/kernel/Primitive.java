@@ -165,7 +165,7 @@ public class Primitive {
      */
     protected void repete(int i, String st) {
         if (i > 0) {
-            st = new String(Utils.decoupe(st));
+            st = new String(Utils.formatCode(st));
             LoopProperties bp = new LoopRepeat(BigDecimal.ONE,
                     new BigDecimal(i), BigDecimal.ONE, st);
             stackLoop.push(bp);
@@ -259,7 +259,7 @@ public class Primitive {
             buffer
                     .append(" " + Utils.primitiveName("ret") + " "
                             + val);
-            app.updateHistory("normal", Utils.SortieTexte(buffer.toString()) + "\n");
+            app.updateHistory("normal", Utils.unescapeString(buffer.toString()) + "\n");
         }
         Interpreter.en_cours.pop();
         Interpreter.locale = Interpreter.stockvariable.pop();

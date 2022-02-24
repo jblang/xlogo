@@ -135,7 +135,7 @@ public class LaunchPrimitive {
                 StringBuffer buffer = new StringBuffer();
                 for (int i = 0; i < Interpreter.en_cours.size(); i++) buffer.append("  ");
                 buffer.append(procedure.name);
-                for (int i = 0; i < param.size(); i++) buffer.append(" " + Utils.SortieTexte(param.get(i)));
+                for (int i = 0; i < param.size(); i++) buffer.append(" " + Utils.unescapeString(param.get(i)));
                 String msg = buffer + "\n";
                 cadre.updateHistory("normal", msg);
             }
@@ -221,16 +221,16 @@ public class LaunchPrimitive {
                             par = formatList(par.substring(1, par.length() - 1));
                         mot = getWord(param.get(i));
                         if (null == mot)
-                            result += Utils.SortieTexte(par) + " ";
+                            result += Utils.unescapeString(par) + " ";
                         else
-                            result += Utils.SortieTexte(mot) + " ";
+                            result += Utils.unescapeString(mot) + " ";
                     }
                     cadre.updateHistory("perso", result + "\n");
                     break;
                 case 10: // si // if
                     try {
                         String liste = getList(param.get(1));
-                        liste = new String(Utils.decoupe(liste));
+                        liste = new String(Utils.formatCode(liste));
                         String liste2 = null;
                         boolean predicat = predicat(param.get(0));
                         InstructionBuffer instruction = cadre.getKernel().getInstructionBuffer();
@@ -245,7 +245,7 @@ public class LaunchPrimitive {
                                 if (instruction.charAt(0) == '[') {
                                     instruction.deleteFirstWord("[");
                                     liste2 = getFinalList(kernel.listSearch());
-                                    liste2 = new String(Utils.decoupe(liste2));
+                                    liste2 = new String(Utils.formatCode(liste2));
                                 }
                             } catch (Exception e) {
                             }
@@ -1089,9 +1089,9 @@ public class LaunchPrimitive {
                         par = formatList(par.substring(1, par.length() - 1));
                     mot = getWord(param.get(0));
                     if (null == mot)
-                        cadre.getDrawPanel().etiquette(Utils.SortieTexte(par));
+                        cadre.getDrawPanel().etiquette(Utils.unescapeString(par));
                     else
-                        cadre.getDrawPanel().etiquette(Utils.SortieTexte(mot));
+                        cadre.getDrawPanel().etiquette(Utils.unescapeString(mot));
                     break;
                 case 85: // /trouvecouleur
                     if (kernel.getActiveTurtle().isVisible())
@@ -1153,9 +1153,9 @@ public class LaunchPrimitive {
                 case 92: // tantque
                     try {
                         String li1 = getList(param.get(0));
-                        li1 = new String(Utils.decoupe(li1));
+                        li1 = new String(Utils.formatCode(li1));
                         String li2 = getList(param.get(1));
-                        li2 = new String(Utils.decoupe(li2));
+                        li2 = new String(Utils.formatCode(li2));
                         String instr = "\\siwhile " + li1 + "[ " + li2 + "] ";
                         LoopWhile bp = new LoopWhile(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, instr);
                         Primitive.stackLoop.push(bp);
@@ -1206,7 +1206,7 @@ public class LaunchPrimitive {
                         param.push(phrase);
                         donne(param);
                         String texte = liste + "\n" + phrase;
-                        cadre.updateHistory("commentaire", Utils.SortieTexte(texte) + "\n");
+                        cadre.updateHistory("commentaire", Utils.unescapeString(texte) + "\n");
                         cadre.focusCommandLine();
                         inputFrame.dispose();
                         cadre.focusCommandLine();
@@ -1335,7 +1335,7 @@ public class LaunchPrimitive {
                         mot = getWord(param.get(0));
                         if (null == mot) {
                             mot = getList(param.get(0).trim());
-                            mot = new String(Utils.decoupe(mot));
+                            mot = new String(Utils.formatCode(mot));
                         } else mot = mot + " ";
                         cadre.getKernel().getInstructionBuffer().insert(mot);
                         Interpreter.renvoi_instruction = true;
@@ -1343,7 +1343,7 @@ public class LaunchPrimitive {
                     }
                     break;
                 case 108: // catalogue
-                    String str = Utils.SortieTexte(Logo.config.getDefaultFolder());
+                    String str = Utils.unescapeString(Logo.config.getDefaultFolder());
                     File f = new File(str);
                     String fichier = "";
                     String dossier = "";
@@ -1381,9 +1381,9 @@ public class LaunchPrimitive {
                         if (null == liste)
                             throw new LogoException(cadre, param.get(0) + " "
                                     + Logo.messages.getString("error.word"));
-                        String chemin = Utils.SortieTexte(liste);
+                        String chemin = Utils.unescapeString(liste);
                         if ((new File(chemin)).isDirectory() && !chemin.startsWith("..")) {
-                            Logo.config.setDefaultFolder(Utils.rajoute_backslash(chemin));
+                            Logo.config.setDefaultFolder(Utils.escapeString(chemin));
                         } else throw new LogoException(cadre, liste
                                 + " "
                                 + Logo.messages
@@ -1426,7 +1426,7 @@ public class LaunchPrimitive {
                         if (null == mot)
                             throw new LogoException(cadre, param.get(0) + " "
                                     + Logo.messages.getString("error.word"));
-                        String path = Utils.SortieTexte(Logo.config.getDefaultFolder()) + File.separator + mot;
+                        String path = Utils.unescapeString(Logo.config.getDefaultFolder()) + File.separator + mot;
                         try {
                             String txt = Utils.readLogoFile(path);
                             cadre.editor.setEditorStyledText(txt);
@@ -1691,7 +1691,7 @@ public class LaunchPrimitive {
                 case 130: // sequence
                     try {
                         liste = getFinalList(param.get(0));
-                        cadre.getSoundPlayer().cree_sequence(Utils.decoupe(liste).toString());
+                        cadre.getSoundPlayer().cree_sequence(Utils.formatCode(liste).toString());
                     } catch (LogoException e) {
                     }
 
@@ -1799,7 +1799,7 @@ public class LaunchPrimitive {
                             }
                         }
                         liste += tampon;
-                        liste = Utils.SortieTexte(liste);
+                        liste = Utils.unescapeString(liste);
 
                         MessageTextArea jt = new MessageTextArea(liste, cadre.getHistoryPanel().getDsd());
                         JOptionPane.showMessageDialog(cadre, jt, "", JOptionPane.INFORMATION_MESSAGE, Logo.getAppIcon());
@@ -1922,7 +1922,7 @@ public class LaunchPrimitive {
                                     + " " + ident);
                         }
                         Interpreter.operande = true;
-                        Interpreter.calcul.push("[ " + Utils.decoupe(line.trim()) + " ] ");
+                        Interpreter.calcul.push("[ " + Utils.formatCode(line.trim()) + " ] ");
                         kernel.flows.set(index, flowReader);
                     } catch (FileNotFoundException e1) {
                         try {
@@ -2000,7 +2000,7 @@ public class LaunchPrimitive {
 
 //					System.out.println(flow.isReader()+" "+flow.isWriter());
                         // Write the line
-                        flowWriter.write(Utils.SortieTexte(liste));
+                        flowWriter.write(Utils.unescapeString(liste));
                         kernel.flows.set(index, flowWriter);
                     } catch (FileNotFoundException e1) {
                     } catch (IOException e2) {
@@ -2055,7 +2055,7 @@ public class LaunchPrimitive {
                         if (null == mot)
                             throw new LogoException(cadre, param.get(0) + " "
                                     + Logo.messages.getString("error.word"));
-                        liste = Utils.SortieTexte(Logo.config.getDefaultFolder()) + File.separator + Utils.SortieTexte(mot);
+                        liste = Utils.unescapeString(Logo.config.getDefaultFolder()) + File.separator + Utils.unescapeString(mot);
                         int ident = kernel.getCalculator().getInteger(param.get(0));
                         if (kernel.flows.search(ident) == -1)
                             kernel.flows.add(new Flow(ident, liste, false));
@@ -2102,7 +2102,7 @@ public class LaunchPrimitive {
                         else flowWriter = new FlowWriter(flow);
 
                         // Write the line
-                        flowWriter.append(Utils.SortieTexte(liste));
+                        flowWriter.append(Utils.unescapeString(liste));
                         kernel.flows.set(index, flowWriter);
                     } catch (FileNotFoundException e1) {
                     } catch (IOException e2) {
@@ -2161,9 +2161,9 @@ public class LaunchPrimitive {
                         par = formatList(par.substring(1, par.length() - 1));
                     mot = getWord(param.get(0));
                     if (null == mot)
-                        cadre.updateHistory("perso", Utils.SortieTexte(par));
+                        cadre.updateHistory("perso", Utils.unescapeString(par));
                     else
-                        cadre.updateHistory("perso", Utils.SortieTexte(mot));
+                        cadre.updateHistory("perso", Utils.unescapeString(mot));
                     break;
                 case 166: // cercle
                     try {
@@ -2252,17 +2252,17 @@ public class LaunchPrimitive {
                                     + Logo.messages.getString("error.word"));
                         String chemin = "";
                         if (Logo.config.getDefaultFolder().endsWith(File.separator))
-                            chemin = Utils.SortieTexte(Logo.config.getDefaultFolder() + mot);
+                            chemin = Utils.unescapeString(Logo.config.getDefaultFolder() + mot);
                         else
-                            chemin = Utils.SortieTexte(Logo.config.getDefaultFolder() + Utils.rajoute_backslash(File.separator) + mot);
+                            chemin = Utils.unescapeString(Logo.config.getDefaultFolder() + Utils.escapeString(File.separator) + mot);
                         if ((new File(chemin)).isDirectory()) {
                             try {
-                                Logo.config.setDefaultFolder(Utils.rajoute_backslash((new File(chemin)).getCanonicalPath()));
+                                Logo.config.setDefaultFolder(Utils.escapeString((new File(chemin)).getCanonicalPath()));
                             } catch (NullPointerException e1) {
                             } catch (IOException e2) {
                             }
                         } else
-                            throw new LogoException(cadre, Utils.rajoute_backslash(chemin)
+                            throw new LogoException(cadre, Utils.escapeString(chemin)
                                     + " "
                                     + Logo.messages
                                     .getString("erreur_pas_repertoire"));
@@ -2280,7 +2280,7 @@ public class LaunchPrimitive {
                                 + Logo.messages.getString("un_caractere"));
                         else {
                             Interpreter.operande = true;
-                            String st = String.valueOf((int) Utils.SortieTexte(itemWord(1, mot)).charAt(0));
+                            String st = String.valueOf((int) Utils.unescapeString(itemWord(1, mot)).charAt(0));
                             Interpreter.calcul.push(st);
                         }
                     } catch (LogoException e) {
@@ -2332,7 +2332,7 @@ public class LaunchPrimitive {
                 case 183: // controls.for repetepour
                     try {
                         String li2 = getList(param.get(1));
-                        li2 = new String(Utils.decoupe(li2));
+                        li2 = new String(Utils.formatCode(li2));
                         String li1 = getFinalList(param.get(0));
                         int nb = numberOfElements(li1);
                         if (nb < 3 || nb > 4)
@@ -2709,7 +2709,7 @@ public class LaunchPrimitive {
                 case 208: // LongueurEtiquette
                     try {
                         mot = getWord(param.get(0));
-                        if (null != mot) mot = Utils.SortieTexte(mot);
+                        if (null != mot) mot = Utils.unescapeString(mot);
                         else mot = getFinalList(param.get(0)).trim();
                         Interpreter.operande = true;
                         java.awt.FontMetrics fm = cadre.getDrawPanel().getGraphics()
@@ -3486,10 +3486,10 @@ public class LaunchPrimitive {
                 case 281: // controls.ifelse
                     try {
                         liste = getList(param.get(1));
-                        liste = new String(Utils.decoupe(liste));
+                        liste = new String(Utils.formatCode(liste));
                         boolean predicat = predicat(param.get(0));
                         String liste2 = getList(param.get(2));
-                        liste = new String(Utils.decoupe(liste));
+                        liste = new String(Utils.formatCode(liste));
                         kernel.primitive.si(predicat, liste, liste2);
                         Interpreter.renvoi_instruction = true;
                     } catch (LogoException e) {
@@ -3544,7 +3544,7 @@ public class LaunchPrimitive {
                             }
                         }
                         String li2 = getList(param.get(2));
-                        li2 = new String(Utils.decoupe(li2));
+                        li2 = new String(Utils.formatCode(li2));
                         String li1 = getWord(param.get(1));
                         boolean list = false;
                         if (null == li1) {
@@ -3596,7 +3596,7 @@ public class LaunchPrimitive {
                 case 285: // controls.forever repetetoujours
                     try {
                         String li2 = getList(param.get(0));
-                        li2 = new String(Utils.decoupe(li2));
+                        li2 = new String(Utils.formatCode(li2));
                         LoopProperties bp = new LoopProperties(BigDecimal.ONE, BigDecimal.ZERO
                                 , BigDecimal.ONE, li2);
                         cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP + " ");
@@ -3662,7 +3662,7 @@ public class LaunchPrimitive {
                         String[] cmd = new String[index];
                         for (int i = 0; i < index; i++) {
                             String liste1 = item(list, i + 1);
-                            cmd[i] = Utils.SortieTexte(getFinalList(liste1).trim());
+                            cmd[i] = Utils.unescapeString(getFinalList(liste1).trim());
                         }
                         try {
 /*                       			String com="";
@@ -3779,7 +3779,7 @@ public class LaunchPrimitive {
                         String list = getFinalList(param.get(0));
                         LoopFillPolygon bp = new LoopFillPolygon();
                         Primitive.stackLoop.push(bp);
-                        cadre.getKernel().getInstructionBuffer().insert(Utils.decoupe(list) + Primitive.END_LOOP + " ");
+                        cadre.getKernel().getInstructionBuffer().insert(Utils.formatCode(list) + Primitive.END_LOOP + " ");
                         cadre.getDrawPanel().startRecord2DPolygon();
                     } catch (LogoException e) {
                     }
@@ -3791,9 +3791,9 @@ public class LaunchPrimitive {
                 case 299: // loop.dountil
                     try {
                         String li1 = getList(param.get(0));
-                        li1 = new String(Utils.decoupe(li1));
+                        li1 = new String(Utils.formatCode(li1));
                         String li2 = getList(param.get(1));
-                        li2 = new String(Utils.decoupe(li2));
+                        li2 = new String(Utils.formatCode(li2));
                         String instr = "\\siwhile " + Utils.primitiveName("non") + " " + li2 + "[ " + li1 + "] ";
                         LoopWhile bp = new LoopWhile(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, instr);
                         Primitive.stackLoop.push(bp);
@@ -3804,9 +3804,9 @@ public class LaunchPrimitive {
                 case 300: // loop.dowhile
                     try {
                         String li1 = getList(param.get(0));
-                        li1 = new String(Utils.decoupe(li1));
+                        li1 = new String(Utils.formatCode(li1));
                         String li2 = getList(param.get(1));
-                        li2 = new String(Utils.decoupe(li2));
+                        li2 = new String(Utils.formatCode(li2));
                         String instr = "\\siwhile " + li2 + "[ " + li1 + "] ";
                         LoopWhile bp = new LoopWhile(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, instr);
                         Primitive.stackLoop.push(bp);
@@ -3906,7 +3906,7 @@ public class LaunchPrimitive {
             boolean bool = true;
             if (!fichier.endsWith(".lgo"))
                 fichier += ".lgo";
-            String path = Utils.SortieTexte(Logo.config.getDefaultFolder())
+            String path = Utils.unescapeString(Logo.config.getDefaultFolder())
                     + File.separator + fichier;
             try {
                 for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
@@ -3952,8 +3952,8 @@ public class LaunchPrimitive {
                     .getString("erreur_format_image"));
         else {
             try {
-                pathWord = Utils.SortieTexte(pathWord);
-                File f = new File(Utils.SortieTexte(Logo.config.getDefaultFolder())
+                pathWord = Utils.unescapeString(pathWord);
+                File f = new File(Utils.unescapeString(Logo.config.getDefaultFolder())
                         + File.separator + pathWord);
                 image = ImageIO.read(f);
             } catch (Exception e1) {
@@ -4243,7 +4243,7 @@ public class LaunchPrimitive {
                 if (liste == String.valueOf(Double.parseDouble(liste)))
                     debut_chaine = "";
                 else debut_chaine = "\"";
-                return Utils.SortieTexte(liste);
+                return Utils.unescapeString(liste);
             } catch (NumberFormatException e) {
             }
         return (null);

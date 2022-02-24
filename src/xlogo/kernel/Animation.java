@@ -23,7 +23,7 @@ import java.util.Stack;
  * the event dispatcher thread 
  */
 public class Animation extends Thread {
-    public static boolean execution_lancee = false;
+    public static boolean executionLaunched = false;
     private boolean pause = false;
     private Application cadre;
     private StringBuffer instruction;
@@ -46,7 +46,7 @@ public class Animation extends Thread {
                 // n'est plus active
             }
         });
-        execution_lancee = true;
+        executionLaunched = true;
         cadre.getDrawPanel().active_souris(); // On active les événements souris sur
         // la zone de dessin
         cadre.scrollPane.getVerticalScrollBar().addMouseListener(souris);
@@ -80,7 +80,7 @@ public class Animation extends Thread {
         }
         cadre.setCommandEnabled(true);
         if (!cadre.viewer3DVisible()) cadre.focusCommandLine();
-        execution_lancee = false;
+        executionLaunched = false;
         cm.setContinuer(false);
         cadre.error = false;
         LogoException.lance = false;

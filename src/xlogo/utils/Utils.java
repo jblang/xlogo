@@ -11,7 +11,8 @@ import xlogo.Logo;
 import xlogo.kernel.Animation;
 import xlogo.kernel.Calculator;
 
-import java.awt.*;
+import javax.swing.*;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -20,76 +21,41 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 public class Utils {
-    public static Image dimensionne_image(String nom, Component jf) {
-        Image image = null;
-        image = Toolkit.getDefaultToolkit().getImage(Utils.class.getResource(nom));
-        MediaTracker tracker = new MediaTracker(jf);
-        tracker.addImage(image, 0);
-        try {
-            tracker.waitForID(0);
-        } catch (InterruptedException e1) {
-        }
-        double largeur_ecran = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-        int largeur = image.getWidth(jf);
-        int hauteur = image.getHeight(jf);
-        // On fait attention à la résolution de l'utilisateur
-        double facteur = largeur_ecran / 1024.0; //les images sont prévues pour 1024x768
-        if ((int) (facteur + 0.001) != 1) {
-            image = image.getScaledInstance((int) (facteur * largeur), (int) (facteur * hauteur), Image.SCALE_SMOOTH);
-            tracker = new MediaTracker(jf);
-            tracker.addImage(image, 0);
-            try {
-                tracker.waitForID(0);
-            } catch (InterruptedException e1) {
-            }
-        }
-        return image;
-    }
 
-    public static void recursivelySetFonts(Component comp, Font font) {
-        comp.setFont(font);
-        if (comp instanceof Container) {
-            Container cont = (Container) comp;
-            for (int j = 0, ub = cont.getComponentCount(); j < ub; ++j)
-                recursivelySetFonts(cont.getComponent(j), font);
-        }
-    }
-
-    public static String rajoute_backslash(String st) {
-        StringBuffer tampon = new StringBuffer();
+    public static String escapeString(String st) {
+        StringBuilder sb = new StringBuilder();
         for (int j = 0; j < st.length(); j++) {
             char c = st.charAt(j);
-            if (c == '\\') tampon.append("\\\\");
-            else if (c == ' ') tampon.append("\\e");
-            else if ("()[]#".indexOf(c) != -1) tampon.append("\\" + c);
-            else tampon.append(c);
+            if (c == '\\') sb.append("\\\\");
+            else if (c == ' ') sb.append("\\e");
+            else if ("()[]#".indexOf(c) != -1) sb.append("\\").append(c);
+            else sb.append(c);
         }
-        return (new String(tampon));
+        return (new String(sb));
     }
 
-    public static String SortieTexte(String chaine) { // Enlève les backslash
-        StringBuffer buffer = new StringBuffer();
+    public static String unescapeString(String chaine) { // Enlève les backslash
+        StringBuilder sb = new StringBuilder();
         boolean backslash = false;
         boolean ignore = false;
         for (int j = 0; j < chaine.length(); j++) {
             char c = chaine.charAt(j);
             if (backslash) {
-                if (c == 'e') buffer.append(' ');
-//				else if (c=='\\') buffer.append('\\');
-                else if (c == 'n') buffer.append("\n");
+                if (c == 'e') sb.append(' ');
+                else if (c == 'n') sb.append("\n");
                 else if (c == 'v') {
                 }
                 else if (c == 'l') {
                     ignore = true;
-                } else if ("[]()#\\".indexOf(c) > -1) buffer.append(c);
+                } else if ("[]()#\\".indexOf(c) > -1) sb.append(c);
                 backslash = false;
             } else {
                 if (c == '\\') backslash = true;
-                else if (!ignore) buffer.append(c);
+                else if (!ignore) sb.append(c);
                 else if (c == ' ') ignore = false;
             }
         }
-        return Calculator.getOutputNumber(new String(buffer));
+        return Calculator.getOutputNumber(new String(sb));
     }
 
     /**
@@ -97,78 +63,69 @@ public class Utils {
      * - Unused white spaces are deleted.<br>
      * - The character \ is modified to \\ <br>
      * - The sequence "\ " is modified to "\e"<br>
-     * - The sequence "\ " is modified to "\e"<br>
-     * - The sequence "\ " is modified to "\e"<br>
-     * - The sequence "\ " is modified to "\e"<br>
      * @param st The String instruction to format
      * @return The formatted instructions
      */
-    public static StringBuffer decoupe(String st) {
-        StringBuffer buffer = new StringBuffer();
+    public static StringBuffer formatCode(String st) {
+        StringBuffer sb = new StringBuffer();
         // If last character is a white space
-        boolean espace = false;
+        boolean space = false;
         // If last character is a backslash
         boolean backslash = false;
         // If last character is a word
-        boolean mot = false;
+        boolean word = false;
 
-        int crochet_liste = 0;
+        int brackets = 0;
 //		boolean variable=false;
         // If XLogo is running a program
-        boolean execution_lancee = Animation.execution_lancee;
+        boolean launched = Animation.executionLaunched;
         for (int i = 0; i < st.length(); i++) {
             char c = st.charAt(i);
             if (c == ' ') {
-                if (!espace && buffer.length() != 0) {
-                    if (backslash) buffer.append("\\e");
+                if (!space && sb.length() != 0) {
+                    if (backslash) sb.append("\\e");
                     else {
-                        buffer.append(c);
-                        espace = true;
-                        mot = false;
-                        //					variable=false;
+                        sb.append(c);
+                        space = true;
+                        word = false;
                     }
                     backslash = false;
                 }
             } else if (c == '\\' && !backslash) {
-                espace = false;
+                space = false;
                 backslash = true;
             } else if (c == '\"') {
-                if (espace && crochet_liste <= 0) {
-                    mot = true;
+                if (space && brackets <= 0) {
+                    word = true;
                 }
-                buffer.append(c);
-                espace = false;
+                sb.append(c);
+                space = false;
                 backslash = false;
             } else if (c == ':') {
-		/*		if (espace&&crochet_liste<=0){
-					variable=true;
-				}*/
-                buffer.append(c);
-                espace = false;
+                sb.append(c);
+                space = false;
                 backslash = false;
             } else if (c == '[' || c == ']' || c == '(' || c == ')') {
                 //Modifications apportées
                 if (backslash) {
-                    buffer.append("\\" + c);
+                    sb.append("\\").append(c);
                     backslash = false;
                 } else {
-                    if (c == '[') crochet_liste++;
-                    else if (c == ']') crochet_liste--;
-                    if (espace || buffer.length() == 0) {
-                        buffer.append(c + " ");
-                        espace = true;
+                    if (c == '[') brackets++;
+                    else if (c == ']') brackets--;
+                    if (space || sb.length() == 0) {
+                        sb.append(c).append(" ");
                     } else {
-                        buffer.append(" " + c + " ");
-                        mot = false;
-                        espace = true;
+                        sb.append(" ").append(c).append(" ");
+                        word = false;
                     }
+                    space = true;
                 }
             } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '=' || c == '<' || c == '>' || c == '&' || c == '|') {
-                //System.out.println(mot+" "+espace);
                 // à modifier (test + fin)
-                if (mot || crochet_liste > 0) {
-                    buffer.append(c);
-                    if (espace) espace = false;
+                if (word || brackets > 0) {
+                    sb.append(c);
+                    if (space) space = false;
                 } else {
                     String op = String.valueOf(c);
                     // Looking for operator <= or >=
@@ -180,47 +137,33 @@ public class Utils {
                             }
                         }
                     }
-                    if (espace) buffer.append(op + " ");
+                    if (space) sb.append(op).append(" ");
                     else {
-                        espace = true;
-                        if (buffer.length() != 0) buffer.append(" " + op + " ");
+                        space = true;
+                        if (sb.length() != 0) sb.append(" ").append(op).append(" ");
                             // If buffer is empty no white space before
-                        else buffer.append(op + " ");
+                        else sb.append(op).append(" ");
                     }
                 }
             } else {
                 if (backslash) {
-                    if (c == 'n') buffer.append("\\n");
-                    else if (c == '\\') buffer.append("\\\\");
-                    else if (c == 'v' && execution_lancee) buffer.append("\"");
-                    else if (c == 'e' && execution_lancee) buffer.append("\\e");
-                    else if (c == '#') buffer.append("\\#");
-                    else if (c == 'l' && execution_lancee) buffer.append("\\l");
+                    if (c == 'n') sb.append("\\n");
+                    else if (c == '\\') sb.append("\\\\");
+                    else if (c == 'v' && launched) sb.append("\"");
+                    else if (c == 'e' && launched) sb.append("\\e");
+                    else if (c == '#') sb.append("\\#");
+                    else if (c == 'l' && launched) sb.append("\\l");
                     else {
-                        buffer.append(c);
+                        sb.append(c);
                     }
                 } else {
-                    buffer.append(c);
+                    sb.append(c);
                 }
                 backslash = false;
-                espace = false;
+                space = false;
             }
         }
-//		System.out.println(buffer);
-        // Remove the space when the user write only "*" or "+" in the command line
-        //if (buffer.length()>0&&buffer.charAt(0)==' ') buffer.deleteCharAt(0);
-        return (buffer);
-    }
-
-
-    public static String specialCharacterXML(String st) {
-        st = st.replaceAll("&", "&amp;");
-        st = st.replaceAll("<", "&lt;");
-        st = st.replaceAll("\"", "&quot;");
-        st = st.replaceAll(">", "&gt;");
-        st = st.replaceAll("'", "&apos;");
-
-        return st;
+        return (sb);
     }
 
     public static String readLogoFile(String path) throws IOException {
@@ -229,7 +172,7 @@ public class Utils {
         try {
             // New format for XLogo >=0.923
             // Encoded with UTF-8
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             FileInputStream fr = new FileInputStream(path);
             InputStreamReader isr = new InputStreamReader(fr, StandardCharsets.UTF_8);
             BufferedReader brd = new BufferedReader(isr);
@@ -242,7 +185,7 @@ public class Utils {
             // tentative fichier réseau
             try {
                 URL url = new java.net.URL(path);
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 java.io.InputStream fr = url.openStream();
                 InputStreamReader isr = new InputStreamReader(fr, StandardCharsets.UTF_8);
                 BufferedReader brd = new BufferedReader(isr);
@@ -287,11 +230,6 @@ public class Utils {
         }
     }
 
-    public static boolean fileExists(String name) {
-        File f = new File(name);
-        return f.exists();
-    }
-
     public static String primitiveName(String generic) {
         Locale locale = Logo.getLocale(Logo.config.getLanguage());
         ResourceBundle prim = ResourceBundle.getBundle(
@@ -302,5 +240,18 @@ public class Utils {
             st = str.nextToken();
         }
         return st;
+    }
+
+    public static JButton createButton(JToolBar parent, String iconName, String toolTip, ActionListener listener) {
+        var button = new JButton(Logo.getIcon(iconName));
+        if (toolTip != null)
+            button.setToolTipText(Logo.messages.getString(toolTip));
+        button.addActionListener(listener);
+        parent.add(button);
+        return button;
+    }
+
+    public static JButton createButton(JToolBar parent, String iconName, ActionListener listener) {
+        return createButton(parent, iconName, null, listener);
     }
 }

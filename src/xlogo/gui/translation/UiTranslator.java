@@ -67,7 +67,7 @@ public class UiTranslator extends JFrame implements ActionListener {
             this.getContentPane().validate();
         } else if (cmd.equals(UiTranslator.SEND)) {
             String path = "";
-            JFileChooser jf = new JFileChooser(Utils.SortieTexte(Logo.config.getDefaultFolder()));
+            JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
             int retval = jf.showDialog(this, Logo.messages
                     .getString("menu.file.save"));
             if (retval == JFileChooser.APPROVE_OPTION) {

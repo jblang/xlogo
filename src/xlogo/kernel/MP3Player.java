@@ -21,8 +21,8 @@ public class MP3Player extends Thread {
         this.app = app;
         try {
             // Build absolutePath
-            String absolutePath = Utils.SortieTexte(Logo.config.getDefaultFolder())
-                    + File.separator + Utils.SortieTexte(path);
+            String absolutePath = Utils.unescapeString(Logo.config.getDefaultFolder())
+                    + File.separator + Utils.unescapeString(path);
             player = new AdvancedPlayer(new FileInputStream(absolutePath));
         } catch (FileNotFoundException e) {
             // tentative fichier réseau

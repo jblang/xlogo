@@ -31,7 +31,7 @@ public class LogoException extends Exception {
             cadre.updateHistory("erreur", Logo.messages.getString("dans") + " " + Interpreter.en_cours.pop() + ", "
                     + Logo.messages.getString("line") + " " + getLineNumber() + ":\n");
         }
-        if (!cadre.error) cadre.updateHistory("erreur", Utils.SortieTexte(st) + "\n");
+        if (!cadre.error) cadre.updateHistory("erreur", Utils.unescapeString(st) + "\n");
 
         cadre.focusCommandLine();
         cadre.error = true;

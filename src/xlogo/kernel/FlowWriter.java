@@ -17,13 +17,13 @@ public class FlowWriter extends Flow {
     void append(String line) throws IOException {
         if (null == bfw) bfw = new BufferedWriter(new FileWriter(getPath(), true));
         PrintWriter pw = new PrintWriter(bfw);
-        pw.println(Utils.SortieTexte(line));
+        pw.println(Utils.unescapeString(line));
     }
 
     void write(String line) throws IOException {
         if (null == bfw) bfw = new BufferedWriter(new FileWriter(getPath()));
         PrintWriter pw = new PrintWriter(bfw);
-        pw.println(Utils.SortieTexte(line));
+        pw.println(Utils.unescapeString(line));
     }
 
     boolean isWriter() {

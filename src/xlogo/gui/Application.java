@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Stack;
 
+import static xlogo.utils.Utils.createButton;
+
 public class Application extends JFrame {
     private static final double ZOOM_FACTOR = 1.25;
     private static final Stack<String> historyStack = new Stack<>();
@@ -164,13 +166,6 @@ public class Application extends JFrame {
         createMenuItem(helpMenu, "menu.help.about", e -> showAbout());
 
         setJMenuBar(menuBar);
-    }
-
-    private JButton createButton(JToolBar parent, String iconName, ActionListener listener) {
-        var button = new JButton(Logo.getIcon(iconName));
-        button.addActionListener(listener);
-        parent.add(button);
-        return button;
     }
 
     private JToolBar createToolBar() {
@@ -316,7 +311,7 @@ public class Application extends JFrame {
     }
 
     private void openWorkspace() {
-        JFileChooser jf = new JFileChooser(Utils.SortieTexte(Logo.config.getDefaultFolder()));
+        JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
         String[] ext = {".lgo"};
         jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_logo"), ext));
         int val = jf.showDialog(this, Logo.messages.getString("menu.file.open"));
@@ -346,7 +341,7 @@ public class Application extends JFrame {
         }
         String path = Application.path;
         if (promptName || null == path) {
-            JFileChooser jf = new JFileChooser(Utils.SortieTexte(Logo.config.getDefaultFolder()));
+            JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
             String[] ext = {".lgo"};
             jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_logo"), ext));
 
@@ -360,7 +355,7 @@ public class Application extends JFrame {
                 setTitle(path + " - XLogo");
                 try {
                     File f = new File(path);
-                    Logo.config.setDefaultFolder(Utils.rajoute_backslash(f.getParent()));
+                    Logo.config.setDefaultFolder(Utils.escapeString(f.getParent()));
                 } catch (NullPointerException ignored) {
                 }
             }
@@ -388,7 +383,7 @@ public class Application extends JFrame {
         RTFEditorKit myRTFEditorKit = new RTFEditorKit();
         StyledDocument myStyledDocument = getHistoryPanel().sd_Historique();
         try {
-            JFileChooser jf = new JFileChooser(Utils.SortieTexte(Logo.config.getDefaultFolder()));
+            JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
             String[] ext = {".rtf"};
             jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_rtf"), ext));
             int val = jf.showDialog(this, Logo.messages.getString("menu.file.save"));
@@ -513,7 +508,7 @@ public class Application extends JFrame {
     }
 
     private void runMainCommand() {
-        startAnimation(Utils.decoupe(Logo.getMainCommand()));
+        startAnimation(Utils.formatCode(Logo.getMainCommand()));
         getHistoryPanel().ecris("normal", Logo.getMainCommand() + "\n");
     }
 
@@ -567,7 +562,7 @@ public class Application extends JFrame {
                 a = text.indexOf("#", a + 1);
             }
             Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-            startAnimation(Utils.decoupe(text));
+            startAnimation(Utils.formatCode(text));
 
             // Delete the command line
             SwingUtilities.invokeLater(() -> commandLine.setText(""));
@@ -686,7 +681,7 @@ public class Application extends JFrame {
      * the command line and the History zone
      */
     public void changeSyntaxHighlightingStyle() {
-        editor.initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
+        editor.initStyles();
         commandLine.initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
         historyPanel.getDsd().initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
     }
