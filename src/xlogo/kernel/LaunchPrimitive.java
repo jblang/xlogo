@@ -2135,13 +2135,13 @@ public class LaunchPrimitive {
                         String value;
                         mot = mot.toLowerCase();
                         if (!Interpreter.locale.containsKey(mot)) {
-                            if (!wp.globale.containsKey(mot))
+                            if (!wp.globals.containsKey(mot))
                                 throw new LogoException(cadre, mot
                                         + " "
                                         + Logo.messages
                                         .getString("erreur_variable"));
                             else
-                                value = wp.globale.get(mot);
+                                value = wp.globals.get(mot);
                         } else {
                             value = Interpreter.locale.get(mot);
                         }
@@ -3157,7 +3157,7 @@ public class LaunchPrimitive {
                             throw new LogoException(cadre, param.get(0) + " "
                                     + Logo.messages.getString("error.word"));
                         mot = mot.toLowerCase();
-                        if (wp.globale.containsKey(mot) || Interpreter.locale.containsKey(mot))
+                        if (wp.globals.containsKey(mot) || Interpreter.locale.containsKey(mot))
                             Interpreter.calcul.push(Logo.messages.getString("vrai"));
                         else
                             Interpreter.calcul.push(Logo.messages.getString("faux"));
@@ -4458,7 +4458,7 @@ public class LaunchPrimitive {
         if (Interpreter.locale.containsKey(mot)) {
             Interpreter.locale.put(mot, param.get(1));
         } else {
-            wp.globale.put(mot, param.get(1));
+            wp.globals.put(mot, param.get(1));
         }
     }
 
@@ -4586,7 +4586,7 @@ public class LaunchPrimitive {
             sb.append(name);
             sb.append(" ");
         }
-        it = wp.globale.keySet().iterator();
+        it = wp.globals.keySet().iterator();
         while (it.hasNext()) {
             String key = it.next();
             if (!Interpreter.locale.containsKey(key)) {

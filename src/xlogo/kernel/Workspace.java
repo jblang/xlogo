@@ -10,14 +10,12 @@ package xlogo.kernel;
 import xlogo.gui.Application;
 import xlogo.Logo;
 import xlogo.kernel.gui.GuiMap;
+import xlogo.utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * The Workspace class Contains:<br>
@@ -32,12 +30,14 @@ import java.util.Stack;
 public class Workspace {
 
 
-    protected HashMap<String, String> globale;  // HashMap with the name of all defined variables
+    protected HashMap<String, String> globals;  // HashMap with the name of all defined variables
     // and their values
-    private Stack<Procedure> procedureList; // stack with all procedures defined by the user
+    private Stack<Procedure> procedures; // stack with all procedures defined by the user
 
     // For all Gui Object (Buttons, ComboBoxes...)
-    private final GuiMap gm;
+    private final GuiMap guiMap;
+
+    final Application app;
 
     /**
      *  For all Property Lists
@@ -45,26 +45,27 @@ public class Workspace {
     private HashMap<String, HashMap<String, String>> propList;
 
     public Workspace(Application app) {
-        globale = new HashMap<String, String>();
-        procedureList = new Stack<Procedure>();
-        propList = new HashMap<String, HashMap<String, String>>();
-        gm = new GuiMap(app);
+        this.app = app;
+        globals = new HashMap<>();
+        procedures = new Stack<>();
+        propList = new HashMap<>();
+        guiMap = new GuiMap(app);
     }
 
     /**
      * Delete all Variables from the workspace
      */
     public void deleteAllVariables() {
-        globale = new HashMap<String, String>();
+        globals = new HashMap<>();
     }
 
     /**
      * Delete all procedures from the workspace
      */
     public void deleteAllProcedures() {
-        for (int i = procedureList.size() - 1; i > -1; i--) {
+        for (int i = procedures.size() - 1; i > -1; i--) {
             Procedure procedure = getProcedure(i);
-            if (procedure.affichable == true)
+            if (procedure.affichable)
                 deleteProcedure(i);
         }
     }
@@ -73,7 +74,7 @@ public class Workspace {
      * Delete all property Lists from the workspace
      */
     public void deleteAllPropertyLists() {
-        propList = new HashMap<String, HashMap<String, String>>();
+        propList = new HashMap<>();
     }
 
     /**
@@ -84,7 +85,7 @@ public class Workspace {
      */
     protected void addPropList(String name, String key, String value) {
         if (!propList.containsKey(name)) {
-            propList.put(name, new HashMap<String, String>());
+            propList.put(name, new HashMap<>());
         }
         propList.get(name).put(key, value);
     }
@@ -117,7 +118,7 @@ public class Workspace {
      */
     protected String displayPropList(String name) {
         if (propList.containsKey(name)) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append("[ ");
             Set<String> set = propList.get(name).keySet();
             for (String key : set) {
@@ -155,58 +156,48 @@ public class Workspace {
         return propList.keySet();
     }
 
-    public Procedure procedureListPeek() {
-        return procedureList.peek();
-    }
-
-    public void procedureListPop() {
-        procedureList.pop();
-    }
-
     public void procedureListPush(Procedure pr) {
-        procedureList.push(pr);
+        procedures.push(pr);
     }
 
     public void setProcedureList(int id, Procedure pr) {
-        procedureList.set(id, pr);
+        procedures.set(id, pr);
     }
 
     public Procedure getProcedure(int index) {
-        return procedureList.get(index);
+        return procedures.get(index);
     }
 
     public int getNumberOfProcedure() {
-        return procedureList.size();
+        return procedures.size();
     }
 
     public void deleteProcedure(int index) {
-        procedureList.remove(index);
+        procedures.remove(index);
     }
 
     public void deleteVariable(String st) {
-        boolean b = globale.containsKey(st);
+        boolean b = globals.containsKey(st);
         if (b) {
-            globale.remove(st);
+            globals.remove(st);
         }
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        Set<String> set = globale.keySet();
-        Iterator<String> it = set.iterator();
-        while (it.hasNext()) {
-            String key = it.next();
+        StringBuilder sb = new StringBuilder();
+        Set<String> set = globals.keySet();
+        for (String key : set) {
             sb.append("-");
             sb.append(key);
             sb.append("\n");
-            sb.append(globale.get(key));
+            sb.append(globals.get(key));
             sb.append("\n");
         }
         for (int i = 0; i < getNumberOfProcedure(); i++) {
             Procedure procedure = getProcedure(i);
-            sb.append(Logo.messages.getString("pour") + " " + procedure.name);
+            sb.append(Logo.messages.getString("pour")).append(" ").append(procedure.name);
             for (int j = 0; j < procedure.nbparametre; j++) {
-                sb.append(" :" + procedure.variable.get(j));
+                sb.append(" :").append(procedure.variable.get(j));
             }
             sb.append("\n");
             sb.append(procedure.instruction);
@@ -217,19 +208,19 @@ public class Workspace {
     }
 
     public void setWorkspace(Application app, String wp) {
-        globale = new HashMap<String, String>();
-        procedureList = new Stack<Procedure>();
+        globals = new HashMap<>();
+        procedures = new Stack<>();
 
         StringReader sr = new StringReader(wp);
         BufferedReader bfr = new BufferedReader(sr);
         try {
-            String input = "";
+            String input;
             while ((input = bfr.readLine()) != null) {
                 if (!input.startsWith(Logo.messages.getString("pour"))) {
-                    globale.put(input.substring(1), bfr.readLine());
+                    globals.put(input.substring(1), bfr.readLine());
                 } else break;
             }
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             if (null != input) {
                 sb.append(input);
                 sb.append("\n");
@@ -244,14 +235,266 @@ public class Workspace {
                 app.editor.setEditable(false);
                 app.editor.setEditorStyledText(new String(sb));
                 app.editor.analyzeProcedure();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
 
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 
     public GuiMap getGuiMap() {
-        return gm;
+        return guiMap;
     }
+
+    public void parseProcedures(String text, boolean editable) throws SyntaxException {
+        text = text.replaceAll("\t", "  ");
+        BufferedReader br = new BufferedReader(new StringReader(text));
+        StringBuilder defineSentence = new StringBuilder();
+        try {
+            while (br.ready()) {
+                ArrayList<String> variables = new ArrayList<>();
+                Stack<String> optVariables = new Stack<>();
+                Stack<StringBuffer> optVariablesExp = new Stack<>();
+                // Read and save the comments that appear before the procedure
+                var comment = new StringBuilder();
+                var line = parseLeadingComments(br, comment);
+                if (null == line) break;
+                // Read the first line
+                if (!comment.toString().equals("") && line.trim().equals(""))
+                    structureException();
+                var name = parseDeclaration(line, variables, optVariables, optVariablesExp);
+                // Then we read the body of the procedure until we find
+                // the word "end" (or "fin" in French)
+                var body = new StringBuilder();
+                parseBody(br, body);
+                defineSentence.append(name).append(", ");
+                int id = isProcedure(name);
+                // If it's a new procedure
+                Procedure proc;
+                if (id == -1) {
+                    proc = new Procedure(name, variables.size(), variables, optVariables, optVariablesExp, editable);
+                    proc.instruction = body.toString();
+                    proc.comment = comment.toString();
+                    this.procedureListPush(proc);
+                } else {          // If we redefine an existing procedure
+                    proc = this.getProcedure(id);
+                    proc.instruction = body.toString();
+                    proc.instr = null;
+                    proc.comment = comment.toString();
+                    proc.variable = variables;
+                    proc.optVariables = optVariables;
+                    proc.optVariablesExp = optVariablesExp;
+                    proc.nbparametre = variables.size();
+                    this.setProcedureList(id, proc);
+
+                }
+            }
+            // We create the formatted instruction strings for each procedure and the backups
+            for (int j = 0; j < this.getNumberOfProcedure(); j++) {
+                Procedure pr = this.getProcedure(j);
+                pr.decoupe();
+                pr.instruction_sauve = pr.instruction;
+                pr.instr_sauve = pr.instr;
+                pr.variable_sauve = new ArrayList<>();
+                pr.variable_sauve.addAll(pr.variable);
+            }
+
+            if (!defineSentence.toString().equals("") && editable) {
+                app.updateHistory("commentaire", Logo.messages.getString("definir") + " " + defineSentence.substring(0, defineSentence.length() - 2) + ".\n");
+                app.updateProcedureEraser();
+            }
+        } catch (IOException ignored) {
+        }
+    }
+
+    private void parseBody(BufferedReader br, StringBuilder body) throws IOException, SyntaxException {
+        String line;
+        boolean end = false;
+        while (br.ready()) {
+            line = br.readLine();
+            if (null == line) break;
+            if (line.trim().equalsIgnoreCase(Logo.messages.getString("fin"))) {
+                end = true;
+                break;
+            } else {
+                body.append(line).append("\n");
+            }
+        }
+        if (!end) structureException();
+    }
+
+    private String parseDeclaration(String line, ArrayList<String> variables, Stack<String> optVariables, Stack<StringBuffer> optVariablesExp) throws SyntaxException {
+        String name = "";
+        StringTokenizer st = new StringTokenizer(line);
+        String token = st.nextToken();
+        // The first word must be "to" (or "pour" in French)
+        if (!token.equalsIgnoreCase(Logo.messages.getString("pour")))
+            structureException();
+        // The second word must be the name of the procedure
+        if (st.hasMoreTokens()) name = st.nextToken().toLowerCase();
+        else structureException();
+        // Then, We read the variables
+        // :a :b :c :d .....
+        while (st.hasMoreTokens()) {
+            token = st.nextToken();
+            if (token.startsWith(":")) {
+                String var = isValidVariable(token);
+                variables.add(var);
+            }
+            // And finally, optional variables if there are some.
+            // [:a 100] [:b 20] [:c 234] ...........
+            else {
+                StringBuffer sb = new StringBuffer();
+                sb.append(token);
+                while (st.hasMoreTokens()) {
+                    sb.append(" ");
+                    sb.append(st.nextToken());
+                }
+
+                while (sb.length() > 0) {
+                    if (sb.indexOf("[") != 0) structureException();
+                    else {
+                        sb.deleteCharAt(0);
+                        String[] arg = new String[2];
+                        extractList(sb, arg);
+                        optVariables.push(arg[0].toLowerCase());
+                        /* Bug Fixed: list as Optional arguments
+                         ** Eg:
+                         ** to a [:var [a b c]]
+                         * end
+                         * when the string is formatted, we check that a white space
+                         * is needed at the end of the argument
+                         */
+
+                        StringBuffer exp = Utils.formatCode(arg[1]);
+                        if (exp.charAt(exp.length() - 1) != ' ') exp.append(" ");
+                        optVariablesExp.push(exp);
+                    }
+                }
+            }
+        }
+        return name;
+    }
+
+    private String parseLeadingComments(BufferedReader br, StringBuilder comment) throws IOException {
+        String line = "";
+        while (br.ready()) {
+            line = br.readLine();
+            if (null == line) break;
+            if (isComment(line)) comment.append(line).append("\n");
+            else {
+                if (!line.trim().equals("")) break;
+                else {
+                    comment.append("\n");
+                }
+            }
+        }
+        return line;
+    }
+
+    private void structureException() throws SyntaxException {
+        throw new SyntaxException(this, Logo.messages.getString("erreur_editeur"));
+    }
+
+    // Check if the String st is a comment (starts with "#")
+    private boolean isComment(String st) {
+        return st.trim().startsWith("#");
+    }
+
+    // Check if the String var is a number
+    private void isNumber(String var) throws SyntaxException {
+        try {
+            Double.parseDouble(var);
+            structureException();
+        } catch (NumberFormatException ignored) {
+        }
+    }
+
+    private void hasSpecialCharacter(String var) throws SyntaxException {
+        StringTokenizer check = new StringTokenizer(var, ":+-*/() []=<>&|", true);
+        String mess = Logo.messages.getString("caractere_special_variable") + "\n" + Logo.messages.getString("caractere_special2") + "\n" + Logo.messages.getString("caractere_special3") + " :" + var;
+        if (check.countTokens() > 1) throw new SyntaxException(this, mess);
+        if (":+-*/() []=<>&|".contains(check.nextToken())) throw new SyntaxException(this, mess);
+    }
+
+    // Check if token is a valid variable
+    //  and returns its name
+    private String isValidVariable(String token) throws SyntaxException {
+        if (token.length() == 1) structureException();
+        String var = token.substring(1);
+        isNumber(var);
+        hasSpecialCharacter(var);
+        return var.toLowerCase();
+    }
+
+    private void extractList(StringBuffer sb, String[] args) throws SyntaxException {
+        StringBuilder variable = new StringBuilder();
+        String expression;
+        int counter = 1;
+        int id = 0;
+        int id2 = 0;
+        boolean space = false;
+        for (int i = 0; i < sb.length(); i++) {
+            char ch = sb.charAt(i);
+            if (ch == '[') counter++;
+            else if (ch == ']') {
+                if (id == 0) {
+                    structureException();
+                }
+                counter--;
+            } else if (ch == ' ') {
+                if (!variable.toString().equals("")) {
+                    if (!space) id = i;
+                    space = true;
+                }
+            } else {
+                if (!space) variable.append(ch);
+            }
+            if (counter == 0) {
+                id2 = i;
+                break;
+            }
+        }
+        if (variable.toString().startsWith(":")) {
+            variable = new StringBuilder(isValidVariable(variable.toString()));
+        } else structureException();
+        if (counter != 0) structureException();
+        expression = sb.substring(id + 1, id2).trim();
+        if (expression.equals("")) structureException();
+        sb.delete(0, id2 + 1);
+        // delete unnecessary space
+        while (sb.length() != 0 && sb.charAt(0) == ' ') sb.deleteCharAt(0);
+        args[0] = variable.toString();
+        args[1] = expression;
+    }
+
+
+    private int isProcedure(String mot) throws SyntaxException {   // vérifie si mot est une procédure
+        // Vérifier si c'est le nom d'une procédure de démarrage
+        for (int i = 0; i < this.getNumberOfProcedure(); i++) {
+            Procedure procedure = this.getProcedure(i);
+            if (procedure.name.equals(mot) && !procedure.affichable)
+                throw new SyntaxException(this, mot + " " + Logo.messages.getString("existe_deja"));
+        }
+        // Vérifier si ce n'est pas un nombre:
+        try {
+            Double.parseDouble(mot);
+            throw new SyntaxException(this, Logo.messages.getString("erreur_nom_nombre_procedure"));
+        } catch (NumberFormatException ignored) {
+        }
+        // Vérifier tout d'abord si le mot n'est pas une primitive.
+        if (Primitive.primitives.containsKey(mot))
+            throw new SyntaxException(this, mot + " " + Logo.messages.getString("existe_deja"));
+        else {
+            //ensuite s'il ne contient pas de caractères spéciaux "\"
+            StringTokenizer decoupe = new StringTokenizer("a" + mot + "a", ":\\+-*/() []=<>&|"); //on rajoute une lettre au mot au cas où le caractere spécial se trouve en début ou en fin de mot.
+            if (decoupe.countTokens() > 1)
+                throw new SyntaxException(this, Logo.messages.getString("caractere_special1") + "\n" + Logo.messages.getString("caractere_special2") + "\n" + Logo.messages.getString("caractere_special3") + " " + mot);
+        }
+        for (int i = 0; i < this.getNumberOfProcedure(); i++) {
+            if (this.getProcedure(i).name.equals(mot)) return (i);
+        }
+        return (-1);
+    }
+
 }

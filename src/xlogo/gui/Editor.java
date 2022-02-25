@@ -1,8 +1,8 @@
 package xlogo.gui;
 
 import xlogo.Logo;
-import xlogo.kernel.Primitive;
 import xlogo.kernel.Procedure;
+import xlogo.kernel.SyntaxException;
 import xlogo.kernel.Workspace;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
@@ -13,13 +13,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Stack;
-import java.util.StringTokenizer;
 
 import static xlogo.utils.Utils.createButton;
 
@@ -68,245 +63,8 @@ public class Editor extends JFrame {
         }
     }
 
-    public void analyzeProcedure() throws EditorException {
-        String text = textZone.getText();
-        text.replaceAll("\t", "  ");
-        StringReader sr = new StringReader(text);
-        BufferedReader br = new BufferedReader(sr);
-        StringBuilder defineSentence = new StringBuilder();
-        try {
-            while (br.ready()) {
-                StringBuilder comment = new StringBuilder();
-                String line = "";
-                String name = "";
-                StringBuilder body = new StringBuilder();
-                ArrayList<String> variables = new ArrayList<>();
-                Stack<String> optVariables = new Stack<>();
-                Stack<StringBuffer> optVariablesExp = new Stack<>();
-                // Read and save the comments that appear before the procedure
-                while (br.ready()) {
-                    line = br.readLine();
-                    if (null == line) break;
-                    if (isComment(line)) comment.append(line).append("\n");
-                    else {
-                        if (!line.trim().equals("")) break;
-                        else {
-                            comment.append("\n");
-                        }
-                    }
-                }
-                if (null == line) break;
-                // Read the first line
-                if (!comment.toString().equals("") && line.trim().equals(""))
-                    structureException();
-                else {
-                    StringTokenizer st = new StringTokenizer(line);
-                    String token = st.nextToken();
-                    // The first word must be "to" (or "pour" in French)
-                    if (!token.equalsIgnoreCase(Logo.messages.getString("pour")))
-                        structureException();
-                    // The second word must be the name of the procedure
-                    if (st.hasMoreTokens()) name = st.nextToken().toLowerCase();
-                    else structureException();
-                    // Then, We read the variables
-                    // :a :b :c :d .....
-                    while (st.hasMoreTokens()) {
-                        token = st.nextToken();
-                        if (token.startsWith(":")) {
-                            String var = isValidVariable(token);
-                            variables.add(var);
-                        }
-                        // And finally, optional variables if there are some.
-                        // [:a 100] [:b 20] [:c 234] ...........
-                        else {
-                            StringBuffer sb = new StringBuffer();
-                            sb.append(token);
-                            while (st.hasMoreTokens()) {
-                                sb.append(" ");
-                                sb.append(st.nextToken());
-                            }
-
-                            while (sb.length() > 0) {
-                                if (sb.indexOf("[") != 0) structureException();
-                                else {
-                                    sb.deleteCharAt(0);
-                                    String[] arg = new String[2];
-                                    extractList(sb, arg);
-                                    optVariables.push(arg[0].toLowerCase());
-                                    /* Bug Fixed: list as Optional arguments
-                                     ** Eg:
-                                     ** to a [:var [a b c]]
-                                     * end
-                                     * when the string is formatted, we check that a white space
-                                     * is needed at the end of the argument
-                                     */
-
-                                    StringBuffer exp = Utils.formatCode(arg[1]);
-                                    if (exp.charAt(exp.length() - 1) != ' ') exp.append(" ");
-                                    optVariablesExp.push(exp);
-                                }
-                            }
-                        }
-                    }
-                }
-                // Then we read the body of the procedure until we find
-                // the word "end" (or "fin" in French)
-                boolean end = false;
-                while (br.ready()) {
-                    line = br.readLine();
-                    if (null == line) break;
-                    if (line.trim().equalsIgnoreCase(Logo.messages.getString("fin"))) {
-                        end = true;
-                        break;
-                    } else {
-                        body.append(line).append("\n");
-                    }
-                }
-                if (!end) structureException();
-                defineSentence.append(name).append(", ");
-                int id = isProcedure(name);
-                // If it's a new procedure
-                Procedure proc;
-                if (id == -1) {
-                    proc = new Procedure(name, variables.size(), variables, optVariables, optVariablesExp, editable);
-                    proc.instruction = body.toString();
-                    proc.comment = comment.toString();
-                    workspace.procedureListPush(proc);
-                } else {          // Si on redéfinit une procédure existante
-                    proc = workspace.getProcedure(id);
-                    proc.instruction = body.toString();
-                    proc.instr = null;
-                    proc.comment = comment.toString();
-                    proc.variable = variables;
-                    proc.optVariables = optVariables;
-                    proc.optVariablesExp = optVariablesExp;
-                    proc.nbparametre = variables.size();
-                    workspace.setProcedureList(id, proc);
-
-                }
-                //	System.out.println(proc.toString());
-            }
-            // On crée les chaînes d'instruction formatées pour chaque procédure et les sauvegardes
-            for (int j = 0; j < workspace.getNumberOfProcedure(); j++) {
-                Procedure pr = workspace.getProcedure(j);
-                pr.decoupe();
-                pr.instruction_sauve = pr.instruction;
-                pr.instr_sauve = pr.instr;
-                pr.variable_sauve = new ArrayList<>();
-                pr.variable_sauve.addAll(pr.variable);
-            }
-
-            if (!defineSentence.toString().equals("") && editable) {
-                app.updateHistory("commentaire", Logo.messages.getString("definir") + " " + defineSentence.substring(0, defineSentence.length() - 2) + ".\n");
-                app.updateProcedureEraser();
-            }
-        } catch (IOException ignored) {
-        }
-    }
-
-    private void structureException() throws EditorException {
-        throw new EditorException(this, Logo.messages.getString("erreur_editeur"));
-    }
-
-    // Check if the String st is a comment (starts with "#")
-    private boolean isComment(String st) {
-        return st.trim().startsWith("#");
-    }
-
-    // Check if the String var is a number
-    private void isNumber(String var) throws EditorException {
-        try {
-            Double.parseDouble(var);
-            structureException();
-        } catch (NumberFormatException ignored) {
-        }
-    }
-
-    private void hasSpecialCharacter(String var) throws EditorException {
-        StringTokenizer check = new StringTokenizer(var, ":+-*/() []=<>&|", true);
-        String mess = Logo.messages.getString("caractere_special_variable") + "\n" + Logo.messages.getString("caractere_special2") + "\n" + Logo.messages.getString("caractere_special3") + " :" + var;
-        if (check.countTokens() > 1) throw new EditorException(this, mess);
-        if (":+-*/() []=<>&|".contains(check.nextToken())) throw new EditorException(this, mess);
-    }
-
-    // Check if token is a valid variable
-    //  and returns its name
-    private String isValidVariable(String token) throws EditorException {
-        if (token.length() == 1) structureException();
-        String var = token.substring(1);
-        isNumber(var);
-        hasSpecialCharacter(var);
-        return var.toLowerCase();
-    }
-
-    private void extractList(StringBuffer sb, String[] args) throws EditorException {
-        StringBuilder variable = new StringBuilder();
-        String expression;
-        int counter = 1;
-        int id = 0;
-        int id2 = 0;
-        boolean space = false;
-        for (int i = 0; i < sb.length(); i++) {
-            char ch = sb.charAt(i);
-            if (ch == '[') counter++;
-            else if (ch == ']') {
-                if (id == 0) {
-                    structureException();
-                }
-                counter--;
-            } else if (ch == ' ') {
-                if (!variable.toString().equals("")) {
-                    if (!space) id = i;
-                    space = true;
-                }
-            } else {
-                if (!space) variable.append(ch);
-            }
-            if (counter == 0) {
-                id2 = i;
-                break;
-            }
-        }
-        if (variable.toString().startsWith(":")) {
-            variable = new StringBuilder(isValidVariable(variable.toString()));
-        } else structureException();
-        if (counter != 0) structureException();
-        expression = sb.substring(id + 1, id2).trim();
-        if (expression.equals("")) structureException();
-        sb.delete(0, id2 + 1);
-        // delete unnecessary space
-        while (sb.length() != 0 && sb.charAt(0) == ' ') sb.deleteCharAt(0);
-        args[0] = variable.toString();
-        args[1] = expression;
-    }
-
-
-    private int isProcedure(String mot) throws EditorException {   // vérifie si mot est une procédure
-        // Vérifier si c'est le nom d'une procédure de démarrage
-        for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
-            Procedure procedure = workspace.getProcedure(i);
-            if (procedure.name.equals(mot) && !procedure.affichable)
-                throw new EditorException(this, mot + " " + Logo.messages.getString("existe_deja"));
-        }
-        // Vérifier si ce n'est pas un nombre:
-        try {
-            Double.parseDouble(mot);
-            throw new EditorException(this, Logo.messages.getString("erreur_nom_nombre_procedure"));
-        } catch (NumberFormatException ignored) {
-        }
-        // Vérifier tout d'abord si le mot n'est pas une primitive.
-        if (Primitive.primitives.containsKey(mot))
-            throw new EditorException(this, mot + " " + Logo.messages.getString("existe_deja"));
-        else {
-            //ensuite s'il ne contient pas de caractères spéciaux "\"
-            StringTokenizer decoupe = new StringTokenizer("a" + mot + "a", ":\\+-*/() []=<>&|"); //on rajoute une lettre au mot au cas où le caractere spécial se trouve en début ou en fin de mot.
-            if (decoupe.countTokens() > 1)
-                throw new EditorException(this, Logo.messages.getString("caractere_special1") + "\n" + Logo.messages.getString("caractere_special2") + "\n" + Logo.messages.getString("caractere_special3") + " " + mot);
-        }
-        for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
-            if (workspace.getProcedure(i).name.equals(mot)) return (i);
-        }
-        return (-1);
+    public void analyzeProcedure() throws SyntaxException {
+        workspace.parseProcedures(textZone.getText(), editable);
     }
 
     private void initGui() {
@@ -436,7 +194,7 @@ public class Editor extends JFrame {
             }
             if (!app.isNewEnabled())
                 app.setNewEnabled(true); //Si c'est la première fois qu'on enregistre, on active le menu nouveau
-        } catch (EditorException ex) {
+        } catch (SyntaxException ex) {
             visible = true;
         }
         setVisible(visible);
@@ -561,6 +319,10 @@ public class Editor extends JFrame {
         }
     }
 
+    public void focusTextZone() {
+        textZone.requestFocus();
+    }
+
     public void discardAllEdits() {
         textZone.getUndoManager().discardAllEdits();
         updateUndoRedoButtons();
@@ -569,24 +331,5 @@ public class Editor extends JFrame {
     protected void updateUndoRedoButtons() {
         redoButton.setEnabled(textZone.getUndoManager().canRedo());
         undoButton.setEnabled(textZone.getUndoManager().canUndo());
-    }
-
-    class EditorException extends Exception {   // à générer en cas d'errreur dans la structure
-        Editor editor;
-
-        EditorException(Editor editor, String message) {        // et des variables
-            this.editor = editor;
-            MessageTextArea jt = new MessageTextArea(message);
-            JOptionPane.showMessageDialog(this.editor, jt, Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
-            for (int i = 0; i < workspace.getNumberOfProcedure(); i++) { // On remémorise les anciennes définitions de procédures
-                Procedure pr = workspace.getProcedure(i);
-                pr.variable = new ArrayList<>(pr.variable_sauve);
-                pr.instr = pr.instr_sauve;
-                pr.instruction = pr.instruction_sauve;
-                pr.nbparametre = pr.variable.size();
-            }
-            editor.toFront();
-            editor.textZone.requestFocus();
-        }
     }
 }

@@ -396,11 +396,11 @@ public class Interpreter {
                 // If the variable isn't local
                 if (!locale.containsKey(variableName)) {
                     // check it's a global variable
-                    if (!wp.globale.containsKey(variableName))
+                    if (!wp.globals.containsKey(variableName))
                         throw new LogoException(app, variableName + " "
                                 + Logo.messages.getString("error.novalue"));
                     else
-                        value = wp.globale.get(variableName);
+                        value = wp.globals.get(variableName);
                 }
                 // If the variable is local
                 else {
