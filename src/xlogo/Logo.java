@@ -206,22 +206,36 @@ public class Logo {
      */
     public static Locale getLocale(int id) {  // rend la locale
         // correspondant à l'entier id
-        return switch (id) {
-            case Config.LANGUAGE_FRENCH -> new Locale("fr", "FR");
-            case Config.LANGUAGE_ENGLISH -> new Locale("en", "US");
-            case Config.LANGUAGE_ARABIC -> new Locale("ar", "MA");
-            case Config.LANGUAGE_SPANISH -> new Locale("es", "ES");
-            case Config.LANGUAGE_PORTUGUESE -> new Locale("pt", "BR");
-            case Config.LANGUAGE_ESPERANTO -> new Locale("eo", "EO");
-            case Config.LANGUAGE_GERMAN -> new Locale("de", "DE");
-            case Config.LANGUAGE_GALICIAN -> new Locale("gl", "ES");
-            case Config.LANGUAGE_ASTURIAN -> new Locale("as", "ES");
-            case Config.LANGUAGE_GREEK -> new Locale("el", "GR");
-            case Config.LANGUAGE_ITALIAN -> new Locale("it", "IT");
-            case Config.LANGUAGE_CATALAN -> new Locale("ca", "ES");
-            case Config.LANGUAGE_HUNGARIAN -> new Locale("hu", "HU");
-            default -> null;
-        };
+        switch (id) {
+            case Config.LANGUAGE_FRENCH:
+                return new Locale("fr", "FR");
+            case Config.LANGUAGE_ENGLISH:
+                return new Locale("en", "US");
+            case Config.LANGUAGE_ARABIC:
+                return new Locale("ar", "MA");
+            case Config.LANGUAGE_SPANISH:
+                return new Locale("es", "ES");
+            case Config.LANGUAGE_PORTUGUESE:
+                return new Locale("pt", "BR");
+            case Config.LANGUAGE_ESPERANTO:
+                return new Locale("eo", "EO");
+            case Config.LANGUAGE_GERMAN:
+                return new Locale("de", "DE");
+            case Config.LANGUAGE_GALICIAN:
+                return new Locale("gl", "ES");
+            case Config.LANGUAGE_ASTURIAN:
+                return new Locale("as", "ES");
+            case Config.LANGUAGE_GREEK:
+                return new Locale("el", "GR");
+            case Config.LANGUAGE_ITALIAN:
+                return new Locale("it", "IT");
+            case Config.LANGUAGE_CATALAN:
+                return new Locale("ca", "ES");
+            case Config.LANGUAGE_HUNGARIAN:
+                return new Locale("hu", "HU");
+            default:
+                return null;
+        }
     }
 
     public static String getLocaleTwoLetters() {
@@ -260,13 +274,16 @@ public class Logo {
         while (i < config.getStartupFiles().size()) {
             String element = config.getStartupFiles().get(i);
             // AutoLaunch main Command on startup
+            // Choosing language
+            // Memory Heap Size
+            // TCP port
+            // Logo Files
             switch (element) {
-                case "-a" -> {
+                case "-a":
                     autoLaunch = true;
                     config.getStartupFiles().remove(i);
-                }
-                // Choosing language
-                case "-lang" -> {
+                    break;
+                case "-lang":
                     config.getStartupFiles().remove(i);
                     if (i < config.getStartupFiles().size()) {
                         element = config.getStartupFiles().get(i);
@@ -279,9 +296,8 @@ public class Logo {
                         }
                         config.getStartupFiles().remove(i);
                     }
-                }
-                // Memory Heap Size
-                case "-memory" -> {
+                    break;
+                case "-memory":
                     config.getStartupFiles().remove(i);
                     if (i < config.getStartupFiles().size()) {
                         element = config.getStartupFiles().get(i);
@@ -294,9 +310,8 @@ public class Logo {
                         } catch (NumberFormatException ignored) {
                         }
                     }
-                }
-                // TCP port
-                case "-tcp_port" -> {
+                    break;
+                case "-tcp_port":
                     config.getStartupFiles().remove(i);
                     if (i < config.getStartupFiles().size()) {
                         element = config.getStartupFiles().get(i);
@@ -310,10 +325,10 @@ public class Logo {
                             config.setTcpPort(1948);
                         }
                     }
-                }
-
-                // Logo Files
-                default -> i++;
+                    break;
+                default:
+                    i++;
+                    break;
             }
         }
     }

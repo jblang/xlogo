@@ -665,9 +665,15 @@ public class Application extends JFrame {
     public void changeLookAndFeel() {
         try {
             switch (Logo.config.getLookAndFeel()) {
-                case Config.LAF_NATIVE -> UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                case Config.LAF_LIGHT -> UIManager.setLookAndFeel(new FlatLightLaf());
-                default -> UIManager.setLookAndFeel(new FlatDarkLaf());
+                case Config.LAF_NATIVE:
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    break;
+                case Config.LAF_LIGHT:
+                    UIManager.setLookAndFeel(new FlatLightLaf());
+                    break;
+                default:
+                    UIManager.setLookAndFeel(new FlatDarkLaf());
+                    break;
             }
             SwingUtilities.updateComponentTreeUI(this);
             SwingUtilities.updateComponentTreeUI(editor);

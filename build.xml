@@ -140,7 +140,7 @@
     <target name="compile" depends="copy.static.files">
         <javac
                 debug="true"
-                release="17"
+                release="11"
                 classpathref="build.classpath"
                 encoding="utf8"
                 srcdir="src"
