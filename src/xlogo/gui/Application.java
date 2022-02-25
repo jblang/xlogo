@@ -415,7 +415,7 @@ public class Application extends JFrame {
 
     void showColorChooser(boolean pen) {
         var title = pen ? "couleur_du_crayon" : "couleur_du_fond";
-        Color color = JColorChooser.showDialog(this, Logo.messages.getString(title), getCanvas().getBackgroundColor());
+        Color color = JColorChooser.showDialog(this, Logo.messages.getString(title), getCanvas().getScreenColor());
         if (null != color) {
             Locale locale = Logo.getLocale(Logo.config.getLanguage());
             java.util.ResourceBundle rs = java.util.ResourceBundle.getBundle("primitives", locale);
@@ -947,7 +947,7 @@ public class Application extends JFrame {
      */
     public void initViewer3D() {
         if (null == viewer3D) {
-            viewer3D = new Viewer3D(drawPanel.getWorld3D(), drawPanel.getBackgroundColor());
+            viewer3D = new Viewer3D(drawPanel.getWorld3D(), drawPanel.getScreenColor());
         }
 
     }
@@ -961,7 +961,7 @@ public class Application extends JFrame {
      */
     public void viewerOpen() {
         if (null == viewer3D) {
-            viewer3D = new Viewer3D(drawPanel.getWorld3D(), drawPanel.getBackgroundColor());
+            viewer3D = new Viewer3D(drawPanel.getWorld3D(), drawPanel.getScreenColor());
         } else {
             viewer3D.setVisible(false);
         }

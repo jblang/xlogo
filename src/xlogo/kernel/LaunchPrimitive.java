@@ -153,14 +153,14 @@ public class LaunchPrimitive {
                 case 0: // av
                     delay();
                     try {
-                        cadre.getDrawPanel().av(kernel.getCalculator().numberDouble(param.pop()));
+                        cadre.getDrawPanel().move(kernel.getCalculator().numberDouble(param.pop()));
                     } catch (LogoException e) {
                     }
                     break;
                 case 1: // re
                     delay();
                     try {
-                        cadre.getDrawPanel().av(-kernel.getCalculator().numberDouble(param.pop()));
+                        cadre.getDrawPanel().move(-kernel.getCalculator().numberDouble(param.pop()));
                     } catch (LogoException e) {
                     }
                     break;
@@ -194,20 +194,20 @@ public class LaunchPrimitive {
                     }
                     break;
                 case 6: // ve
-                    cadre.getDrawPanel().videecran();
+                    cadre.getDrawPanel().clearScreen();
                     break;
                 case 7: // ct
                     if (kernel.getActiveTurtle().isVisible()) {
-                        cadre.getDrawPanel().ct_mt();
-                        cadre.getDrawPanel().tortues_visibles.remove(String
+                        cadre.getDrawPanel().toggleTurtle();
+                        cadre.getDrawPanel().visibleTurtles.remove(String
                                 .valueOf(kernel.getActiveTurtle().id));
                     }
                     kernel.getActiveTurtle().setVisible(false);
                     break;
                 case 8: // mt
                     if (!kernel.getActiveTurtle().isVisible()) {
-                        cadre.getDrawPanel().ct_mt();
-                        cadre.getDrawPanel().tortues_visibles.push(String.valueOf(kernel.getActiveTurtle().id));
+                        cadre.getDrawPanel().toggleTurtle();
+                        cadre.getDrawPanel().visibleTurtles.push(String.valueOf(kernel.getActiveTurtle().id));
                     }
                     kernel.getActiveTurtle().setVisible(true);
                     break;
@@ -263,25 +263,25 @@ public class LaunchPrimitive {
                     break;
                 case 12: // origine
                     delay();
-                    cadre.getDrawPanel().origine();
+                    cadre.getDrawPanel().home();
                     break;
                 case 13: // fpos
                     delay();
                     try {
                         String list = getFinalList(param.get(0));
-                        cadre.getDrawPanel().fpos(list);
+                        cadre.getDrawPanel().setPosition(list);
                     } catch (LogoException e) {
                     }
                     break;
                 case 14: // fixex
                     delay();
                     try {
-                        if (DrawPanel.WINDOW_MODE != DrawPanel.WINDOW_3D) {
+                        if (DrawPanel.windowMode != DrawPanel.WINDOW_3D) {
                             double x = kernel.getCalculator().numberDouble(param.get(0));
-                            double y = Logo.config.getImageHeight() / 2 - kernel.getActiveTurtle().corY;
-                            cadre.getDrawPanel().fpos(x + " " + y);
+                            double y = Logo.config.getImageHeight() / 2 - kernel.getActiveTurtle().curY;
+                            cadre.getDrawPanel().setPosition(x + " " + y);
                         } else
-                            cadre.getDrawPanel().fpos(kernel.getCalculator().numberDouble(param.get(0)) + " " + kernel.getActiveTurtle().Y + " "
+                            cadre.getDrawPanel().setPosition(kernel.getCalculator().numberDouble(param.get(0)) + " " + kernel.getActiveTurtle().Y + " "
                                     + kernel.getActiveTurtle().Z);
                     } catch (LogoException e) {
                     }
@@ -289,12 +289,12 @@ public class LaunchPrimitive {
                 case 15: // fixey
                     delay();
                     try {
-                        if (DrawPanel.WINDOW_MODE != DrawPanel.WINDOW_3D) {
+                        if (DrawPanel.windowMode != DrawPanel.WINDOW_3D) {
                             double y = kernel.getCalculator().numberDouble(param.get(0));
-                            double x = kernel.getActiveTurtle().corX - Logo.config.getImageWidth() / 2;
-                            cadre.getDrawPanel().fpos(x + " " + y);
+                            double x = kernel.getActiveTurtle().curX - Logo.config.getImageWidth() / 2;
+                            cadre.getDrawPanel().setPosition(x + " " + y);
                         } else
-                            cadre.getDrawPanel().fpos(kernel.getActiveTurtle().X + " " + kernel.getCalculator().numberDouble(param.get(0))
+                            cadre.getDrawPanel().setPosition(kernel.getActiveTurtle().X + " " + kernel.getCalculator().numberDouble(param.get(0))
                                     + " " + kernel.getActiveTurtle().Z);
 
                     } catch (LogoException e) {
@@ -304,7 +304,7 @@ public class LaunchPrimitive {
                     delay();
                     try {
                         primitive2D("drawing.fixexy");
-                        cadre.getDrawPanel().fpos(kernel.getCalculator().numberDouble(param.get(0)) + " "
+                        cadre.getDrawPanel().setPosition(kernel.getCalculator().numberDouble(param.get(0)) + " "
                                 + kernel.getCalculator().numberDouble(param.get(1)));
                     } catch (LogoException e) {
                     }
@@ -312,7 +312,7 @@ public class LaunchPrimitive {
                 case 17: // fixecap
                     delay();
                     try {
-                        if (DrawPanel.WINDOW_MODE != DrawPanel.WINDOW_3D)
+                        if (DrawPanel.windowMode != DrawPanel.WINDOW_3D)
                             cadre.getDrawPanel().td(360 - kernel.getActiveTurtle().heading
                                     + kernel.getCalculator().numberDouble(param.pop()));
                         else {
@@ -330,9 +330,9 @@ public class LaunchPrimitive {
                 case 20: // gomme
                     kernel.getActiveTurtle().setPenDown(true);
                     // if mode penerase isn't active yet
-                    if (kernel.getActiveTurtle().couleurmodedessin.equals(kernel.getActiveTurtle().couleurcrayon)) {
-                        kernel.getActiveTurtle().couleurmodedessin = kernel.getActiveTurtle().couleurcrayon;
-                        kernel.getActiveTurtle().couleurcrayon = cadre.getDrawPanel().getBackgroundColor();
+                    if (kernel.getActiveTurtle().imageColorMode.equals(kernel.getActiveTurtle().penColor)) {
+                        kernel.getActiveTurtle().imageColorMode = kernel.getActiveTurtle().penColor;
+                        kernel.getActiveTurtle().penColor = cadre.getDrawPanel().getScreenColor();
                     }
                     break;
                 case 21: // inversecrayon
@@ -342,7 +342,7 @@ public class LaunchPrimitive {
                 case 22: // dessine
                     kernel.getActiveTurtle().setPenReverse(false);
                     kernel.getActiveTurtle().setPenDown(true);
-                    kernel.getActiveTurtle().couleurcrayon = kernel.getActiveTurtle().couleurmodedessin;
+                    kernel.getActiveTurtle().penColor = kernel.getActiveTurtle().imageColorMode;
                     break;
                 case 23: // somme
                     Interpreter.operande = true;
@@ -521,9 +521,9 @@ public class LaunchPrimitive {
                     break;
                 case 41: // pos
                     Interpreter.operande = true;
-                    if (DrawPanel.WINDOW_MODE != DrawPanel.WINDOW_3D) {
-                        double a = kernel.getActiveTurtle().corX - Logo.config.getImageWidth() / 2;
-                        double b = Logo.config.getImageHeight() / 2 - kernel.getActiveTurtle().corY;
+                    if (DrawPanel.windowMode != DrawPanel.WINDOW_3D) {
+                        double a = kernel.getActiveTurtle().curX - Logo.config.getImageWidth() / 2;
+                        double b = Logo.config.getImageHeight() / 2 - kernel.getActiveTurtle().curY;
                         Interpreter.calcul.push("[ " + Calculator.teste_fin_double(a) + " " + Calculator.teste_fin_double(b) + " ] ");
                     } else {
                         Interpreter.calcul.push("[ " + kernel.getActiveTurtle().X + " "
@@ -993,7 +993,7 @@ public class LaunchPrimitive {
                             if (coul < 0) coul += DrawPanel.defaultColors.length;
                             color = DrawPanel.defaultColors[coul];
                         }
-                        cadre.getDrawPanel().fcc(color);
+                        cadre.getDrawPanel().setPenColor(color);
                     } catch (LogoException e) {
                     }
                     break;
@@ -1010,7 +1010,7 @@ public class LaunchPrimitive {
                             if (coul < 0) coul += DrawPanel.defaultColors.length;
                             color = DrawPanel.defaultColors[coul];
                         }
-                        cadre.getDrawPanel().fcfg(color);
+                        cadre.getDrawPanel().setScreenColor(color);
                     } catch (LogoException e) {
                     }
                     break;
@@ -1089,13 +1089,13 @@ public class LaunchPrimitive {
                         par = formatList(par.substring(1, par.length() - 1));
                     mot = getWord(param.get(0));
                     if (null == mot)
-                        cadre.getDrawPanel().etiquette(Utils.unescapeString(par));
+                        cadre.getDrawPanel().label(Utils.unescapeString(par));
                     else
-                        cadre.getDrawPanel().etiquette(Utils.unescapeString(mot));
+                        cadre.getDrawPanel().label(Utils.unescapeString(mot));
                     break;
                 case 85: // /trouvecouleur
                     if (kernel.getActiveTurtle().isVisible())
-                        cadre.getDrawPanel().montrecacheTortue(false);
+                        cadre.getDrawPanel().eraseTurtle(false);
                     try {
                         liste = getFinalList(param.get(0));
                         Color r = cadre.getDrawPanel().guessColorPoint(liste);
@@ -1105,7 +1105,7 @@ public class LaunchPrimitive {
                     } catch (LogoException e) {
                     }
                     if (kernel.getActiveTurtle().isVisible())
-                        cadre.getDrawPanel().montrecacheTortue(true);
+                        cadre.getDrawPanel().eraseTurtle(true);
                     break;
                 case 86: // fenetre
                     cadre.getDrawPanel().setWindowMode(DrawPanel.WINDOW_CLASSIC);
@@ -1127,24 +1127,24 @@ public class LaunchPrimitive {
                     } catch (LogoException e) {
                     }
                     if (null != image)
-                        cadre.getDrawPanel().chargeimage(image);
+                        cadre.getDrawPanel().drawImage(image);
                     break;
                 case 91: // ftc, fixetaillecrayon
                     try {
                         double nombre = kernel.getCalculator().numberDouble(param.get(0));
                         if (nombre < 0)
                             nombre = Math.abs(nombre);
-                        if (DrawPanel.record3D == DrawPanel.record3D_LINE || DrawPanel.record3D == DrawPanel.record3D_POINT) {
+                        if (DrawPanel.record3D == DrawPanel.RECORD_3D_LINE || DrawPanel.record3D == DrawPanel.RECORD_3D_POINT) {
                             if (kernel.getActiveTurtle().getPenWidth() != (float) nombre) DrawPanel.poly.addToScene();
                         }
-                        kernel.getActiveTurtle().fixe_taille_crayon((float) nombre);
+                        kernel.getActiveTurtle().fixPenWidth((float) nombre);
                         cadre.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon);
-                        if (DrawPanel.record3D == DrawPanel.record3D_LINE) {
+                        if (DrawPanel.record3D == DrawPanel.RECORD_3D_LINE) {
                             DrawPanel.poly = new ElementLine(cadre);
                             DrawPanel.poly.addVertex(new Point3d(kernel.getActiveTurtle().X / 1000,
                                     kernel.getActiveTurtle().Y / 1000,
-                                    kernel.getActiveTurtle().Z / 1000), kernel.getActiveTurtle().couleurcrayon);
-                        } else if (DrawPanel.record3D == DrawPanel.record3D_POINT) {
+                                    kernel.getActiveTurtle().Z / 1000), kernel.getActiveTurtle().penColor);
+                        } else if (DrawPanel.record3D == DrawPanel.RECORD_3D_POINT) {
                             DrawPanel.poly = new ElementPoint(cadre);
                         }
                     } catch (LogoException e) {
@@ -1242,23 +1242,23 @@ public class LaunchPrimitive {
                     cadre.setKey(-1);
                     break;
                 case 97: // remplis
-                    cadre.getDrawPanel().remplis();
+                    cadre.getDrawPanel().fill();
                     break;
                 case 98: // point
                     if (kernel.getActiveTurtle().isVisible())
-                        cadre.getDrawPanel().montrecacheTortue(false);
+                        cadre.getDrawPanel().eraseTurtle(false);
                     try {
                         cadre.getDrawPanel().point(getFinalList(param.get(0)));
                     } catch (LogoException e) {
                     }
                     if (kernel.getActiveTurtle().isVisible())
-                        cadre.getDrawPanel().montrecacheTortue(true);
+                        cadre.getDrawPanel().eraseTurtle(true);
                     break;
                 case 99: // vers=towards vers
                     try {
                         Interpreter.operande = true;
-                        if (DrawPanel.WINDOW_MODE != DrawPanel.WINDOW_3D) {
-                            double angle = cadre.getDrawPanel().vers2D(getFinalList(param.get(0)));
+                        if (DrawPanel.windowMode != DrawPanel.WINDOW_3D) {
+                            double angle = cadre.getDrawPanel().to2D(getFinalList(param.get(0)));
                             Interpreter.calcul.push(Calculator.teste_fin_double(angle));
                         } else {
                             double[] orientation = cadre.getDrawPanel().vers3D(getFinalList(param.get(0)));
@@ -1278,13 +1278,13 @@ public class LaunchPrimitive {
                 case 101: // couleurcrayon
                     Interpreter.operande = true;
                     Interpreter.calcul.push("[ "
-                            + kernel.getActiveTurtle().couleurcrayon.getRed() + " "
-                            + kernel.getActiveTurtle().couleurcrayon.getGreen() + " "
-                            + kernel.getActiveTurtle().couleurcrayon.getBlue() + " ] ");
+                            + kernel.getActiveTurtle().penColor.getRed() + " "
+                            + kernel.getActiveTurtle().penColor.getGreen() + " "
+                            + kernel.getActiveTurtle().penColor.getBlue() + " ] ");
                     break;
                 case 102: // couleurfond
                     Interpreter.operande = true;
-                    Color color = cadre.getDrawPanel().getBackgroundColor();
+                    Color color = cadre.getDrawPanel().getScreenColor();
                     Interpreter.calcul.push("[ " + color.getRed() + " "
                             + color.getGreen() + " "
                             + color.getBlue() + " ] ");
@@ -1576,8 +1576,8 @@ public class LaunchPrimitive {
                 case 125: // tortues
                     Interpreter.operande = true;
                     String li = "[ ";
-                    for (int i = 0; i < cadre.getDrawPanel().tortues.length; i++) {
-                        if (null != cadre.getDrawPanel().tortues[i])
+                    for (int i = 0; i < cadre.getDrawPanel().turtles.length; i++) {
+                        if (null != cadre.getDrawPanel().turtles[i])
                             li += i + " ";
                     }
                     li += "]";
@@ -1587,12 +1587,12 @@ public class LaunchPrimitive {
                     try {
                         int i = Integer.parseInt(param.get(0));
                         if (i > -1 && i < Logo.config.getMaxTurtles()) {
-                            if (null == cadre.getDrawPanel().tortues[i]) {
-                                cadre.getDrawPanel().tortues[i] = new Turtle(cadre);
-                                cadre.getDrawPanel().tortues[i].id = i;
-                                cadre.getDrawPanel().tortues[i].setVisible(false);
+                            if (null == cadre.getDrawPanel().turtles[i]) {
+                                cadre.getDrawPanel().turtles[i] = new Turtle(cadre);
+                                cadre.getDrawPanel().turtles[i].id = i;
+                                cadre.getDrawPanel().turtles[i].setVisible(false);
                             }
-                            cadre.getDrawPanel().turtle = cadre.getDrawPanel().tortues[i];
+                            cadre.getDrawPanel().turtle = cadre.getDrawPanel().turtles[i];
                             cadre.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon);
                             String police = cadre.getDrawPanel().getGraphicsFont().getName();
                             cadre.getDrawPanel()
@@ -1637,7 +1637,7 @@ public class LaunchPrimitive {
                             int compteur = 0;
                             int premier_dispo = -1;
                             for (int i = 0; i < Logo.config.getMaxTurtles(); i++) {
-                                if (null != cadre.getDrawPanel().tortues[i]) {
+                                if (null != cadre.getDrawPanel().turtles[i]) {
                                     if (i != id && premier_dispo == -1)
                                         premier_dispo = i;
                                     compteur++;
@@ -1645,19 +1645,19 @@ public class LaunchPrimitive {
                             }
                             // On vérifie que ce n'est pas la seule tortue
                             // dispopnible:
-                            if (null != cadre.getDrawPanel().tortues[id]) {
+                            if (null != cadre.getDrawPanel().turtles[id]) {
                                 if (compteur > 1) {
                                     int tortue_utilisee = kernel.getActiveTurtle().id;
-                                    cadre.getDrawPanel().turtle = cadre.getDrawPanel().tortues[id];
-                                    cadre.getDrawPanel().ct_mt();
-                                    cadre.getDrawPanel().turtle = cadre.getDrawPanel().tortues[tortue_utilisee];
-                                    cadre.getDrawPanel().tortues[id] = null;
-                                    if (cadre.getDrawPanel().tortues_visibles.search(String
+                                    cadre.getDrawPanel().turtle = cadre.getDrawPanel().turtles[id];
+                                    cadre.getDrawPanel().toggleTurtle();
+                                    cadre.getDrawPanel().turtle = cadre.getDrawPanel().turtles[tortue_utilisee];
+                                    cadre.getDrawPanel().turtles[id] = null;
+                                    if (cadre.getDrawPanel().visibleTurtles.search(String
                                             .valueOf(id)) > 0)
-                                        cadre.getDrawPanel().tortues_visibles.remove(String
+                                        cadre.getDrawPanel().visibleTurtles.remove(String
                                                 .valueOf(id));
                                     if (kernel.getActiveTurtle().id == id) {
-                                        cadre.getDrawPanel().turtle = cadre.getDrawPanel().tortues[premier_dispo];
+                                        cadre.getDrawPanel().turtle = cadre.getDrawPanel().turtles[premier_dispo];
                                         cadre.getDrawPanel()
                                                 .setStroke(kernel.getActiveTurtle().crayon); // on
                                         // adapte
@@ -1850,7 +1850,7 @@ public class LaunchPrimitive {
                 case 149: // fnp fixenompolice
                     try {
                         int int_police = kernel.getCalculator().getInteger(param.get(0));
-                        cadre.getDrawPanel().police_etiquette = int_police
+                        cadre.getDrawPanel().drawingFont = int_police
                                 % FontPanel.fontes.length;
                     } catch (LogoException e) {
                     }
@@ -1858,9 +1858,9 @@ public class LaunchPrimitive {
                 case 150: // np nompolice
                     Interpreter.operande = true;
                     Interpreter.calcul.push("[ "
-                            + cadre.getDrawPanel().police_etiquette
+                            + cadre.getDrawPanel().drawingFont
                             + " [ "
-                            + FontPanel.fontes[cadre.getDrawPanel().police_etiquette]
+                            + FontPanel.fontes[cadre.getDrawPanel().drawingFont]
                             .getFontName() + " ] ] ");
                     break;
                 case 151: // fnpt fixenompolicetexte
@@ -2153,7 +2153,7 @@ public class LaunchPrimitive {
                     }
                     break;
                 case 164: // nettoie
-                    cadre.getDrawPanel().nettoie();
+                    cadre.getDrawPanel().wash();
                     break;
                 case 165: // tape
                     par = param.get(0).trim();
@@ -2178,7 +2178,7 @@ public class LaunchPrimitive {
                     }
                     break;
                 case 168: // rempliszone
-                    cadre.getDrawPanel().rempliszone();
+                    cadre.getDrawPanel().fillZone();
                     break;
                 case 169: // animation
                     cadre.getDrawPanel().setAnimation(true);
@@ -2818,15 +2818,15 @@ public class LaunchPrimitive {
                     Logo.config.setGridEnabled(false);
                     Logo.config.setXAxisEnabled(false);
                     Logo.config.setYAxisEnabled(false);
-                    cadre.getDrawPanel().origine();
-                    cadre.getDrawPanel().setBackgroundColor(Color.WHITE);
+                    cadre.getDrawPanel().home();
+                    cadre.getDrawPanel().resetScreenColor();
                     if (kernel.getActiveTurtle().id == 0) {
                         Logo.config.setActiveTurtle(0);
                     }
-                    DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLASSIC;
+                    DrawPanel.windowMode = DrawPanel.WINDOW_CLASSIC;
                     kernel.change_image_tortue(0);
-                    cadre.getDrawPanel().fcfg(Color.WHITE);
-                    cadre.getDrawPanel().fcc(Color.BLACK);
+                    cadre.getDrawPanel().setScreenColor(Color.WHITE);
+                    cadre.getDrawPanel().setPenColor(Color.BLACK);
                     cadre.getDrawPanel().setAnimation(false);
                     Logo.config.setFont(new Font("dialog", Font.PLAIN, 12));
                     kernel.getActiveTurtle().police = 12;
@@ -2841,7 +2841,7 @@ public class LaunchPrimitive {
                     kernel.setNumberOfTurtles(16);
                     Logo.config.setTurtleSpeed(0);
                     Kernel.mode_trace = false;
-                    DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLASSIC;
+                    DrawPanel.windowMode = DrawPanel.WINDOW_CLASSIC;
                     cadre.getDrawPanel().zoom(1, false);
                     break;
                 case 215: // tc taillecrayon
@@ -3059,7 +3059,7 @@ public class LaunchPrimitive {
                         Logo.config.setGridEnabled(true);
                         Logo.config.setXGridSpacing(args[0]);
                         Logo.config.setYGridSpacing(args[1]);
-                        cadre.getDrawPanel().videecran();
+                        cadre.getDrawPanel().clearScreen();
 
                     } catch (LogoException e) {
                     }
@@ -3067,7 +3067,7 @@ public class LaunchPrimitive {
                 case 230: // stopgrille
                     Interpreter.operande = false;
                     Logo.config.setGridEnabled(false);
-                    cadre.getDrawPanel().videecran();
+                    cadre.getDrawPanel().clearScreen();
                     break;
                 case 231: // stopanimation
                     cadre.getDrawPanel().setAnimation(false);
@@ -3104,7 +3104,7 @@ public class LaunchPrimitive {
                         Logo.config.setXAxisSpacing(nombre);
                         Logo.config.setYAxisEnabled(true);
                         Logo.config.setYAxisSpacing(nombre);
-                        cadre.getDrawPanel().videecran();
+                        cadre.getDrawPanel().clearScreen();
                     } catch (LogoException e) {
                     }
                     break;
@@ -3120,7 +3120,7 @@ public class LaunchPrimitive {
                         } else if (nombre < 25) nombre = 25;
                         Logo.config.setXAxisEnabled(true);
                         Logo.config.setXAxisSpacing(nombre);
-                        cadre.getDrawPanel().videecran();
+                        cadre.getDrawPanel().clearScreen();
                     } catch (LogoException e) {
                     }
                     break;
@@ -3136,7 +3136,7 @@ public class LaunchPrimitive {
                         } else if (nombre < 25) nombre = 25;
                         Logo.config.setYAxisEnabled(true);
                         Logo.config.setYAxisSpacing(nombre);
-                        cadre.getDrawPanel().videecran();
+                        cadre.getDrawPanel().clearScreen();
                     } catch (LogoException e) {
                     }
                     break;
@@ -3144,7 +3144,7 @@ public class LaunchPrimitive {
                     Logo.config.setXAxisEnabled(false);
                     Logo.config.setYAxisEnabled(false);
                     Interpreter.operande = false;
-                    cadre.getDrawPanel().videecran();
+                    cadre.getDrawPanel().clearScreen();
                     break;
                 case 238: // bye
                     cadre.closeWindow();
@@ -3233,7 +3233,7 @@ public class LaunchPrimitive {
                     delay();
                     try {
                         primitive3D("3d.rightroll");
-                        cadre.getDrawPanel().rightroll(kernel.getCalculator().numberDouble(param.pop()));
+                        cadre.getDrawPanel().roll(kernel.getCalculator().numberDouble(param.pop()));
                     } catch (LogoException e) {
                     }
                     break;
@@ -3241,7 +3241,7 @@ public class LaunchPrimitive {
                     delay();
                     try {
                         primitive3D("3d.uppitch");
-                        cadre.getDrawPanel().uppitch(kernel.getCalculator().numberDouble(param.pop()));
+                        cadre.getDrawPanel().pitch(kernel.getCalculator().numberDouble(param.pop()));
                     } catch (LogoException e) {
                     }
                     break;
@@ -3249,7 +3249,7 @@ public class LaunchPrimitive {
                     delay();
                     try {
                         primitive3D("3d.leftroll");
-                        cadre.getDrawPanel().rightroll(-kernel.getCalculator().numberDouble(param.pop()));
+                        cadre.getDrawPanel().roll(-kernel.getCalculator().numberDouble(param.pop()));
                     } catch (LogoException e) {
                     }
                     break;
@@ -3257,7 +3257,7 @@ public class LaunchPrimitive {
                     delay();
                     try {
                         primitive3D("3d.downpitch");
-                        cadre.getDrawPanel().uppitch(-kernel.getCalculator().numberDouble(param.pop()));
+                        cadre.getDrawPanel().pitch(-kernel.getCalculator().numberDouble(param.pop()));
                     } catch (LogoException e) {
                     }
                     break;
@@ -3315,7 +3315,7 @@ public class LaunchPrimitive {
                 case 258: // setxyz=fposxyz
                     try {
                         primitive3D("3d.setxyz");
-                        cadre.getDrawPanel().fpos(kernel.getCalculator().numberDouble(param.get(0)) + " "
+                        cadre.getDrawPanel().setPosition(kernel.getCalculator().numberDouble(param.get(0)) + " "
                                 + kernel.getCalculator().numberDouble(param.get(1)) + " " +
                                 kernel.getCalculator().numberDouble(param.get(2)));
                     } catch (LogoException e) {
@@ -3325,7 +3325,7 @@ public class LaunchPrimitive {
                     delay();
                     try {
                         primitive3D("3d.setz");
-                        cadre.getDrawPanel().fpos(kernel.getActiveTurtle().X + " " + kernel.getActiveTurtle().Y
+                        cadre.getDrawPanel().setPosition(kernel.getActiveTurtle().X + " " + kernel.getActiveTurtle().Y
                                 + " " + kernel.getCalculator().numberDouble(param.get(0)));
 
                     } catch (LogoException e) {
@@ -3384,13 +3384,13 @@ public class LaunchPrimitive {
 
                     break;
                 case 264: // polystart=polydef
-                    DrawPanel.record3D = DrawPanel.record3D_POLYGON;
+                    DrawPanel.record3D = DrawPanel.RECORD_3D_POLYGON;
                     cadre.initViewer3D();
 //                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
                     DrawPanel.poly = new ElementPolygon(cadre);
                     break;
                 case 265: // polyend=polyfin
-                    DrawPanel.record3D = DrawPanel.record3D_NONE;
+                    DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
                     try {
                         DrawPanel.poly.addToScene();
                     } catch (LogoException e) {
@@ -3404,42 +3404,42 @@ public class LaunchPrimitive {
                     }
                     break;
                 case 267: // linestart=lignedef
-                    DrawPanel.record3D = DrawPanel.record3D_LINE;
+                    DrawPanel.record3D = DrawPanel.RECORD_3D_LINE;
                     cadre.initViewer3D();
 //                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
                     DrawPanel.poly = new ElementLine(cadre);
                     DrawPanel.poly.addVertex(new Point3d(kernel.getActiveTurtle().X / 1000,
                             kernel.getActiveTurtle().Y / 1000,
-                            kernel.getActiveTurtle().Z / 1000), kernel.getActiveTurtle().couleurcrayon);
+                            kernel.getActiveTurtle().Z / 1000), kernel.getActiveTurtle().penColor);
                     break;
                 case 268: // lineend=lignefin
-                    DrawPanel.record3D = DrawPanel.record3D_NONE;
+                    DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
                     try {
                         DrawPanel.poly.addToScene();
                     } catch (LogoException e) {
                     }
                     break;
                 case 269: // pointstart=pointdef
-                    DrawPanel.record3D = DrawPanel.record3D_POINT;
+                    DrawPanel.record3D = DrawPanel.RECORD_3D_POINT;
                     cadre.initViewer3D();
 //                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
                     DrawPanel.poly = new ElementPoint(cadre);
                     break;
                 case 270: // pointend=pointfin
-                    DrawPanel.record3D = DrawPanel.record3D_NONE;
+                    DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
                     try {
                         DrawPanel.poly.addToScene();
                     } catch (LogoException e) {
                     }
                     break;
                 case 271: // textstart=textedef
-                    DrawPanel.record3D = DrawPanel.record3D_TEXT;
+                    DrawPanel.record3D = DrawPanel.RECORD_3D_TEXT;
                     cadre.initViewer3D();
 //                    	if (null==DrawPanel.listText) DrawPanel.listText=new java.util.Vector<TransformGroup>();
                     DrawPanel.poly = null;
                     break;
                 case 272: // textend=textefin
-                    DrawPanel.record3D = DrawPanel.record3D_NONE;
+                    DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
                     break;
                 case 273: // operator <=
                     infequal(param);
@@ -3859,7 +3859,7 @@ public class LaunchPrimitive {
      * @throws LogoException
      */
     private void primitive2D(String name) throws LogoException {
-        if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_3D)
+        if (DrawPanel.windowMode == DrawPanel.WINDOW_3D)
             throw new LogoException(cadre, Utils.primitiveName(name) + " "
                     + Logo.messages.getString("error.primitive2D"));
     }
@@ -3872,7 +3872,7 @@ public class LaunchPrimitive {
      * @throws LogoException
      */
     private void primitive3D(String name) throws LogoException {
-        if (DrawPanel.WINDOW_MODE != DrawPanel.WINDOW_3D)
+        if (DrawPanel.windowMode != DrawPanel.WINDOW_3D)
             throw new LogoException(cadre, Utils.primitiveName(name) + " "
                     + Logo.messages.getString("error.primitive3D"));
     }

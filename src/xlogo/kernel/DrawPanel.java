@@ -1,6 +1,7 @@
 package xlogo.kernel;
 
 import com.sun.j3d.utils.geometry.Text2D;
+import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.Application;
 import xlogo.gui.preferences.FontPanel;
@@ -81,14 +82,13 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * The screen is a projection of the 3D universe
      */
     protected static final int WINDOW_3D = 3;
-    protected final static int record3D_NONE = 0;
-    protected final static int record3D_POLYGON = 1;
-    protected final static int record3D_LINE = 2;
-    protected final static int record3D_POINT = 3;
-    protected final static int record3D_TEXT = 4;
-    private static final long serialVersionUID = 1L;
-    private final static int record2D_NONE = 0;
-    private final static int record2D_POLYGON = 1;
+    protected final static int RECORD_3D_NONE = 0;
+    protected final static int RECORD_3D_POLYGON = 1;
+    protected final static int RECORD_3D_LINE = 2;
+    protected final static int RECORD_3D_POINT = 3;
+    protected final static int RECORD_3D_TEXT = 4;
+    private final static int RECORD_2D_NONE = 0;
+    private final static int RECORD_2D_POLYGON = 1;
     /**
      * Boolean for animation mode
      */
@@ -96,7 +96,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     /**
      * This Image is used for Buffering the drawing
      */
-    private BufferedImage dessin;
+    private BufferedImage image;
     /**
      * The scale for the zoom
      */
@@ -104,7 +104,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     /**
      * this int indicates the window mode, default 0
      */
-    protected static int WINDOW_MODE = 0;
+    protected static int windowMode = 0;
     /**
      * Boolean that indicates if the interpreter is recording polygon in 3D Mode
      */
@@ -115,27 +115,26 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     private static int record2D = 0;
     public Turtle turtle;
-    public Turtle[] tortues;
+    public Turtle[] turtles;
     /**
      * When a turtle is active on screen, its number is added to this stack
      */
-    public Stack<String> tortues_visibles;
+    public Stack<String> visibleTurtles;
     /**
      * The id for the drawing font (with primitive label)
      */
-    protected int police_etiquette;
+    protected int drawingFont;
     /**
      * The First clicked point when the rectangular selection is created
      */
-    Point origine;
+    Point dragOrigin;
     /**
      * The default drawing area color
      */
-    private Color couleurfond = Color.white;
-    private Shape shape = null;
+    private Color screenColor = Color.white;
     private Line2D line;
-    private Rectangle2D rec;
-    private final Application cadre;
+    private Rectangle2D rect;
+    private final Application app;
     /**
      * Graphics of the BufferedImage dessin
      */
@@ -143,35 +142,32 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     /**
      * All Gui Objects on the drawing area are stored in the GuiMap gm
      */
-    private final GuiMap gm;
+    private final GuiMap guiMap;
     /**
      * The Stroke for the triangle turtle
      */
-    private final BasicStroke crayon_triangle = new BasicStroke(1);
+    private final BasicStroke triangleStroke = new BasicStroke(1);
     /**
      * Tools for 3D Mode
      */
-    private World3D w3d = null;
+    private World3D world3D = null;
     private Vector<Point2D.Double> stackTriangle;
     private double[] coords;
     private double oldx, oldy, x1, y1, x2, y2;
     // Were used for clipping
-    //	private double nx,ny,vx,vy,factor,length;
-    //	private GeneralPath gp;
-    // private Arc2D clipArc;
     private Arc2D arc;
     /**
      * Button number when user click on the drawing area
      */
-    private int bouton_souris = 0;    // Numéro du bouton de souris appuyé sur la zone de dessin
+    private int mouseButton = 0;    // Numéro du bouton de souris appuyé sur la zone de dessin
     /**
      * Last coords for last mouse event
      */
-    private String possouris = "[ 0 0 ] ";    // Coordonnées du point du dernier événement souris
+    private String mousePosition = "[ 0 0 ] ";    // Coordonnées du point du dernier événement souris
     /**
      * Notify if a mouse event has occured
      */
-    private boolean lissouris = false; //Indique si un événement souris est intervenu depuis le debut du programme
+    private boolean readMouse = false; //Indique si un événement souris est intervenu depuis le debut du programme
     /**
      * The rectangular selection zone
      */
@@ -179,27 +175,19 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     /**
      * Color for the rectangular selection
      */
-    private Color colorSelection;
-    /**
-     * This method draws a circle in 2D mode
-     * in WRAP mode, makes recursion to draw all circle part on the screen
-     *
-     * @param x  x circle center
-     * @param y y circle center
-     * @param circle radius
-     */
+    private Color selectionColor;
     private Point2D.Double pt;
     private Vector<Point2D.Double> centers;
     private javax.swing.JComponent gui;
     private double scaleX = 1.0;
     private double scaleY = 1.0;
 
-    public DrawPanel(Application cadre) {
-        this.gm = cadre.getKernel().getWorkspace().getGuiMap();
+    public DrawPanel(Application app) {
+        this.guiMap = app.getKernel().getWorkspace().getGuiMap();
         setLayout(null);
         this.setPreferredSize(new Dimension(
                 (int) (Logo.config.getImageWidth() * zoom), (int) (Logo.config.getImageHeight() * zoom)));
-        this.cadre = cadre;
+        this.app = app;
         addMouseListener(this);
         addMouseMotionListener(this);
     }
@@ -209,106 +197,67 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      *
      * @param arg Number of steps
      */
-    protected void av(double arg) {
+    protected void move(double arg) {
         //	Graphics2D g=(Graphics2D)dessin.getGraphics();
 
-        oldx = turtle.corX;
-        oldy = turtle.corY;
-        if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_CLASSIC) { //mode fenetre
-            montrecacheTortue(false);
+        oldx = turtle.curX;
+        oldy = turtle.curY;
+        if (DrawPanel.windowMode == DrawPanel.WINDOW_CLASSIC) { //mode fenetre
+            eraseTurtle(false);
 
-            turtle.corX = turtle.corX + arg
+            turtle.curX = turtle.curX + arg
                     * Math.cos(turtle.angle);
-            turtle.corY = turtle.corY - arg
+            turtle.curY = turtle.curY - arg
                     * Math.sin(turtle.angle);
             if (turtle.isPenDown()) {
                 if (turtle.isPenReverse()) {
-                    g.setColor(couleurfond);
-                    g.setXORMode(turtle.couleurcrayon);
+                    g.setColor(screenColor);
+                    g.setXORMode(turtle.penColor);
                 } else {
-                    g.setColor(turtle.couleurcrayon);
+                    g.setColor(turtle.penColor);
                     g.setPaintMode();
                 }
                 if (null == line) line = new Line2D.Double();
-			/*	if (null==gp) gp=new GeneralPath();
-				else gp.reset();*/
-                if (oldx < turtle.corX) {
+                if (oldx < turtle.curX) {
                     x1 = oldx;
                     y1 = oldy;
-                    x2 = turtle.corX;
-                    y2 = turtle.corY;
+                    x2 = turtle.curX;
+                    y2 = turtle.curY;
                 }
-                if (oldx > turtle.corX) {
+                if (oldx > turtle.curX) {
                     x2 = oldx;
                     y2 = oldy;
-                    x1 = turtle.corX;
-                    y1 = turtle.corY;
-                } else if (oldx == turtle.corX) {
-                    if (oldy < turtle.corY) {
+                    x1 = turtle.curX;
+                    y1 = turtle.curY;
+                } else if (oldx == turtle.curX) {
+                    if (oldy < turtle.curY) {
                         x2 = oldx;
                         y2 = oldy;
-                        x1 = turtle.corX;
-                        y1 = turtle.corY;
+                        x1 = turtle.curX;
+                        y1 = turtle.curY;
                     } else {
                         x1 = oldx;
                         y1 = oldy;
-                        x2 = turtle.corX;
-                        y2 = turtle.corY;
+                        x2 = turtle.curX;
+                        y2 = turtle.curY;
                     }
                 }
 
                 line.setLine(x1, y1, x2, y2);
-
-				/*
-				// perpendicular vector
-				nx=y1-y2;
-				ny=x2-x1;
-				length=Math.sqrt(nx*nx+ny*ny);
-				if (length!=0){
-					factor=(1+tortue.getPenWidth())/length;
-					vx=x2-x1;
-					vy=y2-y1;
-					gp.moveTo((float)(x1-vx*factor-nx*factor),
-						(float)(y1-vy*factor-ny*factor));
-					gp.lineTo((float)(x1-vx*factor+nx*factor),
-						(float)(y1-vy*factor+ny*factor));
-					gp.lineTo((float)(x2+vx*factor+nx*factor),
-						(float)(y2+vy*factor+ny*factor));
-					gp.lineTo((float)(x2+vx*factor-nx*factor),
-						(float)(y2+vy*factor-ny*factor));
-					gp.lineTo((float)(x1-vx*factor-nx*factor),
-						(float)(y1-vy*factor-ny*factor));
-				}
-				else{
-					float width=tortue.getPenWidth()+0.5f;
-					gp.moveTo((float)(x1-width),
-							(float)(y1-width));
-					gp.lineTo((float)(x1+width),
-							(float)(y1-width));
-					gp.lineTo((float)(x1+width),
-							(float)(y1+width));
-					gp.lineTo((float)(x1-width),
-							(float)(y1+width));
-					gp.lineTo((float)(x1-width),
-							(float)(y1-width));
-				}
-				shape=gp;*/
-                tryRecord2DMode(turtle.corX, turtle.corY);
+                tryRecord2DMode(turtle.curX, turtle.curY);
                 g.draw(line);
-                //if (!tortue.isVisible())
                 clip();
-                //		g.dispose();
             }
-            montrecacheTortue(true);
-        } else if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_WRAP) { //mode enroule
-            trace_enroule(arg, oldx, oldy);
-        } else if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_CLOSE) { //mode clos
+            eraseTurtle(true);
+        } else if (DrawPanel.windowMode == DrawPanel.WINDOW_WRAP) { //mode enroule
+            traceWrap(arg, oldx, oldy);
+        } else if (DrawPanel.windowMode == DrawPanel.WINDOW_CLOSE) { //mode clos
             try {
-                trace_ferme(oldx, oldy, arg);
-            } catch (LogoException e) {
+                traceClosed(oldx, oldy, arg);
+            } catch (LogoException ignored) {
             }
-        } else if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_3D) {
-            montrecacheTortue(false);
+        } else if (DrawPanel.windowMode == DrawPanel.WINDOW_3D) {
+            eraseTurtle(false);
             turtle.X = turtle.X + arg * turtle.getRotationMatrix()[0][1];
             turtle.Y = turtle.Y + arg * turtle.getRotationMatrix()[1][1];
             turtle.Z = turtle.Z + arg * turtle.getRotationMatrix()[2][1];
@@ -319,42 +268,42 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             tmp[2] = turtle.Z;
 
             tmp = this.toScreenCoord(tmp, true);
-            turtle.corX = tmp[0];
-            turtle.corY = tmp[1];
+            turtle.curX = tmp[0];
+            turtle.curY = tmp[1];
 
 
             if (turtle.isPenDown()) {
                 if (turtle.isPenReverse()) {
-                    g.setColor(couleurfond);
-                    g.setXORMode(turtle.couleurcrayon);
+                    g.setColor(screenColor);
+                    g.setXORMode(turtle.penColor);
                 } else {
-                    g.setColor(turtle.couleurcrayon);
+                    g.setColor(turtle.penColor);
                     g.setPaintMode();
                 }
                 if (null == line) line = new Line2D.Double();
 
-                if (oldx < turtle.corX) {
+                if (oldx < turtle.curX) {
                     x1 = oldx;
                     y1 = oldy;
-                    x2 = turtle.corX;
-                    y2 = turtle.corY;
+                    x2 = turtle.curX;
+                    y2 = turtle.curY;
                 }
-                if (oldx > turtle.corX) {
+                if (oldx > turtle.curX) {
                     x2 = oldx;
                     y2 = oldy;
-                    x1 = turtle.corX;
-                    y1 = turtle.corY;
-                } else if (oldx == turtle.corX) {
-                    if (oldy < turtle.corY) {
+                    x1 = turtle.curX;
+                    y1 = turtle.curY;
+                } else if (oldx == turtle.curX) {
+                    if (oldy < turtle.curY) {
                         x2 = oldx;
                         y2 = oldy;
-                        x1 = turtle.corX;
-                        y1 = turtle.corY;
+                        x1 = turtle.curX;
+                        y1 = turtle.curY;
                     } else {
                         x1 = oldx;
                         y1 = oldy;
-                        x2 = turtle.corX;
-                        y2 = turtle.corY;
+                        x2 = turtle.curX;
+                        y2 = turtle.curY;
                     }
                 }
 
@@ -363,7 +312,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 g.draw(line);
                 clip();
             }
-            montrecacheTortue(true);
+            eraseTurtle(true);
         }
     }
 
@@ -373,63 +322,60 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @param arg The angle to rotate
      */
     protected void td(double arg) {
-//		System.out.println(tortue.angle);
         if (turtle.isVisible())
-            montrecacheTortue(false);
+            eraseTurtle(false);
         if (!enabled3D()) {
             turtle.heading = ((turtle.heading + arg) % 360 + 360) % 360;
             turtle.angle = Math.toRadians(90 - turtle.heading);
         } else {
-            turtle.setRotationMatrix(w3d.multiply(turtle.getRotationMatrix(), w3d.rotationZ(-arg)));
-            double[] tmp = w3d.rotationToEuler(turtle.getRotationMatrix());
+            turtle.setRotationMatrix(world3D.multiply(turtle.getRotationMatrix(), world3D.rotationZ(-arg)));
+            double[] tmp = world3D.rotationToEuler(turtle.getRotationMatrix());
             turtle.heading = tmp[2];
             turtle.roll = tmp[1];
             turtle.pitch = tmp[0];
         }
         if (turtle.isVisible())
-            montrecacheTortue(true);
+            eraseTurtle(true);
         Interpreter.operande = false;
     }
 
     /**
      * This method is used for drawing with primitive "rightroll" or "leftroll"
      *
-     * @param arg
+     * @param arg left or right
      */
-    protected void rightroll(double arg) {
-//		System.out.println(tortue.angle);
+    protected void roll(double arg) {
         if (turtle.isVisible())
-            montrecacheTortue(false);
+            eraseTurtle(false);
         if (enabled3D()) {
-            turtle.setRotationMatrix(w3d.multiply(turtle.getRotationMatrix(), w3d.rotationY(-arg)));
-            double[] tmp = w3d.rotationToEuler(turtle.getRotationMatrix());
+            turtle.setRotationMatrix(world3D.multiply(turtle.getRotationMatrix(), world3D.rotationY(-arg)));
+            double[] tmp = world3D.rotationToEuler(turtle.getRotationMatrix());
             turtle.heading = tmp[2];
             turtle.roll = tmp[1];
             turtle.pitch = tmp[0];
         }
         if (turtle.isVisible())
-            montrecacheTortue(true);
+            eraseTurtle(true);
         Interpreter.operande = false;
     }
 
     /**
      * This method is used for drawing with primitive "uppitch" or "downpitch"
      *
-     * @param arg
+     * @param arg up or down
      */
-    protected void uppitch(double arg) {
-//		System.out.println(tortue.angle);
+    protected void pitch(double arg) {
         if (turtle.isVisible())
-            montrecacheTortue(false);
+            eraseTurtle(false);
         if (enabled3D()) {
-            turtle.setRotationMatrix(w3d.multiply(turtle.getRotationMatrix(), w3d.rotationX(arg)));
-            double[] tmp = w3d.rotationToEuler(turtle.getRotationMatrix());
+            turtle.setRotationMatrix(world3D.multiply(turtle.getRotationMatrix(), world3D.rotationX(arg)));
+            double[] tmp = world3D.rotationToEuler(turtle.getRotationMatrix());
             turtle.heading = tmp[2];
             turtle.roll = tmp[1];
             turtle.pitch = tmp[0];
         }
         if (turtle.isVisible())
-            montrecacheTortue(true);
+            eraseTurtle(true);
         Interpreter.operande = false;
     }
 
@@ -440,11 +386,11 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     protected void setRoll(double arg) {
         if (turtle.isVisible())
-            montrecacheTortue(false);
+            eraseTurtle(false);
         turtle.roll = arg;
-        turtle.setRotationMatrix(w3d.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
+        turtle.setRotationMatrix(world3D.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
         if (turtle.isVisible())
-            montrecacheTortue(true);
+            eraseTurtle(true);
         Interpreter.operande = false;
     }
 
@@ -455,11 +401,11 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     protected void setHeading(double arg) {
         if (turtle.isVisible())
-            montrecacheTortue(false);
+            eraseTurtle(false);
         turtle.heading = arg;
-        turtle.setRotationMatrix(w3d.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
+        turtle.setRotationMatrix(world3D.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
         if (turtle.isVisible())
-            montrecacheTortue(true);
+            eraseTurtle(true);
         Interpreter.operande = false;
     }
 
@@ -470,11 +416,11 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     protected void setPitch(double arg) {
         if (turtle.isVisible())
-            montrecacheTortue(false);
+            eraseTurtle(false);
         turtle.pitch = arg;
-        turtle.setRotationMatrix(w3d.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
+        turtle.setRotationMatrix(world3D.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
         if (turtle.isVisible())
-            montrecacheTortue(true);
+            eraseTurtle(true);
         Interpreter.operande = false;
     }
 
@@ -487,37 +433,37 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     protected void setOrientation(String arg) throws LogoException {
         initCoords();
         if (turtle.isVisible())
-            montrecacheTortue(false);
+            eraseTurtle(false);
         extractCoords(arg, Utils.primitiveName("3d.setorientation"));
         turtle.roll = coords[0];
         turtle.pitch = coords[1];
         turtle.heading = coords[2];
-        turtle.setRotationMatrix(w3d.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
+        turtle.setRotationMatrix(world3D.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
         if (turtle.isVisible())
-            montrecacheTortue(true);
+            eraseTurtle(true);
         Interpreter.operande = false;
     }
 
     /**
      * Primitive "origine"
      */
-    protected void origine() { // primitive origine
+    protected void home() { // primitive origine
         try {
             if (!enabled3D())
-                fpos("0 0");
-            else fpos("0 0 0");
-        } catch (LogoException e) {
+                setPosition("0 0");
+            else setPosition("0 0 0");
+        } catch (LogoException ignored) {
         }
         if (turtle.isVisible())
-            montrecacheTortue(false);
+            eraseTurtle(false);
         turtle.heading = 0;
         turtle.angle = Math.PI / 2;
         turtle.roll = 0;
         turtle.pitch = 0;
         if (enabled3D())
-            turtle.setRotationMatrix(w3d.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
+            turtle.setRotationMatrix(world3D.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
         if (turtle.isVisible())
-            montrecacheTortue(true);
+            eraseTurtle(true);
     }
 
     /**
@@ -528,14 +474,13 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @throws LogoException If bad format list
      */
     protected double distance(String liste) throws LogoException {
-
         initCoords();
         extractCoords(liste, Utils.primitiveName("distance"));
         double distance;
         if (!enabled3D()) {
             coords = this.toScreenCoord(coords, false);
-            distance = Math.sqrt(Math.pow(turtle.corX - coords[0], 2)
-                    + Math.pow(turtle.corY - coords[1], 2));
+            distance = Math.sqrt(Math.pow(turtle.curX - coords[0], 2)
+                    + Math.pow(turtle.curY - coords[1], 2));
         } else distance = Math.sqrt(Math.pow(turtle.X - coords[0], 2)
                 + Math.pow(turtle.Y - coords[1], 2) + Math.pow(turtle.Z - coords[2], 2));
         return distance;
@@ -574,33 +519,33 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @return the rotation angle
      * @throws LogoException if Bad format List
      */
-    protected double vers2D(String liste) throws LogoException {
+    protected double to2D(String liste) throws LogoException {
         initCoords();
         extractCoords(liste, Utils.primitiveName("vers"));
         double angle;
         coords = this.toScreenCoord(coords, false);
-        if (turtle.corY == coords[1]) {
-            if (coords[0] > turtle.corX)
+        if (turtle.curY == coords[1]) {
+            if (coords[0] > turtle.curX)
                 angle = 90;
-            else if (coords[0] == turtle.corX)
+            else if (coords[0] == turtle.curX)
                 angle = 0;
             else
                 angle = 270;
-        } else if (turtle.corX == coords[0]) {
-            if (turtle.corY > coords[1])
+        } else if (turtle.curX == coords[0]) {
+            if (turtle.curY > coords[1])
                 angle = 0;
             else
                 angle = 180;
         } else {
             angle = Math.toDegrees(Math.atan(Math
-                    .abs(coords[0] - turtle.corX)
-                    / Math.abs(turtle.corY - coords[1])));
+                    .abs(coords[0] - turtle.curX)
+                    / Math.abs(turtle.curY - coords[1])));
             //		System.out.println(coords[0] - tortue.corX+" "+Math.abs(tortue.corY - coords[1])+" "+angle);
-            if (coords[0] > turtle.corX && coords[1] > turtle.corY)
+            if (coords[0] > turtle.curX && coords[1] > turtle.curY)
                 angle = 180 - angle; // 2eme quadrant
-            else if (coords[0] < turtle.corX && coords[1] > turtle.corY)
+            else if (coords[0] < turtle.curX && coords[1] > turtle.curY)
                 angle = 180 + angle; // 3eme quadrant
-            else if (coords[0] < turtle.corX && coords[1] < turtle.corY)
+            else if (coords[0] < turtle.curX)
                 angle = 360 - angle; // 4eme quadrant
         }
         return angle;
@@ -612,12 +557,12 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @param liste The list with the coordinates to move
      * @throws LogoException If the coordinates are invalid
      */
-    protected void fpos(String liste) throws LogoException {
+    protected void setPosition(String liste) throws LogoException {
         initCoords();
-        oldx = turtle.corX;
-        oldy = turtle.corY;
+        oldx = turtle.curX;
+        oldy = turtle.curY;
         extractCoords(liste, Utils.primitiveName("drawing.fpos"));
-        montrecacheTortue(false);
+        eraseTurtle(false);
         if (enabled3D()) {
             turtle.X = coords[0];
             turtle.Y = coords[1];
@@ -625,71 +570,68 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
         coords = toScreenCoord(coords, true);
 
-        turtle.corX = coords[0];
-        turtle.corY = coords[1];
+        turtle.curX = coords[0];
+        turtle.curY = coords[1];
         if (turtle.isPenDown()) {
             if (turtle.isPenReverse()) {
-                g.setColor(couleurfond);
-                g.setXORMode(turtle.couleurcrayon);
+                g.setColor(screenColor);
+                g.setXORMode(turtle.penColor);
             } else {
-                g.setColor(turtle.couleurcrayon);
+                g.setColor(turtle.penColor);
                 g.setPaintMode();
             }
             if (null == line) line = new Line2D.Double();
-            if (oldx < turtle.corX) {
+            if (oldx < turtle.curX) {
                 x1 = oldx;
                 y1 = oldy;
-                x2 = turtle.corX;
-                y2 = turtle.corY;
+                x2 = turtle.curX;
+                y2 = turtle.curY;
             }
-            if (oldx > turtle.corX) {
+            if (oldx > turtle.curX) {
                 x2 = oldx;
                 y2 = oldy;
-                x1 = turtle.corX;
-                y1 = turtle.corY;
-            } else if (oldx == turtle.corX) {
-                if (oldy < turtle.corY) {
+                x1 = turtle.curX;
+                y1 = turtle.curY;
+            } else if (oldx == turtle.curX) {
+                if (oldy < turtle.curY) {
                     x2 = oldx;
                     y2 = oldy;
-                    x1 = turtle.corX;
-                    y1 = turtle.corY;
+                    x1 = turtle.curX;
+                    y1 = turtle.curY;
                 } else {
                     x1 = oldx;
                     y1 = oldy;
-                    x2 = turtle.corX;
-                    y2 = turtle.corY;
+                    x2 = turtle.curX;
+                    y2 = turtle.curY;
                 }
             }
             line.setLine(x1, y1, x2, y2);
-            tryRecord2DMode(turtle.corX, turtle.corY);
+            tryRecord2DMode(turtle.curX, turtle.curY);
             g.draw(line);
             clip();
         }
-        montrecacheTortue(true);
+        eraseTurtle(true);
     }
 
     public void drawEllipseArc(double xAxis, double yAxis, double angleRotation, double xCenter, double yCenter, double angleStart, double angleExtent) {
-        montrecacheTortue(false);
+        eraseTurtle(false);
         arc = new Arc2D.Double(-xAxis, -yAxis, 2 * xAxis, 2 * yAxis, angleStart, angleExtent, Arc2D.Double.OPEN);
         if (turtle.isPenReverse()) {
-            g.setColor(couleurfond);
-            g.setXORMode(turtle.couleurcrayon);
+            g.setColor(screenColor);
+            g.setXORMode(turtle.penColor);
         } else {
-            g.setColor(turtle.couleurcrayon);
+            g.setColor(turtle.penColor);
             g.setPaintMode();
         }
-        double tmpx = Logo.config.getImageWidth() / 2 + xCenter;
-        double tmpy = Logo.config.getImageHeight() / 2 - yCenter;
+        double tmpx = Logo.config.getImageWidth() / 2.0 + xCenter;
+        double tmpy = Logo.config.getImageHeight() / 2.0 - yCenter;
         g.translate(tmpx, tmpy);
         g.rotate(-angleRotation);
         g.draw(arc);
         g.rotate(angleRotation);
         g.translate(-tmpx, -tmpy);
-	/*	if (null==clipArc) clipArc=new Arc2D.Double();
-		clipArc.setArcByCenter(tortue.corX,tortue.corY,
-				rayon+2+tortue.getPenWidth(),0,360, Arc2D.OPEN);*/
         clip();
-        montrecacheTortue(true); // on efface la tortue si elle st visible
+        eraseTurtle(true); // on efface la tortue si elle st visible
     }
 
     /**
@@ -708,49 +650,32 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         // Calculate angle extend
         double angle = pangle - fangle;
         if (angle < 0) angle += 360;
-        montrecacheTortue(false);
+        eraseTurtle(false);
         if (null == arc) arc = new Arc2D.Double();
         if (!enabled3D()) {
-            if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_WRAP) centers = new Vector<Point2D.Double>();
-            arc2D(turtle.corX, turtle.corY, rayon, fangle, angle);
-
-	/*	if (null==gp) gp=new GeneralPath();
-		else gp.reset();
-		gp.moveTo((float)(tortue.corX-rayon-tortue.getPenWidth()),
-				(float)(tortue.corY-rayon-tortue.getPenWidth());
-		gp.lineTo((float)(tortue.corX-rayon-tortue.getPenWidth()),
-				(float)(tortue.corY-rayon-tortue.getPenWidth()));
-		gp.lineTo((float)(tortue.corX-rayon-tortue.getPenWidth()),
-				(float)(tortue.corY-rayon-tortue.getPenWidth()));
-		gp.lineTo((float)(tortue.corX-rayon-tortue.getPenWidth()),
-				(float)(tortue.corY-rayon-tortue.getPenWidth()));
-		gp.lineTo((float)(tortue.corX-rayon-tortue.getPenWidth()),
-				(float)(tortue.corY-rayon-tortue.getPenWidth()));*/
-/*		if (null==rec) rec=new Rectangle2D.Double();
-		rec.setRect(tortue.corX-rayon-tortue.getPenWidth(),
-			tortue.corY-rayon-tortue.getPenWidth(),
-			2*(rayon+tortue.getPenWidth()),2*(rayon+tortue.getPenWidth()));*/
+            if (DrawPanel.windowMode == DrawPanel.WINDOW_WRAP) centers = new Vector<>();
+            arc2D(turtle.curX, turtle.curY, rayon, fangle, angle);
             clip();
 
         } else {
             arcCircle3D(rayon, fangle, angle);
         }
-        montrecacheTortue(true);
+        eraseTurtle(true);
     }
 
     private void arc2D(double x, double y, double radius, double fangle, double angle) {
         arc.setArcByCenter(x, y, radius,
                 fangle, angle, Arc2D.OPEN);
         if (turtle.isPenReverse()) {
-            g.setColor(couleurfond);
-            g.setXORMode(turtle.couleurcrayon);
+            g.setColor(screenColor);
+            g.setXORMode(turtle.penColor);
         } else {
-            g.setColor(turtle.couleurcrayon);
+            g.setColor(turtle.penColor);
             g.setPaintMode();
         }
         g.draw(arc);
         clip();
-        if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_WRAP) {
+        if (DrawPanel.windowMode == DrawPanel.WINDOW_WRAP) {
             if (x + radius > Logo.config.getImageWidth() && x <= Logo.config.getImageWidth()) {
                 pt = new Point2D.Double(-Logo.config.getImageWidth() + x, y);
                 if (!centers.contains(pt)) {
@@ -788,14 +713,14 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 angleStart, angleExtent, Arc2D.OPEN);
         Shape s = transformShape(arc);
         if (turtle.isPenReverse()) {
-            g.setColor(couleurfond);
-            g.setXORMode(turtle.couleurcrayon);
+            g.setColor(screenColor);
+            g.setXORMode(turtle.penColor);
         } else {
-            g.setColor(turtle.couleurcrayon);
+            g.setColor(turtle.penColor);
             g.setPaintMode();
         }
         g.draw(s);
-        if (DrawPanel.record3D == DrawPanel.record3D_LINE || DrawPanel.record3D == DrawPanel.record3D_POLYGON) {
+        if (DrawPanel.record3D == DrawPanel.RECORD_3D_LINE || DrawPanel.record3D == DrawPanel.RECORD_3D_POLYGON) {
             recordArcCircle3D(radius, angleStart, angleExtent);
         }
     }
@@ -814,8 +739,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         int couleur = -1;
         int x = (int) (coords[0] * scaleX);
         int y = (int) (coords[1] * scaleY);
-        if (0 < x && x < dessin.getWidth() && 0 < y && y < dessin.getHeight()) {
-            couleur = dessin.getRGB(x, y);
+        if (0 < x && x < image.getWidth() && 0 < y && y < image.getHeight()) {
+            couleur = image.getRGB(x, y);
         }
         return new Color(couleur);
     }
@@ -826,18 +751,15 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @param radius The radius of the circle
      */
     protected void circle(double radius) {
-        montrecacheTortue(false);
+        eraseTurtle(false);
         if (null == arc) arc = new Arc2D.Double();
         if (!enabled3D()) {
-            if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_WRAP) centers = new Vector<Point2D.Double>();
-            circle2D(turtle.corX, turtle.corY, radius);
-	/*	if (null==clipArc) clipArc=new Arc2D.Double();
-		clipArc.setArcByCenter(tortue.corX,tortue.corY,
-				rayon+2+tortue.getPenWidth(),0,360, Arc2D.OPEN);*/
+            if (DrawPanel.windowMode == DrawPanel.WINDOW_WRAP) centers = new Vector<>();
+            circle2D(turtle.curX, turtle.curY, radius);
         } else {
             circle3D(radius);
         }
-        montrecacheTortue(true); // on efface la tortue si elle st visible
+        eraseTurtle(true); // on efface la tortue si elle st visible
     }
 
     private void circle2D(double x, double y, double radius) {
@@ -846,15 +768,15 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 0, 360, Arc2D.OPEN);
 
         if (turtle.isPenReverse()) {
-            g.setColor(couleurfond);
-            g.setXORMode(turtle.couleurcrayon);
+            g.setColor(screenColor);
+            g.setXORMode(turtle.penColor);
         } else {
-            g.setColor(turtle.couleurcrayon);
+            g.setColor(turtle.penColor);
             g.setPaintMode();
         }
         g.draw(arc);
         clip();
-        if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_WRAP) {
+        if (DrawPanel.windowMode == DrawPanel.WINDOW_WRAP) {
             if (x + radius > Logo.config.getImageWidth() && x <= Logo.config.getImageWidth()) {
                 pt = new Point2D.Double(-Logo.config.getImageWidth() + x, y);
                 if (!centers.contains(pt)) {
@@ -899,18 +821,18 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 //		System.out.println(coords[0]+" "+coords[1]+" "+Logo.config.imageHeight+" "+Logo.config.imageWidth);
         if (coords[0] > 0 && coords[1] > 0 && coords[0] < Logo.config.getImageWidth() && coords[1] < Logo.config.getImageHeight()) {
             if (turtle.isPenReverse()) {
-                g.setColor(couleurfond);
-                g.setXORMode(turtle.couleurcrayon);
+                g.setColor(screenColor);
+                g.setXORMode(turtle.penColor);
 
             } else {
-                g.setColor(turtle.couleurcrayon);
+                g.setColor(turtle.penColor);
                 g.setPaintMode();
             }
-            if (rec == null) rec = new Rectangle2D.Double();
+            if (rect == null) rect = new Rectangle2D.Double();
             // High quality
-            if (Logo.config.getDrawQuality() == Logo.config.DRAW_QUALITY_HIGH) {
+            if (Logo.config.getDrawQuality() == Config.DRAW_QUALITY_HIGH) {
                 double width = turtle.getPenWidth();
-                rec.setRect(coords[0] - width + 0.5, coords[1] - width + 0.5,
+                rect.setRect(coords[0] - width + 0.5, coords[1] - width + 0.5,
                         2 * width, 2 * width);
             }
             // Normal or Low Quality
@@ -920,17 +842,17 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 if (intWidth % 2 == 1) {
                     double width = turtle.getPenWidth() - 0.5;
 //					System.out.println(coords[0]+" "+coords[1]);
-                    rec.setRect(coords[0] - width, coords[1] - width,
+                    rect.setRect(coords[0] - width, coords[1] - width,
                             2 * width + 1, 2 * width + 1);
                 } else {
                     double width = turtle.getPenWidth();
-                    rec.setRect(coords[0] - width, coords[1] - width,
+                    rect.setRect(coords[0] - width, coords[1] - width,
                             2 * width, 2 * width);
                 }
             }
-            if (Logo.config.getPenShape() == Logo.config.PEN_SHAPE_SQUARE) {
-                g.fill(rec);
-            } else if (Logo.config.getPenShape() == Logo.config.PEN_SHAPE_OVAL) {
+            if (Logo.config.getPenShape() == Config.PEN_SHAPE_SQUARE) {
+                g.fill(rect);
+            } else if (Logo.config.getPenShape() == Config.PEN_SHAPE_OVAL) {
                 if (null == arc) arc = new Arc2D.Double();
                 arc.setArcByCenter(coords[0], coords[1], 0, 0, 360, Arc2D.OPEN);
                 g.draw(arc);
@@ -955,10 +877,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         for (int i = 0; i < 3; i++) {
             v[i] = turtle.getRotationMatrix()[i][2];
         }
-        v[0] += w3d.xCamera;
-        v[1] += w3d.yCamera;
-        v[2] += w3d.zCamera;
-        w3d.toCameraWorld(v);
+        v[0] += world3D.xCamera;
+        v[1] += world3D.yCamera;
+        v[2] += world3D.zCamera;
+        world3D.toCameraWorld(v);
         // Now v contains coordinates of a normal vector to the plane in camera world coordinates
         double a = v[0];
         double b = v[1];
@@ -968,7 +890,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         v[0] = turtle.X;
         v[1] = turtle.Y;
         v[2] = turtle.Z;
-        w3d.toCameraWorld(v);
+        world3D.toCameraWorld(v);
 
         double x = v[0];
         double y = v[1];
@@ -987,7 +909,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         BigDecimal bc = new BigDecimal(c);
         BigDecimal bd = new BigDecimal(d);
         BigDecimal deux = new BigDecimal("2");
-        BigDecimal screenDistance = new BigDecimal(w3d.screenDistance);
+        BigDecimal screenDistance = new BigDecimal(world3D.screenDistance);
         BigDecimal bradius = new BigDecimal(String.valueOf(radius));
 
         // Now we calculate the coefficient for the conic ax^2+bxy+cy^2+dx+ey+f=0
@@ -1014,8 +936,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         // Numbers
         // Math.pow(w3d.screenDistance,2)*(d*d+2*d*z*c+lambda*c*c);
         big[5] = screenDistance.pow(2).multiply(bd.pow(2).add(deux.multiply(bd).multiply(bz).multiply(bc)).add(lambda.multiply(bc.pow(2))));
-        new Conic(cadre, big);
-        if (DrawPanel.record3D == DrawPanel.record3D_LINE || DrawPanel.record3D == DrawPanel.record3D_POLYGON) {
+        new Conic(app, big);
+        if (DrawPanel.record3D == DrawPanel.RECORD_3D_LINE || DrawPanel.record3D == DrawPanel.RECORD_3D_POLYGON) {
             recordArcCircle3D(radius, 0, 360);
         }
     }
@@ -1046,14 +968,14 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         if (null != DrawPanel.poly && DrawPanel.poly.getVertexCount() > 1) {
             try {
                 DrawPanel.poly.addToScene();
-            } catch (LogoException e) {
+            } catch (LogoException ignored) {
             }
         }
-        if (DrawPanel.record3D == DrawPanel.record3D_POLYGON) {
-            DrawPanel.poly = new ElementPolygon(cadre);
-            DrawPanel.poly.addVertex(pos, turtle.couleurcrayon);
+        if (DrawPanel.record3D == DrawPanel.RECORD_3D_POLYGON) {
+            DrawPanel.poly = new ElementPolygon(app);
+            DrawPanel.poly.addVertex(pos, turtle.penColor);
         } else {
-            DrawPanel.poly = new ElementLine(cadre);
+            DrawPanel.poly = new ElementLine(app);
         }
 
         for (int i = 0; i < indexMax - 1; i++) {
@@ -1063,7 +985,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             tmp2.scale(Math.sin(Math.toRadians(angleStart + i)));
             tmp1.add(tmp2);
             tmp1.add(pos);
-            DrawPanel.poly.addVertex(tmp1, turtle.couleurcrayon);
+            DrawPanel.poly.addVertex(tmp1, turtle.penColor);
         }
         Point3d tmp1 = new Point3d(v1);
         tmp1.scale(Math.cos(Math.toRadians(angleStart + angleExtent)));
@@ -1071,7 +993,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         tmp2.scale(Math.sin(Math.toRadians(angleStart + angleExtent)));
         tmp1.add(tmp2);
         tmp1.add(pos);
-        DrawPanel.poly.addVertex(tmp1, turtle.couleurcrayon);
+        DrawPanel.poly.addVertex(tmp1, turtle.penColor);
     }
 
     /**
@@ -1079,23 +1001,19 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      *
      * @param image The image to draw
      */
-    protected void chargeimage(BufferedImage image) {
+    protected void drawImage(BufferedImage image) {
         if (turtle.isVisible())
-            montrecacheTortue(false);
+            eraseTurtle(false);
         g.setPaintMode();
-        g.translate(turtle.corX, turtle.corY);
+        g.translate(turtle.curX, turtle.curY);
         g.rotate(-turtle.angle);
         g.drawImage(image, null, 0, 0);
         g.rotate(turtle.angle);
-        g.translate(-turtle.corX, -turtle.corY);
+        g.translate(-turtle.curX, -turtle.curY);
 
         clip();
-//		repaint();
-/*		if (null==rec) rec=new Rectangle2D.Double();
-		rec.setRect(tortue.corX,tortue.corY,
-				image.getWidth(),image.getHeight());*/
         if (turtle.isVisible())
-            montrecacheTortue(true);
+            eraseTurtle(true);
     }
 
     /**
@@ -1107,18 +1025,18 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @param oldy The Y turtle location
      * @return the number of steps (Recursive dichotomy)
      */
-    private double trouve_longueur(double mini, double maxi, double oldx, double oldy) {
+    private double findLength(double mini, double maxi, double oldx, double oldy) {
         // renvoie la longueur dont on peut encore avancer
         if (Math.abs(maxi - mini) < 0.5) {
             return (mini);
         } else {
-            double milieu = (mini + maxi) / 2;
-            double nx = oldx + milieu * Math.cos(turtle.angle);
-            double ny = oldy - milieu * Math.sin(turtle.angle);
+            double middle = (mini + maxi) / 2;
+            double nx = oldx + middle * Math.cos(turtle.angle);
+            double ny = oldy - middle * Math.sin(turtle.angle);
             if (nx < 0 || nx > Logo.config.getImageWidth() || ny < 0 || ny > Logo.config.getImageHeight())
-                return trouve_longueur(mini, milieu, oldx, oldy);
+                return findLength(mini, middle, oldx, oldy);
             else
-                return trouve_longueur(milieu, maxi, oldx, oldy);
+                return findLength(middle, maxi, oldx, oldy);
         }
     }
 
@@ -1129,68 +1047,68 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @param oldx X position
      * @param oldy Y position
      */
-    private void trace_enroule(double arg, double oldx, double oldy) {
+    private void traceWrap(double arg, double oldx, double oldy) {
         boolean re = arg < 0;
         double diagonale = Math.sqrt(Math.pow(Logo.config.getImageWidth(), 2) + Math.pow(Logo.config.getImageHeight(), 2)) + 1;
         double longueur;
         if (re)
-            longueur = trouve_longueur(0, -diagonale, oldx, oldy);
+            longueur = findLength(0, -diagonale, oldx, oldy);
         else
-            longueur = trouve_longueur(0, diagonale, oldx, oldy);
+            longueur = findLength(0, diagonale, oldx, oldy);
 //		System.out.println(diagonale+" "+oldx+" "+oldy);
         while (Math.abs(longueur) < Math.abs(arg)) {
             //	System.out.println(Math.abs(longueur)+" "+Math.abs(arg));
             arg -= longueur;
-            DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLASSIC;
-            av(longueur);
+            DrawPanel.windowMode = DrawPanel.WINDOW_CLASSIC;
+            move(longueur);
             //System.out.println(Math.abs(longueur)+" "+Math.abs(arg));
-            if (cadre.error)
+            if (app.error)
                 break; //permet d'interrompre avec le bouton stop
-            DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_WRAP;
+            DrawPanel.windowMode = DrawPanel.WINDOW_WRAP;
             if (Logo.config.getTurtleSpeed() != 0) {
                 try {
-                    Thread.sleep(Logo.config.getTurtleSpeed() * 5);
-                } catch (InterruptedException e) {
+                    Thread.sleep(Logo.config.getTurtleSpeed() * 5L);
+                } catch (InterruptedException ignored) {
                 }
             }
             if (turtle.isVisible())
-                this.montrecacheTortue(false);
+                this.eraseTurtle(false);
             if (re) turtle.heading = (turtle.heading + 180) % 360;
-            if (turtle.corX > Logo.config.getImageWidth() - 1
+            if (turtle.curX > Logo.config.getImageWidth() - 1
                     && (turtle.heading < 180 && turtle.heading != 0)) {
-                turtle.corX = 0;
-                if (turtle.corY > Logo.config.getImageHeight() - 1
+                turtle.curX = 0;
+                if (turtle.curY > Logo.config.getImageHeight() - 1
                         && (turtle.heading > 90 && turtle.heading < 270))
-                    turtle.corY = 0;
-                else if (turtle.corY < 1
+                    turtle.curY = 0;
+                else if (turtle.curY < 1
                         && (turtle.heading < 90 || turtle.heading > 270))
-                    turtle.corY = Logo.config.getImageHeight();
-            } else if (turtle.corX < 1 && turtle.heading > 180) {
-                turtle.corX = Logo.config.getImageWidth();
-                if (turtle.corY > Logo.config.getImageHeight() - 1
+                    turtle.curY = Logo.config.getImageHeight();
+            } else if (turtle.curX < 1 && turtle.heading > 180) {
+                turtle.curX = Logo.config.getImageWidth();
+                if (turtle.curY > Logo.config.getImageHeight() - 1
                         && (turtle.heading > 90 && turtle.heading < 270))
-                    turtle.corY = 0;
-                else if (turtle.corY < 1
+                    turtle.curY = 0;
+                else if (turtle.curY < 1
                         && (turtle.heading < 90 || turtle.heading > 270))
-                    turtle.corY = Logo.config.getImageHeight();
-            } else if (turtle.corY > Logo.config.getImageHeight() - 1)
-                turtle.corY = 0;
-            else if (turtle.corY < 1)
-                turtle.corY = Logo.config.getImageHeight();
+                    turtle.curY = Logo.config.getImageHeight();
+            } else if (turtle.curY > Logo.config.getImageHeight() - 1)
+                turtle.curY = 0;
+            else if (turtle.curY < 1)
+                turtle.curY = Logo.config.getImageHeight();
             if (re) turtle.heading = (turtle.heading + 180) % 360;
             if (turtle.isVisible())
-                this.montrecacheTortue(true);
+                this.eraseTurtle(true);
             if (re)
-                longueur = trouve_longueur(0, -diagonale, turtle.corX,
-                        turtle.corY);
+                longueur = findLength(0, -diagonale, turtle.curX,
+                        turtle.curY);
             else
-                longueur = trouve_longueur(0, diagonale, turtle.corX,
-                        turtle.corY);
+                longueur = findLength(0, diagonale, turtle.curX,
+                        turtle.curY);
         }
-        DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLASSIC;
-        if (!cadre.error)
-            av(arg);
-        DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_WRAP;
+        DrawPanel.windowMode = DrawPanel.WINDOW_CLASSIC;
+        if (!app.error)
+            move(arg);
+        DrawPanel.windowMode = DrawPanel.WINDOW_WRAP;
     }
 
     /**
@@ -1199,28 +1117,28 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @param oldx X position
      * @param oldy Y position
      * @param arg  The length to forward
-     * @throws LogoException
+     * @throws LogoException when value is more than length
      */
-    private void trace_ferme(double oldx, double oldy, double arg) throws LogoException {
+    private void traceClosed(double oldx, double oldy, double arg) throws LogoException {
         boolean re = false;
         double longueur;
         double diagonale = Math.sqrt(Math.pow(Logo.config.getImageWidth(), 2) + Math.pow(Logo.config.getImageHeight(), 2)) + 1;
         if (arg < 0)
             re = true;
         if (re)
-            longueur = trouve_longueur(0, -diagonale, oldx, oldy);
+            longueur = findLength(0, -diagonale, oldx, oldy);
         else
-            longueur = trouve_longueur(0, diagonale, oldx, oldy);
+            longueur = findLength(0, diagonale, oldx, oldy);
         if (Math.abs(longueur) < Math.abs(arg))
-            throw new LogoException(cadre, Logo.messages
+            throw new LogoException(app, Logo.messages
                     .getString("erreur_sortie1")
                     + "\n"
                     + Logo.messages.getString("erreur_sortie2")
                     + Math.abs((int) (longueur)));
         else {
-            DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLASSIC;
-            av(arg);
-            DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_CLOSE;
+            DrawPanel.windowMode = DrawPanel.WINDOW_CLASSIC;
+            move(arg);
+            DrawPanel.windowMode = DrawPanel.WINDOW_CLOSE;
         }
     }
 
@@ -1239,7 +1157,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             for (int i = 0; i < coords.length; i++) {
                 coords[i] = 1;
                 if (!st.hasMoreTokens())
-                    throw new LogoException(cadre, prim
+                    throw new LogoException(app, prim
                             + " " + Logo.messages.getString("n_aime_pas") + liste
                             + Logo.messages.getString("comme_parametre"));
                 String element = st.nextToken();
@@ -1252,12 +1170,12 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             }
 
         } catch (NumberFormatException e) {
-            throw new LogoException(cadre, prim
+            throw new LogoException(app, prim
                     + " " + Logo.messages.getString("n_aime_pas") + liste
                     + Logo.messages.getString("comme_parametre"));
         }
         if (st.hasMoreTokens())
-            throw new LogoException(cadre, prim
+            throw new LogoException(app, prim
                     + " " + Logo.messages.getString("n_aime_pas") + liste
                     + Logo.messages.getString("comme_parametre"));
     }
@@ -1271,11 +1189,11 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             Logo.config.setXAxisEnabled(false);
             Logo.config.setYAxisEnabled(false);
             Logo.config.setGridEnabled(false);
-            changeTurtleImage(cadre, 0);
-            montrecacheTortue(false);
-            DrawPanel.WINDOW_MODE = DrawPanel.WINDOW_3D;
-            w3d = new World3D();
-            montrecacheTortue(true);
+            changeTurtleImage(0);
+            eraseTurtle(false);
+            DrawPanel.windowMode = DrawPanel.WINDOW_3D;
+            world3D = new World3D();
+            eraseTurtle(true);
         }
     }
 
@@ -1285,11 +1203,11 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @param id The window Mode
      */
     protected void setWindowMode(int id) {
-        if (DrawPanel.WINDOW_MODE != id) {
-            montrecacheTortue(false);
-            DrawPanel.WINDOW_MODE = id;
-            w3d = null;
-            montrecacheTortue(true);
+        if (DrawPanel.windowMode != id) {
+            eraseTurtle(false);
+            DrawPanel.windowMode = id;
+            world3D = null;
+            eraseTurtle(true);
         }
     }
 
@@ -1302,20 +1220,20 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             //		w3d.toScreenCoord(coord);
             // camera world
             // If we have to record the polygon coordinates
-            if (DrawPanel.record3D != DrawPanel.record3D_NONE && DrawPanel.record3D != DrawPanel.record3D_TEXT && drawPoly) {
+            if (DrawPanel.record3D != DrawPanel.RECORD_3D_NONE && DrawPanel.record3D != DrawPanel.RECORD_3D_TEXT && drawPoly) {
 
-                DrawPanel.poly.addVertex(new Point3d(coord[0] / 1000, coord[1] / 1000, coord[2] / 1000), turtle.couleurcrayon);
+                DrawPanel.poly.addVertex(new Point3d(coord[0] / 1000, coord[1] / 1000, coord[2] / 1000), turtle.penColor);
             }
 
-            w3d.toCameraWorld(coord);
+            world3D.toCameraWorld(coord);
 
             // Convert to screen Coordinates
-            w3d.cameraToScreen(coord);
+            world3D.cameraToScreen(coord);
         }
         // Mode2D
         else {
-            coord[0] = Logo.config.getImageWidth() / 2 + coord[0];
-            coord[1] = Logo.config.getImageHeight() / 2 - coord[1];
+            coord[0] = Logo.config.getImageWidth() / 2.0 + coord[0];
+            coord[1] = Logo.config.getImageHeight() / 2.0 - coord[1];
         }
         return coord;
     }
@@ -1337,146 +1255,87 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     public boolean enabled3D() {
-        return (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_3D);
+        return (DrawPanel.windowMode == DrawPanel.WINDOW_3D);
     }
 
     /**
      * For hideturtle and showturtle
      */
-    protected void ct_mt() {
+    protected void toggleTurtle() {
         if (null == turtle.image) {
-            g.setXORMode(couleurfond);
-            g.setColor(turtle.couleurcrayon);
+            g.setXORMode(screenColor);
+            g.setColor(turtle.penColor);
             turtle.drawTriangle();
             BasicStroke crayon_actuel = (BasicStroke) g.getStroke();
             if (crayon_actuel.getLineWidth() == 1)
                 g.draw(turtle.triangle);
             else {
-                g.setStroke(crayon_triangle);
+                g.setStroke(triangleStroke);
                 g.draw(turtle.triangle);
                 g.setStroke(crayon_actuel);
             }
         } else {
-            g.setXORMode(couleurfond);
+            g.setXORMode(screenColor);
             double angle = Math.PI / 2 - turtle.angle;
-            float x = (float) (turtle.corX * Math.cos(angle) + turtle.corY
+            float x = (float) (turtle.curX * Math.cos(angle) + turtle.curY
                     * Math.sin(angle));
-            float y = (float) (-turtle.corX * Math.sin(angle) + turtle.corY
+            float y = (float) (-turtle.curX * Math.sin(angle) + turtle.curY
                     * Math.cos(angle));
             g.rotate(angle);
             g.drawImage(
                     turtle.image,
-                    (int) x - turtle.height / 2,
-                    (int) y - turtle.width / 2,
-                    turtle.height,
+                    (int) x - turtle.width / 2,
+                    (int) y - turtle.height / 2,
                     turtle.width,
+                    turtle.height,
                     this
             );
             g.rotate(-angle);
         }
-/*		if (null==rec) rec=new Rectangle2D.Double();
-		rec.setRect(tortue.corX - tortue.gabarit,
-				tortue.corY - tortue.gabarit,
-				tortue.gabarit * 2,
-				tortue.gabarit * 2);
-	*/
         clip();
-
-/*		clip((int) (tortue.corX - tortue.gabarit),
-				(int) (tortue.corY - tortue.gabarit),
-				tortue.gabarit * 2, tortue.gabarit * 2);*/
     }
 
 
 
-/*	private void montrecacheTortue() {
-	//	Graphics2D g=(Graphics2D)dessin.getGraphics();
-		g.setColor(couleurfond);
-		for (int i = 0; i < tortues_visibles.size(); i++) {
-			int id = Integer.parseInt(String.valueOf(tortues_visibles
-					.get(i)));
-
-			if (null == tortues[id].tort) {
-				g.setXORMode(couleurfond);
-				g.setColor(tortues[id].couleurmodedessin);
-				tortues[id].coord();
-				BasicStroke crayon_actuel = (BasicStroke) g.getStroke();
-				if (crayon_actuel.getLineWidth() == 1)
-					g.draw(tortues[id].triangle);
-				else {
-					g.setStroke(crayon_triangle);
-					g.draw(tortues[id].triangle);
-					g.setStroke(crayon_actuel);
-				}
-			} else {
-				g.setXORMode(couleurfond);
-				double angle = Math.PI / 2 - tortues[id].angle;
-				float x = (float) (tortues[id].corX * Math.cos(angle) + tortues[id].corY
-						* Math.sin(angle));
-				float y = (float) (-tortues[id].corX * Math.sin(angle) + tortues[id].corY
-						* Math.cos(angle));
-				g.rotate(angle);
-				g.drawImage(tortues[id].tort, (int) x
-						- tortues[id].largeur / 2, (int) y
-						- tortues[id].hauteur / 2, cadre.getArdoise());
-				g.rotate(-angle);
-			}
-	/*		if (null==rec) rec=new Rectangle2D.Double();
-			rec.setRect(tortues[id].corX - tortues[id].gabarit,
-					tortues[id].corY - tortues[id].gabarit,
-					tortues[id].gabarit * 2,
-					tortues[id].gabarit * 2);
-
-			clip();
-		//	g.dispose();
-		}
-	}
-*/
 
     /**
      * When the turtle has to be redrawn, this method erase the turtle on the drawing screen
      */
-    protected void montrecacheTortue(boolean b) {
-        g.setColor(couleurfond);
-        for (int i = 0; i < tortues_visibles.size(); i++) {
-            int id = Integer.parseInt(tortues_visibles.get(i));
+    protected void eraseTurtle(boolean b) {
+        g.setColor(screenColor);
+        for (String visibleTurtle : visibleTurtles) {
+            int id = Integer.parseInt(visibleTurtle);
             // Turtle triangle
-            if (null == tortues[id].image) {
-                g.setXORMode(couleurfond);
-                g.setColor(tortues[id].couleurmodedessin);
-                tortues[id].drawTriangle();
+            if (null == turtles[id].image) {
+                g.setXORMode(screenColor);
+                g.setColor(turtles[id].imageColorMode);
+                turtles[id].drawTriangle();
                 BasicStroke crayon_actuel = (BasicStroke) g.getStroke();
                 if (crayon_actuel.getLineWidth() == 1)
-                    g.draw(tortues[id].triangle);
+                    g.draw(turtles[id].triangle);
                 else {
-                    g.setStroke(crayon_triangle);
-                    g.draw(tortues[id].triangle);
+                    g.setStroke(triangleStroke);
+                    g.draw(turtles[id].triangle);
                     g.setStroke(crayon_actuel);
                 }
             } else {
                 // Image turtle
-                g.setXORMode(couleurfond);
-                double angle = Math.PI / 2 - tortues[id].angle;
-                float x = (float) (tortues[id].corX * Math.cos(angle) + tortues[id].corY
+                g.setXORMode(screenColor);
+                double angle = Math.PI / 2 - turtles[id].angle;
+                float x = (float) (turtles[id].curX * Math.cos(angle) + turtles[id].curY
                         * Math.sin(angle));
-                float y = (float) (-tortues[id].corX * Math.sin(angle) + tortues[id].corY
+                float y = (float) (-turtles[id].curX * Math.sin(angle) + turtles[id].curY
                         * Math.cos(angle));
                 g.rotate(angle);
-                g.drawImage(tortues[id].image,
-                        (int) x - tortues[id].height / 2,
-                        (int) y - tortues[id].width / 2,
-                        tortues[id].height,
-                        tortues[id].width,
+                g.drawImage(turtles[id].image,
+                        (int) x - turtles[id].width / 2,
+                        (int) y - turtles[id].height / 2,
+                        turtles[id].width,
+                        turtles[id].height,
                         this
                 );
                 g.rotate(-angle);
             }
-				/*if (null==rec) rec=new Rectangle2D.Double();
-				rec.setRect(tortues[id].corX - tortues[id].gabarit,
-						tortues[id].corY - tortues[id].gabarit,
-						tortues[id].gabarit * 2,
-						tortues[id].gabarit * 2);
-				shape=rec;*/
             if (b) clip();
         }
     }
@@ -1484,43 +1343,39 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     /**
      * Primitive clearscreen
      */
-    protected void videecran() {
+    protected void clearScreen() {
         // Delete all Gui Component
-        Set<String> set = gm.keySet();
+        Set<String> set = guiMap.keySet();
         Iterator<String> it = set.iterator();
         while (it.hasNext()) {
             String element = it.next();
-            gui = gm.get(element).getGuiObject();
+            gui = guiMap.get(element).getGuiObject();
             it.remove();
             if (SwingUtilities.isEventDispatchThread()) {
                 remove(gui);
                 validate();
             } else {
                 try {
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        public void run() {
-                            remove(gui);
-                            validate();
-                        }
+                    SwingUtilities.invokeAndWait(() -> {
+                        remove(gui);
+                        validate();
                     });
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         }
 
 
         // Delete List Polygon in 3D mode
-//		DrawPanel.listPoly=new Vector<Shape3D>();
-//		DrawPanel.listText=new Vector<TransformGroup>();
         // Erase the 3d viewer if visible
-        if (null != cadre.getViewer3D()) {
-            cadre.getViewer3D().clearScreen();
+        if (null != app.getViewer3D()) {
+            app.getViewer3D().clearScreen();
             System.gc();
         }
 
 
         g.setPaintMode();
-        couleurfond = Logo.config.getScreenColor();
+        screenColor = Logo.config.getScreenColor();
         g.setColor(Logo.config.getScreenColor());
         g.fillRect(0, 0, Logo.config.getImageWidth(), Logo.config.getImageHeight());
         stopRecord2DPolygon();
@@ -1531,23 +1386,23 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         drawXAxis();
         drawYAxis();
         // Init Turtles
-        if (null == tortues[0])
-            tortues[0] = new Turtle(cadre);
+        if (null == turtles[0])
+            turtles[0] = new Turtle(app);
         // The active turtle will be the turtle 0
-        turtle = tortues[0];
+        turtle = turtles[0];
         turtle.id = 0;
         // We delete all other turtles
-        for (int i = 1; i < tortues.length; i++) {
-            tortues[i] = null;
+        for (int i = 1; i < turtles.length; i++) {
+            turtles[i] = null;
         }
-        tortues_visibles.removeAllElements();
-        tortues_visibles.push("0");
-        g.setColor(turtle.couleurcrayon);
+        visibleTurtles.removeAllElements();
+        visibleTurtles.push("0");
+        g.setColor(turtle.penColor);
         clip();
         turtle.init();
         turtle.setVisible(true);
         g.setStroke(new BasicStroke(1));
-        montrecacheTortue(true);
+        eraseTurtle(true);
         // Update the selection frame
         updateColorSelection();
     }
@@ -1555,50 +1410,31 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     /**
      * Primitive wash
      */
-    protected void nettoie() {
+    protected void wash() {
         stopRecord2DPolygon();
         g.setPaintMode();
-        g.setColor(couleurfond);
+        g.setColor(screenColor);
         g.fillRect(0, 0, Logo.config.getImageWidth(), Logo.config.getImageHeight());
 
         drawGrid();
-		/* Réinitialiser les tortues
-		if (null == tortues[0])
-			tortues[0] = new Tortue(cadre);
-		tortue = tortues[0]; //la tortue active sera à présent la
-		// numéro 0
-		tortue.id = 0;
-		for (int i = 1; i < tortues.length; i++) { //On élimine les
-			// autres tortues
-			tortues[i] = null;
-		}
-		tortues_visibles.removeAllElements();
-		tortues_visibles.push("0");*/
-        g.setColor(turtle.couleurcrayon);
+        g.setColor(turtle.penColor);
         clip();
 
         if (turtle.isVisible())
-            montrecacheTortue(true);
+            eraseTurtle(true);
         else
-            tortues_visibles = new Stack<String>();
+            visibleTurtles = new Stack<>();
     }
 
     /**
      * Used for primitive fillzone
-     *
-     * @param x
-     * @param y
-     * @param increment
-     * @param couleur_frontiere
-     * @return
      */
 
-    private int bornes_remplis_zone(int x, int y, int increment, int couleur_frontiere) {
-//		System.out.println(x+" "+y);
-        while (!meme_couleur(dessin.getRGB(x, y), couleur_frontiere)) {
-            dessin.setRGB(x, y, couleur_frontiere);
+    private int fillZoneBounds(int x, int y, int increment, int borderColor) {
+        while (!isSameColor(image.getRGB(x, y), borderColor)) {
+            image.setRGB(x, y, borderColor);
             x = x + increment;
-            if (!(x > 0 && x < dessin.getWidth() - 1))
+            if (!(x > 0 && x < image.getWidth() - 1))
                 break;
         }
         return x - increment;
@@ -1611,67 +1447,22 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * @param col2 The second color
      * @return true or false
      */
-    private boolean meme_couleur(int col1, int col2) {
-/*		if (Logo.config.quality==Logo.QUALITY_HIGH){
-			int rouge1 = (col1 >> 16) & 0xFF;
-			int vert1 = (col1 >> 8) & 0xFF;
-			int bleu1 = col1 & 0xFF;
-			int rouge2 = (col2 >> 16) & 0xFF;
-			int vert2 = (col2 >> 8) & 0xFF;
-			int bleu2 = col2 & 0xFF;
-			int tolerance=120;
-			int diff_rouge=rouge1-rouge2;
-			int diff_bleu=bleu1-bleu2;
-			int diff_vert=vert1-vert2;
-			boolean rouge;boolean vert; boolean bleu;
-			if (rouge1>rouge2){
-				if (rouge1-rouge2< 128 -rouge2/2) rouge=true;
-				else rouge=false;
-			}
-			else{
-				if (rouge2-rouge1<rouge2/2) rouge=true;
-				else rouge=false;
-			}
-			if (vert1>vert2){
-				if (vert1-vert2< 128 -vert2/2) vert=true;
-				else vert=false;
-			}
-			else{
-				if (vert2-vert1<vert2/2) vert=true;
-				else vert=false;
-			}
-			if (bleu1>bleu2){
-				if (bleu1-bleu2< 128 -bleu2/2) bleu=true;
-				else bleu=false;
-			}
-			else{
-				if (bleu2-bleu1<bleu2/2) bleu=true;
-				else bleu=false;
-			}
-
-		return rouge&&bleu&&vert;
-//			if (Math.abs(rouge1-rouge2)<tolerance&&Math.abs(vert1-vert2)<tolerance&&Math.abs(bleu1-bleu2)<tolerance&&Math.abs(rouge1+bleu1+vert1-rouge2-bleu2-vert2)<450)
-//			return true;
-	//	else return false;
-		}
-		else{*/
+    private boolean isSameColor(int col1, int col2) {
         return (col1 == col2);
-        //}
     }
 
     /**
      * Primitive fillzone
      */
-    protected void rempliszone() {
-        montrecacheTortue(false);
-        int x = (int) (turtle.corX * scaleX);
-        int y = (int) (turtle.corY * scaleY);
-        if (x > 0 & x < dessin.getWidth() & y > 0 & y < dessin.getHeight()) {
-            int couleur_origine = dessin.getRGB(x, y);
-            int couleur_frontiere = turtle.couleurcrayon.getRGB();
-            //	System.out.println(couleur_origine+" " +couleur_frontiere);
-            Stack<Point> pile_germes = new Stack<Point>();
-            boolean couleurs_differentes = !meme_couleur(couleur_origine, couleur_frontiere);
+    protected void fillZone() {
+        eraseTurtle(false);
+        int x = (int) (turtle.curX * scaleX);
+        int y = (int) (turtle.curY * scaleY);
+        if (x > 0 & x < image.getWidth() & y > 0 & y < image.getHeight()) {
+            int couleur_origine = image.getRGB(x, y);
+            int couleur_frontiere = turtle.penColor.getRGB();
+            Stack<Point> pile_germes = new Stack<>();
+            boolean couleurs_differentes = !isSameColor(couleur_origine, couleur_frontiere);
             if (couleurs_differentes)
                 pile_germes.push(new Point(x, y));
             while (!pile_germes.isEmpty()) {
@@ -1679,17 +1470,17 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 Point p = pile_germes.pop();
                 int xgerme = p.x;
                 int ygerme = p.y;
-                int xmax = bornes_remplis_zone(xgerme, ygerme, 1,
+                int xmax = fillZoneBounds(xgerme, ygerme, 1,
                         couleur_frontiere);
                 int xmin = 0;
-                if (xgerme > 0) xmin = bornes_remplis_zone(xgerme - 1, ygerme, -1,
+                if (xgerme > 0) xmin = fillZoneBounds(xgerme - 1, ygerme, -1,
                         couleur_frontiere);
                 boolean ligne_dessus = false;
                 boolean ligne_dessous = false;
                 for (int i = xmin; i < xmax + 1; i++) {
                     //on recherche les germes au dessus et au dessous
                     if (ygerme > 0
-                            && meme_couleur(dessin.getRGB(i, ygerme - 1), couleur_frontiere)) {
+                            && isSameColor(image.getRGB(i, ygerme - 1), couleur_frontiere)) {
                         if (ligne_dessus)
                             pile_germes.push(new Point(i - 1, ygerme - 1));
                         ligne_dessus = false;
@@ -1698,39 +1489,32 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                         if (i == xmax && ygerme > 0)
                             pile_germes.push(new Point(xmax, ygerme - 1));
                     }
-                    if (ygerme < dessin.getHeight() - 1
-                            && meme_couleur(dessin.getRGB(i, ygerme + 1), couleur_frontiere)) {
+                    if (ygerme < image.getHeight() - 1
+                            && isSameColor(image.getRGB(i, ygerme + 1), couleur_frontiere)) {
                         if (ligne_dessous)
                             pile_germes.push(new Point(i - 1, ygerme + 1));
                         ligne_dessous = false;
                     } else {
                         ligne_dessous = true;
-                        if (i == xmax && ygerme < dessin.getHeight() - 1)
+                        if (i == xmax && ygerme < image.getHeight() - 1)
                             pile_germes.push(new Point(xmax, ygerme + 1));
                     }
                 }
             }
             clip();
-            montrecacheTortue(true);
+            eraseTurtle(true);
         }
     }
 
     /**
      * Used for primitive "fill"
-     *
-     * @param x
-     * @param y
-     * @param increment
-     * @param couleur_crayon
-     * @param couleur_origine
-     * @return
      */
-    private int bornes_remplis(int x, int y, int increment, int couleur_crayon,
-                               int couleur_origine) {
-        while (dessin.getRGB(x, y) == couleur_origine) {
-            dessin.setRGB(x, y, couleur_crayon);
+    private int fillBounds(int x, int y, int increment, int penColor,
+                           int originColor) {
+        while (image.getRGB(x, y) == originColor) {
+            image.setRGB(x, y, penColor);
             x = x + increment;
-            if (!(x > 0 && x < dessin.getWidth() - 1))
+            if (!(x > 0 && x < image.getWidth() - 1))
                 break;
         }
         return x - increment;
@@ -1739,15 +1523,15 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     /**
      * Primitive "fill"
      */
-    protected void remplis() {
-        montrecacheTortue(false);
-        int x = (int) (turtle.corX * scaleX);
-        int y = (int) (turtle.corY * scaleY);
-        if (x > 0 & x < dessin.getWidth() & y > 0 & y < dessin.getHeight()) {
-            int couleur_origine = dessin.getRGB(x, y);
-            int couleur_crayon = turtle.couleurcrayon.getRGB();
-            if (x > 0 & x < dessin.getWidth() & y > 0 & y < dessin.getHeight()) {
-                Stack<Point> pile_germes = new Stack<Point>();
+    protected void fill() {
+        eraseTurtle(false);
+        int x = (int) (turtle.curX * scaleX);
+        int y = (int) (turtle.curY * scaleY);
+        if (x > 0 & x < image.getWidth() & y > 0 & y < image.getHeight()) {
+            int couleur_origine = image.getRGB(x, y);
+            int couleur_crayon = turtle.penColor.getRGB();
+            if (x < image.getWidth() && y < image.getHeight()) {
+                Stack<Point> pile_germes = new Stack<>();
                 boolean couleurs_differentes = !(couleur_origine == couleur_crayon);
                 if (couleurs_differentes)
                     pile_germes.push(new Point(x, y));
@@ -1756,10 +1540,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                     int xgerme = p.x;
                     int ygerme = p.y;
                     //			System.out.println(xgerme+" "+ygerme);
-                    int xmax = bornes_remplis(xgerme, ygerme, 1, couleur_crayon,
+                    int xmax = fillBounds(xgerme, ygerme, 1, couleur_crayon,
                             couleur_origine);
                     int xmin = 0;
-                    if (xgerme > 0) xmin = bornes_remplis(xgerme - 1, ygerme, -1,
+                    if (xgerme > 0) xmin = fillBounds(xgerme - 1, ygerme, -1,
                             couleur_crayon, couleur_origine);
                     //				System.out.println("xmax "+xmax+"xmin "+xmin);
                     boolean ligne_dessus = false;
@@ -1767,7 +1551,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                     for (int i = xmin; i < xmax + 1; i++) {
                         //on recherche les germes au dessus et au dessous
                         if (ygerme > 0
-                                && dessin.getRGB(i, ygerme - 1) != couleur_origine) {
+                                && image.getRGB(i, ygerme - 1) != couleur_origine) {
                             if (ligne_dessus)
                                 pile_germes.push(new Point(i - 1, ygerme - 1));
                             ligne_dessus = false;
@@ -1776,20 +1560,20 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                             if (i == xmax && ygerme > 0)
                                 pile_germes.push(new Point(xmax, ygerme - 1));
                         }
-                        if (ygerme < dessin.getHeight() - 1
-                                && dessin.getRGB(i, ygerme + 1) != couleur_origine) {
+                        if (ygerme < image.getHeight() - 1
+                                && image.getRGB(i, ygerme + 1) != couleur_origine) {
                             if (ligne_dessous)
                                 pile_germes.push(new Point(i - 1, ygerme + 1));
                             ligne_dessous = false;
                         } else {
                             ligne_dessous = true;
-                            if (i == xmax && ygerme < dessin.getHeight() - 1)
+                            if (i == xmax && ygerme < image.getHeight() - 1)
                                 pile_germes.push(new Point(xmax, ygerme + 1));
                         }
                     }
                 }
                 clip();
-                montrecacheTortue(true);
+                eraseTurtle(true);
             }
         }
     }
@@ -1799,37 +1583,24 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      *
      * @param mot The word to write on the drawing area
      */
-    protected void etiquette(String mot) {
-        //	Graphics2D g = (Graphics2D) Ardoise.dessin.getGraphics();
-        montrecacheTortue(false);
+    protected void label(String mot) {
+        eraseTurtle(false);
         if (!enabled3D()) {
             double angle = Math.PI / 2 - turtle.angle;
-            if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_WRAP) centers = new Vector<Point2D.Double>();
-            etiquette2D(turtle.corX, turtle.corY, angle, mot);
-/*			g.rotate(angle);
-			g.setPaintMode();
-			g.setColor(tortue.couleurcrayon);
-			float x = (float) (tortue.corX * Math.cos(angle) + tortue.corY
-				* Math.sin(angle));
-			float y = (float) (-tortue.corX * Math.sin(angle) + tortue.corY
-				* Math.cos(angle));
-			g.setFont(FontPanel.fontes[police_etiquette]
-				.deriveFont((float) tortue.police));
-			g.drawString(mot, x, y);
-			g.rotate(-angle);*/
+            if (DrawPanel.windowMode == DrawPanel.WINDOW_WRAP) centers = new Vector<>();
+            label2D(turtle.curX, turtle.curY, angle, mot);
         } else {
             FontRenderContext frc = g.getFontRenderContext();
             GlyphVector gv = g.getFont().createGlyphVector(frc, mot);
             Shape outline = gv.getOutline(0, 0);
             Shape s = transformShape(outline);
             g.setPaintMode();
-            g.setColor(turtle.couleurcrayon);
+            g.setColor(turtle.penColor);
             g.fill(s);
-            if (record3D == DrawPanel.record3D_TEXT) {
+            if (record3D == DrawPanel.RECORD_3D_TEXT) {
                 Text2D text = new Text2D(
-                        mot, new Color3f(turtle.couleurcrayon), FontPanel.fontes[police_etiquette].getName(),
+                        mot, new Color3f(turtle.penColor), FontPanel.fontes[drawingFont].getName(),
                         turtle.police, Font.PLAIN);
-
                 text.setRectangleScaleFactor(0.001f);
                 Appearance appear = text.getAppearance();
                 PolygonAttributes pa = new PolygonAttributes();
@@ -1837,29 +1608,25 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 pa.setBackFaceNormalFlip(true);
                 appear.setPolygonAttributes(pa);
                 text.setAppearance(appear);
-//				if (null==DrawPanel.listText) DrawPanel.listText=new Vector<TransformGroup>();
                 TransformGroup tg = new TransformGroup();
                 double[][] d = turtle.getRotationMatrix();
                 Matrix3d m = new Matrix3d(d[0][0], d[0][1], d[0][2], d[1][0], d[1][1], d[1][2], d[2][0], d[2][1], d[2][2]);
                 Transform3D t = new Transform3D(m, new Vector3d(turtle.X / 1000, turtle.Y / 1000, turtle.Z / 1000), 1);
                 tg.setTransform(t);
                 tg.addChild(text);
-                cadre.getViewer3D().add2DText(tg);
-//				DrawPanel.listText.add(tg);
+                app.getViewer3D().add2DText(tg);
             }
-
-
         }
-        montrecacheTortue(true);
+        eraseTurtle(true);
         if (classicMode) repaint();
     }
 
-    private void etiquette2D(double x, double y, double angle, String word) {
+    private void label2D(double x, double y, double angle, String word) {
         if (word.length() == 0) return;
 
         g.setPaintMode();
-        g.setColor(turtle.couleurcrayon);
-        Font f = FontPanel.fontes[police_etiquette]
+        g.setColor(turtle.penColor);
+        Font f = FontPanel.fontes[drawingFont]
                 .deriveFont((float) turtle.police);
         g.setFont(f);
         g.translate(x, y);
@@ -1896,7 +1663,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         g.drawString(word, x1, y1);
         g.rotate(-angle);
         g.translate(-x, -y);
-        if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_WRAP) {
+        if (DrawPanel.windowMode == DrawPanel.WINDOW_WRAP) {
             Rectangle2D.Double rec = new Rectangle2D.Double(0, 0, width, height);
             AffineTransform at = new AffineTransform();
             at.translate(x, y);
@@ -1910,28 +1677,28 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 pt = new Point2D.Double(-Logo.config.getImageWidth() + x, y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    etiquette2D(-Logo.config.getImageWidth() + x, y, angle, word);
+                    label2D(-Logo.config.getImageWidth() + x, y, angle, word);
                 }
             }
             if (x - left < 0 && x >= 0) {
                 pt = new Point2D.Double(Logo.config.getImageWidth() + x, y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    etiquette2D(Logo.config.getImageWidth() + x, y, angle, word);
+                    label2D(Logo.config.getImageWidth() + x, y, angle, word);
                 }
             }
             if (y - up < 0 && y >= 0) {
                 pt = new Point2D.Double(x, Logo.config.getImageHeight() + y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    etiquette2D(x, Logo.config.getImageHeight() + y, angle, word);
+                    label2D(x, Logo.config.getImageHeight() + y, angle, word);
                 }
             }
             if (y + down > Logo.config.getImageHeight() && y <= Logo.config.getImageHeight()) {
                 pt = new Point2D.Double(x, -Logo.config.getImageHeight() + y);
                 if (!centers.contains(pt)) {
                     centers.add(pt);
-                    etiquette2D(x, -Logo.config.getImageHeight() + y, angle, word);
+                    label2D(x, -Logo.config.getImageHeight() + y, angle, word);
                 }
             }
         }
@@ -1954,18 +1721,18 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         boolean b = false;
         while (!it.isDone()) {
             it.next();
-            int id = 0;
+            int id;
             if (!it.isDone()) id = it.currentSegment(d);
             else break;
             coor[0][0] = d[0];
             coor[1][0] = -d[1];
             coor[2][0] = 0;
-            coor = w3d.multiply(turtle.getRotationMatrix(), coor);
+            coor = world3D.multiply(turtle.getRotationMatrix(), coor);
 
             end[0] = coor[0][0] + turtle.X;
             end[1] = coor[1][0] + turtle.Y;
             end[2] = coor[2][0] + turtle.Z;
-            w3d.toScreenCoord(end);
+            world3D.toScreenCoord(end);
 
             if (id == PathIterator.SEG_MOVETO)
                 gp.moveTo((float) end[0], (float) end[1]);
@@ -1984,24 +1751,24 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                         p = ((Arc2D.Double) s).getStartPoint();
                     else if (s instanceof GeneralPath)
                         p = ((GeneralPath) s).getCurrentPoint();
-                    coor[0][0] = p.getX();
+                    coor[0][0] = Objects.requireNonNull(p).getX();
                     coor[1][0] = -p.getY();
                     coor[2][0] = 0;
-                    coor = w3d.multiply(turtle.getRotationMatrix(), coor);
+                    coor = world3D.multiply(turtle.getRotationMatrix(), coor);
                     ctl1[0] = coor[0][0] + turtle.X;
                     ctl1[1] = coor[1][0] + turtle.Y;
                     ctl1[2] = coor[2][0] + turtle.Z;
-                    w3d.toScreenCoord(ctl1);
+                    world3D.toScreenCoord(ctl1);
                     gp.moveTo((float) ctl1[0], (float) ctl1[1]);
                 }
                 coor[0][0] = d[2];
                 coor[1][0] = -d[3];
                 coor[2][0] = 0;
-                coor = w3d.multiply(turtle.getRotationMatrix(), coor);
+                coor = world3D.multiply(turtle.getRotationMatrix(), coor);
                 ctl1[0] = coor[0][0] + turtle.X;
                 ctl1[1] = coor[1][0] + turtle.Y;
                 ctl1[2] = coor[2][0] + turtle.Z;
-                w3d.toScreenCoord(ctl1);
+                world3D.toScreenCoord(ctl1);
                 if (id == PathIterator.SEG_QUADTO) {
                     QuadCurve2D qc = new QuadCurve2D.Double(gp.getCurrentPoint().getX(), gp.getCurrentPoint().getY()
                             , end[0], end[1], ctl1[0], ctl1[1]);
@@ -2010,13 +1777,13 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                     coor[0][0] = d[4];
                     coor[1][0] = -d[5];
                     coor[2][0] = 0;
-                    coor = w3d.multiply(turtle.getRotationMatrix(), coor);
+                    coor = world3D.multiply(turtle.getRotationMatrix(), coor);
 
                     ctl2[0] = coor[0][0] + turtle.X;
                     ctl2[1] = coor[1][0] + turtle.Y;
                     ctl2[2] = coor[2][0] + turtle.Z;
 
-                    w3d.toScreenCoord(ctl2);
+                    world3D.toScreenCoord(ctl2);
                     CubicCurve2D qc = new CubicCurve2D.Double(gp.getCurrentPoint().getX(), gp.getCurrentPoint().getY()
                             , end[0], end[1], ctl1[0], ctl1[1], ctl2[0], ctl2[1]);
                     gp.append(qc, true);
@@ -2027,23 +1794,23 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     public World3D getWorld3D() {
-        return w3d;
+        return world3D;
     }
 
     /**
      * primitive setscreencolor
      *
-     * @param color The Color of the nackground screen
+     * @param color The Color of the background screen
      */
-    protected void fcfg(Color color) {
-        couleurfond = color;
+    protected void setScreenColor(Color color) {
+        screenColor = color;
         updateColorSelection();
         if (enabled3D()) {
-            if (cadre.getViewer3D() != null) {
-                cadre.getViewer3D().updateBackground(couleurfond);
+            if (app.getViewer3D() != null) {
+                app.getViewer3D().updateBackground(screenColor);
             }
         }
-        nettoie();
+        wash();
     }
 
     /**
@@ -2051,11 +1818,11 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      *
      * @param color The pen Color
      */
-    protected void fcc(Color color) {
-        if (turtle.isVisible() && null == turtle.image) montrecacheTortue(false);
-        turtle.couleurcrayon = color;
-        turtle.couleurmodedessin = color;
-        if (turtle.isVisible() && null == turtle.image) montrecacheTortue(true);
+    protected void setPenColor(Color color) {
+        if (turtle.isVisible() && null == turtle.image) eraseTurtle(false);
+        turtle.penColor = color;
+        turtle.imageColorMode = color;
+        if (turtle.isVisible() && null == turtle.image) eraseTurtle(true);
     }
 
     /**
@@ -2071,7 +1838,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             initCoords();
             extractCoords(liste, name);
             coords = toScreenCoord(coords, false);
-            gm.get(id).setLocation((int) coords[0], (int) coords[1]);
+            guiMap.get(id).setLocation((int) coords[0], (int) coords[1]);
         }
     }
 
@@ -2083,7 +1850,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     protected void guiDraw(String id) throws LogoException {
         if (guiExist(id)) {
-            GuiComponent gc = gm.get(id);
+            GuiComponent gc = guiMap.get(id);
             add(gc.getGuiObject());
             validate();
             repaint();
@@ -2095,25 +1862,23 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * This method erases a Gui on the drawing area
      *
      * @param id The Gui Object id
-     * @throws LogoException
+     * @throws LogoException if gui id doesn't exist
      */
 
     protected void guiRemove(String id) throws LogoException {
         if (guiExist(id)) {
-            gui = gm.get(id).getGuiObject();
-            gm.remove(id);
+            gui = guiMap.get(id).getGuiObject();
+            guiMap.remove(id);
             if (SwingUtilities.isEventDispatchThread()) {
                 remove(gui);
                 validate();
             } else {
                 try {
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        public void run() {
-                            remove(gui);
-                            validate();
-                        }
+                    SwingUtilities.invokeAndWait(() -> {
+                        remove(gui);
+                        validate();
                     });
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
             repaint();
@@ -2134,12 +1899,12 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             sb.append(c);
             i++;
         }
-        throw new LogoException(cadre, "[ " + list + " " + Logo.messages.getString("pas_liste"));
+        throw new LogoException(app, "[ " + list + " " + Logo.messages.getString("pas_liste"));
     }
 
     protected void guiAction(String id, String liste) throws LogoException {
         if (guiExist(id)) {
-            GuiComponent gc = gm.get(id);
+            GuiComponent gc = guiMap.get(id);
             // If gc is a JButton
             if (gc.isButton()) {
                 ((GuiButton) gc).setAction(Utils.formatCode(liste));
@@ -2159,60 +1924,35 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                         liste = liste.substring(sb.length() + 1).trim();
                         ((GuiMenu) gc).setAction(sb, i);
                         i++;
-                    } else throw new LogoException(cadre, liste.charAt(0) + " " + Logo.messages.getString("pas_liste"));
+                    } else throw new LogoException(app, liste.charAt(0) + " " + Logo.messages.getString("pas_liste"));
                 }
                 GuiMenu gm = (GuiMenu) gc;
                 if (!gm.hasAction) {
                     gm.hasAction = true;
-                    ((javax.swing.JComboBox) gc.getGuiObject()).addActionListener(gm);
+                    ((JComboBox<?>) gc.getGuiObject()).addActionListener(gm);
                 }
             }
         }
     }
 
     private boolean guiExist(String id) throws LogoException {
-        if (gm.containsKey(id.toLowerCase())) return true;
-        else throw new LogoException(cadre, Logo.messages.getString("no_gui") + " " + id);
+        if (guiMap.containsKey(id.toLowerCase())) return true;
+        else throw new LogoException(app, Logo.messages.getString("no_gui") + " " + id);
     }
 
     //	boolean access=false;
     private void clip() {
         if (classicMode) {
-
-            //access=true;
-//			refresh();
-
             repaint();
-	/*		if (SwingUtilities.isEventDispatchThread()){
-				repaint();
-			}
-			else {
-				try {
-
-				SwingUtilities.invokeLater(new Runnable(){
-					public void run(){
-						repaint();
-					}
-				});
-			}
-			catch(Exception e2){}
-			}*/
         }
-		/*Rectangle rec1=cadre.jScrollPane1.getViewport().getViewRect();
-		boolean inter=sh.intersects(rec1);
-		if (inter){
-			if (classicMode){
-				repaint();
-			}
-		}*/
     }
 
     public void setQuality(int id) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        if (id == Logo.config.DRAW_QUALITY_HIGH) {
+        if (id == Config.DRAW_QUALITY_HIGH) {
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        } else if (id == Logo.config.DRAW_QUALITY_LOW) {
+        } else if (id == Config.DRAW_QUALITY_LOW) {
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         } else { //normal
@@ -2221,12 +1961,12 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
     }
 
-    public void changeTurtleImage(Application cadre, int i) {
+    public void changeTurtleImage(int i) {
         if (turtle.isVisible())
-            montrecacheTortue(false);
+            eraseTurtle(false);
         turtle.setImage(i);
         if (turtle.isVisible())
-            montrecacheTortue(true);
+            eraseTurtle(true);
 
     }
 
@@ -2234,9 +1974,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     protected void setAnimation(boolean predic) {
         if (predic == classicMode) {
             if (predic) {
-                cadre.getHistoryPanel().active_animation();
+                app.getHistoryPanel().active_animation();
             } else {
-                cadre.getHistoryPanel().stop_animation();
+                app.getHistoryPanel().stop_animation();
                 repaint();
             }
         }
@@ -2254,33 +1994,31 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         g.setStroke(st);
     }
 
-    public Color getBackgroundColor() {
-        return couleurfond;
+    public Color getScreenColor() {
+        return screenColor;
     }
 
-    protected void setBackgroundColor(Color c) {
-        couleurfond = c;
+    protected void resetScreenColor() {
+        screenColor = Color.WHITE;
     }
 
     protected void updateColorSelection() {
-        float r = (255 - couleurfond.getRed()) / 255;
-        float v = (255 - couleurfond.getGreen()) / 255;
-        float b = (255 - couleurfond.getBlue()) / 255;
-        colorSelection = new Color(r, v, b, 0.2f);
+        float r = (float) (255 - screenColor.getRed()) / 255;
+        float v = (float) (255 - screenColor.getGreen()) / 255;
+        float b = (float) (255 - screenColor.getBlue()) / 255;
+        selectionColor = new Color(r, v, b, 0.2f);
     }
 
     public void setNumberOfTurtles(int id) {
         Logo.config.setMaxTurtles(id);
-        Turtle[] tampon = tortues.clone();
-        tortues = new Turtle[id];
-        int borne_sup = Math.min(tampon.length, tortues.length);
-        for (int i = 0; i < borne_sup; i++) {
-            tortues[i] = tampon[i];
-        }
-        for (int i = tortues_visibles.size() - 1; i > -1; i--) {
-            int integer = Integer.parseInt(tortues_visibles.get(i));
+        Turtle[] tampon = turtles.clone();
+        turtles = new Turtle[id];
+        int borne_sup = Math.min(tampon.length, turtles.length);
+        System.arraycopy(tampon, 0, turtles, 0, borne_sup);
+        for (int i = visibleTurtles.size() - 1; i > -1; i--) {
+            int integer = Integer.parseInt(visibleTurtles.get(i));
             if (integer >= id) {
-                tortues_visibles.remove(i);
+                visibleTurtles.remove(i);
             }
         }
     }
@@ -2289,22 +2027,22 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         AffineTransform t = ((Graphics2D) getGraphics()).getTransform();
         scaleX = t.getScaleX() * 2;
         scaleY = t.getScaleY() * 2;
-        dessin = new BufferedImage((int)(scaleX * Logo.config.getImageWidth()), (int)(scaleY * Logo.config.getImageHeight()), BufferedImage.TYPE_INT_RGB);
-        police_etiquette = Application.fontId;
+        image = new BufferedImage((int)(scaleX * Logo.config.getImageWidth()), (int)(scaleY * Logo.config.getImageHeight()), BufferedImage.TYPE_INT_RGB);
+        drawingFont = Application.fontId;
         //		 init all turtles
-        tortues = new Turtle[Logo.config.getMaxTurtles()];
-        tortues_visibles = new Stack<String>();
-        turtle = new Turtle(cadre);
-        tortues[0] = turtle;
+        turtles = new Turtle[Logo.config.getMaxTurtles()];
+        visibleTurtles = new Stack<>();
+        turtle = new Turtle(app);
+        turtles[0] = turtle;
         turtle.id = 0;
-        tortues_visibles.push("0");
-        for (int i = 1; i < tortues.length; i++) {
+        visibleTurtles.push("0");
+        for (int i = 1; i < turtles.length; i++) {
             // All other turtles are null
-            tortues[i] = null;
+            turtles[i] = null;
         }
-        g = (Graphics2D) dessin.getGraphics();
+        g = (Graphics2D) image.getGraphics();
         g.scale(scaleX, scaleY);
-        couleurfond = Logo.config.getScreenColor();
+        screenColor = Logo.config.getScreenColor();
         setQuality(Logo.config.getDrawQuality());
         g.setColor(Logo.config.getScreenColor());
         g.fillRect(0, 0, Logo.config.getImageWidth(), Logo.config.getImageHeight());
@@ -2316,24 +2054,24 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
         MediaTracker tracker;
         if (0 == Logo.config.getActiveTurtle()) {
-            g.setXORMode(couleurfond);
+            g.setXORMode(screenColor);
             turtle.drawTriangle();
-            g.setColor(turtle.couleurcrayon);
+            g.setColor(turtle.penColor);
             g.draw(turtle.triangle);
         } else {
-            g.setXORMode(couleurfond);
-            tracker = new MediaTracker(cadre);
+            g.setXORMode(screenColor);
+            tracker = new MediaTracker(app);
             tracker.addImage(turtle.image, 0);
             try {
                 tracker.waitForID(0);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
             if (tracker.checkID(0)) g.drawImage(
                     turtle.image,
-                    Logo.config.getImageWidth() / 2 - turtle.height / 2,
-                    Logo.config.getImageHeight() / 2 - turtle.width / 2,
-                    turtle.height,
+                    Logo.config.getImageWidth() / 2 - turtle.width / 2,
+                    Logo.config.getImageHeight() / 2 - turtle.height / 2,
                     turtle.width,
+                    turtle.height,
                     this);
         }
         updateColorSelection();
@@ -2341,11 +2079,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     private void resizeAllGuiComponents(double d) {
         // Resize all GuiComponent
-        Set<String> set = gm.keySet();
-        Iterator<String> it = set.iterator();
-        while (it.hasNext()) {
-            String element = it.next();
-            GuiComponent gui = gm.get(element);
+        Set<String> set = guiMap.keySet();
+        for (String element : set) {
+            GuiComponent gui = guiMap.get(element);
             gui.getGuiObject().setSize((int) (gui.getOriginalWidth() * d),
                     (int) (gui.getOriginalHeight() * d));
             Font f = gui.getGuiObject().getFont();
@@ -2366,9 +2102,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     public void zoom(double d, boolean zoomIn) {
         // Disable zoom buttons
-        cadre.setZoomEnabled(false);
+        app.setZoomEnabled(false);
 
-        javax.swing.JViewport jv = cadre.scrollPane.getViewport();
+        javax.swing.JViewport jv = app.scrollPane.getViewport();
         Point p = jv.getViewPosition();
         Rectangle r = jv.getVisibleRect();
 
@@ -2376,7 +2112,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         // If a selection rectangle is displaying on the drawing area
         // And If zoomout has been pressed
         // Zooming on the rectangular selection
-        if (null != selection && cadre.isCommandEditable() && zoomIn) {
+        if (null != selection && app.isCommandEditable() && zoomIn) {
             int originalWidth = jv.getWidth();
             double width = selection.getWidth();
             d = zoom * originalWidth / width;
@@ -2484,7 +2220,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         repaint();
         try {
             wait();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignored) {
         }
 
     }
@@ -2494,36 +2230,36 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         Graphics2D g2d = (Graphics2D) graph;
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2d.drawImage(dessin, 0, 0, (int) (Logo.config.getImageWidth() * zoom), (int) (Logo.config.getImageHeight() * zoom), this);
-        if (!Animation.executionLaunched && null != selection && cadre.isCommandEditable()) {
-            g2d.setColor(colorSelection);
+        g2d.drawImage(image, 0, 0, (int) (Logo.config.getImageWidth() * zoom), (int) (Logo.config.getImageHeight() * zoom), this);
+        if (!Animation.executionLaunched && null != selection && app.isCommandEditable()) {
+            g2d.setColor(selectionColor);
             g2d.fillRect(selection.x, selection.y, selection.width, selection.height);
         }
         notify();
     }
 
     public void active_souris() {
-        lissouris = false;
+        readMouse = false;
     }
 
     public boolean get_lissouris() {
-        return lissouris;
+        return readMouse;
     }
 
     public int get_bouton_souris() {
-        lissouris = false;
-        return bouton_souris;
+        readMouse = false;
+        return mouseButton;
     }
 
     public String get_possouris() {
-        lissouris = false;
-        return possouris;
+        readMouse = false;
+        return mousePosition;
     }
 
     public void mousePressed(MouseEvent e) {
         if (!Animation.executionLaunched) {
             selection = new Rectangle();
-            origine = new Point(e.getPoint());
+            dragOrigin = new Point(e.getPoint());
             selection.setSize(0, 0);
         }
     }
@@ -2534,13 +2270,13 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     public void mouseClicked(MouseEvent ev) {
         if (!Animation.executionLaunched) {
             selection = null;
-            origine = null;
+            dragOrigin = null;
             repaint();
         } else {
-            lissouris = true;
-            bouton_souris = ev.getButton();
+            readMouse = true;
+            mouseButton = ev.getButton();
             Point point = ev.getPoint();
-            possouris = "[ " + (point.x - Logo.config.getImageWidth() / 2) + " " + (Logo.config.getImageHeight() / 2 - point.y) + " ] ";
+            mousePosition = "[ " + (point.x - Logo.config.getImageWidth() / 2) + " " + (Logo.config.getImageHeight() / 2 - point.y) + " ] ";
         }
     }
 
@@ -2555,7 +2291,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         if (!Animation.executionLaunched && null != selection) {
             // First, we test if we need to move the scrollbars
             Point pos = e.getPoint();
-            javax.swing.JViewport jv = cadre.scrollPane.getViewport();
+            javax.swing.JViewport jv = app.scrollPane.getViewport();
             Point viewPosition = jv.getViewPosition();
             Rectangle r = jv.getVisibleRect();
             r.setLocation(viewPosition);
@@ -2577,27 +2313,27 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
             // Then , drawing the selection area
 
-            selection.setFrameFromDiagonal(origine, e.getPoint());
+            selection.setFrameFromDiagonal(dragOrigin, e.getPoint());
             repaint();
         }
     }
 
     public void mouseMoved(MouseEvent ev) {
-        lissouris = true;
-        bouton_souris = 0;
+        readMouse = true;
+        mouseButton = 0;
         Point point = ev.getPoint();
-        possouris = "[ " + (point.x - Logo.config.getImageWidth() / 2) + " " + (Logo.config.getImageHeight() / 2 - point.y) + " ] ";
+        mousePosition = "[ " + (point.x - Logo.config.getImageWidth() / 2) + " " + (Logo.config.getImageHeight() / 2 - point.y) + " ] ";
     }
 
     protected void addToGuiMap(GuiComponent gc) throws LogoException {
-        gm.put(gc);
+        guiMap.put(gc);
     }
 
     // This method modifies all Shape for any turtle on screen
     protected void updateAllTurtleShape() {
-        for (int i = 0; i < tortues.length; i++) {
-            if (null != tortues[i]) {
-                tortues[i].fixe_taille_crayon(2 * tortues[i].getPenWidth());
+        for (Turtle value : turtles) {
+            if (null != value) {
+                value.fixPenWidth(2 * value.getPenWidth());
             }
         }
     }
@@ -2621,7 +2357,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         try {
             File f = new File(name);
             ImageIO.write(buffer, format, f);
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
 
     }
@@ -2629,13 +2365,13 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     /**
      * Return a part of the drawing area as an image
      *
-     * @return
+     * @return the part of the image
      */
     private BufferedImage getImagePart(int[] coords) {
-        Image pic = dessin;
+        Image pic = image;
         if (zoom != 1) {
             pic = createImage(new FilteredImageSource(pic.getSource(),
-                    new ReplicateScaleFilter((int) (dessin.getWidth() * zoom), (int) (dessin.getHeight() * zoom))));
+                    new ReplicateScaleFilter((int) (image.getWidth() * zoom), (int) (image.getHeight() * zoom))));
         }
         pic = createImage(new FilteredImageSource(pic.getSource(),
                 new CropImageFilter(coords[0], coords[1], coords[2], coords[3])));
@@ -2644,10 +2380,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
 
     public BufferedImage getSelectionImage() {
-        Image pic = dessin;
+        Image pic = image;
         if (zoom != 1) {
             pic = createImage(new FilteredImageSource(pic.getSource(),
-                    new ReplicateScaleFilter((int) (dessin.getWidth() * zoom), (int) (dessin.getHeight() * zoom))));
+                    new ReplicateScaleFilter((int) (image.getWidth() * zoom), (int) (image.getHeight() * zoom))));
         }
         if (null != selection) {
             int x = (int) (selection.getBounds().getX());
@@ -2702,7 +2438,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     private void tryRecord2DMode(double a, double b) {
-        if (DrawPanel.record2D == DrawPanel.record2D_POLYGON) {
+        if (DrawPanel.record2D == DrawPanel.RECORD_2D_POLYGON) {
             // FillPolygon mode
             if (stackTriangle.size() == 3) {
                 stackTriangle.remove(0);
@@ -2725,13 +2461,13 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     }
 
     protected void startRecord2DPolygon() {
-        DrawPanel.record2D = DrawPanel.record2D_POLYGON;
-        stackTriangle = new Vector<Point2D.Double>();
-        stackTriangle.add(new Point2D.Double(turtle.corX, turtle.corY));
+        DrawPanel.record2D = DrawPanel.RECORD_2D_POLYGON;
+        stackTriangle = new Vector<>();
+        stackTriangle.add(new Point2D.Double(turtle.curX, turtle.curY));
     }
 
     protected void stopRecord2DPolygon() {
-        DrawPanel.record2D = DrawPanel.record2D_NONE;
+        DrawPanel.record2D = DrawPanel.RECORD_2D_NONE;
     }
 
     public double getScaleX() { return scaleX; }
@@ -2752,14 +2488,14 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             // zoom 8 zoom 1 zoom 8
             // Sometimes after the method revalidate(), the left upper corner position
             // wasn't correct
-            cadre.scrollPane.invalidate();
-            cadre.scrollPane.validate();
+            app.scrollPane.invalidate();
+            app.scrollPane.validate();
             // End Bug
 
             jv.setViewPosition(p);
             repaint();
 
-            cadre.setZoomEnabled(true);
+            app.setZoomEnabled(true);
         }
     }
 }

@@ -44,7 +44,7 @@ public class Kernel {
     }
 
     public void fcfg(Color color) {
-        app.getDrawPanel().fcfg(color);
+        app.getDrawPanel().setScreenColor(color);
     }
 
     public Turtle getActiveTurtle() {
@@ -56,11 +56,11 @@ public class Kernel {
     }
 
     public void fcc(Color color) {
-        app.getDrawPanel().fcc(color);
+        app.getDrawPanel().setPenColor(color);
     }
 
     public void vide_ecran() {
-        app.getDrawPanel().videecran();
+        app.getDrawPanel().clearScreen();
     }
 
     public void setNumberOfTurtles(int i) {
@@ -72,11 +72,11 @@ public class Kernel {
     }
 
     public Color getScreenBackground() {
-        return app.getDrawPanel().getBackgroundColor();
+        return app.getDrawPanel().getScreenColor();
     }
 
     public void change_image_tortue(int i) {
-        app.getDrawPanel().changeTurtleImage(app, i);
+        app.getDrawPanel().changeTurtleImage(i);
     }
 
     public void initGraphics() {

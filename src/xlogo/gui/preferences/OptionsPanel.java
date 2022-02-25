@@ -163,7 +163,7 @@ public class OptionsPanel extends JPanel {
             int i = Integer.parseInt(epaisseur.getText());
             Logo.config.setMaxPenWidth(i);
             if (cadre.getKernel().getActiveTurtle().getPenWidth() * 2 > i) {
-                cadre.getKernel().getActiveTurtle().fixe_taille_crayon(i);
+                cadre.getKernel().getActiveTurtle().fixPenWidth(i);
             }
         } catch (NumberFormatException e1) {
         }

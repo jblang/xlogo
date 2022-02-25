@@ -15,6 +15,7 @@ import xlogo.utils.LogoException;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 public class Turtle {
@@ -28,7 +29,7 @@ public class Turtle {
      * Identity Matrix
      */
     private final double[][] identity = new double[3][3];
-    public Color couleurcrayon = Color.black;
+    public Color penColor;
     public int id = -1;
     /**
      * The turtle heading (degree)
@@ -45,32 +46,32 @@ public class Turtle {
     /**
      * The X coordinates on the screen
      */
-    public double corX;
+    public double curX;
     /**
      * The Y coordinates on the screen
      */
-    public double corY;
+    public double curY;
     public double angle;
     /**
      * The X coordinates in real World (3D or 2D)
      */
-    public double X = 0;
+    public double X;
     /**
      * The Y coordinates in real World (3D or 2D)
      */
-    public double Y = 0;
+    public double Y;
     /**
      * The Z coordinates in real World (3D or 2D)
      */
-    public double Z = 0;
-    Color couleurmodedessin = Color.black;
+    public double Z;
+    Color imageColorMode;
     BasicStroke crayon = null;
     int police = 12;
     // Image for the turtle
     // If null then draw the triangle
     Image image = null;
     GeneralPath triangle;
-    int height = 0, width = 0, template = 0;
+    int width = 0, height = 0, template = 0;
     private final Application app;
     private int labelHorizontalAlignment = 0;
     private int labelVerticalAlignment = 0;
@@ -78,7 +79,7 @@ public class Turtle {
      * This is the rotation Matrix (3x3) in 3D world
      */
     private double[][] rotationMatrix = identity;
-    private boolean pendown = true;
+    private boolean penDown = true;
     private boolean penReverse = false;
     private boolean visible = true;
     private int shape = Logo.config.getActiveTurtle();
@@ -92,19 +93,19 @@ public class Turtle {
 
     public Turtle(Application app) {
         this.app = app;
-        fixe_taille_crayon(1);
-        couleurcrayon = Logo.config.getPenColor();
-        couleurmodedessin = Logo.config.getPenColor();
+        fixPenWidth(1);
+        penColor = Logo.config.getPenColor();
+        imageColorMode = Logo.config.getPenColor();
         if (Logo.config.getActiveTurtle() == 0) {
             image = null;
-            height = 26;
             width = 26;
+            height = 26;
         } else {
-            //ON teste tout d'abord si le chemin est valide
+            // first tests if the path is valid
             setImage(Logo.config.getActiveTurtle());
         }
-        corX = Logo.config.getImageWidth() / 2;
-        corY = Logo.config.getImageHeight() / 2;
+        curX = Logo.config.getImageWidth() / 2.0;
+        curY = Logo.config.getImageHeight() / 2.0;
         angle = Math.PI / 2;
         heading = 0.0;
         pitch = 0;
@@ -115,8 +116,8 @@ public class Turtle {
     }
 
     protected void init() {
-        corX = Logo.config.getImageWidth() / 2;
-        corY = Logo.config.getImageHeight() / 2;
+        curX = Logo.config.getImageWidth() / 2.0;
+        curY = Logo.config.getImageHeight() / 2.0;
         X = 0;
         Y = 0;
         Z = 0;
@@ -125,10 +126,10 @@ public class Turtle {
         roll = 0;
         rotationMatrix = identity;
         angle = Math.PI / 2;
-        pendown = true;
-        fixe_taille_crayon(1);
-        couleurcrayon = Logo.config.getPenColor();
-        couleurmodedessin = Logo.config.getPenColor();
+        penDown = true;
+        fixPenWidth(1);
+        penColor = Logo.config.getPenColor();
+        imageColorMode = Logo.config.getPenColor();
         penReverse = false;
     }
 
@@ -137,17 +138,17 @@ public class Turtle {
             if (null == triangle) {
                 triangle = new GeneralPath();
             } else triangle.reset();
-            if (DrawPanel.WINDOW_MODE != DrawPanel.WINDOW_3D) {
-                triangle.moveTo((float) (corX - 10.0 * Math.sin(angle)),
-                        (float) (corY - 10.0 * Math.cos(angle)));
-                triangle.lineTo((float) (corX + 24.0 * Math.cos(angle)),
-                        (float) (corY - 24.0 * Math.sin(angle)));
-                triangle.lineTo((float) (corX + 10.0 * Math.sin(angle)),
-                        (float) (corY + 10.0 * Math.cos(angle)));
-                triangle.lineTo((float) (corX - 10.0 * Math.sin(angle)),
-                        (float) (corY - 10.0 * Math.cos(angle)));
+            if (DrawPanel.windowMode != DrawPanel.WINDOW_3D) {
+                triangle.moveTo((float) (curX - 10.0 * Math.sin(angle)),
+                        (float) (curY - 10.0 * Math.cos(angle)));
+                triangle.lineTo((float) (curX + 24.0 * Math.cos(angle)),
+                        (float) (curY - 24.0 * Math.sin(angle)));
+                triangle.lineTo((float) (curX + 10.0 * Math.sin(angle)),
+                        (float) (curY + 10.0 * Math.cos(angle)));
+                triangle.lineTo((float) (curX - 10.0 * Math.sin(angle)),
+                        (float) (curY - 10.0 * Math.cos(angle)));
             } else {
-                double[] screenCoord = new double[2];
+                double[] screenCoord;
                 // The triangle has coordinates: (-10,0,0);(0,24,0);(10,0,0)
                 double[] x1 = new double[3];
                 x1[0] = X - 20 * rotationMatrix[0][0];
@@ -189,7 +190,7 @@ public class Turtle {
     }
 
 
-    public void fixe_taille_crayon(float nb) {
+    public void fixPenWidth(float nb) {
         if (nb < 0) nb = 1;
         else if (Logo.config.getMaxPenWidth() != -1 && nb > Logo.config.getMaxPenWidth()) nb = 1;
         if (Logo.config.getPenShape() == 0) crayon = new BasicStroke(nb, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
@@ -218,11 +219,11 @@ public class Turtle {
     }
 
     protected boolean isPenDown() {
-        return pendown;
+        return penDown;
     }
 
     protected void setPenDown(boolean b) {
-        pendown = b;
+        penDown = b;
     }
 
     protected boolean isPenReverse() {
@@ -242,14 +243,14 @@ public class Turtle {
     }
 
     protected double getX() {
-        if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_3D) return X;
-        return corX - Logo.config.getImageWidth() / 2;
+        if (DrawPanel.windowMode == DrawPanel.WINDOW_3D) return X;
+        return curX - Logo.config.getImageWidth() / 2.0;
 
     }
 
     protected double getY() {
-        if (DrawPanel.WINDOW_MODE == DrawPanel.WINDOW_3D) return Y;
-        return Logo.config.getImageHeight() / 2 - corY;
+        if (DrawPanel.windowMode == DrawPanel.WINDOW_3D) return Y;
+        return Logo.config.getImageHeight() / 2.0 - curY;
 
     }
 
@@ -262,7 +263,7 @@ public class Turtle {
     }
 
     public String getFontJustify() {
-        StringBuffer sb = new StringBuffer("[ ");
+        StringBuilder sb = new StringBuilder("[ ");
         sb.append(labelHorizontalAlignment);
         sb.append(" ");
         sb.append(labelVerticalAlignment);
@@ -294,28 +295,28 @@ public class Turtle {
     void setImage(int i) {
         if (i == 0) {
             image = null;
-            this.height = 26;
             this.width = 26;
+            this.height = 26;
         } else {
             FlatSVGIcon svg = Logo.getTurtle(i);
             if (svg == null) {
                 svg = Logo.getTurtle(1);
             }
-            float factor = (float) 70 / (float) svg.getIconHeight();
-            this.height = (int)(svg.getIconWidth() * factor);
-            this.width = (int)(svg.getIconHeight() * factor);
+            float factor = (float) 70 / (float) Objects.requireNonNull(svg).getIconHeight();
+            this.width = (int)(svg.getIconWidth() * factor);
+            this.height = (int)(svg.getIconHeight() * factor);
             image = svg.getImage().getScaledInstance(
-                    (int) (this.width * app.getDrawPanel().getScaleX()),
-                    (int) (this.height * app.getDrawPanel().getScaleY()),
+                    (int) (this.height * app.getDrawPanel().getScaleX()),
+                    (int) (this.width * app.getDrawPanel().getScaleY()),
                     Image.SCALE_SMOOTH
             );
             MediaTracker tracker = new MediaTracker(app);
             tracker.addImage(image, 0);
             try {
                 tracker.waitForID(0);
-            } catch (InterruptedException e1) {
+            } catch (InterruptedException ignored) {
             }
         }
-        template = Math.max(this.width, this.height);
+        template = Math.max(this.height, this.width);
     }
 }
