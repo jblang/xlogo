@@ -15,5 +15,8 @@
     <orderEntry type="library" name="jh-2.0_03" level="project" />
     <orderEntry type="library" name="jl-1.0.1" level="project" />
     <orderEntry type="library" name="gluegen-rt-2.3.2" level="project" />
+    <orderEntry type="library" name="rsyntaxtextarea-3.1.6" level="project" />
+    <orderEntry type="library" name="rstaui-3.1.4" level="project" />
+    <orderEntry type="library" name="autocomplete-3.1.5" level="project" />
   </component>
 </module>

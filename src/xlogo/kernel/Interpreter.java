@@ -550,7 +550,7 @@ public class Interpreter {
                                         .getString("ferme_editeur"));
                             else {
                                 app.editor.setVisible(true);
-                                app.editor.setEditorStyledText(definition + "\n\n"
+                                app.editor.appendText(definition + "\n\n"
                                         + Logo.messages.getString("fin"));
                             }
                         }

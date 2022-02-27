@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
  * @author loic
  *
  */
-public class EditorPopupMenu extends JPopupMenu implements ActionListener {
+public class EditPopupMenu extends JPopupMenu implements ActionListener {
     private static final long serialVersionUID = 1L;
     /**
      * This array contains all special characters for esperanto
@@ -57,7 +57,7 @@ public class EditorPopupMenu extends JPopupMenu implements ActionListener {
      * This Constructot attached the Jpopup to Text Component jt
      * @param jt The Text Component
      */
-    public EditorPopupMenu(JTextComponent jt) {
+    public EditPopupMenu(JTextComponent jt) {
         this.jt = jt;
         car[0] = "\u0109";
         car[1] = "\u011d";

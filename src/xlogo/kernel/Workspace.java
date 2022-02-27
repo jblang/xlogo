@@ -233,8 +233,8 @@ public class Workspace {
             sr.close();
             try {
                 app.editor.setEditable(false);
-                app.editor.setEditorStyledText(new String(sb));
-                app.editor.analyzeProcedure();
+                app.editor.appendText(new String(sb));
+                app.editor.parseProcedures();
             } catch (Exception ignored) {
             }
 

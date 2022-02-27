@@ -1,5 +1,10 @@
 package xlogo.gui;
 
+import org.fife.rsta.ui.search.ReplaceDialog;
+import org.fife.rsta.ui.search.SearchEvent;
+import org.fife.rsta.ui.search.SearchListener;
+import org.fife.ui.rsyntaxtextarea.*;
+import org.fife.ui.rtextarea.*;
 import xlogo.Logo;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.SyntaxException;
@@ -9,12 +14,11 @@ import xlogo.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.WindowEvent;
+import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static xlogo.utils.Utils.createButton;
 
@@ -29,136 +33,146 @@ import static xlogo.utils.Utils.createButton;
 /* The main class for the Editor windows
  *
  *  */
-public class Editor extends JFrame {
-    private JButton undoButton;
-    private JButton redoButton;
+public class Editor extends JFrame implements SearchListener {
     private boolean editable = true;
-    private JScrollPane scrollPane;
-    private EditorTextFacade textZone;
+    private RSyntaxTextArea textArea;
+    private ReplaceDialog replaceDialog;
     private JTextField mainCommand;
 
-    private Application app;
-    private Workspace workspace;
-    private ReplaceFrame replace;
+    private final Application app;
+    private final Workspace workspace;
 
     public Editor(Application app) {
         this.app = app;
         this.workspace = app.getKernel().getWorkspace();
-
-        try {
-            initGui();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Editor() {
+        setIconImage(Logo.getAppIcon().getImage());
+        setTitle(Logo.messages.getString("editeur"));
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        initTextArea();
+        initSearchDialogs();
+        initToolBar();
+        initMainCommand();
+        pack();
+        setLocationRelativeTo(app);
     }
 
     protected void processWindowEvent(WindowEvent e) {
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-            this.toFront();
+            cancelEdits();
         } else if (e.getID() == WindowEvent.WINDOW_ACTIVATED) {
-            textZone.requestFocus();
+            textArea.requestFocus();
         }
     }
 
-    public void analyzeProcedure() throws SyntaxException {
-        workspace.parseProcedures(textZone.getText(), editable);
+    public void parseProcedures() throws SyntaxException {
+        workspace.parseProcedures(textArea.getText(), editable);
     }
 
-    private void initGui() {
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    private void rstaButton(JToolBar parent, String iconName, String toolTip, int action) {
+        var button = parent.add(RTextArea.getAction(action));
+        button.setIcon(Logo.getIcon(iconName));
+        button.setHideActionText(true);
+        button.setToolTipText(Logo.messages.getString(toolTip));
+    }
 
-        // Init Toolbar button
+    private void initSearchDialogs() {
+        replaceDialog = new ReplaceDialog(this, this);
+
+        // This ties the properties of the two dialogs together (match case,
+        // regex, etc.).
+        SearchContext context = replaceDialog.getSearchContext();
+        replaceDialog.setSearchContext(context);
+    }
+
+    private void initMainCommand() {
+        mainCommand = new JTextField();
+        setMainCommand();
+        var label = new JLabel(Logo.messages.getString("mainCommand"), Logo.getIcon("run"), JLabel.LEFT);
+        var panel = new JPanel();
+        if (Logo.getMainCommand().length() < 30) mainCommand.setPreferredSize(new Dimension(150, 20));
+        panel.add(label);
+        panel.add(mainCommand);
+        getContentPane().add(panel, BorderLayout.SOUTH);
+    }
+
+    private void initToolBar() {
         var toolBar = new JToolBar(JToolBar.HORIZONTAL);
         createButton(toolBar, "save", "lire_editeur", e -> saveEdits()).setMnemonic('Q');
         createButton(toolBar, "cancel", "quit_editeur", e -> cancelEdits()).setMnemonic('C');
         toolBar.addSeparator();
-        createButton(toolBar, "print", "imprimer_editeur", e -> textZone.print());
+        createButton(toolBar, "print", "imprimer_editeur", e -> print());
         toolBar.addSeparator();
-        createButton(toolBar, "cut", "menu.edition.cut", e -> textZone.cut());
-        createButton(toolBar, "copy", "menu.edition.copy", e -> textZone.copy());
-        createButton(toolBar, "paste", "menu.edition.paste", e -> paste());
+        rstaButton(toolBar, "cut", "menu.edition.cut", RTextArea.CUT_ACTION);
+        rstaButton(toolBar, "copy", "menu.edition.copy", RTextArea.COPY_ACTION);
+        rstaButton(toolBar, "paste", "menu.edition.paste", RTextArea.PASTE_ACTION);
         toolBar.addSeparator();
-        undoButton = createButton(toolBar, "undo", "editor.undo", e -> undo());
-        redoButton = createButton(toolBar, "redo", "editor.redo", e-> redo());
+        rstaButton(toolBar, "undo", "editor.undo", RTextArea.UNDO_ACTION);
+        rstaButton(toolBar, "redo", "editor.redo", RTextArea.REDO_ACTION);
         toolBar.addSeparator();
-        createButton(toolBar, "search", "find", e -> showFind());
-
-        undoButton.setEnabled(false);
-        redoButton.setEnabled(false);
-
-        // Init all other components
-        JLabel labelCommand = new JLabel(Logo.messages.getString("mainCommand"), Logo.getIcon("run"), JLabel.LEFT);
-        scrollPane = new JScrollPane();
-        if (Logo.config.isSyntaxHighlightingEnabled()) {
-            textZone = new EditorTextPane(this);
-        } else textZone = new EditorTextArea(this);
-
-        mainCommand = new JTextField();
-        JPanel panelCommand = new JPanel();
-
-        replace = new ReplaceFrame(this, textZone);
-
-        initMainCommand();
-        if (Logo.getMainCommand().length() < 30) mainCommand.setPreferredSize(new Dimension(150, 20));
-        panelCommand.add(labelCommand);
-        panelCommand.add(mainCommand);
-
-        setIconImage(Logo.getAppIcon().getImage());
-
-        scrollPane.setPreferredSize(new Dimension(500, 500));
-        this.setTitle(Logo.messages.getString("editeur"));
-        this.getContentPane().add(toolBar, BorderLayout.NORTH);
-        this.getContentPane().add(scrollPane, BorderLayout.CENTER);
-        this.getContentPane().add(panelCommand, BorderLayout.SOUTH);
-        scrollPane.getViewport().add(textZone.getTextComponent(), null);
-        replace = new ReplaceFrame(this, textZone);
-        pack();
+        createButton(toolBar, "search", "find", e -> showReplace());
+        getContentPane().add(toolBar, BorderLayout.NORTH);
     }
 
-    private void paste() {
-        // Test if there are too many characters to paste
-        Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-        String text = null;
+    private void initTextArea() {
+        textArea = new RSyntaxTextArea(25, 80);
+        // Register syntax highlighter
+        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
+        atmf.putMapping("text/logo", "xlogo.gui.LogoTokenMaker");
+        textArea.setSyntaxEditingStyle("text/logo");
+        textArea.setCodeFoldingEnabled(true);
+        InputStream in = getClass().
+                getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/monokai.xml");
         try {
-            if (t != null && t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-                text = (String) t.getTransferData(DataFlavor.stringFlavor);
-            }
-        } catch (UnsupportedFlavorException | IOException ignored) {
+            Theme theme = Theme.load(in);
+            theme.apply(textArea);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
-        if (null != text && text.length() > 100000) {
-            if (textZone instanceof EditorTextPane) {
-                Logo.config.setSyntaxHighlightingEnabled(false);
-                toTextArea();
-            }
+        var scrollPane = new RTextScrollPane(textArea);
+        getContentPane().add(scrollPane, BorderLayout.CENTER);
+        ErrorStrip errorStrip = new ErrorStrip(textArea);
+        getContentPane().add(errorStrip, BorderLayout.EAST);
+    }
+
+    private void print() {
+        try {
+            textArea.print();
+        } catch (PrinterException ex) {
+            ex.printStackTrace();
         }
-        textZone.paste();
     }
 
-    private void redo() {
-        textZone.getUndoManager().redo();
-        updateUndoRedoButtons();
+    private void showReplace() {
+        replaceDialog.setVisible(true);
     }
 
-    private void undo() {
-        textZone.getUndoManager().undo();
-        updateUndoRedoButtons();
-    }
-
-    private void showFind() {
-        if (!replace.isVisible()) {
-            replace.setSize(350, 350);
-            replace.setVisible(true);
+    /**
+     * This method displays the editor (if necessary)
+     * and adds all defined procedures
+     */
+    public void open() {
+        if (!app.editor.isVisible()) {
+            setVisible(true);
+            toFront();
+            setTitle(Logo.messages.getString("editeur"));
+            for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
+                Procedure procedure = workspace.getProcedure(i);
+                appendText(procedure.toString());
+            }
+            setMainCommand();
+            discardAllEdits();
+            textArea.requestFocus();
+        } else {
+            app.editor.setVisible(false);
+            app.editor.setVisible(true);
+            textArea.requestFocus();
         }
     }
 
     private void cancelEdits() {
-        textZone.setActive(false);
-        textZone.setText("");
+        clearText();
         setVisible(false);
-        if (Logo.config.isEraseImage()) { //Effacer la zone de dessin
+        if (Logo.config.isEraseImage()) {
             LogoException.lance = true;
             app.error = true;
             while (!app.isCommandEditable()) {
@@ -176,11 +190,10 @@ public class Editor extends JFrame {
     }
 
     private void saveEdits() {
-        textZone.setActive(false);
         boolean visible = false;
         try {
-            analyzeProcedure();
-            this.textZone.setText("");
+            parseProcedures();
+            clearText();
             if (null != app.tempPath) {
                 Application.path = app.tempPath;
                 app.setTitle(Application.path + " - XLogo");
@@ -193,7 +206,7 @@ public class Editor extends JFrame {
                 app.setSaveEnabled(true);
             }
             if (!app.isNewEnabled())
-                app.setNewEnabled(true); //Si c'est la première fois qu'on enregistre, on active le menu nouveau
+                app.setNewEnabled(true);
         } catch (SyntaxException ex) {
             visible = true;
         }
@@ -225,19 +238,9 @@ public class Editor extends JFrame {
         Logo.setMainCommand(mainCommand.getText());
     }
 
-    public void initMainCommand() {
+    public void setMainCommand() {
         mainCommand.setText(Logo.getMainCommand());
     }
-
-    // Change Syntax Highlighting for the editor
-    public void initStyles() {
-        if (textZone.supportHighlighting()) {
-            ((EditorTextPane) textZone).getDsd().initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(),
-                    Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
-        }
-    }
-
-    // Enable or disable Syntax Highlighting
 
     public boolean isEditable() {
         return editable;
@@ -247,89 +250,57 @@ public class Editor extends JFrame {
         editable = b;
     }
 
-    /**
-     * Erase all text
-     */
     public void clearText() {
-        textZone.clearText();
+        textArea.setText("");
     }
 
-    /**
-     * Convert the textZone from a JTextArea to a JTextPane
-     * To allow Syntax Highlighting
-     */
-    public void toTextPane() {
-        scrollPane.getViewport().removeAll();
-        String s = textZone.getText();
-        textZone = new EditorTextPane(this);
-        replace = new ReplaceFrame(this, textZone);
-        textZone.ecris(s);
-        scrollPane.getViewport().add(textZone.getTextComponent());
-        scrollPane.revalidate();
+    public void appendText(String txt) { textArea.append(txt); }
+
+    public void focusTextArea() {
+        textArea.requestFocus();
     }
 
-    /**
-     * Convert the textZone from a JTextPane to a JTextArea
-     * Cause could be that:
-     * - Syntax Highlighting is disabled
-     * - Large text to display in the editor
-     */
-    public void toTextArea() {
-        String s = textZone.getText();
-        scrollPane.getViewport().removeAll();
-        textZone = new EditorTextArea(this);
-        replace = new ReplaceFrame(this, textZone);
-        textZone.ecris(s);
-        scrollPane.getViewport().add(textZone.getTextComponent());
-        scrollPane.revalidate();
-    }
+    public void discardAllEdits() { textArea.discardAllEdits(); }
 
-    public void setEditorStyledText(String txt) {
-        if (txt.length() < 100000) {
-            textZone.ecris(txt);
-        } else {
-            if (textZone instanceof EditorTextPane) {
-                Logo.config.setSyntaxHighlightingEnabled(false);
-                toTextArea();
-                textZone.ecris(txt);
-            } else textZone.ecris(txt);
+    @Override
+    public void searchEvent(SearchEvent e) {
+        SearchEvent.Type type = e.getType();
+        SearchContext context = e.getSearchContext();
+        SearchResult result;
+
+        switch (type) {
+            default: // Prevent FindBugs warning later
+            case MARK_ALL:
+                result = SearchEngine.markAll(textArea, context);
+                break;
+            case FIND:
+                result = SearchEngine.find(textArea, context);
+                if (!result.wasFound() || result.isWrapped()) {
+                    UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+                }
+                break;
+            case REPLACE:
+                result = SearchEngine.replace(textArea, context);
+                if (!result.wasFound() || result.isWrapped()) {
+                    UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+                }
+                break;
+            case REPLACE_ALL:
+                result = SearchEngine.replaceAll(textArea, context);
+                JOptionPane.showMessageDialog(null, result.getCount() +
+                        " occurrences replaced.");
+                break;
         }
     }
 
-    /**
-     * This method displays the editor (if necessary)
-     * and adds all defined procedures
-     */
-    public void open() {
-        if (!app.editor.isVisible()) {
-            setVisible(true);
-            toFront();
-            setTitle(Logo.messages.getString("editeur"));
-            for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
-                Procedure procedure = workspace.getProcedure(i);
-                setEditorStyledText(procedure.toString());
-            }
-            initMainCommand();
-            discardAllEdits();
-            textZone.requestFocus();
-        } else {
-            app.editor.setVisible(false);
-            app.editor.setVisible(true);
-            textZone.requestFocus();
-        }
+    @Override
+    public String getSelectedText() {
+        return textArea.getSelectedText();
     }
 
-    public void focusTextZone() {
-        textZone.requestFocus();
-    }
-
-    public void discardAllEdits() {
-        textZone.getUndoManager().discardAllEdits();
-        updateUndoRedoButtons();
-    }
-
-    protected void updateUndoRedoButtons() {
-        redoButton.setEnabled(textZone.getUndoManager().canRedo());
-        undoButton.setEnabled(textZone.getUndoManager().canUndo());
+    public void changeLookAndFeel() {
+        SwingUtilities.updateComponentTreeUI(this);
+        replaceDialog.updateUI();
+        pack();
     }
 }

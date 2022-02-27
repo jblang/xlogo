@@ -88,7 +88,6 @@ public class HighlighterPanel extends JPanel implements ActionListener {
         if (active_coloration.isSelected()) {
             if (!Logo.config.isSyntaxHighlightingEnabled()) {
                 Logo.config.setSyntaxHighlightingEnabled(true);
-                cadre.editor.toTextPane();
             }
             Logo.config.setSyntaxCommentColor(p_comment.color());
             Logo.config.setSyntaxOperandColor(p_operande.color());
@@ -103,7 +102,6 @@ public class HighlighterPanel extends JPanel implements ActionListener {
             cadre.changeSyntaxHighlightingStyle();
         } else {
             if (Logo.config.isSyntaxHighlightingEnabled()) {
-                cadre.editor.toTextArea();
                 Logo.config.setSyntaxHighlightingEnabled(false);
             }
         }

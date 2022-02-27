@@ -9,6 +9,8 @@ package xlogo;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import xlogo.gui.Application;
 import xlogo.gui.LanguageSelection;
 import xlogo.kernel.Animation;
@@ -194,6 +196,7 @@ public class Logo {
 
         config.getStartupFiles().addAll(Arrays.asList(args));
         config.getStartupFiles().add(0, "#####");
+
         //try{;
         new Logo();
     }

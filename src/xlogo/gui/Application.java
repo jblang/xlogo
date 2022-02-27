@@ -59,7 +59,7 @@ public class Application extends JFrame {
     private final CommandKeyAdapter commandKeyAdapter = new CommandKeyAdapter();
     private final ArrayList<JMenuItem> menuItems = new ArrayList<>();
     private final JLabel commandLabel = new JLabel();
-    private final EditorPopupMenu popupMenu = new EditorPopupMenu(commandLine);
+    private final EditPopupMenu popupMenu = new EditPopupMenu(commandLine);
     public String tempPath = null; // When opening a file
     public boolean error = false;
     public Editor editor;
@@ -98,6 +98,7 @@ public class Application extends JFrame {
         createContent();
         updateLocalization();
         pack();
+        setLocationRelativeTo(null);
     }
 
     private JMenu createMenu(JMenuItem parent, String key) {
@@ -325,8 +326,8 @@ public class Application extends JFrame {
             }
             if (!txt.equals("")) {
                 if (!editor.isVisible()) editor.setVisible(true);
-                editor.setEditorStyledText(txt);
-                editor.initMainCommand();
+                editor.appendText(txt);
+                editor.setMainCommand();
                 editor.discardAllEdits();
             }
             tempPath = path;
@@ -676,7 +677,7 @@ public class Application extends JFrame {
                     break;
             }
             SwingUtilities.updateComponentTreeUI(this);
-            SwingUtilities.updateComponentTreeUI(editor);
+            editor.changeLookAndFeel();
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -687,7 +688,6 @@ public class Application extends JFrame {
      * the command line and the History zone
      */
     public void changeSyntaxHighlightingStyle() {
-        editor.initStyles();
         commandLine.initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
         historyPanel.getDsd().initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
     }
@@ -872,9 +872,9 @@ public class Application extends JFrame {
                 } catch (IOException e2) {
                     System.out.println("Problem reading file");
                 }
-                editor.setEditorStyledText(txt);
+                editor.appendText(txt);
                 try {
-                    editor.analyzeProcedure();
+                    editor.parseProcedures();
                 } catch (Exception e3) {
                     e3.printStackTrace();
                 }

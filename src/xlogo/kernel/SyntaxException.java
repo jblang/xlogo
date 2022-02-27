@@ -22,6 +22,6 @@ public class SyntaxException extends Exception {   // à générer en cas d'errr
             pr.nbparametre = pr.variable.size();
         }
         editor.toFront();
-        editor.focusTextZone();
+        editor.focusTextArea();
     }
 }

@@ -1429,13 +1429,13 @@ public class LaunchPrimitive {
                         String path = Utils.unescapeString(Logo.config.getDefaultFolder()) + File.separator + mot;
                         try {
                             String txt = Utils.readLogoFile(path);
-                            cadre.editor.setEditorStyledText(txt);
+                            cadre.editor.appendText(txt);
                         } catch (IOException e1) {
                             throw new LogoException(cadre,
                                     Logo.messages.getString("error.iolecture"));
                         }
                         try {
-                            cadre.editor.analyzeProcedure();
+                            cadre.editor.parseProcedures();
                             if (!cadre.isNewEnabled())
                                 cadre.setNewEnabled(true);
                         } catch (Exception e3) {
@@ -1558,11 +1558,11 @@ public class LaunchPrimitive {
                         }
                         sb.append("\n");
                         sb.append(Logo.messages.getString("fin"));
-                        cadre.editor.setEditorStyledText(new String(sb));
+                        cadre.editor.appendText(new String(sb));
                     } catch (LogoException e) {
                     }
                     try {
-                        cadre.editor.analyzeProcedure();
+                        cadre.editor.parseProcedures();
                         cadre.editor.clearText();
                     } catch (Exception e2) {
                     }
@@ -3508,7 +3508,7 @@ public class LaunchPrimitive {
                         cadre.editor.setTitle(Logo.messages
                                 .getString("editeur"));
 
-                        cadre.editor.initMainCommand();
+                        cadre.editor.setMainCommand();
                         cadre.editor.setTitle(Logo.messages.getString("editeur"));
                         cadre.editor.discardAllEdits();
                         cadre.editor.setVisible(true);
@@ -3519,7 +3519,7 @@ public class LaunchPrimitive {
                             Procedure procedure = wp.getProcedure(i);
 //							System.out.println(procedure.toString().length());
                             if (names.contains(procedure.name) && procedure.affichable) {
-                                cadre.editor.setEditorStyledText(procedure.toString());
+                                cadre.editor.appendText(procedure.toString());
                             }
                         }
                     } catch (LogoException e) {
