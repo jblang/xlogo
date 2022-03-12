@@ -9,8 +9,6 @@ package xlogo;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
-import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import xlogo.gui.Application;
 import xlogo.gui.LanguageSelection;
 import xlogo.kernel.Animation;
@@ -101,7 +99,7 @@ public class Logo {
             // If this command is defined from the command line
             if (autoLaunch) {
                 frame.startAnimation(Utils.formatCode(getMainCommand()));
-                frame.getHistoryPanel().ecris("normal", getMainCommand() + "\n");
+                frame.getHistoryPanel().setText("normal", getMainCommand() + "\n");
             }
             // Else if this command is defined from the Start Up Dialog Box
             else if (!config.getStartupCommand().equals("")) {

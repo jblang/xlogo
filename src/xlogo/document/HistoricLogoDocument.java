@@ -16,13 +16,13 @@ import java.awt.*;
 
 public class HistoricLogoDocument extends LogoDocument {
     private static final long serialVersionUID = 1L;
-    private Color couleur_texte = Color.BLUE;
-    private int taille_texte = 12;
+    private Color textColor = Color.BLUE;
+    private int fontSize = 12;
     private String style = "normal";
     private final MutableAttributeSet normal;
-    private final MutableAttributeSet erreur;
-    private final MutableAttributeSet commentaire;
-    private final MutableAttributeSet perso;
+    private final MutableAttributeSet error;
+    private final MutableAttributeSet comment;
+    private final MutableAttributeSet primitive;
     private boolean tape = false;
 
     public HistoricLogoDocument() {
@@ -30,121 +30,108 @@ public class HistoricLogoDocument extends LogoDocument {
 
         //Style normal
         normal = new SimpleAttributeSet();
-        //StyleConstants.setFontSize(normal, Logo.config.police.getSize());
-        //StyleConstants.setFontFamily(normal, Logo.config.police.getName());
 
         // Style pour l'écriture des erreurs
-        erreur = new SimpleAttributeSet();
-        //StyleConstants.setForeground(erreur, Color.RED);
-        //StyleConstants.setFontSize(erreur, Logo.config.police.getSize());
-        //StyleConstants.setFontFamily(erreur, Logo.config.police.getName());
+        error = new SimpleAttributeSet();
 
         //Style pour les commentaires (Vous venez de définir ...)
-        commentaire = new SimpleAttributeSet();
-        //StyleConstants.setForeground(commentaire, Color.BLUE);
-        //StyleConstants.setFontSize(commentaire, Logo.config.police.getSize());
-        //StyleConstants.setFontFamily(commentaire, Logo.config.police.getName());
+        comment = new SimpleAttributeSet();
 
         // Style pour la primitive écris et la primitive tape
-        perso = new SimpleAttributeSet();
-        //StyleConstants.setForeground(perso, Color.BLACK);
-        //StyleConstants.setFontFamily(perso, Logo.config.police.getName());
-
-
+        primitive = new SimpleAttributeSet();
     }
 
     public void setStyle(String sty) {
         style = sty;
     }
 
-    public Color getCouleurtexte() {
-        return couleur_texte;
+    public Color getTextColor() {
+        return textColor;
     }
 
-    public int police() {
-        return taille_texte;
+    public int getFontSize() {
+        return fontSize;
     }
 
-    public void fixecouleur(Color color) {
-        couleur_texte = color;
-        StyleConstants.setForeground(perso, couleur_texte);
+    public void setTextColor(Color color) {
+        textColor = color;
+        StyleConstants.setForeground(primitive, textColor);
     }
 
-    public void fixepolice(int taille) {
-        taille_texte = taille;
-        StyleConstants.setFontSize(perso, taille_texte);
+    public void setFontSize(int size) {
+        fontSize = size;
+        StyleConstants.setFontSize(primitive, fontSize);
     }
 
-    public void fixenompolice(int id) {
-        StyleConstants.setFontFamily(perso,
+    public void setFontNumber(int id) {
+        StyleConstants.setFontFamily(primitive,
                 FontPanel.fontes[HistoryPanel.fontPrint].getName());
     }
 
-    public void fixegras(boolean b) {
-        StyleConstants.setBold(perso, b);
+    public void setBold(boolean b) {
+        StyleConstants.setBold(primitive, b);
     }
 
-    public void fixeitalique(boolean b) {
-        StyleConstants.setItalic(perso, b);
+    public void setItalic(boolean b) {
+        StyleConstants.setItalic(primitive, b);
     }
 
-    public void fixesouligne(boolean b) {
-        StyleConstants.setUnderline(perso, b);
+    public void setUnderline(boolean b) {
+        StyleConstants.setUnderline(primitive, b);
     }
 
-    public void fixeexposant(boolean b) {
-        StyleConstants.setSuperscript(perso, b);
+    public void setSuperscript(boolean b) {
+        StyleConstants.setSuperscript(primitive, b);
     }
 
-    public void fixeindice(boolean b) {
-        StyleConstants.setSubscript(perso, b);
+    public void setSubscript(boolean b) {
+        StyleConstants.setSubscript(primitive, b);
     }
 
-    public void fixebarre(boolean b) {
-        StyleConstants.setStrikeThrough(perso, b);
+    public void setStrikeThrough(boolean b) {
+        StyleConstants.setStrikeThrough(primitive, b);
     }
 
-    public boolean estgras() {
-        return StyleConstants.isBold(perso);
+    public boolean isBold() {
+        return StyleConstants.isBold(primitive);
     }
 
-    public boolean estitalique() {
-        return StyleConstants.isItalic(perso);
+    public boolean isItalic() {
+        return StyleConstants.isItalic(primitive);
     }
 
-    public boolean estsouligne() {
-        return StyleConstants.isUnderline(perso);
+    public boolean isUnderline() {
+        return StyleConstants.isUnderline(primitive);
     }
 
-    public boolean estexposant() {
-        return StyleConstants.isSuperscript(perso);
+    public boolean isSuperscript() {
+        return StyleConstants.isSuperscript(primitive);
     }
 
-    public boolean estindice() {
-        return StyleConstants.isSubscript(perso);
+    public boolean isSubscript() {
+        return StyleConstants.isSubscript(primitive);
     }
 
-    public boolean estbarre() {
-        return StyleConstants.isStrikeThrough(perso);
+    public boolean isStrikethrough() {
+        return StyleConstants.isStrikeThrough(primitive);
     }
 
     public Font getFont() {
-        return FontPanel.fontes[HistoryPanel.fontPrint].deriveFont(Font.BOLD, (float) taille_texte);
-
+        return FontPanel.fontes[HistoryPanel.fontPrint].deriveFont(Font.BOLD, (float) fontSize);
     }
 
-    public void change_police_interface(Font font, int taille) {
+    public void setFont(Font font, int taille) {
 
         String famille = font.getName();
 
         StyleConstants.setFontSize(normal, taille);
         StyleConstants.setFontFamily(normal, famille);
 
-        StyleConstants.setFontSize(commentaire, taille);
-        StyleConstants.setFontFamily(commentaire, famille);
+        StyleConstants.setFontSize(comment, taille);
+        StyleConstants.setFontFamily(comment, famille);
 
-        StyleConstants.setFontSize(erreur, taille);
-        StyleConstants.setFontFamily(erreur, famille);
+        StyleConstants.setFontSize(error, taille);
+        StyleConstants.setFontFamily(error, famille);
     }
 
     public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
@@ -152,9 +139,9 @@ public class HistoricLogoDocument extends LogoDocument {
             tape = false;
             super.insertStyleNormal(offset, str, a);
         } else super.insertString(offset, str, a);
-        if (style.equals("erreur")) this.setCharacterAttributes(offset, str.length(), erreur, true);
-        else if (style.equals("commentaire")) this.setCharacterAttributes(offset, str.length(), commentaire, true);
-        else if (style.equals("perso")) this.setCharacterAttributes(offset, str.length(), perso, true);
+        if (style.equals("erreur")) this.setCharacterAttributes(offset, str.length(), error, true);
+        else if (style.equals("commentaire")) this.setCharacterAttributes(offset, str.length(), comment, true);
+        else if (style.equals("perso")) this.setCharacterAttributes(offset, str.length(), primitive, true);
         if (!str.endsWith("\n")) tape = true;
     }
 

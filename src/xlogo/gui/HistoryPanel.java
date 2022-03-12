@@ -33,7 +33,7 @@ public class HistoryPanel extends JPanel {
     private final Color couleur_texte = Color.BLUE;
     private final int taille_texte = 12;
     private final JScrollPane jScrollPane1 = new JScrollPane();
-    private final Historique historique = new Historique();
+    private final HistoryTextPane historyTextPane = new HistoryTextPane();
     private HistoricLogoDocument dsd;
     private final BorderLayout borderLayout1 = new BorderLayout();
     private Application cadre;
@@ -49,7 +49,7 @@ public class HistoryPanel extends JPanel {
             e.printStackTrace();
         }
         dsd = new HistoricLogoDocument();
-        historique.setDocument(dsd);
+        historyTextPane.setDocument(dsd);
     }
 
     public Color getCouleurtexte() {
@@ -60,23 +60,23 @@ public class HistoryPanel extends JPanel {
         return taille_texte;
     }
 
-    public void vide_texte() {
-        historique.setText("");
+    public void clearText() {
+        historyTextPane.setText("");
     }
 
-    public void ecris(String sty, String texte) {
+    public void setText(String sty, String texte) {
         try {
-            int longueur = historique.getDocument().getLength();
+            int longueur = historyTextPane.getDocument().getLength();
             if (texte.length() > 32000) throw new LogoException(cadre, Logo.messages.getString("chaine_trop_longue"));
             if (longueur + texte.length() < 65000) {
                 try {
                     dsd.setStyle(sty);
                     dsd.insertString(dsd.getLength(), texte, null);
-                    historique.setCaretPosition(dsd.getLength());
+                    historyTextPane.setCaretPosition(dsd.getLength());
                 } catch (BadLocationException e) {
                 }
             } else {
-                vide_texte();
+                clearText();
             }
         } catch (LogoException e2) {
         }
@@ -84,9 +84,9 @@ public class HistoryPanel extends JPanel {
 
     private void jbInit() throws Exception {
         this.setLayout(borderLayout1);
-        historique.setEditable(false);
+        historyTextPane.setEditable(false);
         this.add(jScrollPane1, BorderLayout.CENTER);
-        jScrollPane1.getViewport().add(historique, null);
+        jScrollPane1.getViewport().add(historyTextPane, null);
     }
 
 
@@ -106,7 +106,7 @@ public class HistoryPanel extends JPanel {
     }
 
     public void updateText() {
-        historique.setText();
+        historyTextPane.setText();
     }
 
     public void changeLanguage() {
@@ -116,19 +116,19 @@ public class HistoryPanel extends JPanel {
         return dsd;
     }
 
-    public StyledDocument sd_Historique() {
-        return historique.getStyledDocument();
+    public StyledDocument getStyledDocument() {
+        return historyTextPane.getStyledDocument();
     }
 
 
-    class Historique extends JTextPane implements ActionListener {
+    class HistoryTextPane extends JTextPane implements ActionListener {
         private static final long serialVersionUID = 1L;
         private final JPopupMenu popup = new JPopupMenu();
         private final JMenuItem jpopcopier = new JMenuItem();
         private final JMenuItem jpopselect = new JMenuItem();
         private final JMenuItem jpopsave = new JMenuItem();
 
-        Historique() {
+        HistoryTextPane() {
             popup.add(jpopcopier);
             popup.add(jpopselect);
             popup.add(jpopsave);
@@ -172,7 +172,7 @@ public class HistoryPanel extends JPanel {
             boolean continuer = true;
             while (continuer && i != 0) {
                 select(i - 1, i);
-                String t = historique.getSelectedText();
+                String t = historyTextPane.getSelectedText();
                 if (t.equals("\n")) {
                     continuer = false;
                 }

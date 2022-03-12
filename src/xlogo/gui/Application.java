@@ -8,6 +8,8 @@ package xlogo.gui;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.Theme;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.preferences.FontPanel;
@@ -38,6 +40,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Stack;
@@ -53,7 +56,7 @@ public class Application extends JFrame {
     private final Kernel kernel;
     // UI Elements
     private final DrawPanel drawPanel;
-    private final CommandLine commandLine = new CommandLine(this);
+    private final RSyntaxTextArea commandLine = new RSyntaxTextArea(1, 1);
     private final HistoryPanel historyPanel = new HistoryPanel(this);
     private final SoundPlayer soundPlayer = new SoundPlayer(this);
     private final CommandKeyAdapter commandKeyAdapter = new CommandKeyAdapter();
@@ -91,6 +94,17 @@ public class Application extends JFrame {
         resizeDrawingZone();
         kernel.initInterprete();
         editor = new Editor(this);
+        commandLine.setSyntaxEditingStyle("text/logo");
+        commandLine.setHighlightCurrentLine(false);
+        InputStream in = getClass().
+                getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/monokai.xml");
+        try {
+            Theme theme = Theme.load(in);
+            theme.apply(commandLine);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        //commandLine.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), null);
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         setTitle("XLogo");
         setIconImage(Logo.getAppIcon().getImage());
@@ -382,7 +396,7 @@ public class Application extends JFrame {
 
     private void saveHistory() {
         RTFEditorKit myRTFEditorKit = new RTFEditorKit();
-        StyledDocument myStyledDocument = getHistoryPanel().sd_Historique();
+        StyledDocument myStyledDocument = getHistoryPanel().getStyledDocument();
         try {
             JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
             String[] ext = {".rtf"};
@@ -510,7 +524,7 @@ public class Application extends JFrame {
 
     private void runMainCommand() {
         startAnimation(Utils.formatCode(Logo.getMainCommand()));
-        getHistoryPanel().ecris("normal", Logo.getMainCommand() + "\n");
+        getHistoryPanel().setText("normal", Logo.getMainCommand() + "\n");
     }
 
     private void stopAnimation() {
@@ -535,7 +549,7 @@ public class Application extends JFrame {
     public void executeCommand() {
         //	System.out.println("commandeTotal :"+Runtime.getRuntime().totalMemory()/1024/1024+" Free "+Runtime.getRuntime().freeMemory()/1024/1024);
         // Si une parenthese était sélectionnée, on désactive la décoloration
-        commandLine.setActive(false);
+        //commandLine.setActive(false);
         //	System.out.println(commande.getCaret().isVisible());
         if (stop) stop = false;
         String text = commandLine.getText();
@@ -547,7 +561,7 @@ public class Application extends JFrame {
             if (historyStack.size() > 49) historyStack.remove(0);
             historyStack.push(text); // Add text to the history
             historyIndex = historyStack.size(); // Readjust history index
-            historyPanel.ecris("normal", text + "\n");
+            historyPanel.setText("normal", text + "\n");
 
             // Remove any comments
             int a = text.indexOf("#");
@@ -630,7 +644,7 @@ public class Application extends JFrame {
     public void changeFont(Font font, int size) {
         Logo.config.setFont(font);
         updateLocalization();
-        historyPanel.getDsd().change_police_interface(font, size);
+        historyPanel.getDsd().setFont(font, size);
     }
 
     /**
@@ -688,7 +702,7 @@ public class Application extends JFrame {
      * the command line and the History zone
      */
     public void changeSyntaxHighlightingStyle() {
-        commandLine.initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
+        //commandLine.initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
         historyPanel.getDsd().initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
     }
 
@@ -697,7 +711,7 @@ public class Application extends JFrame {
      */
     public void setSyntaxHighlightingEnabled(boolean b) {
         historyPanel.setColoration(b);
-        commandLine.setColoration(b);
+        //commandLine.setColoration(b);
     }
 
     /**
@@ -728,7 +742,7 @@ public class Application extends JFrame {
      * @param txt The text to write
      */
     public void updateHistory(String sty, String txt) {
-        historyPanel.ecris(sty, txt);
+        historyPanel.setText(sty, txt);
     }
 
     /**
@@ -1071,6 +1085,8 @@ public class Application extends JFrame {
                         historyIndex++;
                         commandLine.setText(historyStack.get(historyIndex));
                     } else historyIndex = historyStack.size() - 1;
+                } else if (code == KeyEvent.VK_ENTER) {
+                    executeCommand();
                 }
             } else {
                 if (ch != 65535) key = ch;

@@ -1117,7 +1117,7 @@ public class LaunchPrimitive {
                     cadre.getDrawPanel().setWindowMode(DrawPanel.WINDOW_CLOSE);
                     break;
                 case 89: // videtexte
-                    cadre.getHistoryPanel().vide_texte();
+                    cadre.getHistoryPanel().clearText();
                     break;
                 case 90: // chargeimage
                     BufferedImage image = null;
@@ -1731,7 +1731,7 @@ public class LaunchPrimitive {
                 case 137:// fpt
                     try {
                         int i = kernel.getCalculator().getInteger(param.get(0));
-                        cadre.getHistoryPanel().getDsd().fixepolice(i);
+                        cadre.getHistoryPanel().getDsd().setFontSize(i);
                     } catch (LogoException e) {
                     }
                     break;
@@ -1743,11 +1743,11 @@ public class LaunchPrimitive {
                 case 139: // fct,fixecouleurtexte
                     try {
                         if (isList(param.get(0))) {
-                            cadre.getHistoryPanel().getDsd().fixecouleur(rgb(param.get(0), Utils.primitiveName("fct")));
+                            cadre.getHistoryPanel().getDsd().setTextColor(rgb(param.get(0), Utils.primitiveName("fct")));
                         } else {
                             int coul = kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
                             if (coul < 0) coul += DrawPanel.defaultColors.length;
-                            cadre.getHistoryPanel().getDsd().fixecouleur(DrawPanel.defaultColors[coul]);
+                            cadre.getHistoryPanel().getDsd().setTextColor(DrawPanel.defaultColors[coul]);
                         }
                     } catch (LogoException e) {
                     }
@@ -1868,7 +1868,7 @@ public class LaunchPrimitive {
                         int int_police = kernel.getCalculator().getInteger(param.get(0));
                         HistoryPanel.fontPrint = int_police
                                 % FontPanel.fontes.length;
-                        cadre.getHistoryPanel().getDsd().fixenompolice(int_police);
+                        cadre.getHistoryPanel().getDsd().setFontNumber(int_police);
                     } catch (LogoException e) {
                     }
 
@@ -2644,39 +2644,39 @@ public class LaunchPrimitive {
                             } else if (element.equals(Logo.messages.getString("style.none").toLowerCase())) {
                             } else throw new LogoException(cadre, Logo.messages.getString("erreur_fixestyle"));
                         }
-                        cadre.getHistoryPanel().getDsd().fixegras(gras);
-                        cadre.getHistoryPanel().getDsd().fixeitalique(italique);
-                        cadre.getHistoryPanel().getDsd().fixesouligne(souligne);
-                        cadre.getHistoryPanel().getDsd().fixeexposant(exposant);
-                        cadre.getHistoryPanel().getDsd().fixeindice(indice);
-                        cadre.getHistoryPanel().getDsd().fixebarre(barre);
+                        cadre.getHistoryPanel().getDsd().setBold(gras);
+                        cadre.getHistoryPanel().getDsd().setItalic(italique);
+                        cadre.getHistoryPanel().getDsd().setUnderline(souligne);
+                        cadre.getHistoryPanel().getDsd().setSuperscript(exposant);
+                        cadre.getHistoryPanel().getDsd().setSubscript(indice);
+                        cadre.getHistoryPanel().getDsd().setStrikeThrough(barre);
                     } catch (LogoException e) {
                     }
                     break;
                 case 206: // style
                     StringBuffer buffer = new StringBuffer();
                     int compteur = 0;
-                    if (cadre.getHistoryPanel().getDsd().estgras()) {
+                    if (cadre.getHistoryPanel().getDsd().isBold()) {
                         buffer.append(Logo.messages.getString("style.bold").toLowerCase() + " ");
                         compteur++;
                     }
-                    if (cadre.getHistoryPanel().getDsd().estitalique()) {
+                    if (cadre.getHistoryPanel().getDsd().isItalic()) {
                         buffer.append(Logo.messages.getString("style.italic").toLowerCase() + " ");
                         compteur++;
                     }
-                    if (cadre.getHistoryPanel().getDsd().estsouligne()) {
+                    if (cadre.getHistoryPanel().getDsd().isUnderline()) {
                         buffer.append(Logo.messages.getString("style.underline").toLowerCase() + " ");
                         compteur++;
                     }
-                    if (cadre.getHistoryPanel().getDsd().estexposant()) {
+                    if (cadre.getHistoryPanel().getDsd().isSuperscript()) {
                         buffer.append(Logo.messages.getString("style.exposant").toLowerCase() + " ");
                         compteur++;
                     }
-                    if (cadre.getHistoryPanel().getDsd().estindice()) {
+                    if (cadre.getHistoryPanel().getDsd().isSubscript()) {
                         buffer.append(Logo.messages.getString("style.subscript").toLowerCase() + " ");
                         compteur++;
                     }
-                    if (cadre.getHistoryPanel().getDsd().estbarre()) {
+                    if (cadre.getHistoryPanel().getDsd().isStrikethrough()) {
                         buffer.append(Logo.messages.getString("style.strike").toLowerCase() + " ");
                         compteur++;
                     }
@@ -2832,9 +2832,9 @@ public class LaunchPrimitive {
                     kernel.getActiveTurtle().police = 12;
                     cadre.getDrawPanel().setGraphicsFont(Logo.config.getFont());
                     HistoryPanel.fontPrint = FontPanel.police_id(Logo.config.getFont());
-                    cadre.getHistoryPanel().getDsd().fixepolice(12);
-                    cadre.getHistoryPanel().getDsd().fixenompolice(HistoryPanel.fontPrint);
-                    cadre.getHistoryPanel().getDsd().fixecouleur(Color.black);
+                    cadre.getHistoryPanel().getDsd().setFontSize(12);
+                    cadre.getHistoryPanel().getDsd().setFontNumber(HistoryPanel.fontPrint);
+                    cadre.getHistoryPanel().getDsd().setTextColor(Color.black);
                     Logo.config.setPenShape(0);
                     Logo.config.setDrawQuality(0);
                     kernel.setDrawingQuality(Logo.config.getDrawQuality());
