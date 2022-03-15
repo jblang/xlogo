@@ -1731,30 +1731,30 @@ public class LaunchPrimitive {
                 case 137:// fpt
                     try {
                         int i = kernel.getCalculator().getInteger(param.get(0));
-                        cadre.getHistoryPanel().getDsd().setFontSize(i);
+                        cadre.getHistoryPanel().setFontSize(i);
                     } catch (LogoException e) {
                     }
                     break;
                 case 138: // ptexte
                     Interpreter.operande = true;
                     Interpreter.calcul.push(String.valueOf(cadre.getHistoryPanel()
-                            .police()));
+                            .getFontSize()));
                     break;
                 case 139: // fct,fixecouleurtexte
                     try {
                         if (isList(param.get(0))) {
-                            cadre.getHistoryPanel().getDsd().setTextColor(rgb(param.get(0), Utils.primitiveName("fct")));
+                            cadre.getHistoryPanel().setTextColor(rgb(param.get(0), Utils.primitiveName("fct")));
                         } else {
                             int coul = kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
                             if (coul < 0) coul += DrawPanel.defaultColors.length;
-                            cadre.getHistoryPanel().getDsd().setTextColor(DrawPanel.defaultColors[coul]);
+                            cadre.getHistoryPanel().setTextColor(DrawPanel.defaultColors[coul]);
                         }
                     } catch (LogoException e) {
                     }
                     break;
                 case 140: // couleurtexte
                     Interpreter.operande = true;
-                    Color c = cadre.getHistoryPanel().getCouleurtexte();
+                    Color c = cadre.getHistoryPanel().getTextColor();
                     Interpreter.calcul.push("[ " + c.getRed() + " " + c.getGreen()
                             + " " + c.getBlue() + " ] ");
                     break;
@@ -1801,7 +1801,7 @@ public class LaunchPrimitive {
                         liste += tampon;
                         liste = Utils.unescapeString(liste);
 
-                        MessageTextArea jt = new MessageTextArea(liste, cadre.getHistoryPanel().getDsd());
+                        MessageTextArea jt = new MessageTextArea(liste);
                         JOptionPane.showMessageDialog(cadre, jt, "", JOptionPane.INFORMATION_MESSAGE, Logo.getAppIcon());
 
                     } catch (LogoException e) {
@@ -1851,7 +1851,7 @@ public class LaunchPrimitive {
                     try {
                         int int_police = kernel.getCalculator().getInteger(param.get(0));
                         cadre.getDrawPanel().drawingFont = int_police
-                                % FontPanel.fontes.length;
+                                % FontPanel.fonts.length;
                     } catch (LogoException e) {
                     }
                     break;
@@ -1860,15 +1860,15 @@ public class LaunchPrimitive {
                     Interpreter.calcul.push("[ "
                             + cadre.getDrawPanel().drawingFont
                             + " [ "
-                            + FontPanel.fontes[cadre.getDrawPanel().drawingFont]
+                            + FontPanel.fonts[cadre.getDrawPanel().drawingFont]
                             .getFontName() + " ] ] ");
                     break;
                 case 151: // fnpt fixenompolicetexte
                     try {
                         int int_police = kernel.getCalculator().getInteger(param.get(0));
-                        HistoryPanel.fontPrint = int_police
-                                % FontPanel.fontes.length;
-                        cadre.getHistoryPanel().getDsd().setFontNumber(int_police);
+                        HistoryPanel.printFontId = int_police
+                                % FontPanel.fonts.length;
+                        cadre.getHistoryPanel().setFontNumber(int_police);
                     } catch (LogoException e) {
                     }
 
@@ -1876,9 +1876,9 @@ public class LaunchPrimitive {
                 case 152: // npt nompolicetexte
                     Interpreter.operande = true;
                     Interpreter.calcul.push("[ "
-                            + HistoryPanel.fontPrint
+                            + HistoryPanel.printFontId
                             + " [ "
-                            + FontPanel.fontes[HistoryPanel.fontPrint]
+                            + FontPanel.fonts[HistoryPanel.printFontId]
                             .getFontName() + " ] ] ");
                     break;
                 case 153: // listeflux
@@ -2644,39 +2644,39 @@ public class LaunchPrimitive {
                             } else if (element.equals(Logo.messages.getString("style.none").toLowerCase())) {
                             } else throw new LogoException(cadre, Logo.messages.getString("erreur_fixestyle"));
                         }
-                        cadre.getHistoryPanel().getDsd().setBold(gras);
-                        cadre.getHistoryPanel().getDsd().setItalic(italique);
-                        cadre.getHistoryPanel().getDsd().setUnderline(souligne);
-                        cadre.getHistoryPanel().getDsd().setSuperscript(exposant);
-                        cadre.getHistoryPanel().getDsd().setSubscript(indice);
-                        cadre.getHistoryPanel().getDsd().setStrikeThrough(barre);
+                        cadre.getHistoryPanel().setBold(gras);
+                        cadre.getHistoryPanel().setItalic(italique);
+                        cadre.getHistoryPanel().setUnderline(souligne);
+                        cadre.getHistoryPanel().setSuperscript(exposant);
+                        cadre.getHistoryPanel().setSubscript(indice);
+                        cadre.getHistoryPanel().setStrikeThrough(barre);
                     } catch (LogoException e) {
                     }
                     break;
                 case 206: // style
                     StringBuffer buffer = new StringBuffer();
                     int compteur = 0;
-                    if (cadre.getHistoryPanel().getDsd().isBold()) {
+                    if (cadre.getHistoryPanel().isBold()) {
                         buffer.append(Logo.messages.getString("style.bold").toLowerCase() + " ");
                         compteur++;
                     }
-                    if (cadre.getHistoryPanel().getDsd().isItalic()) {
+                    if (cadre.getHistoryPanel().isItalic()) {
                         buffer.append(Logo.messages.getString("style.italic").toLowerCase() + " ");
                         compteur++;
                     }
-                    if (cadre.getHistoryPanel().getDsd().isUnderline()) {
+                    if (cadre.getHistoryPanel().isUnderline()) {
                         buffer.append(Logo.messages.getString("style.underline").toLowerCase() + " ");
                         compteur++;
                     }
-                    if (cadre.getHistoryPanel().getDsd().isSuperscript()) {
+                    if (cadre.getHistoryPanel().isSuperscript()) {
                         buffer.append(Logo.messages.getString("style.exposant").toLowerCase() + " ");
                         compteur++;
                     }
-                    if (cadre.getHistoryPanel().getDsd().isSubscript()) {
+                    if (cadre.getHistoryPanel().isSubscript()) {
                         buffer.append(Logo.messages.getString("style.subscript").toLowerCase() + " ");
                         compteur++;
                     }
-                    if (cadre.getHistoryPanel().getDsd().isStrikethrough()) {
+                    if (cadre.getHistoryPanel().isStrikethrough()) {
                         buffer.append(Logo.messages.getString("style.strike").toLowerCase() + " ");
                         compteur++;
                     }
@@ -2831,10 +2831,10 @@ public class LaunchPrimitive {
                     Logo.config.setFont(new Font("dialog", Font.PLAIN, 12));
                     kernel.getActiveTurtle().police = 12;
                     cadre.getDrawPanel().setGraphicsFont(Logo.config.getFont());
-                    HistoryPanel.fontPrint = FontPanel.police_id(Logo.config.getFont());
-                    cadre.getHistoryPanel().getDsd().setFontSize(12);
-                    cadre.getHistoryPanel().getDsd().setFontNumber(HistoryPanel.fontPrint);
-                    cadre.getHistoryPanel().getDsd().setTextColor(Color.black);
+                    HistoryPanel.printFontId = FontPanel.getFontId(Logo.config.getFont());
+                    cadre.getHistoryPanel().setFontSize(12);
+                    cadre.getHistoryPanel().setFontNumber(HistoryPanel.printFontId);
+                    cadre.getHistoryPanel().setTextColor(Color.black);
                     Logo.config.setPenShape(0);
                     Logo.config.setDrawQuality(0);
                     kernel.setDrawingQuality(Logo.config.getDrawQuality());

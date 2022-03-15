@@ -1,20 +1,16 @@
 package xlogo.gui;
 
 import xlogo.Logo;
-import xlogo.document.HistoricLogoDocument;
 import xlogo.gui.preferences.FontPanel;
-import xlogo.kernel.DrawPanel;
 import xlogo.utils.ExtensionFilter;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledDocument;
+import javax.swing.text.*;
 import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -26,133 +22,202 @@ import java.io.IOException;
  * @author Loïc Le Coq
  */
 public class HistoryPanel extends JPanel {
-    private static final long serialVersionUID = 1L;
-    // numéro identifiant la police de
-    // l'historique avec "ecris"
-    public static int fontPrint = FontPanel.police_id(Logo.config.getFont());
-    private final Color couleur_texte = Color.BLUE;
-    private final int taille_texte = 12;
-    private final JScrollPane jScrollPane1 = new JScrollPane();
-    private final HistoryTextPane historyTextPane = new HistoryTextPane();
-    private HistoricLogoDocument dsd;
+    public static int printFontId = FontPanel.getFontId(Logo.config.getFont());
+    private final JScrollPane scrollPane = new JScrollPane();
+    private final HistoryTextPane textPane = new HistoryTextPane();
+    private final StyledDocument document;
     private final BorderLayout borderLayout1 = new BorderLayout();
-    private Application cadre;
+    private final Application app;
 
-    public HistoryPanel() {
-    }
+    private Color textColor = Color.BLUE;
+    private int fontSize = 12;
 
-    public HistoryPanel(Application cadre) {
-        this.cadre = cadre;
+    private final MutableAttributeSet normal = new SimpleAttributeSet();
+    private final MutableAttributeSet error = new SimpleAttributeSet();
+    private final MutableAttributeSet comment = new SimpleAttributeSet();
+    private final MutableAttributeSet primitive = new SimpleAttributeSet();
+
+
+    public HistoryPanel(Application app) {
+        this.app = app;
         try {
-            jbInit();
+            initGui();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        dsd = new HistoricLogoDocument();
-        historyTextPane.setDocument(dsd);
+        document = textPane.getStyledDocument();
     }
 
-    public Color getCouleurtexte() {
-        return couleur_texte;
-    }
-
-    public int police() {
-        return taille_texte;
+    public int getFontSize() {
+        return fontSize;
     }
 
     public void clearText() {
-        historyTextPane.setText("");
+        textPane.setText("");
     }
 
-    public void setText(String sty, String texte) {
+    public void setText(String style, String text) {
         try {
-            int longueur = historyTextPane.getDocument().getLength();
-            if (texte.length() > 32000) throw new LogoException(cadre, Logo.messages.getString("chaine_trop_longue"));
-            if (longueur + texte.length() < 65000) {
+            int length = textPane.getDocument().getLength();
+            if (text.length() > 32000) throw new LogoException(app, Logo.messages.getString("chaine_trop_longue"));
+            if (length + text.length() < 65000) {
                 try {
-                    dsd.setStyle(sty);
-                    dsd.insertString(dsd.getLength(), texte, null);
-                    historyTextPane.setCaretPosition(dsd.getLength());
-                } catch (BadLocationException e) {
+                    int offset = document.getLength();
+                    document.insertString(offset, text, null);
+                    switch (style) {
+                        case "erreur":
+                            document.setCharacterAttributes(offset, text.length(), error, true);
+                            break;
+                        case "commentaire":
+                            document.setCharacterAttributes(offset, text.length(), comment, true);
+                            break;
+                        case "perso":
+                            document.setCharacterAttributes(offset, text.length(), primitive, true);
+                            break;
+                    }
+                    textPane.setCaretPosition(document.getLength());
+                } catch (BadLocationException ignored) {
                 }
             } else {
                 clearText();
             }
-        } catch (LogoException e2) {
+        } catch (LogoException ignored) {
         }
     }
 
-    private void jbInit() throws Exception {
+    private void initGui() {
         this.setLayout(borderLayout1);
-        historyTextPane.setEditable(false);
-        this.add(jScrollPane1, BorderLayout.CENTER);
-        jScrollPane1.getViewport().add(historyTextPane, null);
+        textPane.setEditable(false);
+        this.add(scrollPane, BorderLayout.CENTER);
+        scrollPane.getViewport().add(textPane, null);
     }
 
-
-    public void active_animation() {
-        DrawPanel.classicMode = DrawPanel.MODE_ANIMATION;
-        validate();
-    }
-
-    public void stop_animation() {
-        DrawPanel.classicMode = DrawPanel.MODE_CLASSIC;
-        validate();
-    }
-
-    // Enable or disable Syntax Highlighting
-    public void setColoration(boolean b) {
-        dsd.setColoration(b);
-    }
 
     public void updateText() {
-        historyTextPane.setText();
+        textPane.setMenuText();
     }
 
     public void changeLanguage() {
     }
 
-    public HistoricLogoDocument getDsd() {
-        return dsd;
-    }
-
     public StyledDocument getStyledDocument() {
-        return historyTextPane.getStyledDocument();
+        return textPane.getStyledDocument();
     }
 
+    public Color getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(Color color) {
+        textColor = color;
+        StyleConstants.setForeground(primitive, textColor);
+    }
+
+    public void setFontSize(int size) {
+        fontSize = size;
+        StyleConstants.setFontSize(primitive, fontSize);
+    }
+
+    public void setFontNumber(int id) {
+        StyleConstants.setFontFamily(primitive, FontPanel.fonts[id].getName());
+    }
+
+    public void setBold(boolean b) {
+        StyleConstants.setBold(primitive, b);
+    }
+
+    public void setItalic(boolean b) {
+        StyleConstants.setItalic(primitive, b);
+    }
+
+    public void setUnderline(boolean b) {
+        StyleConstants.setUnderline(primitive, b);
+    }
+
+    public void setSuperscript(boolean b) {
+        StyleConstants.setSuperscript(primitive, b);
+    }
+
+    public void setSubscript(boolean b) {
+        StyleConstants.setSubscript(primitive, b);
+    }
+
+    public void setStrikeThrough(boolean b) {
+        StyleConstants.setStrikeThrough(primitive, b);
+    }
+
+    public boolean isBold() {
+        return StyleConstants.isBold(primitive);
+    }
+
+    public boolean isItalic() {
+        return StyleConstants.isItalic(primitive);
+    }
+
+    public boolean isUnderline() {
+        return StyleConstants.isUnderline(primitive);
+    }
+
+    public boolean isSuperscript() {
+        return StyleConstants.isSuperscript(primitive);
+    }
+
+    public boolean isSubscript() {
+        return StyleConstants.isSubscript(primitive);
+    }
+
+    public boolean isStrikethrough() {
+        return StyleConstants.isStrikeThrough(primitive);
+    }
+
+    public Font getFont() {
+        return FontPanel.fonts[HistoryPanel.printFontId].deriveFont(Font.BOLD, (float) fontSize);
+    }
+
+    public void setFont(Font font, int size) {
+
+        String family = font.getName();
+
+        StyleConstants.setFontSize(normal, size);
+        StyleConstants.setFontFamily(normal, family);
+
+        StyleConstants.setFontSize(comment, size);
+        StyleConstants.setFontFamily(comment, family);
+
+        StyleConstants.setFontSize(error, size);
+        StyleConstants.setFontFamily(error, family);
+    }
 
     class HistoryTextPane extends JTextPane implements ActionListener {
-        private static final long serialVersionUID = 1L;
-        private final JPopupMenu popup = new JPopupMenu();
-        private final JMenuItem jpopcopier = new JMenuItem();
-        private final JMenuItem jpopselect = new JMenuItem();
-        private final JMenuItem jpopsave = new JMenuItem();
+        private final JPopupMenu popupMenu = new JPopupMenu();
+        private final JMenuItem copyMenuItem = new JMenuItem();
+        private final JMenuItem selectAllMenuItem = new JMenuItem();
+        private final JMenuItem saveMenuItem = new JMenuItem();
 
         HistoryTextPane() {
-            popup.add(jpopcopier);
-            popup.add(jpopselect);
-            popup.add(jpopsave);
-            jpopselect.addActionListener(this);
-            jpopcopier.addActionListener(this);
-            jpopsave.addActionListener(this);
-            setText();
+            popupMenu.add(copyMenuItem);
+            popupMenu.add(selectAllMenuItem);
+            popupMenu.add(saveMenuItem);
+            selectAllMenuItem.addActionListener(this);
+            copyMenuItem.addActionListener(this);
+            saveMenuItem.addActionListener(this);
+            setMenuText();
             MouseListener popupListener = new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     if (e.getButton() == 1) {
                         int i = getCaretPosition();
-                        int borneinf = borne(i, -1);
-                        int bornesup = borne(i, 1);
-                        if (borneinf == 0) borneinf = borneinf - 1;
-                        select(borneinf + 1, bornesup - 2);
-                        cadre.setCommandText(getSelectedText());
-//				    historique.setCaretPosition(historique.getDocument().getLength());
-                        cadre.focusCommandLine();
+                        int selectionStart = findBounds(i, -1);
+                        int selectionEnd = findBounds(i, 1);
+                        if (selectionStart == 0) selectionStart = -1;
+                        select(selectionStart + 1, selectionEnd - 2);
+                        app.setCommandText(getSelectedText());
+                        app.focusCommandLine();
                     }
                 }
 
                 public void mouseReleased(MouseEvent e) {
                     maybeShowPopup(e);
-                    cadre.focusCommandLine();
+                    app.focusCommandLine();
                 }
 
                 public void mousePressed(MouseEvent e) {
@@ -161,33 +226,33 @@ public class HistoryPanel extends JPanel {
 
                 private void maybeShowPopup(MouseEvent e) {
                     if (e.isPopupTrigger()) {
-                        popup.show(e.getComponent(), e.getX(), e.getY());
+                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }
             };
             addMouseListener(popupListener);
         }
 
-        int borne(int i, int increment) {
-            boolean continuer = true;
-            while (continuer && i != 0) {
+        int findBounds(int i, int increment) {
+            boolean cont = true;
+            while (cont && i != 0) {
                 select(i - 1, i);
-                String t = historyTextPane.getSelectedText();
+                String t = textPane.getSelectedText();
                 if (t.equals("\n")) {
-                    continuer = false;
+                    cont = false;
                 }
                 i = i + increment;
             }
-            return (i);
+            return i;
         }
 
-        void setText() {
-            jpopselect.setText(Logo.messages.getString("menu.edition.selectall"));
-            jpopcopier.setText(Logo.messages.getString("menu.edition.copy"));
-            jpopsave.setText(Logo.messages.getString("menu.file.textzone.rtf"));
-            jpopselect.setActionCommand(Logo.messages.getString("menu.edition.selectall"));
-            jpopcopier.setActionCommand(Logo.messages.getString("menu.edition.copy"));
-            jpopsave.setActionCommand(Logo.messages.getString("menu.file.textzone.rtf"));
+        void setMenuText() {
+            selectAllMenuItem.setText(Logo.messages.getString("menu.edition.selectall"));
+            copyMenuItem.setText(Logo.messages.getString("menu.edition.copy"));
+            saveMenuItem.setText(Logo.messages.getString("menu.file.textzone.rtf"));
+            selectAllMenuItem.setActionCommand(Logo.messages.getString("menu.edition.selectall"));
+            copyMenuItem.setActionCommand(Logo.messages.getString("menu.edition.copy"));
+            saveMenuItem.setActionCommand(Logo.messages.getString("menu.file.textzone.rtf"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -197,30 +262,28 @@ public class HistoryPanel extends JPanel {
             } else if (Logo.messages.getString("menu.edition.selectall").equals(cmd)) {   //Selectionner tout
                 requestFocus();
                 selectAll();
-                cadre.focusCommandLine();
+                app.focusCommandLine();
             } else if (cmd.equals(Logo.messages.getString("menu.file.textzone.rtf"))) {
-                RTFEditorKit myRTFEditorKit = new RTFEditorKit();
-                StyledDocument myStyledDocument = getStyledDocument();
-                try {
-                    JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
-                    String[] ext = {".rtf"};
-                    jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_rtf"), ext));
-                    int retval = jf.showDialog(cadre, Logo.messages.getString("menu.file.save"));
-                    if (retval == JFileChooser.APPROVE_OPTION) {
-                        String path = jf.getSelectedFile().getPath();
-                        String path2 = path.toLowerCase();  // on garde la casse du path pour les systèmes d'exploitation faisant la différence
-                        if (!path2.endsWith(".rtf")) path += ".rtf";
-                        FileOutputStream myFileOutputStream = new FileOutputStream(path);
-                        myRTFEditorKit.write(myFileOutputStream, myStyledDocument, 0, myStyledDocument.getLength() - 1);
-                        myFileOutputStream.close();
-
-                    }
-                } catch (FileNotFoundException e1) {
-                } catch (IOException e2) {
-                } catch (BadLocationException e3) {
-                } catch (NullPointerException e4) {
-                }
+                saveHistory();
             }
+        }
+    }
+
+    public void saveHistory() {
+        try {
+            JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
+            String[] ext = {".rtf"};
+            jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_rtf"), ext));
+            int val = jf.showDialog(app, Logo.messages.getString("menu.file.save"));
+            if (val == JFileChooser.APPROVE_OPTION) {
+                String path = jf.getSelectedFile().getPath();
+                if (!path.toLowerCase().endsWith(".rtf")) path += ".rtf";
+                FileOutputStream myFileOutputStream = new FileOutputStream(path);
+                RTFEditorKit rtfEditorKit = new RTFEditorKit();
+                rtfEditorKit.write(myFileOutputStream, document, 0, document.getLength() - 1);
+                myFileOutputStream.close();
+            }
+        } catch (IOException | BadLocationException | NullPointerException ignored) {
         }
     }
 }

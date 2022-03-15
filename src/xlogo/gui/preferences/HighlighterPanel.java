@@ -2,7 +2,6 @@ package xlogo.gui.preferences;
 
 import xlogo.gui.Application;
 import xlogo.Logo;
-import xlogo.document.LogoDocument;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +24,7 @@ public class HighlighterPanel extends JPanel implements ActionListener {
     private final SyntaxStylePanel p_operande;
     private final GridBagLayout gb = new GridBagLayout();
     private final JTextPane jt = new JTextPane();
-    private final LogoDocument dsd;
+    //private final LogoDocument dsd;
     private final JCheckBox active_coloration = new JCheckBox();
     private final JLabel l_active = new JLabel();
     private final JButton bdefaut = new JButton();
@@ -36,9 +35,9 @@ public class HighlighterPanel extends JPanel implements ActionListener {
         bdefaut.setText(Logo.messages.getString("pref.highlight.init"));
         setLayout(gb);
         jt.setOpaque(true);
-        dsd = new LogoDocument();
-        jt.setDocument(dsd);
-        dsd.setColore_Parenthese(true);
+        //dsd = new LogoDocument();
+        //jt.setDocument(dsd);
+        //dsd.setColore_Parenthese(true);
         p_comment = new SyntaxStylePanel(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.messages.getString("pref.highlight.comment"), this);
         p_parenthese = new SyntaxStylePanel(Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.messages.getString("pref.highlight.parenthesis"), this);
         p_primitive = new SyntaxStylePanel(Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.messages.getString("pref.highlight.primitive"), this);
@@ -106,7 +105,6 @@ public class HighlighterPanel extends JPanel implements ActionListener {
             }
         }
         cadre.setSyntaxHighlightingEnabled(Logo.config.isSyntaxHighlightingEnabled());
-        cadre.resizeCommandLine();
         cadre.validate();
     }
 
@@ -119,7 +117,7 @@ public class HighlighterPanel extends JPanel implements ActionListener {
                 p_parenthese.setEnabled(false);
                 p_operande.setEnabled(false);
                 bdefaut.setEnabled(false);
-                dsd.setColoration(false);
+                //dsd.setColoration(false);
                 jt.setText(Logo.messages.getString("pref.highlight.example"));
             } else {
                 p_comment.setEnabled(true);
@@ -127,7 +125,7 @@ public class HighlighterPanel extends JPanel implements ActionListener {
                 p_parenthese.setEnabled(true);
                 p_operande.setEnabled(true);
                 bdefaut.setEnabled(true);
-                dsd.setColoration(true);
+                //dsd.setColoration(true);
                 rafraichis_texte();
             }
         } else if (cmd.equals("bouton")) {
@@ -141,11 +139,11 @@ public class HighlighterPanel extends JPanel implements ActionListener {
     }
 
     protected void rafraichis_texte() {
-        dsd.initStyles(p_comment.color(), p_comment.style(), p_primitive.color(), p_primitive.style(),
-                p_parenthese.color(), p_parenthese.style(), p_operande.color(), p_operande.style());
+        //dsd.initStyles(p_comment.color(), p_comment.style(), p_primitive.color(), p_primitive.style(),
+        //        p_parenthese.color(), p_parenthese.style(), p_operande.color(), p_operande.style());
         jt.setText(Logo.messages.getString("pref.highlight.example"));
-        dsd.initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(),
-                Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
+        //dsd.initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(),
+        //        Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
 
     }
 }

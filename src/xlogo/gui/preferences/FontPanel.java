@@ -15,7 +15,7 @@ import java.awt.event.*;
  * @author Loïc Le Coq
  */
 public class FontPanel extends JPanel implements ActionListener {
-    public static final Font[] fontes = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();//Toolkit.getDefaultToolkit().getFontList();
+    public static final Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();//Toolkit.getDefaultToolkit().getFontList();
     private static final long serialVersionUID = 1L;
     private static final String chaine_apercu = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz";
     private final Application cadre;
@@ -33,9 +33,9 @@ public class FontPanel extends JPanel implements ActionListener {
         initGui();
     }
 
-    static public int police_id(Font font) {
-        for (int i = 0; i < fontes.length; i++) {
-            if (fontes[i].getFontName().equals(font.getFontName())) return i;
+    static public int getFontId(Font font) {
+        for (int i = 0; i < fonts.length; i++) {
+            if (fonts[i].getFontName().equals(font.getFontName())) return i;
         }
         return 0;
     }
@@ -43,9 +43,9 @@ public class FontPanel extends JPanel implements ActionListener {
     private void initGui() {
         apercu_police.setEditable(false);
         setLayout(new BorderLayout());
-        noms_police = new String[fontes.length];
-        for (int i = 0; i < fontes.length; i++) {
-            noms_police[i] = i + " " + fontes[i].getFontName();
+        noms_police = new String[fonts.length];
+        for (int i = 0; i < fonts.length; i++) {
+            noms_police[i] = i + " " + fonts[i].getFontName();
         }
         jl_police = new JList(noms_police);
         jl_police.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -65,7 +65,7 @@ public class FontPanel extends JPanel implements ActionListener {
         MouseListener mouseListener = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 int index = jl_police.locationToIndex(e.getPoint());
-                apercu_police.setFont(fontes[index].deriveFont((float) Integer.parseInt(taille_police.getText())));
+                apercu_police.setFont(fonts[index].deriveFont((float) Integer.parseInt(taille_police.getText())));
                 apercu_police.setText(chaine_apercu);
             }
         };
@@ -74,7 +74,7 @@ public class FontPanel extends JPanel implements ActionListener {
                 int code = e.getKeyCode();
                 if (code == KeyEvent.VK_UP || code == KeyEvent.VK_DOWN) {
                     int index = jl_police.getSelectedIndex();
-                    apercu_police.setFont(fontes[index].deriveFont((float) Integer.parseInt(taille_police.getText())));
+                    apercu_police.setFont(fonts[index].deriveFont((float) Integer.parseInt(taille_police.getText())));
                     apercu_police.setText(chaine_apercu);
                 }
             }
@@ -87,7 +87,7 @@ public class FontPanel extends JPanel implements ActionListener {
         int size = Integer.parseInt(taille_police
                 .getText());
 
-        Font font = FontPanel.fontes[jl_police
+        Font font = FontPanel.fonts[jl_police
                 .getSelectedIndex()].deriveFont((float) size);
         Application.fontId = jl_police.getSelectedIndex();
 

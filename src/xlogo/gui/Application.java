@@ -28,8 +28,6 @@ import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledDocument;
-import javax.swing.text.rtf.RTFEditorKit;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -38,7 +36,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -51,7 +48,7 @@ public class Application extends JFrame {
     private static final double ZOOM_FACTOR = 1.25;
     private static final Stack<String> historyStack = new Stack<>();
     public static String path = null;
-    public static int fontId = FontPanel.police_id(Logo.config.getFont());
+    public static int fontId = FontPanel.getFontId(Logo.config.getFont());
     // Interpreter and drawPanel
     private final Kernel kernel;
     // UI Elements
@@ -152,7 +149,7 @@ public class Application extends JFrame {
         createMenuItem(fileImageMenu, "menu.file.captureimage.print", e -> printImage());
 
         var fileTextMenu = createMenu(fileMenu, "menu.file.textzone");
-        createMenuItem(fileTextMenu, "menu.file.textzone.rtf", e -> saveHistory());
+        createMenuItem(fileTextMenu, "menu.file.textzone.rtf", e -> historyPanel.saveHistory());
         createMenuItem(fileMenu, "menu.file.quit", e -> closeWindow());
 
         var editMenu = createMenu("menu.edition");
@@ -394,26 +391,6 @@ public class Application extends JFrame {
         }
     }
 
-    private void saveHistory() {
-        RTFEditorKit myRTFEditorKit = new RTFEditorKit();
-        StyledDocument myStyledDocument = getHistoryPanel().getStyledDocument();
-        try {
-            JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
-            String[] ext = {".rtf"};
-            jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_rtf"), ext));
-            int val = jf.showDialog(this, Logo.messages.getString("menu.file.save"));
-            if (val == JFileChooser.APPROVE_OPTION) {
-                String path = jf.getSelectedFile().getPath();
-                String path2 = path.toLowerCase();  // on garde la casse du path pour les syst�mes d'exploitation faisant la diff�rence
-                if (!path2.endsWith(".rtf")) path += ".rtf";
-                FileOutputStream myFileOutputStream = new FileOutputStream(path);
-                myRTFEditorKit.write(myFileOutputStream, myStyledDocument, 0, myStyledDocument.getLength() - 1);
-                myFileOutputStream.close();
-            }
-        } catch (IOException | BadLocationException ignored) {
-        }
-    }
-
     private void saveImage() {
         ImageWriter imageWriter = new ImageWriter(this, getCanvas().getSelectionImage());
         int value = imageWriter.chooseFile();
@@ -644,7 +621,7 @@ public class Application extends JFrame {
     public void changeFont(Font font, int size) {
         Logo.config.setFont(font);
         updateLocalization();
-        historyPanel.getDsd().setFont(font, size);
+        historyPanel.setFont(font, size);
     }
 
     /**
@@ -702,23 +679,12 @@ public class Application extends JFrame {
      * the command line and the History zone
      */
     public void changeSyntaxHighlightingStyle() {
-        //commandLine.initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
-        historyPanel.getDsd().initStyles(Logo.config.getSyntaxCommentColor(), Logo.config.getSyntaxCommentStyle(), Logo.config.getSyntaxPrimitiveColor(), Logo.config.getSyntaxPrimitiveStyle(), Logo.config.getSyntaxBracketColor(), Logo.config.getSyntaxBracketStyle(), Logo.config.getSyntaxOperandColor(), Logo.config.getSyntaxOperandStyle());
     }
 
     /**
      * Enable or disable Syntax Highlighting
      */
     public void setSyntaxHighlightingEnabled(boolean b) {
-        historyPanel.setColoration(b);
-        //commandLine.setColoration(b);
-    }
-
-    /**
-     * Resize the Command line (height)
-     */
-    public void resizeCommandLine() {
-        commandLine.setPreferredSize(new Dimension(300, Logo.config.getFont().getSize() * 18 / 10));
     }
 
     /**
