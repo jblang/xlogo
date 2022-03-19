@@ -1,7 +1,7 @@
 package xlogo.gui.preferences;
 
-import xlogo.gui.Application;
 import xlogo.Logo;
+import xlogo.gui.EditorFrame;
 
 import javax.sound.midi.Instrument;
 import javax.sound.midi.MidiSystem;
@@ -19,14 +19,14 @@ import java.awt.*;
  */
 public class SoundPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    private final Application cadre;
+    private final EditorFrame editor;
     private final JLabel instruments_dispo = new JLabel(Logo.messages
             .getString("pref.sound.instruments"));
     private JList instrument = new JList();
     private JScrollPane scroll_son;
 
-    protected SoundPanel(Application cadre) {
-        this.cadre = cadre;
+    protected SoundPanel(EditorFrame editor) {
+        this.editor = editor;
         initGui();
     }
 
@@ -44,7 +44,7 @@ public class SoundPanel extends JPanel {
             synthesizer.close();
             instrument = new JList(ob);
             instrument.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            instrument.setSelectedIndex(cadre.getSoundPlayer().getInstrument());
+            instrument.setSelectedIndex(editor.getSoundPlayer().getInstrument());
             scroll_son = new JScrollPane(instrument);
             add(scroll_son, BorderLayout.CENTER);
         } catch (MidiUnavailableException e) {
@@ -60,6 +60,6 @@ public class SoundPanel extends JPanel {
     protected void update() {
         int i = instrument.getSelectedIndex();
         if (i != -1)
-            cadre.getSoundPlayer().setInstrument(i);
+            editor.getSoundPlayer().setInstrument(i);
     }
 }

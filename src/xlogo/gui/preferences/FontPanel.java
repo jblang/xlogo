@@ -1,7 +1,8 @@
 package xlogo.gui.preferences;
 
 import xlogo.Logo;
-import xlogo.gui.Application;
+import xlogo.gui.EditorFrame;
+import xlogo.kernel.DrawPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +19,7 @@ public class FontPanel extends JPanel implements ActionListener {
     public static final Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();//Toolkit.getDefaultToolkit().getFontList();
     private static final long serialVersionUID = 1L;
     private static final String chaine_apercu = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz";
-    private final Application cadre;
+    private final EditorFrame editor;
     private final JPanel panneau_taille_police = new JPanel();
     private final JButton gauche = new JButton("-");
     private final JButton droite = new JButton("+");
@@ -28,8 +29,8 @@ public class FontPanel extends JPanel implements ActionListener {
     private String[] noms_police = null;
     private JList jl_police = null;
 
-    protected FontPanel(Application cadre) {
-        this.cadre = cadre;
+    protected FontPanel(EditorFrame editor) {
+        this.editor = editor;
         initGui();
     }
 
@@ -49,7 +50,7 @@ public class FontPanel extends JPanel implements ActionListener {
         }
         jl_police = new JList(noms_police);
         jl_police.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        jl_police.setSelectedIndex(Application.fontId);
+        jl_police.setSelectedIndex(DrawPanel.fontId);
         js_police = new JScrollPane(jl_police);
         gauche.setActionCommand("gauche");
         droite.setActionCommand("droite");
@@ -89,11 +90,11 @@ public class FontPanel extends JPanel implements ActionListener {
 
         Font font = FontPanel.fonts[jl_police
                 .getSelectedIndex()].deriveFont((float) size);
-        Application.fontId = jl_police.getSelectedIndex();
+        DrawPanel.fontId = jl_police.getSelectedIndex();
 
         // Si l'on change la police de l'interface
         if (!Logo.config.getFont().equals(font)) {
-            cadre.changeFont(font, size);
+            editor.changeFont(font, size);
         }
 
     }

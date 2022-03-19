@@ -3,7 +3,7 @@ package xlogo.kernel;
 import com.sun.j3d.utils.geometry.Text2D;
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.gui.preferences.FontPanel;
 import xlogo.kernel.gui.GuiButton;
 import xlogo.kernel.gui.GuiComponent;
@@ -93,6 +93,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      * Boolean for animation mode
      */
     public static boolean classicMode = true; // true si classique false si animation
+    public static int fontId = FontPanel.getFontId(Logo.config.getFont());
     /**
      * This Image is used for Buffering the drawing
      */
@@ -134,7 +135,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     private Color screenColor = Color.white;
     private Line2D line;
     private Rectangle2D rect;
-    private final Application app;
+    private final GraphFrame graphFrame;
     /**
      * Graphics of the BufferedImage dessin
      */
@@ -182,12 +183,12 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     private double scaleX = 1.0;
     private double scaleY = 1.0;
 
-    public DrawPanel(Application app) {
-        this.guiMap = app.getKernel().getWorkspace().getGuiMap();
+    public DrawPanel(GraphFrame graphFrame) {
+        this.guiMap = Logo.kernel.getWorkspace().getGuiMap();
         setLayout(null);
         this.setPreferredSize(new Dimension(
                 (int) (Logo.config.getImageWidth() * zoom), (int) (Logo.config.getImageHeight() * zoom)));
-        this.app = app;
+        this.graphFrame = graphFrame;
         addMouseListener(this);
         addMouseMotionListener(this);
     }
@@ -936,7 +937,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         // Numbers
         // Math.pow(w3d.screenDistance,2)*(d*d+2*d*z*c+lambda*c*c);
         big[5] = screenDistance.pow(2).multiply(bd.pow(2).add(deux.multiply(bd).multiply(bz).multiply(bc)).add(lambda.multiply(bc.pow(2))));
-        new Conic(app, big);
+        new Conic(graphFrame, big);
         if (DrawPanel.record3D == DrawPanel.RECORD_3D_LINE || DrawPanel.record3D == DrawPanel.RECORD_3D_POLYGON) {
             recordArcCircle3D(radius, 0, 360);
         }
@@ -972,10 +973,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             }
         }
         if (DrawPanel.record3D == DrawPanel.RECORD_3D_POLYGON) {
-            DrawPanel.poly = new ElementPolygon(app);
+            DrawPanel.poly = new ElementPolygon(graphFrame);
             DrawPanel.poly.addVertex(pos, turtle.penColor);
         } else {
-            DrawPanel.poly = new ElementLine(app);
+            DrawPanel.poly = new ElementLine(graphFrame);
         }
 
         for (int i = 0; i < indexMax - 1; i++) {
@@ -1062,7 +1063,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             DrawPanel.windowMode = DrawPanel.WINDOW_CLASSIC;
             move(longueur);
             //System.out.println(Math.abs(longueur)+" "+Math.abs(arg));
-            if (app.error)
+            if (graphFrame.error)
                 break; //permet d'interrompre avec le bouton stop
             DrawPanel.windowMode = DrawPanel.WINDOW_WRAP;
             if (Logo.config.getTurtleSpeed() != 0) {
@@ -1106,7 +1107,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                         turtle.curY);
         }
         DrawPanel.windowMode = DrawPanel.WINDOW_CLASSIC;
-        if (!app.error)
+        if (!graphFrame.error)
             move(arg);
         DrawPanel.windowMode = DrawPanel.WINDOW_WRAP;
     }
@@ -1130,7 +1131,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         else
             longueur = findLength(0, diagonale, oldx, oldy);
         if (Math.abs(longueur) < Math.abs(arg))
-            throw new LogoException(app, Logo.messages
+            throw new LogoException(graphFrame, Logo.messages
                     .getString("erreur_sortie1")
                     + "\n"
                     + Logo.messages.getString("erreur_sortie2")
@@ -1157,7 +1158,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             for (int i = 0; i < coords.length; i++) {
                 coords[i] = 1;
                 if (!st.hasMoreTokens())
-                    throw new LogoException(app, prim
+                    throw new LogoException(graphFrame, prim
                             + " " + Logo.messages.getString("n_aime_pas") + liste
                             + Logo.messages.getString("comme_parametre"));
                 String element = st.nextToken();
@@ -1170,12 +1171,12 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             }
 
         } catch (NumberFormatException e) {
-            throw new LogoException(app, prim
+            throw new LogoException(graphFrame, prim
                     + " " + Logo.messages.getString("n_aime_pas") + liste
                     + Logo.messages.getString("comme_parametre"));
         }
         if (st.hasMoreTokens())
-            throw new LogoException(app, prim
+            throw new LogoException(graphFrame, prim
                     + " " + Logo.messages.getString("n_aime_pas") + liste
                     + Logo.messages.getString("comme_parametre"));
     }
@@ -1368,8 +1369,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
         // Delete List Polygon in 3D mode
         // Erase the 3d viewer if visible
-        if (null != app.getViewer3D()) {
-            app.getViewer3D().clearScreen();
+        if (null != graphFrame.getViewer3D()) {
+            graphFrame.getViewer3D().clearScreen();
             System.gc();
         }
 
@@ -1387,7 +1388,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         drawYAxis();
         // Init Turtles
         if (null == turtles[0])
-            turtles[0] = new Turtle(app);
+            turtles[0] = new Turtle(graphFrame);
         // The active turtle will be the turtle 0
         turtle = turtles[0];
         turtle.id = 0;
@@ -1614,7 +1615,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 Transform3D t = new Transform3D(m, new Vector3d(turtle.X / 1000, turtle.Y / 1000, turtle.Z / 1000), 1);
                 tg.setTransform(t);
                 tg.addChild(text);
-                app.getViewer3D().add2DText(tg);
+                graphFrame.getViewer3D().add2DText(tg);
             }
         }
         eraseTurtle(true);
@@ -1806,8 +1807,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         screenColor = color;
         updateColorSelection();
         if (enabled3D()) {
-            if (app.getViewer3D() != null) {
-                app.getViewer3D().updateBackground(screenColor);
+            if (graphFrame.getViewer3D() != null) {
+                graphFrame.getViewer3D().updateBackground(screenColor);
             }
         }
         wash();
@@ -1899,7 +1900,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             sb.append(c);
             i++;
         }
-        throw new LogoException(app, "[ " + list + " " + Logo.messages.getString("pas_liste"));
+        throw new LogoException(graphFrame, "[ " + list + " " + Logo.messages.getString("pas_liste"));
     }
 
     protected void guiAction(String id, String liste) throws LogoException {
@@ -1924,7 +1925,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                         liste = liste.substring(sb.length() + 1).trim();
                         ((GuiMenu) gc).setAction(sb, i);
                         i++;
-                    } else throw new LogoException(app, liste.charAt(0) + " " + Logo.messages.getString("pas_liste"));
+                    } else throw new LogoException(graphFrame, liste.charAt(0) + " " + Logo.messages.getString("pas_liste"));
                 }
                 GuiMenu gm = (GuiMenu) gc;
                 if (!gm.hasAction) {
@@ -1937,7 +1938,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     private boolean guiExist(String id) throws LogoException {
         if (guiMap.containsKey(id.toLowerCase())) return true;
-        else throw new LogoException(app, Logo.messages.getString("no_gui") + " " + id);
+        else throw new LogoException(graphFrame, Logo.messages.getString("no_gui") + " " + id);
     }
 
     //	boolean access=false;
@@ -1975,10 +1976,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         if (predic == classicMode) {
             if (predic) {
                 classicMode = MODE_ANIMATION;
-                app.getHistoryPanel().validate();
+                graphFrame.editor.getHistoryPanel().validate();
             } else {
                 classicMode = MODE_CLASSIC;
-                app.getHistoryPanel().validate();
+                graphFrame.editor.getHistoryPanel().validate();
                 repaint();
             }
         }
@@ -2030,11 +2031,11 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         scaleX = t.getScaleX() * 2;
         scaleY = t.getScaleY() * 2;
         image = new BufferedImage((int)(scaleX * Logo.config.getImageWidth()), (int)(scaleY * Logo.config.getImageHeight()), BufferedImage.TYPE_INT_RGB);
-        drawingFont = Application.fontId;
+        drawingFont = fontId;
         //		 init all turtles
         turtles = new Turtle[Logo.config.getMaxTurtles()];
         visibleTurtles = new Stack<>();
-        turtle = new Turtle(app);
+        turtle = new Turtle(graphFrame);
         turtles[0] = turtle;
         turtle.id = 0;
         visibleTurtles.push("0");
@@ -2062,7 +2063,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             g.draw(turtle.triangle);
         } else {
             g.setXORMode(screenColor);
-            tracker = new MediaTracker(app);
+            tracker = new MediaTracker(graphFrame);
             tracker.addImage(turtle.image, 0);
             try {
                 tracker.waitForID(0);
@@ -2104,9 +2105,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     public void zoom(double d, boolean zoomIn) {
         // Disable zoom buttons
-        app.setZoomEnabled(false);
+        graphFrame.setZoomEnabled(false);
 
-        javax.swing.JViewport jv = app.scrollPane.getViewport();
+        javax.swing.JViewport jv = graphFrame.scrollPane.getViewport();
         Point p = jv.getViewPosition();
         Rectangle r = jv.getVisibleRect();
 
@@ -2114,7 +2115,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         // If a selection rectangle is displaying on the drawing area
         // And If zoomout has been pressed
         // Zooming on the rectangular selection
-        if (null != selection && app.isCommandEditable() && zoomIn) {
+        if (null != selection && graphFrame.editor.isCommandEditable() && zoomIn) {
             int originalWidth = jv.getWidth();
             double width = selection.getWidth();
             d = zoom * originalWidth / width;
@@ -2233,7 +2234,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.drawImage(image, 0, 0, (int) (Logo.config.getImageWidth() * zoom), (int) (Logo.config.getImageHeight() * zoom), this);
-        if (!Animation.executionLaunched && null != selection && app.isCommandEditable()) {
+        if (!Animation.executionLaunched && null != selection && graphFrame.editor.isCommandEditable()) {
             g2d.setColor(selectionColor);
             g2d.fillRect(selection.x, selection.y, selection.width, selection.height);
         }
@@ -2293,7 +2294,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         if (!Animation.executionLaunched && null != selection) {
             // First, we test if we need to move the scrollbars
             Point pos = e.getPoint();
-            javax.swing.JViewport jv = app.scrollPane.getViewport();
+            javax.swing.JViewport jv = graphFrame.scrollPane.getViewport();
             Point viewPosition = jv.getViewPosition();
             Rectangle r = jv.getVisibleRect();
             r.setLocation(viewPosition);
@@ -2490,14 +2491,14 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             // zoom 8 zoom 1 zoom 8
             // Sometimes after the method revalidate(), the left upper corner position
             // wasn't correct
-            app.scrollPane.invalidate();
-            app.scrollPane.validate();
+            graphFrame.scrollPane.invalidate();
+            graphFrame.scrollPane.validate();
             // End Bug
 
             jv.setViewPosition(p);
             repaint();
 
-            app.setZoomEnabled(true);
+            graphFrame.setZoomEnabled(true);
         }
     }
 }

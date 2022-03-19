@@ -1,7 +1,7 @@
 package xlogo.kernel.network;
 
 import xlogo.Logo;
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -20,11 +20,11 @@ public class ChatFrame extends JFrame implements ActionListener {
     private DefaultStyledDocument dsd;
     private JScrollPane scroll;
     private JTextField textField;
-    private final Application app;
+    private final GraphFrame graphFrame;
     private final PrintWriter out;
 
-    protected ChatFrame(PrintWriter out, Application app) {
-        this.app = app;
+    protected ChatFrame(PrintWriter out, GraphFrame graphFrame) {
+        this.graphFrame = graphFrame;
         this.out = out;
         initStyle();
         initGui();
@@ -53,7 +53,7 @@ public class ChatFrame extends JFrame implements ActionListener {
         textPane.setBackground(new Color(255, 255, 220));
         this.getContentPane().setLayout(new BorderLayout());
         textField = new JTextField();
-        java.awt.FontMetrics fm = app.getGraphics().getFontMetrics(Logo.config.getFont());
+        java.awt.FontMetrics fm = graphFrame.getGraphics().getFontMetrics(Logo.config.getFont());
         int width = fm.stringWidth(Logo.messages.getString("stop_chat")) + 30;
         if (width < 200) width = 200;
 

@@ -1,6 +1,6 @@
 package xlogo.kernel;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
@@ -40,11 +40,11 @@ public class Calculator {
      * to calculate trigonometric functions
      */
     private final BigDecimal[] cosTable;
-    private final Application app;
+    private final GraphFrame graphFrame;
 
-    protected Calculator(int digits, Application app) {
+    protected Calculator(int digits, GraphFrame graphFrame) {
         Calculator.digits = digits;
-        this.app = app;
+        this.graphFrame = graphFrame;
         initLogTable = false;
         initCosTable = false;
         if (digits < 16) {
@@ -145,7 +145,7 @@ public class Calculator {
             double nombre = numberDouble(s);
             if (nombre < 0 || nombre == 0) {
                 String log = Utils.primitiveName("arithmetic.log");
-                throw new LogoException(app, log + " "
+                throw new LogoException(graphFrame, log + " "
                         + Logo.messages.getString("attend_positif"));
             }
             return teste_fin_double(Math.log(nombre));
@@ -153,7 +153,7 @@ public class Calculator {
             BigDecimal bd = numberDecimal(s);
             if (bd.signum() != 1) {
                 String log = Utils.primitiveName("arithmetic.log");
-                throw new LogoException(app, log + " "
+                throw new LogoException(graphFrame, log + " "
                         + Logo.messages.getString("attend_positif"));
             }
             return logBD(bd).toPlainString();
@@ -173,7 +173,7 @@ public class Calculator {
             double number = numberDouble(s);
             if (number < 0) {
                 String sqrt = Utils.primitiveName("arithmetic.racine");
-                throw new LogoException(app, sqrt + " "
+                throw new LogoException(graphFrame, sqrt + " "
                         + Logo.messages.getString("attend_positif"));
             }
             return teste_fin_double(Math.sqrt(number));
@@ -181,7 +181,7 @@ public class Calculator {
             BigDecimal bd = numberDecimal(s);
             if (bd.signum() == -1) {
                 String sqrt = Utils.primitiveName("arithmetic.racine");
-                throw new LogoException(app, sqrt + " "
+                throw new LogoException(graphFrame, sqrt + " "
                         + Logo.messages.getString("attend_positif"));
             }
             return sqrtBD(bd).toPlainString();
@@ -214,13 +214,13 @@ public class Calculator {
             double a = numberDouble(param.get(0));
             double b = numberDouble(param.get(1));
             if (b == 0)
-                throw new LogoException(app, Logo.messages
+                throw new LogoException(graphFrame, Logo.messages
                         .getString("division_par_zero"));
             return (teste_fin_double(a / b));
         } else {
             BigDecimal a = new BigDecimal(param.get(0), mc);
             BigDecimal b = new BigDecimal(param.get(1), mc);
-            if (b.signum() == 0) throw new LogoException(app, Logo.messages
+            if (b.signum() == 0) throw new LogoException(graphFrame, Logo.messages
                     .getString("division_par_zero"));
             return (a.divide(b, mc).stripTrailingZeros().toPlainString());
         }
@@ -318,14 +318,14 @@ public class Calculator {
             int aa = getInteger(a);
             int bb = getInteger(b);
             if (bb == 0)
-                throw new LogoException(app, Logo.messages
+                throw new LogoException(graphFrame, Logo.messages
                         .getString("division_par_zero"));
             return teste_fin_double(aa % bb);
         } else {
             BigDecimal aa = getBigInteger(a);
             BigDecimal bb = getBigInteger(b);
             if (bb.signum() == 0)
-                throw new LogoException(app, Logo.messages
+                throw new LogoException(graphFrame, Logo.messages
                         .getString("division_par_zero"));
             return aa.remainder(bb, mc).stripTrailingZeros().toPlainString();
 
@@ -337,7 +337,7 @@ public class Calculator {
             int aa = getInteger(a);
             int bb = getInteger(b);
             if (bb == 0)
-                throw new LogoException(app, Logo.messages
+                throw new LogoException(graphFrame, Logo.messages
                         .getString("division_par_zero"));
             double rem = aa % bb;
             if (aa * bb < 0 && rem != 0) rem = rem + bb;
@@ -346,7 +346,7 @@ public class Calculator {
             BigDecimal aa = getBigInteger(a);
             BigDecimal bb = getBigInteger(b);
             if (bb.signum() == 0)
-                throw new LogoException(app, Logo.messages
+                throw new LogoException(graphFrame, Logo.messages
                         .getString("division_par_zero"));
             BigDecimal rem = aa.remainder(bb, mc);
             if (aa.multiply(bb).compareTo(BigDecimal.ZERO) == -1 && (!rem.equals(BigDecimal.ZERO)))
@@ -361,14 +361,14 @@ public class Calculator {
             double aa = numberDouble(a);
             double bb = numberDouble(b);
             if (bb == 0)
-                throw new LogoException(app, Logo.messages
+                throw new LogoException(graphFrame, Logo.messages
                         .getString("division_par_zero"));
             return String.valueOf((int) (aa / bb));
         } else {
             BigDecimal aa = numberDecimal(a);
             BigDecimal bb = numberDecimal(b);
             if (bb.signum() == 0)
-                throw new LogoException(app, Logo.messages
+                throw new LogoException(graphFrame, Logo.messages
                         .getString("division_par_zero"));
             return aa.divideToIntegralValue(bb, mc).stripTrailingZeros().toPlainString();
 
@@ -391,7 +391,7 @@ public class Calculator {
             // Bug pr power -1 0.5
             Double p1 = p;
             if (p1.equals(Double.NaN))
-                throw new LogoException(app, Utils.primitiveName("arithmetic.puissance") + " " + Logo.messages.getString("attend_positif"));
+                throw new LogoException(graphFrame, Utils.primitiveName("arithmetic.puissance") + " " + Logo.messages.getString("attend_positif"));
             // End Bug
             return teste_fin_double(p);
         } else {
@@ -898,7 +898,7 @@ public class Calculator {
         try {
             return (Double.parseDouble(st));
         } catch (NumberFormatException e) {
-            throw new LogoException(app, st + " "
+            throw new LogoException(graphFrame, st + " "
                     + Logo.messages.getString("pas_nombre"));
         }
     }
@@ -927,7 +927,7 @@ public class Calculator {
         try {
             return new BigDecimal(st, mc);
         } catch (NumberFormatException e) {
-            throw new LogoException(app, st + " "
+            throw new LogoException(graphFrame, st + " "
                     + Logo.messages.getString("pas_nombre"));
         }
 //		}
@@ -947,7 +947,7 @@ public class Calculator {
         try {
             return Integer.parseInt(st);
         } catch (NumberFormatException e) {
-            throw new LogoException(app, st + " "
+            throw new LogoException(graphFrame, st + " "
                     + Logo.messages.getString("pas_entier"));
         }
     }
@@ -965,7 +965,7 @@ public class Calculator {
         try {
             return new BigDecimal(new BigInteger(st));
         } catch (NumberFormatException e) {
-            throw new LogoException(app, st + " "
+            throw new LogoException(graphFrame, st + " "
                     + Logo.messages.getString("pas_entier"));
         }
     }

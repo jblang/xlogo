@@ -7,7 +7,7 @@ package xlogo.kernel.network;
  * @author Loïc Le Coq
  */
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.kernel.Kernel;
 import xlogo.utils.LogoException;
@@ -21,19 +21,19 @@ import java.nio.charset.StandardCharsets;
 public class NetworkClientExecute {
     private final InetAddress ip;
     private final String cmd;
-    private final Application app;
+    private final GraphFrame graphFrame;
     private PrintWriter out;
     private BufferedReader in;
     private Socket socket;
     private final Kernel kernel;
 
-    public NetworkClientExecute(Application app, String ip, String cmd) throws LogoException {
-        this.app = app;
-        this.kernel = app.getKernel();
+    public NetworkClientExecute(GraphFrame graphFrame, String ip, String cmd) throws LogoException {
+        this.graphFrame = graphFrame;
+        this.kernel = Logo.kernel;
         try {
             this.ip = InetAddress.getByName(ip);
         } catch (UnknownHostException e) {
-            throw new LogoException(app, Logo.messages.getString("no_host") + " " + ip);
+            throw new LogoException(graphFrame, Logo.messages.getString("no_host") + " " + ip);
         }
         this.cmd = cmd;
         init();
@@ -64,7 +64,7 @@ public class NetworkClientExecute {
             in.close();
             socket.close();
         } catch (IOException e) {
-            throw new LogoException(app, Logo.messages.getString("no_host") + ip.getHostAddress());
+            throw new LogoException(graphFrame, Logo.messages.getString("no_host") + ip.getHostAddress());
         }
     }
 }

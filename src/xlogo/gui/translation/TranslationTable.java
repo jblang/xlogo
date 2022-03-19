@@ -131,7 +131,7 @@ public class TranslationTable extends JPanel implements Searchable {
             // this component relies on having this renderer for the String class
             MultiLineCellRenderer renderer = new MultiLineCellRenderer();
             table.setDefaultRenderer(String.class, renderer);
-//	                JOptionPane.showMessageDialog(null,"jui ds l'editor","h",JOptionPane.INFORMATION_MESSAGE);
+//	                JOptionPane.showMessageDialog(null,"jui ds l'editorFrame","h",JOptionPane.INFORMATION_MESSAGE);
             textArea = new MyTextArea();
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);

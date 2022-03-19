@@ -1,6 +1,6 @@
 package xlogo.gui.preferences;
 
-import xlogo.gui.Application;
+import xlogo.gui.EditorFrame;
 import xlogo.Logo;
 
 import javax.swing.*;
@@ -17,7 +17,7 @@ import java.awt.event.ActionListener;
  */
 public class HighlighterPanel extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1L;
-    private final Application cadre;
+    private final EditorFrame editor;
     private final SyntaxStylePanel p_comment;
     private final SyntaxStylePanel p_parenthese;
     private final SyntaxStylePanel p_primitive;
@@ -29,8 +29,8 @@ public class HighlighterPanel extends JPanel implements ActionListener {
     private final JLabel l_active = new JLabel();
     private final JButton bdefaut = new JButton();
 
-    protected HighlighterPanel(Application cadre) {
-        this.cadre = cadre;
+    protected HighlighterPanel(EditorFrame editor) {
+        this.editor = editor;
         l_active.setText(Logo.messages.getString("pref.highlight.enabled"));
         bdefaut.setText(Logo.messages.getString("pref.highlight.init"));
         setLayout(gb);
@@ -98,14 +98,14 @@ public class HighlighterPanel extends JPanel implements ActionListener {
             Logo.config.setSyntaxBracketStyle(p_parenthese.style());
 
             // On attribue les styles sélectionnés à l'éditeur
-            cadre.changeSyntaxHighlightingStyle();
+            editor.changeSyntaxHighlightingStyle();
         } else {
             if (Logo.config.isSyntaxHighlightingEnabled()) {
                 Logo.config.setSyntaxHighlightingEnabled(false);
             }
         }
-        cadre.setSyntaxHighlightingEnabled(Logo.config.isSyntaxHighlightingEnabled());
-        cadre.validate();
+        editor.setSyntaxHighlightingEnabled(Logo.config.isSyntaxHighlightingEnabled());
+        editor.validate();
     }
 
     public void actionPerformed(ActionEvent e) {

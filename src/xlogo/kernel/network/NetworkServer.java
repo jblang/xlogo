@@ -7,7 +7,7 @@ package xlogo.kernel.network;
  * @author Loïc Le Coq
  */
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.kernel.Kernel;
 import xlogo.kernel.Workspace;
@@ -24,16 +24,16 @@ public class NetworkServer {
     protected static final String END_OF_FILE = "*/EOF\\*" + "\u001B";
     public static boolean isActive;
     private ServerSocket serverSocket;
-    private final Application app;
+    private final GraphFrame graphFrame;
     private PrintWriter out;
     private BufferedReader in;
     private ChatFrame cf;
     private final Kernel kernel;
 
-    public NetworkServer(Application app) {
+    public NetworkServer(GraphFrame graphFrame) {
         isActive = true;
-        this.app = app;
-        this.kernel = app.getKernel();
+        this.graphFrame = graphFrame;
+        this.kernel = Logo.kernel;
         try {
             init();
         } catch (LogoException e) {
@@ -55,7 +55,7 @@ public class NetworkServer {
         try {
             serverSocket = new ServerSocket(Logo.config.getTcpPort());
         } catch (IOException e) {
-            throw (new LogoException(app, Logo.messages.getString("pb_port") + Logo.config.getTcpPort()));
+            throw (new LogoException(graphFrame, Logo.messages.getString("pb_port") + Logo.config.getTcpPort()));
         }
         Socket clientSocket = null;
         try {
@@ -77,9 +77,9 @@ public class NetworkServer {
                     workspace.append(inputLine);
                     workspace.append("\n");
                 }
-                Workspace wp = new Workspace(app);
+                Workspace wp = new Workspace(graphFrame);
                 kernel.setWorkspace(wp);
-                wp.setWorkspace(app, workspace.toString());
+                wp.setWorkspace(graphFrame, workspace.toString());
                 // We say the workspace is fully created
                 out.println("OK");
                 // What is the command to execute?
@@ -100,7 +100,7 @@ public class NetworkServer {
                     if (inputLine.equals(NetworkServer.END_OF_FILE)) break;
                     sentence = inputLine;
                 }
-                cf = new ChatFrame(out, app);
+                cf = new ChatFrame(out, graphFrame);
                 cf.append("distant", sentence);
                 while ((sentence = in.readLine()) != null) {
                     if (sentence.equals(NetworkServer.END_OF_FILE)) {
@@ -116,7 +116,7 @@ public class NetworkServer {
             }
             // ******************* Envoietcp **************************
             else {
-                app.updateHistory("normal", inputLine);
+                graphFrame.editor.updateHistory("normal", inputLine);
                 out.println(Logo.messages.getString("pref.ok"));
                 out.close();
                 in.close();
@@ -125,7 +125,7 @@ public class NetworkServer {
 
             }
         } catch (IOException e) {
-            throw (new LogoException(app, Logo.messages.getString("erreur_tcp")));
+            throw (new LogoException(graphFrame, Logo.messages.getString("erreur_tcp")));
         }
         isActive = false;
     }

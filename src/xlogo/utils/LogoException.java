@@ -1,6 +1,6 @@
 package xlogo.utils;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.kernel.Interpreter;
 import xlogo.kernel.LoopProperties;
@@ -18,32 +18,32 @@ import java.util.Stack;
 public class LogoException extends Exception {
     private static final long serialVersionUID = 1L;
     public static boolean lance;
-    private Application cadre;
+    private GraphFrame graphFrame;
 
     public LogoException() {
     }
 
-    public LogoException(Application cadre, String st) {
-        this.cadre = cadre;
+    public LogoException(GraphFrame graphFrame, String st) {
+        this.graphFrame = graphFrame;
 //    if (st.equals("siwhile")) st=Logo.messages.getString("tantque");
         while (!Interpreter.en_cours.isEmpty() && Interpreter.en_cours.peek().equals("(")) Interpreter.en_cours.pop();
-        if (!cadre.error & !Interpreter.en_cours.isEmpty()) {
-            cadre.updateHistory("erreur", Logo.messages.getString("dans") + " " + Interpreter.en_cours.pop() + ", "
+        if (!graphFrame.error & !Interpreter.en_cours.isEmpty()) {
+            graphFrame.editor.updateHistory("erreur", Logo.messages.getString("dans") + " " + Interpreter.en_cours.pop() + ", "
                     + Logo.messages.getString("line") + " " + getLineNumber() + ":\n");
         }
-        if (!cadre.error) cadre.updateHistory("erreur", Utils.unescapeString(st) + "\n");
+        if (!graphFrame.error) graphFrame.editor.updateHistory("erreur", Utils.unescapeString(st) + "\n");
 
-        cadre.focusCommandLine();
-        cadre.error = true;
+        graphFrame.editor.focusCommandLine();
+        graphFrame.error = true;
         Interpreter.calcul = new Stack<String>();
-        cadre.getKernel().getInstructionBuffer().clear();
+        Logo.kernel.getInstructionBuffer().clear();
         Primitive.stackLoop = new Stack<LoopProperties>();
     }
 
     private int getLineNumber() {
         String string = Interpreter.lineNumber;
 //	  System.out.println("bb"+string+"bb");
-        if (string.equals("")) string = cadre.getKernel().getInstructionBuffer().toString();
+        if (string.equals("")) string = Logo.kernel.getInstructionBuffer().toString();
 //	  System.out.println("cc"+string+"cc");
         int id = string.indexOf("\\l");
         if (id != -1) {
@@ -70,7 +70,7 @@ public class LogoException extends Exception {
         }
 
         public void run() {
-            cadre.updateHistory("erreur", msg);
+            graphFrame.editor.updateHistory("erreur", msg);
         }
     }
 }

@@ -9,9 +9,9 @@ package xlogo;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import xlogo.gui.Application;
-import xlogo.gui.LanguageSelection;
+import xlogo.gui.*;
 import xlogo.kernel.Animation;
+import xlogo.kernel.Kernel;
 import xlogo.utils.Utils;
 
 import javax.media.j3d.VirtualUniverse;
@@ -35,30 +35,19 @@ public class Logo {
     public static final String WEB_SITE = "github.com/jblang/xlogo";
     public static final String[] englishLanguage = {"French", "English", "Arabic", "Spanish", "Portuguese", "Esperanto", "German", "Galician", "Asturian", "Greek", "Italian", "Catalan", "Hungarian"};
     public static final String[] locales = {"fr", "en", "ar", "es", "pt", "eo", "de", "gl", "as", "el", "it", "ca", "hu"};
-    /**
-     * This ResourceBundle contains all messages for XLogo (menu, errors...)
-     */
-    public static ResourceBundle messages = null;
+    public static ResourceBundle messages;
     public static String[] translationLanguage = new String[13];
     public static Config config = new Config();
+    public static Kernel kernel;
     static int memoryLimit = config.getMemoryLimit();
     static long startupHour;
     static String mainCommand = "";
     static boolean autoLaunch = false;
-    /**
-     * The main frame
-     */
-    private Application frame = null;
+    private EditorFrame editor;
+    private LanguageSelection select;
 
     /**
-     * On the first start, XLogo opens a dialog box where the user can select its language.
-     */
-    private LanguageSelection select = null;
-
-//  private Language language;
-
-    /**
-     * Builds Application with the valid Config
+     * Builds GraphFrame with the valid Config
      */
     public Logo() {
         // Read the XML file .xlogo and extract default config
@@ -71,9 +60,9 @@ public class Logo {
             generateLanguage(config.getLanguage()); //Au cas où si le fichier de démarrage ne contient rien sur la langue
         // Initialize frame
         SwingUtilities.invokeLater(() -> {
-            frame = new Application();
-            frame.changeLookAndFeel();
-            frame.setVisible(true);
+            editor = new EditorFrame();
+            editor.changeLookAndFeel();
+            editor.setVisible(true);
             //On vérifie que la taille mémoire est suffisante pour créer l'image de dessin
             // Checking that we have enough memory to create the image
             int memoryRequired = config.getImageWidth() * config.getImageHeight() * 4 / 1024 / 1024;
@@ -84,11 +73,11 @@ public class Logo {
                 config.setImageWidth(1000);
             }
             // init frame
-            init(frame);
-            frame.setCommandEnabled(false);
+            init(editor);
+            editor.setCommandEnabled(false);
             //  On génère les primitives et les fichiers de démarrage
             // generate primitives and start up files
-            frame.generatePrimitives();
+            editor.generatePrimitives();
 
             // On Enregistre le temps auquel la session a commencé
             // hour when we launch XLogo
@@ -98,16 +87,16 @@ public class Logo {
 
             // If this command is defined from the command line
             if (autoLaunch) {
-                frame.startAnimation(Utils.formatCode(getMainCommand()));
-                frame.getHistoryPanel().setText("normal", getMainCommand() + "\n");
+                editor.startAnimation(Utils.formatCode(getMainCommand()));
+                editor.getHistoryPanel().setText("normal", getMainCommand() + "\n");
             }
             // Else if this command is defined from the Start Up Dialog Box
             else if (!config.getStartupCommand().equals("")) {
-                frame.animation = new Animation(frame, Utils.formatCode(config.getStartupCommand()));
-                frame.animation.start();
+                editor.graphFrame.animation = new Animation(editor.graphFrame, Utils.formatCode(config.getStartupCommand()));
+                editor.graphFrame.animation.start();
             } else {
-                frame.setCommandEnabled(true);
-                frame.focusCommandLine();
+                editor.setCommandEnabled(true);
+                editor.focusCommandLine();
             }
         });
 
@@ -245,25 +234,91 @@ public class Logo {
     }
 
     /**
+     * This method initializes all parameters from the file .xlogo
+     * @param logo
+     */
+    private static void readConfig(Logo logo) {
+        try {
+            FileInputStream fis = new FileInputStream(System.getProperty("user.home") + File.separator + ".xlogo");
+            XMLDecoder dec = new XMLDecoder(fis);
+            config = (Config) dec.readObject();
+            memoryLimit = config.getMemoryLimit();
+            dec.close();
+            fis.close();
+       } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                UIManager.setLookAndFeel(new FlatDarkLaf());
+            } catch (UnsupportedLookAndFeelException ex) {
+                ex.printStackTrace();
+            }
+            try {
+                SwingUtilities.invokeAndWait(() -> logo.select = new LanguageSelection());
+            } catch (Exception ignored) {
+            }
+            while (!logo.select.getSelection_faite()) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ignored) {
+                }
+            }
+            logo.select.dispose();
+            generateLanguage(config.getLanguage());
+        }
+        // Verify that all values are in valid range
+    }
+
+    /**
+     * Write the Configuration file when the user quits XLogo
+     */
+    public static void writeConfig() {
+        try {
+            FileOutputStream fos = new FileOutputStream(System.getProperty("user.home") + File.separator + ".xlogo");
+            XMLEncoder enc = new XMLEncoder(fos);
+            enc.writeObject(config);
+            enc.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static long getStartupHour() {
+        return startupHour;
+    }
+
+    public static int getMemoryLimit() {
+        return memoryLimit;
+    }
+
+    public static String getMainCommand() {
+        return mainCommand;
+    }
+
+    public static void setMainCommand(String mainCommand) {
+        Logo.mainCommand = mainCommand;
+    }
+
+    /**
      * Initializes the main Frame
      *
-     * @param frame The main Frame
+     * @param editor The main Frame
      */
-    private void init(Application frame) {
+    private void init(EditorFrame editor) {
         // on centre la tortue
         // Centering turtle
-        Dimension d = frame.scrollPane.getViewport().getViewRect().getSize();
+        Dimension d = editor.graphFrame.scrollPane.getViewport().getViewRect().getSize();
         Point p = new Point(Math.abs(config.getImageWidth() / 2 - d.width / 2), Math.abs(config.getImageHeight() / 2 - d.height / 2));
-        frame.scrollPane.getViewport().setViewPosition(p);
+        editor.graphFrame.scrollPane.getViewport().setViewPosition(p);
 
         // on affiche la tortue sur la zone de dessin
         // Displays turtle
-        MediaTracker tracker = new MediaTracker(frame);
+        MediaTracker tracker = new MediaTracker(editor);
         try {
             tracker.waitForID(0);
         } catch (InterruptedException ignored) {
         }
-        frame.scrollPane.validate();//getArdoise().revalidate();
+        editor.graphFrame.scrollPane.validate();//getArdoise().revalidate();
    }
 
     /**
@@ -332,72 +387,6 @@ public class Logo {
                     break;
             }
         }
-    }
-
-    /**
-     * This method initializes all parameters from the file .xlogo
-     * @param logo
-     */
-    private static void readConfig(Logo logo) {
-        try {
-            FileInputStream fis = new FileInputStream(System.getProperty("user.home") + File.separator + ".xlogo");
-            XMLDecoder dec = new XMLDecoder(fis);
-            config = (Config) dec.readObject();
-            memoryLimit = config.getMemoryLimit();
-            dec.close();
-            fis.close();
-       } catch (Exception e) {
-            e.printStackTrace();
-            try {
-                UIManager.setLookAndFeel(new FlatDarkLaf());
-            } catch (UnsupportedLookAndFeelException ex) {
-                ex.printStackTrace();
-            }
-            try {
-                SwingUtilities.invokeAndWait(() -> logo.select = new LanguageSelection());
-            } catch (Exception ignored) {
-            }
-            while (!logo.select.getSelection_faite()) {
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException ignored) {
-                }
-            }
-            logo.select.dispose();
-            generateLanguage(config.getLanguage());
-        }
-        // Verify that all values are in valid range
-    }
-
-    /**
-     * Write the Configuration file when the user quits XLogo
-     */
-    public static void writeConfig() {
-        try {
-            FileOutputStream fos = new FileOutputStream(System.getProperty("user.home") + File.separator + ".xlogo");
-            XMLEncoder enc = new XMLEncoder(fos);
-            enc.writeObject(config);
-            enc.close();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static long getStartupHour() {
-        return startupHour;
-    }
-
-    public static int getMemoryLimit() {
-        return memoryLimit;
-    }
-
-    public static String getMainCommand() {
-        return mainCommand;
-    }
-
-    public static void setMainCommand(String mainCommand) {
-        Logo.mainCommand = mainCommand;
     }
 
 }

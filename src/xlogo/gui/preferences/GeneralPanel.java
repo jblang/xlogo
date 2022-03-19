@@ -3,7 +3,7 @@ package xlogo.gui.preferences;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.gui.Application;
+import xlogo.gui.EditorFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +17,7 @@ import java.awt.*;
  */
 public class GeneralPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    private final Application cadre;
+    private final EditorFrame editor;
 
     private final JList jl_langues = new JList(Logo.translationLanguage); //Pour les différentes langues
     private final JScrollPane js_langues = new JScrollPane(jl_langues);
@@ -33,8 +33,8 @@ public class GeneralPanel extends JPanel {
     private final JLabel rapide = new JLabel(Logo.messages.getString("pref.general.fast"));
     private final JSlider jSlider1 = new JSlider(0, 100);
 
-    protected GeneralPanel(Application cadre) {
-        this.cadre = cadre;
+    protected GeneralPanel(EditorFrame editor) {
+        this.editor = editor;
         initGui();
     }
 
@@ -147,7 +147,7 @@ public class GeneralPanel extends JPanel {
         int indicateur = jl_langues.getSelectedIndex();
 
         if (indicateur != Logo.config.getLanguage() && indicateur != -1) {
-            cadre.changeLanguage(indicateur);
+            editor.changeLanguage(indicateur);
         }
         // Turtle Speed
         Logo.config.setTurtleSpeed(jSlider1.getMaximum() - jSlider1.getValue());
@@ -158,7 +158,7 @@ public class GeneralPanel extends JPanel {
         } else if (darkLaf.isSelected()) {
             Logo.config.setLookAndFeel(Logo.config.LAF_DARK);
         }
-        cadre.changeLookAndFeel();
+        editor.changeLookAndFeel();
     }
 
     class Contenu extends JLabel implements ListCellRenderer {

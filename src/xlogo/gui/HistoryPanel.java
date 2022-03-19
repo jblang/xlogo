@@ -27,7 +27,7 @@ public class HistoryPanel extends JPanel {
     private final HistoryTextPane textPane = new HistoryTextPane();
     private final StyledDocument document;
     private final BorderLayout borderLayout1 = new BorderLayout();
-    private final Application app;
+    private final EditorFrame editor;
 
     private Color textColor = Color.BLUE;
     private int fontSize = 12;
@@ -38,8 +38,8 @@ public class HistoryPanel extends JPanel {
     private final MutableAttributeSet primitive = new SimpleAttributeSet();
 
 
-    public HistoryPanel(Application app) {
-        this.app = app;
+    public HistoryPanel(EditorFrame editor) {
+        this.editor = editor;
         try {
             initGui();
         } catch (Exception e) {
@@ -59,7 +59,7 @@ public class HistoryPanel extends JPanel {
     public void setText(String style, String text) {
         try {
             int length = textPane.getDocument().getLength();
-            if (text.length() > 32000) throw new LogoException(app, Logo.messages.getString("chaine_trop_longue"));
+            if (text.length() > 32000) throw new LogoException(editor.graphFrame, Logo.messages.getString("chaine_trop_longue"));
             if (length + text.length() < 65000) {
                 try {
                     int offset = document.getLength();
@@ -210,14 +210,14 @@ public class HistoryPanel extends JPanel {
                         int selectionEnd = findBounds(i, 1);
                         if (selectionStart == 0) selectionStart = -1;
                         select(selectionStart + 1, selectionEnd - 2);
-                        app.setCommandText(getSelectedText());
-                        app.focusCommandLine();
+                        editor.graphFrame.editor.setCommandText(getSelectedText());
+                        editor.graphFrame.editor.focusCommandLine();
                     }
                 }
 
                 public void mouseReleased(MouseEvent e) {
                     maybeShowPopup(e);
-                    app.focusCommandLine();
+                    editor.graphFrame.editor.focusCommandLine();
                 }
 
                 public void mousePressed(MouseEvent e) {
@@ -262,7 +262,7 @@ public class HistoryPanel extends JPanel {
             } else if (Logo.messages.getString("menu.edition.selectall").equals(cmd)) {   //Selectionner tout
                 requestFocus();
                 selectAll();
-                app.focusCommandLine();
+                editor.graphFrame.editor.focusCommandLine();
             } else if (cmd.equals(Logo.messages.getString("menu.file.textzone.rtf"))) {
                 saveHistory();
             }
@@ -274,7 +274,7 @@ public class HistoryPanel extends JPanel {
             JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
             String[] ext = {".rtf"};
             jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_rtf"), ext));
-            int val = jf.showDialog(app, Logo.messages.getString("menu.file.save"));
+            int val = jf.showDialog(editor, Logo.messages.getString("menu.file.save"));
             if (val == JFileChooser.APPROVE_OPTION) {
                 String path = jf.getSelectedFile().getPath();
                 if (!path.toLowerCase().endsWith(".rtf")) path += ".rtf";

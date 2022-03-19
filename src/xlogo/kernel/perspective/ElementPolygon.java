@@ -7,7 +7,7 @@
  */
 package xlogo.kernel.perspective;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 
@@ -22,8 +22,8 @@ import javax.vecmath.Vector3f;
  *
  */
 public class ElementPolygon extends Element3D {
-    public ElementPolygon(Application app) {
-        super(app);
+    public ElementPolygon(GraphFrame graphFrame) {
+        super(graphFrame);
     }
 
     /**
@@ -31,7 +31,7 @@ public class ElementPolygon extends Element3D {
      */
     public void addToScene() throws LogoException {
 
-        if (vertex.size() < 3) throw new LogoException(app, Logo.messages.getString("error.3d.3vertex"));
+        if (vertex.size() < 3) throw new LogoException(graphFrame, Logo.messages.getString("error.3d.3vertex"));
 
         // Create normal vector
 
@@ -51,7 +51,7 @@ public class ElementPolygon extends Element3D {
                 break;
             }
         }
-        if (null == vec1) throw new LogoException(app, Logo.messages.getString("error.3d.emptypolygon"));
+        if (null == vec1) throw new LogoException(graphFrame, Logo.messages.getString("error.3d.emptypolygon"));
         for (int i = 2; i < vertex.size(); i++) {
             point1 = vertex.get(i);
             //System.out.println(" point1 "+point1.x+" "+point1.y+" "+point1.z);
@@ -71,7 +71,7 @@ public class ElementPolygon extends Element3D {
                 //if (vec1.x!=0&& vec1.y!=0&& vec1.z!=0) 				System.out.println("coucou"+" vec1 "+vec1.x+" "+vec1.y+" "+vec1.z);
                 break;
             }
-            if (null == vec2) throw new LogoException(app, Logo.messages.getString("error.3d.emptypolygon"));
+            if (null == vec2) throw new LogoException(graphFrame, Logo.messages.getString("error.3d.emptypolygon"));
         }
 
         // Create Geometry
@@ -105,7 +105,7 @@ public class ElementPolygon extends Element3D {
         appear.setPolygonAttributes(pa);
 
         s.setAppearance(appear);
-        app.getViewer3D().add3DObject(s);
+        graphFrame.getViewer3D().add3DObject(s);
         //	DrawPanel.listPoly.add(s);
         //DrawPanel.listPoly.add(new Shape3D(tfa2));
 //			System.out.println(DrawPanel.listPoly.size()+" "+vertex.get(i).x+" "+vertex.get(i).y+" "+vertex.get(i).z);

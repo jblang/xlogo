@@ -2,7 +2,7 @@ package xlogo.gui.preferences;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
-import xlogo.gui.Application;
+import xlogo.gui.EditorFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,13 +16,13 @@ import java.awt.*;
  */
 public class TurtlesPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    Application cadre;
+    EditorFrame editor;
     private final ButtonGroup buttonGroup3 = new ButtonGroup(); //Pour les images de tortue
     private final Icon[] icon = new Icon[7]; //POur les vignettes
     private final GridBagLayout gridBagLayout2 = new GridBagLayout();
 
-    protected TurtlesPanel(Application cadre) {
-        this.cadre = cadre;
+    protected TurtlesPanel(EditorFrame editor) {
+        this.editor = editor;
         initGui();
     }
 
@@ -67,8 +67,8 @@ public class TurtlesPanel extends JPanel {
             }
         }
         if (turtle != -1) {
-            cadre.getKernel().getActiveTurtle().setShape(Logo.config.getActiveTurtle());
-            cadre.getKernel().change_image_tortue(turtle);
+            Logo.kernel.getActiveTurtle().setShape(Logo.config.getActiveTurtle());
+            Logo.kernel.change_image_tortue(turtle);
         }
     }
 

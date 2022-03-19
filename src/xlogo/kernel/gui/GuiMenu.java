@@ -1,7 +1,7 @@
 package xlogo.kernel.gui;
 
 import xlogo.Logo;
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.kernel.Interpreter;
 import xlogo.utils.Utils;
 
@@ -10,12 +10,12 @@ import java.awt.event.ActionEvent;
 import java.util.StringTokenizer;
 
 public class GuiMenu extends GuiComponent {
-    private final Application app;
+    private final GraphFrame graphFrame;
     private final String[] item;
     private final StringBuffer[] action;
 
-    public GuiMenu(String id, String text, Application app) {
-        this.app = app;
+    public GuiMenu(String id, String text, GraphFrame graphFrame) {
+        this.graphFrame = graphFrame;
         setId(id);
         StringTokenizer st = new StringTokenizer(text);
         item = new String[st.countTokens()];
@@ -24,7 +24,7 @@ public class GuiMenu extends GuiComponent {
         originalWidth = 0;
         while (st.hasMoreTokens()) {
             item[i] = Utils.unescapeString(st.nextToken());
-            java.awt.FontMetrics fm = app.getGraphics()
+            java.awt.FontMetrics fm = graphFrame.getGraphics()
                     .getFontMetrics(Logo.config.getFont());
             originalWidth = Math.max(originalWidth, fm.stringWidth(item[i]));
             i++;
@@ -38,10 +38,10 @@ public class GuiMenu extends GuiComponent {
     public void actionPerformed(ActionEvent e) {
 //		System.out.println("coucou");
         int select = ((JComboBox) guiObject).getSelectedIndex();
-        if (!app.isCommandEditable()) {
+        if (!graphFrame.editor.isCommandEditable()) {
             Interpreter.actionInstruction.append(action[select]);
         } else {
-            app.startAnimation(action[select]);
+            graphFrame.editor.startAnimation(action[select]);
         }
     }
 

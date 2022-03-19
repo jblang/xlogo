@@ -24,9 +24,9 @@ public class ProcedureEraser extends JDialog implements ActionListener {
     private final Workspace wp;
     private int startupFiles = 0;
 
-    public ProcedureEraser(Application app) throws HeadlessException {
-        super(app);
-        this.wp = app.getKernel().getWorkspace();
+    public ProcedureEraser(EditorFrame editor) throws HeadlessException {
+        super(editor);
+        this.wp = Logo.kernel.getWorkspace();
         initGui();
     }
 

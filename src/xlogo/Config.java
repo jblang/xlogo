@@ -174,7 +174,7 @@ public class Config {
     }
 
     /**
-     * Indicates whether the drawing area has to be cleaned when the editor is left.
+     * Indicates whether the drawing area has to be cleaned when the editorFrame is left.
      */
     public boolean isEraseImage() {
         return eraseImage;
@@ -185,7 +185,7 @@ public class Config {
     }
 
     /**
-     * Indicates whether variables are deleted when closing the editor.
+     * Indicates whether variables are deleted when closing the editorFrame.
      */
     public boolean isClearVariables() {
         return clearVariables;

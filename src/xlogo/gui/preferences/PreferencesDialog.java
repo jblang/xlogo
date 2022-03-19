@@ -1,6 +1,6 @@
 package xlogo.gui.preferences;
 
-import xlogo.gui.Application;
+import xlogo.gui.EditorFrame;
 import xlogo.Logo;
 
 import javax.swing.*;
@@ -17,7 +17,7 @@ import java.awt.event.ActionListener;
  */
 public class PreferencesDialog extends JDialog implements ActionListener {
     private static final long serialVersionUID = 1L;
-    private final Application app;
+    private final EditorFrame editor;
     private final JButton bouton_OK = new JButton(Logo.messages.getString("pref.ok"));
     private final JButton bouton_CANCEL = new JButton(Logo.messages.getString("pref.cancel"));
     private final JPanel panneau_bouton = new JPanel();
@@ -33,9 +33,9 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     private FontPanel fontPanel;
     private HighlighterPanel highlighterPanel;
 
-    public PreferencesDialog(Application app) {
-        super(app);
-        this.app = app;
+    public PreferencesDialog(EditorFrame editor) {
+        super(editor);
+        this.editor = editor;
         try {
             initGui();
         } catch (Exception e) {
@@ -49,19 +49,19 @@ public class PreferencesDialog extends JDialog implements ActionListener {
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         setLocation(100, 100);
         // Init all Panels
-        generalPanel = new GeneralPanel(app);
-        panel_Options = new OptionsPanel(app);
-        soundPanel = new SoundPanel(app);
-        fontPanel = new FontPanel(app);
-        highlighterPanel = new HighlighterPanel(app);
+        generalPanel = new GeneralPanel(editor);
+        panel_Options = new OptionsPanel(editor);
+        soundPanel = new SoundPanel(editor);
+        fontPanel = new FontPanel(editor);
+        highlighterPanel = new HighlighterPanel(editor);
 
         this.setTitle("");
         this.getContentPane().setLayout(new BorderLayout());
 
         jt.add(generalPanel, Logo.messages.getString("pref.general"));
 
-        if (!app.getDrawPanel().enabled3D()) {
-            panel_Turtles = new TurtlesPanel(app);
+        if (!editor.graphFrame.getDrawPanel().enabled3D()) {
+            panel_Turtles = new TurtlesPanel(editor);
             jsTurtles.getViewport().add(panel_Turtles);
             jt.add(jsTurtles, Logo.messages.getString("pref.turtles"));
         }
@@ -89,7 +89,7 @@ public class PreferencesDialog extends JDialog implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        app.closePreferences();
+        editor.closePreferences();
         if (e.getActionCommand().equals(Logo.messages.getString("pref.ok"))) {
             generalPanel.update();
             if (null != panel_Turtles) panel_Turtles.update();

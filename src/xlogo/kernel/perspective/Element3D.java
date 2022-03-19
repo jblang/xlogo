@@ -1,6 +1,6 @@
 package xlogo.kernel.perspective;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.utils.LogoException;
 
 import javax.vecmath.Point3d;
@@ -8,7 +8,7 @@ import java.awt.*;
 import java.util.Vector;
 
 abstract public class Element3D {
-    protected Application app;
+    protected GraphFrame graphFrame;
     /**
      * Color for each vertex
      */
@@ -19,8 +19,8 @@ abstract public class Element3D {
      */
     protected Vector<Point3d> vertex;
 
-    public Element3D(Application app) {
-        this.app = app;
+    public Element3D(GraphFrame graphFrame) {
+        this.graphFrame = graphFrame;
         vertex = new Vector<Point3d>();
         color = new Vector<Color>();
 

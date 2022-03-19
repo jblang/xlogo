@@ -44,7 +44,7 @@ public class Procedure {
     }
 
     public void decoupe() {
-        // Only cut procedures which are visible in the editor
+        // Only cut procedures which are visible in the editorFrame
         if (null == instr) {
             instr = new StringBuffer();
             try {
@@ -125,7 +125,7 @@ public class Procedure {
     }
 
     protected StringBuffer cutInList() {
-        // Only cut procedures which are visible in the editor
+        // Only cut procedures which are visible in the editorFrame
         StringBuffer sb = new StringBuffer();
         try {
             String line = "";

@@ -39,8 +39,8 @@ public class StartupFileDialog extends JDialog implements ActionListener {
     private final JTextField proc_demarrage = new JTextField();
     private final GridBagLayout gridBagLayout1 = new GridBagLayout();
 
-    public StartupFileDialog(Application cadre) throws HeadlessException {
-        super(cadre);
+    public StartupFileDialog(EditorFrame editor) throws HeadlessException {
+        super(editor);
         setTitle(Logo.messages.getString("menu.tools.startup"));
         try {
             jbInit();

@@ -7,7 +7,7 @@
  */
 package xlogo.kernel;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.kernel.gui.GuiMap;
 import xlogo.utils.Utils;
@@ -37,19 +37,19 @@ public class Workspace {
     // For all Gui Object (Buttons, ComboBoxes...)
     private final GuiMap guiMap;
 
-    final Application app;
+    final GraphFrame graphFrame;
 
     /**
      *  For all Property Lists
      */
     private HashMap<String, HashMap<String, String>> propList;
 
-    public Workspace(Application app) {
-        this.app = app;
+    public Workspace(GraphFrame graphFrame) {
+        this.graphFrame = graphFrame;
         globals = new HashMap<>();
         procedures = new Stack<>();
         propList = new HashMap<>();
-        guiMap = new GuiMap(app);
+        guiMap = new GuiMap(graphFrame);
     }
 
     /**
@@ -207,7 +207,7 @@ public class Workspace {
         return (new String(sb));
     }
 
-    public void setWorkspace(Application app, String wp) {
+    public void setWorkspace(GraphFrame graphFrame, String wp) {
         globals = new HashMap<>();
         procedures = new Stack<>();
 
@@ -232,9 +232,9 @@ public class Workspace {
             bfr.close();
             sr.close();
             try {
-                app.editor.setEditable(false);
-                app.editor.appendText(new String(sb));
-                app.editor.parseProcedures();
+                graphFrame.editor.setEditable(false);
+                graphFrame.editor.appendText(new String(sb));
+                graphFrame.editor.parseProcedures();
             } catch (Exception ignored) {
             }
 
@@ -300,8 +300,8 @@ public class Workspace {
             }
 
             if (!defineSentence.toString().equals("") && editable) {
-                app.updateHistory("commentaire", Logo.messages.getString("definir") + " " + defineSentence.substring(0, defineSentence.length() - 2) + ".\n");
-                app.updateProcedureEraser();
+                graphFrame.editor.updateHistory("commentaire", Logo.messages.getString("definir") + " " + defineSentence.substring(0, defineSentence.length() - 2) + ".\n");
+                graphFrame.editor.updateProcedureEraser();
             }
         } catch (IOException ignored) {
         }

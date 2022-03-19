@@ -1,7 +1,8 @@
 package xlogo.kernel.perspective;
 
 import com.sun.j3d.utils.geometry.Sphere;
-import xlogo.gui.Application;
+import xlogo.Logo;
+import xlogo.gui.GraphFrame;
 import xlogo.utils.LogoException;
 
 import javax.media.j3d.*;
@@ -13,9 +14,9 @@ import javax.vecmath.Vector3d;
 public class ElementPoint extends Element3D {
     float pointWidth;
 
-    public ElementPoint(Application app) {
-        super(app);
-        pointWidth = app.getKernel().getActiveTurtle().getPenWidth();
+    public ElementPoint(GraphFrame graphFrame) {
+        super(graphFrame);
+        pointWidth = Logo.kernel.getActiveTurtle().getPenWidth();
     }
 
     public void addToScene() throws LogoException {
@@ -28,7 +29,7 @@ public class ElementPoint extends Element3D {
                 point.setCoordinate(i, vertex.get(i));
                 point.setColor(i, new Color3f(color.get(i)));
             }
-            app.getViewer3D().add3DObject(new Shape3D(point));
+            graphFrame.getViewer3D().add3DObject(new Shape3D(point));
         } else {
             for (int i = 0; i < vertex.size(); i++) {
                 createBigPoint(vertex.get(i), new Color3f(color.get(i)));
@@ -55,7 +56,7 @@ public class ElementPoint extends Element3D {
         transform.setTranslation(new Vector3d(p));
         tg.setTransform(transform);
         tg.addChild(sphere);
-        app.getViewer3D().add2DText(tg);
+        graphFrame.getViewer3D().add2DText(tg);
     }
 
     public boolean isLine() {

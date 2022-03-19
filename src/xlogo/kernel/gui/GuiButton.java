@@ -1,7 +1,7 @@
 package xlogo.kernel.gui;
 
 import xlogo.Logo;
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.kernel.Interpreter;
 import xlogo.utils.Utils;
 
@@ -10,13 +10,13 @@ import java.awt.event.ActionEvent;
 
 public class GuiButton extends GuiComponent {
     private StringBuffer action;
-    private final Application app;
+    private final GraphFrame graphFrame;
 
-    public GuiButton(String id, String text, Application app) {
+    public GuiButton(String id, String text, GraphFrame graphFrame) {
         super.setId(id);
         guiObject = new JButton(Utils.unescapeString(text));
-        this.app = app;
-        java.awt.FontMetrics fm = app.getGraphics()
+        this.graphFrame = graphFrame;
+        java.awt.FontMetrics fm = graphFrame.getGraphics()
                 .getFontMetrics(Logo.config.getFont());
         originalWidth = fm.stringWidth(((JButton) (getGuiObject())).getText()) + 50;
         originalHeight = Logo.config.getFont().getSize() + 10;
@@ -24,10 +24,10 @@ public class GuiButton extends GuiComponent {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (!app.isCommandEditable()) {
+        if (!graphFrame.editor.isCommandEditable()) {
             Interpreter.actionInstruction.append(action);
         } else {
-            app.startAnimation(action);
+            graphFrame.editor.startAnimation(action);
         }
     }
 

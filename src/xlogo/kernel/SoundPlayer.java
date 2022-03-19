@@ -8,7 +8,7 @@
 
 package xlogo.kernel;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 
@@ -24,7 +24,7 @@ public class SoundPlayer {
     // These are some MIDI constants from the spec.  They aren't defined
     public static final int END_OF_TRACK = 47;
     static final int[] offsets = {0, 2, 4, 5, 7, 9, 11};
-    private final Application cadre;
+    private final GraphFrame graphFrame;
     private final String[] notes = {Logo.messages.getString("note.do"), Logo.messages.getString("note.re"), Logo.messages.getString("note.mi"), Logo.messages.getString("note.fa"), Logo.messages.getString("note.sol"), Logo.messages.getString("note.la"), Logo.messages.getString("note.si")};
     private Track track = null;
     private int instrument = 0; //instrument selectionne
@@ -35,10 +35,10 @@ public class SoundPlayer {
 
     /**
      * Builds our Sound Player
-     * @param cadre The main Frame
+     * @param graphFrame The main Frame
      */
-    public SoundPlayer(Application cadre) {
-        this.cadre = cadre;
+    public SoundPlayer(GraphFrame graphFrame) {
+        this.graphFrame = graphFrame;
         try {
             sequence = new Sequence(Sequence.PPQ, 16);
         } catch (InvalidMidiDataException e) {
@@ -129,7 +129,7 @@ public class SoundPlayer {
                         else element = "";
                     } catch (NumberFormatException e) {
                         if (!element.equals("") && isnotes(element) == -1 && !element.equals(":"))
-                            throw new LogoException(cadre, Logo.messages.getString("probleme_sequence"));
+                            throw new LogoException(graphFrame, Logo.messages.getString("probleme_sequence"));
                     }
                 }
             }
@@ -182,7 +182,7 @@ public class SoundPlayer {
                     while (temps > 0) { //On attends que la séquence soit jouée.
                         Thread.sleep(500);
                         temps -= 32;
-                        if (LogoException.lance && cadre.error) { //On a appuyé sur le bouton stop
+                        if (LogoException.lance && graphFrame.error) { //On a appuyé sur le bouton stop
                             sequencer.close();
                             synthesizer.close();
                             break;

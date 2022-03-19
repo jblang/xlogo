@@ -2,7 +2,7 @@ package xlogo.kernel;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
@@ -15,10 +15,8 @@ import java.net.URL;
 
 public class MP3Player extends Thread {
     private AdvancedPlayer player;
-    private final Application app;
 
-    MP3Player(Application app, String path) throws LogoException {
-        this.app = app;
+    MP3Player(GraphFrame graphFrame, String path) throws LogoException {
         try {
             // Build absolutePath
             String absolutePath = Utils.unescapeString(Logo.config.getDefaultFolder())
@@ -32,7 +30,7 @@ public class MP3Player extends Thread {
                 player = new AdvancedPlayer(fr);
             } catch (java.net.MalformedURLException e1) {
 
-                throw new LogoException(app, Logo.messages.getString("error.iolecture"));
+                throw new LogoException(graphFrame, Logo.messages.getString("error.iolecture"));
 
 
             } catch (IOException e2) {

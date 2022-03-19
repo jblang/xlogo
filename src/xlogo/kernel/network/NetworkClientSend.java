@@ -1,6 +1,6 @@
 package xlogo.kernel.network;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 
@@ -13,18 +13,18 @@ import java.nio.charset.StandardCharsets;
 public class NetworkClientSend {
     private final InetAddress ip;
     private final String data;
-    private final Application app;
+    private final GraphFrame graphFrame;
     private BufferedReader in;
     private PrintWriter out;
     private Socket socket;
     private String answer;
 
-    public NetworkClientSend(Application app, String ip, String data) throws LogoException {
-        this.app = app;
+    public NetworkClientSend(GraphFrame graphFrame, String ip, String data) throws LogoException {
+        this.graphFrame = graphFrame;
         try {
             this.ip = InetAddress.getByName(ip);
         } catch (UnknownHostException e) {
-            throw new LogoException(app, Logo.messages.getString("no_host") + " " + ip);
+            throw new LogoException(graphFrame, Logo.messages.getString("no_host") + " " + ip);
         }
         this.data = data;
         init();
@@ -49,7 +49,7 @@ public class NetworkClientSend {
             out.close();
             socket.close();
         } catch (IOException e) {
-            throw new LogoException(app, Logo.messages.getString("no_host") + ip.getHostAddress());
+            throw new LogoException(graphFrame, Logo.messages.getString("no_host") + ip.getHostAddress());
         }
     }
 }

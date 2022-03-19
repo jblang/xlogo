@@ -7,7 +7,7 @@
  */
 package xlogo.kernel;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 
@@ -46,7 +46,7 @@ public class Interpreter {
     // noms des variables
     // locales
     private final LaunchPrimitive lanceprim;
-    private final Application app;
+    private final GraphFrame graphFrame;
     private final Kernel kernel;
     private Workspace wp;
     /**
@@ -56,16 +56,16 @@ public class Interpreter {
 
     // private TreeParser tp;
     /*
-     * public Interpreter(Application cadre){ this.cadre=cadre;
+     * public Interpreter(GraphFrame graphFrame){ this.graphFrame=graphFrame;
      *
-     * lanceprim=new LaunchPrimitive(cadre); cadre.error=false; }
+     * lanceprim=new LaunchPrimitive(graphFrame); graphFrame.error=false; }
      */
-    public Interpreter(Application app) {
-        this.kernel = app.getKernel();
-        this.app = app;
+    public Interpreter(GraphFrame graphFrame) {
+        this.kernel = Logo.kernel;
+        this.graphFrame = graphFrame;
         wp = kernel.getWorkspace();
-        lanceprim = new LaunchPrimitive(app, wp);
-        app.error = false;
+        lanceprim = new LaunchPrimitive(graphFrame, wp);
+        graphFrame.error = false;
     }
 
     String execute(StringBuffer instructions) throws LogoException {
@@ -75,9 +75,9 @@ public class Interpreter {
 
         // Object obca1,obca2,oban;
         while (instructionBuffer.getLength() != 0) {
-            if (app.error && LogoException.lance)
-                throw new LogoException(app, Logo.messages.getString("stop"));
-            while (app.animation.isOnPause()) { // Si l'on touche aux scrollbars
+            if (graphFrame.error && LogoException.lance)
+                throw new LogoException(graphFrame, Logo.messages.getString("stop"));
+            while (graphFrame.animation.isOnPause()) { // Si l'on touche aux scrollbars
                 try {
                     wait();
                 } catch (Exception e) {
@@ -121,7 +121,7 @@ public class Interpreter {
                     i = -i - 2;
                 // if (!calcul.empty()&&nom.isEmpty())
                 // throw new
-                // monException(cadre,Logo.messages.getString("que_faire")+"
+                // monException(graphFrame,Logo.messages.getString("que_faire")+"
                 // "+calcul.pop() +" gdfdsf");
                 // exécuter la procédure ou la primitive.
                 Stack<String> param = new Stack<String>();
@@ -140,7 +140,7 @@ public class Interpreter {
                     if (calcul.isEmpty()) { // Si le + ou le - représente le
                         // signe négatif ou positif
                         if (i != 32 && i != 33)
-                            throw new LogoException(app, element + " "
+                            throw new LogoException(graphFrame, element + " "
                                     + Logo.messages.getString("error.ne_peut_etre")); // d'un
                         // nombre
                         if (nom.isEmpty())
@@ -224,12 +224,12 @@ public class Interpreter {
                                     // accept optional parameters
                                     if (j > constantNumber) {
                                         throw new LogoException(
-                                                app,
+                                                graphFrame,
                                                 Logo.messages
                                                         .getString("too_much_arguments"));
                                     } else if (j < constantNumber)
                                         throw new LogoException(
-                                                app,
+                                                graphFrame,
                                                 Logo.messages
                                                         .getString("pas_assez_de")
                                                         + " " + nom.peek());
@@ -249,10 +249,10 @@ public class Interpreter {
                     if (i < 0) {
                         Procedure proc = wp.getProcedure(-i - 2);
                         if (j > proc.nbparametre + proc.optVariables.size())
-                            throw new LogoException(app, Logo.messages
+                            throw new LogoException(graphFrame, Logo.messages
                                     .getString("too_much_arguments"));
                         else if (j < proc.nbparametre)
-                            throw new LogoException(app, Logo.messages
+                            throw new LogoException(graphFrame, Logo.messages
                                     .getString("pas_assez_de")
                                     + " " + nom.peek());
                         // Searching for optional arguments that are not defined
@@ -322,9 +322,9 @@ public class Interpreter {
                 // fin\n"+param.toString());
                 //System.out.println(nom);
                 nom.pop();
-                if (!app.error)
+                if (!graphFrame.error)
                     lanceprim.execute(i, param);
-                if (app.error)
+                if (graphFrame.error)
                     break;
                 if (drapeau_fermante && !calcul.empty()) {
                     drapeau_fermante = false;
@@ -339,7 +339,7 @@ public class Interpreter {
                     if (renvoi_instruction) {
                         renvoi_instruction = false;
                     } else {
-                        if (!nom.isEmpty() && !app.error
+                        if (!nom.isEmpty() && !graphFrame.error
                                 && !nom.peek().equals("\n")) {
                             if (!element.equals("\n")) {
                                 // If it's the end of a loop
@@ -350,7 +350,7 @@ public class Interpreter {
                                     int offset = instructionBuffer.indexOf(" \\ ");
                                     instructionBuffer.delete(0, offset + 1);
 
-                                    throw new LogoException(app, Logo.messages
+                                    throw new LogoException(graphFrame, Logo.messages
                                             .getString("pas_assez_de")
                                             + " " + nom.peek());
                                 }
@@ -358,7 +358,7 @@ public class Interpreter {
                                 // av av 20 ----> Bad
                                 if (!nom.peek().equals("("))
                                     throw new LogoException(
-                                            app,
+                                            graphFrame,
                                             element
                                                     + " "
                                                     + Logo.messages
@@ -374,7 +374,7 @@ public class Interpreter {
                     // The primitive returns a word or a list.
                     // There's no primitive or procedure waiting for it.
                     if (!nom.isEmpty() && nom.peek().equals("\n"))
-                        throw new LogoException(app, Logo.messages.getString("error.whattodo") + " "
+                        throw new LogoException(graphFrame, Logo.messages.getString("error.whattodo") + " "
                                 + calcul.peek() + " ?");
                 }
             }
@@ -397,7 +397,7 @@ public class Interpreter {
                 if (!locale.containsKey(variableName)) {
                     // check it's a global variable
                     if (!wp.globals.containsKey(variableName))
-                        throw new LogoException(app, variableName + " "
+                        throw new LogoException(graphFrame, variableName + " "
                                 + Logo.messages.getString("error.novalue"));
                     else
                         value = wp.globals.get(variableName);
@@ -408,7 +408,7 @@ public class Interpreter {
                 }
 
                 if (null == value)
-                    throw new LogoException(app, variableName + "  "
+                    throw new LogoException(graphFrame, variableName + "  "
                             + Logo.messages.getString("error.novalue"));
                 calcul.push(value);
                 operande = true;
@@ -480,7 +480,7 @@ public class Interpreter {
                         int pos = chercheParenthese();
                         if (pos == -1) {
                             try {
-                                throw new LogoException(app, Logo.messages
+                                throw new LogoException(graphFrame, Logo.messages
                                         .getString("parenthese_fermante"));
                             } catch (LogoException e1) {
                             }
@@ -519,14 +519,14 @@ public class Interpreter {
                             element = instructionBuffer.getNextWord();
                             element_minuscule = element.toLowerCase();
                         } else
-                            throw new LogoException(app, Logo.messages
+                            throw new LogoException(graphFrame, Logo.messages
                                     .getString("pas_assez_de")
                                     + " "
                                     + "\""
                                     + Logo.messages.getString("pour") + "\"");
                         if (Primitive.primitives.containsKey(element_minuscule)
                                 || isProcedure(element_minuscule) != -1)
-                            throw new LogoException(app, element + " "
+                            throw new LogoException(graphFrame, element + " "
                                     + Logo.messages.getString("existe_deja"));
                         else {
                             String definition = Logo.messages.getString("pour")
@@ -538,19 +538,19 @@ public class Interpreter {
                                     break;
                                 if (element.charAt(0) != ':'
                                         || element.length() == 1)
-                                    throw new LogoException(app, element
+                                    throw new LogoException(graphFrame, element
                                             + " "
                                             + Logo.messages
                                             .getString("pas_argument"));
                                 definition += element + " ";
                                 instructionBuffer.deleteFirstWord(element);
                             }
-                            if (app.editor.isVisible())
-                                throw new LogoException(app, Logo.messages
+                            if (graphFrame.editor.isVisible())
+                                throw new LogoException(graphFrame, Logo.messages
                                         .getString("ferme_editeur"));
                             else {
-                                app.editor.setVisible(true);
-                                app.editor.appendText(definition + "\n\n"
+                                graphFrame.editor.setVisible(true);
+                                graphFrame.editor.appendText(definition + "\n\n"
                                         + Logo.messages.getString("fin"));
                             }
                         }
@@ -564,7 +564,7 @@ public class Interpreter {
 
                     } else {
                         deleteLineNumber();
-                        throw new LogoException(app, Logo.messages
+                        throw new LogoException(graphFrame, Logo.messages
                                 .getString("je_ne_sais_pas")
                                 + " " + element);
                     }
@@ -581,7 +581,7 @@ public class Interpreter {
                 while ((!nom.isEmpty()) && nom.peek().equals("\n"))
                     nom.pop();
                 if (!nom.isEmpty()) {
-                    throw new LogoException(app, Logo.messages
+                    throw new LogoException(graphFrame, Logo.messages
                             .getString("pas_assez_de")
                             + " " + nom.peek());
                 }
@@ -601,14 +601,14 @@ public class Interpreter {
                 if (!nom.isEmpty()) {
                     up = nom.peek();
                     try {
-                        throw new LogoException(app, en_cours.get(en_cours.size() - id)
+                        throw new LogoException(graphFrame, en_cours.get(en_cours.size() - id)
                                 + " " + Logo.messages.getString("ne_renvoie_pas")
                                 + " " + up);
                     } catch (LogoException e) {
                     }
                 } else {
                     try {
-                        throw new LogoException(app, Logo.messages
+                        throw new LogoException(graphFrame, Logo.messages
                                 .getString("error.whattodo")
                                 + " " + calcul.peek() + " ?");
                     } catch (LogoException e) {
@@ -700,7 +700,7 @@ public class Interpreter {
             }
         }
         if (true)
-            throw new LogoException(app, Logo.messages
+            throw new LogoException(graphFrame, Logo.messages
                     .getString("erreur_crochet"));
         return (null);
     }
@@ -757,7 +757,7 @@ public class Interpreter {
         if (!nom.isEmpty()) {
             String name = nom.peek();
             if (name.equals("(")) {
-                throw new LogoException(app, Logo.messages.getString("too_much_arguments"));
+                throw new LogoException(graphFrame, Logo.messages.getString("too_much_arguments"));
 
             }
         }

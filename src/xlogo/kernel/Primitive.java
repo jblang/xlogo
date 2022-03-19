@@ -6,7 +6,7 @@
  */
 package xlogo.kernel;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
@@ -33,13 +33,13 @@ public class Primitive {
     protected int[] parametres = new int[PRIMITIVE_NUMBER];
     protected boolean[] generalForm = new boolean[PRIMITIVE_NUMBER];
     //  float taille_crayon=(float)0;
-    private Application app;
+    private GraphFrame graphFrame;
 
     public Primitive() {
     }
 
-    public Primitive(Application app) {
-        this.app = app;
+    public Primitive(GraphFrame graphFrame) {
+        this.graphFrame = graphFrame;
         //build treemap for primitives
         buildPrimitiveTreemap(Logo.config.getLanguage());
     }
@@ -169,10 +169,10 @@ public class Primitive {
             LoopProperties bp = new LoopRepeat(BigDecimal.ONE,
                     new BigDecimal(i), BigDecimal.ONE, st);
             stackLoop.push(bp);
-            app.getKernel().getInstructionBuffer().insert(st + "\\ ");
+            Logo.kernel.getInstructionBuffer().insert(st + "\\ ");
         } else if (i != 0) {
             try {
-                throw new LogoException(app, Utils.primitiveName("controls.repete") + " " + Logo.messages.getString("attend_positif"));
+                throw new LogoException(graphFrame, Utils.primitiveName("controls.repete") + " " + Logo.messages.getString("attend_positif"));
             } catch (LogoException e) {
             }
         }
@@ -185,11 +185,11 @@ public class Primitive {
      */
     protected void whilesi(boolean b, String li) {
         if (b) {
-            app.getKernel().getInstructionBuffer().insert(li
+            Logo.kernel.getInstructionBuffer().insert(li
                     + Primitive.stackLoop.peek().getInstr());
         } else {
             try {
-                eraseLevelStop(app);
+                eraseLevelStop(graphFrame);
             } catch (LogoException e) {
             }
         }
@@ -198,9 +198,9 @@ public class Primitive {
     // primitive if
     protected void si(boolean b, String li, String li2) {
         if (b) {
-            app.getKernel().getInstructionBuffer().insert(li);
+            Logo.kernel.getInstructionBuffer().insert(li);
         } else if (null != li2) {
-            app.getKernel().getInstructionBuffer().insert(li2);
+            Logo.kernel.getInstructionBuffer().insert(li2);
         }
     }
 
@@ -209,7 +209,7 @@ public class Primitive {
         Interpreter.operande = false;
         String car = "";
         try {
-            car = eraseLevelStop(app);
+            car = eraseLevelStop(graphFrame);
         } catch (LogoException e) {
         }
 
@@ -225,7 +225,7 @@ public class Primitive {
             //				stop doesn't output to fd
             if (!Interpreter.nom.isEmpty() && !Interpreter.nom.peek().equals("\n")) {
                 //	System.out.println(Interpreter.nom);
-                throw new LogoException(app, Utils.primitiveName("controls.stop")
+                throw new LogoException(graphFrame, Utils.primitiveName("controls.stop")
                         + " " + Logo.messages.getString("ne_renvoie_pas") + " "
                         + Interpreter.nom.peek());
             } else if (!Interpreter.nom.isEmpty()) {
@@ -239,7 +239,7 @@ public class Primitive {
                 //				bug2 doesn't output to fd
                 if (!Interpreter.nom.isEmpty() && !Interpreter.nom.peek().equals("\n")) {
                     //	System.out.println(Interpreter.nom);
-                    throw new LogoException(app, en_cours
+                    throw new LogoException(graphFrame, en_cours
                             + " " + Logo.messages.getString("ne_renvoie_pas") + " "
                             + Interpreter.nom.peek());
                 }
@@ -259,38 +259,38 @@ public class Primitive {
             buffer
                     .append(" " + Utils.primitiveName("ret") + " "
                             + val);
-            app.updateHistory("normal", Utils.unescapeString(buffer.toString()) + "\n");
+            graphFrame.editor.updateHistory("normal", Utils.unescapeString(buffer.toString()) + "\n");
         }
         Interpreter.en_cours.pop();
         Interpreter.locale = Interpreter.stockvariable.pop();
         if ((!Interpreter.nom.isEmpty())
                 && Interpreter.nom.peek().equals("\n")) {
             try {
-                eraseLevelReturn(app);
+                eraseLevelReturn(graphFrame);
             } catch (LogoException e) {
             }
             Interpreter.nom.pop();
         } else if (!Interpreter.nom.isEmpty())
-            throw new LogoException(app, Utils.primitiveName("ret")
+            throw new LogoException(graphFrame, Utils.primitiveName("ret")
                     + " " + Logo.messages.getString("ne_renvoie_pas") + " "
                     + Interpreter.nom.peek());
         else
-            throw new LogoException(app, Logo.messages
+            throw new LogoException(graphFrame, Logo.messages
                     .getString("erreur_retourne"));
     }
 
     /**
      * This method deletes all instruction since it encounters the end of a loop or the end of a procedure
-     * @param app The runnning frame Application
+     * @param graphFrame The runnning frame GraphFrame
      * @return The specific character \n or \ if found
      * @throws LogoException
      */
-    private String eraseLevelStop(Application app)
+    private String eraseLevelStop(GraphFrame graphFrame)
             throws LogoException {
         boolean error = true;
         String caractere = "";
         int marqueur = 0;
-        InstructionBuffer instruction = app.getKernel().getInstructionBuffer();
+        InstructionBuffer instruction = Logo.kernel.getInstructionBuffer();
         for (int i = 0; i < instruction.getLength(); i++) {
             caractere = String.valueOf(instruction.charAt(i));
             if (caractere.equals(Primitive.END_LOOP) | caractere.equals(Primitive.END_PROCEDURE)) {
@@ -312,7 +312,7 @@ public class Primitive {
         }
 
         if (error) {
-            throw new LogoException(app, Logo.messages
+            throw new LogoException(graphFrame, Logo.messages
                     .getString("erreur_stop"));
         }
         if (marqueur + 2 > instruction.getLength())
@@ -327,17 +327,17 @@ public class Primitive {
 
     /**
      * This method deletes all instruction since it encounters the end of a procedure
-     * @param app The running frame Application
+     * @param graphFrame The running frame GraphFrame
      * @return an integer that indicates the number of loop to delete from Primitive.stackLoop
      * @throws LogoException
      */
-    private void eraseLevelReturn(Application app)
+    private void eraseLevelReturn(GraphFrame graphFrame)
             throws LogoException {
         boolean error = true;
         String caractere = "";
         int loopLevel = 0;
         int marqueur = 0;
-        InstructionBuffer instruction = app.getKernel().getInstructionBuffer();
+        InstructionBuffer instruction = Logo.kernel.getInstructionBuffer();
         for (int i = 0; i < instruction.getLength(); i++) {
             caractere = String.valueOf(instruction.charAt(i));
             if (caractere.equals(Primitive.END_PROCEDURE)) {
@@ -355,7 +355,7 @@ public class Primitive {
             }
         }
         if (error) {
-            throw new LogoException(app, Logo.messages
+            throw new LogoException(graphFrame, Logo.messages
                     .getString("erreur_retourne"));
         }
         if (marqueur + 2 > instruction.getLength())

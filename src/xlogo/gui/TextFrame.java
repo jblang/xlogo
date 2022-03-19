@@ -16,15 +16,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class InputFrame extends JFrame implements ActionListener {
+public class TextFrame extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
     private final JTextField texte = new JTextField();
     private final JButton ok = new JButton(Logo.messages.getString("pref.ok"));
 
-    public InputFrame() throws HeadlessException {
+    public TextFrame() throws HeadlessException {
     }
 
-    public InputFrame(String titre, int longueur) {
+    public TextFrame(String titre, int longueur) {
         setIconImage(Logo.getAppIcon().getImage());
         getContentPane().setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

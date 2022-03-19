@@ -1,6 +1,6 @@
 package xlogo.gui.translation;
 
-import xlogo.gui.Application;
+import xlogo.gui.EditorFrame;
 import xlogo.Logo;
 import xlogo.gui.SearchFrame;
 import xlogo.utils.Utils;
@@ -25,15 +25,15 @@ public class UiTranslator extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
     private String id = "";
     private String action;
-    private final Application app;
+    private final EditorFrame editor;
     private FirstPanel first;
     private TopPanel top;
     private BottomPanel bottom;
 
     private SearchFrame sf = null;
 
-    public UiTranslator(Application app) {
-        this.app = app;
+    public UiTranslator(EditorFrame editor) {
+        this.editor = editor;
         initGui();
     }
 
@@ -110,7 +110,7 @@ public class UiTranslator extends JFrame implements ActionListener {
                     System.out.println("annulation");
                 } //Si l'utilisateur annule
                 catch (IOException e2) {
-                    app.updateHistory("erreur", Logo.messages.getString("error.ioecriture"));
+                    editor.updateHistory("erreur", Logo.messages.getString("error.ioecriture"));
                 }
             }
         } else if (cmd.equals(UiTranslator.SEARCH)) {
@@ -137,7 +137,7 @@ public class UiTranslator extends JFrame implements ActionListener {
     protected void processWindowEvent(WindowEvent e) {
         super.processWindowEvent(e);
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-            app.closeUiTranslator();
+            editor.closeUiTranslator();
         }
 
     }

@@ -7,7 +7,7 @@
  **/
 package xlogo.kernel;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.gui.MessageTextArea;
 
@@ -33,7 +33,7 @@ public class MemoryChecker extends Thread {
     /**
      * The main frame
      */
-    private final Application cadre;
+    private final GraphFrame graphFrame;
     /**
      * This boolean indicates if the thread has to continue.<br>
      * If false, the thread will stop.
@@ -42,10 +42,10 @@ public class MemoryChecker extends Thread {
 
     /**
      * Constructs the Memory Checker for the main Frame
-     * @param cadre the main Frame
+     * @param graphFrame the main Frame
      */
-    public MemoryChecker(Application cadre) {
-        this.cadre = cadre;
+    public MemoryChecker(GraphFrame graphFrame) {
+        this.graphFrame = graphFrame;
         alive = true;
     }
 
@@ -63,11 +63,11 @@ public class MemoryChecker extends Thread {
             long memoire_utilisee = (total - free) / 1024 / 1024;
 //		System.out.println(memoire_utilisee);
             if (memoire_utilisee > 0.9 * Logo.getMemoryLimit()) {
-                cadre.error = true;
+                graphFrame.error = true;
                 alive = false;
                 String message = Logo.messages.getString("depassement_memoire");
                 MessageTextArea jt = new MessageTextArea(message);
-                JOptionPane.showMessageDialog(cadre, jt, Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(graphFrame, jt, Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
 
             }
         }

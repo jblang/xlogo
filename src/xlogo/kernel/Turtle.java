@@ -10,7 +10,7 @@ package xlogo.kernel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.utils.LogoException;
 
 import java.awt.*;
@@ -72,7 +72,7 @@ public class Turtle {
     Image image = null;
     GeneralPath triangle;
     int width = 0, height = 0, template = 0;
-    private final Application app;
+    private final GraphFrame graphFrame;
     private int labelHorizontalAlignment = 0;
     private int labelVerticalAlignment = 0;
     /**
@@ -91,8 +91,8 @@ public class Turtle {
         identity[1][0] = identity[2][1] = identity[2][0] = 0;
     }
 
-    public Turtle(Application app) {
-        this.app = app;
+    public Turtle(GraphFrame graphFrame) {
+        this.graphFrame = graphFrame;
         fixPenWidth(1);
         penColor = Logo.config.getPenColor();
         imageColorMode = Logo.config.getPenColor();
@@ -154,17 +154,17 @@ public class Turtle {
                 x1[0] = X - 20 * rotationMatrix[0][0];
                 x1[1] = Y - 20 * rotationMatrix[1][0];
                 x1[2] = Z - 20 * rotationMatrix[2][0];
-                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
+                screenCoord = graphFrame.getDrawPanel().toScreenCoord(x1, false);
                 triangle.moveTo((float) screenCoord[0], (float) screenCoord[1]);
                 x1[0] = X + 48 * rotationMatrix[0][1];
                 x1[1] = Y + 48 * rotationMatrix[1][1];
                 x1[2] = Z + 48 * rotationMatrix[2][1];
-                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
+                screenCoord = graphFrame.getDrawPanel().toScreenCoord(x1, false);
                 triangle.lineTo((float) screenCoord[0], (float) screenCoord[1]);
                 x1[0] = X + 20 * rotationMatrix[0][0];
                 x1[1] = Y + 20 * rotationMatrix[1][0];
                 x1[2] = Z + 20 * rotationMatrix[2][0];
-                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
+                screenCoord = graphFrame.getDrawPanel().toScreenCoord(x1, false);
                 triangle.lineTo((float) screenCoord[0], (float) screenCoord[1]);
                 triangle.closePath();
 
@@ -173,17 +173,17 @@ public class Turtle {
                 x1[0] = X + 15 * rotationMatrix[0][1];
                 x1[1] = Y + 15 * rotationMatrix[1][1];
                 x1[2] = Z + 15 * rotationMatrix[2][1];
-                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
+                screenCoord = graphFrame.getDrawPanel().toScreenCoord(x1, false);
                 triangle.moveTo((float) screenCoord[0], (float) screenCoord[1]);
                 x1[0] = X + 15 * rotationMatrix[0][2];
                 x1[1] = Y + 15 * rotationMatrix[1][2];
                 x1[2] = Z + 15 * rotationMatrix[2][2];
-                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
+                screenCoord = graphFrame.getDrawPanel().toScreenCoord(x1, false);
                 triangle.lineTo((float) screenCoord[0], (float) screenCoord[1]);
                 x1[0] = X;
                 x1[1] = Y;
                 x1[2] = Z;
-                screenCoord = app.getDrawPanel().toScreenCoord(x1, false);
+                screenCoord = graphFrame.getDrawPanel().toScreenCoord(x1, false);
                 triangle.lineTo((float) screenCoord[0], (float) screenCoord[1]);
             }
         }
@@ -278,18 +278,18 @@ public class Turtle {
             String s = st.nextToken();
             try {
                 int j = Integer.parseInt(s);
-                if (j < 0 || j > 2) throw new LogoException(app, list + " " + Logo.messages.getString("pas_argument"));
+                if (j < 0 || j > 2) throw new LogoException(graphFrame, list + " " + Logo.messages.getString("pas_argument"));
                 else {
                     if (i == 0) labelHorizontalAlignment = j;
                     else if (i == 1) labelVerticalAlignment = j;
                 }
             } catch (NumberFormatException e) {
-                throw new LogoException(app, list + " " + Logo.messages.getString("pas_argument"));
+                throw new LogoException(graphFrame, list + " " + Logo.messages.getString("pas_argument"));
             }
 
             i++;
         }
-        if (i != 2) throw new LogoException(app, list + " " + Logo.messages.getString("pas_argument"));
+        if (i != 2) throw new LogoException(graphFrame, list + " " + Logo.messages.getString("pas_argument"));
     }
 
     void setImage(int i) {
@@ -306,11 +306,11 @@ public class Turtle {
             this.width = (int)(svg.getIconWidth() * factor);
             this.height = (int)(svg.getIconHeight() * factor);
             image = svg.getImage().getScaledInstance(
-                    (int) (this.height * app.getDrawPanel().getScaleX()),
-                    (int) (this.width * app.getDrawPanel().getScaleY()),
+                    (int) (this.height * graphFrame.getDrawPanel().getScaleX()),
+                    (int) (this.width * graphFrame.getDrawPanel().getScaleY()),
                     Image.SCALE_SMOOTH
             );
-            MediaTracker tracker = new MediaTracker(app);
+            MediaTracker tracker = new MediaTracker(graphFrame);
             tracker.addImage(image, 0);
             try {
                 tracker.waitForID(0);

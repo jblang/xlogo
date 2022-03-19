@@ -1,6 +1,6 @@
 package xlogo.kernel.perspective;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 
 import java.math.BigDecimal;
 
@@ -10,14 +10,14 @@ public class Conic {
     BigDecimal a, b, c, d, e, f;
     BigDecimal deux = new BigDecimal(2);
     BigDecimal[][] A = new BigDecimal[2][2];
-    private final Application app;
+    private final GraphFrame graphFrame;
     private final BigDecimal[] eigenValue = new BigDecimal[2];
     private final BigDecimal[][] eigenVect = new BigDecimal[2][2];
     private final BigDecimal[] center = new BigDecimal[2];
     private double halfXAxis, halfYAxis;
 
-    public Conic(Application app, BigDecimal[] v) {
-        this.app = app;
+    public Conic(GraphFrame graphFrame, BigDecimal[] v) {
+        this.graphFrame = graphFrame;
         this.a = v[0];
         this.b = v[1];
         this.c = v[2];
@@ -57,7 +57,7 @@ public class Conic {
             halfYAxis = 1 / Math.sqrt(eigenValue[1].divide(omega.negate(), 20, BigDecimal.ROUND_HALF_EVEN).doubleValue());
             double angle = Math.atan(eigenVect[1][0].divide(eigenVect[0][0], 20, BigDecimal.ROUND_HALF_EVEN).doubleValue());
             //	System.out.println(toString());
-            app.getDrawPanel().drawEllipseArc(halfXAxis, halfYAxis, angle,
+            graphFrame.getDrawPanel().drawEllipseArc(halfXAxis, halfYAxis, angle,
                     center[0].doubleValue(), center[1].doubleValue(), 0, 360);
 
         }

@@ -2,7 +2,8 @@ package xlogo.kernel.perspective;
 
 import com.sun.j3d.utils.geometry.Cylinder;
 import com.sun.j3d.utils.geometry.Sphere;
-import xlogo.gui.Application;
+import xlogo.Logo;
+import xlogo.gui.GraphFrame;
 import xlogo.utils.LogoException;
 
 import javax.media.j3d.*;
@@ -17,9 +18,9 @@ public class ElementLine extends Element3D {
      */
     private final float lineWidth;
 
-    public ElementLine(Application app) {
-        super(app);
-        lineWidth = app.getKernel().getActiveTurtle().getPenWidth();
+    public ElementLine(GraphFrame graphFrame) {
+        super(graphFrame);
+        lineWidth = Logo.kernel.getActiveTurtle().getPenWidth();
     }
 
     public void addToScene() throws LogoException {
@@ -51,7 +52,7 @@ public class ElementLine extends Element3D {
         appear.setLineAttributes(new LineAttributes(2 * lineWidth, LineAttributes.PATTERN_SOLID, false));
         s.setAppearance(appear);
 //		DrawPanel.listPoly.add(s);
-        app.getViewer3D().add3DObject(s);
+        graphFrame.getViewer3D().add3DObject(s);
 /*			for (int i=0;i<line.getVertexCount();i++){
 			double[] d=new double[3];
 			line.getCoordinate(i, d);
@@ -118,7 +119,7 @@ public class ElementLine extends Element3D {
         TransformGroup tg = new TransformGroup();
         tg.setTransform(transform1);
         tg.addChild(cyl);
-        app.getViewer3D().add2DText(tg);
+        graphFrame.getViewer3D().add2DText(tg);
 
         // Add Sphere to the line extremities.
         Sphere sphere1 = new Sphere(radius, appear);
@@ -127,7 +128,7 @@ public class ElementLine extends Element3D {
         transform3.setTranslation(new Vector3d(p1));
         tg2.setTransform(transform3);
         tg2.addChild(sphere1);
-        app.getViewer3D().add2DText(tg2);
+        graphFrame.getViewer3D().add2DText(tg2);
 
         Sphere sphere2 = new Sphere(radius, appear);
         TransformGroup tg3 = new TransformGroup();
@@ -135,7 +136,7 @@ public class ElementLine extends Element3D {
         transform4.setTranslation(new Vector3d(p2));
         tg3.setTransform(transform4);
         tg3.addChild(sphere2);
-        app.getViewer3D().add2DText(tg3);
+        graphFrame.getViewer3D().add2DText(tg3);
 
     }
 

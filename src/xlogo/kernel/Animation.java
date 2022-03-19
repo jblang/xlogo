@@ -6,7 +6,7 @@
  */
 package xlogo.kernel;
 
-import xlogo.gui.Application;
+import xlogo.gui.GraphFrame;
 import xlogo.Logo;
 import xlogo.utils.LogoException;
 
@@ -25,7 +25,7 @@ import java.util.Stack;
 public class Animation extends Thread {
     public static boolean executionLaunched = false;
     private boolean pause = false;
-    private Application cadre;
+    private GraphFrame graphFrame;
     private StringBuffer instruction;
     private final Souris souris = new Souris();
     private MemoryChecker cm = null;
@@ -33,8 +33,8 @@ public class Animation extends Thread {
     public Animation() {
     }
 
-    public Animation(Application cadre, StringBuffer instruction) {
-        this.cadre = cadre;
+    public Animation(GraphFrame graphFrame, StringBuffer instruction) {
+        this.graphFrame = graphFrame;
         this.instruction = instruction;
     }
 
@@ -42,32 +42,32 @@ public class Animation extends Thread {
         //	currentThread().setPriority(Thread.MIN_PRIORITY);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                cadre.setCommandEnabled(false);// la ligne de commandes
+                graphFrame.editor.setCommandEnabled(false);// la ligne de commandes
                 // n'est plus active
             }
         });
         executionLaunched = true;
-        cadre.getDrawPanel().active_souris(); // On active les événements souris sur
+        graphFrame.getDrawPanel().active_souris(); // On active les événements souris sur
         // la zone de dessin
-        cadre.scrollPane.getVerticalScrollBar().addMouseListener(souris);
-        cadre.scrollPane.getHorizontalScrollBar().addMouseListener(souris);
+        graphFrame.scrollPane.getVerticalScrollBar().addMouseListener(souris);
+        graphFrame.scrollPane.getHorizontalScrollBar().addMouseListener(souris);
         try {
-            cadre.setKey(-1);
-            cadre.error = false;
+            graphFrame.editor.setKey(-1);
+            graphFrame.error = false;
             LogoException.lance = false;
             Interpreter.operande = Interpreter.operateur = Interpreter.drapeau_ouvrante = false;
-            cadre.getKernel().getInstructionBuffer().clear();
+            Logo.kernel.getInstructionBuffer().clear();
             Interpreter.calcul = new Stack<String>();
             Interpreter.nom = new Stack<String>();
             Interpreter.locale = new HashMap<String, String>();
             Interpreter.en_cours = new Stack<String>();
-            cm = new MemoryChecker(cadre);
+            cm = new MemoryChecker(graphFrame);
             cm.start();
             boolean b = true;
             while (b) {
-                String st = cadre.getKernel().execute(instruction);
+                String st = Logo.kernel.execute(instruction);
                 if (!st.equals(""))
-                    throw new LogoException(cadre, Logo.messages
+                    throw new LogoException(graphFrame, Logo.messages
                             .getString("error.whattodo")
                             + " " + st + " ?");
                 if (Interpreter.actionInstruction.length() == 0) b = false;
@@ -78,14 +78,14 @@ public class Animation extends Thread {
             }
         } catch (LogoException e) {
         }
-        cadre.setCommandEnabled(true);
-        if (!cadre.viewer3DVisible()) cadre.focusCommandLine();
+        graphFrame.editor.setCommandEnabled(true);
+        if (!graphFrame.viewer3DVisible()) graphFrame.editor.focusCommandLine();
         executionLaunched = false;
         cm.setContinuer(false);
-        cadre.error = false;
+        graphFrame.error = false;
         LogoException.lance = false;
-        cadre.scrollPane.getVerticalScrollBar().removeMouseListener(souris);
-        cadre.scrollPane.getHorizontalScrollBar().removeMouseListener(souris);
+        graphFrame.scrollPane.getVerticalScrollBar().removeMouseListener(souris);
+        graphFrame.scrollPane.getHorizontalScrollBar().removeMouseListener(souris);
     }
 
     protected boolean isOnPause() {

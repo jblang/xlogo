@@ -1,7 +1,7 @@
 package xlogo.kernel;
 
-import xlogo.gui.Application;
-import xlogo.gui.Editor;
+import xlogo.gui.GraphFrame;
+import xlogo.gui.EditorFrame;
 import xlogo.utils.LogoException;
 
 import java.awt.*;
@@ -18,13 +18,13 @@ public class Kernel {
     // interpreter the user command and launch primitive and procedure
     private Interpreter interpreter;
     private Workspace wp;
-    private final Application app;
+    private final GraphFrame graphFrame;
     private MP3Player mp3Player;
     private Calculator calculator;
 
-    public Kernel(Application app) {
-        this.app = app;
-        this.wp = new Workspace(app);
+    public Kernel(GraphFrame graphFrame) {
+        this.graphFrame = graphFrame;
+        this.wp = new Workspace(graphFrame);
         initCalculator(-1);
     }
 
@@ -35,7 +35,7 @@ public class Kernel {
 
     public void setWorkspace(Workspace workspace) {
         wp = workspace;
-        app.editor = new Editor(app);
+        //graphFrame.editor = new EditorFrame();
         interpreter.setWorkspace(wp);
     }
 
@@ -44,11 +44,11 @@ public class Kernel {
     }
 
     public void fcfg(Color color) {
-        app.getDrawPanel().setScreenColor(color);
+        graphFrame.getDrawPanel().setScreenColor(color);
     }
 
     public Turtle getActiveTurtle() {
-        return app.getDrawPanel().turtle;
+        return graphFrame.getDrawPanel().turtle;
     }
 
     public Calculator getCalculator() {
@@ -56,31 +56,31 @@ public class Kernel {
     }
 
     public void fcc(Color color) {
-        app.getDrawPanel().setPenColor(color);
+        graphFrame.getDrawPanel().setPenColor(color);
     }
 
     public void vide_ecran() {
-        app.getDrawPanel().clearScreen();
+        graphFrame.getDrawPanel().clearScreen();
     }
 
     public void setNumberOfTurtles(int i) {
-        app.getDrawPanel().setNumberOfTurtles(i);
+        graphFrame.getDrawPanel().setNumberOfTurtles(i);
     }
 
     public void setDrawingQuality(int id) {
-        app.getDrawPanel().setQuality(id);
+        graphFrame.getDrawPanel().setQuality(id);
     }
 
     public Color getScreenBackground() {
-        return app.getDrawPanel().getScreenColor();
+        return graphFrame.getDrawPanel().getScreenColor();
     }
 
     public void change_image_tortue(int i) {
-        app.getDrawPanel().changeTurtleImage(i);
+        graphFrame.getDrawPanel().changeTurtleImage(i);
     }
 
     public void initGraphics() {
-        app.getDrawPanel().initGraphics();
+        graphFrame.getDrawPanel().initGraphics();
     }
 
     public void buildPrimitiveTreemap(int id) {
@@ -92,17 +92,17 @@ public class Kernel {
     }
 
     protected void initCalculator(int s) {
-        calculator = new Calculator(s, app);
+        calculator = new Calculator(s, graphFrame);
 
     }
 
     public void initPrimitive() {
-        primitive = new Primitive(app);
+        primitive = new Primitive(graphFrame);
     }
 
 
-    public void initInterprete() {
-        interpreter = new Interpreter(app);
+    public void initInterpreter() {
+        interpreter = new Interpreter(graphFrame);
     }
 
     /**

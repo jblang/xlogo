@@ -1,7 +1,7 @@
 package xlogo.gui.preferences;
 
-import xlogo.gui.Application;
 import xlogo.Logo;
+import xlogo.gui.EditorFrame;
 import xlogo.gui.MessageTextArea;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ import java.awt.*;
  */
 public class OptionsPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    private final Application cadre;
+    private final EditorFrame editor;
     private final JCheckBox effacer_editeur = new JCheckBox(Logo.messages.getString("effacer_editeur"));
     private final JCheckBox clearVariables = new JCheckBox(Logo.messages.getString("pref.options.eraseVariables"));
     private final GridBagLayout gridBagLayout4 = new GridBagLayout();
@@ -50,8 +50,8 @@ public class OptionsPanel extends JPanel {
     private final JLabel labelTcp = new JLabel(Logo.messages.getString("pref.options.tcp"));
     private final JTextField textTcp = new JTextField(String.valueOf(Logo.config.getTcpPort()));
 
-    protected OptionsPanel(Application cadre) {
-        this.cadre = cadre;
+    protected OptionsPanel(EditorFrame editor) {
+        this.editor = editor;
 
         jc.setSelectedIndex(Logo.config.getPenShape());
         if (Logo.config.isEraseImage())
@@ -148,13 +148,13 @@ public class OptionsPanel extends JPanel {
         Logo.config.setPenColor(b_pencolor.getValue());
         // screencolor
         Logo.config.setScreenColor(b_screencolor.getValue());
-        // Clear screen when we leave editor?
+        // Clear screen when we leave editorFrame?
         Logo.config.setEraseImage(effacer_editeur.isSelected());
         Logo.config.setClearVariables(clearVariables.isSelected());
         // Number of turtles
         try {
             int i = Integer.parseInt(tortues.getText());
-            cadre.getKernel().setNumberOfTurtles(i);
+            Logo.kernel.setNumberOfTurtles(i);
         } catch (NumberFormatException e2) {
         }
 
@@ -162,8 +162,8 @@ public class OptionsPanel extends JPanel {
         try {
             int i = Integer.parseInt(epaisseur.getText());
             Logo.config.setMaxPenWidth(i);
-            if (cadre.getKernel().getActiveTurtle().getPenWidth() * 2 > i) {
-                cadre.getKernel().getActiveTurtle().fixPenWidth(i);
+            if (Logo.kernel.getActiveTurtle().getPenWidth() * 2 > i) {
+                Logo.kernel.getActiveTurtle().fixPenWidth(i);
             }
         } catch (NumberFormatException e1) {
         }
@@ -171,7 +171,7 @@ public class OptionsPanel extends JPanel {
         Logo.config.setPenShape(jc.getSelectedIndex());
         // Quality of drawing
         Logo.config.setDrawQuality(jc_qualite.getSelectedIndex());
-        cadre.getKernel().setDrawingQuality(Logo.config.getDrawQuality());
+        Logo.kernel.setDrawingQuality(Logo.config.getDrawQuality());
         // Si on redimensionne la zone de dessin
         // Resize drawing zone
         try {
@@ -195,7 +195,7 @@ public class OptionsPanel extends JPanel {
                 long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
 //				System.out.println("memoire envisagee "+(total-free+memoire_necessaire-memoire_image));
                 if (total - free + memoire_necessaire - memoire_image < Logo.config.getMemoryLimit() * 0.8) {
-                    cadre.resizeDrawingZone();
+                    editor.graphFrame.resizeDrawingZone();
                 } else {
                     Logo.config.setImageWidth(tmp_largeur);
                     Logo.config.setImageHeight(tmp_hauteur);
@@ -264,6 +264,6 @@ public class OptionsPanel extends JPanel {
         Logo.config.setYAxisEnabled(b);
         Logo.config.setYAxisSpacing(axisPanel.getYAxis());
         Logo.config.setAxisColor(axisPanel.getAxisColor());
-        cadre.getKernel().vide_ecran();
+        Logo.kernel.vide_ecran();
     }
 }
