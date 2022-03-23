@@ -10,11 +10,11 @@ import java.awt.event.ActionListener;
 
 public class GridPanel extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1L;
-    private JCheckBox checkGrid;
-    private JLabel labelXGrid;
-    private JLabel labelYGrid;
-    private JTextField jtXGrid;
-    private JTextField jtYGrid;
+    private JCheckBox gridEnabled;
+    private JLabel xSpacingLabel;
+    private JLabel ySpacingLabel;
+    private JTextField xSpacing;
+    private JTextField ySpacing;
     private ColorPanel colorPanelGrid;
 
     GridPanel() {
@@ -22,11 +22,11 @@ public class GridPanel extends JPanel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        boolean b = checkGrid.isSelected();
-        jtXGrid.setEnabled(b);
-        jtYGrid.setEnabled(b);
-        labelXGrid.setEnabled(b);
-        labelYGrid.setEnabled(b);
+        boolean b = gridEnabled.isSelected();
+        xSpacing.setEnabled(b);
+        ySpacing.setEnabled(b);
+        xSpacingLabel.setEnabled(b);
+        ySpacingLabel.setEnabled(b);
         colorPanelGrid.setEnabled(b);
     }
 
@@ -36,7 +36,7 @@ public class GridPanel extends JPanel implements ActionListener {
 
     protected int getXGrid() {
         try {
-            int x = Integer.parseInt(jtXGrid.getText());
+            int x = Integer.parseInt(xSpacing.getText());
             return x;
         } catch (NumberFormatException e) {
             return 20;
@@ -45,7 +45,7 @@ public class GridPanel extends JPanel implements ActionListener {
 
     protected int getYGrid() {
         try {
-            int x = Integer.parseInt(jtYGrid.getText());
+            int x = Integer.parseInt(ySpacing.getText());
             return x;
         } catch (NumberFormatException e) {
             return 20;
@@ -53,44 +53,45 @@ public class GridPanel extends JPanel implements ActionListener {
     }
 
     protected boolean gridVisible() {
-        return checkGrid.isSelected();
+        return gridEnabled.isSelected();
     }
 
     private void initGui() {
-        checkGrid = new JCheckBox(Logo.messages.getString("active_grid"));
-        checkGrid.setSelected(Logo.config.isGridEnabled());
-        labelXGrid = new JLabel(Logo.messages.getString("xgrid"));
-        labelYGrid = new JLabel(Logo.messages.getString("ygrid"));
-        jtXGrid = new JTextField(String.valueOf(Logo.config.getXGridSpacing()));
-        jtYGrid = new JTextField(String.valueOf(Logo.config.getYGridSpacing()));
+        gridEnabled = new JCheckBox(Logo.messages.getString("active_grid"));
+        gridEnabled.setSelected(Logo.config.isGridEnabled());
+        xSpacingLabel = new JLabel(Logo.messages.getString("xgrid"));
+        ySpacingLabel = new JLabel(Logo.messages.getString("ygrid"));
+        xSpacing = new JTextField(String.valueOf(Logo.config.getXGridSpacing()));
+        ySpacing = new JTextField(String.valueOf(Logo.config.getYGridSpacing()));
         colorPanelGrid = new ColorPanel(new Color(Logo.config.getGridColor()));
         setLayout(new GridBagLayout());
-        add(checkGrid, new GridBagConstraints(0, 0, 1, 1, 0.3, 1.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        add(colorPanelGrid, new GridBagConstraints(0, 1, 1, 1, 0.3, 1.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        add(labelXGrid, new GridBagConstraints(1, 0, 1, 1, 0.25, 1.0,
-                GridBagConstraints.EAST, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        add(jtXGrid, new GridBagConstraints(2, 0, 1, 1, 0.25, 1.0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        add(labelYGrid, new GridBagConstraints(1, 1, 1, 1, 0.25, 1.0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        add(jtYGrid, new GridBagConstraints(2, 1, 1, 1, 0.25, 1.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(10, 10, 0, 10), 0, 0));
-        labelXGrid.setEnabled(Logo.config.isGridEnabled());
-        labelYGrid.setEnabled(Logo.config.isGridEnabled());
-        jtXGrid.setEnabled(Logo.config.isGridEnabled());
-        jtYGrid.setEnabled(Logo.config.isGridEnabled());
+        var standard = new Insets(1, 1, 1, 1);
+        add(gridEnabled, new GridBagConstraints(0, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        add(xSpacingLabel, new GridBagConstraints(1, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        add(xSpacing, new GridBagConstraints(2, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        add(ySpacingLabel, new GridBagConstraints(3, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        add(ySpacing, new GridBagConstraints(4, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        add(colorPanelGrid, new GridBagConstraints(5, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        xSpacingLabel.setEnabled(Logo.config.isGridEnabled());
+        ySpacingLabel.setEnabled(Logo.config.isGridEnabled());
+        xSpacing.setEnabled(Logo.config.isGridEnabled());
+        ySpacing.setEnabled(Logo.config.isGridEnabled());
         colorPanelGrid.setEnabled(Logo.config.isGridEnabled());
 
         TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("draw_grid"));
         setBorder(tb);
-        checkGrid.addActionListener(this);
+        gridEnabled.addActionListener(this);
     }
 }

@@ -1,12 +1,10 @@
 package xlogo.gui.preferences;
 
-import xlogo.gui.Application;
 import xlogo.Logo;
+import xlogo.gui.Application;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Title :        XLogo
@@ -15,90 +13,65 @@ import java.awt.event.ActionListener;
  *
  * @author Loïc Le Coq
  */
-public class PreferencesDialog extends JDialog implements ActionListener {
-    private static final long serialVersionUID = 1L;
+public class PreferencesDialog extends JDialog {
     private final Application app;
-    private final JButton bouton_OK = new JButton(Logo.messages.getString("pref.ok"));
-    private final JButton bouton_CANCEL = new JButton(Logo.messages.getString("pref.cancel"));
-    private final JPanel panneau_bouton = new JPanel();
-
-    private final JTabbedPane jt = new JTabbedPane();
-
-    private final JScrollPane jsTurtles = new JScrollPane();
-    private final JScrollPane jsOptions = new JScrollPane();
     private GeneralPanel generalPanel;
-    private TurtlesPanel panel_Turtles;
+    private TurtlesPanel turtlesPanel;
     private SoundPanel soundPanel;
-    private OptionsPanel panel_Options;
-    private FontPanel fontPanel;
-    private HighlighterPanel highlighterPanel;
+    private OptionsPanel optionsPanel;
+    private EditorPanel editorPanel;
 
     public PreferencesDialog(Application app) {
         super(app);
         this.app = app;
-        try {
-            initGui();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        initGui();
     }
 
-    private void initGui() throws Exception {
+    private void initGui() {
         setModal(false);
         setResizable(true);
-        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        setLocation(100, 100);
-        // Init all Panels
+        setTitle("Preferences");
+        getContentPane().setLayout(new BorderLayout());
+
         generalPanel = new GeneralPanel(app);
-        panel_Options = new OptionsPanel(app);
+        turtlesPanel = new TurtlesPanel(app);
+        optionsPanel = new OptionsPanel(app);
         soundPanel = new SoundPanel(app);
-        fontPanel = new FontPanel(app);
-        highlighterPanel = new HighlighterPanel(app);
+        editorPanel = new EditorPanel(app);
 
-        this.setTitle("");
-        this.getContentPane().setLayout(new BorderLayout());
+        var turtlesPane = new JScrollPane(turtlesPanel);
+        var optionsPane = new JScrollPane(optionsPanel);
+        var editorPane = new JScrollPane(editorPanel);
 
-        jt.add(generalPanel, Logo.messages.getString("pref.general"));
+        var tabs = new JTabbedPane();
+        tabs.add(generalPanel, Logo.messages.getString("pref.general"));
+        tabs.add(turtlesPane, Logo.messages.getString("pref.turtles"));
+        tabs.add(optionsPane, Logo.messages.getString("pref.options"));
+        tabs.add(editorPane, Logo.messages.getString("editeur"));
+        tabs.add(soundPanel, Logo.messages.getString("pref.sound"));
+        getContentPane().add(tabs, BorderLayout.CENTER);
 
-        if (!app.getDrawPanel().enabled3D()) {
-            panel_Turtles = new TurtlesPanel(app);
-            jsTurtles.getViewport().add(panel_Turtles);
-            jt.add(jsTurtles, Logo.messages.getString("pref.turtles"));
-        }
+        var okButton = new JButton(Logo.messages.getString("pref.ok"));
+        okButton.addActionListener(e -> updateAndClose());
+        var cancelButton = new JButton(Logo.messages.getString("pref.cancel"));
+        cancelButton.addActionListener(e -> dispose());
 
-        jsOptions.getViewport().add(panel_Options);
-        jt.add(jsOptions, Logo.messages.getString("pref.options"));
+        var buttonPanel = new JPanel();
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
-        jt.add(soundPanel, Logo.messages.getString("pref.sound"));
-        jt.add(fontPanel, Logo.messages.getString("pref.font"));
-
-        JScrollPane js_coloration = new JScrollPane(highlighterPanel);
-        jt.add(js_coloration, Logo.messages.getString("pref.highlight"));
-
-        getContentPane().add(jt, BorderLayout.CENTER);
-
-        panneau_bouton.add(bouton_CANCEL);
-        panneau_bouton.add(bouton_OK);
-        getContentPane().add(panneau_bouton, BorderLayout.SOUTH);
-        bouton_OK.addActionListener(this);
-        bouton_CANCEL.addActionListener(this);
-        setVisible(true);
         pack();
-
-
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
-    public void actionPerformed(ActionEvent e) {
-        app.closePreferences();
-        if (e.getActionCommand().equals(Logo.messages.getString("pref.ok"))) {
-            generalPanel.update();
-            if (null != panel_Turtles) panel_Turtles.update();
-            panel_Options.update();
-            soundPanel.update();
-            fontPanel.update();
-            highlighterPanel.update();
-            dispose();
-        } else
-            dispose();
+    public void updateAndClose() {
+        editorPanel.update();
+        generalPanel.update();
+        turtlesPanel.update();
+        optionsPanel.update();
+        soundPanel.update();
+        dispose();
     }
 }

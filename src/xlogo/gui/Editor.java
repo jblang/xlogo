@@ -3,7 +3,8 @@ package xlogo.gui;
 import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
-import org.fife.ui.rsyntaxtextarea.*;
+import org.fife.ui.rsyntaxtextarea.ErrorStrip;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.*;
 import xlogo.Logo;
 import xlogo.kernel.Procedure;
@@ -17,8 +18,6 @@ import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.print.PrinterException;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import static xlogo.utils.Utils.createButton;
 
@@ -34,8 +33,8 @@ import static xlogo.utils.Utils.createButton;
  *
  *  */
 public class Editor extends JFrame implements SearchListener {
+    RSyntaxTextArea textArea;
     private boolean editable = true;
-    private RSyntaxTextArea textArea;
     private ReplaceDialog replaceDialog;
     private JTextField mainCommand;
 
@@ -115,19 +114,6 @@ public class Editor extends JFrame implements SearchListener {
 
     private void initTextArea() {
         textArea = new RSyntaxTextArea(25, 80);
-        // Register syntax highlighter
-        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
-        atmf.putMapping("text/logo", "xlogo.gui.LogoTokenMaker");
-        textArea.setSyntaxEditingStyle("text/logo");
-        textArea.setCodeFoldingEnabled(true);
-        InputStream in = getClass().
-                getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/monokai.xml");
-        try {
-            Theme theme = Theme.load(in);
-            theme.apply(textArea);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
         var scrollPane = new RTextScrollPane(textArea);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
         ErrorStrip errorStrip = new ErrorStrip(textArea);
@@ -172,7 +158,7 @@ public class Editor extends JFrame implements SearchListener {
     private void cancelEdits() {
         clearText();
         setVisible(false);
-        if (Logo.config.isEraseImage()) {
+        if (Logo.config.getEraseImage()) {
             LogoException.lance = true;
             app.error = true;
             while (!app.isCommandEditable()) {
@@ -212,7 +198,7 @@ public class Editor extends JFrame implements SearchListener {
         }
         setVisible(visible);
         app.focusCommandLine();
-        if (Logo.config.isEraseImage()) { //Effacer la zone de dessin
+        if (Logo.config.getEraseImage()) { //Effacer la zone de dessin
             LogoException.lance = true;
             app.error = true;
             try {
@@ -222,7 +208,7 @@ public class Editor extends JFrame implements SearchListener {
             app.getKernel().vide_ecran();
             app.focusCommandLine();
         }
-        if (Logo.config.isClearVariables()) {
+        if (Logo.config.getClearVariables()) {
             // Interrupt any running programs
             LogoException.lance = true;
             app.error = true;

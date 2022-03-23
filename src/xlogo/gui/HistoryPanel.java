@@ -1,7 +1,6 @@
 package xlogo.gui;
 
 import xlogo.Logo;
-import xlogo.gui.preferences.FontPanel;
 import xlogo.utils.ExtensionFilter;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
@@ -22,7 +21,7 @@ import java.io.IOException;
  * @author Loïc Le Coq
  */
 public class HistoryPanel extends JPanel {
-    public static int printFontId = FontPanel.getFontId(Logo.config.getFont());
+    public static int printFontId = Application.getFontId(Logo.config.getFont());
     private final JScrollPane scrollPane = new JScrollPane();
     private final HistoryTextPane textPane = new HistoryTextPane();
     private final StyledDocument document;
@@ -119,7 +118,7 @@ public class HistoryPanel extends JPanel {
     }
 
     public void setFontNumber(int id) {
-        StyleConstants.setFontFamily(primitive, FontPanel.fonts[id].getName());
+        StyleConstants.setFontFamily(primitive, Application.fonts[id].getName());
     }
 
     public void setBold(boolean b) {
@@ -171,7 +170,7 @@ public class HistoryPanel extends JPanel {
     }
 
     public Font getFont() {
-        return FontPanel.fonts[HistoryPanel.printFontId].deriveFont(Font.BOLD, (float) fontSize);
+        return Application.fonts[HistoryPanel.printFontId].deriveFont(Font.BOLD, (float) fontSize);
     }
 
     public void setFont(Font font, int size) {

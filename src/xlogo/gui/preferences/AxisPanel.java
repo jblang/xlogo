@@ -10,35 +10,35 @@ import java.awt.event.ActionListener;
 
 public class AxisPanel extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1L;
-    private JCheckBox checkXAxis;
-    private JCheckBox checkYAxis;
-    private JLabel labelXAxis;
-    private JLabel labelYAxis;
-    private JTextField jtXAxis;
-    private JTextField jtYAxis;
-    private ColorPanel panelAxisColor;
+    private JCheckBox xAxisEnabled;
+    private JCheckBox yAxisEnabled;
+    private JLabel xAxisLabel;
+    private JLabel yAxisLabel;
+    private JTextField xAxisSpacing;
+    private JTextField yAxisSpacing;
+    private ColorPanel axisColor;
 
     AxisPanel() {
         initGui();
     }
 
     public void actionPerformed(ActionEvent e) {
-        boolean b1 = checkXAxis.isSelected();
-        boolean b2 = checkYAxis.isSelected();
-        labelXAxis.setEnabled(b1);
-        labelYAxis.setEnabled(b2);
-        jtXAxis.setEnabled(b1);
-        jtYAxis.setEnabled(b2);
-        panelAxisColor.setEnabled(b1 || b2);
+        boolean b1 = xAxisEnabled.isSelected();
+        boolean b2 = yAxisEnabled.isSelected();
+        xAxisLabel.setEnabled(b1);
+        yAxisLabel.setEnabled(b2);
+        xAxisSpacing.setEnabled(b1);
+        yAxisSpacing.setEnabled(b2);
+        axisColor.setEnabled(b1 || b2);
     }
 
     protected int getAxisColor() {
-        return panelAxisColor.getValue().getRGB();
+        return axisColor.getValue().getRGB();
     }
 
     protected int getXAxis() {
         try {
-            int x = Integer.parseInt(jtXAxis.getText());
+            int x = Integer.parseInt(xAxisSpacing.getText());
             return x;
         } catch (NumberFormatException e) {
             return 30;
@@ -47,7 +47,7 @@ public class AxisPanel extends JPanel implements ActionListener {
 
     protected int getYAxis() {
         try {
-            int x = Integer.parseInt(jtYAxis.getText());
+            int x = Integer.parseInt(yAxisSpacing.getText());
             return x;
         } catch (NumberFormatException e) {
             return 30;
@@ -55,55 +55,55 @@ public class AxisPanel extends JPanel implements ActionListener {
     }
 
     protected boolean xAxisVisible() {
-        return checkXAxis.isSelected();
+        return xAxisEnabled.isSelected();
     }
 
     protected boolean yAxisVisible() {
-        return checkYAxis.isSelected();
+        return yAxisEnabled.isSelected();
     }
 
     private void initGui() {
-        checkXAxis = new JCheckBox(Logo.messages.getString("active_xaxis"));
-        checkXAxis.setSelected(Logo.config.isXAxisEnabled());
-        checkYAxis = new JCheckBox(Logo.messages.getString("active_yaxis"));
-        checkYAxis.setSelected(Logo.config.isYAxisEnabled());
-        labelXAxis = new JLabel(Logo.messages.getString("pas"));
-        labelYAxis = new JLabel(Logo.messages.getString("pas"));
-        jtXAxis = new JTextField(String.valueOf(Logo.config.getXAxisSpacing()));
-        jtYAxis = new JTextField(String.valueOf(Logo.config.getYAxisSpacing()));
-        panelAxisColor = new ColorPanel(new Color(Logo.config.getAxisColor()));
-        setLayout(new GridBagLayout());
-        add(checkXAxis, new GridBagConstraints(0, 0, 1, 1, 0.3, 1.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        add(labelXAxis, new GridBagConstraints(1, 0, 1, 1, 0.25, 1.0,
-                GridBagConstraints.EAST, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        add(jtXAxis, new GridBagConstraints(2, 0, 1, 1, 0.25, 1.0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        add(checkYAxis, new GridBagConstraints(0, 1, 1, 1, 0.3, 1.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        add(labelYAxis, new GridBagConstraints(1, 1, 1, 1, 0.25, 1.0,
-                GridBagConstraints.EAST, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        add(jtYAxis, new GridBagConstraints(2, 1, 1, 1, 0.25, 1.0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        add(panelAxisColor, new GridBagConstraints(0, 2, 1, 1, 0.3, 1.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                new Insets(10, 10, 10, 10), 0, 0));
-        labelXAxis.setEnabled(Logo.config.isXAxisEnabled());
-        labelYAxis.setEnabled(Logo.config.isYAxisEnabled());
-        jtXAxis.setEnabled(Logo.config.isXAxisEnabled());
-        jtYAxis.setEnabled(Logo.config.isYAxisEnabled());
-        panelAxisColor.setEnabled(Logo.config.isXAxisEnabled() || Logo.config.isYAxisEnabled());
+        setBorder(BorderFactory.createTitledBorder(Logo.messages.getString("title_axis")));
 
-        TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("title_axis"));
-        setBorder(tb);
-        checkXAxis.addActionListener(this);
-        checkYAxis.addActionListener(this);
+        xAxisEnabled = new JCheckBox(Logo.messages.getString("active_xaxis"));
+        xAxisEnabled.setSelected(Logo.config.isXAxisEnabled());
+        yAxisEnabled = new JCheckBox(Logo.messages.getString("active_yaxis"));
+        yAxisEnabled.setSelected(Logo.config.isYAxisEnabled());
+        xAxisLabel = new JLabel(Logo.messages.getString("pas"));
+        yAxisLabel = new JLabel(Logo.messages.getString("pas"));
+        xAxisSpacing = new JTextField(String.valueOf(Logo.config.getXAxisSpacing()));
+        yAxisSpacing = new JTextField(String.valueOf(Logo.config.getYAxisSpacing()));
+        axisColor = new ColorPanel(new Color(Logo.config.getAxisColor()));
+        setLayout(new GridBagLayout());
+        var standard = new Insets(1, 1, 1, 1);
+        add(xAxisEnabled, new GridBagConstraints(0, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        add(xAxisLabel, new GridBagConstraints(1, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        add(xAxisSpacing, new GridBagConstraints(2, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        add(yAxisEnabled, new GridBagConstraints(3, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        add(yAxisLabel, new GridBagConstraints(4, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        add(yAxisSpacing, new GridBagConstraints(5, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        add(axisColor, new GridBagConstraints(6, 0, 1, 1, 0.25, 1.0,
+                GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                standard, 0, 0));
+        xAxisLabel.setEnabled(Logo.config.isXAxisEnabled());
+        yAxisLabel.setEnabled(Logo.config.isYAxisEnabled());
+        xAxisSpacing.setEnabled(Logo.config.isXAxisEnabled());
+        yAxisSpacing.setEnabled(Logo.config.isYAxisEnabled());
+        axisColor.setEnabled(Logo.config.isXAxisEnabled() || Logo.config.isYAxisEnabled());
+        xAxisEnabled.addActionListener(this);
+        yAxisEnabled.addActionListener(this);
     }
 
 

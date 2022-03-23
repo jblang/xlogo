@@ -12,7 +12,6 @@ import xlogo.Logo;
 import xlogo.gui.HistoryPanel;
 import xlogo.gui.InputFrame;
 import xlogo.gui.MessageTextArea;
-import xlogo.gui.preferences.FontPanel;
 import xlogo.kernel.gui.GuiButton;
 import xlogo.kernel.gui.GuiMenu;
 import xlogo.kernel.network.NetworkClientChat;
@@ -1851,7 +1850,7 @@ public class LaunchPrimitive {
                     try {
                         int int_police = kernel.getCalculator().getInteger(param.get(0));
                         cadre.getDrawPanel().drawingFont = int_police
-                                % FontPanel.fonts.length;
+                                % Application.fonts.length;
                     } catch (LogoException e) {
                     }
                     break;
@@ -1860,14 +1859,14 @@ public class LaunchPrimitive {
                     Interpreter.calcul.push("[ "
                             + cadre.getDrawPanel().drawingFont
                             + " [ "
-                            + FontPanel.fonts[cadre.getDrawPanel().drawingFont]
+                            + Application.fonts[cadre.getDrawPanel().drawingFont]
                             .getFontName() + " ] ] ");
                     break;
                 case 151: // fnpt fixenompolicetexte
                     try {
                         int int_police = kernel.getCalculator().getInteger(param.get(0));
                         HistoryPanel.printFontId = int_police
-                                % FontPanel.fonts.length;
+                                % Application.fonts.length;
                         cadre.getHistoryPanel().setFontNumber(int_police);
                     } catch (LogoException e) {
                     }
@@ -1878,7 +1877,7 @@ public class LaunchPrimitive {
                     Interpreter.calcul.push("[ "
                             + HistoryPanel.printFontId
                             + " [ "
-                            + FontPanel.fonts[HistoryPanel.printFontId]
+                            + Application.fonts[HistoryPanel.printFontId]
                             .getFontName() + " ] ] ");
                     break;
                 case 153: // listeflux
@@ -2831,7 +2830,7 @@ public class LaunchPrimitive {
                     Logo.config.setFont(new Font("dialog", Font.PLAIN, 12));
                     kernel.getActiveTurtle().police = 12;
                     cadre.getDrawPanel().setGraphicsFont(Logo.config.getFont());
-                    HistoryPanel.printFontId = FontPanel.getFontId(Logo.config.getFont());
+                    HistoryPanel.printFontId = Application.getFontId(Logo.config.getFont());
                     cadre.getHistoryPanel().setFontSize(12);
                     cadre.getHistoryPanel().setFontNumber(HistoryPanel.printFontId);
                     cadre.getHistoryPanel().setTextColor(Color.black);

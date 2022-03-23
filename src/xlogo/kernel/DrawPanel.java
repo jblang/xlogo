@@ -4,7 +4,6 @@ import com.sun.j3d.utils.geometry.Text2D;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.Application;
-import xlogo.gui.preferences.FontPanel;
 import xlogo.kernel.gui.GuiButton;
 import xlogo.kernel.gui.GuiComponent;
 import xlogo.kernel.gui.GuiMap;
@@ -1599,7 +1598,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             g.fill(s);
             if (record3D == DrawPanel.RECORD_3D_TEXT) {
                 Text2D text = new Text2D(
-                        mot, new Color3f(turtle.penColor), FontPanel.fonts[drawingFont].getName(),
+                        mot, new Color3f(turtle.penColor), Application.fonts[drawingFont].getName(),
                         turtle.police, Font.PLAIN);
                 text.setRectangleScaleFactor(0.001f);
                 Appearance appear = text.getAppearance();
@@ -1626,7 +1625,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
         g.setPaintMode();
         g.setColor(turtle.penColor);
-        Font f = FontPanel.fonts[drawingFont]
+        Font f = Application.fonts[drawingFont]
                 .deriveFont((float) turtle.police);
         g.setFont(f);
         g.translate(x, y);

@@ -17,7 +17,7 @@ import java.awt.*;
  */
 public class GeneralPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    private final Application cadre;
+    private final Application app;
 
     private final JList jl_langues = new JList(Logo.translationLanguage); //Pour les différentes langues
     private final JScrollPane js_langues = new JScrollPane(jl_langues);
@@ -33,8 +33,8 @@ public class GeneralPanel extends JPanel {
     private final JLabel rapide = new JLabel(Logo.messages.getString("pref.general.fast"));
     private final JSlider jSlider1 = new JSlider(0, 100);
 
-    protected GeneralPanel(Application cadre) {
-        this.cadre = cadre;
+    protected GeneralPanel(Application app) {
+        this.app = app;
         initGui();
     }
 
@@ -147,18 +147,27 @@ public class GeneralPanel extends JPanel {
         int indicateur = jl_langues.getSelectedIndex();
 
         if (indicateur != Logo.config.getLanguage() && indicateur != -1) {
-            cadre.changeLanguage(indicateur);
+            app.changeLanguage(indicateur);
         }
         // Turtle Speed
         Logo.config.setTurtleSpeed(jSlider1.getMaximum() - jSlider1.getValue());
         if (nativeLaf.isSelected()) {
-            Logo.config.setLookAndFeel(Logo.config.LAF_NATIVE);
+            if (Logo.config.getLookAndFeel() != Config.LAF_NATIVE) {
+                Logo.config.setLookAndFeel(Config.LAF_NATIVE);
+                Logo.config.loadLightEditorTheme();
+            }
         } else if (lightLaf.isSelected()) {
-            Logo.config.setLookAndFeel(Logo.config.LAF_LIGHT);
+            if (Logo.config.getLookAndFeel() != Config.LAF_LIGHT) {
+                Logo.config.setLookAndFeel(Config.LAF_LIGHT);
+                Logo.config.loadLightEditorTheme();
+            }
         } else if (darkLaf.isSelected()) {
-            Logo.config.setLookAndFeel(Logo.config.LAF_DARK);
+            if (Logo.config.getLookAndFeel() != Config.LAF_DARK) {
+                Logo.config.setLookAndFeel(Config.LAF_DARK);
+                Logo.config.loadDarkEditorTheme();
+            }
         }
-        cadre.changeLookAndFeel();
+        app.changeLookAndFeel();
     }
 
     class Contenu extends JLabel implements ListCellRenderer {

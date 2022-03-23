@@ -9,10 +9,8 @@ package xlogo.gui;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.Theme;
 import xlogo.Config;
 import xlogo.Logo;
-import xlogo.gui.preferences.FontPanel;
 import xlogo.gui.preferences.PreferencesDialog;
 import xlogo.gui.translation.UiTranslator;
 import xlogo.kernel.*;
@@ -27,7 +25,6 @@ import javax.help.CSH;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -37,7 +34,6 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Stack;
@@ -45,10 +41,11 @@ import java.util.Stack;
 import static xlogo.utils.Utils.createButton;
 
 public class Application extends JFrame {
+    public static final Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
     private static final double ZOOM_FACTOR = 1.25;
     private static final Stack<String> historyStack = new Stack<>();
     public static String path = null;
-    public static int fontId = FontPanel.getFontId(Logo.config.getFont());
+    public static int fontId = getFontId(Logo.config.getFont());
     // Interpreter and drawPanel
     private final Kernel kernel;
     // UI Elements
@@ -59,7 +56,6 @@ public class Application extends JFrame {
     private final CommandKeyAdapter commandKeyAdapter = new CommandKeyAdapter();
     private final ArrayList<JMenuItem> menuItems = new ArrayList<>();
     private final JLabel commandLabel = new JLabel();
-    private final EditPopupMenu popupMenu = new EditPopupMenu(commandLine);
     public String tempPath = null; // When opening a file
     public boolean error = false;
     public Editor editor;
@@ -75,11 +71,10 @@ public class Application extends JFrame {
     private JMenuItem fileNewMenuItem;
     private JMenuItem fileSaveMenuItem;
     // Dialog boxes available in menu
-    private PreferencesDialog preferencesDialog = null;
-    private StartupFileDialog startupDialog = null;
-    private ProcedureEraser procedureEraser = null;
-    private CodeTranslator codeTranslator = null;
-    private UiTranslator uiTranslator = null;
+    private StartupFileDialog startupDialog;
+    private ProcedureEraser procedureEraser;
+    private CodeTranslator codeTranslator;
+    private UiTranslator uiTranslator;
     private Viewer3D viewer3D = null;
 
     /**
@@ -91,25 +86,22 @@ public class Application extends JFrame {
         resizeDrawingZone();
         kernel.initInterprete();
         editor = new Editor(this);
-        commandLine.setSyntaxEditingStyle("text/logo");
-        commandLine.setHighlightCurrentLine(false);
-        InputStream in = getClass().
-                getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/monokai.xml");
-        try {
-            Theme theme = Theme.load(in);
-            theme.apply(commandLine);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        //commandLine.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), null);
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         setTitle("XLogo");
         setIconImage(Logo.getAppIcon().getImage());
         createMenuBar();
         createContent();
         updateLocalization();
+        changeLookAndFeel();
         pack();
         setLocationRelativeTo(null);
+    }
+
+    static public int getFontId(Font font) {
+        for (int i = 0; i < fonts.length; i++) {
+            if (fonts[i].getFontName().equals(font.getFontName())) return i;
+        }
+        return 0;
     }
 
     private JMenu createMenu(JMenuItem parent, String key) {
@@ -212,8 +204,6 @@ public class Application extends JFrame {
 
         commandLine.setPreferredSize(new Dimension(300, 18 * Logo.config.getFont().getSize() / 10));
         commandLine.setAlignmentY(JComponent.CENTER_ALIGNMENT);
-        MouseListener popupListener = new PopupListener();
-        commandLine.addMouseListener(popupListener);
         commandLine.addKeyListener(commandKeyAdapter);
 
         splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -423,16 +413,7 @@ public class Application extends JFrame {
     }
 
     void showPreferences() {
-        if (editor.isVisible()) showCloseEditor();
-        else if (null == preferencesDialog) {
-            SwingUtilities.invokeLater(() -> {
-                preferencesDialog = new PreferencesDialog(getApp());
-                preferencesDialog.setBounds(100, 100, 600, 580);
-                preferencesDialog.setVisible(true);
-            });
-        } else {
-            preferencesDialog.requestFocus();
-        }
+        new PreferencesDialog(this);
     }
 
     private void showHelp(ActionEvent e) {
@@ -583,15 +564,6 @@ public class Application extends JFrame {
     // change language for the interface
     // change la langue de l'interface
 
-    /**
-     * Close the preference dialog box
-     */
-    public void closePreferences() {
-        preferencesDialog = null;
-    }
-    // Change font for the interface
-    // Change la police de l'interface
-
     public void closeUiTranslator() {
         uiTranslator = null;
     }
@@ -669,6 +641,9 @@ public class Application extends JFrame {
             }
             SwingUtilities.updateComponentTreeUI(this);
             editor.changeLookAndFeel();
+            Logo.config.configureEditor(commandLine);
+            commandLine.setHighlightCurrentLine(false);
+            Logo.config.configureEditor(editor.textArea);
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -1057,28 +1032,6 @@ public class Application extends JFrame {
             } else {
                 if (ch != 65535) key = ch;
                 else key = -code;
-            }
-        }
-    }
-
-    /**
-     * The Mouse popup Menu
-     *
-     * @author loic
-     */
-    class PopupListener extends MouseAdapter {
-
-        public void mousePressed(MouseEvent e) {
-            maybeShowPopup(e);
-        }
-
-        public void mouseReleased(MouseEvent e) {
-            maybeShowPopup(e);
-        }
-
-        private void maybeShowPopup(MouseEvent e) {
-            if (e.isPopupTrigger()) {
-                popupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         }
     }

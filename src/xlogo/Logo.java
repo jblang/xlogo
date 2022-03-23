@@ -9,6 +9,8 @@ package xlogo;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import xlogo.gui.Application;
 import xlogo.gui.LanguageSelection;
 import xlogo.kernel.Animation;
@@ -72,7 +74,6 @@ public class Logo {
         // Initialize frame
         SwingUtilities.invokeLater(() -> {
             frame = new Application();
-            frame.changeLookAndFeel();
             frame.setVisible(true);
             //On vérifie que la taille mémoire est suffisante pour créer l'image de dessin
             // Checking that we have enough memory to create the image
@@ -195,7 +196,10 @@ public class Logo {
         config.getStartupFiles().addAll(Arrays.asList(args));
         config.getStartupFiles().add(0, "#####");
 
-        //try{;
+        // Register syntax highlighter
+        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
+        atmf.putMapping("text/logo", "xlogo.gui.LogoTokenMaker");
+
         new Logo();
     }
 
@@ -347,7 +351,6 @@ public class Logo {
             dec.close();
             fis.close();
        } catch (Exception e) {
-            e.printStackTrace();
             try {
                 UIManager.setLookAndFeel(new FlatDarkLaf());
             } catch (UnsupportedLookAndFeelException ex) {
@@ -366,7 +369,6 @@ public class Logo {
             logo.select.dispose();
             generateLanguage(config.getLanguage());
         }
-        // Verify that all values are in valid range
     }
 
     /**

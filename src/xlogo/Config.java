@@ -7,7 +7,12 @@
  */
 package xlogo;
 
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.Theme;
+
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -63,15 +68,6 @@ public class Config {
     private String startupCommand = "";
     private String defaultFolder = System.getProperty("user.home");
     private ArrayList<String> startupFiles = new ArrayList<>();
-    private int syntaxPrimitiveColor = new Color(0, 128, 0).getRGB();
-    private int syntaxPrimitiveStyle = Font.PLAIN;
-    private int syntaxOperandColor = Color.BLUE.getRGB();
-    private int syntaxOperandStyle = Font.PLAIN;
-    private int syntaxCommentColor = Color.GRAY.getRGB();
-    private int syntaxCommentStyle = Font.PLAIN;
-    private int syntaxBracketColor = Color.RED.getRGB();
-    private int syntaxBracketStyle = Font.BOLD;
-    private boolean syntaxHighlightingEnabled = true;
     private boolean gridEnabled = false;
     private int xGridSpacing = 20;
     private int yGridSpacing = 20;
@@ -83,6 +79,22 @@ public class Config {
     private int yAxisSpacing = 30;
     private Font font = new Font("dialog", Font.PLAIN, 12);
     private int tcpPort = 1948;
+
+    // Editor settings
+    private boolean syntaxHighlightingEnabled = true;
+    private Theme editorTheme = new Theme(new RSyntaxTextArea());
+    private int tabSize = RSyntaxTextArea.getDefaultTabSize();
+    private boolean tabsEmulated = true;
+    private boolean paintTabLines = false;
+    private boolean marginLineEnabled = false;
+    private int marginLinePosition = RSyntaxTextArea.getDefaultMarginLinePosition();
+    private boolean whitespaceVisible = false;
+    private boolean eolMarkersVisible = false;
+    private boolean highlightCurrentLine = true;
+    private boolean bracketMatchingEnabled = true;
+    private boolean hyperlinksEnabled = true;
+    private boolean antiAliasingEnabled = true;
+    private boolean fractionalFontMetricsEnabled = false;
 
     /**
      * The quality of drawing
@@ -176,7 +188,7 @@ public class Config {
     /**
      * Indicates whether the drawing area has to be cleaned when the editor is left.
      */
-    public boolean isEraseImage() {
+    public boolean getEraseImage() {
         return eraseImage;
     }
 
@@ -187,7 +199,7 @@ public class Config {
     /**
      * Indicates whether variables are deleted when closing the editor.
      */
-    public boolean isClearVariables() {
+    public boolean getClearVariables() {
         return clearVariables;
     }
 
@@ -288,102 +300,161 @@ public class Config {
     }
 
     /**
-     * Syntax Highlighting: Color for primitives
+     * Defines the syntax highlighting for the editor
      */
-    public int getSyntaxPrimitiveColor() {
-        return syntaxPrimitiveColor;
+    public Theme getEditorTheme() {
+        return editorTheme;
     }
 
-    public void setSyntaxPrimitiveColor(int syntaxPrimitiveColor) {
-        this.syntaxPrimitiveColor = syntaxPrimitiveColor;
+    public void setEditorTheme(Theme theme) {
+        this.editorTheme = theme;
     }
 
-    /**
-     * Syntax Highlighting: Style for primitives
-     */
-    public int getSyntaxPrimitiveStyle() {
-        return syntaxPrimitiveStyle;
+    public int getTabSize() {
+        return tabSize;
     }
 
-    public void setSyntaxPrimitiveStyle(int syntaxPrimitiveStyle) {
-        this.syntaxPrimitiveStyle = syntaxPrimitiveStyle;
+    public void setTabSize(int tabSize) {
+        this.tabSize = tabSize;
     }
 
-    /**
-     * Syntax Highlighting: Color for operands: numbers....
-     */
-    public int getSyntaxOperandColor() {
-        return syntaxOperandColor;
+    public boolean isTabsEmulated() {
+        return tabsEmulated;
     }
 
-    public void setSyntaxOperandColor(int syntaxOperandColor) {
-        this.syntaxOperandColor = syntaxOperandColor;
+    public void setTabsEmulated(boolean tabsEmulated) {
+        this.tabsEmulated = tabsEmulated;
     }
 
-    /**
-     * Syntax Highlighting: Style for operands
-     */
-    public int getSyntaxOperandStyle() {
-        return syntaxOperandStyle;
+    public boolean isPaintTabLines() {
+        return paintTabLines;
     }
 
-    public void setSyntaxOperandStyle(int syntaxOperandStyle) {
-        this.syntaxOperandStyle = syntaxOperandStyle;
+    public void setPaintTabLines(boolean paintTabLines) {
+        this.paintTabLines = paintTabLines;
     }
 
-    /**
-     * Syntax Highlighting: Color for comments
-     */
-    public int getSyntaxCommentColor() {
-        return syntaxCommentColor;
+    public boolean isMarginLineEnabled() {
+        return marginLineEnabled;
     }
 
-    public void setSyntaxCommentColor(int syntaxCommentColor) {
-        this.syntaxCommentColor = syntaxCommentColor;
+    public void setMarginLineEnabled(boolean marginLineEnabled) {
+        this.marginLineEnabled = marginLineEnabled;
     }
 
-    /**
-     * Syntax Highlighting: Style for comments
-     */
-    public int getSyntaxCommentStyle() {
-        return syntaxCommentStyle;
+    public int getMarginLinePosition() {
+        return marginLinePosition;
     }
 
-    public void setSyntaxCommentStyle(int syntaxCommentStyle) {
-        this.syntaxCommentStyle = syntaxCommentStyle;
+    public void setMarginLinePosition(int marginLinePosition) {
+        this.marginLinePosition = marginLinePosition;
     }
 
-    /**
-     * Syntax Highlighting: Color for brackets
-     */
-    public int getSyntaxBracketColor() {
-        return syntaxBracketColor;
+    public boolean isWhitespaceVisible() {
+        return whitespaceVisible;
     }
 
-    public void setSyntaxBracketColor(int syntaxBracketColor) {
-        this.syntaxBracketColor = syntaxBracketColor;
+    public void setWhitespaceVisible(boolean whitespaceVisible) {
+        this.whitespaceVisible = whitespaceVisible;
     }
 
-    /**
-     * Syntax Highlighting: Style for brackets
-     */
-    public int getSyntaxBracketStyle() {
-        return syntaxBracketStyle;
+    public boolean isEolMarkersVisible() {
+        return eolMarkersVisible;
     }
 
-    public void setSyntaxBracketStyle(int syntaxBracketStyle) {
-        this.syntaxBracketStyle = syntaxBracketStyle;
+    public void setEolMarkersVisible(boolean eolMarkersVisible) {
+        this.eolMarkersVisible = eolMarkersVisible;
     }
 
-    /**
-     *  Indicates whether syntax Highlighting is enabled
-     */
     public boolean isSyntaxHighlightingEnabled() {
         return syntaxHighlightingEnabled;
     }
 
     public void setSyntaxHighlightingEnabled(boolean syntaxHighlightingEnabled) {
         this.syntaxHighlightingEnabled = syntaxHighlightingEnabled;
+    }
+
+    public boolean isHighlightCurrentLine() {
+        return highlightCurrentLine;
+    }
+
+    public void setHighlightCurrentLine(boolean highlightCurrentLine) {
+        this.highlightCurrentLine = highlightCurrentLine;
+    }
+
+    public boolean isBracketMatchingEnabled() {
+        return bracketMatchingEnabled;
+    }
+
+    public void setBracketMatchingEnabled(boolean bracketMatchingEnabled) {
+        this.bracketMatchingEnabled = bracketMatchingEnabled;
+    }
+
+    public boolean isHyperlinksEnabled() {
+        return hyperlinksEnabled;
+    }
+
+    public void setHyperlinksEnabled(boolean hyperlinksEnabled) {
+        this.hyperlinksEnabled = hyperlinksEnabled;
+    }
+
+    public void loadEditorTheme(String name) {
+        try {
+            editorTheme = Theme.load(getClass().getResourceAsStream(name));
+        } catch (IOException ignored) {
+        }
+    }
+
+    public void loadLightEditorTheme() {
+        loadEditorTheme("/org/fife/ui/rsyntaxtextarea/themes/default.xml");
+    }
+
+    public void loadDarkEditorTheme() {
+        loadEditorTheme("/org/fife/ui/rsyntaxtextarea/themes/monokai.xml");
+    }
+
+    public void configureEditor(RSyntaxTextArea editor) {
+        editorTheme.apply(editor);
+        editor.setTabSize(tabSize);
+        editor.setTabsEmulated(tabsEmulated);
+        if (syntaxHighlightingEnabled)
+            editor.setSyntaxEditingStyle("text/logo");
+        else
+            editor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
+        editor.setPaintTabLines(paintTabLines);
+        editor.setMarginLineEnabled(marginLineEnabled);
+        editor.setMarginLinePosition(marginLinePosition);
+        editor.setWhitespaceVisible(whitespaceVisible);
+        editor.setEOLMarkersVisible(eolMarkersVisible);
+        editor.setHighlightCurrentLine(highlightCurrentLine);
+        editor.setBracketMatchingEnabled(bracketMatchingEnabled);
+        editor.setHyperlinksEnabled(hyperlinksEnabled);
+        editor.setAntiAliasingEnabled(antiAliasingEnabled);
+        editor.setFractionalFontMetricsEnabled(fractionalFontMetricsEnabled);
+
+        // Hard-coded values
+        editor.setAnimateBracketMatching(false);
+        editor.setCloseCurlyBraces(false);
+        editor.setClearWhitespaceLinesEnabled(false);
+        editor.setPaintMatchedBracketPair(true);
+        editor.setWrapStyleWord(false);
+    }
+
+    public void saveEditorConfiguration(RSyntaxTextArea editor) {
+        syntaxHighlightingEnabled = editor.getSyntaxEditingStyle().equals("text/logo");
+        editorTheme = new Theme(editor);
+        tabSize = editor.getTabSize();
+        tabsEmulated = editor.getTabsEmulated();
+        paintTabLines = editor.getPaintTabLines();
+        marginLineEnabled = editor.isMarginLineEnabled();
+        marginLinePosition = editor.getMarginLinePosition();
+        whitespaceVisible = editor.isWhitespaceVisible();
+        eolMarkersVisible = editor.getEOLMarkersVisible();
+        highlightCurrentLine = editor.getHighlightCurrentLine();
+        bracketMatchingEnabled = editor.isBracketMatchingEnabled();
+        hyperlinksEnabled = editor.getHyperlinksEnabled();
+        antiAliasingEnabled = editor.getAntiAliasingEnabled();
+        fractionalFontMetricsEnabled = editor.getFractionalFontMetricsEnabled();
     }
 
     /**
