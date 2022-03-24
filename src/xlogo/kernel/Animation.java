@@ -28,7 +28,6 @@ public class Animation extends Thread {
     private Application cadre;
     private StringBuffer instruction;
     private final Souris souris = new Souris();
-    private MemoryChecker cm = null;
 
     public Animation() {
     }
@@ -61,8 +60,6 @@ public class Animation extends Thread {
             Interpreter.nom = new Stack<String>();
             Interpreter.locale = new HashMap<String, String>();
             Interpreter.en_cours = new Stack<String>();
-            cm = new MemoryChecker(cadre);
-            cm.start();
             boolean b = true;
             while (b) {
                 String st = cadre.getKernel().execute(instruction);
@@ -81,7 +78,6 @@ public class Animation extends Thread {
         cadre.setCommandEnabled(true);
         if (!cadre.viewer3DVisible()) cadre.focusCommandLine();
         executionLaunched = false;
-        cm.setContinuer(false);
         cadre.error = false;
         LogoException.lance = false;
         cadre.scrollPane.getVerticalScrollBar().removeMouseListener(souris);

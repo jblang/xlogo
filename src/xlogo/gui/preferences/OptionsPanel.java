@@ -172,39 +172,20 @@ public class OptionsPanel extends JPanel {
             boolean changement = false;
             int dim = Integer.parseInt(imageHeight.getText());
             if (dim != Logo.config.getImageHeight()) changement = true;
-            int tmp_hauteur = Logo.config.getImageHeight();
             Logo.config.setImageHeight(dim);
             dim = Integer.parseInt(imageWidth.getText());
             if (dim != Logo.config.getImageWidth()) changement = true;
-            int tmp_largeur = Logo.config.getImageWidth();
             Logo.config.setImageWidth(dim);
             if (Logo.config.getImageWidth() < 100 || Logo.config.getImageHeight() < 100) {
-                Logo.config.setImageWidth(1000);
-                Logo.config.setImageHeight(1000);
+                Logo.config.setImageWidth(400);
+                Logo.config.setImageHeight(400);
             }
             if (changement) {
-                int memoire_necessaire = Logo.config.getImageWidth() * Logo.config.getImageHeight() * 4 / 1024 / 1024;
-                int memoire_image = tmp_hauteur * tmp_largeur * 4 / 1024 / 1024;
-                long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
-                long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
-                if (total - free + memoire_necessaire - memoire_image < Logo.config.getMemoryLimit() * 0.8) {
                     app.resizeDrawingZone();
-                } else {
-                    Logo.config.setImageWidth(tmp_largeur);
-                    Logo.config.setImageHeight(tmp_hauteur);
-                    imageWidth.setText(String.valueOf(Logo.config.getImageWidth()));
-                    imageHeight.setText(String.valueOf(Logo.config.getImageHeight()));
-                    long conseil = 64 * ((total - free + memoire_necessaire - memoire_image) / 64) + 64;
-                    if (total - free + memoire_necessaire - memoire_image > 0.8 * conseil) conseil += 64;
-                    if (conseil == Logo.config.getMemoryLimit()) conseil += 64;
-                    String message = Logo.messages.getString("erreur_memoire") + " " + conseil + "\n" + Logo.messages.getString("relancer");
-                    MessageTextArea jt = new MessageTextArea(message);
-                    JOptionPane.showMessageDialog(this, jt, Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
-                }
             }
         } catch (NumberFormatException e1) {
-            Logo.config.setImageWidth(1000);
-            Logo.config.setImageHeight(1000);
+            Logo.config.setImageWidth(400);
+            Logo.config.setImageHeight(400);
         }
         Logo.config.setMemoryLimit(Integer.parseInt(memoryLimit.getText()));
         if (Logo.config.getMemoryLimit() < 256) Logo.config.setMemoryLimit(256);

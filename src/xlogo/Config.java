@@ -49,8 +49,8 @@ public class Config {
     public static final int LAF_DARK = 2;
     private int lookAndFeel = LAF_DARK;
 
-    private int imageWidth = 1000;
-    private int imageHeight = 1000;
+    private int imageWidth = 400;
+    private int imageHeight = 400;
     private int memoryLimit = 256;
     private int activeTurtle = 0;
     private int maxPenWidth = -1;

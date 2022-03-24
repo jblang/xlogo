@@ -43,7 +43,6 @@ public class Logo {
     public static ResourceBundle messages = null;
     public static String[] translationLanguage = new String[13];
     public static Config config = new Config();
-    static int memoryLimit = config.getMemoryLimit();
     static long startupHour;
     static String mainCommand = "";
     static boolean autoLaunch = false;
@@ -75,15 +74,6 @@ public class Logo {
         SwingUtilities.invokeLater(() -> {
             frame = new Application();
             frame.setVisible(true);
-            //On vérifie que la taille mémoire est suffisante pour créer l'image de dessin
-            // Checking that we have enough memory to create the image
-            int memoryRequired = config.getImageWidth() * config.getImageHeight() * 4 / 1024 / 1024;
-            long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
-            long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
-            if (total - free + memoryRequired > getMemoryLimit() * 0.8) {
-                config.setImageHeight(1000);
-                config.setImageWidth(1000);
-            }
             // init frame
             init(frame);
             frame.setCommandEnabled(false);
@@ -309,7 +299,6 @@ public class Logo {
                         try {
                             int mem = Integer.parseInt(element);
                             config.setMemoryLimit(mem);
-                            memoryLimit = mem;
                             config.getStartupFiles().remove(i);
 
                         } catch (NumberFormatException ignored) {
@@ -347,7 +336,6 @@ public class Logo {
             FileInputStream fis = new FileInputStream(System.getProperty("user.home") + File.separator + ".xlogo");
             XMLDecoder dec = new XMLDecoder(fis);
             config = (Config) dec.readObject();
-            memoryLimit = config.getMemoryLimit();
             dec.close();
             fis.close();
        } catch (Exception e) {
@@ -388,10 +376,6 @@ public class Logo {
 
     public static long getStartupHour() {
         return startupHour;
-    }
-
-    public static int getMemoryLimit() {
-        return memoryLimit;
     }
 
     public static String getMainCommand() {

@@ -505,10 +505,6 @@ public class Application extends JFrame {
      * When the user types "Enter" in the Command Line
      */
     public void executeCommand() {
-        //	System.out.println("commandeTotal :"+Runtime.getRuntime().totalMemory()/1024/1024+" Free "+Runtime.getRuntime().freeMemory()/1024/1024);
-        // Si une parenthese était sélectionnée, on désactive la décoloration
-        //commandLine.setActive(false);
-        //	System.out.println(commande.getCaret().isVisible());
         if (stop) stop = false;
         String text = commandLine.getText();
         if (!text.equals("") && commandLine.isEditable()) {
