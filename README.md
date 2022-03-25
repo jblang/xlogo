@@ -24,18 +24,69 @@ Extensive documentation is available from the [XLogo website](http://xlogo.tuxfa
 
 | Document | English | French | German | Italian | Portuguese | Spanish | Esperanto |
 | - | - | - | - | - | - | - | - |
-| Reference Manual (online) | [English](https://downloads.tuxfamily.org/xlogo/downloads-en/manual-html-en/manual-en.html) | [French](https://downloads.tuxfamily.org/xlogo/downloads-fr/manual-html-fr/manual-fr.html) | [German](https://downloads.tuxfamily.org/xlogo/downloads-de/manual-html-de/manual-de.html) | [Italian](https://downloads.tuxfamily.org/xlogo/downloads-it/manual-html-it/manual-it.html) | [Portuguese](https://xlogo.tuxfamily.org/pt/xlogo.htm) | [Spanish](https://xlogo.tuxfamily.org/sp/html/manual-sp/index.html) | [Esperanto](https://downloads.tuxfamily.org/xlogo/downloads-eo/manual-html-eo/manual-eo.html)
-| Reference Manual (zipped html) | [English](https://downloads.tuxfamily.org/xlogo/downloads-en/manual-html-en.zip) | [French](https://downloads.tuxfamily.org/xlogo/downloads-fr/manual-html-fr.zip) | [German](https://downloads.tuxfamily.org/xlogo/downloads-de/manual-html-de.zip) | [Italian](https://downloads.tuxfamily.org/xlogo/downloads-it/manual-html-it.zip) | [Portuguese](https://downloads.tuxfamily.org/xlogo/downloads-pt/xmanualPT3.zip) | [Spanish](https://downloads.tuxfamily.org/xlogo/downloads-sp/manual-html-sp.zip) | [Esperanto](https://downloads.tuxfamily.org/xlogo/downloads-eo/manual-html-eo.zip)
-| Reference Manual (pdf) | [English](https://downloads.tuxfamily.org/xlogo/downloads-en/manual-en.pdf) | [French](https://downloads.tuxfamily.org/xlogo/downloads-fr/manual-fr.pdf) | [German](https://downloads.tuxfamily.org/xlogo/downloads-de/manual-de.pdf) | [Italian](https://downloads.tuxfamily.org/xlogo/downloads-it/manual-it.pdf) | [Portuguese](https://downloads.tuxfamily.org/xlogo/downloads-pt/manualPT.pdf) | [Spanish](https://downloads.tuxfamily.org/xlogo/downloads-sp/manual-sp.pdf) | [Esperanto](https://downloads.tuxfamily.org/xlogo/downloads-eo/manual-eo.pdf)
-| Examples | *[LogoArts](http://www.cr31.co.uk/logoarts/prog/top/all.html)* | [French](http://xlogo.tuxfamily.org/fr/examples-fr.html) | [German](https://xlogo.tuxfamily.org/de/examples-de.html) | [Italian](http://xlogo.tuxfamily.org/it/examples-it.html) | [Portuguese](http://xlogo.tuxfamily.org/pt/examples.html) | [Spanish](http://xlogo.tuxfamily.org/sp/ejemplos.html) | [Esperanto](https://xlogo.tuxfamily.org/eo/examples-eo.html)
-| XLogo Robotics | [English](https://xlogo.tuxfamily.org/en/robot-en.html) | | | [Italian](http://xlogo.tuxfamily.org/it/robot-it.html) | [Portuguese](https://xlogo.tuxfamily.org/pt/robot.html) | [Spanish](https://xlogo.tuxfamily.org/sp/robotica.html) |
-| Tutorial (pdf) | | [French](http://downloads.tuxfamily.org/xlogo/downloads-fr/tutorial-fr.pdf) | | | [Portuguese](https://downloads.tuxfamily.org/xlogo/downloads-pt/tutlogo.pdf) | [Spanish](https://downloads.tuxfamily.org/xlogo/downloads-sp/tutorial.pdf)
-| Tutorial (zipped html) | | | | | | [Spanish](https://downloads.tuxfamily.org/xlogo/downloads-sp/tutorial-html-sp.zip)
-| Introductory Course | | | | | | [Spanish](https://xlogo.tuxfamily.org/sp/curso/curso.html)
-| Installation (pdf) | [English](https://downloads.tuxfamily.org/xlogo/downloads-en/start-en.pdf) | [French](https://downloads.tuxfamily.org/xlogo/downloads-fr/start-fr.pdf) | [German](https://downloads.tuxfamily.org/xlogo/downloads-de/start-de.pdf) |  |  | [Spanish](https://downloads.tuxfamily.org/xlogo/downloads-sp/start-sp.pdf) |
+| Reference Manual (online) | [English][man-en] | [French][man-fr] | [German][man-de] | [Italian][man-it] | [Portuguese][man-pt] | [Spanish][man-es] | [Esperanto][man-eo]
+| Reference Manual (zipped html) | [English][zip-en] | [French][zip-fr] | [German][zip-de] | [Italian][zip-it] | [Portuguese][zip-pt] | [Spanish][zip-es] | [Esperanto][zip-eo]
+| Reference Manual (pdf) | [English][pdf-en] | [French][pdf-fr] | [German][pdf-de] | [Italian][pdf-it] | [Portuguese][pdf-pt] | [Spanish][pdf-es] | [Esperanto][pdf-eo]
+| Examples | *[LogoArts][ex-en]* | [French][ex-fr] | [German][ex-de] | [Italian][ex-it] | [Portuguese][ex-pt] | [Spanish][ex-es] | [Esperanto][ex-eo]
+| XLogo Robotics | [English][rob-en] | | | [Italian][rob-it] | [Portuguese][rob-pt] | [Spanish][rob-es] |
+| Tutorial (pdf) | | [French][tut-fr] | | | [Portuguese][tut-pt] | [Spanish][tut-es]
+| Tutorial (zipped html) | | | | | | [Spanish][ziptut-es]
+| Introductory Course | | | | | | [Spanish][course-es]
+| Installation (pdf) | [English][ins-en] | [French][ins-fr] | [German][ins-de] |  |  | [Spanish][ins-es] |
+
+[man-en]: https://downloads.tuxfamily.org/xlogo/downloads-en/manual-html-en/manual-en.html
+[man-fr]: https://downloads.tuxfamily.org/xlogo/downloads-fr/manual-html-fr/manual-fr.html
+[man-de]: https://downloads.tuxfamily.org/xlogo/downloads-de/manual-html-de/manual-de.html
+[man-it]: https://downloads.tuxfamily.org/xlogo/downloads-it/manual-html-it/manual-it.html
+[man-pt]: https://xlogo.tuxfamily.org/pt/xlogo.htm
+[man-es]: https://xlogo.tuxfamily.org/sp/html/manual-sp/index.html
+[man-eo]: https://downloads.tuxfamily.org/xlogo/downloads-eo/manual-html-eo/manual-eo.html
+
+[zip-en]: https://downloads.tuxfamily.org/xlogo/downloads-en/manual-html-en.zip
+[zip-fr]: https://downloads.tuxfamily.org/xlogo/downloads-fr/manual-html-fr.zip
+[zip-de]: https://downloads.tuxfamily.org/xlogo/downloads-de/manual-html-de.zip
+[zip-it]: https://downloads.tuxfamily.org/xlogo/downloads-it/manual-html-it.zip
+[zip-pt]: https://downloads.tuxfamily.org/xlogo/downloads-pt/xmanualPT3.zip
+[zip-es]: https://downloads.tuxfamily.org/xlogo/downloads-sp/manual-html-sp.zip
+[zip-eo]: https://downloads.tuxfamily.org/xlogo/downloads-eo/manual-html-eo.zip
+
+[pdf-en]: https://downloads.tuxfamily.org/xlogo/downloads-en/manual-en.pdf
+[pdf-fr]: https://downloads.tuxfamily.org/xlogo/downloads-fr/manual-fr.pdf
+[pdf-de]: https://downloads.tuxfamily.org/xlogo/downloads-de/manual-de.pdf
+[pdf-it]: https://downloads.tuxfamily.org/xlogo/downloads-it/manual-it.pdf
+[pdf-pt]: https://downloads.tuxfamily.org/xlogo/downloads-pt/manualPT.pdf
+[pdf-es]: https://downloads.tuxfamily.org/xlogo/downloads-sp/manual-sp.pdf
+[pdf-eo]: https://downloads.tuxfamily.org/xlogo/downloads-eo/manual-eo.pdf
+
+[ex-en]: http://www.cr31.co.uk/logoarts/prog/top/all.html
+[ex-fr]: http://xlogo.tuxfamily.org/fr/examples-fr.html
+[ex-de]: https://xlogo.tuxfamily.org/de/examples-de.html
+[ex-it]: http://xlogo.tuxfamily.org/it/examples-it.html
+[ex-pt]: http://xlogo.tuxfamily.org/pt/examples.html
+[ex-es]: http://xlogo.tuxfamily.org/sp/ejemplos.html
+[ex-eo]: https://xlogo.tuxfamily.org/eo/examples-eo.html
+
+[rob-en]: https://xlogo.tuxfamily.org/en/robot-en.html
+[rob-it]: http://xlogo.tuxfamily.org/it/robot-it.html
+[rob-pt]: https://xlogo.tuxfamily.org/pt/robot.html
+[rob-es]: https://xlogo.tuxfamily.org/sp/robotica.html
+
+[tut-fr]: http://downloads.tuxfamily.org/xlogo/downloads-fr/tutorial-fr.pdf
+[tut-pt]: https://downloads.tuxfamily.org/xlogo/downloads-pt/tutlogo.pdf
+[tut-es]: https://downloads.tuxfamily.org/xlogo/downloads-sp/tutorial.pdf
+
+[ziptut-es]: https://downloads.tuxfamily.org/xlogo/downloads-sp/tutorial-html-sp.zip
+[course-es]: https://xlogo.tuxfamily.org/sp/curso/curso.html
+
+[ins-en]: https://downloads.tuxfamily.org/xlogo/downloads-en/start-en.pdf
+[ins-fr]: https://downloads.tuxfamily.org/xlogo/downloads-fr/start-fr.pdf
+[ins-de]: https://downloads.tuxfamily.org/xlogo/downloads-de/start-de.pdf
+[ins-es]: https://downloads.tuxfamily.org/xlogo/downloads-sp/start-sp.pdf
 
 [TeX sources](docs) for each language's documentation are available on the XLogo website but have also been added to this 
 repo, if available.
+
+**Note:** none of the manuals have yet been updated to reflect recent user interface changes.
 
 ## Logo Arts
 
