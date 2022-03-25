@@ -16,7 +16,7 @@ This very intuitive graphical approach makes Logo an ideal language for beginner
 
 Pre-compiled jars available on the [Releases](https://github.com/jblang/xlogo/releases) page. You can also still download the [old version](http://xlogo.tuxfamily.org/en/download-en.html) from the XLogo website.
 
-Note: You will need Java on your computer to run XLogo. Java 11 or Java 17 is recommended. Java 8 may also work but has scaling issues on high resolution displays. If you don't already have a JDK installed, [Microsoft](https://docs.microsoft.com/en-us/java/openjdk/download) offers free OpenJDK downloads for Windows, Mac, and Linux.
+Note: You will need Java 11 or later on your computer to run XLogo. If you don't already have a compatible JDK installed, [Microsoft](https://docs.microsoft.com/en-us/java/openjdk/download) offers free OpenJDK downloads for Windows, Mac, and Linux.
 
 ## Documentation
 
@@ -46,20 +46,23 @@ Guy Walker's wonderful [Logo Arts](http://www.cr31.co.uk/logoarts/index.html) we
 
 ## Current Status
 
-XLogo's development ceased in 2012. I tried to contact the original author in 2022 but got no response. I migrated the Subversion repository to GitHub and started working on some improvements:
+XLogo's development ceased in 2012. I tried to contact the original author in 2022 but got no response. Sadly, I believe he [passed away](https://avis-de-deces.ouest-france.fr/20130306/loic-lecoq-15803) in 2013.  I migrated the original repository here to GitHub and started working on some improvements:
 
 - Fix blurry/pixelated scaling on high resolution displays
 - Make a nice looking themeable UI using FlatLaf
+- Update libraries to latest versions
+- Use SVG images for smooth scaling
+- Replace custom text editor with feature-rich RSyntaxTextArea
 - Fix bugs and improve code quality
 
-If you want to help improve the code, check out the [Developer Notes](DEVNOTES.md) to get started. 
+If you want to help, check out the [Developer Notes](DEVNOTES.md) to get started. 
 
 ## Credits
 
 ### Developers
 
+- J.B. Langston: Current Maintainer
 - Loïc Le Coq: Original Developer 
-- J.B. Langston: UI upgrade and GitHub migration
 
 ### Translators
 
@@ -84,3 +87,5 @@ If you want to help improve the code, check out the [Developer Notes](DEVNOTES.m
 - [Jogamp](https://jogamp.org/): OpenGL libraries (BSD/MIT/Apache license)
 - [JavaHelp](https://github.com/javaee/javahelp): Help library (GPL license)
 - [JLayer](https://github.com/umjammer/jlayer): MP3 library (LGPL license)
+- [RSyntaxTextArea](https://github.com/bobbylight/RSyntaxTextArea), [RSTAUI](https://github.com/bobbylight/RSTAUI) and [AutoComplete](https://github.com/bobbylight/AutoComplete): Syntax-highlighting editor components (BSD license)
+- [WikiMedia Commons](https://commons.wikimedia.org/wiki/Main_Page): flag images (Public domain)
