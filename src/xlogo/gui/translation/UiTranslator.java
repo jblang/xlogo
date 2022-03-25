@@ -3,6 +3,7 @@ package xlogo.gui.translation;
 import xlogo.Logo;
 import xlogo.gui.Application;
 import xlogo.gui.SearchFrame;
+import xlogo.resources.ResourceLoader;
 import xlogo.utils.Utils;
 
 import javax.swing.*;
@@ -37,7 +38,7 @@ public class UiTranslator extends JFrame implements ActionListener {
     }
 
     private void initGui() {
-        setIconImage(Logo.getAppIcon().getImage());
+        setIconImage(ResourceLoader.getAppIcon().getImage());
         setTitle(Logo.messages.getString("menu.help.translatexlogo"));
         first = new FirstPanel(this);
         getContentPane().add(first);

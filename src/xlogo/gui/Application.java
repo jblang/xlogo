@@ -16,6 +16,7 @@ import xlogo.gui.translation.UiTranslator;
 import xlogo.kernel.*;
 import xlogo.kernel.network.NetworkServer;
 import xlogo.kernel.perspective.Viewer3D;
+import xlogo.resources.ResourceLoader;
 import xlogo.utils.ExtensionFilter;
 import xlogo.utils.ImageWriter;
 import xlogo.utils.LogoException;
@@ -88,7 +89,7 @@ public class Application extends JFrame {
         editor = new Editor(this);
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         setTitle("XLogo");
-        setIconImage(Logo.getAppIcon().getImage());
+        setIconImage(ResourceLoader.getAppIcon().getImage());
         createMenuBar();
         createContent();
         updateLocalization();
@@ -278,7 +279,7 @@ public class Application extends JFrame {
         String message = Logo.messages.getString("quitter?");
         MessageTextArea jt = new MessageTextArea(message);
         String[] choice = {Logo.messages.getString("pref.ok"), Logo.messages.getString("pref.cancel")};
-        int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("menu.file.quit"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, Logo.getAppIcon(), choice, choice[0]);
+        int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("menu.file.quit"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, ResourceLoader.getAppIcon(), choice, choice[0]);
         if (val == JOptionPane.OK_OPTION) {
             try {
                 Logo.config.write();
@@ -291,7 +292,7 @@ public class Application extends JFrame {
         var wp = kernel.getWorkspace();
         String[] choice = {Logo.messages.getString("pref.ok"), Logo.messages.getString("pref.cancel")};
         MessageTextArea jt = new MessageTextArea(Logo.messages.getString("enregistrer_espace"));
-        int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("enregistrer_espace"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, Logo.getAppIcon(), choice, choice[0]);
+        int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("enregistrer_espace"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, ResourceLoader.getAppIcon(), choice, choice[0]);
 
         if (val == JOptionPane.OK_OPTION) {
             wp.deleteAllProcedures();
@@ -442,12 +443,12 @@ public class Application extends JFrame {
     private void showAbout() {
         String message = Logo.messages.getString("message_a_propos1") + Logo.VERSION + "\n\n" + Logo.messages.getString("message_a_propos2") + " " + Logo.WEB_SITE;
         MessageTextArea jt = new MessageTextArea(message);
-        JOptionPane.showMessageDialog(null, jt, Logo.messages.getString("menu.help.about"), JOptionPane.INFORMATION_MESSAGE, Logo.getAppIcon());
+        JOptionPane.showMessageDialog(null, jt, Logo.messages.getString("menu.help.about"), JOptionPane.INFORMATION_MESSAGE, ResourceLoader.getAppIcon());
     }
 
     private void showLicence(boolean english) {
         JFrame frame = new JFrame(Logo.messages.getString("menu.help.licence"));
-        frame.setIconImage(Logo.getAppIcon().getImage());
+        frame.setIconImage(ResourceLoader.getAppIcon().getImage());
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(500, 500);
         LicensePane editorPane = new LicensePane();

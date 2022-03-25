@@ -1,6 +1,7 @@
 package xlogo.gui.translation;
 
 import xlogo.Logo;
+import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +32,7 @@ public class BottomPanel extends JPanel {
         javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(tabbedPane);
 
         add(scroll, BorderLayout.CENTER);
-        JButton searchButton = new JButton(Logo.getIcon("search"));
+        JButton searchButton = new JButton(ResourceLoader.getIcon("search"));
         searchButton.setToolTipText(Logo.messages.getString("find"));
         searchButton.addActionListener(translator);
         searchButton.setActionCommand(UiTranslator.SEARCH);

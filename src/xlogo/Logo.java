@@ -8,7 +8,6 @@
 package xlogo;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import xlogo.gui.Application;
@@ -96,38 +95,6 @@ public class Logo {
             }
         });
 
-    }
-
-    public static ImageIcon getIcon(String name) {
-        var res = Logo.class.getResource("resources/icons/" + name + ".svg");
-        if (res == null)
-            return null;
-        else
-            return new FlatSVGIcon(res);
-    }
-
-    public static FlatSVGIcon getFlag(String name) {
-        var res = Logo.class.getResource("resources/flags/" + name + ".svg");
-        if (res == null)
-            return null;
-        else
-            return new FlatSVGIcon(res);
-    }
-
-    public static FlatSVGIcon getFlag(int i) {
-        return getFlag(locales[i]);
-    }
-
-    public static ImageIcon getAppIcon() {
-        return new ImageIcon(Objects.requireNonNull(Logo.class.getResource("resources/appicon.png")));
-    }
-
-    public static FlatSVGIcon getTurtle(int i) {
-        var res = Logo.class.getResource("resources/turtles/turtle" + i + ".svg");
-        if (res == null)
-            return null;
-        else
-            return new FlatSVGIcon(res);
     }
 
     /**

@@ -21,6 +21,7 @@ import xlogo.kernel.network.NetworkServer;
 import xlogo.kernel.perspective.ElementLine;
 import xlogo.kernel.perspective.ElementPoint;
 import xlogo.kernel.perspective.ElementPolygon;
+import xlogo.resources.ResourceLoader;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
 
@@ -1801,7 +1802,7 @@ public class LaunchPrimitive {
                         liste = Utils.unescapeString(liste);
 
                         MessageTextArea jt = new MessageTextArea(liste);
-                        JOptionPane.showMessageDialog(cadre, jt, "", JOptionPane.INFORMATION_MESSAGE, Logo.getAppIcon());
+                        JOptionPane.showMessageDialog(cadre, jt, "", JOptionPane.INFORMATION_MESSAGE, ResourceLoader.getAppIcon());
 
                     } catch (LogoException e) {
                     }

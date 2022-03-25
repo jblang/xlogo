@@ -11,6 +11,7 @@ package xlogo.kernel;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
 import xlogo.gui.Application;
+import xlogo.resources.ResourceLoader;
 import xlogo.utils.LogoException;
 
 import java.awt.*;
@@ -298,9 +299,9 @@ public class Turtle {
             this.width = 26;
             this.height = 26;
         } else {
-            FlatSVGIcon svg = Logo.getTurtle(i);
+            FlatSVGIcon svg = ResourceLoader.getTurtle(i);
             if (svg == null) {
-                svg = Logo.getTurtle(1);
+                svg = ResourceLoader.getTurtle(1);
             }
             float factor = (float) 70 / (float) Objects.requireNonNull(svg).getIconHeight();
             this.width = (int)(svg.getIconWidth() * factor);

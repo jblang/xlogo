@@ -10,6 +10,7 @@ package xlogo.utils;
 import xlogo.Logo;
 import xlogo.kernel.Animation;
 import xlogo.kernel.Calculator;
+import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -243,7 +244,7 @@ public class Utils {
     }
 
     public static JButton createButton(JToolBar parent, String iconName, String toolTip, ActionListener listener) {
-        var button = new JButton(Logo.getIcon(iconName));
+        var button = new JButton(ResourceLoader.getIcon(iconName));
         if (toolTip != null)
             button.setToolTipText(Logo.messages.getString(toolTip));
         button.addActionListener(listener);

@@ -1,6 +1,7 @@
 package xlogo.gui;
 
 import xlogo.Logo;
+import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +31,7 @@ public class CodeTranslator extends JFrame implements ActionListener {
 
     public CodeTranslator() {
         setTitle(Logo.messages.getString("menu.tools.translate"));
-        setIconImage(Logo.getAppIcon().getImage());
+        setIconImage(ResourceLoader.getAppIcon().getImage());
         getContentPane().setLayout(new BorderLayout());
         sourceLanguageCombo.setSelectedIndex(Logo.config.getLanguage());
         targetLanguageCombo.setSelectedIndex(Logo.config.getLanguage());
@@ -44,12 +45,12 @@ public class CodeTranslator extends JFrame implements ActionListener {
         targetLanguagePanel.add(targetLanguageLabel);
         targetLanguagePanel.add(targetLanguageCombo);
 
-        JButton sourceCopyButton = new JButton(Logo.getIcon("copy"));
+        JButton sourceCopyButton = new JButton(ResourceLoader.getIcon("copy"));
         JPanel sourceEditPanel = new JPanel();
         sourceEditPanel.add(sourceCopyButton);
-        JButton sourceCutButton = new JButton(Logo.getIcon("cut"));
+        JButton sourceCutButton = new JButton(ResourceLoader.getIcon("cut"));
         sourceEditPanel.add(sourceCutButton);
-        JButton sourcePasteButton = new JButton(Logo.getIcon("paste"));
+        JButton sourcePasteButton = new JButton(ResourceLoader.getIcon("paste"));
         sourceEditPanel.add(sourcePasteButton);
 
         JPanel sourcePanel = new JPanel();
@@ -61,12 +62,12 @@ public class CodeTranslator extends JFrame implements ActionListener {
 
         getContentPane().add(sourcePanel, BorderLayout.WEST);
 
-        JButton targetCopyButton = new JButton(Logo.getIcon("copy"));
+        JButton targetCopyButton = new JButton(ResourceLoader.getIcon("copy"));
         JPanel targetEditPanel = new JPanel();
         targetEditPanel.add(targetCopyButton);
-        JButton targetCutButton = new JButton(Logo.getIcon("cut"));
+        JButton targetCutButton = new JButton(ResourceLoader.getIcon("cut"));
         targetEditPanel.add(targetCutButton);
-        JButton targetPasteButton = new JButton(Logo.getIcon("paste"));
+        JButton targetPasteButton = new JButton(ResourceLoader.getIcon("paste"));
         targetEditPanel.add(targetPasteButton);
 
         JPanel targetPanel = new JPanel();

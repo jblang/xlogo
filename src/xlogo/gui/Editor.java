@@ -10,6 +10,7 @@ import xlogo.Logo;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.SyntaxException;
 import xlogo.kernel.Workspace;
+import xlogo.resources.ResourceLoader;
 import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
 
@@ -44,7 +45,7 @@ public class Editor extends JFrame implements SearchListener {
     public Editor(Application app) {
         this.app = app;
         this.workspace = app.getKernel().getWorkspace();
-        setIconImage(Logo.getAppIcon().getImage());
+        setIconImage(ResourceLoader.getAppIcon().getImage());
         setTitle(Logo.messages.getString("editeur"));
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         initTextArea();
@@ -69,7 +70,7 @@ public class Editor extends JFrame implements SearchListener {
 
     private void rstaButton(JToolBar parent, String iconName, String toolTip, int action) {
         var button = parent.add(RTextArea.getAction(action));
-        button.setIcon(Logo.getIcon(iconName));
+        button.setIcon(ResourceLoader.getIcon(iconName));
         button.setHideActionText(true);
         button.setToolTipText(Logo.messages.getString(toolTip));
     }
@@ -86,7 +87,7 @@ public class Editor extends JFrame implements SearchListener {
     private void initMainCommand() {
         mainCommand = new JTextField();
         setMainCommand();
-        var label = new JLabel(Logo.messages.getString("mainCommand"), Logo.getIcon("run"), JLabel.LEFT);
+        var label = new JLabel(Logo.messages.getString("mainCommand"), ResourceLoader.getIcon("run"), JLabel.LEFT);
         var panel = new JPanel();
         if (Logo.getMainCommand().length() < 30) mainCommand.setPreferredSize(new Dimension(150, 20));
         panel.add(label);

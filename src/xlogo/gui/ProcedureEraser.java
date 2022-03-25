@@ -10,6 +10,7 @@ package xlogo.gui;
 import xlogo.Logo;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.Workspace;
+import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,8 +32,8 @@ public class ProcedureEraser extends JDialog implements ActionListener {
     }
 
     private void initGui() {
-        JButton up = new JButton(Logo.getIcon("moveUp"));
-        JButton down = new JButton(Logo.getIcon("moveDown"));
+        JButton up = new JButton(ResourceLoader.getIcon("moveUp"));
+        JButton down = new JButton(ResourceLoader.getIcon("moveDown"));
         up.setActionCommand("up");
         down.setActionCommand("down");
         up.addActionListener(this);

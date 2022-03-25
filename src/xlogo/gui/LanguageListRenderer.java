@@ -2,6 +2,7 @@ package xlogo.gui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
+import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,7 @@ public class LanguageListRenderer extends JLabel implements ListCellRenderer<Str
     public LanguageListRenderer() {
         flag = new ImageIcon[Logo.translationLanguage.length];
         for (int i = 0; i < Logo.translationLanguage.length; i++) {
-            FlatSVGIcon icon = Logo.getFlag(i);
+            FlatSVGIcon icon = ResourceLoader.getFlag(i);
             float factor = (float) 40 / (float) icon.getIconWidth();
             flag[i] = icon.derive(factor);
         }

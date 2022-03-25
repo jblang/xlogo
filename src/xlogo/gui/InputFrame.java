@@ -10,6 +10,7 @@ package xlogo.gui;
 
 
 import xlogo.Logo;
+import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +26,7 @@ public class InputFrame extends JFrame implements ActionListener {
     }
 
     public InputFrame(String titre, int longueur) {
-        setIconImage(Logo.getAppIcon().getImage());
+        setIconImage(ResourceLoader.getAppIcon().getImage());
         getContentPane().setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         getContentPane().add(ok, BorderLayout.EAST);
