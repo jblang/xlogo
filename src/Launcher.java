@@ -6,10 +6,8 @@
  * @author Loïc Le Coq
  */
 
-import xlogo.Config;
-
-import java.beans.XMLDecoder;
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,30 +36,21 @@ public class Launcher {
     private File tmpFolder = null;
     private File[] files;
     private File mainJar;
-    private int memory = 256;
 
     /**
      * Constructs Launcher with arguments args<br>
      * @param args The arguments for the class Launcher (path to file in lgo format)
      */
     Launcher(String[] args) {
-        // Look for old files from XLogo crash
         cleanTmp();
-        // Look from file .xlogo for the memory allocated to the JVM heap size
-        readConfig();
-        // Look from command line for the memory allocated to the JVM heap size
-        // And overwrite the existing value
-        int mem = readMemoryFromCommandLine(args);
-        if (mem > memory) memory = mem;
-
-        // extract application in the java.io.tmp directory
-        extractApplication();
+        extractJars();
         try {
             var jvm = Paths.get(System.getProperty("java.home"), "bin", "java").toFile();
-            var xmx = "-Xmx" + memory + "m";
+            var xmx = "-Xmx" + Math.max(getXmxFromArgs(args), getXmxFromFile()) + "m";
             var myArgs = new String[] {
                     jvm.getAbsolutePath(),
                     xmx,
+                    // Workaround for https://jogamp.org/bugzilla/show_bug.cgi?id=1317#c9
                     "--add-exports=java.base/java.lang=ALL-UNNAMED",
                     "--add-exports=java.desktop/sun.awt=ALL-UNNAMED",
                     "--add-exports=java.desktop/sun.java2d=ALL-UNNAMED",
@@ -74,13 +63,11 @@ public class Launcher {
             System.out.println("Starting XLogo");
             System.out.println(String.join(" ", command) + "\n\n");
             process = Runtime.getRuntime().exec(command);
-            // Recept Message from the Process
             new Thread(() -> {
                 try {
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                         String line;
                         while ((line = reader.readLine()) != null) {
-                            // Traitement du flux de sortie de l'application si besoin est
                             System.out.println(line);
                         }
                     }
@@ -88,13 +75,11 @@ public class Launcher {
                     ioe.printStackTrace();
                 }
             }).start();
-            // Recept Error Message from the Process
             new Thread(() -> {
                 try {
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
                         String line;
                         while ((line = reader.readLine()) != null) {
-                            // Traitement du flux de sortie de l'application si besoin est
                             System.out.println(line);
                         }
                     }
@@ -106,7 +91,6 @@ public class Launcher {
         } catch (InterruptedException | IOException | SecurityException e) {
             e.printStackTrace();
         }
-        // Delete tmp files
         for (File file : files) {
             if (null != file) file.delete();
         }
@@ -136,11 +120,9 @@ public class Launcher {
                     if (file.getName().startsWith("xlogo-nested")) {
                         long fileTime = file.lastModified();
                         long time = Calendar.getInstance().getTimeInMillis();
-                        // Delete file if it's more than 24 hours old
                         if (time - fileTime > 24 * 3600 * 1000) {
                             if (file.isDirectory()) deleteDirectory(file);
                             file.delete();
-
                         }
                     }
                 } catch (Exception e) {
@@ -153,8 +135,7 @@ public class Launcher {
     /**
      * This method extracts the file xlogo-nested.jar from the archive and copy it into the temporary directory.
      */
-    private void extractApplication() {
-        // Create in the "java.io.tmpdir" a directory called xlogo-nested
+    private void extractJars() {
         int i = 0;
         String tmpPath = System.getProperty("java.io.tmpdir") + File.separator + "xlogo-nested";
         while (true) {
@@ -194,19 +175,15 @@ public class Launcher {
     /**
      * This method reads the Memory needed by XLogo in the file .xlogo
      */
-    private void readConfig() {
+    private int getXmxFromFile() {
+        var xmx = 256;
+        var xmxFile = Paths.get(System.getProperty("user.home"), ".xlogo", "xmx.txt");
         try {
-            FileInputStream fis = new FileInputStream(System.getProperty("user.home") + File.separator + ".xlogo");
-            XMLDecoder dec = new XMLDecoder(fis);
-            Config config = (Config) dec.readObject();
-            memory = config.getMemoryLimit();
-            dec.close();
-            fis.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("No File \".xlogo\". Will create one...");
-        } catch (Exception e) {
-            e.printStackTrace();
+            xmx = Integer.parseInt(Files.readString(xmxFile));
+        } catch (IOException | NumberFormatException e) {
+            System.out.printf("Could not read Xmx value; defaulting to %dM\n", xmx);
         }
+        return xmx;
     }
 
     /**
@@ -233,7 +210,7 @@ public class Launcher {
     }
 
     /**
-     * Delete a the directory created by Logo in /tmp
+     * Delete the directory created by Logo in /tmp
      * @param path The Directory path
      * @return true if success
      */
@@ -262,17 +239,16 @@ public class Launcher {
      * @param args All arguments
      * @return The memory in Mb
      */
-    private int readMemoryFromCommandLine(String[] args) {
+    private int getXmxFromArgs(String[] args) {
         int memory = 0;
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equals("-memory")) {
+        var prev = "";
+        for (var arg : args) {
+            if (prev.equals("-memory")) {
                 try {
-                    if (i + 1 < args.length) {
-                        memory = Integer.parseInt(args[i + 1]);
-                    }
-                } catch (NumberFormatException ignored) {
-                }
+                    memory = Integer.parseInt(arg);
+                } catch (NumberFormatException ignored) {}
             }
+            prev = arg;
         }
         return memory;
     }

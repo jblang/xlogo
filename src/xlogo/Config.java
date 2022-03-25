@@ -12,7 +12,13 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.Theme;
 
 import java.awt.*;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
@@ -95,6 +101,37 @@ public class Config {
     private boolean hyperlinksEnabled = true;
     private boolean antiAliasingEnabled = true;
     private boolean fractionalFontMetricsEnabled = false;
+
+    static Config read() throws IOException {
+        var configPath = Paths.get(System.getProperty("user.home"), ".xlogo");
+        if (Files.isDirectory(configPath))
+            configPath = configPath.resolve("config.xml");
+        var fis = new FileInputStream(configPath.toFile());
+        XMLDecoder dec = new XMLDecoder(fis);
+        var config = (Config) dec.readObject();
+        dec.close();
+        fis.close();
+        return config;
+    }
+
+    /**
+     * Write the Configuration file when the user quits XLogo
+     */
+    public void write() throws IOException {
+        var configPath = Paths.get(System.getProperty("user.home"), ".xlogo");
+        if (Files.isRegularFile(configPath))
+            Files.delete(configPath);
+        if (!Files.exists(configPath))
+            Files.createDirectory(configPath);
+        var configFile = configPath.resolve("config.xml").toFile();
+        var fos = new FileOutputStream(configFile);
+        var enc = new XMLEncoder(fos);
+        enc.writeObject(this);
+        enc.close();
+        fos.close();
+        var xmxFile = configPath.resolve("xmx.txt");
+        Files.writeString(xmxFile, String.valueOf(getMemoryLimit()));
+    }
 
     /**
      * The quality of drawing

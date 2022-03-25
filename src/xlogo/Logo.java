@@ -19,12 +19,6 @@ import xlogo.utils.Utils;
 import javax.media.j3d.VirtualUniverse;
 import javax.swing.*;
 import java.awt.*;
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -33,7 +27,7 @@ import java.util.*;
  * @author loic
  */
 public class Logo {
-    public static final String VERSION = "1.0.0 beta 4";
+    public static final String VERSION = "1.0.0 beta 5";
     public static final String WEB_SITE = "github.com/jblang/xlogo";
     public static final String[] englishLanguage = {"French", "English", "Arabic", "Spanish", "Portuguese", "Esperanto", "German", "Galician", "Asturian", "Greek", "Italian", "Catalan", "Hungarian"};
     public static final String[] locales = {"fr", "en", "ar", "es", "pt", "eo", "de", "gl", "as", "el", "it", "ca", "hu"};
@@ -63,7 +57,7 @@ public class Logo {
      */
     public Logo() {
         // Read the XML file .xlogo and extract default config
-        readConfig(this);
+        tryConfig(this);
 
         // Overwrite loaded config with command line arguments
         readCommandLineConfig();
@@ -331,14 +325,10 @@ public class Logo {
      * This method initializes all parameters from the file .xlogo
      * @param logo
      */
-    private static void readConfig(Logo logo) {
+    private static void tryConfig(Logo logo) {
         try {
-            FileInputStream fis = new FileInputStream(System.getProperty("user.home") + File.separator + ".xlogo");
-            XMLDecoder dec = new XMLDecoder(fis);
-            config = (Config) dec.readObject();
-            dec.close();
-            fis.close();
-       } catch (Exception e) {
+            config = Config.read();
+        } catch (Exception e) {
             try {
                 UIManager.setLookAndFeel(new FlatDarkLaf());
             } catch (UnsupportedLookAndFeelException ex) {
@@ -357,21 +347,6 @@ public class Logo {
             }
             logo.select.dispose();
             generateLanguage(config.getLanguage());
-        }
-    }
-
-    /**
-     * Write the Configuration file when the user quits XLogo
-     */
-    public static void writeConfig() {
-        try {
-            FileOutputStream fos = new FileOutputStream(System.getProperty("user.home") + File.separator + ".xlogo");
-            XMLEncoder enc = new XMLEncoder(fos);
-            enc.writeObject(config);
-            enc.close();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

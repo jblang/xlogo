@@ -280,7 +280,9 @@ public class Application extends JFrame {
         String[] choice = {Logo.messages.getString("pref.ok"), Logo.messages.getString("pref.cancel")};
         int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("menu.file.quit"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, Logo.getAppIcon(), choice, choice[0]);
         if (val == JOptionPane.OK_OPTION) {
-            Logo.writeConfig();
+            try {
+                Logo.config.write();
+            } catch (IOException ignored) {}
             System.exit(0);
         }
     }

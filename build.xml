@@ -25,7 +25,7 @@
 
     <!-- Version for this Build -->
 
-    <property name="version" value="1.0.0beta3"/>
+    <property name="version" value="1.0.0beta5"/>
 
     <!-- =================================
          default target: deploy
@@ -122,7 +122,6 @@
             <fileset dir="deploy/">
                 <include name="*.jar"/>
                 <include name="Launcher.class"/>
-                <include name="xlogo/Config.class"/>
             </fileset>
         </jar>
 
