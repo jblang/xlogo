@@ -344,6 +344,7 @@ public class Logo {
             } catch (UnsupportedLookAndFeelException ex) {
                 ex.printStackTrace();
             }
+            config.loadDarkEditorTheme();
             try {
                 SwingUtilities.invokeAndWait(() -> logo.select = new LanguageSelection());
             } catch (Exception ignored) {
