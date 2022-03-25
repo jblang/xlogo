@@ -27,7 +27,7 @@ Extensive documentation is available from the [XLogo website](http://xlogo.tuxfa
 | Reference Manual (online) | [English][man-en] | [French][man-fr] | [German][man-de] | [Italian][man-it] | [Portuguese][man-pt] | [Spanish][man-es] | [Esperanto][man-eo]
 | Reference Manual (zipped html) | [English][zip-en] | [French][zip-fr] | [German][zip-de] | [Italian][zip-it] | [Portuguese][zip-pt] | [Spanish][zip-es] | [Esperanto][zip-eo]
 | Reference Manual (pdf) | [English][pdf-en] | [French][pdf-fr] | [German][pdf-de] | [Italian][pdf-it] | [Portuguese][pdf-pt] | [Spanish][pdf-es] | [Esperanto][pdf-eo]
-| Examples | *[LogoArts][ex-en]* | [French][ex-fr] | [German][ex-de] | [Italian][ex-it] | [Portuguese][ex-pt] | [Spanish][ex-es] | [Esperanto][ex-eo]
+| Examples | *[LogoArts][ex-en]* | [French][ex-fr] | | [Italian][ex-it] | [Portuguese][ex-pt] | [Spanish][ex-es] | 
 | XLogo Robotics | [English][rob-en] | | | [Italian][rob-it] | [Portuguese][rob-pt] | [Spanish][rob-es] |
 | Tutorial (pdf) | | [French][tut-fr] | | | [Portuguese][tut-pt] | [Spanish][tut-es]
 | Tutorial (zipped html) | | | | | | [Spanish][ziptut-es]
