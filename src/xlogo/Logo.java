@@ -33,7 +33,7 @@ import java.util.*;
  * @author loic
  */
 public class Logo {
-    public static final String VERSION = "1.0.0 beta 3";
+    public static final String VERSION = "1.0.0 beta 4";
     public static final String WEB_SITE = "github.com/jblang/xlogo";
     public static final String[] englishLanguage = {"French", "English", "Arabic", "Spanish", "Portuguese", "Esperanto", "German", "Galician", "Asturian", "Greek", "Italian", "Catalan", "Hungarian"};
     public static final String[] locales = {"fr", "en", "ar", "es", "pt", "eo", "de", "gl", "as", "el", "it", "ca", "hu"};
