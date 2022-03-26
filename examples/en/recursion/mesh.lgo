@@ -1,6 +1,6 @@
 # Main Command: Go 5 3
 # Tracker by Guy Walker
-# www.logoarts.co.uk
+# www.cr31.co.uk/logoarts
 
 to track :x
   # write value of :X as footer
@@ -12,7 +12,7 @@ to track :x
   SetPos :myPos SetHeading :myHeading SetPC :myCol
 end
 # Mesh by Guy Walker
-# www.logoarts.co.uk
+# www.cr31.co.uk/logoarts
 
 to new
   # set default screen, pen and turtle 

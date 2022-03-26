@@ -277,7 +277,7 @@ public class EditorPanel extends GridBagPanel {
         p.gb.insets = new Insets(2, 3, 2, 3);
 
         p.addRow(4, 0, tabSizeLabel, tabSize);
-        p.addRow(7, 2,marginPositionLabel, marginPosition);
+        p.addRow(7, 2, marginPositionLabel, marginPosition);
         p.addCol(0, 0, syntaxHighlighting, highlightCurrentLine, bracketMatchingEnabled);
         p.addCol(2, 0, antiAliasingEnabled, fractionalFontEnabled, hyperlinksEnabled);
 
