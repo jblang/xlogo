@@ -1,16 +1,25 @@
 # XLogo
 
+![screenshot](xlogo.png)
+
 XLogo is a Logo interpreter written in Java and licensed under the [GPL](COPYING.md). It has many extensions relative to other Logo implementations, such as networking, sound, 3D, and animation support.  It supports nine languages: French, English, Spanish, Arabic, Portuguese, German, Esperanto, Galician and Greek.
 
-Logo is a programming language developed in the 1970's by Wally Feurzeig, Seymour Papert, and Cynthia Solomon. It is an excellent language to begin learning with, as it teaches the basics of things like loops, tests, procedures, etc. The user moves an object called a "turtle" around the screen using commands as simple as forward, back, right, and so on. As it moves, the turtle leaves a trail behind it, and so it is therefore possible to create drawings. Operations on lists and words are also possible.
+Logo is a programming language [developed in the 1970's](https://dl.acm.org/doi/pdf/10.1145/3386329) by Wally Feurzeig, Seymour Papert, and Cynthia Solomon. It is an excellent language to begin learning with, as it teaches the basics of things like loops, tests, procedures, etc. Operations on lists and words are also possible. 
 
-Here is a simple example that produces the image in [this screenshot](xlogo.png):
+The user moves an object called a "turtle" around the screen using commands as simple as forward, back, right, and so on. As it moves, the turtle leaves a trail behind it, and so it is therefore possible to create drawings.  For example, `forward 100 right 90` will first make the turtle move 100 steps forward, and then turn the turtle 90° to the right.  This intuitive graphical approach makes Logo an ideal language for beginners, including children.
 
-- `forward 3 right 2` will first make the turtle move 3 steps forward, and then turn the turtle 2° to the right. 
-- `repeat 180 [forward 3 right 2]` repeats this motion 180 times to draw a circle
-- `repeat 20 [repeat 180 [forward 3 right 2] right 18]` draws 20 circles offset by 18° to make a flower.
+## Reboot
 
-This very intuitive graphical approach makes Logo an ideal language for beginners, including children.
+Loïc Le Coq originally developed XLogo until 2012. I (J.B. Langston) came across XLogo in 2022 and tried to contact him but got no response. Sadly, I believe he [passed away](https://avis-de-deces.ouest-france.fr/20130306/loic-lecoq-15803) in 2013.  I migrated the original repo to GitHub and started working on some improvements:
+
+- Fix blurry/pixelated scaling on high resolution displays
+- Make a nice looking themeable UI using FlatLaf
+- Use SVG images for icons, flags, and turtles
+- Replace editor with feature-rich RSyntaxTextArea
+- Update Java3D dependencies to latest versions
+- Fix bugs and improve code quality
+
+This version of XLogo is currently in beta status but is already more usable on modern computers than the original version. It still needs a lot of testing, especially on platforms other than Windows.  If you try it out and have any problems, please [open an issue](https://github.com/jblang/xlogo/issues). If you want to help, check out the [Developer Notes](DEVNOTES.md) to get started.
 
 ## Download
 
@@ -20,7 +29,18 @@ Note: You will need Java 11 or later on your computer to run XLogo. If you don't
 
 ## Documentation
 
-Extensive documentation is available from the [XLogo website](http://xlogo.tuxfamily.org/). Reference manuals are available in many languages. Some languages and formats may be more up-to-date than others, and some also have tutorials and other resources.  I have summarized what's available in the table below.
+### Logo Arts
+
+Guy Walker's wonderful [Logo Arts](http://www.cr31.co.uk/logoarts/index.html) website contains many XLogo resources:
+- Lots of [Example Programs](http://www.cr31.co.uk/logoarts/prog/top/all.html) with screenshots
+- Comprehensive [Primitive Reference](http://www.cr31.co.uk/logoarts/ipt/top/prim.html)
+- Excellent [Book Recommendations](http://www.cr31.co.uk/logoarts/ipt/info/books.html)
+
+### XLogo Website
+
+The [XLogo website](http://xlogo.tuxfamily.org/) contains extensive documentation. Reference manuals are available in many languages. Some languages and formats may be more up-to-date than others, and some also have tutorials and other resources.  **Note:** none of the manuals have yet been updated to reflect recent user interface changes, but they are still generally applicable.
+
+I have summarized what's available in the table below:
 
 | Document | English | French | German | Italian | Portuguese | Spanish | Esperanto |
 | - | - | - | - | - | - | - | - |
@@ -86,34 +106,12 @@ Extensive documentation is available from the [XLogo website](http://xlogo.tuxfa
 [TeX sources](docs) for each language's documentation are available on the XLogo website but have also been added to this 
 repo, if available.
 
-**Note:** none of the manuals have yet been updated to reflect recent user interface changes.
-
-## Logo Arts
-
-Guy Walker's wonderful [Logo Arts](http://www.cr31.co.uk/logoarts/index.html) website contains many XLogo resources:
-- Lots of [Example Programs](http://www.cr31.co.uk/logoarts/prog/top/all.html) with screenshots
-- Comprehensive [Primitive Reference](http://www.cr31.co.uk/logoarts/ipt/top/prim.html)
-- Excellent [Book Recommendations](http://www.cr31.co.uk/logoarts/ipt/info/books.html)
-
-## Current Status
-
-XLogo's development ceased in 2012. I tried to contact the original author in 2022 but got no response. Sadly, I believe he [passed away](https://avis-de-deces.ouest-france.fr/20130306/loic-lecoq-15803) in 2013.  I migrated the original repository here to GitHub and started working on some improvements:
-
-- Fix blurry/pixelated scaling on high resolution displays
-- Make a nice looking themeable UI using FlatLaf
-- Update libraries to latest versions
-- Use SVG images for smooth scaling
-- Replace custom text editor with feature-rich RSyntaxTextArea
-- Fix bugs and improve code quality
-
-If you want to help, check out the [Developer Notes](DEVNOTES.md) to get started. 
-
 ## Credits
 
 ### Developers
 
+- Loïc Le Coq: Original Developer
 - J.B. Langston: Current Maintainer
-- Loïc Le Coq: Original Developer 
 
 ### Translators
 

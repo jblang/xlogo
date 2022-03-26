@@ -30,10 +30,6 @@ Because not all the required libraries are available in MavenCentral, I am keepi
       - jogl-all*.jar
       - gluegen-rt*.jar
 
-## Known Bugs
-
-Rather than try to catalog them here, I will start creating [GitHub Issues](https://github.com/jblang/xlogo/issues) from now on.
-
 ## Code Quality Issues
 
 - It would be nice to have automated dependency management, but the latest JOGL and Java3D jars don't seem to be available in MavenCentral.  If that ever gets resolved, I'll probably switch to Gradle.
@@ -47,7 +43,6 @@ Rather than try to catalog them here, I will start creating [GitHub Issues](http
   - Lots of copypasta.
   - Many long methods and one insanely long [switch statement](https://github.com/jblang/xlogo/blob/main/src/xlogo/kernel/LaunchPrimitive.java#L152-L3823) (3671 lines!)
   - UI code is [Totally Gridbag](https://www.youtube.com/watch?v=UuLaxbFKAcc), but I'm [working](https://github.com/jblang/xlogo/blob/main/src/xlogo/gui/preferences/EditorPanel.java#L230-L250) [on it](https://github.com/jblang/xlogo/blob/main/src/xlogo/utils/GridBagPanel.java).
-- I take great pride in having reduced the lines of code from 19782 to 15876 while improving the feature set, but I probably have at least another 5000 lines to go.
 
 ## Adding a Language
 - `Config.java`: add a `public static LANGUAGE_...` constant 
