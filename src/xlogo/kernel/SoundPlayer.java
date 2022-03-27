@@ -8,9 +8,8 @@
 
 package xlogo.kernel;
 
-import xlogo.gui.Application;
 import xlogo.Logo;
-import xlogo.utils.LogoException;
+import xlogo.gui.Application;
 
 import javax.sound.midi.*;
 import java.util.StringTokenizer;

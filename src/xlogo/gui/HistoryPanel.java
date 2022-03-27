@@ -1,8 +1,8 @@
 package xlogo.gui;
 
 import xlogo.Logo;
+import xlogo.kernel.LogoException;
 import xlogo.utils.ExtensionFilter;
-import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
 
 import javax.swing.*;

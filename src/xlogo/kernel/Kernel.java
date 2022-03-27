@@ -2,7 +2,6 @@ package xlogo.kernel;
 
 import xlogo.gui.Application;
 import xlogo.gui.Editor;
-import xlogo.utils.LogoException;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ public class Kernel {
     // For all drawing operation
 //	protected DrawPanel dg;
     // For primitive
-    protected Primitive primitive = null;
+    protected Primitives primitive;
     // interpreter the user command and launch primitive and procedure
     private Interpreter interpreter;
     private Workspace wp;
@@ -84,7 +83,7 @@ public class Kernel {
     }
 
     public void buildPrimitiveTreemap(int id) {
-        primitive.buildPrimitiveTreemap(id);
+        primitive.buildPrimitiveTreemap();
     }
 
     public String execute(StringBuffer st) throws LogoException {
@@ -97,7 +96,7 @@ public class Kernel {
     }
 
     public void initPrimitive() {
-        primitive = new Primitive(app);
+        primitive = new Primitives(app, wp);
     }
 
 

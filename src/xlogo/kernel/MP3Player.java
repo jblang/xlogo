@@ -2,9 +2,8 @@ package xlogo.kernel;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
-import xlogo.gui.Application;
 import xlogo.Logo;
-import xlogo.utils.LogoException;
+import xlogo.gui.Application;
 import xlogo.utils.Utils;
 
 import java.io.File;

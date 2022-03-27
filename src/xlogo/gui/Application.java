@@ -19,7 +19,6 @@ import xlogo.kernel.perspective.Viewer3D;
 import xlogo.resources.ResourceLoader;
 import xlogo.utils.ExtensionFilter;
 import xlogo.utils.ImageWriter;
-import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
 
 import javax.help.CSH;

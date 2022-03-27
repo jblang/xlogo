@@ -1,8 +1,8 @@
 package xlogo.kernel.network;
 
-import xlogo.gui.Application;
 import xlogo.Logo;
-import xlogo.utils.LogoException;
+import xlogo.gui.Application;
+import xlogo.kernel.LogoException;
 
 import java.io.*;
 import java.net.InetAddress;

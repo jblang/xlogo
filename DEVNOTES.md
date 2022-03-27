@@ -56,8 +56,10 @@ Because not all the required libraries are available in MavenCentral, I am keepi
 - Update language properties files genrated from Help->Translate
 
 ## Adding Primitives
-- `xlogo/resources/Primitives.txt`: Add the generic name for the primitive and the number of arguments 
-  - If this primitive allows a general form (example: `(sum 1 2 3 4)`), add a + at the end of the line
-- `xlogo/kernel/LaunchPrimitive.java`: add the primitive instruction
-- If it's a drawing primitive, use `DrawPanel.java`
-- If it's a control primitive (loop, break, return ...), add it to `Primitive.java` 
+- In `xlogo/kernel/Primitives.java`: 
+  - Add the method implementing the primitive with the signature `void primitive(Stack<String> param)`
+  - Add a reference to the method to the end of the primitives list: `new Prim(key, arity, general, function)`
+    - `key` is used to look up the primitive in the resource bundle
+    - `arity` is the number of arguments the primitive takes
+    - `general` is whether the primitive has a general form (e.g., `(sum 1 2 3 4)`)
+    - `function` is the method implementing the primitive operation

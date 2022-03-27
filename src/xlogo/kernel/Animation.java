@@ -6,9 +6,8 @@
  */
 package xlogo.kernel;
 
-import xlogo.gui.Application;
 import xlogo.Logo;
-import xlogo.utils.LogoException;
+import xlogo.gui.Application;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;

@@ -6,10 +6,11 @@
  * This library is distributed under a modified BSD license.  See the included
  * LICENSE file for details.
  */
-package xlogo.gui;
+package xlogo.kernel;
 
-import org.fife.ui.rsyntaxtextarea.*;
-import xlogo.kernel.Primitive;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMaker;
+import org.fife.ui.rsyntaxtextarea.Token;
+import org.fife.ui.rsyntaxtextarea.TokenMap;
 
 import javax.swing.text.Segment;
 
@@ -79,7 +80,7 @@ public class LogoTokenMaker extends AbstractTokenMaker {
         tokenMap.put("end", Token.RESERVED_WORD);
         tokenMap.put("true", Token.LITERAL_BOOLEAN);
         tokenMap.put("false", Token.LITERAL_BOOLEAN);
-        for (var p : Primitive.primitives.keySet()) {
+        for (var p : Primitives.primitiveMap.keySet()) {
             tokenMap.put(p, Token.FUNCTION);
         }
         return tokenMap;

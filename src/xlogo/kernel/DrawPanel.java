@@ -9,7 +9,6 @@ import xlogo.kernel.gui.GuiComponent;
 import xlogo.kernel.gui.GuiMap;
 import xlogo.kernel.gui.GuiMenu;
 import xlogo.kernel.perspective.*;
-import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
 
 import javax.imageio.ImageIO;

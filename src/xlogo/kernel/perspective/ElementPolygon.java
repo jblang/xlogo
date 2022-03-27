@@ -7,9 +7,9 @@
  */
 package xlogo.kernel.perspective;
 
-import xlogo.gui.Application;
 import xlogo.Logo;
-import xlogo.utils.LogoException;
+import xlogo.gui.Application;
+import xlogo.kernel.LogoException;
 
 import javax.media.j3d.*;
 import javax.vecmath.Color3f;

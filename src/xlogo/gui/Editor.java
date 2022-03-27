@@ -7,11 +7,11 @@ import org.fife.ui.rsyntaxtextarea.ErrorStrip;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.*;
 import xlogo.Logo;
+import xlogo.kernel.LogoException;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.SyntaxException;
 import xlogo.kernel.Workspace;
 import xlogo.resources.ResourceLoader;
-import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
 
 import javax.swing.*;

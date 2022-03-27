@@ -160,7 +160,6 @@
                 <include name="**/*.png"/>
                 <include name="**/*.svg"/>
                 <include name="**/*.html"/>
-                <include name="**/Primitives.txt"/>
             </fileset>
         </copy>
     </target>

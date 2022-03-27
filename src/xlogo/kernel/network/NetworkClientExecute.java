@@ -7,10 +7,10 @@ package xlogo.kernel.network;
  * @author Loïc Le Coq
  */
 
-import xlogo.gui.Application;
 import xlogo.Logo;
+import xlogo.gui.Application;
 import xlogo.kernel.Kernel;
-import xlogo.utils.LogoException;
+import xlogo.kernel.LogoException;
 
 import java.io.*;
 import java.net.InetAddress;

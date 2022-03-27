@@ -2,7 +2,7 @@ package xlogo.kernel.perspective;
 
 import com.sun.j3d.utils.geometry.Sphere;
 import xlogo.gui.Application;
-import xlogo.utils.LogoException;
+import xlogo.kernel.LogoException;
 
 import javax.media.j3d.*;
 import javax.vecmath.Color3f;

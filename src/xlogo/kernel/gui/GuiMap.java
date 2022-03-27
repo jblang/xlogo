@@ -1,8 +1,8 @@
 package xlogo.kernel.gui;
 
-import xlogo.gui.Application;
 import xlogo.Logo;
-import xlogo.utils.LogoException;
+import xlogo.gui.Application;
+import xlogo.kernel.LogoException;
 
 import java.util.HashMap;
 

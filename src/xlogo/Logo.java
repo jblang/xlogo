@@ -18,7 +18,10 @@ import xlogo.utils.Utils;
 import javax.media.j3d.VirtualUniverse;
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * This class initializes the main frame, loads startup files and launches startup command
@@ -149,7 +152,7 @@ public class Logo {
 
         // Register syntax highlighter
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
-        atmf.putMapping("text/logo", "xlogo.gui.LogoTokenMaker");
+        atmf.putMapping("text/logo", "xlogo.kernel.LogoTokenMaker");
 
         new Logo();
     }

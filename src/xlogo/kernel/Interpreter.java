@@ -7,65 +7,92 @@
  */
 package xlogo.kernel;
 
-import xlogo.gui.Application;
 import xlogo.Logo;
-import xlogo.utils.LogoException;
+import xlogo.gui.Application;
+import xlogo.utils.Utils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 public class Interpreter {
-
-    // renvoie une série
-    // d'instruction à
-    // évaluer (si,
-    // exec).
-    public static Stack<String> calcul = new Stack<String>(); // Pile contenant les nombres
-    // procédures attendant
-    // parmamètres à recevoir
-    public static Stack<String> en_cours = new Stack<String>(); // contient les procédures
+    static final String END_PROCEDURE = "\n";
+    static final String END_LOOP = "\\";
+    static final String END_TCP = "\\x";
+    static final String LOOP_CONDITION = "\\siwhile";
     public static StringBuffer actionInstruction = new StringBuffer();
-    // est une parenthèse
-    // fermante
-    public static String lineNumber = "";
-    protected static boolean renvoi_instruction = false; // Si une primitive
-    protected static Stack<HashMap<String, String>> stockvariable = new Stack<HashMap<String, String>>();
-    protected static boolean stop = false;
-    protected static Stack<String> nom = new Stack<String>(); // contient les noms des
-    protected static HashMap<String, String> locale = new HashMap<String, String>(); // Pile contenant les
-    protected static boolean operande = false; // si l'élément trouvé est un
-    // actuellement en cours
-    // d'exécution
-    // nombre
-    protected static boolean operateur = false; // si l'élément trouvé est un
-    // opérateur
-    protected static boolean drapeau_ouvrante = false; // si l'élément trouvé
-    // est une parenthèse
-    // ouvrante
-    protected static boolean drapeau_fermante = false; // si l'élément trouvé
-    // noms des variables
-    // locales
-    private final LaunchPrimitive lanceprim;
+    static Stack<String> calcul = new Stack<>(); // stack containing the numbers
+    static Stack<String> en_cours = new Stack<>(); // contains currently running procedures
+    static String lineNumber = "";
+    static boolean renvoi_instruction = false; // if a primitive returns a series of statements to evaluate
+    static Stack<HashMap<String, String>> stockvariable = new Stack<>();
+    static Stack<String> nom = new Stack<>(); // contains the names of the procedures waiting for parameters to be received
+    static HashMap<String, String> locale = new HashMap<>(); // stack containing local variable names
+    static boolean operande = false; // if the element is a number
+    static boolean operateur = false; // if the element is an operator
+    static boolean drapeau_ouvrante = false; // if the element is an opening parenthesis
+    static boolean drapeau_fermante = false; // is a closing parenthesis
+    private final Primitives lanceprim;
     private final Application app;
-    private final Kernel kernel;
-    private Workspace wp;
     /**
      * This buffer contains all instructions to execute
      */
     private final InstructionBuffer instructionBuffer = new InstructionBuffer();
+    private Workspace wp;
 
-    // private TreeParser tp;
-    /*
-     * public Interpreter(Application cadre){ this.cadre=cadre;
-     *
-     * lanceprim=new LaunchPrimitive(cadre); cadre.error=false; }
-     */
     public Interpreter(Application app) {
-        this.kernel = app.getKernel();
         this.app = app;
-        wp = kernel.getWorkspace();
-        lanceprim = new LaunchPrimitive(app, wp);
+        wp = app.getKernel().getWorkspace();
+        lanceprim = new Primitives(app, wp);
         app.error = false;
+    }
+
+    /**
+     * Execute the primitive number "id" with the arguments contained in "param"<br>
+     * <ul>
+     * <li> if id<0: it is a procedure. <br>
+     * For example, if id=-3, it is procedure number -i-2=-(-3)-2=1 </li>
+     * <li> if d>=0: it is primitive number "id"</li>
+     * </ul>
+     *
+     * @param procedure    The procedure to execute
+     * @param param The Stack that contains all arguments
+     */
+    protected void executeProc(Procedure procedure, Stack<String> param) {
+        // procedure or primitive identifier parameter value
+        Interpreter.stockvariable.push(Interpreter.locale);
+        Interpreter.locale = new HashMap<>();
+        // Read local Variable
+        int optSize = procedure.optVariables.size();
+        int normSize = procedure.variable.size();
+        for (int j = 0; j < optSize + normSize; j++) {
+            // Add local Variable
+            if (j < normSize) {
+                Interpreter.locale.put(procedure.variable.get(j), param.get(j));
+            } else {
+                // add optional variables
+                String value;
+                if (j < param.size()) value = param.get(j);
+                else value = procedure.optVariablesExp.get(j - param.size()).toString();
+                Interpreter.locale.put(procedure.optVariables.get(j - normSize), value);
+
+            }
+        }
+        // Add optional variable
+        if (Kernel.mode_trace) {
+            StringBuilder buffer = new StringBuilder();
+            buffer.append("  ".repeat(Interpreter.en_cours.size()));
+            buffer.append(procedure.name);
+            for (String s : param) buffer.append(" ").append(Utils.unescapeString(s));
+            String msg = buffer + "\n";
+            app.updateHistory("normal", msg);
+        }
+        Interpreter.en_cours.push(procedure.name);
+
+        // Add Procedure code in Interpreter.instruction
+        instructionBuffer.insert("\n ");
+        instructionBuffer.insertCode(procedure.instr);
+        Interpreter.nom.push("\n");
     }
 
     String execute(StringBuffer instructions) throws LogoException {
@@ -73,7 +100,6 @@ public class Interpreter {
             instructionBuffer.insertCode(instructions);
         }
 
-        // Object obca1,obca2,oban;
         while (instructionBuffer.getLength() != 0) {
             if (app.error && LogoException.lance)
                 throw new LogoException(app, Logo.messages.getString("stop"));
@@ -108,24 +134,17 @@ public class Interpreter {
 			 * ***********************************************
 			 */
             String element_minuscule = element.toLowerCase();
-            int i = isProcedure(element_minuscule);
+            var prim = Primitives.primitiveMap.get(element_minuscule);
+            var proc = wp.getProcedure(element_minuscule);
+            if (prim != null || proc != null) {
 
-            if (Primitive.primitives.containsKey(element_minuscule) || i > -1) {
-
-                // identifiant de la primitive
-                if (i == -1)
-                    i = Integer.valueOf(
-                            Primitive.primitives.get(element_minuscule)).intValue()
-                            % Primitive.PRIMITIVE_NUMBER;
-                else
-                    i = -i - 2;
                 // if (!calcul.empty()&&nom.isEmpty())
                 // throw new
                 // monException(cadre,Logo.messages.getString("que_faire")+"
                 // "+calcul.pop() +" gdfdsf");
                 // exécuter la procédure ou la primitive.
                 Stack<String> param = new Stack<String>();
-                if (isInfixedOperator(i)) { // Si c'est un opérateur infixé
+                if (isInfixedOperator(element_minuscule)) { // Si c'est un opérateur infixé
                     deleteLineNumber();
                     operateur = true;
                     operande = false;
@@ -139,7 +158,7 @@ public class Interpreter {
                     // else
                     if (calcul.isEmpty()) { // Si le + ou le - représente le
                         // signe négatif ou positif
-                        if (i != 32 && i != 33)
+                        if (!isPlusMinus(element))
                             throw new LogoException(app, element + " "
                                     + Logo.messages.getString("error.ne_peut_etre")); // d'un
                         // nombre
@@ -149,7 +168,7 @@ public class Interpreter {
                             String st = nom.peek();
                             if (!testoperateur(st))
                                 param.push("0");
-                            else if ("*/".indexOf(st) > -1) { // Si le signe -
+                            else if (isTimesDiv(element)) { // Si le signe -
                                 // ou + suit un
                                 // * ou /
                                 instructionBuffer.deleteFirstWord(element);
@@ -157,7 +176,7 @@ public class Interpreter {
                                     instructionBuffer.insert("* ");
                                 else
                                     instructionBuffer.insert("/ ");
-                                if (i == 32)
+                                if (element.equals("+"))
                                     return ("1"); // Si c'est un plus
                                 else
                                     return ("-1"); // Si c'est un moins
@@ -169,8 +188,6 @@ public class Interpreter {
                     } else {
                         String st = nom.peek();
                         if (testoperateur(st)) {
-                            // System.out.println("st "+st+" element "+element+"
-                            // "+prioriteinf(st,element));
                             if (prioriteinf(st, element)) {
                                 param.push(calcul.pop());
                             } else
@@ -178,7 +195,7 @@ public class Interpreter {
                         } else
                             param.push(calcul.pop());
                     }
-                } else if (operande && i != 204) {
+                } else if (operande && !element.equals(")")) {
                     checkParenthesis();
                     operande = false;
                     break;
@@ -199,14 +216,14 @@ public class Interpreter {
                 if (drapeau_ouvrante) {
                     drapeau_ouvrante = false;
                     int constantNumber = -1;
-                    if (!hasGeneralForm(i)) {
+                    if (!hasGeneralForm(prim, proc)) {
                         // How many arguments for the procedure or the primitive
                         // For primitive
-                        if (i > -1)
-                            constantNumber = kernel.primitive.parametres[i];
+                        if (prim != null)
+                            constantNumber = prim.arity;
                             // For procedure
                         else
-                            constantNumber = wp.getProcedure(-i - 2).nbparametre;
+                            constantNumber = proc.nbparametre;
                     }
                     // Looking for all arguments (Number undefined)
                     nom.push(element);
@@ -245,9 +262,7 @@ public class Interpreter {
                         j++;
                     }
                     // If It's a procedure
-
-                    if (i < 0) {
-                        Procedure proc = wp.getProcedure(-i - 2);
+                    if (proc != null) {
                         if (j > proc.nbparametre + proc.optVariables.size())
                             throw new LogoException(app, Logo.messages
                                     .getString("too_much_arguments"));
@@ -279,11 +294,11 @@ public class Interpreter {
                     // How many arguments for the procedure or the primitive
                     int nbparametre = 0;
                     // For primitive
-                    if (i > -1)
-                        nbparametre = kernel.primitive.parametres[i];
+                    if (prim != null)
+                        nbparametre = prim.arity;
                         // For procedure
                     else
-                        nbparametre = wp.getProcedure(-i - 2).nbparametre;
+                        nbparametre = proc.nbparametre;
                     // Looking for each arguments
                     int j = 0;
                     nom.push(element);
@@ -301,8 +316,7 @@ public class Interpreter {
 //					System.out.println(instructionBuffer.toString());
 //					System.out.println(nom+"arguments"+param);
                     // Looking for Optional arguments in case of procedure
-                    if (i < 0) {
-                        Procedure proc = wp.getProcedure(-i - 2);
+                    if (proc != null) {
                         nbparametre = proc.optVariables.size();
                         for (j = 0; j < nbparametre; j++) {
                             try {
@@ -317,13 +331,13 @@ public class Interpreter {
                     }
                 }
 
-                // //////////////////////////////////////////////////////////////////////////////////////////
-                // System.out.println(nom+" "+"debut "+instruction+"
-                // fin\n"+param.toString());
-                //System.out.println(nom);
                 nom.pop();
-                if (!app.error)
-                    lanceprim.execute(i, param);
+                if (!app.error) {
+                    if (prim != null)
+                        prim.function.execute(param);
+                    else
+                        executeProc(proc, param);
+                }
                 if (app.error)
                     break;
                 if (drapeau_fermante && !calcul.empty()) {
@@ -524,8 +538,7 @@ public class Interpreter {
                                     + " "
                                     + "\""
                                     + Logo.messages.getString("pour") + "\"");
-                        if (Primitive.primitives.containsKey(element_minuscule)
-                                || isProcedure(element_minuscule) != -1)
+                        if (prim != null || proc != null)
                             throw new LogoException(app, element + " "
                                     + Logo.messages.getString("existe_deja"));
                         else {
@@ -731,26 +744,16 @@ public class Interpreter {
         else return ">=<=".indexOf(str) > -1 && "|&".indexOf(op) > -1;
     }
 
-    private int isProcedure(String mot) { // vérifie si mot est une procédure
-        for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-            if (wp.getProcedure(i).name.equals(mot))
-                return (i);
-        }
-        return (-1);
-    }
-
-
     protected void setWorkspace(Workspace workspace) {
         wp = workspace;
         lanceprim.setWorkspace(workspace);
     }
 
-
-    private boolean hasGeneralForm(int i) {
-        // If it's a procedure
-        if (i < 0)
-            return (!wp.getProcedure(-i - 2).optVariables.isEmpty());
-        return kernel.primitive.generalForm[i];
+    private boolean hasGeneralForm(Primitives.Primitive prim, Procedure proc) {
+        if (prim != null)
+            return prim.general;
+        else
+            return !proc.optVariables.isEmpty();
     }
 
     private void checkParenthesis() throws LogoException {
@@ -771,13 +774,11 @@ public class Interpreter {
     /**
      * This method indicates if a primitive is an infixed operator<br>
      * Infixed operators are for example: +,-,*-,/,&,>=.....
-     * @param id The integer identifiant for the primitive
+     * @param op The primitive
      * @return true or false if it's an infixed operator
      */
-    private boolean isInfixedOperator(int id) {
-        boolean b1 = (29 < id) && (id < 39);
-        boolean b2 = (id == 273) || (id == 274);
-        return b1 || b2;
+    static boolean isInfixedOperator(String op) {
+        return List.of("*", "/", "+", "-", "=", "<", ">", "|", "&", "<=", ">=").contains(op);
     }
 
     /**
@@ -785,7 +786,7 @@ public class Interpreter {
      * @param op The operator to test
      * @return true if op is a logic operator
      */
-    private boolean isLogicOperator(String op) {
+    static boolean isLogicOperator(String op) {
         return ("|&>=<=".indexOf(op) != -1);
 
     }
@@ -795,7 +796,7 @@ public class Interpreter {
      * @param op The operator to test
      * @return true if op is + or -
      */
-    private boolean isPlusMinus(String op) {
+    static boolean isPlusMinus(String op) {
         return (op.equals("+") || op.equals("-"));
     }
 
@@ -804,8 +805,17 @@ public class Interpreter {
      * @param op The operator to test
      * @return true if op is * or /
      */
-    private boolean isTimesDiv(String op) {
+    static boolean isTimesDiv(String op) {
         return (op.equals("*") || op.equals("/"));
+    }
+
+    /**
+     * This metods tests if the String op is a special token
+     * @param op The operator to test
+     * @return true if op is a special token
+     */
+    static boolean isSpecialPrim(String op) {
+        return List.of(END_PROCEDURE, END_LOOP, END_TCP, LOOP_CONDITION, ")").contains(op);
     }
 
     protected InstructionBuffer getInstructionBuffer() {

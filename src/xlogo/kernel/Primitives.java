@@ -23,7 +23,6 @@ import xlogo.kernel.perspective.ElementLine;
 import xlogo.kernel.perspective.ElementPoint;
 import xlogo.kernel.perspective.ElementPolygon;
 import xlogo.resources.ResourceLoader;
-import xlogo.utils.LogoException;
 import xlogo.utils.Utils;
 
 import javax.imageio.ImageIO;
@@ -35,354 +34,673 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.*;
 
 /**
- * When a primitive or a procedure has all arguments, LaunchPrimitive executes
+ * When a primitive or a procedure has all arguments, Primitives executes
  * the appropriate code.
  */
-public class LaunchPrimitive {
-    /**
-     * Default Application frame
-     */
+public class Primitives {
+    static Map<String, Primitive> primitiveMap = new TreeMap<>();
+    static Stack<LoopProperties> stackLoop = new Stack<>();
     private final Application cadre;
-    /**
-     * Default kernel
-     */
     private final Kernel kernel;
-    /**
-     * Default workspace
-     */
     private Workspace wp;
-    private Procedure procedure;
-    /**
-     * This is the start for the String returned by primitive or procedure.
-     * It is "\"" for words and "" for numbers.
-     */
-    private String debut_chaine = "";
-    /**
-     * When we launch the primitive "listentcp", we have to save workspaces
-     */
     private Stack<Workspace> savedWorkspace;
-    private final PrimFunc[] primitives = new PrimFunc[]{
-            this::forward,
-            this::back,
-            this::right,
-            this::left,
-            this::power,
-            this::repeat,
-            this::clearScreenWrap,
-            this::hideTurtle,
-            this::showTurtle,
-            this::print,
-            this::_if,
-            this::stop,
-            this::home,
-            this::setPos,
-            this::setX,
-            this::setY,
-            this::setXY,
-            this::setHeading,
-            this::penUp,
-            this::penDown,
-            this::penErase,
-            this::penReverse,
-            this::penPaint,
-            this::sum,
-            this::difference,
-            this::minus,
-            this::product,
-            this::divide,
-            this::remainder,
-            this::output,
-            this::multiply,
-            this::divideOp,
-            this::add,
-            this::subtract,
-            this::isEqual,
-            this::isLessThan,
-            this::isGreaterThan,
-            this::orOp,
-            this::andOp,
-            this::endProc,
-            this::endLoop,
-            this::position,
-            this::heading,
-            this::round,
-            this::log10,
-            this::sin,
-            this::cos,
-            this::or,
-            this::and,
-            this::not,
-            this::list,
-            this::sentence,
-            this::fput,
-            this::lput,
-            this::reverse,
-            this::pick,
-            this::remove,
-            this::item,
-            this::butLast,
-            this::butFirst,
-            this::last,
-            this::first,
-            this::count,
-            this::isWord,
-            this::isNumber,
-            this::isList,
-            this::isEmpty,
-            this::isEqual,
-            this::isBeforeWrap,
-            this::isMember69,
-            this::sqrt,
-            this::isMember71,
-            this::globalMakeWrap,
-            this::localWrap,
-            this::localMake,
-            this::setPenColor,
-            this::setScreenColor,
-            this::random,
-            this::wait,
-            this::procedures,
-            this::eraseProcedure,
-            this::eraseVariable,
-            this::eraseAll,
-            this::word,
-            this::label,
-            this::findColor,
-            this::windowTurtle,
-            this::wrapTurtle,
-            this::fenceTurtle,
-            this::clearText,
-            this::loadImage,
-            this::setPenWidth,
-            this::_while,
-            this::read,
-            this::isKey,
-            this::evalWhile,
-            this::readChar,
-            this::fill,
-            this::dot,
-            this::towards,
-            this::distance,
-            this::penColor,
-            this::screenColor,
-            this::isPenDown,
-            this::isVisible,
-            this::isPrimitive,
-            this::isProcedure,
-            this::run,
-            this::getFiles,
-            this::setDirectory,
-            this::getDirectory,
-            this::save,
-            this::saveAll,
-            this::load,
-            this::pi,
-            this::tan,
-            this::acos,
-            this::asin,
-            this::atan,
-            this::_true,
-            this::_false,
-            this::getShape,
-            this::setShape,
-            this::define,
-            this::getActiveTurtle,
-            this::getTurtles,
-            this::setTurtle,
-            this::getFontSize,
-            this::setFontSize,
-            this::eraseTurtle,
-            this::sequence,
-            this::getInstrument,
-            this::setInstrument,
-            this::play,
-            this::deleteSequence,
-            this::getSequenceIndex,
-            this::setSequenceIndex,
-            this::setTextSize,
-            this::getTextSize,
-            this::setTextColor,
-            this::getTextColor,
-            this::mouseButton,
-            this::mousePosition,
-            this::message,
-            this::getDate,
-            this::getTime,
-            this::getTimePassed,
-            this::countdown,
-            this::isCountdownEnded,
-            this::setLabelFont,
-            this::getLabelFont,
-            this::setTextFont,
-            this::getTextFont,
-            this::getOpenFiles,
-            this::fileReadLine,
-            this::fileReadChar,
-            this::fileWriteLine,
-            this::isEndOfFile,
-            this::openFile,
-            this::closeFile,
-            this::fileAppendLine,
-            this::isMouseEvent,
-            this::listVariables,
-            this::getVariableValue,
-            this::wash,
-            this::write,
-            this::circle,
-            this::arc,
-            this::fillZone,
-            this::startAnimation,
-            this::refresh,
-            this::getImageSize,
-            this::quotient,
-            this::isInteger,
-            this::setSeparation,
-            this::getSeparation,
-            this::truncate,
-            this::trace,
-            this::changeDirectory,
-            this::getUnicode,
-            this::getCharacter,
-            this::stopAll,
-            this::getRepCount,
-            this::_for,
-            this::abs,
-            this::replaceItem,
-            this::addItem,
-            this::setColorGray,
-            this::setColorLightGray,
-            this::setColorDarkRed,
-            this::setColorDarkGreen,
-            this::setColorDarkBlue,
-            this::setColorOrange,
-            this::setColorPink,
-            this::setColorPurple,
-            this::setColorBrown,
-            this::setColorBlack,
-            this::setColorRed,
-            this::setColorGreen,
-            this::setColorYellow,
-            this::setColorBlue,
-            this::setColorMagenta,
-            this::setColorCyan,
-            this::setColorWhite,
-            this::closeParentheses,
-            this::setTextStyle,
-            this::getTextStyle,
-            this::getZoneSize,
-            this::getLabelLength,
-            this::sendTcp,
-            this::listenTcp,
-            this::executeTcp,
-            this::endExecuteTcp,
-            this::chatTcp,
-            this::resetAll,
-            this::getPenWidth,
-            this::setPenShape,
-            this::getPenShape,
-            this::setDrawingQuality,
-            this::getDrawingQuality,
-            this::setTurtlesMax,
-            this::getTurtlesMax,
-            this::setScreenSize,
-            this::guiButton,
-            this::guiAction,
-            this::guiRemove,
-            this::guiPosition,
-            this::guiDraw,
-            this::setZoom,
-            this::drawGrid,
-            this::disableGrid,
-            this::stopAnimation,
-            this::stopTrace,
-            this::guiMenu,
-            this::drawBothAxes,
-            this::drawXAxis,
-            this::drawYAxis,
-            this::disableAxes,
-            this::bye,
-            this::isVariable,
-            this::getAxisColor,
-            this::getGridColor,
-            this::isGridEnabled,
-            this::isXAxisEnabled,
-            this::isYAxisEnabled,
-            this::setGridColor,
-            this::setAxisColor,
-            this::enable3D,
-            this::rollRight,
-            this::pitchUp,
-            this::rollLeft,
-            this::pitchDown,
-            this::getRoll,
-            this::getPitch,
-            this::setRoll,
-            this::setPitch,
-            this::setOrientation,
-            this::getOrientation,
-            this::setXYZ,
-            this::setZ,
-            this::setProperty,
-            this::getProperty,
-            this::removeProperty,
-            this::listProperties,
-            this::startPolygon,
-            this::endPolygon,
-            this::view3D,
-            this::startLine,
-            this::endLine,
-            this::startPoint,
-            this::endPoint,
-            this::startText,
-            this::endText,
-            this::isLessThanOrEqual,
-            this::isGreatherThanOrEqual,
-            this::listPrimitives,
-            this::getPropertyLists,
-            this::getContents,
-            this::erasePropertyList,
-            this::exp,
-            this::log,
-            this::ifElse,
-            this::edit,
-            this::editAll,
-            this::forEach,
-            this::forever,
-            this::setSignificantDigits,
-            this::getSignificantDigits,
-            this::getProcedureBody,
-            this::runExternalCommand,
-            this::saveImage,
-            this::playMP3,
-            this::stopMP3,
-            this::getZoom,
-            this::getX,
-            this::getY,
-            this::getZ,
-            this::fillPolygon,
-            this::randomZeroToOne,
-            this::doUntil,
-            this::doWhile,
-            this::mod,
-            this::setFontJustify,
-            this::getFontJustify,
-            this::isLessThan,
-            this::isGreaterThan,
-            this::isLessThanOrEqual,
-            this::isGreatherThanOrEqual,
-    };
+    private String debut_chaine = "";
+
+    interface PrimFunc {
+        void execute(Stack<String> param);
+    }
+
+    static class Primitive {
+        public final String key;
+        public final int arity;
+        public final boolean general;
+        public final PrimFunc function;
+
+        Primitive(String key, int arity, boolean general, PrimFunc function) {
+            this.key = key;
+            this.arity = arity;
+            this.general = general;
+            this.function = function;
+        }
+    }
+
+    final List<Primitive> primitives = List.of(
+            new Primitive("&", 1, false, this::andOp),
+            new Primitive("|", 1, false, this::orOp),
+            new Primitive("*", 1, false, this::multiplyOp),
+            new Primitive("+", 1, false, this::addOp),
+            new Primitive("-", 1, false, this::subtractOp),
+            new Primitive("/", 1, false, this::divideOp),
+            new Primitive("<", 1, false, this::isLessThan),
+            new Primitive("<=", 1, false, this::isLessThanOrEqual),
+            new Primitive("=", 1, false, this::isEqual),
+            new Primitive(">", 1, false, this::isGreaterThan),
+            new Primitive(">=", 1, false, this::isGreatherThanOrEqual),
+            new Primitive(")", 0, false, this::closeParen),
+            new Primitive("\\", 0, false, this::endLoop),
+            new Primitive("\\siwhile", 2, false, this::evalWhile),
+            new Primitive("\\x", 0, false, this::endExecuteTcp),
+            new Primitive("\n", 0, false, this::endProc),
+            new Primitive("3d.downpitch", 1, false, this::pitchDown),
+            new Primitive("3d.leftroll", 1, false, this::rollLeft),
+            new Primitive("3d.lineend", 0, false, this::endLine),
+            new Primitive("3d.linestart", 0, false, this::startLine),
+            new Primitive("3d.orientation", 0, false, this::getOrientation),
+            new Primitive("3d.perspective", 0, false, this::enable3D),
+            new Primitive("3d.pitch", 0, false, this::getPitch),
+            new Primitive("3d.pointend", 0, false, this::endPoint),
+            new Primitive("3d.pointstart", 0, false, this::startPoint),
+            new Primitive("3d.polyend", 0, false, this::endPolygon),
+            new Primitive("3d.polystart", 0, false, this::startPolygon),
+            new Primitive("3d.polyview", 0, false, this::view3D),
+            new Primitive("3d.rightroll", 1, false, this::rollRight),
+            new Primitive("3d.roll", 0, false, this::getRoll),
+            new Primitive("3d.setorientation", 1, false, this::setOrientation),
+            new Primitive("3d.setpitch", 1, false, this::setPitch),
+            new Primitive("3d.setroll", 1, false, this::setRoll),
+            new Primitive("3d.setxyz", 3, false, this::setXYZ),
+            new Primitive("3d.setz", 1, false, this::setZ),
+            new Primitive("3d.textend", 0, false, this::endText),
+            new Primitive("3d.textstart", 0, false, this::startText),
+            new Primitive("3d.uppitch", 1, false, this::pitchUp),
+            new Primitive("ajoute", 3, false, this::addItem),
+            new Primitive("ajouteligneflux", 2, false, this::fileAppendLine),
+            new Primitive("animation", 0, false, this::startAnimation),
+            new Primitive("arithmetic.absolue", 1, false, this::abs),
+            new Primitive("arithmetic.acos", 1, false, this::acos),
+            new Primitive("arithmetic.alea", 0, false, this::randomZeroToOne),
+            new Primitive("arithmetic.arrondi", 1, false, this::round),
+            new Primitive("arithmetic.asin", 1, false, this::asin),
+            new Primitive("arithmetic.atan", 1, false, this::atan),
+            new Primitive("arithmetic.cos", 1, false, this::cos),
+            new Primitive("arithmetic.difference", 2, false, this::difference),
+            new Primitive("arithmetic.digits", 0, false, this::getSignificantDigits),
+            new Primitive("arithmetic.div", 2, false, this::divide),
+            new Primitive("arithmetic.exp", 1, false, this::exp),
+            new Primitive("arithmetic.hasard", 1, false, this::random),
+            new Primitive("arithmetic.inf", 2, false, this::isLessThan),
+            new Primitive("arithmetic.infequal", 2, false, this::isLessThanOrEqual),
+            new Primitive("arithmetic.log", 1, false, this::log),
+            new Primitive("arithmetic.log10", 1, false, this::log10),
+            new Primitive("arithmetic.moins", 1, false, this::minus),
+            new Primitive("arithmetic.pi", 0, false, this::pi),
+            new Primitive("arithmetic.produit", 2, true, this::product),
+            new Primitive("arithmetic.puissance", 2, false, this::power),
+            new Primitive("arithmetic.quotient", 2, false, this::quotient),
+            new Primitive("arithmetic.racine", 1, false, this::sqrt),
+            new Primitive("arithmetic.reste", 2, false, this::remainder),
+            new Primitive("arithmetic.setdigits", 1, false, this::setSignificantDigits),
+            new Primitive("arithmetic.sin", 1, false, this::sin),
+            new Primitive("arithmetic.somme", 2, true, this::sum),
+            new Primitive("arithmetic.sup", 2, false, this::isGreaterThan),
+            new Primitive("arithmetic.supequal", 2, false, this::isGreatherThanOrEqual),
+            new Primitive("arithmetic.tan", 1, false, this::tan),
+            new Primitive("arithmetic.tronque", 1, false, this::truncate),
+            new Primitive("aritmetic.modulo", 2, false, this::mod),
+            new Primitive("attends", 1, false, this::wait),
+            new Primitive("axis", 1, false, this::drawBothAxes),
+            new Primitive("axiscolor", 0, false, this::getAxisColor),
+            new Primitive("bc", 0, false, this::penDown),
+            new Primitive("bc?", 0, false, this::isPenDown),
+            new Primitive("bye", 0, false, this::bye),
+            new Primitive("cap", 0, false, this::heading),
+            new Primitive("caractere", 1, false, this::getCharacter),
+            new Primitive("cat", 0, false, this::getFiles),
+            new Primitive("cc", 0, false, this::penColor),
+            new Primitive("cf", 0, false, this::screenColor),
+            new Primitive("changedossier", 1, false, this::changeDirectory),
+            new Primitive("chattcp", 2, false, this::chatTcp),
+            new Primitive("choix", 1, false, this::pick),
+            new Primitive("ci", 1, false, this::loadImage),
+            new Primitive("clos", 0, false, this::fenceTurtle),
+            new Primitive("color.blanc", 0, false, this::setColorWhite),
+            new Primitive("color.bleu", 0, false, this::setColorBlue),
+            new Primitive("color.bleufonce", 0, false, this::setColorDarkBlue),
+            new Primitive("color.cyan", 0, false, this::setColorCyan),
+            new Primitive("color.gris", 0, false, this::setColorGray),
+            new Primitive("color.grisclair", 0, false, this::setColorLightGray),
+            new Primitive("color.jaune", 0, false, this::setColorYellow),
+            new Primitive("color.magenta", 0, false, this::setColorMagenta),
+            new Primitive("color.marron", 0, false, this::setColorBrown),
+            new Primitive("color.noir", 0, false, this::setColorBlack),
+            new Primitive("color.orange", 0, false, this::setColorOrange),
+            new Primitive("color.rose", 0, false, this::setColorPink),
+            new Primitive("color.rouge", 0, false, this::setColorRed),
+            new Primitive("color.rougefonce", 0, false, this::setColorDarkRed),
+            new Primitive("color.vert", 0, false, this::setColorGreen),
+            new Primitive("color.vertfonce", 0, false, this::setColorDarkGreen),
+            new Primitive("color.violet", 0, false, this::setColorPurple),
+            new Primitive("compte", 1, false, this::count),
+            new Primitive("controls.compteur", 0, false, this::getRepCount),
+            new Primitive("controls.foreach", 3, false, this::forEach),
+            new Primitive("controls.forever", 1, false, this::forever),
+            new Primitive("controls.ifelse", 3, false, this::ifElse),
+            new Primitive("controls.repete", 2, false, this::repeat),
+            new Primitive("controls.repetepour", 2, false, this::_for),
+            new Primitive("controls.stop", 0, false, this::stop),
+            new Primitive("controls.stoptout", 0, false, this::stopAll),
+            new Primitive("controls.tantque", 2, false, this::_while),
+            new Primitive("couleurtexte", 0, false, this::getTextColor),
+            new Primitive("ct", 0, false, this::hideTurtle),
+            new Primitive("date", 0, false, this::getDate),
+            new Primitive("de", 0, false, this::penPaint),
+            new Primitive("debuttemps", 1, false, this::countdown),
+            new Primitive("dernier", 1, false, this::last),
+            new Primitive("distance", 1, false, this::distance),
+            new Primitive("drawing.arc", 3, false, this::arc),
+            new Primitive("drawing.av", 1, false, this::forward),
+            new Primitive("drawing.cercle", 1, false, this::circle),
+            new Primitive("drawing.etiquette", 1, false, this::label),
+            new Primitive("drawing.fillpolygon", 1, false, this::fillPolygon),
+            new Primitive("drawing.fixecap", 1, false, this::setHeading),
+            new Primitive("drawing.fixex", 1, false, this::setX),
+            new Primitive("drawing.fixexy", 2, false, this::setXY),
+            new Primitive("drawing.fixey", 1, false, this::setY),
+            new Primitive("drawing.fontjustify", 0, false, this::getFontJustify),
+            new Primitive("drawing.fpos", 1, false, this::setPos),
+            new Primitive("drawing.longueuretiquette", 1, false, this::getLabelLength),
+            new Primitive("drawing.origine", 0, false, this::home),
+            new Primitive("drawing.point", 1, false, this::dot),
+            new Primitive("drawing.re", 1, false, this::back),
+            new Primitive("drawing.saveimage", 2, false, this::saveImage),
+            new Primitive("drawing.setfontjustify", 1, false, this::setFontJustify),
+            new Primitive("drawing.td", 1, false, this::right),
+            new Primitive("drawing.tg", 1, false, this::left),
+            new Primitive("drawing.x", 0, false, this::getX),
+            new Primitive("drawing.y", 0, false, this::getY),
+            new Primitive("drawing.z", 0, false, this::getZ),
+            new Primitive("drawingquality", 0, false, this::getDrawingQuality),
+            new Primitive("ec", 1, true, this::print),
+            new Primitive("ecoutetcp", 0, false, this::listenTcp),
+            new Primitive("ecrisligneflux", 2, false, this::fileWriteLine),
+            new Primitive("efseq", 0, false, this::deleteSequence),
+            new Primitive("egal?", 2, false, this::isEqual),
+            new Primitive("enleve", 2, false, this::remove),
+            new Primitive("enr", 0, false, this::wrapTurtle),
+            new Primitive("entier?", 1, false, this::isInteger),
+            new Primitive("envoietcp", 2, false, this::sendTcp),
+            new Primitive("et", 2, true, this::and),
+            new Primitive("executetcp", 2, false, this::executeTcp),
+            new Primitive("faux", 0, false, this::_false),
+            new Primitive("fcc", 1, false, this::setPenColor),
+            new Primitive("fcfg", 1, false, this::setScreenColor),
+            new Primitive("fct", 1, false, this::setTextColor),
+            new Primitive("fen", 0, false, this::windowTurtle),
+            new Primitive("fermeflux", 1, false, this::closeFile),
+            new Primitive("findseq", 1, false, this::setSequenceIndex),
+            new Primitive("finflux?", 1, false, this::isEndOfFile),
+            new Primitive("finstr", 1, false, this::setInstrument),
+            new Primitive("fintemps?", 0, false, this::isCountdownEnded),
+            new Primitive("fixenompolice", 1, false, this::setLabelFont),
+            new Primitive("fixenompolicetexte", 1, false, this::setTextFont),
+            new Primitive("fixeseparation", 1, false, this::setSeparation),
+            new Primitive("fixestyle", 1, false, this::setTextStyle),
+            new Primitive("fpolice", 1, false, this::setFontSize),
+            new Primitive("fpt", 1, false, this::setTextSize),
+            new Primitive("frep", 1, false, this::setDirectory),
+            new Primitive("ftc", 1, false, this::setPenWidth),
+            new Primitive("ftortue", 1, false, this::setTurtle),
+            new Primitive("go", 0, false, this::penErase),
+            new Primitive("grid?", 0, false, this::isGridEnabled),
+            new Primitive("gridcolor", 0, false, this::getGridColor),
+            new Primitive("grille", 2, false, this::drawGrid),
+            new Primitive("guiaction", 2, false, this::guiAction),
+            new Primitive("guibutton", 2, false, this::guiButton),
+            new Primitive("guidraw", 1, false, this::guiDraw),
+            new Primitive("guimenu", 2, false, this::guiMenu),
+            new Primitive("guiposition", 2, false, this::guiPosition),
+            new Primitive("guiremove", 1, false, this::guiRemove),
+            new Primitive("heure", 0, false, this::getTime),
+            new Primitive("ic", 0, false, this::penReverse),
+            new Primitive("indseq", 0, false, this::getSequenceIndex),
+            new Primitive("instr", 0, false, this::getInstrument),
+            new Primitive("inverse", 1, false, this::reverse),
+            new Primitive("item", 2, false, this::item),
+            new Primitive("joue", 0, false, this::play),
+            new Primitive("lc", 0, false, this::penUp),
+            new Primitive("lis", 2, false, this::read),
+            new Primitive("liscar", 0, false, this::readChar),
+            new Primitive("liscarflux", 1, false, this::fileReadChar),
+            new Primitive("lisligneflux", 1, false, this::fileReadLine),
+            new Primitive("lissouris", 0, false, this::mouseButton),
+            new Primitive("liste", 2, true, this::list),
+            new Primitive("liste?", 1, false, this::isList),
+            new Primitive("listeflux", 0, false, this::getOpenFiles),
+            new Primitive("loop.dountil", 2, false, this::doUntil),
+            new Primitive("loop.dowhile", 2, false, this::doWhile),
+            new Primitive("md", 2, false, this::lput),
+            new Primitive("membre", 2, false, this::isMember71),
+            new Primitive("membre?", 2, false, this::isMember69),
+            new Primitive("message", 1, false, this::message),
+            new Primitive("mot", 2, true, this::word),
+            new Primitive("mot?", 1, false, this::isWord),
+            new Primitive("mp", 2, false, this::fput),
+            new Primitive("mt", 0, false, this::showTurtle),
+            new Primitive("nettoie", 0, false, this::wash),
+            new Primitive("nombre?", 1, false, this::isNumber),
+            new Primitive("nompolice", 0, false, this::getLabelFont),
+            new Primitive("nompolicetexte", 0, false, this::getTextFont),
+            new Primitive("non", 1, false, this::not),
+            new Primitive("ou", 2, true, this::or),
+            new Primitive("ouvreflux", 2, false, this::openFile),
+            new Primitive("penshape", 0, false, this::getPenShape),
+            new Primitive("penwidth", 0, false, this::getPenWidth),
+            new Primitive("ph", 2, true, this::sentence),
+            new Primitive("police", 0, false, this::getFontSize),
+            new Primitive("pos", 0, false, this::position),
+            new Primitive("possouris", 0, false, this::mousePosition),
+            new Primitive("precede?", 2, false, this::isBeforeWrap),
+            new Primitive("premier", 1, false, this::first),
+            new Primitive("prim?", 1, false, this::isPrimitive),
+            new Primitive("proc?", 1, false, this::isProcedure),
+            new Primitive("ptexte", 0, false, this::getTextSize),
+            new Primitive("rafraichis", 0, false, this::refresh),
+            new Primitive("ramene", 1, false, this::load),
+            new Primitive("remplace", 3, false, this::replaceItem),
+            new Primitive("remplis", 0, false, this::fill),
+            new Primitive("rempliszone", 0, false, this::fillZone),
+            new Primitive("rep", 0, false, this::getDirectory),
+            new Primitive("resetall", 0, false, this::resetAll),
+            new Primitive("ret", 1, false, this::output),
+            new Primitive("sauve", 2, false, this::save),
+            new Primitive("sauved", 1, false, this::saveAll),
+            new Primitive("sd", 1, false, this::butLast),
+            new Primitive("separation", 0, false, this::getSeparation),
+            new Primitive("seq", 1, false, this::sequence),
+            new Primitive("setaxiscolor", 1, false, this::setAxisColor),
+            new Primitive("setdrawingquality", 1, false, this::setDrawingQuality),
+            new Primitive("setgridcolor", 1, false, this::setGridColor),
+            new Primitive("setpenshape", 1, false, this::setPenShape),
+            new Primitive("setscreensize", 1, false, this::setScreenSize),
+            new Primitive("setturtlesnumber", 1, false, this::setTurtlesMax),
+            new Primitive("setzoom", 1, false, this::setZoom),
+            new Primitive("si", 2, false, this::_if),
+            new Primitive("sound.mp3play", 1, false, this::playMP3),
+            new Primitive("sound.mp3stop", 0, false, this::stopMP3),
+            new Primitive("souris?", 0, false, this::isMouseEvent),
+            new Primitive("sp", 1, false, this::butFirst),
+            new Primitive("stopanimation", 0, false, this::stopAnimation),
+            new Primitive("stopaxis", 0, false, this::disableAxes),
+            new Primitive("stopgrille", 0, false, this::disableGrid),
+            new Primitive("style", 0, false, this::getTextStyle),
+            new Primitive("taillefenetre", 0, false, this::getZoneSize),
+            new Primitive("tailleimage", 0, false, this::getImageSize),
+            new Primitive("tape", 1, false, this::write),
+            new Primitive("tc", 1, false, this::findColor),
+            new Primitive("temps", 0, false, this::getTimePassed),
+            new Primitive("tortue", 0, false, this::getActiveTurtle),
+            new Primitive("tortues", 0, false, this::getTurtles),
+            new Primitive("touche?", 0, false, this::isKey),
+            new Primitive("tuetortue", 1, false, this::eraseTurtle),
+            new Primitive("turtle.fforme", 1, false, this::setShape),
+            new Primitive("turtle.forme", 0, false, this::getShape),
+            new Primitive("turtlesnumber", 0, false, this::getTurtlesMax),
+            new Primitive("unicode", 1, false, this::getUnicode),
+            new Primitive("var?", 1, false, this::isVariable),
+            new Primitive("ve", 0, false, this::clearScreenWrap),
+            new Primitive("vers", 1, false, this::towards),
+            new Primitive("vide?", 1, false, this::isEmpty),
+            new Primitive("visible?", 0, false, this::isVisible),
+            new Primitive("vrai", 0, false, this::_true),
+            new Primitive("vt", 0, false, this::clearText),
+            new Primitive("workspace.chose", 1, false, this::getVariableValue),
+            new Primitive("workspace.content", 0, false, this::getContents),
+            new Primitive("workspace.def", 2, false, this::define),
+            new Primitive("workspace.donne", 2, false, this::globalMakeWrap),
+            new Primitive("workspace.donnelocale", 2, false, this::localMake),
+            new Primitive("workspace.ed", 1, false, this::edit),
+            new Primitive("workspace.edall", 0, false, this::editAll),
+            new Primitive("workspace.efn", 1, false, this::eraseProcedure),
+            new Primitive("workspace.efns", 0, false, this::eraseAll),
+            new Primitive("workspace.efv", 1, false, this::eraseVariable),
+            new Primitive("workspace.erpl", 1, false, this::erasePropertyList),
+            new Primitive("workspace.exec", 1, false, this::run),
+            new Primitive("workspace.externalcommand", 1, false, this::runExternalCommand),
+            new Primitive("workspace.gprop", 2, false, this::getProperty),
+            new Primitive("workspace.imts", 0, false, this::procedures),
+            new Primitive("workspace.listevariables", 0, false, this::listVariables),
+            new Primitive("workspace.locale", 1, false, this::localWrap),
+            new Primitive("workspace.plist", 1, false, this::listProperties),
+            new Primitive("workspace.pprop", 3, false, this::setProperty),
+            new Primitive("workspace.primitives", 0, false, this::listPrimitives),
+            new Primitive("workspace.propertylists", 0, false, this::getPropertyLists),
+            new Primitive("workspace.remprop", 2, false, this::removeProperty),
+            new Primitive("workspace.stoptrace", 0, false, this::stopTrace),
+            new Primitive("workspace.text", 1, false, this::getProcedureBody),
+            new Primitive("workspace.trace", 0, false, this::trace),
+            new Primitive("xaxis", 1, false, this::drawXAxis),
+            new Primitive("xaxis?", 0, false, this::isXAxisEnabled),
+            new Primitive("yaxis", 1, false, this::drawYAxis),
+            new Primitive("yaxis?", 0, false, this::isYAxisEnabled),
+            new Primitive("zoom", 0, false, this::getZoom)
+    );
 
     /**
      * @param cadre Default frame Application
-     * @param wp    Default workspace
+     * @param wp  Default workspace
      */
-    public LaunchPrimitive(Application cadre, Workspace wp) {
+    public Primitives(Application cadre, Workspace wp) {
         this.wp = wp;
         this.cadre = cadre;
         this.kernel = cadre.getKernel();
+        buildPrimitiveTreemap();
+    }
+
+    /**
+     * This methods returns a list which contains all the primitive for the current language
+     *
+     * @return The primitives list
+     */
+    protected String getAllPrimitives() {
+        List<String> list = new ArrayList<>();
+        Locale locale = Logo.getLocale(Logo.config.getLanguage());
+        ResourceBundle names = ResourceBundle.getBundle("primitives", Objects.requireNonNull(locale));
+        for (var prim : primitives) {
+            // Exclude internal primitives \n \\x and \\siwhile
+            // Exclude all arithmetic symbols + - / * & |
+            if (!Interpreter.isInfixedOperator(prim.key) || !Interpreter.isSpecialPrim(prim.key)) {
+                list.add(names.getString(prim.key).trim());
+            }
+        }
+        Collections.sort(list);
+        StringBuilder sb = new StringBuilder("[ ");
+        for (String s : list) {
+            sb.append("[ ");
+            sb.append(s);
+            sb.append("] ");
+        }
+        sb.append("] ");
+        return (sb.toString());
+    }
+
+    //Exécution des primitives
+    public void buildPrimitiveTreemap() {
+        primitiveMap = new TreeMap<>();
+        Locale locale = Logo.getLocale(Logo.config.getLanguage());
+        ResourceBundle names = ResourceBundle.getBundle("primitives", Objects.requireNonNull(locale));
+        for (var prim : primitives) {
+            // read the standard number of arguments for the primitive
+            String name = prim.key;
+            if (!Interpreter.isInfixedOperator(name) && !Interpreter.isSpecialPrim(name)) {
+                name = names.getString(name);
+            }
+            if (name.equals("\n")) {
+                primitiveMap.put(name, prim);
+            } else {
+                StringTokenizer st = new StringTokenizer(name.toLowerCase());
+                while (st.hasMoreTokens())
+                    primitiveMap.put(st.nextToken(), prim);
+            }
+        }
+    }
+
+    /**
+     * This method creates the loop "repeat"
+     *
+     * @param i  The number of iteration
+     * @param st The instruction to execute
+     */
+    protected void repete(int i, String st) {
+        if (i > 0) {
+            st = new String(Utils.formatCode(st));
+            LoopProperties bp = new LoopRepeat(BigDecimal.ONE, new BigDecimal(i), BigDecimal.ONE, st);
+            stackLoop.push(bp);
+            cadre.getKernel().getInstructionBuffer().insert(st + "\\ ");
+        } else if (i != 0) {
+            try {
+                throw new LogoException(cadre, Utils.primitiveName("controls.repete") + " " + Logo.messages.getString("attend_positif"));
+            } catch (LogoException e) {
+            }
+        }
+    }
+
+    /**
+     * This method is an internal primitive for the primitive "while"
+     *
+     * @param b  Do we still execute the loop body?
+     * @param li The loop body instructions
+     */
+    void whilesi(boolean b, String li) {
+        if (b) {
+            cadre.getKernel().getInstructionBuffer().insert(li + stackLoop.peek().getInstr());
+        } else {
+            try {
+                eraseLevelStop();
+            } catch (LogoException e) {
+            }
+        }
+    }
+
+    // primitive if
+    void si(boolean b, String li, String li2) {
+        if (b) {
+            cadre.getKernel().getInstructionBuffer().insert(li);
+        } else if (null != li2) {
+            cadre.getKernel().getInstructionBuffer().insert(li2);
+        }
+    }
+
+    // primitive stop
+    void stop() throws LogoException {
+        Interpreter.operande = false;
+        String car = "";
+        try {
+            car = eraseLevelStop();
+        } catch (LogoException e) {
+        }
+
+        // A procedure has been stopped
+        if (car.equals("\n")) {
+            String en_cours = Interpreter.en_cours.pop();
+            Interpreter.locale = Interpreter.stockvariable.pop();
+            // Example: 	to bug
+            //				fd stop
+            //				end
+            // 				--------
+            //				bug
+            //				stop doesn't output to fd
+            if (!Interpreter.nom.isEmpty() && !Interpreter.nom.peek().equals("\n")) {
+                //	System.out.println(Interpreter.nom);
+                throw new LogoException(cadre, Utils.primitiveName("controls.stop") + " " + Logo.messages.getString("ne_renvoie_pas") + " " + Interpreter.nom.peek());
+            } else if (!Interpreter.nom.isEmpty()) {
+                // Removing the character "\n"
+                Interpreter.nom.pop();
+                // Example: 	to bug		|	to bug2
+                // 				fd bug2		|	stop
+                //				end			|	end
+                //				------------------------
+                // 				bug
+                //				bug2 doesn't output to fd
+                if (!Interpreter.nom.isEmpty() && !Interpreter.nom.peek().equals("\n")) {
+                    //	System.out.println(Interpreter.nom);
+                    throw new LogoException(cadre, en_cours + " " + Logo.messages.getString("ne_renvoie_pas") + " " + Interpreter.nom.peek());
+                }
+            }
+        }
+    }
+
+    // primitive output
+    void retourne(String val) throws LogoException {
+        Interpreter.calcul.push(val);
+        Interpreter.operande = true;
+        if (Kernel.mode_trace) {
+            String buffer = "  ".repeat(Math.max(0, Interpreter.en_cours.size() - 1)) + Interpreter.en_cours.peek() + " " + Utils.primitiveName("ret") + " " + val;
+            cadre.updateHistory("normal", Utils.unescapeString(buffer) + "\n");
+        }
+        Interpreter.en_cours.pop();
+        Interpreter.locale = Interpreter.stockvariable.pop();
+        if ((!Interpreter.nom.isEmpty()) && Interpreter.nom.peek().equals("\n")) {
+            try {
+                eraseLevelReturn();
+            } catch (LogoException e) {
+            }
+            Interpreter.nom.pop();
+        } else if (!Interpreter.nom.isEmpty())
+            throw new LogoException(cadre, Utils.primitiveName("ret") + " " + Logo.messages.getString("ne_renvoie_pas") + " " + Interpreter.nom.peek());
+        else throw new LogoException(cadre, Logo.messages.getString("erreur_retourne"));
+    }
+
+    /**
+     * This method deletes all instruction since it encounters the end of a loop or the end of a procedure
+     *
+     * @return The specific character \n or \ if found
+     * @throws LogoException if an error occurs
+     */
+    String eraseLevelStop() throws LogoException {
+        boolean error = true;
+        String caractere = "";
+        int marqueur = 0;
+        InstructionBuffer instruction = cadre.getKernel().getInstructionBuffer();
+        for (int i = 0; i < instruction.getLength(); i++) {
+            caractere = String.valueOf(instruction.charAt(i));
+            if (caractere.equals(Interpreter.END_LOOP) | caractere.equals(Interpreter.END_PROCEDURE)) {
+                marqueur = i;
+                if (caractere.equals(Interpreter.END_LOOP) && i != instruction.getLength() - 1) {
+                    // We test if the character "\" is indeed an end of
+                    // loop character and not of the style "\e" or "\"
+                    if (instruction.charAt(i + 1) == ' ') {
+                        error = false;
+                        break;
+                    }
+                } else {
+                    error = false;
+                    break;
+                }
+            }
+        }
+
+        if (error) {
+            throw new LogoException(cadre, Logo.messages.getString("erreur_stop"));
+        }
+        if (marqueur + 2 <= instruction.getLength()) instruction.delete(0, marqueur + 2);
+        if (!caractere.equals("\n")) {
+            stackLoop.pop();
+        }
+        return (caractere);
+    }
+
+    /**
+     * This method deletes all instruction since it encounters the end of a procedure
+     *
+     * @throws LogoException if there is an error
+     */
+    void eraseLevelReturn() throws LogoException {
+        boolean error = true;
+        String caractere;
+        int loopLevel = 0;
+        int marqueur = 0;
+        InstructionBuffer instruction = cadre.getKernel().getInstructionBuffer();
+        for (int i = 0; i < instruction.getLength(); i++) {
+            caractere = String.valueOf(instruction.charAt(i));
+            if (caractere.equals(Interpreter.END_PROCEDURE)) {
+                marqueur = i;
+                error = false;
+                break;
+            } else if (caractere.equals(Interpreter.END_LOOP)) {
+                // We test if the character "\" is indeed an end of
+                // loop character and not of the style "\e" or "\"
+                if (instruction.charAt(i + 1) == ' ') {
+                    loopLevel++;
+                }
+            }
+        }
+        if (error) {
+            throw new LogoException(cadre, Logo.messages.getString("erreur_retourne"));
+        }
+        if (marqueur + 2 <= instruction.getLength()) instruction.delete(0, marqueur + 2);
+        for (int i = 0; i < loopLevel; i++) {
+            stackLoop.pop();
+        }
+    }
+
+    void exportPrimCSV() {
+        StringBuilder sb = new StringBuilder();
+        Locale locale = new Locale("fr", "FR");
+        ResourceBundle names_fr = ResourceBundle.getBundle("primitives", locale);
+        locale = new Locale("en", "US");
+        ResourceBundle names_en = ResourceBundle.getBundle("primitives", locale);
+        locale = new Locale("ar", "MA");
+        ResourceBundle names_ar = ResourceBundle.getBundle("primitives", locale);
+        locale = new Locale("es", "ES");
+        ResourceBundle names_es = ResourceBundle.getBundle("primitives", locale);
+        locale = new Locale("pt", "BR");
+        ResourceBundle names_pt = ResourceBundle.getBundle("primitives", locale);
+        locale = new Locale("eo", "EO");
+        ResourceBundle names_eo = ResourceBundle.getBundle("primitives", locale);
+        locale = new Locale("de", "DE");
+        ResourceBundle names_de = ResourceBundle.getBundle("primitives", locale);
+        //locale=new Locale("nl","NL");
+        ResourceBundle[] names = {names_fr, names_en, names_es, names_pt, names_ar, names_eo, names_de};
+        int i = 0;
+        for (var prim : primitives) {
+            var cle = prim.key;
+            if (i != 39 && i != 95 && i != 212 && cle.length() != 1) {
+                sb.append("$");
+                sb.append(cle);
+                sb.append("$");
+                sb.append(";");
+                for (ResourceBundle name : names) {
+                    String txt = name.getString(cle);
+                    sb.append("$");
+                    sb.append(txt);
+                    sb.append("$");
+                    sb.append(";");
+                }
+                sb.append("\n");
+            }
+            i++;
+        }
+        try {
+            Utils.writeLogoFile("/home/loic/primTable.csv", new String(sb));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void exportMessageCSV() {
+        StringBuilder sb = new StringBuilder();
+        Locale locale = new Locale("fr", "FR");
+        ResourceBundle lang_fr = ResourceBundle.getBundle("langage", locale);
+        locale = new Locale("en", "US");
+        ResourceBundle lang_en = ResourceBundle.getBundle("langage", locale);
+        locale = new Locale("ar", "MA");
+        ResourceBundle lang_ar = ResourceBundle.getBundle("langage", locale);
+        locale = new Locale("es", "ES");
+        ResourceBundle lang_es = ResourceBundle.getBundle("langage", locale);
+        locale = new Locale("pt", "BR");
+        ResourceBundle lang_pt = ResourceBundle.getBundle("langage", locale);
+        locale = new Locale("eo", "EO");
+        ResourceBundle lang_eo = ResourceBundle.getBundle("langage", locale);
+        locale = new Locale("de", "DE");
+        ResourceBundle lang_de = ResourceBundle.getBundle("langage", locale);
+        //locale=new Locale("nl","NL");
+        ResourceBundle[] lang = {lang_fr, lang_en, lang_es, lang_pt, lang_ar, lang_eo, lang_de};
+        try {
+            Enumeration<String> en = lang_fr.getKeys();
+            while (en.hasMoreElements()) {
+                String cle = en.nextElement();
+                sb.append("$");
+                sb.append(cle);
+                sb.append("$");
+                sb.append(";");
+                for (int j = 0; j < lang.length; j++) {
+                    String txt = lang[j].getString(cle);
+                    sb.append("$");
+                    sb.append(txt);
+                    sb.append("$");
+                    if (j != lang.length - 1) sb.append(";");
+                }
+
+                sb.append("\n");
+            }
+            Utils.writeLogoFile("/home/loic/messageTable.csv", new String(sb));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -396,59 +714,6 @@ public class LaunchPrimitive {
         li = li.trim();
         return li.length() > 0 && li.charAt(0) == '['
                 && li.endsWith("]");
-    }
-
-    /**
-     * Execute the primitive number "id" with the arguments contained in "param"<br>
-     * <ul>
-     * <li> if id<0: it is a procedure. <br>
-     * For example, if id=-3, it is procedure number -i-2=-(-3)-2=1 </li>
-     * <li> if d>=0: it is primitive number "id"</li>
-     * </ul>
-     *
-     * @param id    The number representing the procedure or the primitive
-     * @param param The Stack that contains all arguments
-     */
-    protected void execute(int id, Stack<String> param) {
-        // procedure or primitive identifier parameter value
-        if (id < 0) {
-            procedure = wp.getProcedure(-id - 2);
-            Interpreter.stockvariable.push(Interpreter.locale);
-            Interpreter.locale = new HashMap<String, String>();
-            // Read local Variable
-            int optSize = procedure.optVariables.size();
-            int normSize = procedure.variable.size();
-            for (int j = 0; j < optSize + normSize; j++) {
-                // Add local Variable
-                if (j < normSize) {
-                    Interpreter.locale.put(procedure.variable.get(j), param.get(j));
-                }    // add optional variables
-                else {
-                    String value = "";
-                    if (j < param.size()) value = param.get(j);
-                    else value = procedure.optVariablesExp.get(j - param.size()).toString();
-                    Interpreter.locale.put(procedure.optVariables.get(j - normSize), value);
-
-                }
-            }
-            // Add Optionnal variable
-            if (Kernel.mode_trace) {
-                StringBuffer buffer = new StringBuffer();
-                for (int i = 0; i < Interpreter.en_cours.size(); i++) buffer.append("  ");
-                buffer.append(procedure.name);
-                for (int i = 0; i < param.size(); i++) buffer.append(" " + Utils.unescapeString(param.get(i)));
-                String msg = buffer + "\n";
-                cadre.updateHistory("normal", msg);
-            }
-            Interpreter.en_cours.push(procedure.name);
-
-            // Add Procedure code in Interpreter.instruction
-            kernel.getInstructionBuffer().insert("\n ");
-            kernel.getInstructionBuffer().insertCode(procedure.instr);
-            Interpreter.nom.push("\n");
-        } else if (id < primitives.length) {
-            primitives[id].execute(param);
-        }
     }
 
     private void getFontJustify(Stack<String> param) {
@@ -482,8 +747,8 @@ public class LaunchPrimitive {
             li2 = new String(Utils.formatCode(li2));
             String instr = "\\siwhile " + li2 + "[ " + li1 + "] ";
             LoopWhile bp = new LoopWhile(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, instr);
-            Primitive.stackLoop.push(bp);
-            cadre.getKernel().getInstructionBuffer().insert(li1 + instr + Primitive.END_LOOP + " ");
+            stackLoop.push(bp);
+            cadre.getKernel().getInstructionBuffer().insert(li1 + instr + Interpreter.END_LOOP + " ");
         } catch (LogoException e) {
         }
     }
@@ -496,8 +761,8 @@ public class LaunchPrimitive {
             li2 = new String(Utils.formatCode(li2));
             String instr = "\\siwhile " + Utils.primitiveName("non") + " " + li2 + "[ " + li1 + "] ";
             LoopWhile bp = new LoopWhile(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, instr);
-            Primitive.stackLoop.push(bp);
-            cadre.getKernel().getInstructionBuffer().insert(instr + Primitive.END_LOOP + " ");
+            stackLoop.push(bp);
+            cadre.getKernel().getInstructionBuffer().insert(instr + Interpreter.END_LOOP + " ");
         } catch (LogoException e) {
         }
     }
@@ -512,8 +777,8 @@ public class LaunchPrimitive {
         try {
             String list = getFinalList(param.get(0));
             LoopFillPolygon bp = new LoopFillPolygon();
-            Primitive.stackLoop.push(bp);
-            cadre.getKernel().getInstructionBuffer().insert(Utils.formatCode(list) + Primitive.END_LOOP + " ");
+            stackLoop.push(bp);
+            cadre.getKernel().getInstructionBuffer().insert(Utils.formatCode(list) + Interpreter.END_LOOP + " ");
             cadre.getDrawPanel().startRecord2DPolygon();
         } catch (LogoException e) {
         }
@@ -702,8 +967,8 @@ public class LaunchPrimitive {
             li2 = new String(Utils.formatCode(li2));
             LoopProperties bp = new LoopProperties(BigDecimal.ONE, BigDecimal.ZERO
                     , BigDecimal.ONE, li2);
-            cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP + " ");
-            Primitive.stackLoop.push(bp);
+            cadre.getKernel().getInstructionBuffer().insert(li2 + Interpreter.END_LOOP + " ");
+            stackLoop.push(bp);
         } catch (LogoException e) {
         }
     }
@@ -767,8 +1032,8 @@ public class LaunchPrimitive {
                 LoopForEach bp = new LoopForEach(BigDecimal.ZERO, new BigDecimal(elements.size() - 1)
                         , BigDecimal.ONE, li2, var.toLowerCase(), elements);
                 bp.AffecteVar(true);
-                cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP + " ");
-                Primitive.stackLoop.push(bp);
+                cadre.getKernel().getInstructionBuffer().insert(li2 + Interpreter.END_LOOP + " ");
+                stackLoop.push(bp);
             }
         } catch (LogoException e) {
         }
@@ -1756,7 +2021,7 @@ public class LaunchPrimitive {
         }
     }
 
-    private void closeParentheses(Stack<String> param) {
+    private void closeParen(Stack<String> param) {
         // Distinguons les deux cas : (3)*2 et (4+3)*2
         // Le 3 est ici a retourner au +
         boolean a_retourner = true;
@@ -1785,7 +2050,7 @@ public class LaunchPrimitive {
             }
             for (int j = pos; j < Interpreter.nom.size(); j++) {
                 String proc = Interpreter.nom.get(j).toLowerCase();
-                if (Primitive.primitives.containsKey(proc)) est_procedure = true;
+                if (primitiveMap.containsKey(proc)) est_procedure = true;
                 else {
                     for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
                         if (wp.getProcedure(i).name.equals(proc)) {
@@ -1799,7 +2064,7 @@ public class LaunchPrimitive {
         }
         // Si une procedure est presente dans la pile nom, on garde les
         // parenteses
-// System.out.println(Primitive.primitives.containsKey("puissance")+"
+// System.out.println(primitiveMap.containsKey("puissance")+"
 // "+est_procedure);
         if (est_procedure) {
             cadre.getKernel().getInstructionBuffer().insert(") ");
@@ -2066,8 +2331,8 @@ public class LaunchPrimitive {
 
                 if ((increment.compareTo(BigDecimal.ZERO) == 1 && fin.compareTo(deb) >= 0)
                         || (increment.compareTo(BigDecimal.ZERO) == -1 && fin.compareTo(deb) <= 0)) {
-                    cadre.getKernel().getInstructionBuffer().insert(li2 + Primitive.END_LOOP + " ");
-                    Primitive.stackLoop.push(bp);
+                    cadre.getKernel().getInstructionBuffer().insert(li2 + Interpreter.END_LOOP + " ");
+                    stackLoop.push(bp);
                 }
             }
         } catch (LogoException e) {
@@ -2076,8 +2341,8 @@ public class LaunchPrimitive {
 
     private void getRepCount(Stack<String> param) {
         boolean erreur = false;
-        if (!Primitive.stackLoop.isEmpty()) {
-            LoopProperties bp = Primitive.stackLoop.peek();
+        if (!stackLoop.isEmpty()) {
+            LoopProperties bp = stackLoop.peek();
             if (bp.isRepeat()) {
                 Interpreter.operande = true;
                 Interpreter.calcul.push(bp.getCounter().toString());
@@ -3174,7 +3439,7 @@ public class LaunchPrimitive {
             if (null == mot)
                 throw new LogoException(cadre, param.get(0) + " "
                         + Logo.messages.getString("error.word"));
-            if (Primitive.primitives.containsKey(mot))
+            if (primitiveMap.containsKey(mot))
                 Interpreter.calcul.push(Logo.messages.getString("vrai"));
             else
                 Interpreter.calcul.push(Logo.messages.getString("faux"));
@@ -3342,8 +3607,8 @@ public class LaunchPrimitive {
             li2 = new String(Utils.formatCode(li2));
             String instr = "\\siwhile " + li1 + "[ " + li2 + "] ";
             LoopWhile bp = new LoopWhile(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, instr);
-            Primitive.stackLoop.push(bp);
-            cadre.getKernel().getInstructionBuffer().insert(instr + Primitive.END_LOOP + " ");
+            stackLoop.push(bp);
+            cadre.getKernel().getInstructionBuffer().insert(instr + Interpreter.END_LOOP + " ");
         } catch (LogoException e) {
         }
     }
@@ -4016,18 +4281,18 @@ public class LaunchPrimitive {
     }
 
     private void endLoop(Stack<String> param) {
-        LoopProperties loop = Primitive.stackLoop.peek();
+        LoopProperties loop = stackLoop.peek();
         // LOOP REPEAT
         if (loop.isRepeat()) {
             BigDecimal compteur = loop.getCounter();
             BigDecimal fin = loop.getEnd();
             if (compteur.compareTo(fin) < 0) {
                 loop.incremente();
-                Primitive.stackLoop.pop();
-                Primitive.stackLoop.push(loop);
-                cadre.getKernel().getInstructionBuffer().insert(loop.getInstr() + Primitive.END_LOOP + " ");
+                stackLoop.pop();
+                stackLoop.push(loop);
+                cadre.getKernel().getInstructionBuffer().insert(loop.getInstr() + Interpreter.END_LOOP + " ");
             } else if (compteur.compareTo(fin) == 0) {
-                Primitive.stackLoop.pop();
+                stackLoop.pop();
             }
         }
         // LOOP FOR or LOOP FOREACH
@@ -4039,22 +4304,22 @@ public class LaunchPrimitive {
                     || (inc.compareTo(BigDecimal.ZERO) == -1 && (compteur.add(inc).compareTo(fin) >= 0))) {
                 loop.incremente();
                 ((LoopFor) loop).AffecteVar(false);
-                Primitive.stackLoop.pop();
-                Primitive.stackLoop.push(loop);
-                cadre.getKernel().getInstructionBuffer().insert(loop.getInstr() + Primitive.END_LOOP + " ");
+                stackLoop.pop();
+                stackLoop.push(loop);
+                cadre.getKernel().getInstructionBuffer().insert(loop.getInstr() + Interpreter.END_LOOP + " ");
             } else {
                 ((LoopFor) loop).DeleteVar();
-                Primitive.stackLoop.pop();
+                stackLoop.pop();
             }
         }
         // LOOP FOREVER
         else if (loop.isForEver()) {
-            cadre.getKernel().getInstructionBuffer().insert(loop.getInstr() + Primitive.END_LOOP + " ");
+            cadre.getKernel().getInstructionBuffer().insert(loop.getInstr() + Interpreter.END_LOOP + " ");
         }
         // LOOP FILL POLYGON
         else if (loop.isFillPolygon()) {
             cadre.getDrawPanel().stopRecord2DPolygon();
-            Primitive.stackLoop.pop();
+            stackLoop.pop();
         }
     }
 
@@ -4118,7 +4383,7 @@ public class LaunchPrimitive {
         Interpreter.operande = true;
     }
 
-    private void subtract(Stack<String> param) {
+    private void subtractOp(Stack<String> param) {
         Interpreter.operande = true;
         try {
             Interpreter.calcul.push(kernel.getCalculator().substract(param));
@@ -4126,7 +4391,7 @@ public class LaunchPrimitive {
         }
     }
 
-    private void add(Stack<String> param) {
+    private void addOp(Stack<String> param) {
         Interpreter.operande = true;
         Interpreter.calcul.push(kernel.getCalculator().add(param));
     }
@@ -4139,7 +4404,7 @@ public class LaunchPrimitive {
         }
     }
 
-    private void multiply(Stack<String> param) {
+    private void multiplyOp(Stack<String> param) {
         Interpreter.operande = true;
         Interpreter.calcul.push(kernel.getCalculator().multiply(param));
     }
@@ -4542,7 +4807,7 @@ public class LaunchPrimitive {
 
     private void local(Stack<String> param) throws LogoException {
         String li = param.get(0);
-        if (LaunchPrimitive.isList(li)) {
+        if (Primitives.isList(li)) {
             li = getFinalList(li);
             StringTokenizer st = new StringTokenizer(li);
             while (st.hasMoreTokens()) {
@@ -5190,7 +5455,7 @@ public class LaunchPrimitive {
     private void erase(String name, String type) {
         Interpreter.operande = false;
         try {
-            if (LaunchPrimitive.isList(name)) {
+            if (Primitives.isList(name)) {
                 name = getFinalList(name);
                 StringTokenizer st = new StringTokenizer(name);
                 while (st.hasMoreTokens()) {
@@ -5225,9 +5490,5 @@ public class LaunchPrimitive {
             wp.removePropList(name);
         }
 
-    }
-
-    private interface PrimFunc {
-        void execute(Stack<String> param);
     }
 }

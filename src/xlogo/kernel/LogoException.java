@@ -1,10 +1,8 @@
-package xlogo.utils;
+package xlogo.kernel;
 
-import xlogo.gui.Application;
 import xlogo.Logo;
-import xlogo.kernel.Interpreter;
-import xlogo.kernel.LoopProperties;
-import xlogo.kernel.Primitive;
+import xlogo.gui.Application;
+import xlogo.utils.Utils;
 
 import java.util.Stack;
 
@@ -37,7 +35,7 @@ public class LogoException extends Exception {
         cadre.error = true;
         Interpreter.calcul = new Stack<String>();
         cadre.getKernel().getInstructionBuffer().clear();
-        Primitive.stackLoop = new Stack<LoopProperties>();
+        Primitives.stackLoop = new Stack<LoopProperties>();
     }
 
     private int getLineNumber() {

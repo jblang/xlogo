@@ -12,7 +12,6 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
 import xlogo.gui.Application;
 import xlogo.resources.ResourceLoader;
-import xlogo.utils.LogoException;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
