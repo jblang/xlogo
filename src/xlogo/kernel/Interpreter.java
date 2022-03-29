@@ -5532,54 +5532,6 @@ public class Interpreter {
 
     }
 
-    /**
-     * Execute the primitive number "id" with the arguments contained in "param"<br>
-     * <ul>
-     * <li> if id<0: it is a procedure. <br>
-     * For example, if id=-3, it is procedure number -i-2=-(-3)-2=1 </li>
-     * <li> if d>=0: it is primitive number "id"</li>
-     * </ul>
-     *
-     * @param procedure The procedure to execute
-     * @param param     The Stack that contains all arguments
-     */
-    protected void executeProc(Procedure procedure, Stack<String> param) {
-        // procedure or primitive identifier parameter value
-        Interpreter.stockvariable.push(Interpreter.locale);
-        Interpreter.locale = new HashMap<>();
-        // Read local Variable
-        int optSize = procedure.optVariables.size();
-        int normSize = procedure.variable.size();
-        for (int j = 0; j < optSize + normSize; j++) {
-            // Add local Variable
-            if (j < normSize) {
-                Interpreter.locale.put(procedure.variable.get(j), param.get(j));
-            } else {
-                // add optional variables
-                String value;
-                if (j < param.size()) value = param.get(j);
-                else value = procedure.optVariablesExp.get(j - param.size()).toString();
-                Interpreter.locale.put(procedure.optVariables.get(j - normSize), value);
-
-            }
-        }
-        // Add optional variable
-        if (Kernel.mode_trace) {
-            StringBuilder buffer = new StringBuilder();
-            buffer.append("  ".repeat(Interpreter.en_cours.size()));
-            buffer.append(procedure.name);
-            for (String s : param) buffer.append(" ").append(Utils.unescapeString(s));
-            String msg = buffer + "\n";
-            app.updateHistory("normal", msg);
-        }
-        Interpreter.en_cours.push(procedure.name);
-
-        // Add Procedure code in Interpreter.instruction
-        instructionBuffer.insert("\n ");
-        instructionBuffer.insertCode(procedure.instr);
-        Interpreter.nom.push("\n");
-    }
-
     String execute(StringBuffer instructions) throws LogoException {
         if (!instructions.equals("")) {
             instructionBuffer.insertCode(instructions);
@@ -5619,9 +5571,12 @@ public class Interpreter {
 			 * ***********************************************
 			 */
             String element_minuscule = element.toLowerCase();
-            var prim = primitiveMap.get(element_minuscule);
-            var proc = wp.getProcedure(element_minuscule);
-            if (prim != null || proc != null) {
+            AbstractProcedure proc;
+            if (primitiveMap.containsKey(element_minuscule))
+                proc = primitiveMap.get(element_minuscule);
+            else
+                proc = wp.getProcedure(element_minuscule);
+            if (proc != null) {
 
                 // if (!calcul.empty()&&nom.isEmpty())
                 // throw new
@@ -5701,15 +5656,8 @@ public class Interpreter {
                 if (drapeau_ouvrante) {
                     drapeau_ouvrante = false;
                     int constantNumber = -1;
-                    if (!hasGeneralForm(prim, proc)) {
-                        // How many arguments for the procedure or the primitive
-                        // For primitive
-                        if (prim != null)
-                            constantNumber = prim.arity;
-                            // For procedure
-                        else
-                            constantNumber = proc.nbparametre;
-                    }
+                    if (!proc.isGeneral())
+                        constantNumber = proc.getArity();
                     // Looking for all arguments (Number undefined)
                     nom.push(element);
                     int j = 0;
@@ -5747,22 +5695,23 @@ public class Interpreter {
                         j++;
                     }
                     // If It's a procedure
-                    if (proc != null) {
-                        if (j > proc.nbparametre + proc.optVariables.size())
+                    if (proc instanceof Procedure) {
+                        var userproc = (Procedure) proc;
+                        if (j > userproc.nbparametre + userproc.optVariables.size())
                             throw new LogoException(app, Logo.messages
                                     .getString("too_much_arguments"));
-                        else if (j < proc.nbparametre)
+                        else if (j < userproc.nbparametre)
                             throw new LogoException(app, Logo.messages
                                     .getString("pas_assez_de")
                                     + " " + nom.peek());
                         // Searching for optional arguments that are not defined
 
-                        if (j < proc.optVariables.size() + proc.nbparametre) {
-                            j = j - proc.nbparametre;
-                            for (int c = j; c < proc.optVariables.size(); c++) {
+                        if (j < userproc.optVariables.size() + userproc.nbparametre) {
+                            j = j - userproc.nbparametre;
+                            for (int c = j; c < userproc.optVariables.size(); c++) {
                                 try {
                                     operande = operateur = drapeau_ouvrante = false;
-                                    String a = execute(proc.optVariablesExp
+                                    String a = execute(userproc.optVariablesExp
                                             .get(c));
                                     param.push(a);
                                 } catch (LogoException e) {
@@ -5777,13 +5726,7 @@ public class Interpreter {
                 else {
                     drapeau_ouvrante = false;
                     // How many arguments for the procedure or the primitive
-                    int nbparametre = 0;
-                    // For primitive
-                    if (prim != null)
-                        nbparametre = prim.arity;
-                        // For procedure
-                    else
-                        nbparametre = proc.nbparametre;
+                    int nbparametre = proc.getArity();
                     // Looking for each arguments
                     int j = 0;
                     nom.push(element);
@@ -5801,12 +5744,13 @@ public class Interpreter {
 //					System.out.println(instructionBuffer.toString());
 //					System.out.println(nom+"arguments"+param);
                     // Looking for Optional arguments in case of procedure
-                    if (proc != null) {
-                        nbparametre = proc.optVariables.size();
+                    if (proc instanceof Procedure) {
+                        var userproc = (Procedure) proc;
+                        nbparametre = userproc.optVariables.size();
                         for (j = 0; j < nbparametre; j++) {
                             try {
                                 operande = operateur = drapeau_ouvrante = false;
-                                String a = execute(proc.optVariablesExp
+                                String a = execute(userproc.optVariablesExp
                                         .get(j));
                                 param.push(a);
                             } catch (LogoException e) {
@@ -5817,12 +5761,8 @@ public class Interpreter {
                 }
 
                 nom.pop();
-                if (!app.error) {
-                    if (prim != null)
-                        prim.function.execute(param);
-                    else
-                        executeProc(proc, param);
-                }
+                if (!app.error)
+                    proc.execute(param);
                 if (app.error)
                     break;
                 if (drapeau_fermante && !calcul.empty()) {
@@ -6013,44 +5953,39 @@ public class Interpreter {
                     // Si c'est le mot pour
                     else if (element_minuscule.equals(Logo.messages
                             .getString("pour"))) {
+                    instructionBuffer.deleteFirstWord(element);
+                    if (instructionBuffer.getLength() != 0) {
+                        element = instructionBuffer.getNextWord();
+                        element_minuscule = element.toLowerCase();
+                    } else
+                        throw new LogoException(app, Logo.messages
+                                .getString("pas_assez_de")
+                                + " "
+                                + "\""
+                                + Logo.messages.getString("pour") + "\"");
+                        String definition = Logo.messages.getString("pour")
+                                + " " + element + " ";
                         instructionBuffer.deleteFirstWord(element);
-                        if (instructionBuffer.getLength() != 0) {
-                            element = instructionBuffer.getNextWord();
-                            element_minuscule = element.toLowerCase();
-                        } else
-                            throw new LogoException(app, Logo.messages
-                                    .getString("pas_assez_de")
-                                    + " "
-                                    + "\""
-                                    + Logo.messages.getString("pour") + "\"");
-                        if (prim != null || proc != null)
-                            throw new LogoException(app, element + " "
-                                    + Logo.messages.getString("existe_deja"));
-                        else {
-                            String definition = Logo.messages.getString("pour")
-                                    + " " + element + " ";
+                        while (instructionBuffer.getLength() != 0) {
+                            element = instructionBuffer.getNextWord().toLowerCase();
+                            if (null == element)
+                                break;
+                            if (element.charAt(0) != ':'
+                                    || element.length() == 1)
+                                throw new LogoException(app, element
+                                        + " "
+                                        + Logo.messages
+                                        .getString("pas_argument"));
+                            definition += element + " ";
                             instructionBuffer.deleteFirstWord(element);
-                            while (instructionBuffer.getLength() != 0) {
-                                element = instructionBuffer.getNextWord().toLowerCase();
-                                if (null == element)
-                                    break;
-                                if (element.charAt(0) != ':'
-                                        || element.length() == 1)
-                                    throw new LogoException(app, element
-                                            + " "
-                                            + Logo.messages
-                                            .getString("pas_argument"));
-                                definition += element + " ";
-                                instructionBuffer.deleteFirstWord(element);
-                            }
-                            if (app.editor.isVisible())
-                                throw new LogoException(app, Logo.messages
-                                        .getString("ferme_editeur"));
-                            else {
-                                app.editor.setVisible(true);
-                                app.editor.appendText(definition + "\n\n"
-                                        + Logo.messages.getString("fin"));
-                            }
+                        }
+                        if (app.editor.isVisible())
+                            throw new LogoException(app, Logo.messages
+                                    .getString("ferme_editeur"));
+                        else {
+                            app.editor.setVisible(true);
+                            app.editor.appendText(definition + "\n\n"
+                                    + Logo.messages.getString("fin"));
                         }
                     } else if (element.startsWith("\\l")) {
                         if (operande) {
@@ -6259,24 +6194,4 @@ public class Interpreter {
     protected InstructionBuffer getInstructionBuffer() {
         return instructionBuffer;
     }
-
-    interface PrimFunc {
-        void execute(Stack<String> param);
-    }
-
-    static class Primitive {
-        public final String key;
-        public final int arity;
-        public final boolean general;
-        public final PrimFunc function;
-
-        Primitive(String key, int arity, boolean general, PrimFunc function) {
-            this.key = key;
-            this.arity = arity;
-            this.general = general;
-            this.function = function;
-        }
-    }
-
-
 }

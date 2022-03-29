@@ -280,7 +280,7 @@ public class Workspace {
                 // If it's a new procedure
                 Procedure proc;
                 if (id == -1) {
-                    proc = new Procedure(name, variables.size(), variables, optVariables, optVariablesExp, editable);
+                    proc = new Procedure(name, variables.size(), variables, optVariables, optVariablesExp, editable, app);
                     proc.instruction = body.toString();
                     proc.comment = comment.toString();
                     this.procedureListPush(proc);

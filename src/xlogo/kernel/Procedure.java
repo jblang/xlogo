@@ -8,35 +8,36 @@
 package xlogo.kernel;
 
 import xlogo.Logo;
+import xlogo.gui.Application;
 import xlogo.utils.Utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Stack;
 
-public class Procedure {
+public class Procedure implements AbstractProcedure {
 
     public boolean affichable; // false lorsque c'est une procédure d'un fichier de démarrage
-    public String comment; // Line of comment introducing the procedure
-    public int nbparametre;
-    public String name;
-    public ArrayList<String> variable = new ArrayList<String>();
-    public Stack<String> optVariables = new Stack<String>();
-    public Stack<StringBuffer> optVariablesExp = new Stack<StringBuffer>();
-    public String instruction = "";
-    public StringBuffer instr = null;
-    public String instruction_sauve = "";  // En cas de mauvaise écriture dans l'éditeur
-    public StringBuffer instr_sauve = null;          // Permet de revenir aux valeurs antérieures d'une
-    public ArrayList<String> variable_sauve = new ArrayList<String>(); // procédure avant modification
+    String comment; // Line of comment introducing the procedure
+    int nbparametre;
+    String name;
+    ArrayList<String> variable = new ArrayList<String>();
+    Stack<String> optVariables = new Stack<String>();
+    Stack<StringBuffer> optVariablesExp = new Stack<StringBuffer>();
+    String instruction = "";
+    StringBuffer instr = null;
+    String instruction_sauve = "";  // En cas de mauvaise écriture dans l'éditeur
+    StringBuffer instr_sauve = null;          // Permet de revenir aux valeurs antérieures d'une
+    ArrayList<String> variable_sauve = new ArrayList<String>(); // procédure avant modification
+    Application app;
 
-    public Procedure() {
-    }
-
-    public Procedure(String name, int nbparametre, ArrayList<String> variable, Stack<String> optVariables, Stack<StringBuffer> optVariablesExp, boolean affichable) {
+    public Procedure(String name, int arity, ArrayList<String> variable, Stack<String> optVariables, Stack<StringBuffer> optVariablesExp, boolean affichable, Application app) {
+        this.app = app;
         this.name = name;
-        this.nbparametre = nbparametre;
+        this.nbparametre = arity;
         this.variable = variable;
         this.optVariables = optVariables;
         this.optVariablesExp = optVariablesExp;
@@ -149,4 +150,51 @@ public class Procedure {
         return sb;
     }
 
+    @Override
+    public boolean isGeneral() {
+        return !optVariables.isEmpty();
+    }
+
+    @Override
+    public int getArity() {
+        return nbparametre;
+    }
+
+    @Override
+    public void execute(Stack<String> param) {
+        // procedure or primitive identifier parameter value
+        Interpreter.stockvariable.push(Interpreter.locale);
+        Interpreter.locale = new HashMap<>();
+        // Read local Variable
+        int optSize = optVariables.size();
+        int normSize = variable.size();
+        for (int j = 0; j < optSize + normSize; j++) {
+            // Add local Variable
+            if (j < normSize) {
+                Interpreter.locale.put(variable.get(j), param.get(j));
+            } else {
+                // add optional variables
+                String value;
+                if (j < param.size()) value = param.get(j);
+                else value = optVariablesExp.get(j - param.size()).toString();
+                Interpreter.locale.put(optVariables.get(j - normSize), value);
+
+            }
+        }
+        // Add optional variable
+        if (Kernel.mode_trace) {
+            StringBuilder buffer = new StringBuilder();
+            buffer.append("  ".repeat(Interpreter.en_cours.size()));
+            buffer.append(name);
+            for (String s : param) buffer.append(" ").append(Utils.unescapeString(s));
+            String msg = buffer + "\n";
+            app.updateHistory("normal", msg);
+        }
+        Interpreter.en_cours.push(name);
+
+        // Add Procedure code in Interpreter.instruction
+        app.getKernel().getInstructionBuffer().insert("\n ");
+        app.getKernel().getInstructionBuffer().insertCode(instr);
+        Interpreter.nom.push("\n");
+    }
 }
