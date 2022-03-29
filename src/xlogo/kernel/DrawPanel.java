@@ -473,7 +473,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     protected double distance(String liste) throws LogoException {
         initCoords();
-        extractCoords(liste, Utils.primitiveName("distance"));
+        extractCoords(liste, Utils.primitiveName("drawing.distance"));
         double distance;
         if (!enabled3D()) {
             coords = this.toScreenCoord(coords, false);
@@ -487,7 +487,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
     protected double[] vers3D(String liste) throws LogoException {
         double[] tmp = new double[3];
         initCoords();
-        extractCoords(liste, Utils.primitiveName("vers"));
+        extractCoords(liste, Utils.primitiveName("drawing.towards"));
         tmp[0] = coords[0] - turtle.X;
         tmp[1] = coords[1] - turtle.Y;
         tmp[2] = coords[2] - turtle.Z;
@@ -519,7 +519,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     protected double to2D(String liste) throws LogoException {
         initCoords();
-        extractCoords(liste, Utils.primitiveName("vers"));
+        extractCoords(liste, Utils.primitiveName("drawing.towards"));
         double angle;
         coords = this.toScreenCoord(coords, false);
         if (turtle.curY == coords[1]) {
@@ -559,7 +559,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         initCoords();
         oldx = turtle.curX;
         oldy = turtle.curY;
-        extractCoords(liste, Utils.primitiveName("drawing.fpos"));
+        extractCoords(liste, Utils.primitiveName("drawing.setposition"));
         eraseTurtle(false);
         if (enabled3D()) {
             turtle.X = coords[0];
@@ -732,7 +732,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     protected Color guessColorPoint(String liste) throws LogoException {
         initCoords();
-        extractCoords(liste, Utils.primitiveName("tc"));
+        extractCoords(liste, Utils.primitiveName("drawing.findcolor"));
         coords = toScreenCoord(coords, false);
         int couleur = -1;
         int x = (int) (coords[0] * scaleX);
@@ -814,7 +814,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      */
     protected void point(String liste) throws LogoException {
         initCoords();
-        extractCoords(liste, Utils.primitiveName("drawing.point"));
+        extractCoords(liste, Utils.primitiveName("drawing.dot"));
         coords = toScreenCoord(coords, true);
 //		System.out.println(coords[0]+" "+coords[1]+" "+Logo.config.imageHeight+" "+Logo.config.imageWidth);
         if (coords[0] > 0 && coords[1] > 0 && coords[0] < Logo.config.getImageWidth() && coords[1] < Logo.config.getImageHeight()) {

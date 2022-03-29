@@ -402,10 +402,8 @@ public class Application extends JFrame {
         Color color = JColorChooser.showDialog(this, Logo.messages.getString(title), getCanvas().getScreenColor());
         if (null != color) {
             Locale locale = Logo.getLocale(Logo.config.getLanguage());
-            java.util.ResourceBundle rs = ResourceLoader.getPrimitiveBundle(locale);
-            var f = rs.getString(pen ? "fcc" : "fcfg");
-            f = f.substring(0, f.indexOf(" "));
-            updateHistory("commentaire", f + " [" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + "]\n");
+            var prim = Utils.primitiveName(pen ? "drawing.setpencolor" : "drawing.setscreencolor");
+            updateHistory("commentaire", prim + " [" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + "]\n");
             if (pen) {
                 kernel.fcc(color);
             } else {

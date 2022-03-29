@@ -143,7 +143,7 @@ public class Calculator {
         if (lowPrecision) {
             double nombre = numberDouble(s);
             if (nombre < 0 || nombre == 0) {
-                String log = Utils.primitiveName("arithmetic.log");
+                String log = Utils.primitiveName("math.log");
                 throw new LogoException(app, log + " "
                         + Logo.messages.getString("attend_positif"));
             }
@@ -151,7 +151,7 @@ public class Calculator {
         } else {
             BigDecimal bd = numberDecimal(s);
             if (bd.signum() != 1) {
-                String log = Utils.primitiveName("arithmetic.log");
+                String log = Utils.primitiveName("math.log");
                 throw new LogoException(app, log + " "
                         + Logo.messages.getString("attend_positif"));
             }
@@ -171,7 +171,7 @@ public class Calculator {
         if (lowPrecision) {
             double number = numberDouble(s);
             if (number < 0) {
-                String sqrt = Utils.primitiveName("arithmetic.racine");
+                String sqrt = Utils.primitiveName("math.sqrt");
                 throw new LogoException(app, sqrt + " "
                         + Logo.messages.getString("attend_positif"));
             }
@@ -179,7 +179,7 @@ public class Calculator {
         } else {
             BigDecimal bd = numberDecimal(s);
             if (bd.signum() == -1) {
-                String sqrt = Utils.primitiveName("arithmetic.racine");
+                String sqrt = Utils.primitiveName("math.sqrt");
                 throw new LogoException(app, sqrt + " "
                         + Logo.messages.getString("attend_positif"));
             }
@@ -390,7 +390,7 @@ public class Calculator {
             // Bug pr power -1 0.5
             Double p1 = p;
             if (p1.equals(Double.NaN))
-                throw new LogoException(app, Utils.primitiveName("arithmetic.puissance") + " " + Logo.messages.getString("attend_positif"));
+                throw new LogoException(app, Utils.primitiveName("math.power") + " " + Logo.messages.getString("attend_positif"));
             // End Bug
             return teste_fin_double(p);
         } else {
