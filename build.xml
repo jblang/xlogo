@@ -103,14 +103,13 @@
             </manifest>
             <fileset dir="deploy/">
                 <include name="xlogo/**"/>
-                <include name="*.properties"/>
             </fileset>
         </jar>
 
         <!-- Delete Used files -->
         <delete includeemptydirs="true">
             <fileset dir="deploy/">
-                <include name="*.properties"/>
+                <include name="**/*.properties"/>
             </fileset>
         </delete>
 
@@ -156,7 +155,7 @@
                 <include name="*.jar"/>
             </fileset>
             <fileset dir="src/">
-                <include name="**.properties"/>
+                <include name="**/*.properties"/>
                 <include name="**/*.png"/>
                 <include name="**/*.svg"/>
                 <include name="**/*.html"/>

@@ -82,7 +82,7 @@ public class UiTranslator extends JFrame implements ActionListener {
                             locale = Logo.getLocale(Integer.parseInt(id));
                         }
                         Vector<String> v = bottom.getPrimitiveTable().getKeys();
-                        ResourceBundle rb = ResourceBundle.getBundle("primitives", locale);
+                        ResourceBundle rb = ResourceLoader.getPrimitiveBundle(locale);
                         for (int i = 0; i < v.size(); i++) {
                             String key = v.get(i);
                             if (action.equals(UiTranslator.CREATE)) {
@@ -95,7 +95,7 @@ public class UiTranslator extends JFrame implements ActionListener {
                         }
                         sb.append("\n---------------------------------------\n");
                         v = bottom.getMessageTable().getKeys();
-                        rb = ResourceBundle.getBundle("langage", locale);
+                        rb = ResourceLoader.getLanguageBundle(locale);
                         for (int i = 0; i < v.size(); i++) {
                             String key = v.get(i);
                             if (action.equals(UiTranslator.CREATE)) {

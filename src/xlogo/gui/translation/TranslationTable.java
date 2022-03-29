@@ -23,14 +23,18 @@ public class TranslationTable extends JPanel implements Searchable {
     private final UiTranslator tx;
     private final String id;
     private final String action;
-    private final String bundle;
+    private final BundleLoader loader;
     private Vector<String> keys;
 
-    protected TranslationTable(UiTranslator tx, String action, String id, String bundle) {
+    interface BundleLoader {
+        ResourceBundle load(Locale locale);
+    }
+
+    protected TranslationTable(UiTranslator tx, String action, String id, BundleLoader loader) {
         this.tx = tx;
         this.action = action;
         this.id = id;
-        this.bundle = bundle;
+        this.loader = loader;
         initGui();
     }
 
@@ -46,7 +50,7 @@ public class TranslationTable extends JPanel implements Searchable {
 
     private void initGui() {
         setLayout(new java.awt.BorderLayout());
-        table = new JTable(new MyModel(bundle, action, id));
+        table = new JTable(new MyModel(loader, action, id));
 
         MultiLineCellEditor editor = new MultiLineCellEditor(table);
         table.setDefaultEditor(String.class, editor);
@@ -236,7 +240,7 @@ public class TranslationTable extends JPanel implements Searchable {
         private final String[] columnNames;
         private String[][] rowData;
 
-        MyModel(String bundle, String action, String id) {
+        MyModel(BundleLoader loader, String action, String id) {
             this.action = action;
             this.id = id;
 
@@ -249,7 +253,7 @@ public class TranslationTable extends JPanel implements Searchable {
                     columnNames[i] = tmp[i - 1];
                 }
             } else columnNames = Logo.translationLanguage;
-            buildRowData(bundle, action, id);
+            buildRowData(loader, action, id);
         }
 
         public String getColumnName(int col) {
@@ -293,14 +297,14 @@ public class TranslationTable extends JPanel implements Searchable {
 
         }
 
-        private void buildRowData(String bundle, String action, String id) {
+        private void buildRowData(BundleLoader loader, String action, String id) {
             ResourceBundle[] rb = new ResourceBundle[getColumnCount()];
             // initialize all ResourceBundle
             for (int i = 0; i < getColumnCount(); i++) {
                 Locale locale = Logo.getLocale(i);
                 // In CREATE Mode, when i=getColumnCount(), the last locale is null
                 if (null == locale) break;
-                rb[i] = ResourceBundle.getBundle(bundle, locale);
+                rb[i] = loader.load(locale);
             }
             keys = new Vector<String>();
             Enumeration<String> en = rb[0].getKeys();

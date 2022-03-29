@@ -4,7 +4,9 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
 
 import javax.swing.*;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class ResourceLoader {
     public static ImageIcon getIcon(String name) {
@@ -37,5 +39,13 @@ public class ResourceLoader {
             return null;
         else
             return new FlatSVGIcon(res);
+    }
+
+    public static ResourceBundle getLanguageBundle(Locale locale) {
+        return ResourceBundle.getBundle("xlogo.resources.language", locale);
+    }
+
+    public static ResourceBundle getPrimitiveBundle(Locale locale) {
+        return ResourceBundle.getBundle("xlogo.resources.primitives", locale);
     }
 }

@@ -233,8 +233,7 @@ public class Utils {
 
     public static String primitiveName(String generic) {
         Locale locale = Logo.getLocale(Logo.config.getLanguage());
-        ResourceBundle prim = ResourceBundle.getBundle(
-                "primitives", locale);
+        ResourceBundle prim = ResourceLoader.getPrimitiveBundle(locale);
         String st = prim.getString(generic);
         StringTokenizer str = new StringTokenizer(st);
         while (str.hasMoreTokens()) {

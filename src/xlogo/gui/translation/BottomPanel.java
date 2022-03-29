@@ -25,8 +25,8 @@ public class BottomPanel extends JPanel {
     private void initGui() {
         setLayout(new BorderLayout());
         tabbedPane = new JTabbedPane();
-        messageTable = new TranslationTable(translator, action, id, "langage");
-        primitiveTable = new TranslationTable(translator, action, id, "primitives");
+        messageTable = new TranslationTable(translator, action, id, ResourceLoader::getLanguageBundle);
+        primitiveTable = new TranslationTable(translator, action, id, ResourceLoader::getPrimitiveBundle);
         tabbedPane.add(primitiveTable, Logo.messages.getString("primitives"));
         tabbedPane.add(messageTable, Logo.messages.getString("messages"));
         javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(tabbedPane);

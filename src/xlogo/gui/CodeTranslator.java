@@ -127,10 +127,10 @@ public class CodeTranslator extends JFrame implements ActionListener {
             // ajout des mots clés pour et fin
             int id = sourceLanguageCombo.getSelectedIndex();
             Locale locale = Logo.getLocale(id);
-            ResourceBundle res1 = ResourceBundle.getBundle("langage", locale);
+            ResourceBundle res1 = ResourceLoader.getLanguageBundle(locale);
             id = targetLanguageCombo.getSelectedIndex();
             locale = Logo.getLocale(id);
-            ResourceBundle res2 = ResourceBundle.getBundle("langage", locale);
+            ResourceBundle res2 = ResourceLoader.getLanguageBundle(locale);
             tre.put(res1.getString("pour"), res2.getString("pour"));
             tre.put(res1.getString("fin"), res2.getString("fin"));
             StringTokenizer st = new StringTokenizer(texte, " */+-\n|&()[]", true);
@@ -160,6 +160,6 @@ public class CodeTranslator extends JFrame implements ActionListener {
         Locale locale = null;
         int id = jc.getSelectedIndex();
         locale = Logo.getLocale(id);
-        return ResourceBundle.getBundle("primitives", locale);
+        return ResourceLoader.getPrimitiveBundle(locale);
     }
 }

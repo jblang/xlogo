@@ -13,6 +13,7 @@ import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import xlogo.gui.Application;
 import xlogo.gui.LanguageSelection;
 import xlogo.kernel.Animation;
+import xlogo.resources.ResourceLoader;
 import xlogo.utils.Utils;
 
 import javax.media.j3d.VirtualUniverse;
@@ -107,7 +108,7 @@ public class Logo {
      */
     public static void generateLanguage(int id) { // fixe la langue utilisée pour les messages
         Locale locale = Logo.getLocale(id);
-        messages = ResourceBundle.getBundle("langage", locale);
+        messages = ResourceLoader.getLanguageBundle(locale);
         translationLanguage[0] = Logo.messages.getString("pref.general.french");
         translationLanguage[1] = Logo.messages.getString("pref.general.english");
         translationLanguage[2] = Logo.messages.getString("pref.general.arabic");

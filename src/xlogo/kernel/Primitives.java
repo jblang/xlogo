@@ -398,7 +398,7 @@ public class Primitives {
     protected String getAllPrimitives() {
         List<String> list = new ArrayList<>();
         Locale locale = Logo.getLocale(Logo.config.getLanguage());
-        ResourceBundle names = ResourceBundle.getBundle("primitives", Objects.requireNonNull(locale));
+        ResourceBundle names = ResourceLoader.getPrimitiveBundle(Objects.requireNonNull(locale));
         for (var prim : primitives) {
             // Exclude internal primitives \n \\x and \\siwhile
             // Exclude all arithmetic symbols + - / * & |
@@ -421,7 +421,7 @@ public class Primitives {
     public void buildPrimitiveTreemap() {
         primitiveMap = new TreeMap<>();
         Locale locale = Logo.getLocale(Logo.config.getLanguage());
-        ResourceBundle names = ResourceBundle.getBundle("primitives", Objects.requireNonNull(locale));
+        ResourceBundle names = ResourceLoader.getPrimitiveBundle(Objects.requireNonNull(locale));
         for (var prim : primitives) {
             // read the standard number of arguments for the primitive
             String name = prim.key;
@@ -620,19 +620,19 @@ public class Primitives {
     void exportPrimCSV() {
         StringBuilder sb = new StringBuilder();
         Locale locale = new Locale("fr", "FR");
-        ResourceBundle names_fr = ResourceBundle.getBundle("primitives", locale);
+        ResourceBundle names_fr = ResourceLoader.getPrimitiveBundle(locale);
         locale = new Locale("en", "US");
-        ResourceBundle names_en = ResourceBundle.getBundle("primitives", locale);
+        ResourceBundle names_en = ResourceLoader.getPrimitiveBundle(locale);
         locale = new Locale("ar", "MA");
-        ResourceBundle names_ar = ResourceBundle.getBundle("primitives", locale);
+        ResourceBundle names_ar = ResourceLoader.getPrimitiveBundle(locale);
         locale = new Locale("es", "ES");
-        ResourceBundle names_es = ResourceBundle.getBundle("primitives", locale);
+        ResourceBundle names_es = ResourceLoader.getPrimitiveBundle(locale);
         locale = new Locale("pt", "BR");
-        ResourceBundle names_pt = ResourceBundle.getBundle("primitives", locale);
+        ResourceBundle names_pt = ResourceLoader.getPrimitiveBundle(locale);
         locale = new Locale("eo", "EO");
-        ResourceBundle names_eo = ResourceBundle.getBundle("primitives", locale);
+        ResourceBundle names_eo = ResourceLoader.getPrimitiveBundle(locale);
         locale = new Locale("de", "DE");
-        ResourceBundle names_de = ResourceBundle.getBundle("primitives", locale);
+        ResourceBundle names_de = ResourceLoader.getPrimitiveBundle(locale);
         //locale=new Locale("nl","NL");
         ResourceBundle[] names = {names_fr, names_en, names_es, names_pt, names_ar, names_eo, names_de};
         int i = 0;
@@ -664,19 +664,19 @@ public class Primitives {
     void exportMessageCSV() {
         StringBuilder sb = new StringBuilder();
         Locale locale = new Locale("fr", "FR");
-        ResourceBundle lang_fr = ResourceBundle.getBundle("langage", locale);
+        ResourceBundle lang_fr = ResourceLoader.getLanguageBundle(locale);
         locale = new Locale("en", "US");
-        ResourceBundle lang_en = ResourceBundle.getBundle("langage", locale);
+        ResourceBundle lang_en = ResourceLoader.getLanguageBundle(locale);
         locale = new Locale("ar", "MA");
-        ResourceBundle lang_ar = ResourceBundle.getBundle("langage", locale);
+        ResourceBundle lang_ar = ResourceLoader.getLanguageBundle(locale);
         locale = new Locale("es", "ES");
-        ResourceBundle lang_es = ResourceBundle.getBundle("langage", locale);
+        ResourceBundle lang_es = ResourceLoader.getLanguageBundle(locale);
         locale = new Locale("pt", "BR");
-        ResourceBundle lang_pt = ResourceBundle.getBundle("langage", locale);
+        ResourceBundle lang_pt = ResourceLoader.getLanguageBundle(locale);
         locale = new Locale("eo", "EO");
-        ResourceBundle lang_eo = ResourceBundle.getBundle("langage", locale);
+        ResourceBundle lang_eo = ResourceLoader.getLanguageBundle(locale);
         locale = new Locale("de", "DE");
-        ResourceBundle lang_de = ResourceBundle.getBundle("langage", locale);
+        ResourceBundle lang_de = ResourceLoader.getLanguageBundle(locale);
         //locale=new Locale("nl","NL");
         ResourceBundle[] lang = {lang_fr, lang_en, lang_es, lang_pt, lang_ar, lang_eo, lang_de};
         try {
