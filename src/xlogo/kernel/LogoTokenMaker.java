@@ -80,7 +80,7 @@ public class LogoTokenMaker extends AbstractTokenMaker {
         tokenMap.put("end", Token.RESERVED_WORD);
         tokenMap.put("true", Token.LITERAL_BOOLEAN);
         tokenMap.put("false", Token.LITERAL_BOOLEAN);
-        for (var p : Primitives.primitiveMap.keySet()) {
+        for (var p : Interpreter.primitiveMap.keySet()) {
             tokenMap.put(p, Token.FUNCTION);
         }
         return tokenMap;

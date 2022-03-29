@@ -10,11 +10,6 @@ public class Kernel {
     protected static long chrono = 0;
     protected static boolean mode_trace = false; // true si le mode trace est enclenchée (permet de suivre les procédures)
     protected ArrayFlow flows = new ArrayFlow(); // Contient les flux de lecture ou d'écriture
-    // For all drawing operation
-//	protected DrawPanel dg;
-    // For primitive
-    protected Primitives primitive;
-    // interpreter the user command and launch primitive and procedure
     private Interpreter interpreter;
     private Workspace wp;
     private final Application app;
@@ -83,7 +78,7 @@ public class Kernel {
     }
 
     public void buildPrimitiveTreemap(int id) {
-        primitive.buildPrimitiveTreemap();
+        interpreter.buildPrimitiveTreemap();
     }
 
     public String execute(StringBuffer st) throws LogoException {
@@ -94,11 +89,6 @@ public class Kernel {
         calculator = new Calculator(s, app);
 
     }
-
-    public void initPrimitive() {
-        primitive = new Primitives(app, wp);
-    }
-
 
     public void initInterprete() {
         interpreter = new Interpreter(app);

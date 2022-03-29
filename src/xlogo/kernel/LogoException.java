@@ -35,7 +35,7 @@ public class LogoException extends Exception {
         cadre.error = true;
         Interpreter.calcul = new Stack<String>();
         cadre.getKernel().getInstructionBuffer().clear();
-        Primitives.stackLoop = new Stack<LoopProperties>();
+        Interpreter.stackLoop = new Stack<LoopProperties>();
     }
 
     private int getLineNumber() {

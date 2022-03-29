@@ -807,7 +807,6 @@ public class Application extends JFrame {
      * This method creates all primitives and loads the startup files
      */
     public void generatePrimitives() {
-        kernel.initPrimitive();
         Stack<String> stack = new Stack<>();
         editor.setEditable(false);
         int counter = Logo.config.getStartupFiles().size();

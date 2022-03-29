@@ -491,7 +491,7 @@ public class Workspace {
         } catch (NumberFormatException ignored) {
         }
         // Vérifier tout d'abord si le mot n'est pas une primitive.
-        if (Primitives.primitiveMap.containsKey(mot))
+        if (Interpreter.primitiveMap.containsKey(mot))
             throw new SyntaxException(this, mot + " " + Logo.messages.getString("existe_deja"));
         else {
             //ensuite s'il ne contient pas de caractères spéciaux "\"
