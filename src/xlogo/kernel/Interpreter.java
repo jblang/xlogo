@@ -3357,7 +3357,6 @@ public class Interpreter {
             }
             try {
                 app.editor.parseProcedures();
-                if (!app.isNewEnabled()) app.setNewEnabled(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -3715,7 +3714,6 @@ public class Interpreter {
         workspace.deleteAllProcedures();
         workspace.deleteAllVariables();
         workspace.deleteAllPropertyLists();
-        app.setNewEnabled(false);
     }
 
     void procedures(Stack<String> param) {

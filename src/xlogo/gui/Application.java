@@ -35,7 +35,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Stack;
 
 import static xlogo.utils.Utils.createButton;
@@ -46,9 +45,7 @@ public class Application extends JFrame {
     private static final Stack<String> historyStack = new Stack<>();
     public static String path = null;
     public static int fontId = getFontId(Logo.config.getFont());
-    // Interpreter and drawPanel
     private final Kernel kernel;
-    // UI Elements
     private final DrawPanel drawPanel;
     private final RSyntaxTextArea commandLine = new RSyntaxTextArea(1, 1);
     private final HistoryPanel historyPanel = new HistoryPanel(this);
@@ -68,9 +65,6 @@ public class Application extends JFrame {
     private JButton stopButton;
     private JButton zoomInButton;
     private JButton zoomOutButton;
-    private JMenuItem fileNewMenuItem;
-    private JMenuItem fileSaveMenuItem;
-    // Dialog boxes available in menu
     private StartupFileDialog startupDialog;
     private ProcedureEraser procedureEraser;
     private CodeTranslator codeTranslator;
@@ -95,6 +89,24 @@ public class Application extends JFrame {
         changeLookAndFeel();
         pack();
         setLocationRelativeTo(null);
+        setVisible(true);
+        initTurtle();
+        runStartupCommands();
+    }
+
+    private void runStartupCommands() {
+        setCommandEnabled(false);
+        generatePrimitives();
+        if (Logo.isAutoLaunchEnabled()) {
+            startAnimation(Utils.formatCode(Logo.getMainCommand()));
+            getHistoryPanel().setText("normal", Logo.getMainCommand() + "\n");
+        } else if (!Logo.config.getStartupCommand().equals("")) {
+            animation = new Animation(this, Utils.formatCode(Logo.config.getStartupCommand()));
+            animation.start();
+        } else {
+            setCommandEnabled(true);
+            focusCommandLine();
+        }
     }
 
     static public int getFontId(Font font) {
@@ -130,10 +142,10 @@ public class Application extends JFrame {
 
         var fileMenu = createMenu("menu.file");
         menuBar.add(fileMenu);
-        fileNewMenuItem = createMenuItem(fileMenu, "nouveau", e -> newFile());
+        createMenuItem(fileMenu, "nouveau", e -> newFile());
         createMenuItem(fileMenu, "menu.file.open", e -> openWorkspace());
         createMenuItem(fileMenu, "menu.file.saveas", e -> saveWorkspace(true));
-        fileSaveMenuItem = createMenuItem(fileMenu, "menu.file.save", e -> saveWorkspace(false));
+        createMenuItem(fileMenu, "menu.file.save", e -> saveWorkspace(false));
 
         var fileImageMenu = createMenu(fileMenu, "menu.file.captureimage");
         createMenuItem(fileImageMenu, "menu.file.captureimage.clipboard", e -> copyImage());
@@ -304,10 +316,9 @@ public class Application extends JFrame {
                 editor.setVisible(false);
                 editor.clearText();
             }
-            setNewEnabled(false);
             Logo.setMainCommand("");
 
-        } else setNewEnabled(true);
+        }
     }
 
     private void showCloseEditor() {
@@ -355,7 +366,6 @@ public class Application extends JFrame {
                 String path2 = path.toLowerCase();  // on garde la casse du path pour les systemes d'exploitation faisant la diff�rence
                 if (!path2.endsWith(".lgo")) path += ".lgo";
                 Application.path = path;
-                setSaveEnabled(true);
                 setTitle(path + " - XLogo");
                 try {
                     File f = new File(path);
@@ -401,7 +411,6 @@ public class Application extends JFrame {
         var title = pen ? "couleur_du_crayon" : "couleur_du_fond";
         Color color = JColorChooser.showDialog(this, Logo.messages.getString(title), getCanvas().getScreenColor());
         if (null != color) {
-            Locale locale = Logo.getLocale(Logo.config.getLanguage());
             var prim = Utils.primitiveName(pen ? "drawing.setpencolor" : "drawing.setscreencolor");
             updateHistory("commentaire", prim + " [" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + "]\n");
             if (pen) {
@@ -581,18 +590,6 @@ public class Application extends JFrame {
     }
 
     /**
-     * Modify the font for the main Interface
-     *
-     * @param font The choosen Font
-     * @param size The font size
-     */
-    public void changeFont(Font font, int size) {
-        Logo.config.setFont(font);
-        updateLocalization();
-        historyPanel.setFont(font, size);
-    }
-
-    /**
      * Resize the dawing area
      */
     public void resizeDrawingZone() {
@@ -646,19 +643,6 @@ public class Application extends JFrame {
     }
 
     /**
-     * Change Syntax Highlighting for the editor,
-     * the command line and the History zone
-     */
-    public void changeSyntaxHighlightingStyle() {
-    }
-
-    /**
-     * Enable or disable Syntax Highlighting
-     */
-    public void setSyntaxHighlightingEnabled(boolean b) {
-    }
-
-    /**
      * Return the drawing area
      *
      * @return The drawing area
@@ -688,33 +672,6 @@ public class Application extends JFrame {
     public void focusCommandLine() {
         commandLine.requestFocus();
         commandLine.getCaret().setVisible(true);
-    }
-
-    /**
-     * Set the Menu "Save File" enable or disable
-     *
-     * @param b true or false
-     */
-    public void setSaveEnabled(boolean b) {
-        fileSaveMenuItem.setEnabled(b);
-    }
-
-    /**
-     * Notice if the menu File-New is enabled.
-     *
-     * @return true if Menu File-New is enabled, false otherwise
-     */
-    public boolean isNewEnabled() {
-        return fileNewMenuItem.isEnabled();
-    }
-
-    /**
-     * Set the Menu "File New" enable or disable
-     *
-     * @param b true or false
-     */
-    public void setNewEnabled(boolean b) {
-        fileNewMenuItem.setEnabled(b);
     }
 
     /**
@@ -856,10 +813,6 @@ public class Application extends JFrame {
         commandKeyAdapter.setKey(i);
     }
 
-    private Application getApp() {
-        return this;
-    }
-
     /**
      * Open the UiTranslatorFrame Dialog box
      */
@@ -982,6 +935,24 @@ public class Application extends JFrame {
     public void setZoomEnabled(boolean b) {
         zoomInButton.setEnabled(b);
         zoomOutButton.setEnabled(b);
+    }
+
+    /**
+     * Initializes the main Frame
+     */
+    public void initTurtle() {
+        // Centering turtle
+        Dimension d = scrollPane.getViewport().getViewRect().getSize();
+        Point p = new Point(Math.abs(Logo.config.getImageWidth() / 2 - d.width / 2), Math.abs(Logo.config.getImageHeight() / 2 - d.height / 2));
+        scrollPane.getViewport().setViewPosition(p);
+
+        // Displays turtle
+        MediaTracker tracker = new MediaTracker(this);
+        try {
+            tracker.waitForID(0);
+        } catch (InterruptedException ignored) {
+        }
+        scrollPane.validate();
     }
 
     /**

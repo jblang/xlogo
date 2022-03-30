@@ -246,13 +246,13 @@ public class TranslationTable extends JPanel implements Searchable {
 
             if (action.equals(UiTranslator.CREATE)) {
                 // Initilaize all Column Names
-                String[] tmp = Logo.translationLanguage;
+                String[] tmp = Logo.translatedLanguages;
                 columnNames = new String[tmp.length + 1];
                 columnNames[0] = id;
                 for (int i = 1; i < columnNames.length; i++) {
                     columnNames[i] = tmp[i - 1];
                 }
-            } else columnNames = Logo.translationLanguage;
+            } else columnNames = Logo.translatedLanguages;
             buildRowData(loader, action, id);
         }
 

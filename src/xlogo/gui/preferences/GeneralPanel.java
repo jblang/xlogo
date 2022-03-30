@@ -18,7 +18,7 @@ import java.awt.*;
 public class GeneralPanel extends JPanel {
     private final Application app;
 
-    private final JList<String> languageList = new JList<>(Logo.translationLanguage);
+    private final JList<String> languageList = new JList<>(Logo.nativeLanguages);
     private final JRadioButton lightLaf = new JRadioButton();
     private final JRadioButton nativeLaf = new JRadioButton();
     private final JRadioButton darkLaf = new JRadioButton();

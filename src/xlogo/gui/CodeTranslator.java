@@ -16,14 +16,16 @@ import java.util.*;
  * @author Loïc Le Coq
  */
 
-/** Frame For translating Logo Code from a language to another
- *  * */
+/**
+ * Frame For translating Logo Code from a language to another
+ * *
+ */
 
 public class CodeTranslator extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
 
-    private final JComboBox sourceLanguageCombo = new JComboBox(Logo.translationLanguage);
-    private final JComboBox targetLanguageCombo = new JComboBox(Logo.translationLanguage);
+    private final JComboBox sourceLanguageCombo = new JComboBox(Logo.translatedLanguages);
+    private final JComboBox targetLanguageCombo = new JComboBox(Logo.translatedLanguages);
     private final JTextArea sourceTextArea = new JTextArea();
     private final JTextArea targetTextArea = new JTextArea();
 

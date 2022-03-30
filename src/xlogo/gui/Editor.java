@@ -190,10 +190,7 @@ public class Editor extends JFrame implements SearchListener {
                 } catch (NullPointerException ignored) {
                 }
                 app.tempPath = null;
-                app.setSaveEnabled(true);
             }
-            if (!app.isNewEnabled())
-                app.setNewEnabled(true);
         } catch (SyntaxException ex) {
             visible = true;
         }

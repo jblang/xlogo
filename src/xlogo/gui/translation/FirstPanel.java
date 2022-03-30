@@ -53,9 +53,9 @@ public class FirstPanel extends JPanel implements ActionListener {
         completeButton.addActionListener(this);
         modifyButton.addActionListener(this);
         consultButton.addActionListener(this);
-        comboLangModify = new JComboBox<>(Logo.translationLanguage);
+        comboLangModify = new JComboBox<>(Logo.translatedLanguages);
         comboLangModify.setRenderer(new LanguageListRenderer());
-        comboLangComplete = new JComboBox<>(Logo.translationLanguage);
+        comboLangComplete = new JComboBox<>(Logo.translatedLanguages);
         comboLangComplete.setRenderer(new LanguageListRenderer());
         JButton validButton = new JButton(Logo.messages.getString("pref.ok"));
         validButton.setActionCommand(UiTranslator.OK);
