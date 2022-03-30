@@ -36,11 +36,11 @@ public class LoopForEach extends LoopFor {
      */
     protected void AffecteVar(boolean first) {
         String element = vec.get(getCounter().intValue());
-        if (Interpreter.locale.containsKey(var)) {
+        if (Interpreter.locals.containsKey(var)) {
             if (first) conserver = true;
-            Interpreter.locale.put(var, element);
+            Interpreter.locals.put(var, element);
         } else {
-            Interpreter.locale.put(var, element);
+            Interpreter.locals.put(var, element);
         }
     }
 }

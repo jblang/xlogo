@@ -24,18 +24,19 @@ public class LogoException extends Exception {
     public LogoException(Application cadre, String st) {
         this.cadre = cadre;
 //    if (st.equals("siwhile")) st=Logo.messages.getString("tantque");
-        while (!Interpreter.en_cours.isEmpty() && Interpreter.en_cours.peek().equals("(")) Interpreter.en_cours.pop();
-        if (!cadre.error & !Interpreter.en_cours.isEmpty()) {
-            cadre.updateHistory("erreur", Logo.messages.getString("dans") + " " + Interpreter.en_cours.pop() + ", "
+        while (!Interpreter.procedures.isEmpty() && Interpreter.procedures.peek().equals("("))
+            Interpreter.procedures.pop();
+        if (!cadre.error & !Interpreter.procedures.isEmpty()) {
+            cadre.updateHistory("erreur", Logo.messages.getString("dans") + " " + Interpreter.procedures.pop() + ", "
                     + Logo.messages.getString("line") + " " + getLineNumber() + ":\n");
         }
         if (!cadre.error) cadre.updateHistory("erreur", Utils.unescapeString(st) + "\n");
 
         cadre.focusCommandLine();
         cadre.error = true;
-        Interpreter.calcul = new Stack<String>();
         cadre.getKernel().getInstructionBuffer().clear();
-        Interpreter.stackLoop = new Stack<LoopProperties>();
+        Interpreter.operands = new Stack<String>();
+        Interpreter.loops = new Stack<Loop>();
     }
 
     private int getLineNumber() {

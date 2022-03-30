@@ -319,7 +319,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
      *
      * @param arg The angle to rotate
      */
-    protected void td(double arg) {
+    protected void turn(double arg) {
         if (turtle.isVisible())
             eraseTurtle(false);
         if (!enabled3D()) {
@@ -334,7 +334,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
         if (turtle.isVisible())
             eraseTurtle(true);
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
     }
 
     /**
@@ -354,7 +354,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
         if (turtle.isVisible())
             eraseTurtle(true);
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
     }
 
     /**
@@ -374,7 +374,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         }
         if (turtle.isVisible())
             eraseTurtle(true);
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
     }
 
     /**
@@ -389,7 +389,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         turtle.setRotationMatrix(world3D.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
         if (turtle.isVisible())
             eraseTurtle(true);
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
     }
 
     /**
@@ -404,7 +404,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         turtle.setRotationMatrix(world3D.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
         if (turtle.isVisible())
             eraseTurtle(true);
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
     }
 
     /**
@@ -419,7 +419,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         turtle.setRotationMatrix(world3D.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
         if (turtle.isVisible())
             eraseTurtle(true);
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
     }
 
     /**
@@ -439,7 +439,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         turtle.setRotationMatrix(world3D.EulerToRotation(-turtle.roll, turtle.pitch, -turtle.heading));
         if (turtle.isVisible())
             eraseTurtle(true);
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
     }
 
     /**
@@ -2238,7 +2238,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         notify();
     }
 
-    public void active_souris() {
+    public void activateScrollListener() {
         readMouse = false;
     }
 

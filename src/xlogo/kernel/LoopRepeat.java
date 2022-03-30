@@ -2,7 +2,7 @@ package xlogo.kernel;
 
 import java.math.BigDecimal;
 
-public class LoopRepeat extends LoopProperties {
+public class LoopRepeat extends Loop {
     LoopRepeat(BigDecimal counter, BigDecimal end, BigDecimal increment, String instr) {
         super(counter, end, increment, instr);
     }

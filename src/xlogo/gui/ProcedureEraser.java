@@ -46,7 +46,7 @@ public class ProcedureEraser extends JDialog implements ActionListener {
 
         for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
             Procedure proc = wp.getProcedure(i);
-            if (proc.affichable) {
+            if (proc.displayed) {
                 if (list.size() == 0) startupFiles = i;
                 list.add(proc.getName());
             }

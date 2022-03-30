@@ -20,43 +20,43 @@ import java.util.Stack;
 
 public class Procedure implements AbstractProcedure {
 
-    public boolean affichable; // false lorsque c'est une procédure d'un fichier de démarrage
+    public boolean displayed; // false when it is a startup file procedure
     String comment; // Line of comment introducing the procedure
-    int nbparametre;
+    int arity;
     String name;
-    ArrayList<String> variable = new ArrayList<String>();
-    Stack<String> optVariables = new Stack<String>();
-    Stack<StringBuffer> optVariablesExp = new Stack<StringBuffer>();
-    String instruction = "";
-    StringBuffer instr = null;
-    String instruction_sauve = "";  // En cas de mauvaise écriture dans l'éditeur
-    StringBuffer instr_sauve = null;          // Permet de revenir aux valeurs antérieures d'une
-    ArrayList<String> variable_sauve = new ArrayList<String>(); // procédure avant modification
+    ArrayList<String> variables;
+    Stack<String> optVariables;
+    Stack<StringBuffer> formattedOptVariables;
+    String body = "";
+    StringBuffer formattedBody = null;
+    String backupBody = "";  // In case of bad writing in the editor
+    StringBuffer backupFormattedBody = null;          // allows you to return to the previous values of a
+    ArrayList<String> backupVariables = new ArrayList<>(); // procedure before modification
     Application app;
 
-    public Procedure(String name, int arity, ArrayList<String> variable, Stack<String> optVariables, Stack<StringBuffer> optVariablesExp, boolean affichable, Application app) {
+    public Procedure(String name, int arity, ArrayList<String> variables, Stack<String> optVariables, Stack<StringBuffer> formattedOptVariables, boolean displayed, Application app) {
         this.app = app;
         this.name = name;
-        this.nbparametre = arity;
-        this.variable = variable;
+        this.arity = arity;
+        this.variables = variables;
         this.optVariables = optVariables;
-        this.optVariablesExp = optVariablesExp;
-        this.affichable = affichable;
+        this.formattedOptVariables = formattedOptVariables;
+        this.displayed = displayed;
     }
 
-    public void decoupe() {
+    public void format() {
         // Only cut procedures which are visible in the editor
-        if (null == instr) {
-            instr = new StringBuffer();
+        if (null == formattedBody) {
+            formattedBody = new StringBuffer();
             try {
-                String line = "";
-                StringReader sr = new StringReader(instruction);
+                String line;
+                StringReader sr = new StringReader(body);
                 BufferedReader bfr = new BufferedReader(sr);
                 int lineNumber = 0;
                 // Append the number of the line
-                instr.append("\\l");
-                instr.append(lineNumber);
-                instr.append(" ");
+                formattedBody.append("\\l");
+                formattedBody.append(lineNumber);
+                formattedBody.append(" ");
                 while (bfr.ready()) {
                     lineNumber++;
                     // read the line
@@ -68,18 +68,17 @@ public class Procedure implements AbstractProcedure {
                     // delete comments
                     line = deleteComments(line);
                     line = Utils.formatCode(line).toString().trim();
-                    instr.append(line);
+                    formattedBody.append(line);
                     if (!line.equals("")) {
-                        instr.append(" ");
+                        formattedBody.append(" ");
                         // Append the number of the line
-                        instr.append("\\l");
-                        instr.append(lineNumber);
-                        instr.append(" ");
+                        formattedBody.append("\\l");
+                        formattedBody.append(lineNumber);
+                        formattedBody.append(" ");
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
-            //  System.out.println("****************************"+name+"\n"+instr+"\n\n");
         }
     }
 
@@ -96,24 +95,23 @@ public class Procedure implements AbstractProcedure {
     }
 
     public String toString() {
-//    return("nom "+name+" nombre paramètres "+nbparametre+" identifiant "+id+"\n"+variable.toString()+"\n"+instr+"\ninstrction_sauve"+instruction_sauve+"\ninstr_sauve\n"+instr_sauve);
-        StringBuffer sb = new StringBuffer();
-        if (affichable) {
+        StringBuilder sb = new StringBuilder();
+        if (displayed) {
             sb.append(comment);
-            sb.append(Logo.messages.getString("pour") + " " + name);
-            for (int j = 0; j < nbparametre; j++) {
+            sb.append(Logo.messages.getString("pour")).append(" ").append(name);
+            for (int j = 0; j < arity; j++) {
                 sb.append(" :");
-                sb.append(variable.get(j));
+                sb.append(variables.get(j));
             }
             for (int j = 0; j < optVariables.size(); j++) {
                 sb.append(" [ :");
                 sb.append(optVariables.get(j));
                 sb.append(" ");
-                sb.append(optVariablesExp.get(j));
+                sb.append(formattedOptVariables.get(j));
                 sb.append(" ]");
             }
             sb.append("\n");
-            sb.append(instruction);
+            sb.append(body);
             sb.append(Logo.messages.getString("fin"));
             sb.append("\n");
         }
@@ -129,8 +127,8 @@ public class Procedure implements AbstractProcedure {
         // Only cut procedures which are visible in the editor
         StringBuffer sb = new StringBuffer();
         try {
-            String line = "";
-            StringReader sr = new StringReader(instruction);
+            String line;
+            StringReader sr = new StringReader(body);
             BufferedReader bfr = new BufferedReader(sr);
             while (bfr.ready()) {
                 try {
@@ -145,7 +143,7 @@ public class Procedure implements AbstractProcedure {
                 sb.append(line);
                 sb.append(" ] ");
             }
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         return sb;
     }
@@ -157,44 +155,44 @@ public class Procedure implements AbstractProcedure {
 
     @Override
     public int getArity() {
-        return nbparametre;
+        return arity;
     }
 
     @Override
     public void execute(Stack<String> param) {
         // procedure or primitive identifier parameter value
-        Interpreter.stockvariable.push(Interpreter.locale);
-        Interpreter.locale = new HashMap<>();
+        Interpreter.scopes.push(Interpreter.locals);
+        Interpreter.locals = new HashMap<>();
         // Read local Variable
         int optSize = optVariables.size();
-        int normSize = variable.size();
+        int normSize = variables.size();
         for (int j = 0; j < optSize + normSize; j++) {
             // Add local Variable
             if (j < normSize) {
-                Interpreter.locale.put(variable.get(j), param.get(j));
+                Interpreter.locals.put(variables.get(j), param.get(j));
             } else {
                 // add optional variables
                 String value;
                 if (j < param.size()) value = param.get(j);
-                else value = optVariablesExp.get(j - param.size()).toString();
-                Interpreter.locale.put(optVariables.get(j - normSize), value);
+                else value = formattedOptVariables.get(j - param.size()).toString();
+                Interpreter.locals.put(optVariables.get(j - normSize), value);
 
             }
         }
         // Add optional variable
-        if (Kernel.mode_trace) {
+        if (Kernel.traceMode) {
             StringBuilder buffer = new StringBuilder();
-            buffer.append("  ".repeat(Interpreter.en_cours.size()));
+            buffer.append("  ".repeat(Interpreter.procedures.size()));
             buffer.append(name);
             for (String s : param) buffer.append(" ").append(Utils.unescapeString(s));
             String msg = buffer + "\n";
             app.updateHistory("normal", msg);
         }
-        Interpreter.en_cours.push(name);
+        Interpreter.procedures.push(name);
 
         // Add Procedure code in Interpreter.instruction
         app.getKernel().getInstructionBuffer().insert("\n ");
-        app.getKernel().getInstructionBuffer().insertCode(instr);
-        Interpreter.nom.push("\n");
+        app.getKernel().getInstructionBuffer().insertCode(formattedBody);
+        Interpreter.consumers.push("\n");
     }
 }

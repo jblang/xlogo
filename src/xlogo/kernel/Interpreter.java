@@ -43,30 +43,29 @@ public class Interpreter {
     static final String END_TCP = "\\x";
     static final String LOOP_CONDITION = "\\siwhile";
     public static StringBuffer actionInstruction = new StringBuffer();
-    static Stack<String> calcul = new Stack<>(); // stack containing the numbers
-    static Stack<String> en_cours = new Stack<>(); // contains currently running procedures
+    static Stack<String> operands = new Stack<>(); // stack containing procedure operands
+    static Stack<String> procedures = new Stack<>(); // currently running procedures
+    static Stack<String> consumers = new Stack<>(); // procedures waiting to consume parameters
+    static Stack<Loop> loops = new Stack<>();
+    static Stack<HashMap<String, String>> scopes = new Stack<>();
+    static HashMap<String, String> locals = new HashMap<>(); // local variables
     static String lineNumber = "";
-    static boolean renvoi_instruction = false; // if a primitive returns a series of statements to evaluate
-    static Stack<HashMap<String, String>> stockvariable = new Stack<>();
-    static Stack<String> nom = new Stack<>(); // contains the names of the procedures waiting for parameters to be received
-    static HashMap<String, String> locale = new HashMap<>(); // stack containing local variable names
     static Map<String, Primitive> primitiveMap = new TreeMap<>();
-    static Stack<LoopProperties> stackLoop = new Stack<>();
-    static boolean operande = false; // if the element is a number
-    static boolean operateur = false; // if the element is an operator
-    static boolean drapeau_ouvrante = false; // if the element is an opening parenthesis
-    static boolean drapeau_fermante = false; // is a closing parenthesis
+    static boolean returnValue = false; // if the element is a number
+    static boolean evalReturnValue = false; // if a primitive returns a series of statements to evaluate
+    static boolean openParen = false; // if the element is an opening parenthesis
+    static boolean closeParen = false; // is a closing parenthesis
     final Application app;
     final InstructionBuffer instructionBuffer = new InstructionBuffer();
     final Kernel kernel;
-    Workspace wp;
+    Workspace workspace;
     Stack<Workspace> savedWorkspace;
-    String debut_chaine = "";
+    String wordPrefix = "";
 
     public Interpreter(Application app) {
         this.app = app;
         this.kernel = app.getKernel();
-        this.wp = kernel.getWorkspace();
+        this.workspace = kernel.getWorkspace();
         app.error = false;
         buildPrimitiveTreemap();
     }
@@ -80,345 +79,21 @@ public class Interpreter {
     //
     protected static boolean isList(String li) {
         li = li.trim();
-        return li.length() > 0 && li.charAt(0) == '['
-                && li.endsWith("]");
+        return li.length() > 0 && li.charAt(0) == '[' && li.endsWith("]");
     }
 
     /**
-     * This method indicates if a primitive is an infixed operator<br>
-     * Infixed operators are for example: +,-,*-,/,&,>=.....
-     *
-     * @param op The primitive
-     * @return true or false if it's an infixed operator
-     */
-    static boolean isInfixedOperator(String op) {
-        return List.of("*", "/", "+", "-", "=", "<", ">", "|", "&", "<=", ">=").contains(op);
-    }
-
-    /**
-     * This metods tests if the String op is a logic operator, ie a string like |,&,<,>,=,>=,<=
+     * Tests if the string op is a logic operator: |,&,<,>,=,>=,<=
      *
      * @param op The operator to test
      * @return true if op is a logic operator
      */
     static boolean isLogicOperator(String op) {
-        return ("|&>=<=".indexOf(op) != -1);
-
+        return List.of("=", "<", ">", "|", "&", "<=", ">=").contains(op);
     }
 
-    final List<Primitive> primitives = List.of(
-            new Primitive("&", 1, false, this::andOp),
-            new Primitive("|", 1, false, this::orOp),
-            new Primitive("*", 1, false, this::multiplyOp),
-            new Primitive("+", 1, false, this::addOp),
-            new Primitive("-", 1, false, this::subtractOp),
-            new Primitive("/", 1, false, this::divideOp),
-            new Primitive("<", 1, false, this::isLessThan),
-            new Primitive("<=", 1, false, this::isLessThanOrEqual),
-            new Primitive("=", 1, false, this::isEqual),
-            new Primitive(">", 1, false, this::isGreaterThan),
-            new Primitive(">=", 1, false, this::isGreatherThanOrEqual),
-            new Primitive(")", 0, false, this::closeParen),
-            new Primitive("\\", 0, false, this::endLoop),
-            new Primitive("\\siwhile", 2, false, this::evalWhile),
-            new Primitive("\\x", 0, false, this::endExecuteTcp),
-            new Primitive("\n", 0, false, this::endProc),
-            new Primitive("3d.downpitch", 1, false, this::pitchDown),
-            new Primitive("3d.leftroll", 1, false, this::rollLeft),
-            new Primitive("3d.lineend", 0, false, this::endLine),
-            new Primitive("3d.linestart", 0, false, this::startLine),
-            new Primitive("3d.orientation", 0, false, this::getOrientation),
-            new Primitive("3d.perspective", 0, false, this::enable3D),
-            new Primitive("3d.pitch", 0, false, this::getPitch),
-            new Primitive("3d.pointend", 0, false, this::endPoint),
-            new Primitive("3d.pointstart", 0, false, this::startPoint),
-            new Primitive("3d.polyend", 0, false, this::endPolygon),
-            new Primitive("3d.polystart", 0, false, this::startPolygon),
-            new Primitive("3d.polyview", 0, false, this::view3D),
-            new Primitive("3d.rightroll", 1, false, this::rollRight),
-            new Primitive("3d.roll", 0, false, this::getRoll),
-            new Primitive("3d.setorientation", 1, false, this::setOrientation),
-            new Primitive("3d.setpitch", 1, false, this::setPitch),
-            new Primitive("3d.setroll", 1, false, this::setRoll),
-            new Primitive("3d.setxyz", 3, false, this::setXYZ),
-            new Primitive("3d.setz", 1, false, this::setZ),
-            new Primitive("3d.textend", 0, false, this::endText),
-            new Primitive("3d.textstart", 0, false, this::startText),
-            new Primitive("3d.uppitch", 1, false, this::pitchUp),
-            new Primitive("color.black", 0, false, this::setColorBlack),
-            new Primitive("color.blue", 0, false, this::setColorBlue),
-            new Primitive("color.brown", 0, false, this::setColorBrown),
-            new Primitive("color.cyan", 0, false, this::setColorCyan),
-            new Primitive("color.darkblue", 0, false, this::setColorDarkBlue),
-            new Primitive("color.darkgreen", 0, false, this::setColorDarkGreen),
-            new Primitive("color.darkred", 0, false, this::setColorDarkRed),
-            new Primitive("color.gray", 0, false, this::setColorGray),
-            new Primitive("color.green", 0, false, this::setColorGreen),
-            new Primitive("color.lightgray", 0, false, this::setColorLightGray),
-            new Primitive("color.magenta", 0, false, this::setColorMagenta),
-            new Primitive("color.orange", 0, false, this::setColorOrange),
-            new Primitive("color.pink", 0, false, this::setColorPink),
-            new Primitive("color.purple", 0, false, this::setColorPurple),
-            new Primitive("color.red", 0, false, this::setColorRed),
-            new Primitive("color.white", 0, false, this::setColorWhite),
-            new Primitive("color.yellow", 0, false, this::setColorYellow),
-            new Primitive("control.and", 2, true, this::and),
-            new Primitive("control.before?", 2, false, this::isBeforeWrap),
-            new Primitive("control.bye", 0, false, this::bye),
-            new Primitive("control.dountil", 2, false, this::doUntil),
-            new Primitive("control.dowhile", 2, false, this::doWhile),
-            new Primitive("control.empty?", 1, false, this::isEmpty),
-            new Primitive("control.equal?", 2, false, this::isEqual),
-            new Primitive("control.false", 0, false, this::_false),
-            new Primitive("control.for", 2, false, this::_for),
-            new Primitive("control.foreach", 3, false, this::forEach),
-            new Primitive("control.forever", 1, false, this::forever),
-            new Primitive("control.if", 2, false, this::_if),
-            new Primitive("control.ifelse", 3, false, this::ifElse),
-            new Primitive("control.integer?", 1, false, this::isInteger),
-            new Primitive("control.not", 1, false, this::not),
-            new Primitive("control.number?", 1, false, this::isNumber),
-            new Primitive("control.or", 2, true, this::or),
-            new Primitive("control.output", 1, false, this::output),
-            new Primitive("control.primitive?", 1, false, this::isPrimitive),
-            new Primitive("control.procedure?", 1, false, this::isProcedure),
-            new Primitive("control.repcount", 0, false, this::getRepCount),
-            new Primitive("control.repeat", 2, false, this::repeat),
-            new Primitive("control.resetall", 0, false, this::resetAll),
-            new Primitive("control.sentence", 2, true, this::sentence),
-            new Primitive("control.stop", 0, false, this::stop),
-            new Primitive("control.stopall", 0, false, this::stopAll),
-            new Primitive("control.true", 0, false, this::_true),
-            new Primitive("control.variable?", 1, false, this::isVariable),
-            new Primitive("control.while", 2, false, this::_while),
-            new Primitive("control.word", 2, true, this::word),
-            new Primitive("control.word?", 1, false, this::isWord),
-            new Primitive("drawing.animation", 0, false, this::startAnimation),
-            new Primitive("drawing.arc", 3, false, this::arc),
-            new Primitive("drawing.axis", 1, false, this::drawBothAxes),
-            new Primitive("drawing.axiscolor", 0, false, this::getAxisColor),
-            new Primitive("drawing.back", 1, false, this::back),
-            new Primitive("drawing.changedirectory", 1, false, this::changeDirectory),
-            new Primitive("drawing.circle", 1, false, this::circle),
-            new Primitive("drawing.clearscreen", 0, false, this::clearScreenWrap),
-            new Primitive("drawing.distance", 1, false, this::distance),
-            new Primitive("drawing.dot", 1, false, this::dot),
-            new Primitive("drawing.drawingquality", 0, false, this::getDrawingQuality),
-            new Primitive("drawing.eraseturtle", 1, false, this::eraseTurtle),
-            new Primitive("drawing.fence", 0, false, this::fenceTurtle),
-            new Primitive("drawing.fill", 0, false, this::fill),
-            new Primitive("drawing.fillpolygon", 1, false, this::fillPolygon),
-            new Primitive("drawing.fillzone", 0, false, this::fillZone),
-            new Primitive("drawing.findcolor", 1, false, this::findColor),
-            new Primitive("drawing.fontjustify", 0, false, this::getFontJustify),
-            new Primitive("drawing.fontname", 0, false, this::getLabelFont),
-            new Primitive("drawing.fontsize", 0, false, this::getFontSize),
-            new Primitive("drawing.forward", 1, false, this::forward),
-            new Primitive("drawing.grid", 2, false, this::drawGrid),
-            new Primitive("drawing.grid?", 0, false, this::isGridEnabled),
-            new Primitive("drawing.gridcolor", 0, false, this::getGridColor),
-            new Primitive("drawing.heading", 0, false, this::heading),
-            new Primitive("drawing.hideturtle", 0, false, this::hideTurtle),
-            new Primitive("drawing.home", 0, false, this::home),
-            new Primitive("drawing.label", 1, false, this::label),
-            new Primitive("drawing.labellength", 1, false, this::getLabelLength),
-            new Primitive("drawing.left", 1, false, this::left),
-            new Primitive("drawing.loadimage", 1, false, this::loadImage),
-            new Primitive("drawing.pencolor", 0, false, this::penColor),
-            new Primitive("drawing.pendown", 0, false, this::penDown),
-            new Primitive("drawing.pendown?", 0, false, this::isPenDown),
-            new Primitive("drawing.penerase", 0, false, this::penErase),
-            new Primitive("drawing.penpaint", 0, false, this::penPaint),
-            new Primitive("drawing.penreverse", 0, false, this::penReverse),
-            new Primitive("drawing.penshape", 0, false, this::getPenShape),
-            new Primitive("drawing.penup", 0, false, this::penUp),
-            new Primitive("drawing.penwidth", 0, false, this::getPenWidth),
-            new Primitive("drawing.position", 0, false, this::position),
-            new Primitive("drawing.repaint", 0, false, this::refresh),
-            new Primitive("drawing.right", 1, false, this::right),
-            new Primitive("drawing.saveimage", 2, false, this::saveImage),
-            new Primitive("drawing.screencolor", 0, false, this::screenColor),
-            new Primitive("drawing.screensize", 0, false, this::getImageSize),
-            new Primitive("drawing.setaxiscolor", 1, false, this::setAxisColor),
-            new Primitive("drawing.setdrawingquality", 1, false, this::setDrawingQuality),
-            new Primitive("drawing.setfontjustify", 1, false, this::setFontJustify),
-            new Primitive("drawing.setfontname", 1, false, this::setLabelFont),
-            new Primitive("drawing.setfontsize", 1, false, this::setFontSize),
-            new Primitive("drawing.setgridcolor", 1, false, this::setGridColor),
-            new Primitive("drawing.setheading", 1, false, this::setHeading),
-            new Primitive("drawing.setpencolor", 1, false, this::setPenColor),
-            new Primitive("drawing.setpenshape", 1, false, this::setPenShape),
-            new Primitive("drawing.setpenwidth", 1, false, this::setPenWidth),
-            new Primitive("drawing.setposition", 1, false, this::setPos),
-            new Primitive("drawing.setscreencolor", 1, false, this::setScreenColor),
-            new Primitive("drawing.setscreensize", 1, false, this::setScreenSize),
-            new Primitive("drawing.setshape", 1, false, this::setShape),
-            new Primitive("drawing.setturtle", 1, false, this::setTurtle),
-            new Primitive("drawing.setturtlesmax", 1, false, this::setTurtlesMax),
-            new Primitive("drawing.setx", 1, false, this::setX),
-            new Primitive("drawing.setxy", 2, false, this::setXY),
-            new Primitive("drawing.sety", 1, false, this::setY),
-            new Primitive("drawing.setzoom", 1, false, this::setZoom),
-            new Primitive("drawing.shape", 0, false, this::getShape),
-            new Primitive("drawing.showturtle", 0, false, this::showTurtle),
-            new Primitive("drawing.stopanimation", 0, false, this::stopAnimation),
-            new Primitive("drawing.stopaxis", 0, false, this::disableAxes),
-            new Primitive("drawing.stopgrid", 0, false, this::disableGrid),
-            new Primitive("drawing.towards", 1, false, this::towards),
-            new Primitive("drawing.turtle", 0, false, this::getActiveTurtle),
-            new Primitive("drawing.turtles", 0, false, this::getTurtles),
-            new Primitive("drawing.turtlesmax", 0, false, this::getTurtlesMax),
-            new Primitive("drawing.visible?", 0, false, this::isVisible),
-            new Primitive("drawing.wash", 0, false, this::wash),
-            new Primitive("drawing.window", 0, false, this::windowTurtle),
-            new Primitive("drawing.wrap", 0, false, this::wrapTurtle),
-            new Primitive("drawing.x", 0, false, this::getX),
-            new Primitive("drawing.xaxis", 1, false, this::drawXAxis),
-            new Primitive("drawing.xaxis?", 0, false, this::isXAxisEnabled),
-            new Primitive("drawing.y", 0, false, this::getY),
-            new Primitive("drawing.yaxis", 1, false, this::drawYAxis),
-            new Primitive("drawing.yaxis?", 0, false, this::isYAxisEnabled),
-            new Primitive("drawing.z", 0, false, this::getZ),
-            new Primitive("drawing.zonesize", 0, false, this::getZoneSize),
-            new Primitive("drawing.zoom", 0, false, this::getZoom),
-            new Primitive("file.appendlineflow", 2, false, this::fileAppendLine),
-            new Primitive("file.closeflow", 1, false, this::closeFile),
-            new Primitive("file.directory", 0, false, this::getDirectory),
-            new Primitive("file.endflow?", 1, false, this::isEndOfFile),
-            new Primitive("file.files", 0, false, this::getFiles),
-            new Primitive("file.listflow", 0, false, this::getOpenFiles),
-            new Primitive("file.load", 1, false, this::load),
-            new Primitive("file.openflow", 2, false, this::openFile),
-            new Primitive("file.readcharflow", 1, false, this::fileReadChar),
-            new Primitive("file.readlineflow", 1, false, this::fileReadLine),
-            new Primitive("file.save", 2, false, this::save),
-            new Primitive("file.saved", 1, false, this::saveAll),
-            new Primitive("file.setdirectory", 1, false, this::setDirectory),
-            new Primitive("file.writelineflow", 2, false, this::fileWriteLine),
-            new Primitive("list.additem", 3, false, this::addItem),
-            new Primitive("list.butfirst", 1, false, this::butFirst),
-            new Primitive("list.butlast", 1, false, this::butLast),
-            new Primitive("list.count", 1, false, this::count),
-            new Primitive("list.first", 1, false, this::first),
-            new Primitive("list.fput", 2, false, this::fput),
-            new Primitive("list.item", 2, false, this::item),
-            new Primitive("list.last", 1, false, this::last),
-            new Primitive("list.list", 2, true, this::list),
-            new Primitive("list.list?", 1, false, this::isList),
-            new Primitive("list.lput", 2, false, this::lput),
-            new Primitive("list.member", 2, false, this::isMember71),
-            new Primitive("list.member?", 2, false, this::isMember69),
-            new Primitive("list.pick", 1, false, this::pick),
-            new Primitive("list.remove", 2, false, this::remove),
-            new Primitive("list.replace", 3, false, this::replaceItem),
-            new Primitive("list.reverse", 1, false, this::reverse),
-            new Primitive("math.abs", 1, false, this::abs),
-            new Primitive("math.acos", 1, false, this::acos),
-            new Primitive("math.asin", 1, false, this::asin),
-            new Primitive("math.atan", 1, false, this::atan),
-            new Primitive("math.cos", 1, false, this::cos),
-            new Primitive("math.difference", 2, false, this::difference),
-            new Primitive("math.digits", 0, false, this::getSignificantDigits),
-            new Primitive("math.div", 2, false, this::divide),
-            new Primitive("math.exp", 1, false, this::exp),
-            new Primitive("math.greater", 2, false, this::isGreaterThan),
-            new Primitive("math.greaterequal", 2, false, this::isGreatherThanOrEqual),
-            new Primitive("math.integer", 1, false, this::truncate),
-            new Primitive("math.less", 2, false, this::isLessThan),
-            new Primitive("math.lessequal", 2, false, this::isLessThanOrEqual),
-            new Primitive("math.log", 1, false, this::log),
-            new Primitive("math.log10", 1, false, this::log10),
-            new Primitive("math.minus", 1, false, this::minus),
-            new Primitive("math.mod", 2, false, this::mod),
-            new Primitive("math.pi", 0, false, this::pi),
-            new Primitive("math.power", 2, false, this::power),
-            new Primitive("math.product", 2, true, this::product),
-            new Primitive("math.quotient", 2, false, this::quotient),
-            new Primitive("math.random", 1, false, this::random),
-            new Primitive("math.randomfrac", 0, false, this::randomZeroToOne),
-            new Primitive("math.remainder", 2, false, this::remainder),
-            new Primitive("math.round", 1, false, this::round),
-            new Primitive("math.setdigits", 1, false, this::setSignificantDigits),
-            new Primitive("math.sin", 1, false, this::sin),
-            new Primitive("math.sqrt", 1, false, this::sqrt),
-            new Primitive("math.sum", 2, true, this::sum),
-            new Primitive("math.tan", 1, false, this::tan),
-            new Primitive("net.chattcp", 2, false, this::chatTcp),
-            new Primitive("net.executetcp", 2, false, this::executeTcp),
-            new Primitive("net.listentcp", 0, false, this::listenTcp),
-            new Primitive("net.sendtcp", 2, false, this::sendTcp),
-            new Primitive("sound.deletesequence", 0, false, this::deleteSequence),
-            new Primitive("sound.indexsequence", 0, false, this::getSequenceIndex),
-            new Primitive("sound.instrument", 0, false, this::getInstrument),
-            new Primitive("sound.mp3play", 1, false, this::playMP3),
-            new Primitive("sound.mp3stop", 0, false, this::stopMP3),
-            new Primitive("sound.play", 0, false, this::play),
-            new Primitive("sound.sequence", 1, false, this::sequence),
-            new Primitive("sound.setindexsequence", 1, false, this::setSequenceIndex),
-            new Primitive("sound.setinstrument", 1, false, this::setInstrument),
-            new Primitive("time.countdown", 1, false, this::countdown),
-            new Primitive("time.date", 0, false, this::getDate),
-            new Primitive("time.endcountdown?", 0, false, this::isCountdownEnded),
-            new Primitive("time.pasttime", 0, false, this::getTimePassed),
-            new Primitive("time.time", 0, false, this::getTime),
-            new Primitive("time.wait", 1, false, this::wait),
-            new Primitive("ui.character", 1, false, this::getCharacter),
-            new Primitive("ui.cleartext", 0, false, this::clearText),
-            new Primitive("ui.guiaction", 2, false, this::guiAction),
-            new Primitive("ui.guibutton", 2, false, this::guiButton),
-            new Primitive("ui.guidraw", 1, false, this::guiDraw),
-            new Primitive("ui.guimenu", 2, false, this::guiMenu),
-            new Primitive("ui.guiposition", 2, false, this::guiPosition),
-            new Primitive("ui.guiremove", 1, false, this::guiRemove),
-            new Primitive("ui.key?", 0, false, this::isKey),
-            new Primitive("ui.message", 1, false, this::message),
-            new Primitive("ui.mouse?", 0, false, this::isMouseEvent),
-            new Primitive("ui.mouseposition", 0, false, this::mousePosition),
-            new Primitive("ui.print", 1, true, this::print),
-            new Primitive("ui.read", 2, false, this::read),
-            new Primitive("ui.readcharacter", 0, false, this::readChar),
-            new Primitive("ui.readmouse", 0, false, this::mouseButton),
-            new Primitive("ui.separation", 0, false, this::getSeparation),
-            new Primitive("ui.setseparation", 1, false, this::setSeparation),
-            new Primitive("ui.setstyle", 1, false, this::setTextStyle),
-            new Primitive("ui.settextcolor", 1, false, this::setTextColor),
-            new Primitive("ui.settextname", 1, false, this::setTextFont),
-            new Primitive("ui.settextsize", 1, false, this::setTextSize),
-            new Primitive("ui.style", 0, false, this::getTextStyle),
-            new Primitive("ui.textcolor", 0, false, this::getTextColor),
-            new Primitive("ui.textname", 0, false, this::getTextFont),
-            new Primitive("ui.textsize", 0, false, this::getTextSize),
-            new Primitive("ui.unicode", 1, false, this::getUnicode),
-            new Primitive("ui.write", 1, false, this::write),
-            new Primitive("workspace.contents", 0, false, this::getContents),
-            new Primitive("workspace.define", 2, false, this::define),
-            new Primitive("workspace.edit", 1, false, this::edit),
-            new Primitive("workspace.editall", 0, false, this::editAll),
-            new Primitive("workspace.eraseall", 0, false, this::eraseAll),
-            new Primitive("workspace.eraseprocedure", 1, false, this::eraseProcedure),
-            new Primitive("workspace.erasepropertylist", 1, false, this::erasePropertyList),
-            new Primitive("workspace.erasevariable", 1, false, this::eraseVariable),
-            new Primitive("workspace.externalcommand", 1, false, this::runExternalCommand),
-            new Primitive("workspace.getproperty", 2, false, this::getProperty),
-            new Primitive("workspace.globalmake", 2, false, this::globalMakeWrap),
-            new Primitive("workspace.local", 1, false, this::localWrap),
-            new Primitive("workspace.localmake", 2, false, this::localMake),
-            new Primitive("workspace.primitives", 0, false, this::listPrimitives),
-            new Primitive("workspace.procedures", 0, false, this::procedures),
-            new Primitive("workspace.propertylist", 1, false, this::listProperties),
-            new Primitive("workspace.propertylists", 0, false, this::getPropertyLists),
-            new Primitive("workspace.putproperty", 3, false, this::setProperty),
-            new Primitive("workspace.removeproperty", 2, false, this::removeProperty),
-            new Primitive("workspace.run", 1, false, this::run),
-            new Primitive("workspace.stoptrace", 0, false, this::stopTrace),
-            new Primitive("workspace.text", 1, false, this::getProcedureBody),
-            new Primitive("workspace.thing", 1, false, this::getVariableValue),
-            new Primitive("workspace.trace", 0, false, this::trace),
-            new Primitive("workspace.variables", 0, false, this::listVariables)
-    );
-
     /**
-     * This metods tests if the String op is + or -
+     * Tests if the string op is a + or -
      *
      * @param op The operator to test
      * @return true if op is + or -
@@ -428,7 +103,7 @@ public class Interpreter {
     }
 
     /**
-     * This metods tests if the String op is / or *
+     * Tests is the op is * or /
      *
      * @param op The operator to test
      * @return true if op is * or /
@@ -438,7 +113,7 @@ public class Interpreter {
     }
 
     /**
-     * This metods tests if the String op is a special token
+     * Tests if the string op is a special primitive (end conditions, loop conditions)
      *
      * @param op The operator to test
      * @return true if op is a special token
@@ -448,7 +123,582 @@ public class Interpreter {
     }
 
     /**
-     * This methods returns a list which contains all the primitive for the current language
+     * Tests if the string is any kind of operator
+     *
+     * @param op The operator to test
+     * @return true if op is + or -
+     */
+    static boolean isOperator(String op) {
+        return isTimesDiv(op) || isPlusMinus(op) || isLogicOperator(op);
+    }
+
+    static void reset() {
+        Interpreter.returnValue = Interpreter.openParen = false;
+        Interpreter.operands = new Stack<>();
+        Interpreter.consumers = new Stack<>();
+        Interpreter.locals = new HashMap<>();
+        Interpreter.procedures = new Stack<>();
+    }
+
+    /**
+     * This methods returns a list that contains all procedures name
+     *
+     * @return A list with all procedure names
+     */
+    StringBuffer getAllProcedures() {
+        StringBuffer sb = new StringBuffer("[ ");
+        for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
+            Procedure proc = workspace.getProcedure(i);
+            if (proc.displayed) {
+                sb.append(proc.name);
+                sb.append(" ");
+            }
+        }
+        sb.append("] ");
+        return sb;
+    }
+
+    /**
+     * This methods returns a list that contains all variables name
+     *
+     * @return A list with all variables names
+     */
+    StringBuffer getAllVariables() {
+        StringBuffer sb = new StringBuffer("[ ");
+        Iterator<String> it = Interpreter.locals.keySet().iterator();
+        while (it.hasNext()) {
+            String name = it.next();
+            sb.append(name);
+            sb.append(" ");
+        }
+        it = workspace.globals.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next();
+            if (!Interpreter.locals.containsKey(key)) {
+                sb.append(key);
+                sb.append(" ");
+            }
+        }
+        sb.append("] ");
+        return sb;
+    }    final List<Primitive> primitives = List.of(new Primitive("&", 1, false, this::andOp), new Primitive("|", 1, false, this::orOp), new Primitive("*", 1, false, this::multiplyOp), new Primitive("+", 1, false, this::addOp), new Primitive("-", 1, false, this::subtractOp), new Primitive("/", 1, false, this::divideOp), new Primitive("<", 1, false, this::isLessThan), new Primitive("<=", 1, false, this::isLessThanOrEqual), new Primitive("=", 1, false, this::isEqual), new Primitive(">", 1, false, this::isGreaterThan), new Primitive(">=", 1, false, this::isGreatherThanOrEqual), new Primitive(")", 0, false, this::closeParen), new Primitive("\\", 0, false, this::endLoop), new Primitive("\\siwhile", 2, false, this::testWhile), new Primitive("\\x", 0, false, this::endExecuteTcp), new Primitive("\n", 0, false, this::endProc), new Primitive("3d.downpitch", 1, false, this::pitchDown), new Primitive("3d.leftroll", 1, false, this::rollLeft), new Primitive("3d.lineend", 0, false, this::endLine), new Primitive("3d.linestart", 0, false, this::startLine), new Primitive("3d.orientation", 0, false, this::getOrientation), new Primitive("3d.perspective", 0, false, this::enable3D), new Primitive("3d.pitch", 0, false, this::getPitch), new Primitive("3d.pointend", 0, false, this::endPoint), new Primitive("3d.pointstart", 0, false, this::startPoint), new Primitive("3d.polyend", 0, false, this::endPolygon), new Primitive("3d.polystart", 0, false, this::startPolygon), new Primitive("3d.polyview", 0, false, this::view3D), new Primitive("3d.rightroll", 1, false, this::rollRight), new Primitive("3d.roll", 0, false, this::getRoll), new Primitive("3d.setorientation", 1, false, this::setOrientation), new Primitive("3d.setpitch", 1, false, this::setPitch), new Primitive("3d.setroll", 1, false, this::setRoll), new Primitive("3d.setxyz", 3, false, this::setXYZ), new Primitive("3d.setz", 1, false, this::setZ), new Primitive("3d.textend", 0, false, this::endText), new Primitive("3d.textstart", 0, false, this::startText), new Primitive("3d.uppitch", 1, false, this::pitchUp), new Primitive("color.black", 0, false, this::colorBlack), new Primitive("color.blue", 0, false, this::colorBlue), new Primitive("color.brown", 0, false, this::colorBrown), new Primitive("color.cyan", 0, false, this::colorCyan), new Primitive("color.darkblue", 0, false, this::colorDarkBlue), new Primitive("color.darkgreen", 0, false, this::colorDarkGreen), new Primitive("color.darkred", 0, false, this::colorDarkRed), new Primitive("color.gray", 0, false, this::colorGray), new Primitive("color.green", 0, false, this::colorGreen), new Primitive("color.lightgray", 0, false, this::colorLightGray), new Primitive("color.magenta", 0, false, this::colorMagenta), new Primitive("color.orange", 0, false, this::colorOrange), new Primitive("color.pink", 0, false, this::colorPink), new Primitive("color.purple", 0, false, this::colorPurple), new Primitive("color.red", 0, false, this::colorRed), new Primitive("color.white", 0, false, this::colorWhite), new Primitive("color.yellow", 0, false, this::colorYellow), new Primitive("control.and", 2, true, this::and), new Primitive("control.before?", 2, false, this::isBeforeWrap), new Primitive("control.bye", 0, false, this::bye), new Primitive("control.dountil", 2, false, this::doUntil), new Primitive("control.dowhile", 2, false, this::doWhile), new Primitive("control.empty?", 1, false, this::isEmpty), new Primitive("control.equal?", 2, false, this::isEqual), new Primitive("control.false", 0, false, this::falseValue), new Primitive("control.for", 2, false, this::forLoop), new Primitive("control.foreach", 3, false, this::forEach), new Primitive("control.forever", 1, false, this::forever), new Primitive("control.if", 2, false, this::ifThen), new Primitive("control.ifelse", 3, false, this::ifThenElse), new Primitive("control.integer?", 1, false, this::isInteger), new Primitive("control.not", 1, false, this::not), new Primitive("control.number?", 1, false, this::isNumber), new Primitive("control.or", 2, true, this::or), new Primitive("control.output", 1, false, this::output), new Primitive("control.primitive?", 1, false, this::isPrimitive), new Primitive("control.procedure?", 1, false, this::isProcedure), new Primitive("control.repcount", 0, false, this::getRepCount), new Primitive("control.repeat", 2, false, this::repeat), new Primitive("control.resetall", 0, false, this::resetAll), new Primitive("control.sentence", 2, true, this::sentence), new Primitive("control.stop", 0, false, this::stop), new Primitive("control.stopall", 0, false, this::stopAll), new Primitive("control.true", 0, false, this::trueValue), new Primitive("control.variable?", 1, false, this::isVariable), new Primitive("control.while", 2, false, this::whileLoop), new Primitive("control.word", 2, true, this::word), new Primitive("control.word?", 1, false, this::isWord), new Primitive("drawing.animation", 0, false, this::startAnimation), new Primitive("drawing.arc", 3, false, this::arc), new Primitive("drawing.axis", 1, false, this::drawBothAxes), new Primitive("drawing.axiscolor", 0, false, this::getAxisColor), new Primitive("drawing.back", 1, false, this::back), new Primitive("drawing.changedirectory", 1, false, this::changeDirectory), new Primitive("drawing.circle", 1, false, this::circle), new Primitive("drawing.clearscreen", 0, false, this::clearScreenWrap), new Primitive("drawing.distance", 1, false, this::distance), new Primitive("drawing.dot", 1, false, this::dot), new Primitive("drawing.drawingquality", 0, false, this::getDrawingQuality), new Primitive("drawing.eraseturtle", 1, false, this::eraseTurtle), new Primitive("drawing.fence", 0, false, this::fenceTurtle), new Primitive("drawing.fill", 0, false, this::fill), new Primitive("drawing.fillpolygon", 1, false, this::fillPolygon), new Primitive("drawing.fillzone", 0, false, this::fillZone), new Primitive("drawing.findcolor", 1, false, this::findColor), new Primitive("drawing.fontjustify", 0, false, this::getFontJustify), new Primitive("drawing.fontname", 0, false, this::getLabelFont), new Primitive("drawing.fontsize", 0, false, this::getFontSize), new Primitive("drawing.forward", 1, false, this::forward), new Primitive("drawing.grid", 2, false, this::drawGrid), new Primitive("drawing.grid?", 0, false, this::isGridEnabled), new Primitive("drawing.gridcolor", 0, false, this::getGridColor), new Primitive("drawing.heading", 0, false, this::heading), new Primitive("drawing.hideturtle", 0, false, this::hideTurtle), new Primitive("drawing.home", 0, false, this::home), new Primitive("drawing.label", 1, false, this::label), new Primitive("drawing.labellength", 1, false, this::getLabelLength), new Primitive("drawing.left", 1, false, this::left), new Primitive("drawing.loadimage", 1, false, this::loadImage), new Primitive("drawing.pencolor", 0, false, this::penColor), new Primitive("drawing.pendown", 0, false, this::penDown), new Primitive("drawing.pendown?", 0, false, this::isPenDown), new Primitive("drawing.penerase", 0, false, this::penErase), new Primitive("drawing.penpaint", 0, false, this::penPaint), new Primitive("drawing.penreverse", 0, false, this::penReverse), new Primitive("drawing.penshape", 0, false, this::getPenShape), new Primitive("drawing.penup", 0, false, this::penUp), new Primitive("drawing.penwidth", 0, false, this::getPenWidth), new Primitive("drawing.position", 0, false, this::position), new Primitive("drawing.repaint", 0, false, this::refresh), new Primitive("drawing.right", 1, false, this::right), new Primitive("drawing.saveimage", 2, false, this::saveImage), new Primitive("drawing.screencolor", 0, false, this::screenColor), new Primitive("drawing.screensize", 0, false, this::getImageSize), new Primitive("drawing.setaxiscolor", 1, false, this::setAxisColor), new Primitive("drawing.setdrawingquality", 1, false, this::setDrawingQuality), new Primitive("drawing.setfontjustify", 1, false, this::setFontJustify), new Primitive("drawing.setfontname", 1, false, this::setLabelFont), new Primitive("drawing.setfontsize", 1, false, this::setFontSize), new Primitive("drawing.setgridcolor", 1, false, this::setGridColor), new Primitive("drawing.setheading", 1, false, this::setHeading), new Primitive("drawing.setpencolor", 1, false, this::setPenColor), new Primitive("drawing.setpenshape", 1, false, this::setPenShape), new Primitive("drawing.setpenwidth", 1, false, this::setPenWidth), new Primitive("drawing.setposition", 1, false, this::setPos), new Primitive("drawing.setscreencolor", 1, false, this::setScreenColor), new Primitive("drawing.setscreensize", 1, false, this::setScreenSize), new Primitive("drawing.setshape", 1, false, this::setShape), new Primitive("drawing.setturtle", 1, false, this::setTurtle), new Primitive("drawing.setturtlesmax", 1, false, this::setTurtlesMax), new Primitive("drawing.setx", 1, false, this::setX), new Primitive("drawing.setxy", 2, false, this::setXY), new Primitive("drawing.sety", 1, false, this::setY), new Primitive("drawing.setzoom", 1, false, this::setZoom), new Primitive("drawing.shape", 0, false, this::getShape), new Primitive("drawing.showturtle", 0, false, this::showTurtle), new Primitive("drawing.stopanimation", 0, false, this::stopAnimation), new Primitive("drawing.stopaxis", 0, false, this::disableAxes), new Primitive("drawing.stopgrid", 0, false, this::disableGrid), new Primitive("drawing.towards", 1, false, this::towards), new Primitive("drawing.turtle", 0, false, this::getActiveTurtle), new Primitive("drawing.turtles", 0, false, this::getTurtles), new Primitive("drawing.turtlesmax", 0, false, this::getTurtlesMax), new Primitive("drawing.visible?", 0, false, this::isVisible), new Primitive("drawing.wash", 0, false, this::wash), new Primitive("drawing.window", 0, false, this::windowTurtle), new Primitive("drawing.wrap", 0, false, this::wrapTurtle), new Primitive("drawing.x", 0, false, this::getX), new Primitive("drawing.xaxis", 1, false, this::drawXAxis), new Primitive("drawing.xaxis?", 0, false, this::isXAxisEnabled), new Primitive("drawing.y", 0, false, this::getY), new Primitive("drawing.yaxis", 1, false, this::drawYAxis), new Primitive("drawing.yaxis?", 0, false, this::isYAxisEnabled), new Primitive("drawing.z", 0, false, this::getZ), new Primitive("drawing.zonesize", 0, false, this::getZoneSize), new Primitive("drawing.zoom", 0, false, this::getZoom), new Primitive("file.appendlineflow", 2, false, this::fileAppendLine), new Primitive("file.closeflow", 1, false, this::closeFile), new Primitive("file.directory", 0, false, this::getDirectory), new Primitive("file.endflow?", 1, false, this::isEndOfFile), new Primitive("file.files", 0, false, this::getFiles), new Primitive("file.listflow", 0, false, this::getOpenFiles), new Primitive("file.load", 1, false, this::load), new Primitive("file.openflow", 2, false, this::openFile), new Primitive("file.readcharflow", 1, false, this::fileReadChar), new Primitive("file.readlineflow", 1, false, this::fileReadLine), new Primitive("file.save", 2, false, this::save), new Primitive("file.saved", 1, false, this::saveAll), new Primitive("file.setdirectory", 1, false, this::setDirectory), new Primitive("file.writelineflow", 2, false, this::fileWriteLine), new Primitive("list.additem", 3, false, this::addItem), new Primitive("list.butfirst", 1, false, this::butFirst), new Primitive("list.butlast", 1, false, this::butLast), new Primitive("list.count", 1, false, this::count), new Primitive("list.first", 1, false, this::first), new Primitive("list.fput", 2, false, this::fput), new Primitive("list.item", 2, false, this::item), new Primitive("list.last", 1, false, this::last), new Primitive("list.list", 2, true, this::list), new Primitive("list.list?", 1, false, this::isList), new Primitive("list.lput", 2, false, this::lput), new Primitive("list.member", 2, false, this::isMember71), new Primitive("list.member?", 2, false, this::isMember69), new Primitive("list.pick", 1, false, this::pick), new Primitive("list.remove", 2, false, this::remove), new Primitive("list.replace", 3, false, this::replaceItem), new Primitive("list.reverse", 1, false, this::reverse), new Primitive("math.abs", 1, false, this::abs), new Primitive("math.acos", 1, false, this::acos), new Primitive("math.asin", 1, false, this::asin), new Primitive("math.atan", 1, false, this::atan), new Primitive("math.cos", 1, false, this::cos), new Primitive("math.difference", 2, false, this::difference), new Primitive("math.digits", 0, false, this::getSignificantDigits), new Primitive("math.div", 2, false, this::divide), new Primitive("math.exp", 1, false, this::exp), new Primitive("math.greater", 2, false, this::isGreaterThan), new Primitive("math.greaterequal", 2, false, this::isGreatherThanOrEqual), new Primitive("math.integer", 1, false, this::truncate), new Primitive("math.less", 2, false, this::isLessThan), new Primitive("math.lessequal", 2, false, this::isLessThanOrEqual), new Primitive("math.log", 1, false, this::log), new Primitive("math.log10", 1, false, this::log10), new Primitive("math.minus", 1, false, this::minus), new Primitive("math.mod", 2, false, this::mod), new Primitive("math.pi", 0, false, this::pi), new Primitive("math.power", 2, false, this::power), new Primitive("math.product", 2, true, this::product), new Primitive("math.quotient", 2, false, this::quotient), new Primitive("math.random", 1, false, this::random), new Primitive("math.randomfrac", 0, false, this::randomZeroToOne), new Primitive("math.remainder", 2, false, this::remainder), new Primitive("math.round", 1, false, this::round), new Primitive("math.setdigits", 1, false, this::setSignificantDigits), new Primitive("math.sin", 1, false, this::sin), new Primitive("math.sqrt", 1, false, this::sqrt), new Primitive("math.sum", 2, true, this::sum), new Primitive("math.tan", 1, false, this::tan), new Primitive("net.chattcp", 2, false, this::chatTcp), new Primitive("net.executetcp", 2, false, this::executeTcp), new Primitive("net.listentcp", 0, false, this::listenTcp), new Primitive("net.sendtcp", 2, false, this::sendTcp), new Primitive("sound.deletesequence", 0, false, this::deleteSequence), new Primitive("sound.indexsequence", 0, false, this::getSequenceIndex), new Primitive("sound.instrument", 0, false, this::getInstrument), new Primitive("sound.mp3play", 1, false, this::playMP3), new Primitive("sound.mp3stop", 0, false, this::stopMP3), new Primitive("sound.play", 0, false, this::play), new Primitive("sound.sequence", 1, false, this::sequence), new Primitive("sound.setindexsequence", 1, false, this::setSequenceIndex), new Primitive("sound.setinstrument", 1, false, this::setInstrument), new Primitive("time.countdown", 1, false, this::countdown), new Primitive("time.date", 0, false, this::getDate), new Primitive("time.endcountdown?", 0, false, this::isCountdownEnded), new Primitive("time.pasttime", 0, false, this::getTimePassed), new Primitive("time.time", 0, false, this::getTime), new Primitive("time.wait", 1, false, this::wait), new Primitive("ui.character", 1, false, this::getCharacter), new Primitive("ui.cleartext", 0, false, this::clearText), new Primitive("ui.guiaction", 2, false, this::guiAction), new Primitive("ui.guibutton", 2, false, this::guiButton), new Primitive("ui.guidraw", 1, false, this::guiDraw), new Primitive("ui.guimenu", 2, false, this::guiMenu), new Primitive("ui.guiposition", 2, false, this::guiPosition), new Primitive("ui.guiremove", 1, false, this::guiRemove), new Primitive("ui.key?", 0, false, this::isKey), new Primitive("ui.message", 1, false, this::message), new Primitive("ui.mouse?", 0, false, this::isMouseEvent), new Primitive("ui.mouseposition", 0, false, this::mousePosition), new Primitive("ui.print", 1, true, this::print), new Primitive("ui.read", 2, false, this::read), new Primitive("ui.readcharacter", 0, false, this::readChar), new Primitive("ui.readmouse", 0, false, this::mouseButton), new Primitive("ui.separation", 0, false, this::getSeparation), new Primitive("ui.setseparation", 1, false, this::setSeparation), new Primitive("ui.setstyle", 1, false, this::setTextStyle), new Primitive("ui.settextcolor", 1, false, this::setTextColor), new Primitive("ui.settextname", 1, false, this::setTextFont), new Primitive("ui.settextsize", 1, false, this::setTextSize), new Primitive("ui.style", 0, false, this::getTextStyle), new Primitive("ui.textcolor", 0, false, this::getTextColor), new Primitive("ui.textname", 0, false, this::getTextFont), new Primitive("ui.textsize", 0, false, this::getTextSize), new Primitive("ui.unicode", 1, false, this::getUnicode), new Primitive("ui.write", 1, false, this::write), new Primitive("workspace.contents", 0, false, this::getContents), new Primitive("workspace.define", 2, false, this::define), new Primitive("workspace.edit", 1, false, this::edit), new Primitive("workspace.editall", 0, false, this::editAll), new Primitive("workspace.eraseall", 0, false, this::eraseAll), new Primitive("workspace.eraseprocedure", 1, false, this::eraseProcedure), new Primitive("workspace.erasepropertylist", 1, false, this::erasePropertyList), new Primitive("workspace.erasevariable", 1, false, this::eraseVariable), new Primitive("workspace.externalcommand", 1, false, this::runExternalCommand), new Primitive("workspace.getproperty", 2, false, this::getProperty), new Primitive("workspace.globalmake", 2, false, this::globalMakeWrap), new Primitive("workspace.local", 1, false, this::localWrap), new Primitive("workspace.localmake", 2, false, this::localMake), new Primitive("workspace.primitives", 0, false, this::listPrimitives), new Primitive("workspace.procedures", 0, false, this::procedures), new Primitive("workspace.propertylist", 1, false, this::listProperties), new Primitive("workspace.propertylists", 0, false, this::getPropertyLists), new Primitive("workspace.putproperty", 3, false, this::setProperty), new Primitive("workspace.removeproperty", 2, false, this::removeProperty), new Primitive("workspace.run", 1, false, this::run), new Primitive("workspace.stoptrace", 0, false, this::stopTrace), new Primitive("workspace.text", 1, false, this::getProcedureBody), new Primitive("workspace.thing", 1, false, this::getVariableValue), new Primitive("workspace.trace", 0, false, this::trace), new Primitive("workspace.variables", 0, false, this::listVariables));
+
+    /**
+     * This methods returns a list that contains all Property Lists name
+     *
+     * @return A list with all Property Lists names
+     */
+    StringBuffer getAllpropertyLists() {
+        StringBuffer sb = new StringBuffer("[ ");
+        for (String s : workspace.getPropListKeys()) {
+            sb.append(s);
+            sb.append(" ");
+        }
+        sb.append("] ");
+        return sb;
+    }
+
+    /**
+     * Delete The variable called "name" from the workspace if it exists
+     *
+     * @param name The variable name
+     */
+    void deleteVariable(String name) {
+        if (!Interpreter.locals.isEmpty()) {
+            Interpreter.locals.remove(name);
+        } else {
+            workspace.deleteVariable(name);
+        }
+    }
+
+    /**
+     * Delete the procedure called "name" from the workspace
+     *
+     * @param name The procedure name
+     */
+    void deleteProcedure(String name) {
+        for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
+            Procedure procedure = workspace.getProcedure(i);
+            if (procedure.name.equals(name) && procedure.displayed) {
+                workspace.deleteProcedure(i);
+                break;
+            }
+        }
+    }
+
+    /**
+     * According to the type of the data, erase from workspace the resource called "name"
+     *
+     * @param name The name of the deleted resource, it couls be a list with all resource names
+     * @param type The type for the data, it could be "variable", "procedure" or "propertylist"
+     */
+    void erase(String name, String type) {
+        Interpreter.returnValue = false;
+        try {
+            if (isList(name)) {
+                name = getFinalList(name);
+                StringTokenizer st = new StringTokenizer(name);
+                while (st.hasMoreTokens()) {
+                    String item = st.nextToken();
+                    this.eraseItem(item, type);
+                }
+            } else {
+                name = getWord(name);
+                if (null != name) {
+                    this.eraseItem(name, type);
+                } else throw new LogoException(app, Logo.messages.getString("error.word"));
+
+            }
+        } catch (LogoException ignored) {
+        }
+    }
+
+    /**
+     * According to the type of the data, erase from workspace the resource called "name"
+     *
+     * @param name The name of the deleted resource
+     * @param type The type for the data, it could be "variable", "procedure" or "propertylist"
+     */
+    void eraseItem(String name, String type) {
+        if (type.equals("procedure")) {
+            this.deleteProcedure(name);
+        } else if (type.equals("variable")) {
+            this.deleteVariable(name);
+        } else if (type.equals("propertylist")) {
+            workspace.removePropList(name);
+        }
+
+    }
+
+    String execute(StringBuffer instructions) throws LogoException {
+        if (!instructions.toString().equals("")) {
+            instructionBuffer.insertCode(instructions);
+        }
+        while (instructionBuffer.getLength() != 0) {
+            if (app.error && LogoException.lance) throw new LogoException(app, Logo.messages.getString("stop"));
+            while (app.animation.isOnPause()) { // If we touch the scrollbars
+                try {
+                    wait();
+                } catch (Exception ignored) {
+                }
+            }
+            // Is this line really required?
+            if (instructionBuffer.getLength() == 0) break;
+            String element = instructionBuffer.getNextWord();
+            String lower = element.toLowerCase();
+            AbstractProcedure proc;
+            if (primitiveMap.containsKey(lower)) proc = primitiveMap.get(lower);
+            else proc = workspace.getProcedure(lower);
+            if (proc != null) {
+                // if it is a primitive or a procedure
+                Stack<String> param = new Stack<>();
+                if (isOperator(lower)) {
+                    // If it is an infix operator
+                    deleteLineNumber();
+                    returnValue = false;
+                    if (operands.isEmpty()) {
+                        // If the + or the - represents the negative or positive sign
+                        if (!isPlusMinus(element))
+                            throw new LogoException(app, element + " " + Logo.messages.getString("error.ne_peut_etre")); // of a name
+                        if (consumers.isEmpty()) param.push("0");
+                        else {
+                            String st = consumers.peek();
+                            if (!isOperator(st)) param.push("0");
+                            else if (isTimesDiv(element)) { // If the - or + sign follows an or
+                                instructionBuffer.deleteFirstWord(element);
+                                if (st.equals("*")) instructionBuffer.insert("* ");
+                                else instructionBuffer.insert("/ ");
+                                if (element.equals("+")) return ("1"); // If that's a plus
+                                else return ("-1"); // If it's a minus
+                            } else param.push("0");
+                        }
+                    } else if (consumers.isEmpty()) {
+                        param.push(operands.pop());
+                    } else {
+                        String st = consumers.peek();
+                        if (isOperator(st)) {
+                            if (relativePriority(st, element)) {
+                                param.push(operands.pop());
+                            } else return (operands.pop());
+                        } else param.push(operands.pop());
+                    }
+                } else if (returnValue && !element.equals(")")) {
+                    checkParenthesis();
+                    returnValue = false;
+                    break;
+                } // If it is not the end parenthesis operator, we exit
+
+                /*Example:
+                 * To test  |	Formatted Form:
+                 * fd 5 	| 	fd 5 \l1 rt \l2
+                 * rt 		| --> The \l2 can't be removed before be
+                 * end		|		sure the rt has noproblem
+                 * */
+                if (!element.equals("\n")) deleteLineNumber();
+                instructionBuffer.deleteFirstWord(element);
+
+                // Case with parenthensis
+                // eg (sum 3 4 5)
+                // eg (myProcedure 2 3 4 5)
+                if (openParen) {
+                    openParen = false;
+                    int constantNumber = -1;
+                    if (!proc.isGeneral()) constantNumber = proc.getArity();
+                    // Looking for all arguments (Number undefined)
+                    consumers.push(element);
+                    int j = 0;
+                    while (true) {
+                        /* This line fixed the bug for primitive or procedure without arguments
+                         * eg: pr (pi+2)
+                         */
+                        if (constantNumber == 0) break;
+                        returnValue = openParen = false;
+                        if (instructionBuffer.getNextWord().equals(")")) {
+                            if (constantNumber != -1) {
+                                // If the primitive or the procedure doesn't
+                                // accept optional parameters
+                                if (j > constantNumber) {
+                                    throw new LogoException(app, Logo.messages.getString("too_much_arguments"));
+                                } else if (j < constantNumber)
+                                    throw new LogoException(app, Logo.messages.getString("pas_assez_de") + " " + consumers.peek());
+                            }
+                            break;
+                        }
+                        String a = execute(new StringBuffer());
+
+                        param.push(a);
+                        j++;
+                    }
+                    // If It's a procedure
+                    if (proc instanceof Procedure) {
+                        var userproc = (Procedure) proc;
+                        if (j > userproc.arity + userproc.optVariables.size())
+                            throw new LogoException(app, Logo.messages.getString("too_much_arguments"));
+                        else if (j < userproc.arity)
+                            throw new LogoException(app, Logo.messages.getString("pas_assez_de") + " " + consumers.peek());
+                        // Searching for optional arguments that are not defined
+                        if (j < userproc.optVariables.size() + userproc.arity) {
+                            j = j - userproc.arity;
+                            for (int c = j; c < userproc.optVariables.size(); c++) {
+                                returnValue = openParen = false;
+                                String a = execute(userproc.formattedOptVariables.get(c));
+                                param.push(a);
+                            }
+                        }
+                    }
+                } else {
+                    // classic case: predefined number of arguments
+                    openParen = false;
+                    // How many arguments for the procedure or the primitive
+                    int nbparametre = proc.getArity();
+                    // Looking for each arguments
+                    int j = 0;
+                    consumers.push(element);
+                    while (j < nbparametre) {
+                        returnValue = openParen = false;
+
+                        String a = execute(new StringBuffer());
+                        param.push(a);
+                        j++;
+                    }
+                    // Looking for Optional arguments in case of procedure
+                    if (proc instanceof Procedure) {
+                        var userproc = (Procedure) proc;
+                        nbparametre = userproc.optVariables.size();
+                        for (j = 0; j < nbparametre; j++) {
+                            returnValue = openParen = false;
+                            String a = execute(userproc.formattedOptVariables.get(j));
+                            param.push(a);
+                        }
+                    }
+                }
+                consumers.pop();
+                if (!app.error) proc.execute(param);
+                if (app.error) break;
+                if (closeParen && !operands.empty()) {
+                    closeParen = false;
+                    returnValue = false;
+                    return operands.pop();
+                }
+                // Test if the procedure returns something when
+                // expected in the case of exec primitives or if
+                if (!returnValue) {
+                    if (evalReturnValue) {
+                        evalReturnValue = false;
+                    } else {
+                        if (!consumers.isEmpty() && !app.error && !consumers.peek().equals("\n")) {
+                            if (!element.equals("\n")) {
+                                // If it's the end of a loop
+                                // repeat 2 [fd 90 rt]
+                                if (element.equals("\\")) {
+                                    // The loop had been executed, we have to remove
+                                    // the loop instruction
+                                    int offset = instructionBuffer.indexOf(" \\ ");
+                                    instructionBuffer.delete(0, offset + 1);
+                                    throw new LogoException(app, Logo.messages.getString("pas_assez_de") + " " + consumers.peek());
+                                }
+                                // (av 100) ---> OK
+                                // av av 20 ----> Bad
+                                if (!consumers.peek().equals("("))
+                                    throw new LogoException(app, element + " " + Logo.messages.getString("ne_renvoie_pas") + " " + consumers.peek());
+                            }
+                        }
+                    }
+                } else {
+                    // The primitive returns a word or a list.
+                    // There's no primitive or procedure waiting for it.
+                    if (!consumers.isEmpty() && consumers.peek().equals("\n"))
+                        throw new LogoException(app, Logo.messages.getString("error.whattodo") + " " + operands.peek() + " ?");
+                }
+            } else if (element.charAt(0) == ':' && element.length() > 1) {
+                // If element is a variable
+                if (returnValue) {
+                    checkParenthesis();
+                    returnValue = false;
+                    break;
+                } else deleteLineNumber();
+                String value;
+                String variableName = lower.substring(1);
+                // If the variable isn't local
+                if (!locals.containsKey(variableName)) {
+                    // check it's a global variable
+                    if (!workspace.globals.containsKey(variableName))
+                        throw new LogoException(app, variableName + " " + Logo.messages.getString("error.novalue"));
+                    else value = workspace.globals.get(variableName);
+                }
+                // If the variable is local
+                else {
+                    value = locals.get(variableName);
+                }
+                if (null == value)
+                    throw new LogoException(app, variableName + "  " + Logo.messages.getString("error.novalue"));
+                operands.push(value);
+                returnValue = true;
+                openParen = false;
+                instructionBuffer.deleteFirstWord(element);
+            } else {
+                // If element is a number
+                try {
+                    Double.parseDouble(element);
+                    boolean deleteEndZero = false;
+                    if (element.endsWith(".0")) {
+                        deleteEndZero = true;
+                        element = element.substring(0, element.length() - 2);
+                    }
+                    operands.push(element);
+                    if (returnValue) {
+                        checkParenthesis();
+                        operands.pop();
+                        returnValue = false;
+                        break;
+                    } else deleteLineNumber();
+                    returnValue = true;
+                    openParen = false;
+                    if (deleteEndZero) instructionBuffer.deleteFirstWord(element + ".0");
+                    else instructionBuffer.deleteFirstWord(element);
+                } catch (NumberFormatException e) {
+                    if (element.equals("[")) {
+                        if (returnValue) {
+                            checkParenthesis();
+                            break;
+                        } else deleteLineNumber();
+                        returnValue = true;
+                        openParen = false;
+                        instructionBuffer.deleteFirstWord(element);
+                        String a = searchList();
+                        operands.push(a);
+                    } else if (element.equals("(")) {
+                        if (returnValue) {
+                            checkParenthesis();
+                            break;
+                        } else deleteLineNumber();
+                        openParen = true;
+                        Interpreter.procedures.push("(");
+                        int pos = searchParentheses();
+                        if (pos == -1) {
+                            try {
+                                throw new LogoException(app, Logo.messages.getString("parenthese_fermante"));
+                            } catch (LogoException ignored) {
+                            }
+                        }
+                        instructionBuffer.deleteFirstWord(element);
+                        Interpreter.consumers.push("(");
+                    } else if (element.charAt(0) == '"') {
+                        // If the element is a word
+                        try {
+                            String el = element.substring(1);
+                            Double.parseDouble(el);
+                            operands.push(el);
+                        } catch (NumberFormatException e1) {
+                            operands.push(element);
+                        }
+                        if (returnValue) {
+                            checkParenthesis();
+                            operands.pop();
+                            returnValue = false;
+                            break;
+                        } else deleteLineNumber();
+                        returnValue = true;
+                        openParen = false;
+                        instructionBuffer.deleteFirstWord(element);
+                    } else if (lower.equals(Logo.messages.getString("pour"))) {
+                        // If that's the word for
+                        instructionBuffer.deleteFirstWord(element);
+                        if (instructionBuffer.getLength() != 0) {
+                            element = instructionBuffer.getNextWord();
+                            lower = element.toLowerCase();
+                        } else
+                            throw new LogoException(app, Logo.messages.getString("pas_assez_de") + " " + "\"" + Logo.messages.getString("pour") + "\"");
+                        StringBuilder definition = new StringBuilder(Logo.messages.getString("pour") + " " + element + " ");
+                        instructionBuffer.deleteFirstWord(element);
+                        while (instructionBuffer.getLength() != 0) {
+                            element = instructionBuffer.getNextWord().toLowerCase();
+                            if (element.charAt(0) != ':' || element.length() == 1)
+                                throw new LogoException(app, element + " " + Logo.messages.getString("pas_argument"));
+                            definition.append(element).append(" ");
+                            instructionBuffer.deleteFirstWord(element);
+                        }
+                        if (app.editor.isVisible())
+                            throw new LogoException(app, Logo.messages.getString("ferme_editeur"));
+                        else {
+                            app.editor.setVisible(true);
+                            app.editor.appendText(definition + "\n\n" + Logo.messages.getString("fin"));
+                        }
+                    } else if (element.startsWith("\\l")) {
+                        if (returnValue) {
+                            break;
+                        }
+                        instructionBuffer.deleteFirstWord(element);
+                        lineNumber = element + " ";
+                        element = instructionBuffer.getNextWord();
+
+                    } else {
+                        deleteLineNumber();
+                        throw new LogoException(app, Logo.messages.getString("je_ne_sais_pas") + " " + element);
+                    }
+                }
+            }
+        }
+        // END OF THE MAIN LOOP
+        // If there's nothing to return.
+        if (operands.isEmpty()) {
+            if (!consumers.isEmpty()) {// &&!nom.peek().equals("\n")) {
+                while ((!consumers.isEmpty()) && consumers.peek().equals("\n")) consumers.pop();
+                if (!consumers.isEmpty()) {
+                    throw new LogoException(app, Logo.messages.getString("pas_assez_de") + " " + consumers.peek());
+                }
+            }
+        }
+        // Otherwise, we return the value contained in the calculation stack.
+        if (!operands.isEmpty()) {
+            // If there is a procedure to launch
+            // Ex: pour t -- 6 -- fin . Puis, av t.
+            if ((!consumers.isEmpty()) && consumers.peek().equals("\n")) {
+                String up;
+                int id = 0;
+                while (!consumers.isEmpty() && consumers.peek().equals("\n")) {
+                    consumers.pop();
+                    id++;
+                }
+                if (!consumers.isEmpty()) {
+                    up = consumers.peek();
+                    try {
+                        throw new LogoException(app, procedures.get(procedures.size() - id) + " " + Logo.messages.getString("ne_renvoie_pas") + " " + up);
+                    } catch (LogoException ignored) {
+                    }
+                } else {
+                    try {
+                        throw new LogoException(app, Logo.messages.getString("error.whattodo") + " " + operands.peek() + " ?");
+                    } catch (LogoException ignored) {
+                    }
+                }
+            } else {
+                returnValue = false;
+                return (operands.pop());
+            }
+        }
+        return ("");
+    }
+
+    private int searchParentheses() { // position where the next parenthesis stops
+        boolean cont = true;
+        int open;
+        int close = 0;
+        int nextOpen = 1;
+        int nextClose = 1;
+        while (cont) {
+            open = instructionBuffer.indexOf("(", nextOpen);
+            close = instructionBuffer.indexOf(")", nextClose);
+            if (close == -1) break;
+            if (open != -1 && open < close) {
+                nextOpen = open + 1;
+                nextClose = close + 1;
+            } else cont = false;
+        }
+        return close;
+    }
+
+    protected String searchList() throws LogoException {
+        StringBuilder list = new StringBuilder("[ ");
+        String element;
+        while (instructionBuffer.getLength() != 0) {
+            element = instructionBuffer.getNextWord();
+            // If opening square bracket, it is pushed into the calculation stack
+            if (element.equals("[")) {
+                operands.push("[");
+                instructionBuffer.deleteFirstWord(element);
+                list.append("[ ");
+            } else if (element.equals("]")) { // If we reach a closing bracket
+                instructionBuffer.deleteFirstWord(element);
+                list.append("] ");
+                if (operands.empty()) {
+                    return (list.toString());
+                } // 1er cas: rien dans la pile de calcul, on renvoie la liste
+                else if (!operands.peek().equals("[")) {
+                    return (list.toString());
+                } // 2nd case: no opening bracket at the top of the stack, same
+                else operands.pop(); // 3rd case: a bracket opening at the top of the stack, it is removed
+            } else {
+                instructionBuffer.deleteFirstWord(element);
+                list.append(element).append(" ");
+            }
+        }
+        throw new LogoException(app, Logo.messages.getString("erreur_crochet"));
+    }
+
+    /**
+     * This method compares the two operators first and second.<br>
+     *
+     * @param first  The first operator
+     * @param second The second operator
+     * @return true if first has a lower priority than second.
+     */
+    private boolean relativePriority(String first, String second) {
+        if (isTimesDiv(second) && !isTimesDiv(first)) return (true);
+        else if (isPlusMinus(second) && isLogicOperator(first)) return (true);
+        else return ">=<=".contains(second) && "|&".contains(first);
+    }
+
+    protected void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
+    private void checkParenthesis() throws LogoException {
+        if (!consumers.isEmpty()) {
+            String name = consumers.peek();
+            if (name.equals("(")) {
+                throw new LogoException(app, Logo.messages.getString("too_much_arguments"));
+
+            }
+        }
+    }
+
+    private void deleteLineNumber() {
+        lineNumber = "";
+    }
+
+    /**
+     * This method returns a list which contains all the primitive for the current language
      *
      * @return The primitives list
      */
@@ -459,7 +709,7 @@ public class Interpreter {
         for (var prim : primitives) {
             // Exclude internal primitives \n \\x and \\siwhile
             // Exclude all arithmetic symbols + - / * & |
-            if (!Interpreter.isInfixedOperator(prim.key) || !Interpreter.isSpecialPrim(prim.key)) {
+            if (!Interpreter.isOperator(prim.key) || !Interpreter.isSpecialPrim(prim.key)) {
                 list.add(names.getString(prim.key).trim());
             }
         }
@@ -474,7 +724,7 @@ public class Interpreter {
         return (sb.toString());
     }
 
-    //Exécution des primitives
+    // Execution of primitives
     public void buildPrimitiveTreemap() {
         primitiveMap = new TreeMap<>();
         Locale locale = Logo.getLocale(Logo.config.getLanguage());
@@ -482,15 +732,14 @@ public class Interpreter {
         for (var prim : primitives) {
             // read the standard number of arguments for the primitive
             String name = prim.key;
-            if (!Interpreter.isInfixedOperator(name) && !Interpreter.isSpecialPrim(name)) {
+            if (!Interpreter.isOperator(name) && !Interpreter.isSpecialPrim(name)) {
                 name = names.getString(name);
             }
             if (name.equals("\n")) {
                 primitiveMap.put(name, prim);
             } else {
                 StringTokenizer st = new StringTokenizer(name.toLowerCase());
-                while (st.hasMoreTokens())
-                    primitiveMap.put(st.nextToken(), prim);
+                while (st.hasMoreTokens()) primitiveMap.put(st.nextToken(), prim);
             }
         }
     }
@@ -501,39 +750,22 @@ public class Interpreter {
      * @param i  The number of iteration
      * @param st The instruction to execute
      */
-    protected void repete(int i, String st) {
+    protected void repeat(int i, String st) {
         if (i > 0) {
             st = new String(Utils.formatCode(st));
-            LoopProperties bp = new LoopRepeat(BigDecimal.ONE, new BigDecimal(i), BigDecimal.ONE, st);
-            stackLoop.push(bp);
+            Loop bp = new LoopRepeat(BigDecimal.ONE, new BigDecimal(i), BigDecimal.ONE, st);
+            loops.push(bp);
             app.getKernel().getInstructionBuffer().insert(st + "\\ ");
         } else if (i != 0) {
             try {
                 throw new LogoException(app, Utils.primitiveName("control.repeat") + " " + Logo.messages.getString("attend_positif"));
-            } catch (LogoException e) {
-            }
-        }
-    }
-
-    /**
-     * This method is an internal primitive for the primitive "while"
-     *
-     * @param b  Do we still execute the loop body?
-     * @param li The loop body instructions
-     */
-    void whilesi(boolean b, String li) {
-        if (b) {
-            app.getKernel().getInstructionBuffer().insert(li + stackLoop.peek().getInstr());
-        } else {
-            try {
-                eraseLevelStop();
-            } catch (LogoException e) {
+            } catch (LogoException ignored) {
             }
         }
     }
 
     // primitive if
-    void si(boolean b, String li, String li2) {
+    void ifThen(boolean b, String li, String li2) {
         if (b) {
             app.getKernel().getInstructionBuffer().insert(li);
         } else if (null != li2) {
@@ -543,61 +775,61 @@ public class Interpreter {
 
     // primitive stop
     void stop() throws LogoException {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         String car = "";
         try {
             car = eraseLevelStop();
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
 
         // A procedure has been stopped
         if (car.equals("\n")) {
-            String en_cours = Interpreter.en_cours.pop();
-            Interpreter.locale = Interpreter.stockvariable.pop();
+            String en_cours = Interpreter.procedures.pop();
+            Interpreter.locals = Interpreter.scopes.pop();
             // Example: 	to bug
             //				fd stop
             //				end
             // 				--------
             //				bug
             //				stop doesn't output to fd
-            if (!Interpreter.nom.isEmpty() && !Interpreter.nom.peek().equals("\n")) {
+            if (!Interpreter.consumers.isEmpty() && !Interpreter.consumers.peek().equals("\n")) {
                 //	System.out.println(Interpreter.nom);
-                throw new LogoException(app, Utils.primitiveName("control.stop") + " " + Logo.messages.getString("ne_renvoie_pas") + " " + Interpreter.nom.peek());
-            } else if (!Interpreter.nom.isEmpty()) {
+                throw new LogoException(app, Utils.primitiveName("control.stop") + " " + Logo.messages.getString("ne_renvoie_pas") + " " + Interpreter.consumers.peek());
+            } else if (!Interpreter.consumers.isEmpty()) {
                 // Removing the character "\n"
-                Interpreter.nom.pop();
+                Interpreter.consumers.pop();
                 // Example: 	to bug		|	to bug2
                 // 				fd bug2		|	stop
                 //				end			|	end
                 //				------------------------
                 // 				bug
                 //				bug2 doesn't output to fd
-                if (!Interpreter.nom.isEmpty() && !Interpreter.nom.peek().equals("\n")) {
+                if (!Interpreter.consumers.isEmpty() && !Interpreter.consumers.peek().equals("\n")) {
                     //	System.out.println(Interpreter.nom);
-                    throw new LogoException(app, en_cours + " " + Logo.messages.getString("ne_renvoie_pas") + " " + Interpreter.nom.peek());
+                    throw new LogoException(app, en_cours + " " + Logo.messages.getString("ne_renvoie_pas") + " " + Interpreter.consumers.peek());
                 }
             }
         }
     }
 
     // primitive output
-    void retourne(String val) throws LogoException {
-        Interpreter.calcul.push(val);
-        Interpreter.operande = true;
-        if (Kernel.mode_trace) {
-            String buffer = "  ".repeat(Math.max(0, Interpreter.en_cours.size() - 1)) + Interpreter.en_cours.peek() + " " + Utils.primitiveName("control.output") + " " + val;
+    void output(String val) throws LogoException {
+        Interpreter.operands.push(val);
+        Interpreter.returnValue = true;
+        if (Kernel.traceMode) {
+            String buffer = "  ".repeat(Math.max(0, Interpreter.procedures.size() - 1)) + Interpreter.procedures.peek() + " " + Utils.primitiveName("control.output") + " " + val;
             app.updateHistory("normal", Utils.unescapeString(buffer) + "\n");
         }
-        Interpreter.en_cours.pop();
-        Interpreter.locale = Interpreter.stockvariable.pop();
-        if ((!Interpreter.nom.isEmpty()) && Interpreter.nom.peek().equals("\n")) {
+        Interpreter.procedures.pop();
+        Interpreter.locals = Interpreter.scopes.pop();
+        if ((!Interpreter.consumers.isEmpty()) && Interpreter.consumers.peek().equals("\n")) {
             try {
                 eraseLevelReturn();
-            } catch (LogoException e) {
+            } catch (LogoException ignored) {
             }
-            Interpreter.nom.pop();
-        } else if (!Interpreter.nom.isEmpty())
-            throw new LogoException(app, Utils.primitiveName("control.output") + " " + Logo.messages.getString("ne_renvoie_pas") + " " + Interpreter.nom.peek());
+            Interpreter.consumers.pop();
+        } else if (!Interpreter.consumers.isEmpty())
+            throw new LogoException(app, Utils.primitiveName("control.output") + " " + Logo.messages.getString("ne_renvoie_pas") + " " + Interpreter.consumers.peek());
         else throw new LogoException(app, Logo.messages.getString("erreur_retourne"));
     }
 
@@ -635,7 +867,7 @@ public class Interpreter {
         }
         if (marqueur + 2 <= instruction.getLength()) instruction.delete(0, marqueur + 2);
         if (!caractere.equals("\n")) {
-            stackLoop.pop();
+            loops.pop();
         }
         return (caractere);
     }
@@ -670,8 +902,13 @@ public class Interpreter {
         }
         if (marqueur + 2 <= instruction.getLength()) instruction.delete(0, marqueur + 2);
         for (int i = 0; i < loopLevel; i++) {
-            stackLoop.pop();
+            loops.pop();
         }
+    }
+
+    void getFontJustify(Stack<String> param) {
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(kernel.getActiveTurtle().getFontJustify());
     }
 
     void exportPrimCSV() {
@@ -760,13 +997,8 @@ public class Interpreter {
         }
     }
 
-    void getFontJustify(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(kernel.getActiveTurtle().getFontJustify());
-    }
-
     void setFontJustify(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             String li1 = getFinalList(param.get(0));
             kernel.getActiveTurtle().setFontJustify(li1);
@@ -776,10 +1008,10 @@ public class Interpreter {
     }
 
     void mod(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().modulo(param.get(0), param.get(1)));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().modulo(param.get(0), param.get(1)));
+        } catch (LogoException ignored) {
         }
     }
 
@@ -791,9 +1023,9 @@ public class Interpreter {
             li2 = new String(Utils.formatCode(li2));
             String instr = "\\siwhile " + li2 + "[ " + li1 + "] ";
             LoopWhile bp = new LoopWhile(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, instr);
-            stackLoop.push(bp);
+            loops.push(bp);
             app.getKernel().getInstructionBuffer().insert(li1 + instr + Interpreter.END_LOOP + " ");
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -805,80 +1037,77 @@ public class Interpreter {
             li2 = new String(Utils.formatCode(li2));
             String instr = "\\siwhile " + Utils.primitiveName("control.not") + " " + li2 + "[ " + li1 + "] ";
             LoopWhile bp = new LoopWhile(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, instr);
-            stackLoop.push(bp);
+            loops.push(bp);
             app.getKernel().getInstructionBuffer().insert(instr + Interpreter.END_LOOP + " ");
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void randomZeroToOne(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(Calculator.teste_fin_double(Math.random()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(Calculator.teste_fin_double(Math.random()));
     }
 
     void fillPolygon(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             String list = getFinalList(param.get(0));
             LoopFillPolygon bp = new LoopFillPolygon();
-            stackLoop.push(bp);
+            loops.push(bp);
             app.getKernel().getInstructionBuffer().insert(Utils.formatCode(list) + Interpreter.END_LOOP + " ");
             app.getDrawPanel().startRecord2DPolygon();
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getZ(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
             primitive3D("drawing.z");
-            Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().Z));
-        } catch (LogoException e) {
+            Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().Z));
+        } catch (LogoException ignored) {
         }
     }
 
     void getY(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().getY()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().getY()));
     }
 
     void getX(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().getX()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().getX()));
     }
 
     void getZoom(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(Calculator.teste_fin_double(DrawPanel.zoom));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(Calculator.teste_fin_double(DrawPanel.zoom));
     }
 
     void stopMP3(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         if (null != kernel.getMp3Player()) kernel.getMp3Player().getPlayer().close();
     }
 
     void playMP3(Stack<String> param) {
         String mot;
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         if (kernel.getMp3Player() != null) kernel.getMp3Player().getPlayer().close();
         mot = getWord(param.get(0));
         try {
-            if (null == mot) throw new LogoException(app, mot + " "
-                    + Logo.messages.getString("error.word"));
+            if (null == mot) throw new LogoException(app, Logo.messages.getString("error.word"));
             MP3Player player = new MP3Player(app, mot);
             kernel.setMp3Player(player);
             kernel.getMp3Player().start();
-        } catch (LogoException z) {
+        } catch (LogoException ignored) {
         }
     }
 
     void saveImage(Stack<String> param) {
         try {
             String word = getWord(param.get(0));
-            if (null == word)
-                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
-            if (word.equals(""))
-                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("mot_vide"));
+            if (null == word) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            if (word.equals("")) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("mot_vide"));
             // xmin, ymin, width, height
             int[] coord = new int[4];
             String list = getFinalList(param.get(1));
@@ -925,13 +1154,13 @@ public class Interpreter {
                 coord[3] = Logo.config.getImageHeight();
             }
             app.getDrawPanel().saveImage(word, coord);
-            Interpreter.operande = false;
-        } catch (LogoException e) {
+            Interpreter.returnValue = false;
+        } catch (LogoException ignored) {
         }
     }
 
     void runExternalCommand(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             String list = getFinalList(param.get(0));
             int index = numberOfElements(list);
@@ -952,56 +1181,54 @@ public class Interpreter {
     }
 
     void getProcedureBody(Stack<String> param) {
-        StringBuffer sb;
+        StringBuilder sb;
         try {
             String var = getWord(param.get(0));
-            if (null == var)
-                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            if (null == var) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             int index = -1;
-            for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-                if (wp.getProcedure(i).name.equals(var)) {
+            for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
+                if (workspace.getProcedure(i).name.equals(var)) {
                     index = i;
                     break;
                 }
             }
             if (index != -1) {
-                Procedure proc = wp.getProcedure(index);
-                sb = new StringBuffer();
+                Procedure proc = workspace.getProcedure(index);
+                sb = new StringBuilder();
                 sb.append("[ [ ");
                 // Append variable names
-                for (int j = 0; j < proc.nbparametre; j++) {
-                    sb.append(proc.variable.get(j));
+                for (int j = 0; j < proc.arity; j++) {
+                    sb.append(proc.variables.get(j));
                     sb.append(" ");
                 }
                 for (int j = 0; j < proc.optVariables.size(); j++) {
                     sb.append("[ ");
                     sb.append(proc.optVariables.get(j));
                     sb.append(" ");
-                    sb.append(proc.optVariablesExp.get(j).toString());
+                    sb.append(proc.formattedOptVariables.get(j).toString());
                     sb.append(" ] ");
                 }
                 sb.append("] ");
                 // Append body procedure
                 sb.append(proc.cutInList());
                 sb.append("] ");
-                Interpreter.operande = true;
-                Interpreter.calcul.push(sb.toString());
-            } else
-                throw new LogoException(app, var + " " + Logo.messages.getString("error.procedure.must.be"));
-        } catch (LogoException e) {
+                Interpreter.returnValue = true;
+                Interpreter.operands.push(sb.toString());
+            } else throw new LogoException(app, var + " " + Logo.messages.getString("error.procedure.must.be"));
+        } catch (LogoException ignored) {
         }
     }
 
     void getSignificantDigits(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(String.valueOf(kernel.getCalculator().getDigits()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(String.valueOf(kernel.getCalculator().getDigits()));
     }
 
     void setSignificantDigits(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             kernel.initCalculator(kernel.getCalculator().getInteger(param.get(0)));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1009,11 +1236,10 @@ public class Interpreter {
         try {
             String li2 = getList(param.get(0));
             li2 = new String(Utils.formatCode(li2));
-            LoopProperties bp = new LoopProperties(BigDecimal.ONE, BigDecimal.ZERO
-                    , BigDecimal.ONE, li2);
+            Loop bp = new Loop(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, li2);
             app.getKernel().getInstructionBuffer().insert(li2 + Interpreter.END_LOOP + " ");
-            stackLoop.push(bp);
-        } catch (LogoException e) {
+            loops.push(bp);
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1022,14 +1248,13 @@ public class Interpreter {
             // Variable name
             String var = getWord(param.get(0));
             // If it isn't a word
-            if (null == var) throw new LogoException(app, param.get(0) + " " +
-                    Logo.messages.getString("error.word"));
+            if (null == var) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
                 // If it's a number
             else {
                 try {
                     Double.parseDouble(var);
                     throw new LogoException(app, Logo.messages.getString("erreur_nom_nombre_variable"));
-                } catch (NumberFormatException e1) {
+                } catch (NumberFormatException ignored) {
                 }
             }
             String li2 = getList(param.get(2));
@@ -1040,9 +1265,9 @@ public class Interpreter {
                 list = true;
                 li1 = getFinalList(param.get(1));
             }
-            Vector<String> elements = new Vector<String>();
+            Vector<String> elements = new Vector<>();
             while (!li1.equals("")) {
-                String character = "";
+                String character;
                 // If it's a list
                 if (list) {
                     character = this.item(li1, 1);
@@ -1073,18 +1298,13 @@ public class Interpreter {
                 elements.add(character);
             }
             if (elements.size() > 0) {
-                LoopForEach bp = new LoopForEach(BigDecimal.ZERO, new BigDecimal(elements.size() - 1)
-                        , BigDecimal.ONE, li2, var.toLowerCase(), elements);
+                LoopForEach bp = new LoopForEach(BigDecimal.ZERO, new BigDecimal(elements.size() - 1), BigDecimal.ONE, li2, var.toLowerCase(), elements);
                 bp.AffecteVar(true);
                 app.getKernel().getInstructionBuffer().insert(li2 + Interpreter.END_LOOP + " ");
-                stackLoop.push(bp);
+                loops.push(bp);
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
-    }
-
-    void editAll(Stack<String> param) {
-        app.editor.open();
     }
 
     void edit(Stack<String> param) {
@@ -1094,12 +1314,11 @@ public class Interpreter {
             if (null == mot) mot = this.getFinalList(param.get(0));
             StringTokenizer st = new StringTokenizer(mot);
             // Write all procedures names in a Vector
-            Vector<String> names = new Vector<String>();
+            Vector<String> names = new Vector<>();
             while (st.hasMoreTokens()) {
                 names.add(st.nextToken());
             }
-            app.editor.setTitle(Logo.messages
-                    .getString("editeur"));
+            app.editor.setTitle(Logo.messages.getString("editeur"));
 
             app.editor.setMainCommand();
             app.editor.setTitle(Logo.messages.getString("editeur"));
@@ -1108,72 +1327,84 @@ public class Interpreter {
             app.editor.toFront();
             app.editor.requestFocus();
 
-            for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-                Procedure procedure = wp.getProcedure(i);
+            for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
+                Procedure procedure = workspace.getProcedure(i);
 //							System.out.println(procedure.toString().length());
-                if (names.contains(procedure.name) && procedure.affichable) {
+                if (names.contains(procedure.name) && procedure.displayed) {
                     app.editor.appendText(procedure.toString());
                 }
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
-    void ifElse(Stack<String> param) {
+    void editAll(Stack<String> param) {
+        app.editor.open();
+    }
+
+    void ifThenElse(Stack<String> param) {
         String liste;
         try {
             liste = getList(param.get(1));
             liste = new String(Utils.formatCode(liste));
-            boolean predicat = predicat(param.get(0));
+            boolean predicat = getBoolean(param.get(0));
             String liste2 = getList(param.get(2));
             liste = new String(Utils.formatCode(liste));
-            si(predicat, liste, liste2);
-            Interpreter.renvoi_instruction = true;
-        } catch (LogoException e) {
+            ifThen(predicat, liste, liste2);
+            Interpreter.evalReturnValue = true;
+        } catch (LogoException ignored) {
         }
     }
 
     void log(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().log(param.get(0)));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().log(param.get(0)));
+        } catch (LogoException ignored) {
         }
     }
 
     void exp(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().exp(param.get(0)));
+            Interpreter.operands.push(kernel.getCalculator().exp(param.get(0)));
 
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void erasePropertyList(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         this.erase(param.get(0), "propertylist");
     }
 
     void getContents(Stack<String> param) {
-        StringBuffer sb;
-        Interpreter.operande = true;
-        sb = new StringBuffer("[ ");
+        StringBuilder sb;
+        Interpreter.returnValue = true;
+        sb = new StringBuilder("[ ");
         sb.append(this.getAllProcedures());
         sb.append(this.getAllVariables());
         sb.append(this.getAllpropertyLists());
         sb.append("] ");
-        Interpreter.calcul.push(new String(sb));
+        Interpreter.operands.push(new String(sb));
     }
 
     void getPropertyLists(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(new String(getAllpropertyLists()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(new String(getAllpropertyLists()));
     }
 
     void listPrimitives(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(getAllPrimitives());
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(getAllPrimitives());
+    }
+
+    void endPoint(Stack<String> param) {
+        DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
+        try {
+            DrawPanel.poly.addToScene();
+        } catch (LogoException ignored) {
+        }
     }
 
     void endText(Stack<String> param) {
@@ -1187,11 +1418,11 @@ public class Interpreter {
         DrawPanel.poly = null;
     }
 
-    void endPoint(Stack<String> param) {
+    void endLine(Stack<String> param) {
         DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
         try {
             DrawPanel.poly.addToScene();
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1202,29 +1433,19 @@ public class Interpreter {
         DrawPanel.poly = new ElementPoint(app);
     }
 
-    void endLine(Stack<String> param) {
-        DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
-        try {
-            DrawPanel.poly.addToScene();
-        } catch (LogoException e) {
-        }
-    }
-
     void startLine(Stack<String> param) {
         DrawPanel.record3D = DrawPanel.RECORD_3D_LINE;
         app.initViewer3D();
 //                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
         DrawPanel.poly = new ElementLine(app);
-        DrawPanel.poly.addVertex(new Point3d(kernel.getActiveTurtle().X / 1000,
-                kernel.getActiveTurtle().Y / 1000,
-                kernel.getActiveTurtle().Z / 1000), kernel.getActiveTurtle().penColor);
+        DrawPanel.poly.addVertex(new Point3d(kernel.getActiveTurtle().X / 1000, kernel.getActiveTurtle().Y / 1000, kernel.getActiveTurtle().Z / 1000), kernel.getActiveTurtle().penColor);
     }
 
     void view3D(Stack<String> param) {
         try {
             primitive3D("3d.polyview");
             app.viewerOpen();
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1232,7 +1453,18 @@ public class Interpreter {
         DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
         try {
             DrawPanel.poly.addToScene();
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
+        }
+    }
+
+    void listProperties(Stack<String> param) {
+        String mot;
+        try {
+            Interpreter.returnValue = true;
+            mot = getWord(param.get(0));
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            Interpreter.operands.push(workspace.displayPropList(mot));
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1243,31 +1475,17 @@ public class Interpreter {
         DrawPanel.poly = new ElementPolygon(app);
     }
 
-    void listProperties(Stack<String> param) {
-        String mot;
-        try {
-            Interpreter.operande = true;
-            mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
-            Interpreter.calcul.push(wp.displayPropList(mot));
-        } catch (LogoException e) {
-        }
-    }
-
     void removeProperty(Stack<String> param) {
         String mot;
         String mot2;
         try {
-            Interpreter.operande = false;
+            Interpreter.returnValue = false;
             mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             mot2 = getWord(param.get(1));
-            if (null == mot2)
-                throw new LogoException(app, param.get(1) + " " + Logo.messages.getString("error.word"));
-            wp.removePropList(mot, mot2);
-        } catch (LogoException e) {
+            if (null == mot2) throw new LogoException(app, param.get(1) + " " + Logo.messages.getString("error.word"));
+            workspace.removePropList(mot, mot2);
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1275,33 +1493,29 @@ public class Interpreter {
         String mot;
         String mot2;
         try {
-            Interpreter.operande = true;
+            Interpreter.returnValue = true;
             mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             mot2 = getWord(param.get(1));
-            if (null == mot2)
-                throw new LogoException(app, param.get(1) + " " + Logo.messages.getString("error.word"));
-            String value = wp.getPropList(mot, mot2);
+            if (null == mot2) throw new LogoException(app, param.get(1) + " " + Logo.messages.getString("error.word"));
+            String value = workspace.getPropList(mot, mot2);
             if (value.startsWith("[")) value += " ";
-            Interpreter.calcul.push(value);
-        } catch (LogoException e) {
+            Interpreter.operands.push(value);
+        } catch (LogoException ignored) {
         }
     }
 
     void setProperty(Stack<String> param) {
         String mot;
         String mot2;
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             mot2 = getWord(param.get(1));
-            if (null == mot2)
-                throw new LogoException(app, param.get(1) + " " + Logo.messages.getString("error.word"));
-            wp.addPropList(mot, mot2, param.get(2));
-        } catch (LogoException e) {
+            if (null == mot2) throw new LogoException(app, param.get(1) + " " + Logo.messages.getString("error.word"));
+            workspace.addPropList(mot, mot2, param.get(2));
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1309,32 +1523,29 @@ public class Interpreter {
         delay();
         try {
             primitive3D("3d.setz");
-            app.getDrawPanel().setPosition(kernel.getActiveTurtle().X + " " + kernel.getActiveTurtle().Y
-                    + " " + kernel.getCalculator().numberDouble(param.get(0)));
+            app.getDrawPanel().setPosition(kernel.getActiveTurtle().X + " " + kernel.getActiveTurtle().Y + " " + kernel.getCalculator().numberDouble(param.get(0)));
 
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void setXYZ(Stack<String> param) {
         try {
             primitive3D("3d.setxyz");
-            app.getDrawPanel().setPosition(kernel.getCalculator().numberDouble(param.get(0)) + " "
-                    + kernel.getCalculator().numberDouble(param.get(1)) + " " +
-                    kernel.getCalculator().numberDouble(param.get(2)));
-        } catch (LogoException e) {
+            app.getDrawPanel().setPosition(kernel.getCalculator().numberDouble(param.get(0)) + " " + kernel.getCalculator().numberDouble(param.get(1)) + " " + kernel.getCalculator().numberDouble(param.get(2)));
+        } catch (LogoException ignored) {
         }
     }
 
     void getOrientation(Stack<String> param) {
         try {
             primitive3D("3d.orientation");
-            Interpreter.operande = true;
+            Interpreter.returnValue = true;
             String pitch = Calculator.teste_fin_double(kernel.getActiveTurtle().pitch);
             String roll = Calculator.teste_fin_double(kernel.getActiveTurtle().roll);
             String heading = Calculator.teste_fin_double(kernel.getActiveTurtle().heading);
-            Interpreter.calcul.push("[ " + roll + " " + pitch + " " + heading + " ] ");
-        } catch (LogoException e) {
+            Interpreter.operands.push("[ " + roll + " " + pitch + " " + heading + " ] ");
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1343,7 +1554,7 @@ public class Interpreter {
             primitive3D("3d.setorientation");
             delay();
             app.getDrawPanel().setOrientation(getFinalList(param.pop()));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1352,7 +1563,7 @@ public class Interpreter {
             primitive3D("3d.setpitch");
             delay();
             app.getDrawPanel().setPitch(kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1361,25 +1572,25 @@ public class Interpreter {
             primitive3D("3d.setroll");
             delay();
             app.getDrawPanel().setRoll(kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getPitch(Stack<String> param) {
         try {
             primitive3D("3d.pitch");
-            Interpreter.operande = true;
-            Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().pitch));
-        } catch (LogoException e) {
+            Interpreter.returnValue = true;
+            Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().pitch));
+        } catch (LogoException ignored) {
         }
     }
 
     void getRoll(Stack<String> param) {
         try {
             primitive3D("3d.roll");
-            Interpreter.operande = true;
-            Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().roll));
-        } catch (LogoException e) {
+            Interpreter.returnValue = true;
+            Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().roll));
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1388,7 +1599,7 @@ public class Interpreter {
         try {
             primitive3D("3d.downpitch");
             app.getDrawPanel().pitch(-kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1397,7 +1608,7 @@ public class Interpreter {
         try {
             primitive3D("3d.leftroll");
             app.getDrawPanel().roll(-kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1406,7 +1617,7 @@ public class Interpreter {
         try {
             primitive3D("3d.uppitch");
             app.getDrawPanel().pitch(kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1415,16 +1626,12 @@ public class Interpreter {
         try {
             primitive3D("3d.rightroll");
             app.getDrawPanel().roll(kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
-    void enable3D(Stack<String> param) {
-        app.getDrawPanel().perspective();
-    }
-
     void setAxisColor(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             if (isList(param.get(0))) {
                 Logo.config.setAxisColor(rgb(param.get(0), Utils.primitiveName("drawing.setaxiscolor")).getRGB());
@@ -1433,12 +1640,16 @@ public class Interpreter {
                 if (coul < 0) coul += DrawPanel.defaultColors.length;
                 Logo.config.setAxisColor(DrawPanel.defaultColors[coul].getRGB());
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
+    void enable3D(Stack<String> param) {
+        app.getDrawPanel().perspective();
+    }
+
     void setGridColor(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             if (isList(param.get(0))) {
                 Logo.config.setGridColor(rgb(param.get(0), Utils.primitiveName("drawing.setgridcolor")).getRGB());
@@ -1447,128 +1658,114 @@ public class Interpreter {
                 if (coul < 0) coul += DrawPanel.defaultColors.length;
                 Logo.config.setGridColor(DrawPanel.defaultColors[coul].getRGB());
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void isYAxisEnabled(Stack<String> param) {
-        Interpreter.operande = true;
-        if (Logo.config.isYAxisEnabled())
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
+        Interpreter.returnValue = true;
+        if (Logo.config.isYAxisEnabled()) Interpreter.operands.push(Logo.messages.getString("vrai"));
+        else Interpreter.operands.push(Logo.messages.getString("faux"));
     }
 
     void isXAxisEnabled(Stack<String> param) {
-        Interpreter.operande = true;
-        if (Logo.config.isXAxisEnabled())
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
+        Interpreter.returnValue = true;
+        if (Logo.config.isXAxisEnabled()) Interpreter.operands.push(Logo.messages.getString("vrai"));
+        else Interpreter.operands.push(Logo.messages.getString("faux"));
     }
 
     void isGridEnabled(Stack<String> param) {
-        Interpreter.operande = true;
-        if (Logo.config.isGridEnabled())
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
+        Interpreter.returnValue = true;
+        if (Logo.config.isGridEnabled()) Interpreter.operands.push(Logo.messages.getString("vrai"));
+        else Interpreter.operands.push(Logo.messages.getString("faux"));
     }
 
     void getGridColor(Stack<String> param) {
         Color c;
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         c = new Color(Logo.config.getGridColor());
-        Interpreter.calcul.push("[ " + c.getRed() + " " + c.getGreen()
-                + " " + c.getBlue() + " ] ");
+        Interpreter.operands.push("[ " + c.getRed() + " " + c.getGreen() + " " + c.getBlue() + " ] ");
     }
 
     void getAxisColor(Stack<String> param) {
         Color c;
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         c = new Color(Logo.config.getAxisColor());
-        Interpreter.calcul.push("[ " + c.getRed() + " " + c.getGreen()
-                + " " + c.getBlue() + " ] ");
+        Interpreter.operands.push("[ " + c.getRed() + " " + c.getGreen() + " " + c.getBlue() + " ] ");
     }
 
     void isVariable(Stack<String> param) {
         String mot;
         try {
-            Interpreter.operande = true;
+            Interpreter.returnValue = true;
             mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             mot = mot.toLowerCase();
-            if (wp.globals.containsKey(mot) || Interpreter.locale.containsKey(mot))
-                Interpreter.calcul.push(Logo.messages.getString("vrai"));
-            else
-                Interpreter.calcul.push(Logo.messages.getString("faux"));
-        } catch (LogoException e) {
+            if (workspace.globals.containsKey(mot) || Interpreter.locals.containsKey(mot))
+                Interpreter.operands.push(Logo.messages.getString("vrai"));
+            else Interpreter.operands.push(Logo.messages.getString("faux"));
+        } catch (LogoException ignored) {
         }
+    }
+
+    void disableAxes(Stack<String> param) {
+        Logo.config.setXAxisEnabled(false);
+        Logo.config.setYAxisEnabled(false);
+        Interpreter.returnValue = false;
+        clearScreen();
     }
 
     void bye(Stack<String> param) {
         app.closeWindow();
     }
 
-    void disableAxes(Stack<String> param) {
-        Logo.config.setXAxisEnabled(false);
-        Logo.config.setYAxisEnabled(false);
-        Interpreter.operande = false;
-        clearScreen();
-    }
-
     void drawYAxis(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             primitive2D("drawing.yaxis");
             int nombre = kernel.getCalculator().getInteger(param.get(0));
             if (nombre < 0) {
                 String name = Utils.primitiveName("drawing.yaxis");
-                throw new LogoException(app, name + " "
-                        + Logo.messages.getString("attend_positif"));
+                throw new LogoException(app, name + " " + Logo.messages.getString("attend_positif"));
             } else if (nombre < 25) nombre = 25;
             Logo.config.setYAxisEnabled(true);
             Logo.config.setYAxisSpacing(nombre);
             clearScreen();
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void drawXAxis(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             primitive2D("drawing.xaxis");
             int nombre = kernel.getCalculator().getInteger(param.get(0));
             if (nombre < 0) {
                 String name = Utils.primitiveName("drawing.xaxis");
-                throw new LogoException(app, name + " "
-                        + Logo.messages.getString("attend_positif"));
+                throw new LogoException(app, name + " " + Logo.messages.getString("attend_positif"));
             } else if (nombre < 25) nombre = 25;
             Logo.config.setXAxisEnabled(true);
             Logo.config.setXAxisSpacing(nombre);
             clearScreen();
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void drawBothAxes(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             primitive2D("drawing.axis");
             int nombre = kernel.getCalculator().getInteger(param.get(0));
             if (nombre < 0) {
                 String name = Utils.primitiveName("drawing.axis");
-                throw new LogoException(app, name + " "
-                        + Logo.messages.getString("attend_positif"));
+                throw new LogoException(app, name + " " + Logo.messages.getString("attend_positif"));
             } else if (nombre < 25) nombre = 25;
             Logo.config.setXAxisEnabled(true);
             Logo.config.setXAxisSpacing(nombre);
             Logo.config.setYAxisEnabled(true);
             Logo.config.setYAxisSpacing(nombre);
             clearScreen();
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1576,34 +1773,32 @@ public class Interpreter {
         String liste;
         try {
             String ident = getWord(param.get(0));
-            if (null == ident)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             liste = getFinalList(param.get(1));
             GuiMenu gm = new GuiMenu(ident.toLowerCase(), liste, app);
             app.getDrawPanel().addToGuiMap(gm);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void stopTrace(Stack<String> param) {
-        Kernel.mode_trace = false;
-        Interpreter.operande = false;
+        Kernel.traceMode = false;
+        Interpreter.returnValue = false;
     }
 
     void stopAnimation(Stack<String> param) {
         app.getDrawPanel().setAnimation(false);
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
     }
 
     void disableGrid(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         Logo.config.setGridEnabled(false);
         clearScreen();
     }
 
     void drawGrid(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             primitive2D("drawing.grid");
             int[] args = new int[2];
@@ -1611,8 +1806,7 @@ public class Interpreter {
                 args[i] = kernel.getCalculator().getInteger(param.get(i));
                 if (args[i] < 0) {
                     String grille = Utils.primitiveName("drawing.grid");
-                    throw new LogoException(app, grille + " "
-                            + Logo.messages.getString("attend_positif"));
+                    throw new LogoException(app, grille + " " + Logo.messages.getString("attend_positif"));
                 } else if (args[i] == 0) {
                     args[i] = 1;
                 }
@@ -1622,33 +1816,30 @@ public class Interpreter {
             Logo.config.setYGridSpacing(args[1]);
             clearScreen();
 
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void setZoom(Stack<String> param) {
         double d;
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             d = kernel.getCalculator().numberDouble(param.get(0));
             if (d <= 0) {
                 String name = Utils.primitiveName("drawing.zoom");
-                throw new LogoException(app, name + " "
-                        + Logo.messages.getString("attend_positif"));
+                throw new LogoException(app, name + " " + Logo.messages.getString("attend_positif"));
             }
             app.getDrawPanel().zoom(d, false);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void guiDraw(Stack<String> param) {
         try {
             String ident = getWord(param.get(0));
-            if (null == ident)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             app.getDrawPanel().guiDraw(ident);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1656,23 +1847,19 @@ public class Interpreter {
         String liste;
         try {
             String ident = getWord(param.get(0));
-            if (null == ident)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             liste = getFinalList(param.get(1));
             app.getDrawPanel().guiposition(ident, liste, Utils.primitiveName("ui.guiposition"));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void guiRemove(Stack<String> param) {
         try {
             String ident = getWord(param.get(0));
-            if (null == ident)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             app.getDrawPanel().guiRemove(ident);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1680,12 +1867,10 @@ public class Interpreter {
         String liste;
         try {
             String ident = getWord(param.get(0));
-            if (null == ident)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             liste = getFinalList(param.get(1));
             app.getDrawPanel().guiAction(ident, liste);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1693,22 +1878,18 @@ public class Interpreter {
         String mot;
         try {
             String ident = getWord(param.get(0));
-            if (null == ident)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             mot = getWord(param.get(1));
-            if (null == mot)
-                throw new LogoException(app, param.get(1) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == mot) throw new LogoException(app, param.get(1) + " " + Logo.messages.getString("error.word"));
             GuiButton gb = new GuiButton(ident.toLowerCase(), mot, app);
             app.getDrawPanel().addToGuiMap(gb);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void setScreenSize(Stack<String> param) {
         String liste;
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             String prim = Utils.primitiveName("drawing.setscreensize");
             liste = getFinalList(param.get(0));
@@ -1716,29 +1897,19 @@ public class Interpreter {
             StringTokenizer st = new StringTokenizer(liste);
             try {
                 if (!st.hasMoreTokens())
-                    throw new LogoException(app, prim
-                            + " " + Logo.messages.getString("n_aime_pas") + liste
-                            + Logo.messages.getString("comme_parametre"));
+                    throw new LogoException(app, prim + " " + Logo.messages.getString("n_aime_pas") + liste + Logo.messages.getString("comme_parametre"));
                 width = Integer.parseInt(st.nextToken());
                 if (!st.hasMoreTokens())
-                    throw new LogoException(app, prim
-                            + " " + Logo.messages.getString("n_aime_pas") + liste
-                            + Logo.messages.getString("comme_parametre"));
+                    throw new LogoException(app, prim + " " + Logo.messages.getString("n_aime_pas") + liste + Logo.messages.getString("comme_parametre"));
                 height = Integer.parseInt(st.nextToken());
             } catch (NumberFormatException e) {
-                throw new LogoException(app, prim
-                        + " " + Logo.messages.getString("n_aime_pas") + liste
-                        + Logo.messages.getString("comme_parametre"));
+                throw new LogoException(app, prim + " " + Logo.messages.getString("n_aime_pas") + liste + Logo.messages.getString("comme_parametre"));
             }
             if (st.hasMoreTokens())
-                throw new LogoException(app, prim
-                        + " " + Logo.messages.getString("n_aime_pas") + liste
-                        + Logo.messages.getString("comme_parametre"));
+                throw new LogoException(app, prim + " " + Logo.messages.getString("n_aime_pas") + liste + Logo.messages.getString("comme_parametre"));
             boolean changement = height != Logo.config.getImageHeight();
-            int tmp_hauteur = Logo.config.getImageHeight();
             Logo.config.setImageHeight(height);
             if (width != Logo.config.getImageWidth()) changement = true;
-            int tmp_largeur = Logo.config.getImageWidth();
             Logo.config.setImageWidth(width);
             if (Logo.config.getImageWidth() < 100 || Logo.config.getImageHeight() < 100) {
                 Logo.config.setImageWidth(400);
@@ -1747,36 +1918,35 @@ public class Interpreter {
             if (changement) {
                 app.resizeDrawingZone();
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getTurtlesMax(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(String.valueOf(Logo.config.getMaxTurtles()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(String.valueOf(Logo.config.getMaxTurtles()));
     }
 
     void setTurtlesMax(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             int i = kernel.getCalculator().getInteger(param.get(0));
             if (i < 0) {
                 String fmt = Utils.primitiveName("drawing.setturtlesmax");
-                throw new LogoException(app, fmt + " "
-                        + Logo.messages.getString("attend_positif"));
+                throw new LogoException(app, fmt + " " + Logo.messages.getString("attend_positif"));
             } else if (i == 0) i = 1;
             kernel.setNumberOfTurtles(i);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getDrawingQuality(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(String.valueOf(Logo.config.getDrawQuality()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(String.valueOf(Logo.config.getDrawQuality()));
     }
 
     void setDrawingQuality(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             int i = kernel.getCalculator().getInteger(param.get(0));
             if (i != Config.DRAW_QUALITY_NORMAL && i != Config.DRAW_QUALITY_HIGH && i != Config.DRAW_QUALITY_LOW) {
@@ -1785,17 +1955,17 @@ public class Interpreter {
             }
             Logo.config.setDrawQuality(i);
             kernel.setDrawingQuality(Logo.config.getDrawQuality());
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getPenShape(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(String.valueOf(Logo.config.getPenShape()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(String.valueOf(Logo.config.getPenShape()));
     }
 
     void setPenShape(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             int i = kernel.getCalculator().getInteger(param.get(0));
             if (i != Config.PEN_SHAPE_OVAL && i != Config.PEN_SHAPE_SQUARE) {
@@ -1806,18 +1976,18 @@ public class Interpreter {
             Logo.config.setPenShape(i);
             app.getDrawPanel().updateAllTurtleShape();
             app.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getPenWidth(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         double penwidth = 2 * kernel.getActiveTurtle().getPenWidth();
-        Interpreter.calcul.push(Calculator.teste_fin_double(penwidth));
+        Interpreter.operands.push(Calculator.teste_fin_double(penwidth));
     }
 
     void resetAll(Stack<String> param) {
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         // resize drawing zone if necessary
         if (Logo.config.getImageHeight() != 1000 || Logo.config.getImageWidth() != 1000) {
             Logo.config.setImageHeight(1000);
@@ -1849,7 +2019,7 @@ public class Interpreter {
         kernel.setDrawingQuality(Logo.config.getDrawQuality());
         kernel.setNumberOfTurtles(16);
         Logo.config.setTurtleSpeed(0);
-        Kernel.mode_trace = false;
+        Kernel.traceMode = false;
         DrawPanel.windowMode = DrawPanel.WINDOW_CLASSIC;
         app.getDrawPanel().zoom(1, false);
     }
@@ -1857,21 +2027,19 @@ public class Interpreter {
     void chatTcp(Stack<String> param) {
         String mot;
         String liste;
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         mot = getWord(param.get(0));
         if (null == mot) {
             try {
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
-            } catch (LogoException e) {
+                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            } catch (LogoException ignored) {
             }
         }
-        mot = mot.toLowerCase();
-        liste = "";
+        mot = Objects.requireNonNull(mot).toLowerCase();
         try {
             liste = getFinalList(param.get(1));
             new NetworkClientChat(app, mot, liste);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -1880,7 +2048,7 @@ public class Interpreter {
         // the end of network instructions with
         // "executetcp"
         // have to replace workspace
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         kernel.setWorkspace(savedWorkspace.pop());
     }
 
@@ -1890,66 +2058,43 @@ public class Interpreter {
         mot = getWord(param.get(0));
         if (null == mot) {
             try {
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
-            } catch (LogoException e) {
+                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            } catch (LogoException ignored) {
             }
         }
-        mot = mot.toLowerCase();
-        liste = "";
+        mot = Objects.requireNonNull(mot).toLowerCase();
         try {
             liste = getFinalList(param.get(1));
             new NetworkClientExecute(app, mot, liste);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void listenTcp(Stack<String> param) {
-        Interpreter.operande = false;
-        if (null == savedWorkspace) savedWorkspace = new Stack<Workspace>();
-        savedWorkspace.push(wp);
+        Interpreter.returnValue = false;
+        if (null == savedWorkspace) savedWorkspace = new Stack<>();
+        savedWorkspace.push(workspace);
         new NetworkServer(app);
     }
 
     void sendTcp(Stack<String> param) {
         String liste;
         String mot;
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         mot = getWord(param.get(0));
         if (null == mot) {
             try {
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
-            } catch (LogoException e) {
+                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            } catch (LogoException ignored) {
             }
         }
-        mot = mot.toLowerCase();
-        liste = "";
+        mot = Objects.requireNonNull(mot).toLowerCase();
         try {
             liste = getFinalList(param.get(1));
             NetworkClientSend ncs = new NetworkClientSend(app, mot, liste);
-            Interpreter.calcul.push("[ " + ncs.getAnswer() + " ] ");
-        } catch (LogoException e) {
+            Interpreter.operands.push("[ " + ncs.getAnswer() + " ] ");
+        } catch (LogoException ignored) {
         }
-        /*
-         * try{
-         *
-         * liste = "[ "; mot2 = getFinalList(param.get(0).toString()); liste += mot2 + "
-         * ]"; String rip = liste.substring(2,17); // cadre.updateHistory("perso", rip + "\n");
-         * //para debug String rdat = "_" + liste.substring(18,23) + "*\n\r"; //
-         * cadre.updateHistory("perso", rdat + "\n"); //para debug Socket echoSocket = null;
-         * DataOutputStream tcpout = null; BufferedReader tcpin = null; String resp =
-         * null; try { echoSocket = new Socket(rip, 1948); tcpout = new
-         * DataOutputStream(echoSocket.getOutputStream()); tcpin= new BufferedReader(new
-         * InputStreamReader(echoSocket.getInputStream())); tcpout.writeBytes(rdat);
-         * resp = tcpin.readLine(); // readLine detiene el programa hasta que recibe una
-         * respuesta del robot. Que hacer si no recibe nada? tcpout.close();
-         * tcpin.close(); echoSocket.close(); } catch (UnknownHostException e) { throw
-         * new LogoException(cadre, Logo.messages.getString("erreur_tcp")); } catch
-         * (IOException e) { throw new LogoException(cadre,
-         * Logo.messages.getString("erreur_tcp")); } Interpreter.calcul.push("[ " + resp + "
-         * ]"); } catch(LogoException e){}
-         */
     }
 
     void getLabelLength(Stack<String> param) {
@@ -1958,21 +2103,20 @@ public class Interpreter {
             mot = getWord(param.get(0));
             if (null != mot) mot = Utils.unescapeString(mot);
             else mot = getFinalList(param.get(0)).trim();
-            Interpreter.operande = true;
-            FontMetrics fm = app.getDrawPanel().getGraphics()
-                    .getFontMetrics(app.getDrawPanel().getGraphicsFont());
+            Interpreter.returnValue = true;
+            FontMetrics fm = app.getDrawPanel().getGraphics().getFontMetrics(app.getDrawPanel().getGraphicsFont());
             int longueur = fm.stringWidth(mot);
-            Interpreter.calcul.push(String.valueOf(longueur));
-        } catch (LogoException e) {
+            Interpreter.operands.push(String.valueOf(longueur));
+        } catch (LogoException ignored) {
         }
     }
 
     void getZoneSize(Stack<String> param) {
-        StringBuffer sb;
-        Interpreter.operande = true;
+        StringBuilder sb;
+        Interpreter.returnValue = true;
         Point p = app.scrollPane.getViewport().getViewPosition();
         Rectangle rec = app.scrollPane.getVisibleRect();
-        sb = new StringBuffer();
+        sb = new StringBuilder();
         int x1 = p.x - Logo.config.getImageWidth() / 2;
         int y1 = Logo.config.getImageHeight() / 2 - p.y;
         int x2 = x1 + rec.width - app.scrollPane.getVerticalScrollBar().getWidth();
@@ -1986,53 +2130,52 @@ public class Interpreter {
         sb.append(" ");
         sb.append(y2);
         sb.append(" ] ");
-        Interpreter.calcul.push(new String(sb));
+        Interpreter.operands.push(new String(sb));
     }
 
     void getTextStyle(Stack<String> param) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         int compteur = 0;
         if (app.getHistoryPanel().isBold()) {
-            buffer.append(Logo.messages.getString("style.bold").toLowerCase() + " ");
+            buffer.append(Logo.messages.getString("style.bold").toLowerCase()).append(" ");
             compteur++;
         }
         if (app.getHistoryPanel().isItalic()) {
-            buffer.append(Logo.messages.getString("style.italic").toLowerCase() + " ");
+            buffer.append(Logo.messages.getString("style.italic").toLowerCase()).append(" ");
             compteur++;
         }
         if (app.getHistoryPanel().isUnderline()) {
-            buffer.append(Logo.messages.getString("style.underline").toLowerCase() + " ");
+            buffer.append(Logo.messages.getString("style.underline").toLowerCase()).append(" ");
             compteur++;
         }
         if (app.getHistoryPanel().isSuperscript()) {
-            buffer.append(Logo.messages.getString("style.exposant").toLowerCase() + " ");
+            buffer.append(Logo.messages.getString("style.exposant").toLowerCase()).append(" ");
             compteur++;
         }
         if (app.getHistoryPanel().isSubscript()) {
-            buffer.append(Logo.messages.getString("style.subscript").toLowerCase() + " ");
+            buffer.append(Logo.messages.getString("style.subscript").toLowerCase()).append(" ");
             compteur++;
         }
         if (app.getHistoryPanel().isStrikethrough()) {
-            buffer.append(Logo.messages.getString("style.strike").toLowerCase() + " ");
+            buffer.append(Logo.messages.getString("style.strike").toLowerCase()).append(" ");
             compteur++;
         }
-        Interpreter.operande = true;
-        if (compteur == 0)
-            Interpreter.calcul.push("\"" + Logo.messages.getString("style.none").toLowerCase());
-        else if (compteur == 1) Interpreter.calcul.push("\"" + new String(buffer).trim());
-        else if (compteur > 1) Interpreter.calcul.push("[ " + new String(buffer) + "]");
+        Interpreter.returnValue = true;
+        if (compteur == 0) Interpreter.operands.push("\"" + Logo.messages.getString("style.none").toLowerCase());
+        else if (compteur == 1) Interpreter.operands.push("\"" + new String(buffer).trim());
+        else Interpreter.operands.push("[ " + new String(buffer) + "]");
     }
 
     void setTextStyle(Stack<String> param) {
         String liste;
         String mot;
         try {
-            boolean gras = false;
-            boolean italique = false;
-            boolean souligne = false;
-            boolean exposant = false;
-            boolean indice = false;
-            boolean barre = false;
+            boolean bold = false;
+            boolean italic = false;
+            boolean underline = false;
+            boolean superscript = false;
+            boolean subscript = false;
+            boolean strikethrough = false;
             mot = getWord(param.get(0));
             if (null == mot) liste = getFinalList(param.get(0));
             else liste = mot;
@@ -2041,63 +2184,62 @@ public class Interpreter {
             while (st.hasMoreTokens()) {
                 String element = st.nextToken().toLowerCase();
                 if (element.equals(Logo.messages.getString("style.underline").toLowerCase())) {
-                    souligne = true;
+                    underline = true;
                 } else if (element.equals(Logo.messages.getString("style.bold").toLowerCase())) {
-                    gras = true;
+                    bold = true;
                 } else if (element.equals(Logo.messages.getString("style.italic").toLowerCase())) {
-                    italique = true;
+                    italic = true;
                 } else if (element.equals(Logo.messages.getString("style.exposant").toLowerCase())) {
-                    exposant = true;
+                    superscript = true;
                 } else if (element.equals(Logo.messages.getString("style.subscript").toLowerCase())) {
-                    indice = true;
+                    subscript = true;
                 } else if (element.equals(Logo.messages.getString("style.strike").toLowerCase())) {
-                    barre = true;
+                    strikethrough = true;
                 } else if (element.equals(Logo.messages.getString("style.none").toLowerCase())) {
+                    // ignored
                 } else throw new LogoException(app, Logo.messages.getString("erreur_fixestyle"));
             }
-            app.getHistoryPanel().setBold(gras);
-            app.getHistoryPanel().setItalic(italique);
-            app.getHistoryPanel().setUnderline(souligne);
-            app.getHistoryPanel().setSuperscript(exposant);
-            app.getHistoryPanel().setSubscript(indice);
-            app.getHistoryPanel().setStrikeThrough(barre);
-        } catch (LogoException e) {
+            app.getHistoryPanel().setBold(bold);
+            app.getHistoryPanel().setItalic(italic);
+            app.getHistoryPanel().setUnderline(underline);
+            app.getHistoryPanel().setSuperscript(superscript);
+            app.getHistoryPanel().setSubscript(subscript);
+            app.getHistoryPanel().setStrikeThrough(strikethrough);
+        } catch (LogoException ignored) {
         }
     }
 
     void closeParen(Stack<String> param) {
-        // Distinguons les deux cas : (3)*2 et (4+3)*2
-        // Le 3 est ici a retourner au +
+        // Let us distinguish the two cases: (3)*2 and (4+3)*2 The 3 is here to return to the +
         boolean a_retourner = true;
-        // On enleve le "(" correspondant a la parenthese ouvrante de la
-        // pile nom
-        // a condition que l'element attendant de la pile nom ne soit
-        // pas une procedure
+        // We remove the "(" corresponding to the opening parenthesis of the stack
+        // name provided that the waiting element of the stack name is not a procedure
         boolean est_procedure = false;
-        int pos = Interpreter.nom.lastIndexOf("(");
+        int pos = Interpreter.consumers.lastIndexOf("(");
         if (pos == -1) {
-            // Parenthese fermante sans parenthese ouvrante au prealable
+            // Closing parenthesis without opening parenthesis first
             try {
                 throw new LogoException(app, Logo.messages.getString("parenthese_ouvrante"));
-            } catch (LogoException e) {
+            } catch (LogoException ignored) {
             }
-        } else { // Evitons l'erreur en cas de par exemple: "ec )"
-            // (parenthese fermante sans ouvrante)--> else a
-            // executer qu'en cas de non erreur
-            if (Interpreter.drapeau_ouvrante) {
-                // parenthese vide
+        } else {
+            // Let's avoid the error in case of for example: "etc )"
+            // (closing parenthesis without opening) -->
+            // else to be executed only in case of no error
+            if (Interpreter.openParen) {
+                // empty parentheses
                 try {
                     throw new LogoException(app, Logo.messages.getString("parenthese_vide"));
-                } catch (LogoException e) {
+                } catch (LogoException ignored) {
                 }
 
             }
-            for (int j = pos; j < Interpreter.nom.size(); j++) {
-                String proc = Interpreter.nom.get(j).toLowerCase();
+            for (int j = pos; j < Interpreter.consumers.size(); j++) {
+                String proc = Interpreter.consumers.get(j).toLowerCase();
                 if (primitiveMap.containsKey(proc)) est_procedure = true;
                 else {
-                    for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-                        if (wp.getProcedure(i).name.equals(proc)) {
+                    for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
+                        if (workspace.getProcedure(i).name.equals(proc)) {
                             est_procedure = true;
                             break;
                         }
@@ -2106,126 +2248,122 @@ public class Interpreter {
                 }
             }
         }
-        // Si une procedure est presente dans la pile nom, on garde les
-        // parenteses
-// System.out.println(primitiveMap.containsKey("puissance")+"
-// "+est_procedure);
+        // If a procedure is present in the name stack, we keep the parentheses
         if (est_procedure) {
             app.getKernel().getInstructionBuffer().insert(") ");
         }
-        // Sinon on les enleve avec leurs imbrications eventuelles
+        // Otherwise we remove them with their possible nestings
         else {
-            if (Interpreter.en_cours.isEmpty() || !Interpreter.en_cours.peek().equals("(")) {
+            if (Interpreter.procedures.isEmpty() || !Interpreter.procedures.peek().equals("(")) {
                 try {
                     throw new LogoException(app, Logo.messages.getString("parenthese_ouvrante"));
-                } catch (LogoException e) {
+                } catch (LogoException ignored) {
                 }
-            } else Interpreter.en_cours.pop();
-            if (!Interpreter.nom.isEmpty()) {
-                if (Interpreter.nom.peek().equals("(")) a_retourner = false;
-                pos = Interpreter.nom.lastIndexOf("(");
+            } else Interpreter.procedures.pop();
+            if (!Interpreter.consumers.isEmpty()) {
+                if (Interpreter.consumers.peek().equals("(")) a_retourner = false;
+                pos = Interpreter.consumers.lastIndexOf("(");
                 if (pos == -1) {
-                    // Parenthese fermante sans parenthese ouvrante
-                    // au prelable
+                    // Closing parenthesis without first opening parenthesis
                     try {
                         throw new LogoException(app, Logo.messages.getString("parenthese_ouvrante"));
-                    } catch (LogoException e) {
+                    } catch (LogoException ignored) {
                     }
                 } else {
-                    Interpreter.nom.removeElementAt(pos);
-                    // S'il y a imbrication de parentheses (((20)))
+                    Interpreter.consumers.removeElementAt(pos);
+                    // If there is nesting of parentheses (((20)))
                     pos--;
                     InstructionBuffer instruction = app.getKernel().getInstructionBuffer();
                     while (instruction.getNextWord().equals(")") && (pos > -1)) {
-                        if (!Interpreter.nom.isEmpty() && Interpreter.nom.get(pos).equals("(")) {
+                        if (!Interpreter.consumers.isEmpty() && Interpreter.consumers.get(pos).equals("(")) {
                             instruction.deleteFirstWord(")");
-                            Interpreter.nom.removeElementAt(pos);
+                            Interpreter.consumers.removeElementAt(pos);
                             pos--;
                         } else break;
                     }
                 }
             }
         }
-        if (Interpreter.calcul.isEmpty()) {
-            Interpreter.operande = false;
+        if (Interpreter.operands.isEmpty()) {
+            Interpreter.returnValue = false;
         } else {
-            Interpreter.operande = true;
-            Interpreter.drapeau_fermante = a_retourner;
+            Interpreter.returnValue = true;
+            Interpreter.closeParen = a_retourner;
         }
     }
 
     void circle(Stack<String> param) {
         try {
             app.getDrawPanel().circle((kernel.getCalculator().numberDouble(param.pop())));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
-    void setColorWhite(Stack<String> param) {
+    void colorWhite(Stack<String> param) {
         colorCode(7);
     }
 
-    void setColorCyan(Stack<String> param) {
+    void colorCyan(Stack<String> param) {
         colorCode(6);
     }
 
-    void setColorMagenta(Stack<String> param) {
+    void colorMagenta(Stack<String> param) {
         colorCode(5);
     }
 
-    void setColorBlue(Stack<String> param) {
+    void colorBlue(Stack<String> param) {
         colorCode(4);
     }
 
-    void setColorYellow(Stack<String> param) {
+    void colorYellow(Stack<String> param) {
         colorCode(3);
     }
 
-    void setColorGreen(Stack<String> param) {
+    void colorGreen(Stack<String> param) {
         colorCode(2);
     }
 
-    void setColorRed(Stack<String> param) {
+    void colorRed(Stack<String> param) {
         colorCode(1);
     }
 
-    void setColorBlack(Stack<String> param) {
+    void colorBlack(Stack<String> param) {
         colorCode(0);
     }
 
-    void setColorBrown(Stack<String> param) {
+    void colorBrown(Stack<String> param) {
         colorCode(16);
     }
 
-    void setColorPurple(Stack<String> param) {
+    void colorPurple(Stack<String> param) {
         colorCode(15);
     }
 
-    void setColorPink(Stack<String> param) {
+    void colorPink(Stack<String> param) {
         colorCode(14);
     }
 
-    void setColorOrange(Stack<String> param) {
+    void colorOrange(Stack<String> param) {
         colorCode(13);
     }
 
-    void setColorDarkBlue(Stack<String> param) {
+    void colorDarkBlue(Stack<String> param) {
         colorCode(12);
     }
 
-    void setColorDarkGreen(Stack<String> param) {
+    void colorDarkGreen(Stack<String> param) {
         colorCode(11);
     }
 
-    void setColorDarkRed(Stack<String> param) {
+    void colorDarkRed(Stack<String> param) {
         colorCode(10);
     }
 
-    void setColorLightGray(Stack<String> param) {
+    void colorLightGray(Stack<String> param) {
         colorCode(9);
     }
 
-    void setColorGray(Stack<String> param) {
+    void colorGray(Stack<String> param) {
         colorCode(8);
     }
 
@@ -2233,7 +2371,7 @@ public class Interpreter {
         String mot;
         String liste;
         try {
-            String reponse = "";
+            String reponse;
             liste = getFinalList(param.get(0));
             int entier = kernel.getCalculator().getInteger(param.get(1));
             mot = getWord(param.get(2));
@@ -2269,16 +2407,13 @@ public class Interpreter {
                 }
             }
             if (error && entier != compteur)
-                throw new LogoException(app, Logo.messages.getString("y_a_pas")
-                        + " " + entier + " "
-                        + Logo.messages.getString("element_dans_liste") + liste
-                        + "]");
+                throw new LogoException(app, Logo.messages.getString("y_a_pas") + " " + entier + " " + Logo.messages.getString("element_dans_liste") + liste + "]");
             if (!liste.trim().equals(""))
                 reponse = "[ " + liste.substring(0, compteur) + mot + " " + liste.substring(compteur) + "] ";
             else reponse = "[ " + mot + " ] ";
-            Interpreter.operande = true;
-            Interpreter.calcul.push(reponse);
-        } catch (LogoException e) {
+            Interpreter.returnValue = true;
+            Interpreter.operands.push(reponse);
+        } catch (LogoException ignored) {
         }
     }
 
@@ -2286,7 +2421,7 @@ public class Interpreter {
         String mot;
         String liste;
         try {
-            String reponse = "";
+            String reponse;
             liste = getFinalList(param.get(0));
             int entier = kernel.getCalculator().getInteger(param.get(1));
             mot = getWord(param.get(2));
@@ -2318,15 +2453,11 @@ public class Interpreter {
                 }
             }
             if (error)
-                throw new LogoException(app, Logo.messages.getString("y_a_pas")
-                        + " " + entier + " "
-                        + Logo.messages.getString("element_dans_liste") + liste
-                        + "]");
+                throw new LogoException(app, Logo.messages.getString("y_a_pas") + " " + entier + " " + Logo.messages.getString("element_dans_liste") + liste + "]");
             reponse = "[ " + liste.substring(0, compteur) + mot;
             // On extrait le mot suivant
             if (compteur + 1 < liste.length() && liste.charAt(compteur) == '[' && liste.charAt(compteur + 1) == ' ') {
                 compteur = extractList(liste, compteur + 2);
-                reponse += liste.substring(compteur) + "] ";
 
             } else {
                 for (int i = compteur + 1; i < liste.length(); i++) {
@@ -2335,30 +2466,29 @@ public class Interpreter {
                         break;
                     }
                 }
-                reponse += liste.substring(compteur) + "] ";
             }
-            Interpreter.operande = true;
-            Interpreter.calcul.push(reponse);
-        } catch (LogoException e) {
+            reponse += liste.substring(compteur) + "] ";
+            Interpreter.returnValue = true;
+            Interpreter.operands.push(reponse);
+        } catch (LogoException ignored) {
         }
     }
 
     void abs(Stack<String> param) {
         try {
-            Interpreter.operande = true;
-            Interpreter.calcul.push(kernel.getCalculator().abs(param.get(0)));
-        } catch (LogoException e) {
+            Interpreter.returnValue = true;
+            Interpreter.operands.push(kernel.getCalculator().abs(param.get(0)));
+        } catch (LogoException ignored) {
         }
     }
 
-    void _for(Stack<String> param) {
+    void forLoop(Stack<String> param) {
         try {
             String li2 = getList(param.get(1));
             li2 = new String(Utils.formatCode(li2));
             String li1 = getFinalList(param.get(0));
             int nb = numberOfElements(li1);
-            if (nb < 3 || nb > 4)
-                throw new LogoException(app, Logo.messages.getString("erreur_repetepour"));
+            if (nb < 3 || nb > 4) throw new LogoException(app, Logo.messages.getString("erreur_repetepour"));
             StringTokenizer st = new StringTokenizer(li1);
             String var = st.nextToken().toLowerCase();
             BigDecimal deb = kernel.getCalculator().numberDecimal(st.nextToken());
@@ -2373,35 +2503,30 @@ public class Interpreter {
                 LoopFor bp = new LoopFor(deb, fin, increment, li2, var);
                 bp.AffecteVar(true);
 
-                if ((increment.compareTo(BigDecimal.ZERO) == 1 && fin.compareTo(deb) >= 0)
-                        || (increment.compareTo(BigDecimal.ZERO) == -1 && fin.compareTo(deb) <= 0)) {
+                if ((increment.compareTo(BigDecimal.ZERO) > 0 && fin.compareTo(deb) >= 0) || (increment.compareTo(BigDecimal.ZERO) < 0 && fin.compareTo(deb) <= 0)) {
                     app.getKernel().getInstructionBuffer().insert(li2 + Interpreter.END_LOOP + " ");
-                    stackLoop.push(bp);
+                    loops.push(bp);
                 }
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getRepCount(Stack<String> param) {
         boolean erreur = false;
-        if (!stackLoop.isEmpty()) {
-            LoopProperties bp = stackLoop.peek();
+        if (!loops.isEmpty()) {
+            Loop bp = loops.peek();
             if (bp.isRepeat()) {
-                Interpreter.operande = true;
-                Interpreter.calcul.push(bp.getCounter().toString());
+                Interpreter.returnValue = true;
+                Interpreter.operands.push(bp.getCounter().toString());
             } else erreur = true;
         } else erreur = true;
         if (erreur) {
             try {
                 throw new LogoException(app, Logo.messages.getString("erreur_compteur"));
-            } catch (LogoException e) {
+            } catch (LogoException ignored) {
             }
         }
-    }
-
-    void stopAll(Stack<String> param) {
-        app.error = true;
     }
 
     void getCharacter(Stack<String> param) {
@@ -2410,8 +2535,8 @@ public class Interpreter {
             if (i < 0 || i > 65535)
                 throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("nombre_unicode"));
             else {
-                String st = "";
-                Interpreter.operande = true;
+                String st;
+                Interpreter.returnValue = true;
                 if (i == 92) st = "\"\\\\";
                 else if (i == 10) st = "\"\\n";
                 else if (i == 32) st = "\"\\e";
@@ -2423,39 +2548,39 @@ public class Interpreter {
                         st = "\"" + st;
                     }
                 }
-                Interpreter.calcul.push(st);
+                Interpreter.operands.push(st);
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
+    }
+
+    void stopAll(Stack<String> param) {
+        app.error = true;
     }
 
     void getUnicode(Stack<String> param) {
         String mot;
         try {
             mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
-            else if (getWordLength(mot) != 1) throw new LogoException(app, param.get(0) + " "
-                    + Logo.messages.getString("un_caractere"));
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            else if (getWordLength(mot) != 1)
+                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("un_caractere"));
             else {
-                Interpreter.operande = true;
+                Interpreter.returnValue = true;
                 String st = String.valueOf((int) Utils.unescapeString(itemWord(1, mot)).charAt(0));
-                Interpreter.calcul.push(st);
+                Interpreter.operands.push(st);
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void changeDirectory(Stack<String> param) {
         String mot;
-        Interpreter.operande = false;
+        Interpreter.returnValue = false;
         try {
             mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
-            String chemin = "";
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            String chemin;
             if (Logo.config.getDefaultFolder().endsWith(File.separator))
                 chemin = Utils.unescapeString(Logo.config.getDefaultFolder() + mot);
             else
@@ -2463,34 +2588,30 @@ public class Interpreter {
             if ((new File(chemin)).isDirectory()) {
                 try {
                     Logo.config.setDefaultFolder(Utils.escapeString((new File(chemin)).getCanonicalPath()));
-                } catch (NullPointerException e1) {
-                } catch (IOException e2) {
+                } catch (NullPointerException | IOException ignored) {
                 }
             } else
-                throw new LogoException(app, Utils.escapeString(chemin)
-                        + " "
-                        + Logo.messages
-                        .getString("erreur_pas_repertoire"));
-        } catch (LogoException e) {
+                throw new LogoException(app, Utils.escapeString(chemin) + " " + Logo.messages.getString("erreur_pas_repertoire"));
+        } catch (LogoException ignored) {
         }
     }
 
     void trace(Stack<String> param) {
-        Kernel.mode_trace = true;
-        Interpreter.operande = false;
+        Kernel.traceMode = true;
+        Interpreter.returnValue = false;
     }
 
     void truncate(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().truncate(param.get(0)));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().truncate(param.get(0)));
+        } catch (LogoException ignored) {
         }
     }
 
     void getSeparation(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(Calculator.teste_fin_double(app.splitPane.getResizeWeight()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(Calculator.teste_fin_double(app.splitPane.getResizeWeight()));
     }
 
     void setSeparation(Stack<String> param) {
@@ -2500,37 +2621,42 @@ public class Interpreter {
                 throw new LogoException(app, nombre + " " + Logo.messages.getString("entre_zero_un"));
             app.splitPane.setResizeWeight(nombre);
             app.splitPane.setDividerLocation(nombre);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void isInteger(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
             double ent = kernel.getCalculator().numberDouble(param.get(0));
-            if ((int) ent == ent) Interpreter.calcul.push(Logo.messages.getString("vrai"));
-            else Interpreter.calcul.push(Logo.messages.getString("faux"));
-        } catch (LogoException e) {
+            if ((int) ent == ent) Interpreter.operands.push(Logo.messages.getString("vrai"));
+            else Interpreter.operands.push(Logo.messages.getString("faux"));
+        } catch (LogoException ignored) {
         }
     }
 
     void quotient(Stack<String> param) {
         try {
-            Interpreter.operande = true;
-            Interpreter.calcul.push(kernel.getCalculator().quotient(param.get(0), param.get(1)));
-        } catch (LogoException e) {
+            Interpreter.returnValue = true;
+            Interpreter.operands.push(kernel.getCalculator().quotient(param.get(0), param.get(1)));
+        } catch (LogoException ignored) {
         }
     }
 
     void getImageSize(Stack<String> param) {
-        Interpreter.operande = true;
-        StringBuffer sb = new StringBuffer();
+        Interpreter.returnValue = true;
+        StringBuilder sb = new StringBuilder();
         sb.append("[ ");
         sb.append(Logo.config.getImageWidth());
         sb.append(" ");
         sb.append(Logo.config.getImageHeight());
         sb.append(" ] ");
-        Interpreter.calcul.push(new String(sb));
+        Interpreter.operands.push(new String(sb));
+    }
+
+    void startAnimation(Stack<String> param) {
+        app.getDrawPanel().setAnimation(true);
+        Interpreter.returnValue = false;
     }
 
     void refresh(Stack<String> param) {
@@ -2539,36 +2665,24 @@ public class Interpreter {
         }
     }
 
-    void startAnimation(Stack<String> param) {
-        app.getDrawPanel().setAnimation(true);
-        Interpreter.operande = false;
+    void arc(Stack<String> param) {
+        try {
+            app.getDrawPanel().arc(kernel.getCalculator().numberDouble(param.get(0)), kernel.getCalculator().numberDouble(param.get(1)), kernel.getCalculator().numberDouble(param.get(2)));
+        } catch (LogoException ignored) {
+        }
     }
 
     void fillZone(Stack<String> param) {
         app.getDrawPanel().fillZone();
     }
 
-    void arc(Stack<String> param) {
-        try {
-            app.getDrawPanel().arc(kernel.getCalculator().numberDouble(param.get(0)), kernel.getCalculator().numberDouble(param.get(1)), kernel.getCalculator().numberDouble(param.get(2)));
-        } catch (LogoException e) {
-        }
-    }
-
     void write(Stack<String> param) {
         String mot;
         String par = param.get(0).trim();
-        if (isList(par))
-            par = formatList(par.substring(1, par.length() - 1));
+        if (isList(par)) par = formatList(par.substring(1, par.length() - 1));
         mot = getWord(param.get(0));
-        if (null == mot)
-            app.updateHistory("perso", Utils.unescapeString(par));
-        else
-            app.updateHistory("perso", Utils.unescapeString(mot));
-    }
-
-    void wash(Stack<String> param) {
-        app.getDrawPanel().wash();
+        if (null == mot) app.updateHistory("perso", Utils.unescapeString(par));
+        else app.updateHistory("perso", Utils.unescapeString(mot));
     }
 
     void getVariableValue(Stack<String> param) {
@@ -2576,50 +2690,40 @@ public class Interpreter {
         mot = getWord(param.get(0));
         try {
             if (null == mot) {
-                throw new LogoException(app, Logo.messages
-                        .getString("error.word"));
+                throw new LogoException(app, Logo.messages.getString("error.word"));
             } // si c'est une liste
-            else if (debut_chaine.equals("")) {
-                throw new LogoException(app, Logo.messages
-                        .getString("erreur_variable"));
+            else if (wordPrefix.equals("")) {
+                throw new LogoException(app, Logo.messages.getString("erreur_variable"));
             } // si c'est un nombre
-            Interpreter.operande = true;
+            Interpreter.returnValue = true;
             String value;
             mot = mot.toLowerCase();
-            if (!Interpreter.locale.containsKey(mot)) {
-                if (!wp.globals.containsKey(mot))
-                    throw new LogoException(app, mot
-                            + " "
-                            + Logo.messages
-                            .getString("erreur_variable"));
-                else
-                    value = wp.globals.get(mot);
+            if (!Interpreter.locals.containsKey(mot)) {
+                if (!workspace.globals.containsKey(mot))
+                    throw new LogoException(app, mot + " " + Logo.messages.getString("erreur_variable"));
+                else value = workspace.globals.get(mot);
             } else {
-                value = Interpreter.locale.get(mot);
+                value = Interpreter.locals.get(mot);
             }
-            if (null == value)
-                throw new LogoException(app, mot + "  "
-                        + Logo.messages.getString("erreur_variable"));
-            Interpreter.calcul.push(value);
-        } catch (LogoException e) {
+            if (null == value) throw new LogoException(app, mot + "  " + Logo.messages.getString("erreur_variable"));
+            Interpreter.operands.push(value);
+        } catch (LogoException ignored) {
         }
     }
 
+    void wash(Stack<String> param) {
+        app.getDrawPanel().wash();
+    }
+
     void listVariables(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(new String(getAllVariables()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(new String(getAllVariables()));
     }
 
     void isMouseEvent(Stack<String> param) {
-        Interpreter.operande = true;
-        if (app.getDrawPanel().get_lissouris())
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
-    }
-
-    void clearText(Stack<String> param) {
-        app.getHistoryPanel().clearText();
+        Interpreter.returnValue = true;
+        if (app.getDrawPanel().get_lissouris()) Interpreter.operands.push(Logo.messages.getString("vrai"));
+        else Interpreter.operands.push(Logo.messages.getString("faux"));
     }
 
     void fileAppendLine(Stack<String> param) {
@@ -2628,10 +2732,7 @@ public class Interpreter {
             int ident = kernel.getCalculator().getInteger(param.get(0));
             int index = kernel.flows.search(ident);
             liste = getFinalList(param.get(1));
-            if (index == -1)
-                throw new LogoException(app, Logo.messages
-                        .getString("flux_non_disponible")
-                        + " " + ident);
+            if (index == -1) throw new LogoException(app, Logo.messages.getString("flux_non_disponible") + " " + ident);
             Flow flow = kernel.flows.get(index);
             FlowWriter flowWriter;
             // If the flow is a readable flow, throw an error
@@ -2644,28 +2745,26 @@ public class Interpreter {
             // Write the line
             flowWriter.append(Utils.unescapeString(liste));
             kernel.flows.set(index, flowWriter);
-        } catch (FileNotFoundException e1) {
-        } catch (IOException e2) {
-        } catch (LogoException e) {
+        } catch (IOException | LogoException ignored) {
         }
+    }
+
+    void clearText(Stack<String> param) {
+        app.getHistoryPanel().clearText();
     }
 
     void closeFile(Stack<String> param) {
         try {
             int ident = kernel.getCalculator().getInteger(param.get(0));
             int index = kernel.flows.search(ident);
-            if (index == -1)
-                throw new LogoException(app, Logo.messages
-                        .getString("flux_non_disponible")
-                        + " " + ident);
+            if (index == -1) throw new LogoException(app, Logo.messages.getString("flux_non_disponible") + " " + ident);
             Flow flow = kernel.flows.get(index);
             // If the flow is a readable flow
             if (flow.isReader()) ((FlowReader) flow).close();
                 // Else if it's a writable flow
             else if (flow.isWriter()) ((FlowWriter) flow).close();
             kernel.flows.remove(index);
-        } catch (IOException e2) {
-        } catch (LogoException e) {
+        } catch (IOException | LogoException ignored) {
         }
     }
 
@@ -2674,17 +2773,12 @@ public class Interpreter {
         String mot;
         try {
             mot = getWord(param.get(1));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             liste = Utils.unescapeString(Logo.config.getDefaultFolder()) + File.separator + Utils.unescapeString(mot);
             int ident = kernel.getCalculator().getInteger(param.get(0));
-            if (kernel.flows.search(ident) == -1)
-                kernel.flows.add(new Flow(ident, liste, false));
-            else
-                throw new LogoException(app, ident + " "
-                        + Logo.messages.getString("flux_existant"));
-        } catch (LogoException e) {
+            if (kernel.flows.search(ident) == -1) kernel.flows.add(new Flow(ident, liste, false));
+            else throw new LogoException(app, ident + " " + Logo.messages.getString("flux_existant"));
+        } catch (LogoException ignored) {
         }
     }
 
@@ -2692,42 +2786,31 @@ public class Interpreter {
         try {
             int ident = kernel.getCalculator().getInteger(param.get(0));
             int index = kernel.flows.search(ident);
-            if (index == -1)
-                throw new LogoException(app, Logo.messages
-                        .getString("flux_non_disponible")
-                        + " " + ident);
+            if (index == -1) throw new LogoException(app, Logo.messages.getString("flux_non_disponible") + " " + ident);
             else {
                 Flow flow = kernel.flows.get(index);
                 FlowReader flowReader = null;
                 // If the flow isn't defined yet, initialize
                 if (!flow.isWriter() && !flow.isReader()) {
                     flowReader = new FlowReader(flow);
-                } else if (flow.isReader())
-                    flowReader = (FlowReader) flow;
+                } else if (flow.isReader()) flowReader = (FlowReader) flow;
                 if (null != flowReader) {
                     if (flow.isFinished()) {
-                        Interpreter.operande = true;
-                        Interpreter.calcul.push(Logo.messages
-                                .getString("control.true"));
+                        Interpreter.returnValue = true;
+                        Interpreter.operands.push(Logo.messages.getString("control.true"));
                     } else {
                         int read = flowReader.isReadable();
+                        Interpreter.returnValue = true;
                         if (read == -1) {
-                            Interpreter.operande = true;
-                            Interpreter.calcul.push(Logo.messages
-                                    .getString("control.true"));
+                            Interpreter.operands.push(Logo.messages.getString("control.true"));
                             flow.setFinished(true);
                         } else {
-                            Interpreter.operande = true;
-                            Interpreter.calcul.push(Logo.messages
-                                    .getString("control.false"));
+                            Interpreter.operands.push(Logo.messages.getString("control.false"));
                         }
                     }
-                } else throw new LogoException(app, Logo.messages
-                        .getString("flux_lecture"));
+                } else throw new LogoException(app, Logo.messages.getString("flux_lecture"));
             }
-        } catch (FileNotFoundException e1) {
-        } catch (IOException e2) {
-        } catch (LogoException e) {
+        } catch (IOException | LogoException ignored) {
         }
     }
 
@@ -2737,10 +2820,7 @@ public class Interpreter {
             int ident = kernel.getCalculator().getInteger(param.get(0));
             int index = kernel.flows.search(ident);
             liste = getFinalList(param.get(1));
-            if (index == -1)
-                throw new LogoException(app, Logo.messages
-                        .getString("flux_non_disponible")
-                        + " " + ident);
+            if (index == -1) throw new LogoException(app, Logo.messages.getString("flux_non_disponible") + " " + ident);
             Flow flow = kernel.flows.get(index);
             FlowWriter flowWriter;
             // If the flow is a readable flow, throw an error
@@ -2749,14 +2829,10 @@ public class Interpreter {
             else if (flow.isWriter()) flowWriter = (FlowWriter) flow;
                 // Else the flow isn't defined yet, initialize
             else flowWriter = new FlowWriter(flow);
-
-//					System.out.println(flow.isReader()+" "+flow.isWriter());
             // Write the line
             flowWriter.write(Utils.unescapeString(liste));
             kernel.flows.set(index, flowWriter);
-        } catch (FileNotFoundException e1) {
-        } catch (IOException e2) {
-        } catch (LogoException e) {
+        } catch (IOException | LogoException ignored) {
         }
     }
 
@@ -2764,16 +2840,11 @@ public class Interpreter {
         try {
             int ident = kernel.getCalculator().getInteger(param.get(0));
             int index = kernel.flows.search(ident);
-            if (index == -1)
-                throw new LogoException(app, Logo.messages
-                        .getString("flux_non_disponible")
-                        + " " + ident);
+            if (index == -1) throw new LogoException(app, Logo.messages.getString("flux_non_disponible") + " " + ident);
             Flow flow = kernel.flows.get(index);
             FlowReader flowReader;
             // If the flow is a writable flow, throw error
-            if (flow.isWriter())
-                throw new LogoException(app, Logo.messages
-                        .getString("flux_lecture"));
+            if (flow.isWriter()) throw new LogoException(app, Logo.messages.getString("flux_lecture"));
                 // else if the flow is reader, convert to FlowReader
             else if (flow.isReader()) {
                 flowReader = ((FlowReader) flow);
@@ -2787,23 +2858,19 @@ public class Interpreter {
             int character = ((FlowReader) flow).readChar();
             if (character == -1) {
                 flow.setFinished(true);
-                throw new LogoException(app, Logo.messages
-                        .getString("fin_flux")
-                        + " " + ident);
+                throw new LogoException(app, Logo.messages.getString("fin_flux") + " " + ident);
             }
-            Interpreter.operande = true;
+            Interpreter.returnValue = true;
             String car = String.valueOf(character);
             if (car.equals("\\")) car = "\\\\";
-            Interpreter.calcul.push(car);
+            Interpreter.operands.push(car);
             kernel.flows.set(index, flowReader);
         } catch (FileNotFoundException e1) {
             try {
-                throw new LogoException(app, Logo.messages
-                        .getString("error.iolecture"));
-            } catch (LogoException e5) {
+                throw new LogoException(app, Logo.messages.getString("error.iolecture"));
+            } catch (LogoException ignored) {
             }
-        } catch (IOException e2) {
-        } catch (LogoException e) {
+        } catch (IOException | LogoException ignored) {
         }
     }
 
@@ -2811,16 +2878,11 @@ public class Interpreter {
         try {
             int ident = kernel.getCalculator().getInteger(param.get(0));
             int index = kernel.flows.search(ident);
-            if (index == -1)
-                throw new LogoException(app, Logo.messages
-                        .getString("flux_non_disponible")
-                        + " " + ident);
+            if (index == -1) throw new LogoException(app, Logo.messages.getString("flux_non_disponible") + " " + ident);
             Flow flow = kernel.flows.get(index);
             FlowReader flowReader;
             // If the flow is a writable flow, throw error
-            if (flow.isWriter())
-                throw new LogoException(app, Logo.messages
-                        .getString("flux_lecture"));
+            if (flow.isWriter()) throw new LogoException(app, Logo.messages.getString("flux_lecture"));
                 // else if the flow is a readable flow, convert to FlowReader
             else if (flow.isReader()) {
                 flowReader = ((FlowReader) flow);
@@ -2834,176 +2896,144 @@ public class Interpreter {
             String line = flowReader.readLine();
             if (null == line) {
                 flow.setFinished(true);
-                throw new LogoException(app, Logo.messages.getString("fin_flux")
-                        + " " + ident);
+                throw new LogoException(app, Logo.messages.getString("fin_flux") + " " + ident);
             }
-            Interpreter.operande = true;
-            Interpreter.calcul.push("[ " + Utils.formatCode(line.trim()) + " ] ");
+            Interpreter.returnValue = true;
+            Interpreter.operands.push("[ " + Utils.formatCode(line.trim()) + " ] ");
             kernel.flows.set(index, flowReader);
         } catch (FileNotFoundException e1) {
             try {
-                throw new LogoException(app, Logo.messages
-                        .getString("error.iolecture"));
-            } catch (LogoException e5) {
+                throw new LogoException(app, Logo.messages.getString("error.iolecture"));
+            } catch (LogoException ignored) {
             }
-        } catch (IOException e2) {
-        } catch (LogoException e) {
+        } catch (IOException | LogoException ignored) {
         }
     }
 
     void getOpenFiles(Stack<String> param) {
-        String liste;
-        liste = "[ ";
+        StringBuilder liste;
+        liste = new StringBuilder("[ ");
         for (Flow flow : kernel.flows) {
-            liste += "[ " + flow.getId()
-                    + " " + flow.getPath() + " ] ";
+            liste.append("[ ").append(flow.getId()).append(" ").append(flow.getPath()).append(" ] ");
         }
-        liste += "] ";
-        Interpreter.operande = true;
-        Interpreter.calcul.push(liste);
+        liste.append("] ");
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(liste.toString());
     }
 
     void getTextFont(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push("[ "
-                + HistoryPanel.printFontId
-                + " [ "
-                + Application.fonts[HistoryPanel.printFontId]
-                .getFontName() + " ] ] ");
+        Interpreter.returnValue = true;
+        Interpreter.operands.push("[ " + HistoryPanel.printFontId + " [ " + Application.fonts[HistoryPanel.printFontId].getFontName() + " ] ] ");
     }
 
     void setTextFont(Stack<String> param) {
         try {
             int int_police = kernel.getCalculator().getInteger(param.get(0));
-            HistoryPanel.printFontId = int_police
-                    % Application.fonts.length;
+            HistoryPanel.printFontId = int_police % Application.fonts.length;
             app.getHistoryPanel().setFontNumber(int_police);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getLabelFont(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push("[ "
-                + app.getDrawPanel().drawingFont
-                + " [ "
-                + Application.fonts[app.getDrawPanel().drawingFont]
-                .getFontName() + " ] ] ");
+        Interpreter.returnValue = true;
+        Interpreter.operands.push("[ " + app.getDrawPanel().drawingFont + " [ " + Application.fonts[app.getDrawPanel().drawingFont].getFontName() + " ] ] ");
     }
 
     void setLabelFont(Stack<String> param) {
         try {
             int int_police = kernel.getCalculator().getInteger(param.get(0));
-            app.getDrawPanel().drawingFont = int_police
-                    % Application.fonts.length;
-        } catch (LogoException e) {
+            app.getDrawPanel().drawingFont = int_police % Application.fonts.length;
+        } catch (LogoException ignored) {
         }
     }
 
     void isCountdownEnded(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         if (Calendar.getInstance().getTimeInMillis() > Kernel.chrono)
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
+            Interpreter.operands.push(Logo.messages.getString("vrai"));
+        else Interpreter.operands.push(Logo.messages.getString("faux"));
     }
 
     void countdown(Stack<String> param) {
         try {
             int temps = kernel.getCalculator().getInteger(param.get(0));
-            Kernel.chrono = Calendar.getInstance().getTimeInMillis()
-                    + 1000 * temps;
-        } catch (LogoException e) {
+            Kernel.chrono = Calendar.getInstance().getTimeInMillis() + 1000L * temps;
+        } catch (LogoException ignored) {
         }
     }
 
     void getTimePassed(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         long heure_actuelle = Calendar.getInstance().getTimeInMillis();
-        Interpreter.calcul
-                .push(String
-                        .valueOf((heure_actuelle - Logo.getStartupHour()) / 1000));
+        Interpreter.operands.push(String.valueOf((heure_actuelle - Logo.getStartupHour()) / 1000));
     }
 
     void getTime(Stack<String> param) {
         Calendar cal;
-        Interpreter.operande = true;
-        cal = Calendar.getInstance(Logo.getLocale(Logo.config.getLanguage()));
+        Interpreter.returnValue = true;
+        cal = Calendar.getInstance(Objects.requireNonNull(Logo.getLocale(Logo.config.getLanguage())));
         int heure = cal.get(Calendar.HOUR_OF_DAY);
         int minute = cal.get(Calendar.MINUTE);
         int seconde = cal.get(Calendar.SECOND);
-        Interpreter.calcul.push("[ " + heure + " " + minute + " "
-                + seconde + " ] ");
+        Interpreter.operands.push("[ " + heure + " " + minute + " " + seconde + " ] ");
     }
 
     void getDate(Stack<String> param) {
-        Interpreter.operande = true;
-        Calendar cal = Calendar.getInstance(Logo.getLocale(Logo.config.getLanguage()));
+        Interpreter.returnValue = true;
+        Calendar cal = Calendar.getInstance(Objects.requireNonNull(Logo.getLocale(Logo.config.getLanguage())));
         int jour = cal.get(Calendar.DAY_OF_MONTH);
         int mois = cal.get(Calendar.MONTH) + 1;
         int annee = cal.get(Calendar.YEAR);
-        Interpreter.calcul.push("[ " + jour + " " + mois + " " + annee
-                + " ] ");
+        Interpreter.operands.push("[ " + jour + " " + mois + " " + annee + " ] ");
     }
 
     void message(Stack<String> param) {
-        String liste;
         try {
-            liste = getFinalList(param.get(0));
-            StringTokenizer st = new StringTokenizer(liste); // On
-            // découpe
-            // le
-            // message
-            // en
-            // tranche
-            // de
-            // longueurs
-            // acceptables
-            FontMetrics fm = app.getGraphics()
-                    .getFontMetrics(Logo.config.getFont());
-            liste = "";
+            StringBuilder list = new StringBuilder(getFinalList(param.get(0)));
+            StringTokenizer st = new StringTokenizer(list.toString());
+            // The message is cut into slices of acceptable lengths
+            FontMetrics fm = app.getGraphics().getFontMetrics(Logo.config.getFont());
+            list = new StringBuilder();
             String tampon = "";
             while (st.hasMoreTokens()) {
                 tampon += st.nextToken() + " ";
                 if (fm.stringWidth(tampon) > 200) {
-                    liste += tampon + "\n";
+                    list.append(tampon).append("\n");
                     tampon = "";
                 }
             }
-            liste += tampon;
-            liste = Utils.unescapeString(liste);
+            list.append(tampon);
+            list = new StringBuilder(Utils.unescapeString(list.toString()));
 
-            MessageTextArea jt = new MessageTextArea(liste);
+            MessageTextArea jt = new MessageTextArea(list.toString());
             JOptionPane.showMessageDialog(app, jt, "", JOptionPane.INFORMATION_MESSAGE, ResourceLoader.getAppIcon());
 
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void mousePosition(Stack<String> param) {
-        Interpreter.calcul.push(app.getDrawPanel().get_possouris());
-        Interpreter.operande = true;
+        Interpreter.operands.push(app.getDrawPanel().get_possouris());
+        Interpreter.returnValue = true;
     }
 
     void mouseButton(Stack<String> param) {
         while (!app.getDrawPanel().get_lissouris()) {
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
-            if (LogoException.lance)
-                break;
+            if (LogoException.lance) break;
         }
-        Interpreter.calcul.push(String.valueOf(app.getDrawPanel()
-                .get_bouton_souris()));
-        Interpreter.operande = true;
+        Interpreter.operands.push(String.valueOf(app.getDrawPanel().get_bouton_souris()));
+        Interpreter.returnValue = true;
     }
 
     void getTextColor(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         Color c = app.getHistoryPanel().getTextColor();
-        Interpreter.calcul.push("[ " + c.getRed() + " " + c.getGreen()
-                + " " + c.getBlue() + " ] ");
+        Interpreter.operands.push("[ " + c.getRed() + " " + c.getGreen() + " " + c.getBlue() + " ] ");
     }
 
     void setTextColor(Stack<String> param) {
@@ -3015,21 +3045,20 @@ public class Interpreter {
                 if (coul < 0) coul += DrawPanel.defaultColors.length;
                 app.getHistoryPanel().setTextColor(DrawPanel.defaultColors[coul]);
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getTextSize(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(String.valueOf(app.getHistoryPanel()
-                .getFontSize()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(String.valueOf(app.getHistoryPanel().getFontSize()));
     }
 
     void setTextSize(Stack<String> param) {
         try {
             int i = kernel.getCalculator().getInteger(param.get(0));
             app.getHistoryPanel().setFontSize(i);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -3037,14 +3066,22 @@ public class Interpreter {
         try {
             int i = kernel.getCalculator().getInteger(param.get(0));
             app.getSoundPlayer().setTicks(i * 64);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getSequenceIndex(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         double d = (double) app.getSoundPlayer().getTicks() / 64;
-        Interpreter.calcul.push(Calculator.teste_fin_double(d));
+        Interpreter.operands.push(Calculator.teste_fin_double(d));
+    }
+
+    void setInstrument(Stack<String> param) {
+        try {
+            int i = kernel.getCalculator().getInteger(param.get(0));
+            app.getSoundPlayer().setInstrument(i);
+        } catch (LogoException ignored) {
+        }
     }
 
     void deleteSequence(Stack<String> param) {
@@ -3055,18 +3092,9 @@ public class Interpreter {
         app.getSoundPlayer().joue();
     }
 
-    void setInstrument(Stack<String> param) {
-        try {
-            int i = kernel.getCalculator().getInteger(param.get(0));
-            app.getSoundPlayer().setInstrument(i);
-        } catch (LogoException e) {
-        }
-    }
-
     void getInstrument(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(String
-                .valueOf(app.getSoundPlayer().getInstrument()));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(String.valueOf(app.getSoundPlayer().getInstrument()));
     }
 
     void sequence(Stack<String> param) {
@@ -3074,7 +3102,7 @@ public class Interpreter {
         try {
             liste = getFinalList(param.get(0));
             app.getSoundPlayer().cree_sequence(Utils.formatCode(liste).toString());
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -3088,8 +3116,7 @@ public class Interpreter {
                 int premier_dispo = -1;
                 for (int i = 0; i < Logo.config.getMaxTurtles(); i++) {
                     if (null != app.getDrawPanel().turtles[i]) {
-                        if (i != id && premier_dispo == -1)
-                            premier_dispo = i;
+                        if (i != id && premier_dispo == -1) premier_dispo = i;
                         compteur++;
                     }
                 }
@@ -3102,31 +3129,23 @@ public class Interpreter {
                         app.getDrawPanel().toggleTurtle();
                         app.getDrawPanel().turtle = app.getDrawPanel().turtles[tortue_utilisee];
                         app.getDrawPanel().turtles[id] = null;
-                        if (app.getDrawPanel().visibleTurtles.search(String
-                                .valueOf(id)) > 0)
-                            app.getDrawPanel().visibleTurtles.remove(String
-                                    .valueOf(id));
+                        if (app.getDrawPanel().visibleTurtles.search(String.valueOf(id)) > 0)
+                            app.getDrawPanel().visibleTurtles.remove(String.valueOf(id));
                         if (kernel.getActiveTurtle().id == id) {
                             app.getDrawPanel().turtle = app.getDrawPanel().turtles[premier_dispo];
-                            app.getDrawPanel()
-                                    .setStroke(kernel.getActiveTurtle().crayon); // on
+                            app.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon); // on
                             // adapte
                             // le
                             // nouveau
                             // crayon
-                            String police = app.getDrawPanel().getGraphicsFont()
-                                    .getName();
-                            app.getDrawPanel()
-                                    .setFont(new Font(police,
-                                            Font.PLAIN,
-                                            kernel.getActiveTurtle().police));
+                            String police = app.getDrawPanel().getGraphicsFont().getName();
+                            app.getDrawPanel().setFont(new Font(police, Font.PLAIN, kernel.getActiveTurtle().police));
 
                         }
                     } else {
                         try {
-                            throw new LogoException(app, Logo.messages
-                                    .getString("seule_tortue_dispo"));
-                        } catch (LogoException e) {
+                            throw new LogoException(app, Logo.messages.getString("seule_tortue_dispo"));
+                        } catch (LogoException ignored) {
                         }
                     }
                 }
@@ -3134,25 +3153,23 @@ public class Interpreter {
         } catch (NumberFormatException e) {
             try {
                 kernel.getCalculator().getInteger(param.get(0));
-            } catch (LogoException e1) {
+            } catch (LogoException ignored) {
             }
         }
     }
 
     void setFontSize(Stack<String> param) {
         try {
-            int taille = kernel.getCalculator().getInteger(param.get(0));
-            kernel.getActiveTurtle().police = taille;
+            kernel.getActiveTurtle().police = kernel.getCalculator().getInteger(param.get(0));
             Font police = Logo.config.getFont();
-            app.getDrawPanel().setGraphicsFont(police
-                    .deriveFont((float) kernel.getActiveTurtle().police));
-        } catch (LogoException e) {
+            app.getDrawPanel().setGraphicsFont(police.deriveFont((float) kernel.getActiveTurtle().police));
+        } catch (LogoException ignored) {
         }
     }
 
     void getFontSize(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(String.valueOf(kernel.getActiveTurtle().police));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(String.valueOf(kernel.getActiveTurtle().police));
     }
 
     void setTurtle(Stack<String> param) {
@@ -3167,51 +3184,45 @@ public class Interpreter {
                 app.getDrawPanel().turtle = app.getDrawPanel().turtles[i];
                 app.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon);
                 String police = app.getDrawPanel().getGraphicsFont().getName();
-                app.getDrawPanel()
-                        .setGraphicsFont(new Font(police,
-                                Font.PLAIN,
-                                kernel.getActiveTurtle().police));
+                app.getDrawPanel().setGraphicsFont(new Font(police, Font.PLAIN, kernel.getActiveTurtle().police));
 
             } else {
                 try {
-                    throw new LogoException(app, Logo.messages
-                            .getString("tortue_inaccessible"));
-                } catch (LogoException e) {
+                    throw new LogoException(app, Logo.messages.getString("tortue_inaccessible"));
+                } catch (LogoException ignored) {
                 }
             }
         } catch (NumberFormatException e) {
             try {
                 kernel.getCalculator().getInteger(param.get(0));
-            } catch (LogoException e1) {
+            } catch (LogoException ignored) {
             }
         }
     }
 
     void getTurtles(Stack<String> param) {
-        Interpreter.operande = true;
-        String li = "[ ";
+        Interpreter.returnValue = true;
+        StringBuilder li = new StringBuilder("[ ");
         for (int i = 0; i < app.getDrawPanel().turtles.length; i++) {
-            if (null != app.getDrawPanel().turtles[i])
-                li += i + " ";
+            if (null != app.getDrawPanel().turtles[i]) li.append(i).append(" ");
         }
-        li += "]";
-        Interpreter.calcul.push(li);
+        li.append("]");
+        Interpreter.operands.push(li.toString());
     }
 
     void getActiveTurtle(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(String.valueOf(kernel.getActiveTurtle().id));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(String.valueOf(kernel.getActiveTurtle().id));
     }
 
     void define(Stack<String> param) {
         String mot;
         try {
             mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
-            if (mot.equals("")) new LogoException(app, Logo.messages.getString("procedure_vide"));
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            if (mot.equals("")) throw new LogoException(app, Logo.messages.getString("procedure_vide"));
             String list = getFinalList(param.get(1));
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (int i = 1; i <= numberOfElements(list); i++) {
                 String liste1 = item(list, i);
                 liste1 = getFinalList(liste1);
@@ -3255,12 +3266,12 @@ public class Interpreter {
             sb.append("\n");
             sb.append(Logo.messages.getString("fin"));
             app.editor.appendText(new String(sb));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
         try {
             app.editor.parseProcedures();
             app.editor.clearText();
-        } catch (Exception e2) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -3272,90 +3283,86 @@ public class Interpreter {
                 Logo.config.setActiveTurtle(i);
             }
             kernel.change_image_tortue(i);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getShape(Stack<String> param) {
         try {
             primitive2D("drawing.shape");
-            Interpreter.operande = true;
-            Interpreter.calcul.push(String.valueOf(kernel.getActiveTurtle().getShape()));
-        } catch (LogoException e) {
+            Interpreter.returnValue = true;
+            Interpreter.operands.push(String.valueOf(kernel.getActiveTurtle().getShape()));
+        } catch (LogoException ignored) {
         }
     }
 
-    void _false(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(Logo.messages.getString("faux"));
+    void falseValue(Stack<String> param) {
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(Logo.messages.getString("faux"));
     }
 
-    void _true(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(Logo.messages.getString("vrai"));
+    void trueValue(Stack<String> param) {
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(Logo.messages.getString("vrai"));
     }
 
     void atan(Stack<String> param) {
         try {
-            Interpreter.calcul.push(kernel.getCalculator().atan(param.get(0)));
-            Interpreter.operande = true;
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().atan(param.get(0)));
+            Interpreter.returnValue = true;
+        } catch (LogoException ignored) {
         }
     }
 
     void asin(Stack<String> param) {
         try {
-            Interpreter.calcul.push(kernel.getCalculator().asin(param.get(0)));
-            Interpreter.operande = true;
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().asin(param.get(0)));
+            Interpreter.returnValue = true;
+        } catch (LogoException ignored) {
         }
     }
 
     void acos(Stack<String> param) {
         try {
-            Interpreter.calcul.push(kernel.getCalculator().acos(param.get(0)));
-            Interpreter.operande = true;
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().acos(param.get(0)));
+            Interpreter.returnValue = true;
+        } catch (LogoException ignored) {
         }
     }
 
     void tan(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().tan(param.get(0)));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().tan(param.get(0)));
+        } catch (LogoException ignored) {
         }
     }
 
     void pi(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(kernel.getCalculator().pi());
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(kernel.getCalculator().pi());
     }
 
     void load(Stack<String> param) {
         String mot;
         try {
             mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             String path = Utils.unescapeString(Logo.config.getDefaultFolder()) + File.separator + mot;
             try {
                 String txt = Utils.readLogoFile(path);
                 app.editor.appendText(txt);
             } catch (IOException e1) {
-                throw new LogoException(app,
-                        Logo.messages.getString("error.iolecture"));
+                throw new LogoException(app, Logo.messages.getString("error.iolecture"));
             }
             try {
                 app.editor.parseProcedures();
-                if (!app.isNewEnabled())
-                    app.setNewEnabled(true);
-            } catch (Exception e3) {
-                System.out.println(e3);
+                if (!app.isNewEnabled()) app.setNewEnabled(true);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             app.editor.clearText();
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -3363,11 +3370,9 @@ public class Interpreter {
         String mot;
         try {
             mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             saveProcedures(mot, null);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -3376,73 +3381,57 @@ public class Interpreter {
         String liste;
         try {
             mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, Logo.messages
-                        .getString("error.word"));
+            if (null == mot) throw new LogoException(app, Logo.messages.getString("error.word"));
             liste = getFinalList(param.get(1));
             StringTokenizer st = new StringTokenizer(liste);
-            Stack<String> pile = new Stack<String>();
-            while (st.hasMoreTokens())
-                pile.push(st.nextToken());
+            Stack<String> pile = new Stack<>();
+            while (st.hasMoreTokens()) pile.push(st.nextToken());
             saveProcedures(mot, pile);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void getDirectory(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push("\"" + Logo.config.getDefaultFolder());
+        Interpreter.returnValue = true;
+        Interpreter.operands.push("\"" + Logo.config.getDefaultFolder());
     }
 
     void setDirectory(Stack<String> param) {
         String liste;
         try {
             liste = getWord(param.get(0));
-            if (null == liste)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
+            if (null == liste) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
             String chemin = Utils.unescapeString(liste);
             if ((new File(chemin)).isDirectory() && !chemin.startsWith("..")) {
                 Logo.config.setDefaultFolder(Utils.escapeString(chemin));
-            } else throw new LogoException(app, liste
-                    + " "
-                    + Logo.messages
-                    .getString("erreur_pas_repertoire"));
-        } catch (LogoException e) {
+            } else throw new LogoException(app, liste + " " + Logo.messages.getString("erreur_pas_repertoire"));
+        } catch (LogoException ignored) {
         }
     }
 
     void getFiles(Stack<String> param) {
         String str = Utils.unescapeString(Logo.config.getDefaultFolder());
         File f = new File(str);
-        String fichier = "";
-        String dossier = "";
+        StringBuilder file = new StringBuilder();
+        StringBuilder directory = new StringBuilder();
         int nbdossier = 0;
         int nbfichier = 0;
         String[] l = f.list();
-        for (int i = 0; i < l.length; i++) {
-            if ((new File(str + File.separator
-                    + l[i])).isDirectory()) {
+        for (String s : Objects.requireNonNull(l)) {
+            if ((new File(str + File.separator + s)).isDirectory()) {
                 nbdossier++;
-                if (nbdossier % 5 == 0)
-                    dossier += l[i] + "\n";
-                else
-                    dossier += l[i] + " ";
+                if (nbdossier % 5 == 0) directory.append(s).append("\n");
+                else directory.append(s).append(" ");
             } else {
                 nbfichier++;
-                if (nbfichier % 5 == 0)
-                    fichier += l[i] + "\n";
-                else
-                    fichier += l[i] + " ";
+                if (nbfichier % 5 == 0) file.append(s).append("\n");
+                else file.append(s).append(" ");
             }
         }
         String texte = "";
-        if (!dossier.equals(""))
-            texte += Logo.messages.getString("repertoires") + ":\n"
-                    + dossier + "\n";
-        if (!fichier.equals(""))
-            texte += Logo.messages.getString("fichiers") + ":\n"
-                    + fichier + "\n";
+        if (!directory.toString().equals(""))
+            texte += Logo.messages.getString("repertoires") + ":\n" + directory + "\n";
+        if (!file.toString().equals("")) texte += Logo.messages.getString("fichiers") + ":\n" + file + "\n";
         app.updateHistory("commentaire", texte);
     }
 
@@ -3455,141 +3444,127 @@ public class Interpreter {
                 mot = new String(Utils.formatCode(mot));
             } else mot = mot + " ";
             app.getKernel().getInstructionBuffer().insert(mot);
-            Interpreter.renvoi_instruction = true;
-        } catch (LogoException e) {
+            Interpreter.evalReturnValue = true;
+        } catch (LogoException ignored) {
         }
     }
 
     void isProcedure(Stack<String> param) {
         String mot;
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         boolean test = false;
         mot = getWord(param.get(0));
-        for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-            if (wp.getProcedure(i).name.equals(mot))
-                test = true;
+        for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
+            if (workspace.getProcedure(i).name.equals(mot)) test = true;
         }
-        if (test)
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
+        if (test) Interpreter.operands.push(Logo.messages.getString("vrai"));
+        else Interpreter.operands.push(Logo.messages.getString("faux"));
     }
 
     void isPrimitive(Stack<String> param) {
         String mot;
         try {
-            Interpreter.operande = true;
+            Interpreter.returnValue = true;
             mot = getWord(param.get(0));
-            if (null == mot)
-                throw new LogoException(app, param.get(0) + " "
-                        + Logo.messages.getString("error.word"));
-            if (primitiveMap.containsKey(mot))
-                Interpreter.calcul.push(Logo.messages.getString("vrai"));
-            else
-                Interpreter.calcul.push(Logo.messages.getString("faux"));
-        } catch (LogoException e) {
+            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
+            if (primitiveMap.containsKey(mot)) Interpreter.operands.push(Logo.messages.getString("vrai"));
+            else Interpreter.operands.push(Logo.messages.getString("faux"));
+        } catch (LogoException ignored) {
         }
     }
 
     void isVisible(Stack<String> param) {
-        Interpreter.operande = true;
-        if (kernel.getActiveTurtle().isVisible())
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
+        Interpreter.returnValue = true;
+        if (kernel.getActiveTurtle().isVisible()) Interpreter.operands.push(Logo.messages.getString("vrai"));
+        else Interpreter.operands.push(Logo.messages.getString("faux"));
     }
 
     void isPenDown(Stack<String> param) {
-        Interpreter.operande = true;
-        if (kernel.getActiveTurtle().isPenDown())
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
+        Interpreter.returnValue = true;
+        if (kernel.getActiveTurtle().isPenDown()) Interpreter.operands.push(Logo.messages.getString("vrai"));
+        else Interpreter.operands.push(Logo.messages.getString("faux"));
     }
 
     void screenColor(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         Color color = app.getDrawPanel().getScreenColor();
-        Interpreter.calcul.push("[ " + color.getRed() + " "
-                + color.getGreen() + " "
-                + color.getBlue() + " ] ");
+        Interpreter.operands.push("[ " + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + " ] ");
     }
 
     void penColor(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push("[ "
-                + kernel.getActiveTurtle().penColor.getRed() + " "
-                + kernel.getActiveTurtle().penColor.getGreen() + " "
-                + kernel.getActiveTurtle().penColor.getBlue() + " ] ");
+        Interpreter.returnValue = true;
+        Interpreter.operands.push("[ " + kernel.getActiveTurtle().penColor.getRed() + " " + kernel.getActiveTurtle().penColor.getGreen() + " " + kernel.getActiveTurtle().penColor.getBlue() + " ] ");
     }
 
     void distance(Stack<String> param) {
         try {
-            Interpreter.operande = true;
+            Interpreter.returnValue = true;
             double distance = app.getDrawPanel().distance(getFinalList(param.get(0)));
-            Interpreter.calcul.push(Calculator.teste_fin_double(distance));
-        } catch (LogoException e) {
+            Interpreter.operands.push(Calculator.teste_fin_double(distance));
+        } catch (LogoException ignored) {
         }
     }
 
     void towards(Stack<String> param) {
         try {
-            Interpreter.operande = true;
+            Interpreter.returnValue = true;
             if (DrawPanel.windowMode != DrawPanel.WINDOW_3D) {
                 double angle = app.getDrawPanel().to2D(getFinalList(param.get(0)));
-                Interpreter.calcul.push(Calculator.teste_fin_double(angle));
+                Interpreter.operands.push(Calculator.teste_fin_double(angle));
             } else {
                 double[] orientation = app.getDrawPanel().vers3D(getFinalList(param.get(0)));
-                Interpreter.calcul.push("[ " + orientation[0] + " " + orientation[1] + " " + orientation[2] + " ] ");
+                Interpreter.operands.push("[ " + orientation[0] + " " + orientation[1] + " " + orientation[2] + " ] ");
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void dot(Stack<String> param) {
-        if (kernel.getActiveTurtle().isVisible())
-            app.getDrawPanel().eraseTurtle(false);
+        if (kernel.getActiveTurtle().isVisible()) app.getDrawPanel().eraseTurtle(false);
         try {
             app.getDrawPanel().point(getFinalList(param.get(0)));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
-        if (kernel.getActiveTurtle().isVisible())
-            app.getDrawPanel().eraseTurtle(true);
-    }
-
-    void fill(Stack<String> param) {
-        app.getDrawPanel().fill();
+        if (kernel.getActiveTurtle().isVisible()) app.getDrawPanel().eraseTurtle(true);
     }
 
     void readChar(Stack<String> param) {
         while (app.getKey() == -1) {
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
-            if (LogoException.lance)
-                break;
+            if (LogoException.lance) break;
         }
-        Interpreter.calcul.push(String.valueOf(app.getKey()));
-        Interpreter.operande = true;
+        Interpreter.operands.push(String.valueOf(app.getKey()));
+        Interpreter.returnValue = true;
         app.setKey(-1);
     }
 
-    void evalWhile(Stack<String> param) {
+    void fill(Stack<String> param) {
+        app.getDrawPanel().fill();
+    }
+
+    void testWhile(Stack<String> param) {
         try {
             String liste = getFinalList(param.get(1));
-            boolean predicat = predicat(param.get(0));
-            whilesi(predicat, liste);
-        } catch (LogoException e) {
+            boolean predicat = getBoolean(param.get(0));
+            if (predicat) {
+                app.getKernel().getInstructionBuffer().insert(liste + loops.peek().getInstr());
+            } else {
+                try {
+                    eraseLevelStop();
+                } catch (LogoException ignored) {
+                }
+            }
+        } catch (LogoException ignored) {
         }
     }
 
     void isKey(Stack<String> param) {
-        Interpreter.operande = true;
-        if (app.getKey() != -1)
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
+        Interpreter.returnValue = true;
+        if (app.getKey() != -1) Interpreter.operands.push(Logo.messages.getString("vrai"));
+        else Interpreter.operands.push(Logo.messages.getString("faux"));
     }
 
     void read(Stack<String> param) {
@@ -3597,41 +3572,38 @@ public class Interpreter {
         try {
             String liste = getFinalList(param.get(0));
             mot = getWord(param.get(1));
-            if (null == mot)
-                throw new LogoException(app, Logo.messages
-                        .getString("error.word"));
-            FontMetrics fm = app.getGraphics()
-                    .getFontMetrics(Logo.config.getFont());
+            if (null == mot) throw new LogoException(app, Logo.messages.getString("error.word"));
+            FontMetrics fm = app.getGraphics().getFontMetrics(Logo.config.getFont());
             int longueur = fm.stringWidth(liste) + 100;
             InputFrame inputFrame = new InputFrame(liste, longueur);
             while (inputFrame.isVisible()) {
                 try {
                     Thread.sleep(50);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
             }
-            param = new Stack<String>();
+            param = new Stack<>();
             param.push("\"" + mot);
             String phrase = inputFrame.getText();
             // phrase="[ "+Logo.rajoute_backslash(phrase)+" ] ";
-            StringBuffer tampon = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             for (int j = 0; j < phrase.length(); j++) {
                 char c = phrase.charAt(j);
-                if (c == '\\') tampon.append("\\\\");
-                else tampon.append(c);
+                if (c == '\\') buffer.append("\\\\");
+                else buffer.append(c);
             }
-            int offset = tampon.indexOf(" ");
+            int offset = buffer.indexOf(" ");
             if (offset != -1) {
-                tampon.insert(0, "[ ");
-                tampon.append(" ] ");
+                buffer.insert(0, "[ ");
+                buffer.append(" ] ");
             } else {
                 try {
                     Double.parseDouble(phrase);
                 } catch (NumberFormatException e) {
-                    tampon.insert(0, "\"");
+                    buffer.insert(0, "\"");
                 }
             }
-            phrase = new String(tampon);
+            phrase = new String(buffer);
             param.push(phrase);
             globalMake(param);
             String texte = liste + "\n" + phrase;
@@ -3639,11 +3611,11 @@ public class Interpreter {
             app.focusCommandLine();
             inputFrame.dispose();
             app.focusCommandLine();
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
-    void _while(Stack<String> param) {
+    void whileLoop(Stack<String> param) {
         try {
             String li1 = getList(param.get(0));
             li1 = new String(Utils.formatCode(li1));
@@ -3651,17 +3623,16 @@ public class Interpreter {
             li2 = new String(Utils.formatCode(li2));
             String instr = "\\siwhile " + li1 + "[ " + li2 + "] ";
             LoopWhile bp = new LoopWhile(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, instr);
-            stackLoop.push(bp);
+            loops.push(bp);
             app.getKernel().getInstructionBuffer().insert(instr + Interpreter.END_LOOP + " ");
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void setPenWidth(Stack<String> param) {
         try {
             double nombre = kernel.getCalculator().numberDouble(param.get(0));
-            if (nombre < 0)
-                nombre = Math.abs(nombre);
+            if (nombre < 0) nombre = Math.abs(nombre);
             if (DrawPanel.record3D == DrawPanel.RECORD_3D_LINE || DrawPanel.record3D == DrawPanel.RECORD_3D_POINT) {
                 if (kernel.getActiveTurtle().getPenWidth() != (float) nombre) DrawPanel.poly.addToScene();
             }
@@ -3669,13 +3640,11 @@ public class Interpreter {
             app.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon);
             if (DrawPanel.record3D == DrawPanel.RECORD_3D_LINE) {
                 DrawPanel.poly = new ElementLine(app);
-                DrawPanel.poly.addVertex(new Point3d(kernel.getActiveTurtle().X / 1000,
-                        kernel.getActiveTurtle().Y / 1000,
-                        kernel.getActiveTurtle().Z / 1000), kernel.getActiveTurtle().penColor);
+                DrawPanel.poly.addVertex(new Point3d(kernel.getActiveTurtle().X / 1000, kernel.getActiveTurtle().Y / 1000, kernel.getActiveTurtle().Z / 1000), kernel.getActiveTurtle().penColor);
             } else if (DrawPanel.record3D == DrawPanel.RECORD_3D_POINT) {
                 DrawPanel.poly = new ElementPoint(app);
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -3684,10 +3653,21 @@ public class Interpreter {
         try {
             primitive2D("drawing.loadimage");
             image = getImage(param.get(0));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
-        if (null != image)
-            app.getDrawPanel().drawImage(image);
+        if (null != image) app.getDrawPanel().drawImage(image);
+    }
+
+    void findColor(Stack<String> param) {
+        if (kernel.getActiveTurtle().isVisible()) app.getDrawPanel().eraseTurtle(false);
+        try {
+            String liste = getFinalList(param.get(0));
+            Color r = app.getDrawPanel().guessColorPoint(liste);
+            Interpreter.returnValue = true;
+            Interpreter.operands.push("[ " + r.getRed() + " " + r.getGreen() + " " + r.getBlue() + " ] ");
+        } catch (LogoException ignored) {
+        }
+        if (kernel.getActiveTurtle().isVisible()) app.getDrawPanel().eraseTurtle(true);
     }
 
     void fenceTurtle(Stack<String> param) {
@@ -3702,60 +3682,45 @@ public class Interpreter {
         app.getDrawPanel().setWindowMode(DrawPanel.WINDOW_CLASSIC);
     }
 
-    void findColor(Stack<String> param) {
-        if (kernel.getActiveTurtle().isVisible())
-            app.getDrawPanel().eraseTurtle(false);
-        try {
-            String liste = getFinalList(param.get(0));
-            Color r = app.getDrawPanel().guessColorPoint(liste);
-            Interpreter.operande = true;
-            Interpreter.calcul.push("[ " + r.getRed() + " "
-                    + r.getGreen() + " " + r.getBlue() + " ] ");
-        } catch (LogoException e) {
-        }
-        if (kernel.getActiveTurtle().isVisible())
-            app.getDrawPanel().eraseTurtle(true);
-    }
-
     void label(Stack<String> param) {
         String mot;
         String par = param.get(0).trim();
-        if (isList(par))
-            par = formatList(par.substring(1, par.length() - 1));
+        if (isList(par)) par = formatList(par.substring(1, par.length() - 1));
         mot = getWord(param.get(0));
-        if (null == mot)
-            app.getDrawPanel().label(Utils.unescapeString(par));
-        else
-            app.getDrawPanel().label(Utils.unescapeString(mot));
+        if (null == mot) app.getDrawPanel().label(Utils.unescapeString(par));
+        else app.getDrawPanel().label(Utils.unescapeString(mot));
     }
 
     void word(Stack<String> param) {
         String mot;
-        Interpreter.operande = true;
-        String result = "";
-        for (int i = 0; i < param.size(); i++) {
-            mot = getWord(param.get(i));
-            if (null == mot)
-                try {
-                    throw new LogoException(app, param.get(i) + " "
-                            + Logo.messages.getString("error.word"));
-                } catch (LogoException e) {
-                }
-            result += mot;
+        Interpreter.returnValue = true;
+        StringBuilder result = new StringBuilder();
+        for (String s : param) {
+            mot = getWord(s);
+            if (null == mot) try {
+                throw new LogoException(app, s + " " + Logo.messages.getString("error.word"));
+            } catch (LogoException ignored) {
+            }
+            result.append(mot);
         }
         try {
-            Double.parseDouble(result);
+            Double.parseDouble(result.toString());
         } catch (NumberFormatException e) {
-            result = "\"" + result;
+            result.insert(0, "\"");
         }
-        Interpreter.calcul.push(result);
+        Interpreter.operands.push(result.toString());
     }
 
     void eraseAll(Stack<String> param) {
-        wp.deleteAllProcedures();
-        wp.deleteAllVariables();
-        wp.deleteAllPropertyLists();
+        workspace.deleteAllProcedures();
+        workspace.deleteAllVariables();
+        workspace.deleteAllPropertyLists();
         app.setNewEnabled(false);
+    }
+
+    void procedures(Stack<String> param) {
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(new String(getAllProcedures()));
     }
 
     void eraseVariable(Stack<String> param) {
@@ -3766,42 +3731,33 @@ public class Interpreter {
         erase(param.get(0), "procedure");
     }
 
-    void procedures(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(new String(getAllProcedures()));
-    }
-
     void wait(Stack<String> param) {
         try {
             int temps = kernel.getCalculator().getInteger(param.get(0));
             if (temps < 0) {
                 String attends = Utils.primitiveName("time.wait");
-                throw new LogoException(app, attends + " "
-                        + Logo.messages.getString("attend_positif"));
+                throw new LogoException(app, attends + " " + Logo.messages.getString("attend_positif"));
             } else {
                 int nbsecondes = temps / 60;
                 int reste = temps % 60;
                 for (int i = 0; i < nbsecondes; i++) {
                     Thread.sleep(1000);
-                    if (app.error)
-                        break;
+                    if (app.error) break;
                 }
-                if (!app.error)
-                    Thread.sleep(reste * 50 / 3);
+                if (!app.error) Thread.sleep(reste * 50 / 3);
             }
 
-        } catch (LogoException e1) {
-        } catch (InterruptedException e2) {
+        } catch (LogoException | InterruptedException ignored) {
         }
     }
 
     void random(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
             int i = kernel.getCalculator().getInteger(param.get(0));
             i = (int) Math.floor(Math.random() * i);
-            Interpreter.calcul.push(String.valueOf(i));
-        } catch (LogoException e) {
+            Interpreter.operands.push(String.valueOf(i));
+        } catch (LogoException ignored) {
         }
     }
 
@@ -3811,7 +3767,7 @@ public class Interpreter {
             if (isList(param.get(0))) {
                 try {
                     color = rgb(param.get(0), Utils.primitiveName("drawing.setscreencolor"));
-                } catch (LogoException e) {
+                } catch (LogoException ignored) {
                 }
             } else {
                 int coul = kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
@@ -3819,7 +3775,7 @@ public class Interpreter {
                 color = DrawPanel.defaultColors[coul];
             }
             app.getDrawPanel().setScreenColor(color);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -3829,7 +3785,7 @@ public class Interpreter {
             if (isList(param.get(0))) {
                 try {
                     color = rgb(param.get(0), Utils.primitiveName("drawing.setpencolor"));
-                } catch (LogoException e) {
+                } catch (LogoException ignored) {
                 }
             } else {
                 int coul = kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
@@ -3837,7 +3793,7 @@ public class Interpreter {
                 color = DrawPanel.defaultColors[coul];
             }
             app.getDrawPanel().setPenColor(color);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -3845,54 +3801,54 @@ public class Interpreter {
         try {
             local(param);
             globalMake(param);
-            Interpreter.operande = false;
-        } catch (LogoException e) {
+            Interpreter.returnValue = false;
+        } catch (LogoException ignored) {
         }
     }
 
     void localWrap(Stack<String> param) {
         try {
             local(param);
-            Interpreter.operande = false;
-        } catch (LogoException e) {
+            Interpreter.returnValue = false;
+        } catch (LogoException ignored) {
         }
     }
 
     void globalMakeWrap(Stack<String> param) {
         try {
             globalMake(param);
-            Interpreter.operande = false;
-        } catch (LogoException e) {
+            Interpreter.returnValue = false;
+        } catch (LogoException ignored) {
         }
     }
 
     void sqrt(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().sqrt(param.get(0)));
+            Interpreter.operands.push(kernel.getCalculator().sqrt(param.get(0)));
 
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void isMember69(Stack<String> param) {
         try {
             isMember(param, 69);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void isMember71(Stack<String> param) {
         try {
             isMember(param, 71);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void isBeforeWrap(Stack<String> param) {
         try {
             isBefore(param);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -3903,155 +3859,136 @@ public class Interpreter {
         if (null == mot) { // si c'est une liste ou un nombre
             try {
                 liste = getFinalList(liste).trim();
-                if (liste.equals(""))
-                    Interpreter.calcul.push(Logo.messages
-                            .getString("control.true"));
-                else
-                    Interpreter.calcul.push(Logo.messages
-                            .getString("control.false"));
-            } catch (LogoException e) {
+                if (liste.equals("")) Interpreter.operands.push(Logo.messages.getString("control.true"));
+                else Interpreter.operands.push(Logo.messages.getString("control.false"));
+            } catch (LogoException ignored) {
             }
         } else { // Si c'est un mot
-            if (mot.equals(""))
-                Interpreter.calcul.push(Logo.messages.getString("vrai"));
-            else
-                Interpreter.calcul.push(Logo.messages.getString("faux"));
+            if (mot.equals("")) Interpreter.operands.push(Logo.messages.getString("vrai"));
+            else Interpreter.operands.push(Logo.messages.getString("faux"));
         }
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
     }
 
     void isList(Stack<String> param) {
         String liste = param.get(0).trim();
-        if (isList(liste))
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
-        Interpreter.operande = true;
+        if (isList(liste)) Interpreter.operands.push(Logo.messages.getString("vrai"));
+        else Interpreter.operands.push(Logo.messages.getString("faux"));
+        Interpreter.returnValue = true;
     }
 
     void isNumber(Stack<String> param) {
         try {
             Double.parseDouble(param.get(0));
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
+            Interpreter.operands.push(Logo.messages.getString("vrai"));
         } catch (NumberFormatException e) {
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
+            Interpreter.operands.push(Logo.messages.getString("faux"));
         }
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
     }
 
     void isWord(Stack<String> param) {
         String mot;
         mot = getWord(param.get(0));
-        if (null == mot)
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        Interpreter.operande = true;
+        if (null == mot) Interpreter.operands.push(Logo.messages.getString("faux"));
+        else Interpreter.operands.push(Logo.messages.getString("vrai"));
+        Interpreter.returnValue = true;
     }
 
     void count(Stack<String> param) {
         String mot;
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         mot = getWord(param.get(0));
         if (null == mot) {
             try {
                 String liste = getFinalList(param.get(0));
-                Interpreter.calcul.push(String
-                        .valueOf(numberOfElements(liste)));
-            } catch (LogoException e) {
+                Interpreter.operands.push(String.valueOf(numberOfElements(liste)));
+            } catch (LogoException ignored) {
             }
-        } else
-            Interpreter.calcul.push(String.valueOf(getWordLength(mot)));
+        } else Interpreter.operands.push(String.valueOf(getWordLength(mot)));
     }
 
     void first(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         String mot = getWord(param.get(0));
         if (null == mot) { // SI c'est une liste
             try {
                 String liste = getFinalList(param.get(0));
                 // System.out.println("b"+item(liste, 1)+"b");
-                Interpreter.calcul.push(item(liste, 1));
-            } catch (LogoException e) {
+                Interpreter.operands.push(item(liste, 1));
+            } catch (LogoException ignored) {
             }
-        } else if (getWordLength(mot) == 1)
-            Interpreter.calcul.push(debut_chaine + mot);
+        } else if (getWordLength(mot) == 1) Interpreter.operands.push(wordPrefix + mot);
         else {
             String st = "";
             try {
                 st = itemWord(1, mot);
                 Double.parseDouble(st);
-                Interpreter.calcul.push(st);
-            } catch (LogoException e1) {
+                Interpreter.operands.push(st);
+            } catch (LogoException ignored) {
             } catch (NumberFormatException e2) {
-                Interpreter.calcul.push("\"" + st);
+                Interpreter.operands.push("\"" + st);
             }
         }
     }
 
     void last(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         String mot = getWord(param.get(0));
         if (null == mot) { // Si c'est une liste
             try {
                 String liste = getFinalList(param.get(0));
-                Interpreter.calcul
-                        .push(item(liste, numberOfElements(liste)));
-            } catch (LogoException e) {
+                Interpreter.operands.push(item(liste, numberOfElements(liste)));
+            } catch (LogoException ignored) {
             }
-        } else if (getWordLength(mot) == 1)
-            Interpreter.calcul.push(debut_chaine + mot);
+        } else if (getWordLength(mot) == 1) Interpreter.operands.push(wordPrefix + mot);
         else {
             String st = "";
             try {
                 st = itemWord(getWordLength(mot), mot);
                 Double.parseDouble(st);
-                Interpreter.calcul.push(st);
+                Interpreter.operands.push(st);
             } catch (NumberFormatException e1) {
-                Interpreter.calcul.push("\"" + st);
-            } catch (LogoException e2) {
+                Interpreter.operands.push("\"" + st);
+            } catch (LogoException ignored) {
             }
         }
     }
 
     void butFirst(Stack<String> param) {
         String mot;
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         mot = getWord(param.get(0));
         if (null == mot) {
             try {
                 String liste = getFinalList(param.get(0)).trim();
                 String element = item(liste, 1);
                 int longueur = element.length();
-                if (element.startsWith("\"") || element.startsWith("["))
-                    longueur--;
-                Interpreter.calcul.push("["
-                        + liste.substring(longueur)
-                        + " ] ");
-            } catch (LogoException e) {
+                if (element.startsWith("\"") || element.startsWith("[")) longueur--;
+                Interpreter.operands.push("[" + liste.substring(longueur) + " ] ");
+            } catch (LogoException ignored) {
             }
         } else if (mot.equals("")) {
             try {
                 throw new LogoException(app, Logo.messages.getString("mot_vide"));
-            } catch (LogoException e1) {
+            } catch (LogoException ignored) {
             }
-        } else if (getWordLength(mot) == 1)
-            Interpreter.calcul.push("\"");
+        } else if (getWordLength(mot) == 1) Interpreter.operands.push("\"");
         else {
             if (!mot.startsWith("\\")) mot = mot.substring(1);
             else mot = mot.substring(2);
             try {
                 Double.parseDouble(mot);
-                Interpreter.calcul.push(mot);
+                Interpreter.operands.push(mot);
             } catch (NumberFormatException e) {
-                Interpreter.calcul.push(debut_chaine + mot);
+                Interpreter.operands.push(wordPrefix + mot);
             }
         }
     }
 
     void butLast(Stack<String> param) {
         String mot;
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         mot = getWord(param.get(0));
         if (null == mot) {
             try {
@@ -4059,97 +3996,86 @@ public class Interpreter {
                 String element = item(liste, numberOfElements(liste));
                 int longueur = element.length();
 
-                if (element.startsWith("\"") || element.startsWith("["))
-                    longueur--;
-                Interpreter.calcul.push("[ "
-                        + liste.substring(0, liste.length() - longueur)
-                        + "] ");
-            } catch (LogoException e) {
+                if (element.startsWith("\"") || element.startsWith("[")) longueur--;
+                Interpreter.operands.push("[ " + liste.substring(0, liste.length() - longueur) + "] ");
+            } catch (LogoException ignored) {
             }
         } else if (mot.equals("")) {
             try {
                 throw new LogoException(app, Logo.messages.getString("mot_vide"));
-            } catch (LogoException e1) {
+            } catch (LogoException ignored) {
             }
-        } else if (getWordLength(mot) == 1)
-            Interpreter.calcul.push("\"");
+        } else if (getWordLength(mot) == 1) Interpreter.operands.push("\"");
         else {
             String tmp = mot.substring(0, mot.length() - 1);
             if (tmp.endsWith("\\")) tmp = tmp.substring(0, tmp.length() - 1);
             try {
                 Double.parseDouble(tmp);
-                Interpreter.calcul.push(tmp);
+                Interpreter.operands.push(tmp);
             } catch (NumberFormatException e) {
-                Interpreter.calcul.push(debut_chaine + tmp);
+                Interpreter.operands.push(wordPrefix + tmp);
             }
         }
     }
 
     void item(Stack<String> param) {
         String mot;
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
             mot = getWord(param.get(1));
             if (null == mot)
-                Interpreter.calcul.push(item(getFinalList(param.get(1)
-                ), kernel.getCalculator().getInteger(param.get(0))));
+                Interpreter.operands.push(item(getFinalList(param.get(1)), kernel.getCalculator().getInteger(param.get(0))));
             else {
                 int i = kernel.getCalculator().getInteger(param.get(0));
                 if (i < 1 || i > getWordLength(mot))
-                    throw new LogoException(app, Utils.primitiveName("list.item") + " " +
-                            Logo.messages.getString("n_aime_pas") + i + " " +
-                            Logo.messages.getString("comme_parametre") + ".");
+                    throw new LogoException(app, Utils.primitiveName("list.item") + " " + Logo.messages.getString("n_aime_pas") + i + " " + Logo.messages.getString("comme_parametre") + ".");
                 else {
                     String st = itemWord(i, mot);
                     try {
                         Double.parseDouble(st);
-                        Interpreter.calcul.push(st);
+                        Interpreter.operands.push(st);
                     } catch (NumberFormatException e1) {
-                        Interpreter.calcul.push("\"" + st);
+                        Interpreter.operands.push("\"" + st);
                     }
                 }
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void remove(Stack<String> param) {
         String mot;
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            String liste = getFinalList(param.get(1));
-            StringTokenizer st = new StringTokenizer(liste);
-            liste = "[ ";
+            StringBuilder list = new StringBuilder(getFinalList(param.get(1)));
+            StringTokenizer st = new StringTokenizer(list.toString());
+            list = new StringBuilder("[ ");
             mot = getWord(param.get(0));
             String str;
             if (null != mot && mot.equals("")) mot = "\\v";
-            if (null == mot)
-                mot = param.get(0).trim();
+            if (null == mot) mot = param.get(0).trim();
 
             while (st.hasMoreTokens()) {
                 str = st.nextToken();
-                if (str.equals("["))
-                    str = extractList(st);
-                if (!str.equals(mot))
-                    liste += str + " ";
+                if (str.equals("[")) str = extractList(st);
+                if (!str.equals(mot)) list.append(str).append(" ");
             }
-            Interpreter.calcul.push(liste.trim() + " ] ");
-        } catch (LogoException e) {
+            Interpreter.operands.push(list.toString().trim() + " ] ");
+        } catch (LogoException ignored) {
         }
     }
 
     void pick(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         String mot = getWord(param.get(0));
         if (null == mot) {
             try {
-                String liste = getFinalList(param.get(0));
-                int nombre = (int) Math.floor(numberOfElements(liste)
-                        * Math.random()) + 1;
-                String tmp = item(liste, nombre);
+                String list = getFinalList(param.get(0));
+                int nombre = (int) Math.floor(numberOfElements(list) * Math.random()) + 1;
+                String tmp = item(list, nombre);
                 if (tmp.equals("\"\\v")) tmp = "\"";
-                Interpreter.calcul.push(tmp);
-            } catch (LogoException e) {
+                Interpreter.operands.push(tmp);
+            } catch (LogoException ignored) {
             }
         } else {
             int nombre = (int) Math.floor(Math.random() * getWordLength(mot)) + 1;
@@ -4157,186 +4083,166 @@ public class Interpreter {
             try {
                 st = itemWord(nombre, mot);
                 Double.parseDouble(st);
-                Interpreter.calcul.push(st);
+                Interpreter.operands.push(st);
             } catch (NumberFormatException e1) {
-                Interpreter.calcul.push("\"" + st);
-            } catch (LogoException e2) {
+                Interpreter.operands.push("\"" + st);
+            } catch (LogoException ignored) {
             }
         }
     }
 
     void reverse(Stack<String> param) {
         try {
-            String liste = getFinalList(param.get(0)).trim();
-            Interpreter.operande = true;
-            StringTokenizer st = new StringTokenizer(liste);
-            liste = " ] ";
-            String element = "";
+            StringBuilder liste = new StringBuilder(getFinalList(param.get(0)).trim());
+            Interpreter.returnValue = true;
+            StringTokenizer st = new StringTokenizer(liste.toString());
+            liste = new StringBuilder(" ] ");
+            String element;
             while (st.hasMoreTokens()) {
                 element = st.nextToken();
-                if (element.equals("["))
-                    element = extractList(st);
-                liste = " " + element + liste;
+                if (element.equals("[")) element = extractList(st);
+                liste.insert(0, " " + element);
             }
-            Interpreter.calcul.push("[" + liste);
-        } catch (LogoException e) {
+            Interpreter.operands.push("[" + liste);
+        } catch (LogoException ignored) {
         }
     }
 
     void lput(Stack<String> param) {
         try {
             String liste = getFinalList(param.get(1)).trim();
-            Interpreter.operande = true;
+            Interpreter.returnValue = true;
             String mot = getWord(param.get(0));
             if (null != mot && mot.equals("")) mot = "\\v";
-            if (null == mot) { // Si c'est une liste
-                Interpreter.calcul.push(("[ " + liste).trim() + " "
-                        + param.get(0).trim() + " ] ");
-
-            } else
-                Interpreter.calcul.push(("[ " + liste).trim() + " " + mot + " ] ");
-        } catch (LogoException e) {
+            // Si c'est une liste
+            Interpreter.operands.push(("[ " + liste).trim() + " " + Objects.requireNonNullElseGet(mot, () -> param.get(0).trim()) + " ] ");
+        } catch (LogoException ignored) {
         }
     }
 
     void fput(Stack<String> param) {
         try {
             String liste = getFinalList(param.get(1));
-            Interpreter.operande = true;
+            Interpreter.returnValue = true;
             String mot = getWord(param.get(0));
             if (null != mot && mot.equals("")) mot = "\\v";
             if (null == mot) {
                 if (!liste.equals(""))
-                    Interpreter.calcul.push("[ "
-                            + param.get(0).trim() + " "
-                            + liste.trim() + " ] ");
-                else
-                    Interpreter.calcul.push("[ "
-                            + param.get(0).trim() + " ] ");
+                    Interpreter.operands.push("[ " + param.get(0).trim() + " " + liste.trim() + " ] ");
+                else Interpreter.operands.push("[ " + param.get(0).trim() + " ] ");
             } else {
-                if (!liste.equals(""))
-                    Interpreter.calcul.push("[ " + mot + " " + liste.trim()
-                            + " ] ");
-                else Interpreter.calcul.push("[ " + mot + " ] ");
+                if (!liste.equals("")) Interpreter.operands.push("[ " + mot + " " + liste.trim() + " ] ");
+                else Interpreter.operands.push("[ " + mot + " ] ");
             }
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void sentence(Stack<String> param) {
-        String liste = "[ ";
-        Interpreter.operande = true;
-        for (int i = 0; i < param.size(); i++) {
-            String mot = getWord(param.get(i));
-            String mot2 = param.get(i).trim();
+        StringBuilder liste = new StringBuilder("[ ");
+        Interpreter.returnValue = true;
+        for (String s : param) {
+            String mot = getWord(s);
+            String mot2 = s.trim();
             if (null == mot) {
-                if (isList(mot2))
-                    liste += mot2.substring(1, mot2.length() - 1)
-                            .trim()
-                            + " ";
-                else
-                    liste += mot2 + " ";
+                if (isList(mot2)) liste.append(mot2.substring(1, mot2.length() - 1).trim()).append(" ");
+                else liste.append(mot2).append(" ");
             } else {
                 if (mot.equals("")) mot = "\\v";
-                liste += mot + " ";
+                liste.append(mot).append(" ");
             }
         }
-        Interpreter.calcul.push(liste + "] ");
+        Interpreter.operands.push(liste + "] ");
     }
 
     void list(Stack<String> param) {
-        String liste = "[ ";
-        Interpreter.operande = true;
-        for (int i = 0; i < param.size(); i++) {
-            String mot2 = param.get(i);
-            String mot = getWord(param.get(i));
+        StringBuilder liste = new StringBuilder("[ ");
+        Interpreter.returnValue = true;
+        for (String mot2 : param) {
+            String mot = getWord(mot2);
             if (null == mot) {
-                liste += mot2;
+                liste.append(mot2);
                 // System.out.println("a"+mot2+"a");
             } else {
                 if (mot.equals("")) mot = "\\v";
-                liste += mot + " ";
+                liste.append(mot).append(" ");
             }
         }
-        Interpreter.calcul.push(liste + "] ");
+        Interpreter.operands.push(liste + "] ");
     }
 
     void not(Stack<String> param) {
         try {
-            Interpreter.operande = true;
-            boolean b1 = predicat(param.get(0));
-            if (b1)
-                Interpreter.calcul.push(Logo.messages.getString("faux"));
-            else
-                Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        } catch (LogoException e) {
+            Interpreter.returnValue = true;
+            boolean b1 = getBoolean(param.get(0));
+            if (b1) Interpreter.operands.push(Logo.messages.getString("faux"));
+            else Interpreter.operands.push(Logo.messages.getString("vrai"));
+        } catch (LogoException ignored) {
         }
     }
 
     void cos(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().cos(param.get(0)));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().cos(param.get(0)));
+        } catch (LogoException ignored) {
         }
     }
 
     void sin(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().sin(param.get(0)));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().sin(param.get(0)));
+        } catch (LogoException ignored) {
         }
     }
 
     void log10(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().log10(param.get(0)));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().log10(param.get(0)));
+        } catch (LogoException ignored) {
         }
     }
 
     void round(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(String.valueOf(Math
-                    .round(kernel.getCalculator().numberDouble(param.get(0)))));
-        } catch (LogoException e) {
+            Interpreter.operands.push(String.valueOf(Math.round(kernel.getCalculator().numberDouble(param.get(0)))));
+        } catch (LogoException ignored) {
         }
     }
 
     void heading(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(Calculator.teste_fin_double(kernel.getActiveTurtle().heading));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().heading));
     }
 
     void position(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         if (DrawPanel.windowMode != DrawPanel.WINDOW_3D) {
-            double a = kernel.getActiveTurtle().curX - Logo.config.getImageWidth() / 2;
-            double b = Logo.config.getImageHeight() / 2 - kernel.getActiveTurtle().curY;
-            Interpreter.calcul.push("[ " + Calculator.teste_fin_double(a) + " " + Calculator.teste_fin_double(b) + " ] ");
+            double a = kernel.getActiveTurtle().curX - Logo.config.getImageWidth() / 2.0;
+            double b = Logo.config.getImageHeight() / 2.0 - kernel.getActiveTurtle().curY;
+            Interpreter.operands.push("[ " + Calculator.teste_fin_double(a) + " " + Calculator.teste_fin_double(b) + " ] ");
         } else {
-            Interpreter.calcul.push("[ " + kernel.getActiveTurtle().X + " "
-                    + kernel.getActiveTurtle().Y + " " + kernel.getActiveTurtle().Z + " ] ");
+            Interpreter.operands.push("[ " + kernel.getActiveTurtle().X + " " + kernel.getActiveTurtle().Y + " " + kernel.getActiveTurtle().Z + " ] ");
 
         }
     }
 
     void endLoop(Stack<String> param) {
-        LoopProperties loop = stackLoop.peek();
+        Loop loop = loops.peek();
         // LOOP REPEAT
         if (loop.isRepeat()) {
             BigDecimal compteur = loop.getCounter();
             BigDecimal fin = loop.getEnd();
             if (compteur.compareTo(fin) < 0) {
                 loop.incremente();
-                stackLoop.pop();
-                stackLoop.push(loop);
+                loops.pop();
+                loops.push(loop);
                 app.getKernel().getInstructionBuffer().insert(loop.getInstr() + Interpreter.END_LOOP + " ");
             } else if (compteur.compareTo(fin) == 0) {
-                stackLoop.pop();
+                loops.pop();
             }
         }
         // LOOP FOR or LOOP FOREACH
@@ -4344,16 +4250,15 @@ public class Interpreter {
             BigDecimal inc = loop.getIncrement();
             BigDecimal compteur = loop.getCounter();
             BigDecimal fin = loop.getEnd();
-            if ((inc.compareTo(BigDecimal.ZERO) == 1 && (compteur.add(inc).compareTo(fin) <= 0))
-                    || (inc.compareTo(BigDecimal.ZERO) == -1 && (compteur.add(inc).compareTo(fin) >= 0))) {
+            if ((inc.compareTo(BigDecimal.ZERO) > 0 && (compteur.add(inc).compareTo(fin) <= 0)) || (inc.compareTo(BigDecimal.ZERO) < 0 && (compteur.add(inc).compareTo(fin) >= 0))) {
                 loop.incremente();
                 ((LoopFor) loop).AffecteVar(false);
-                stackLoop.pop();
-                stackLoop.push(loop);
+                loops.pop();
+                loops.push(loop);
                 app.getKernel().getInstructionBuffer().insert(loop.getInstr() + Interpreter.END_LOOP + " ");
             } else {
                 ((LoopFor) loop).DeleteVar();
-                stackLoop.pop();
+                loops.pop();
             }
         }
         // LOOP FOREVER
@@ -4363,14 +4268,14 @@ public class Interpreter {
         // LOOP FILL POLYGON
         else if (loop.isFillPolygon()) {
             app.getDrawPanel().stopRecord2DPolygon();
-            stackLoop.pop();
+            loops.pop();
         }
     }
 
     void endProc(Stack<String> param) {
-        Interpreter.locale = Interpreter.stockvariable.pop();
-        if (Interpreter.nom.peek().equals("\n")) {
-            Interpreter.nom.pop();
+        Interpreter.locals = Interpreter.scopes.pop();
+        if (Interpreter.consumers.peek().equals("\n")) {
+            Interpreter.consumers.pop();
             Interpreter.lineNumber = "";
         } else {
             /* Example
@@ -4379,127 +4284,133 @@ public class Interpreter {
              * end
              */
             try {
-                throw new LogoException(app, Logo.messages
-                        .getString("pas_assez_de")
-                        + " " + Interpreter.nom.peek());
-            } catch (LogoException e) {
+                throw new LogoException(app, Logo.messages.getString("pas_assez_de") + " " + Interpreter.consumers.peek());
+            } catch (LogoException ignored) {
             }
         }
         /* to bug [:a]	| (bug 10)
          * av :a		|
          * end			|
          */
-        if (!Interpreter.nom.isEmpty() && !Interpreter.nom.peek().equals("\n") && !Interpreter.nom.peek().equals("(")) {
+        if (!Interpreter.consumers.isEmpty() && !Interpreter.consumers.peek().equals("\n") && !Interpreter.consumers.peek().equals("(")) {
             try {
                 if (!app.error)
-                    throw new LogoException(app, Interpreter.en_cours.peek() + " " + Logo.messages.getString("ne_renvoie_pas") + " " + Interpreter.nom.peek());
-            } catch (LogoException e) {
+                    throw new LogoException(app, Interpreter.procedures.peek() + " " + Logo.messages.getString("ne_renvoie_pas") + " " + Interpreter.consumers.peek());
+            } catch (LogoException ignored) {
             }
         }
-        if (!Interpreter.en_cours.isEmpty()) Interpreter.en_cours.pop();
+        if (!Interpreter.procedures.isEmpty()) Interpreter.procedures.pop();
     }
 
     void andOp(Stack<String> param) {
         try {
-            boolean b1 = predicat(param.get(0));
-            boolean b2 = predicat(param.get(1));
+            boolean b1 = getBoolean(param.get(0));
+            boolean b2 = getBoolean(param.get(1));
             b1 = b1 & b2;
-            if (b1)
-                Interpreter.calcul.push(Logo.messages.getString("vrai"));
-            else
-                Interpreter.calcul.push(Logo.messages.getString("faux"));
-        } catch (LogoException e) {
+            if (b1) Interpreter.operands.push(Logo.messages.getString("vrai"));
+            else Interpreter.operands.push(Logo.messages.getString("faux"));
+        } catch (LogoException ignored) {
         }
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
     }
 
     void orOp(Stack<String> param) {
         try {
-            boolean b1 = predicat(param.get(0));
-            boolean b2 = predicat(param.get(1));
+            boolean b1 = getBoolean(param.get(0));
+            boolean b2 = getBoolean(param.get(1));
             b1 = b1 | b2;
-            if (b1)
-                Interpreter.calcul.push(Logo.messages.getString("vrai"));
-            else
-                Interpreter.calcul.push(Logo.messages.getString("faux"));
-        } catch (LogoException e) {
+            if (b1) Interpreter.operands.push(Logo.messages.getString("vrai"));
+            else Interpreter.operands.push(Logo.messages.getString("faux"));
+        } catch (LogoException ignored) {
         }
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
     }
 
     void subtractOp(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().substract(param));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().substract(param));
+        } catch (LogoException ignored) {
         }
     }
 
     void addOp(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(kernel.getCalculator().add(param));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(kernel.getCalculator().add(param));
     }
 
     void divideOp(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().divide(param));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().divide(param));
+        } catch (LogoException ignored) {
         }
     }
 
     void multiplyOp(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(kernel.getCalculator().multiply(param));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(kernel.getCalculator().multiply(param));
     }
 
     void output(Stack<String> param) {
         try {
-            retourne(param.get(0));
-        } catch (LogoException e) {
+            output(param.get(0));
+        } catch (LogoException ignored) {
         }
     }
 
     void remainder(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().remainder(param.get(0), param.get(1)));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().remainder(param.get(0), param.get(1)));
+        } catch (LogoException ignored) {
         }
     }
 
     void divide(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().divide(param));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().divide(param));
+        } catch (LogoException ignored) {
         }
     }
 
     void product(Stack<String> param) {
-        Interpreter.calcul.push(kernel.getCalculator().multiply(param));
-        Interpreter.operande = true;
+        Interpreter.operands.push(kernel.getCalculator().multiply(param));
+        Interpreter.returnValue = true;
     }
 
     void minus(Stack<String> param) {
         try {
-            Interpreter.calcul.push(kernel.getCalculator().minus(param.get(0)));
-            Interpreter.operande = true;
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().minus(param.get(0)));
+            Interpreter.returnValue = true;
+        } catch (LogoException ignored) {
         }
     }
 
     void difference(Stack<String> param) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         try {
-            Interpreter.calcul.push(kernel.getCalculator().substract(param));
-        } catch (LogoException e) {
+            Interpreter.operands.push(kernel.getCalculator().substract(param));
+        } catch (LogoException ignored) {
         }
     }
 
     void sum(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(kernel.getCalculator().add(param));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(kernel.getCalculator().add(param));
+    }
+
+    void setHeading(Stack<String> param) {
+        delay();
+        try {
+            if (DrawPanel.windowMode != DrawPanel.WINDOW_3D)
+                app.getDrawPanel().turn(360 - kernel.getActiveTurtle().heading + kernel.getCalculator().numberDouble(param.pop()));
+            else {
+                app.getDrawPanel().setHeading(kernel.getCalculator().numberDouble(param.pop()));
+            }
+        } catch (LogoException ignored) {
+        }
     }
 
     void penPaint(Stack<String> param) {
@@ -4530,26 +4441,12 @@ public class Interpreter {
         kernel.getActiveTurtle().setPenDown(false);
     }
 
-    void setHeading(Stack<String> param) {
-        delay();
-        try {
-            if (DrawPanel.windowMode != DrawPanel.WINDOW_3D)
-                app.getDrawPanel().td(360 - kernel.getActiveTurtle().heading
-                        + kernel.getCalculator().numberDouble(param.pop()));
-            else {
-                app.getDrawPanel().setHeading(kernel.getCalculator().numberDouble(param.pop()));
-            }
-        } catch (LogoException e) {
-        }
-    }
-
     void setXY(Stack<String> param) {
         delay();
         try {
             primitive2D("drawing.setxy");
-            app.getDrawPanel().setPosition(kernel.getCalculator().numberDouble(param.get(0)) + " "
-                    + kernel.getCalculator().numberDouble(param.get(1)));
-        } catch (LogoException e) {
+            app.getDrawPanel().setPosition(kernel.getCalculator().numberDouble(param.get(0)) + " " + kernel.getCalculator().numberDouble(param.get(1)));
+        } catch (LogoException ignored) {
         }
     }
 
@@ -4558,13 +4455,12 @@ public class Interpreter {
         try {
             if (DrawPanel.windowMode != DrawPanel.WINDOW_3D) {
                 double y = kernel.getCalculator().numberDouble(param.get(0));
-                double x = kernel.getActiveTurtle().curX - Logo.config.getImageWidth() / 2;
+                double x = kernel.getActiveTurtle().curX - Logo.config.getImageWidth() / 2.0;
                 app.getDrawPanel().setPosition(x + " " + y);
             } else
-                app.getDrawPanel().setPosition(kernel.getActiveTurtle().X + " " + kernel.getCalculator().numberDouble(param.get(0))
-                        + " " + kernel.getActiveTurtle().Z);
+                app.getDrawPanel().setPosition(kernel.getActiveTurtle().X + " " + kernel.getCalculator().numberDouble(param.get(0)) + " " + kernel.getActiveTurtle().Z);
 
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -4573,12 +4469,11 @@ public class Interpreter {
         try {
             if (DrawPanel.windowMode != DrawPanel.WINDOW_3D) {
                 double x = kernel.getCalculator().numberDouble(param.get(0));
-                double y = Logo.config.getImageHeight() / 2 - kernel.getActiveTurtle().curY;
+                double y = Logo.config.getImageHeight() / 2.0 - kernel.getActiveTurtle().curY;
                 app.getDrawPanel().setPosition(x + " " + y);
             } else
-                app.getDrawPanel().setPosition(kernel.getCalculator().numberDouble(param.get(0)) + " " + kernel.getActiveTurtle().Y + " "
-                        + kernel.getActiveTurtle().Z);
-        } catch (LogoException e) {
+                app.getDrawPanel().setPosition(kernel.getCalculator().numberDouble(param.get(0)) + " " + kernel.getActiveTurtle().Y + " " + kernel.getActiveTurtle().Z);
+        } catch (LogoException ignored) {
         }
     }
 
@@ -4587,7 +4482,14 @@ public class Interpreter {
         try {
             String list = getFinalList(param.get(0));
             app.getDrawPanel().setPosition(list);
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
+        }
+    }
+
+    void stop(Stack<String> param) {
+        try {
+            stop();
+        } catch (LogoException ignored) {
         }
     }
 
@@ -4596,19 +4498,12 @@ public class Interpreter {
         app.getDrawPanel().home();
     }
 
-    void stop(Stack<String> param) {
-        try {
-            stop();
-        } catch (LogoException e) {
-        }
-    }
-
-    void _if(Stack<String> param) {
+    void ifThen(Stack<String> param) {
         try {
             String liste = getList(param.get(1));
             liste = new String(Utils.formatCode(liste));
             String liste2 = null;
-            boolean predicat = predicat(param.get(0));
+            boolean predicat = getBoolean(param.get(0));
             InstructionBuffer instruction = app.getKernel().getInstructionBuffer();
             if (instruction.getLength() != 0) {
                 try {
@@ -4623,29 +4518,33 @@ public class Interpreter {
                         liste2 = getFinalList(kernel.listSearch());
                         liste2 = new String(Utils.formatCode(liste2));
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
-            si(predicat, liste, liste2);
-            Interpreter.renvoi_instruction = true;
-        } catch (LogoException e) {
+            ifThen(predicat, liste, liste2);
+            Interpreter.evalReturnValue = true;
+        } catch (LogoException ignored) {
         }
     }
 
     void print(Stack<String> param) {
-        int size = param.size();
-        String result = "";
-        for (int i = 0; i < size; i++) {
-            String par = param.get(i).trim();
-            if (isList(par))
-                par = formatList(par.substring(1, par.length() - 1));
-            String mot = getWord(param.get(i));
-            if (null == mot)
-                result += Utils.unescapeString(par) + " ";
-            else
-                result += Utils.unescapeString(mot) + " ";
+        StringBuilder result = new StringBuilder();
+        for (String s : param) {
+            String par = s.trim();
+            if (isList(par)) par = formatList(par.substring(1, par.length() - 1));
+            String mot = getWord(s);
+            if (null == mot) result.append(Utils.unescapeString(par)).append(" ");
+            else result.append(Utils.unescapeString(mot)).append(" ");
         }
         app.updateHistory("perso", result + "\n");
+    }
+
+    void hideTurtle(Stack<String> param) {
+        if (kernel.getActiveTurtle().isVisible()) {
+            app.getDrawPanel().toggleTurtle();
+            app.getDrawPanel().visibleTurtles.remove(String.valueOf(kernel.getActiveTurtle().id));
+        }
+        kernel.getActiveTurtle().setVisible(false);
     }
 
     void showTurtle(Stack<String> param) {
@@ -4656,13 +4555,12 @@ public class Interpreter {
         kernel.getActiveTurtle().setVisible(true);
     }
 
-    void hideTurtle(Stack<String> param) {
-        if (kernel.getActiveTurtle().isVisible()) {
-            app.getDrawPanel().toggleTurtle();
-            app.getDrawPanel().visibleTurtles.remove(String
-                    .valueOf(kernel.getActiveTurtle().id));
+    void repeat(Stack<String> param) {
+        try {
+            String liste = getList(param.get(1));
+            repeat(kernel.getCalculator().getInteger(param.get(0)), liste);
+        } catch (LogoException ignored) {
         }
-        kernel.getActiveTurtle().setVisible(false);
     }
 
     void clearScreen() {
@@ -4673,36 +4571,28 @@ public class Interpreter {
         app.getDrawPanel().clearScreen();
     }
 
-    void repeat(Stack<String> param) {
-        try {
-            String liste = getList(param.get(1));
-            repete(kernel.getCalculator().getInteger(param.get(0)), liste);
-        } catch (LogoException e) {
-        }
-    }
-
     void power(Stack<String> param) {
         try {
-            Interpreter.operande = true;
-            Interpreter.calcul.push(kernel.getCalculator().power(param.get(0), param.get(1)));
-        } catch (LogoException e) {
+            Interpreter.returnValue = true;
+            Interpreter.operands.push(kernel.getCalculator().power(param.get(0), param.get(1)));
+        } catch (LogoException ignored) {
         }
     }
 
     void left(Stack<String> param) {
         delay();
         try {
-            app.getDrawPanel().td(-kernel.getCalculator().numberDouble(param.pop()));
+            app.getDrawPanel().turn(-kernel.getCalculator().numberDouble(param.pop()));
 
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
     void right(Stack<String> param) {
         delay();
         try {
-            app.getDrawPanel().td(kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException e) {
+            app.getDrawPanel().turn(kernel.getCalculator().numberDouble(param.pop()));
+        } catch (LogoException ignored) {
         }
     }
 
@@ -4710,7 +4600,7 @@ public class Interpreter {
         delay();
         try {
             app.getDrawPanel().move(-kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
     }
 
@@ -4718,33 +4608,30 @@ public class Interpreter {
         delay();
         try {
             app.getDrawPanel().move(kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException e) {
+        } catch (LogoException ignored) {
         }
-        return;
     }
 
     /**
      * This method tests if the primitive name exist in 2D mode
      *
      * @param name The primitive name
-     * @throws LogoException
+     * @throws LogoException if in 3D mode
      */
     void primitive2D(String name) throws LogoException {
         if (DrawPanel.windowMode == DrawPanel.WINDOW_3D)
-            throw new LogoException(app, Utils.primitiveName(name) + " "
-                    + Logo.messages.getString("error.primitive2D"));
+            throw new LogoException(app, Utils.primitiveName(name) + " " + Logo.messages.getString("error.primitive2D"));
     }
 
     /**
      * This method tests if the primitive name exist in 2D mode
      *
      * @param name The primitive name
-     * @throws LogoException
+     * @throws LogoException if in 2D mode
      */
     void primitive3D(String name) throws LogoException {
         if (DrawPanel.windowMode != DrawPanel.WINDOW_3D)
-            throw new LogoException(app, Utils.primitiveName(name) + " "
-                    + Logo.messages.getString("error.primitive3D"));
+            throw new LogoException(app, Utils.primitiveName(name) + " " + Logo.messages.getString("error.primitive3D"));
     }
 
     /**
@@ -4753,10 +4640,9 @@ public class Interpreter {
      * @param i Integer representing the Color
      */
     void colorCode(int i) {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         Color co = DrawPanel.defaultColors[i];
-        Interpreter.calcul.push("[ " + co.getRed() + " " + co.getGreen() + " "
-                + co.getBlue() + " ] ");
+        Interpreter.operands.push("[ " + co.getRed() + " " + co.getGreen() + " " + co.getBlue() + " ] ");
     }
 
     /**
@@ -4765,36 +4651,28 @@ public class Interpreter {
      * @param fichier The patch to the saved file
      * @param pile    Stack Stack containing all procedure names
      */
-    void saveProcedures(String fichier, Stack<String> pile) {// throws
-        // LogoException
-        // {
+    void saveProcedures(String fichier, Stack<String> pile) {
         try {
-            String aecrire = "";
-            boolean bool = true;
-            if (!fichier.endsWith(".lgo"))
-                fichier += ".lgo";
-            String path = Utils.unescapeString(Logo.config.getDefaultFolder())
-                    + File.separator + fichier;
+            StringBuilder aecrire = new StringBuilder();
+            boolean bool;
+            if (!fichier.endsWith(".lgo")) fichier += ".lgo";
+            String path = Utils.unescapeString(Logo.config.getDefaultFolder()) + File.separator + fichier;
             try {
-                for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-                    Procedure procedure = wp.getProcedure(i);
-                    if (null == pile)
-                        bool = true;
-                    else
-                        bool = (pile.search(procedure.name) != -1);
-                    if (procedure.affichable && bool) {
-                        aecrire += Logo.messages.getString("pour") + " "
-                                + procedure.name;
-                        for (int j = 0; j < procedure.nbparametre; j++) {
-                            aecrire += " :" + procedure.variable.get(j);
+                for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
+                    Procedure procedure = workspace.getProcedure(i);
+                    if (null == pile) bool = true;
+                    else bool = (pile.search(procedure.name) != -1);
+                    if (procedure.displayed && bool) {
+                        aecrire.append(Logo.messages.getString("pour")).append(" ").append(procedure.name);
+                        for (int j = 0; j < procedure.arity; j++) {
+                            aecrire.append(" :").append(procedure.variables.get(j));
                         }
-                        aecrire += "\n" + procedure.instruction
-                                + Logo.messages.getString("fin") + "\n\n";
+                        aecrire.append("\n").append(procedure.body).append(Logo.messages.getString("fin")).append("\n\n");
                     }
                 }
-            } catch (NullPointerException ex) {
-            } // Si aucune procédure n'a été définie.
-            Utils.writeLogoFile(path, aecrire);
+            } catch (NullPointerException ignored) {
+            } // If no procedure has been defined.
+            Utils.writeLogoFile(path, aecrire.toString());
         } catch (IOException e2) {
             app.updateHistory("erreur", Logo.messages.getString("error.ioecriture"));
         }
@@ -4808,22 +4686,18 @@ public class Interpreter {
      * @throws LogoException If Image format isn't valid(jpg or png)
      */
     BufferedImage getImage(String path) throws LogoException {
-        BufferedImage image = null;
+        BufferedImage image;
         String pathWord = getWord(path);
-        if (null == pathWord) throw new LogoException(app, path + " "
-                + Logo.messages.getString("error.word"));
+        if (null == pathWord) throw new LogoException(app, path + " " + Logo.messages.getString("error.word"));
         if (!(pathWord.endsWith(".png") || pathWord.endsWith(".jpg")))
-            throw new LogoException(app, Logo.messages
-                    .getString("erreur_format_image"));
+            throw new LogoException(app, Logo.messages.getString("erreur_format_image"));
         else {
             try {
                 pathWord = Utils.unescapeString(pathWord);
-                File f = new File(Utils.unescapeString(Logo.config.getDefaultFolder())
-                        + File.separator + pathWord);
+                File f = new File(Utils.unescapeString(Logo.config.getDefaultFolder()) + File.separator + pathWord);
                 image = ImageIO.read(f);
             } catch (Exception e1) {
-                throw new LogoException(app, Logo.messages
-                        .getString("error.iolecture"));
+                throw new LogoException(app, Logo.messages.getString("error.iolecture"));
             }
         }
         return image;
@@ -4836,8 +4710,8 @@ public class Interpreter {
      */
     void createLocaleName(String mot) {
         mot = mot.toLowerCase();
-        if (!Interpreter.locale.containsKey(mot)) {
-            Interpreter.locale.put(mot, null);
+        if (!Interpreter.locals.containsKey(mot)) {
+            Interpreter.locals.put(mot, null);
         }
     }
 
@@ -4863,9 +4737,7 @@ public class Interpreter {
             String mot = getWord(param.get(0));
             if (null != mot) {
                 createLocaleName(mot);
-            } else
-                throw new LogoException(app, param.get(0)
-                        + Logo.messages.getString("error.word"));
+            } else throw new LogoException(app, param.get(0) + Logo.messages.getString("error.word"));
         }
     }
 
@@ -4882,21 +4754,17 @@ public class Interpreter {
         String liste = getFinalList(obj);
         StringTokenizer st = new StringTokenizer(liste);
         if (st.countTokens() != 3)
-            throw new LogoException(app, name + " "
-                    + Logo.messages.getString("color_3_arguments"));
+            throw new LogoException(app, name + " " + Logo.messages.getString("color_3_arguments"));
         int[] entier = new int[3];
         for (int i = 0; i < 3; i++) {
             String element = st.nextToken();
             try {
                 entier[i] = (int) (Double.parseDouble(element) + 0.5);
             } catch (NumberFormatException e) {
-                throw new LogoException(app, element + " "
-                        + Logo.messages.getString("pas_nombre"));
+                throw new LogoException(app, element + " " + Logo.messages.getString("pas_nombre"));
             }
-            if (entier[i] < 0)
-                entier[i] = 0;
-            if (entier[i] > 255)
-                entier[i] = 255;
+            if (entier[i] < 0) entier[i] = 0;
+            if (entier[i] > 255) entier[i] = 255;
 
         }
         return (new Color(entier[0], entier[1], entier[2]));
@@ -4910,80 +4778,67 @@ public class Interpreter {
      * @throws LogoException Incorrect arguments
      */
     void isMember(Stack<String> param, int id) throws LogoException {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         String mot_retourne = null;
         boolean b = false;
         String mot = getWord(param.get(1));
-        String liste = "[ ";
+        StringBuilder liste = new StringBuilder("[ ");
         if (null == mot) { // on travaille sur une liste
             try {
-                liste = getFinalList(param.get(1));
-                StringTokenizer st = new StringTokenizer(liste);
-                liste = "[ ";
+                liste = new StringBuilder(getFinalList(param.get(1)));
+                StringTokenizer st = new StringTokenizer(liste.toString());
+                liste = new StringBuilder("[ ");
                 mot = getWord(param.get(0));
                 String str;
-                if (null != mot && mot.equals(""))
-                    mot = "\\v";
-                if (null == mot)
-                    mot = param.get(0).trim();
+                if (null != mot && mot.equals("")) mot = "\\v";
+                if (null == mot) mot = param.get(0).trim();
                 while (st.hasMoreTokens()) {
                     str = st.nextToken();
-                    if (str.equals("["))
-                        str = extractList(st);
-                    if (!liste.equals("[ "))
-                        liste += str + " ";
-                    if (str.equals(mot) && liste.equals("[ ")) {
+                    if (str.equals("[")) str = extractList(st);
+                    if (!liste.toString().equals("[ ")) liste.append(str).append(" ");
+                    if (str.equals(mot) && liste.toString().equals("[ ")) {
                         if (id == 69) {
                             b = true;
                             break;
-                        } else
-                            liste += str + " ";
+                        } else liste.append(str).append(" ");
                     }
                 }
-            } catch (LogoException ex) {
+            } catch (LogoException ignored) {
             }
-        } else { // on travaille sur un mot
+        } else { // we work on a word
             String mot2 = getWord(param.get(0));
             if (null != mot2) {
                 boolean backslash = false;
                 for (int i = 0; i < mot.length(); i++) {
                     char c = mot.charAt(i);
-                    if (!backslash && c == '\\')
-                        backslash = true;
+                    if (!backslash && c == '\\') backslash = true;
                     else {
                         String tmp = Character.toString(c);
-                        if (backslash)
-                            tmp = "\\" + tmp;
+                        if (backslash) tmp = "\\" + tmp;
                         if (tmp.equals(mot2)) {
                             if (id == 69) {
                                 b = true;
-                                break;
                             } else {
-                                if (!backslash)
-                                    mot_retourne = mot.substring(i);
-                                else
-                                    mot_retourne = mot.substring(i - 1);
-                                break;
+                                if (!backslash) mot_retourne = mot.substring(i);
+                                else mot_retourne = mot.substring(i - 1);
                             }
+                            break;
                         }
                         backslash = false;
                     }
                 }
             }
         }
-        if (!liste.equals("[ "))
-            Interpreter.calcul.push(liste + "] ");
+        if (!liste.toString().equals("[ ")) Interpreter.operands.push(liste + "] ");
         else if (null != mot_retourne) {
             try {
                 Double.parseDouble(mot_retourne);
-                Interpreter.calcul.push(mot_retourne);
+                Interpreter.operands.push(mot_retourne);
             } catch (NumberFormatException e) {
-                Interpreter.calcul.push(debut_chaine + mot_retourne);
+                Interpreter.operands.push(wordPrefix + mot_retourne);
             }
-        } else if (b)
-            Interpreter.calcul.push(Logo.messages.getString("vrai"));
-        else
-            Interpreter.calcul.push(Logo.messages.getString("faux"));
+        } else if (b) Interpreter.operands.push(Logo.messages.getString("vrai"));
+        else Interpreter.operands.push(Logo.messages.getString("faux"));
     }
 
     /**
@@ -4994,45 +4849,39 @@ public class Interpreter {
      */
 
     void isBefore(Stack<String> param) throws LogoException {
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
         boolean b = false;
         String[] ope = {"", ""};
-        String mot = "";
+        String mot;
         for (int i = 0; i < 2; i++) {
             mot = getWord(param.get(i));
-            if (null == mot)
-                throw new LogoException(app, param.get(i) + " "
-                        + Logo.messages.getString("pas_mot"));
-            else
-                ope[i] = mot;
+            if (null == mot) throw new LogoException(app, param.get(i) + " " + Logo.messages.getString("pas_mot"));
+            else ope[i] = mot;
         }
-        if (ope[1].compareTo(ope[0]) > 0)
-            b = true;
-        if (b)
-            mot = Logo.messages.getString("vrai");
-        else
-            mot = Logo.messages.getString("faux");
-        Interpreter.calcul.push(mot);
+        if (ope[1].compareTo(ope[0]) > 0) b = true;
+        if (b) mot = Logo.messages.getString("vrai");
+        else mot = Logo.messages.getString("faux");
+        Interpreter.operands.push(mot);
     }
 
     void isLessThanOrEqual(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(kernel.getCalculator().infequal(param));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(kernel.getCalculator().infequal(param));
     }
 
     void isGreatherThanOrEqual(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(kernel.getCalculator().supequal(param));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(kernel.getCalculator().supequal(param));
     }
 
     void isLessThan(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(kernel.getCalculator().inf(param));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(kernel.getCalculator().inf(param));
     }
 
     void isGreaterThan(Stack<String> param) {
-        Interpreter.operande = true;
-        Interpreter.calcul.push(kernel.getCalculator().sup(param));
+        Interpreter.returnValue = true;
+        Interpreter.operands.push(kernel.getCalculator().sup(param));
     }
 
     /**
@@ -5044,14 +4893,12 @@ public class Interpreter {
         try {
             Double.parseDouble(param.get(0));
             Double.parseDouble(param.get(1));
-            Interpreter.calcul.push(kernel.getCalculator().equal(param));
+            Interpreter.operands.push(kernel.getCalculator().equal(param));
         } catch (NumberFormatException e) {
-            if (param.get(0).equals(param.get(1)))
-                Interpreter.calcul.push(Logo.messages.getString("vrai"));
-            else
-                Interpreter.calcul.push(Logo.messages.getString("faux"));
+            if (param.get(0).equals(param.get(1))) Interpreter.operands.push(Logo.messages.getString("vrai"));
+            else Interpreter.operands.push(Logo.messages.getString("faux"));
         }
-        Interpreter.operande = true;
+        Interpreter.returnValue = true;
     }
 
     /**
@@ -5062,14 +4909,10 @@ public class Interpreter {
      * @throws LogoException If st isn't equal to true or false
      */
 
-    boolean predicat(String st) throws LogoException {
-        if (st.toLowerCase().equals(Logo.messages.getString("vrai")))
-            return true;
-        else if (st.toLowerCase().equals(Logo.messages.getString("faux")))
-            return false;
-        else
-            throw new LogoException(app, st + " "
-                    + Logo.messages.getString("pas_predicat"));
+    boolean getBoolean(String st) throws LogoException {
+        if (st.toLowerCase().equals(Logo.messages.getString("vrai"))) return true;
+        else if (st.toLowerCase().equals(Logo.messages.getString("faux"))) return false;
+        else throw new LogoException(app, st + " " + Logo.messages.getString("pas_predicat"));
 
     }
 
@@ -5082,21 +4925,36 @@ public class Interpreter {
     String getWord(Object st) { // Si c'est un mot
         String liste = st.toString();
         if (liste.equals("\"")) {
-            debut_chaine = "";
+            wordPrefix = "";
             return "";
         }
         if (liste.length() > 0 && liste.charAt(0) == '"') {
-            debut_chaine = "\"";
+            wordPrefix = "\"";
             return (liste.substring(1));
-        } else
-            try {
-                if (liste == String.valueOf(Double.parseDouble(liste)))
-                    debut_chaine = "";
-                else debut_chaine = "\"";
-                return Utils.unescapeString(liste);
-            } catch (NumberFormatException e) {
-            }
+        } else try {
+            if (liste.equals(String.valueOf(Double.parseDouble(liste)))) wordPrefix = "";
+            else wordPrefix = "\"";
+            return Utils.unescapeString(liste);
+        } catch (NumberFormatException ignored) {
+        }
         return (null);
+    }
+
+    /**
+     * Returns the list contained in the string li
+     *
+     * @param li The String corresponding to the list
+     * @return A list with line Number tag (\0, \1, \2 ...)
+     * @throws LogoException List bad format
+     */
+    String getList(String li) throws LogoException {
+        li = li.trim();
+        // Retourne la liste sans crochets;
+        if (li.charAt(0) == '[' && li.endsWith("]")) {
+            li = li.substring(1, li.length() - 1).trim() + " ";
+            if (!li.equals(" ")) return li;
+            else return ("");
+        } else throw new LogoException(app, li + " " + Logo.messages.getString("pas_liste"));
     }
 
     /**
@@ -5114,74 +4972,46 @@ public class Interpreter {
         return getList(li);
     }
 
-    /**
-     * Returns the list contained in the string li
-     *
-     * @param li The String corresponding to the list
-     * @return A list with line Number tag (\0, \1, \2 ...)
-     * @throws LogoException List bad format
-     */
-    String getList(String li) throws LogoException {
-        li = li.trim();
-        // Retourne la liste sans crochets;
-        if (li.charAt(0) == '['
-                && li.endsWith("]")) {
-            li = li.substring(1, li.length() - 1).trim() + " ";
-            if (!li.equals(" "))
-                return li;
-            else
-                return ("");
-        } else
-            throw new LogoException(app, li + " "
-                    + Logo.messages.getString("pas_liste"));
-    }
-
     // Format the List (only one space between two elements)
     String formatList(String li) {
-        String tampon = "";
+        StringBuilder tampon = new StringBuilder();
         String precedent = "";
         StringTokenizer st = new StringTokenizer(li, " []", true);
-        String element = "";
+        String element;
         while (st.hasMoreTokens()) {
             element = st.nextToken();
             while (st.hasMoreTokens() && element.equals(" ")) {
                 element = st.nextToken();
             }
-            if (element.equals("]"))
-                tampon = tampon.trim() + "] ";
+            if (element.equals("]")) tampon = new StringBuilder(tampon.toString().trim() + "] ");
             else if (element.equals("[")) {
-                if (precedent.equals("["))
-                    tampon += "[";
-                else
-                    tampon = tampon.trim() + " [";
-            } else
-                tampon += element + " ";
+                if (precedent.equals("[")) tampon.append("[");
+                else tampon = new StringBuilder(tampon.toString().trim() + " [");
+            } else tampon.append(element).append(" ");
             precedent = element;
         }
-        return (tampon.trim());
+        return (tampon.toString().trim());
     }
 
     String extractList(StringTokenizer st) {
         int compteur = 1;
-        String crochet = "[ ";
-        String element = "";
+        StringBuilder crochet = new StringBuilder("[ ");
+        String element;
         while (st.hasMoreTokens()) {
             element = st.nextToken();
             if (element.equals("[")) {
                 compteur++;
-                crochet += "[ ";
-            } else if (!element.equals("]"))
-                crochet += element + " ";
+                crochet.append("[ ");
+            } else if (!element.equals("]")) crochet.append(element).append(" ");
             else if (compteur != 1) {
                 compteur--;
-                crochet += "] ";
+                crochet.append("] ");
             } else {
-                crochet += element + " ";
+                crochet.append(element).append(" ");
                 break;
             }
         }
-        element = crochet;
-        compteur = 0;
+        element = crochet.toString();
         return element.trim();
     }
 
@@ -5194,13 +5024,11 @@ public class Interpreter {
         for (int i = deb; i < st.length(); i++) {
             element = st.charAt(i);
             if (element == '[') {
-                if (espace)
-                    crochet_ouvert = true;
+                if (espace) crochet_ouvert = true;
                 espace = false;
                 crochet_ferme = false;
             } else if (element == ']') {
-                if (espace)
-                    crochet_ferme = true;
+                if (espace) crochet_ferme = true;
                 espace = false;
                 crochet_ouvert = false;
             } else if (element == ' ') {
@@ -5210,8 +5038,7 @@ public class Interpreter {
                     crochet_ouvert = false;
                 } else if (crochet_ferme) {
                     crochet_ferme = false;
-                    if (compteur != 1)
-                        compteur--;
+                    if (compteur != 1) compteur--;
                     else {
                         compteur = i;
                         break;
@@ -5222,73 +5049,55 @@ public class Interpreter {
         return compteur;
     }
 
-    // returns how many elements contains the list "liste"
-    int numberOfElements(String liste) { // calcule le nombre
-        // d'éléments dans une
-        // liste
-        StringTokenizer st = new StringTokenizer(liste);
+    // returns how many elements contains the list
+    int numberOfElements(String list) {
+        StringTokenizer st = new StringTokenizer(list);
         int i = 0;
-        String element = "";
+        String element;
         while (st.hasMoreTokens()) {
             element = st.nextToken();
-            if (element.equals("["))
-                element = extractList(st);
+            if (element.equals("[")) extractList(st);
             i++;
         }
         return i;
     }
 
-    // returns the item "i" from the list "liste"
-    String item(String liste, int i) throws LogoException { // retourne
-        // l'élément i d'une
-        // liste
-        StringTokenizer st = new StringTokenizer(liste);
+    // returns the item "i" from the list
+    String item(String list, int i) throws LogoException {
+        StringTokenizer st = new StringTokenizer(list);
         String element = "";
         int j = 0;
         while (st.hasMoreTokens()) {
             j++;
             element = st.nextToken();
-            if (element.equals("["))
-                element = extractList(st);
-            if (j == i)
-                break;
+            if (element.equals("[")) element = extractList(st);
+            if (j == i) break;
         }
         if (j != i)
-            throw new LogoException(app, Logo.messages.getString("y_a_pas")
-                    + " " + i + " "
-                    + Logo.messages.getString("element_dans_liste") + liste
-                    + "]");
-        else if (i == 0 && j == 0)
-            throw new LogoException(app, Logo.messages.getString("liste_vide"));
+            throw new LogoException(app, Logo.messages.getString("y_a_pas") + " " + i + " " + Logo.messages.getString("element_dans_liste") + list + "]");
+        else if (i == 0) throw new LogoException(app, Logo.messages.getString("liste_vide"));
         try {
             Double.parseDouble(element);
             return element;
-        } // Si c'est un nombre, on le renvoie.
-        catch (Exception e) {
+        } // If it's a number, it's returned.
+        catch (Exception ignored) {
         }
-        if (element.startsWith("["))
-            return element + " "; // C'est une liste, on la renvoie telle
+        if (element.startsWith("[")) return element + " "; // It's a list, we return it as
         // quelle.
-        if (element.equals("\\v"))
-            element = "";
-        return "\"" + element; // C'est forcément un mot, on le renvoie.
+        if (element.equals("\\v")) element = "";
+        return "\"" + element; // It's necessarily a word, we send it back.
     }
 
     // Test if the name of the variable is valid
     void isVariableName(String st) throws LogoException {
-        if (st.equals(""))
-            throw new LogoException(app, Logo.messages
-                    .getString("variable_vide"));
-        if (":+-*/() []=<>&|".indexOf(st) > -1)
-            throw new LogoException(app, st + " "
-                    + Logo.messages.getString("erreur_variable"));
+        if (st.equals("")) throw new LogoException(app, Logo.messages.getString("variable_vide"));
+        if (":+-*/() []=<>&|".contains(st))
+            throw new LogoException(app, st + " " + Logo.messages.getString("erreur_variable"));
 
         try {
             Double.parseDouble(st);
-            throw new LogoException(app, Logo.messages
-                    .getString("erreur_nom_nombre_variable"));
-        } catch (NumberFormatException e) {
-
+            throw new LogoException(app, Logo.messages.getString("erreur_nom_nombre_variable"));
+        } catch (NumberFormatException ignored) {
         }
 
     }
@@ -5296,23 +5105,21 @@ public class Interpreter {
     // primitve make
     void globalMake(Stack<String> param) throws LogoException {
         String mot = getWord(param.get(0));
-        if (null == mot)
-            throw new LogoException(app, param.get(0) + " "
-                    + Logo.messages.getString("error.word"));
+        if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.messages.getString("error.word"));
         mot = mot.toLowerCase();
         isVariableName(mot);
-        if (Interpreter.locale.containsKey(mot)) {
-            Interpreter.locale.put(mot, param.get(1));
+        if (Interpreter.locals.containsKey(mot)) {
+            Interpreter.locals.put(mot, param.get(1));
         } else {
-            wp.globals.put(mot, param.get(1));
+            workspace.globals.put(mot, param.get(1));
         }
     }
 
     void delay() {
         if (Logo.config.getTurtleSpeed() != 0) {
             try {
-                Thread.sleep(Logo.config.getTurtleSpeed() * 5);
-            } catch (InterruptedException e) {
+                Thread.sleep(Logo.config.getTurtleSpeed() * 5L);
+            } catch (InterruptedException ignored) {
             }
         }
     }
@@ -5323,8 +5130,7 @@ public class Interpreter {
         int compteur = 0;
         boolean backslash = false;
         for (int i = 0; i < mot.length(); i++) {
-            if (!backslash && mot.charAt(i) == '\\')
-                backslash = true;
+            if (!backslash && mot.charAt(i) == '\\') backslash = true;
             else {
                 backslash = false;
                 compteur++;
@@ -5338,18 +5144,14 @@ public class Interpreter {
         String reponse = "";
         int compteur = 1;
         boolean backslash = false;
-        if (mot.equals(""))
-            throw new LogoException(app, Logo.messages.getString("mot_vide"));
+        if (mot.equals("")) throw new LogoException(app, Logo.messages.getString("mot_vide"));
         for (int i = 0; i < mot.length(); i++) {
             char c = mot.charAt(i);
-            if (!backslash && c == '\\')
-                backslash = true;
+            if (!backslash && c == '\\') backslash = true;
             else {
                 if (compteur == entier) {
-                    if (backslash)
-                        reponse = "\\" + c;
-                    else
-                        reponse = Character.toString(c);
+                    if (backslash) reponse = "\\" + c;
+                    else reponse = Character.toString(c);
                     break;
                 } else {
                     compteur++;
@@ -5361,835 +5163,36 @@ public class Interpreter {
     }
 
     void or(Stack<String> param) {
-        int size = param.size();
         boolean result = false;
         boolean b;
         try {
-            for (int i = 0; i < size; i++) {
-                b = predicat(param.get(i));
+            for (String s : param) {
+                b = getBoolean(s);
                 result = result | b;
             }
-            if (result)
-                Interpreter.calcul.push(Logo.messages.getString("vrai"));
-            else
-                Interpreter.calcul.push(Logo.messages.getString("faux"));
-            Interpreter.operande = true;
-        } catch (LogoException e) {
+            if (result) Interpreter.operands.push(Logo.messages.getString("vrai"));
+            else Interpreter.operands.push(Logo.messages.getString("faux"));
+            Interpreter.returnValue = true;
+        } catch (LogoException ignored) {
         }
     }
 
     void and(Stack<String> param) {
-        int size = param.size();
         boolean result = true;
         boolean b;
         try {
-            for (int i = 0; i < size; i++) {
-                b = predicat(param.get(i));
+            for (String s : param) {
+                b = getBoolean(s);
                 result = result & b;
             }
-            Interpreter.operande = true;
-            if (result)
-                Interpreter.calcul.push(Logo.messages.getString("vrai"));
-            else
-                Interpreter.calcul.push(Logo.messages.getString("faux"));
-        } catch (LogoException e) {
+            Interpreter.returnValue = true;
+            if (result) Interpreter.operands.push(Logo.messages.getString("vrai"));
+            else Interpreter.operands.push(Logo.messages.getString("faux"));
+        } catch (LogoException ignored) {
         }
     }
 
-    /**
-     * This methods returns a list that contains all procedures name
-     *
-     * @return A list with all procedure names
-     */
-    StringBuffer getAllProcedures() {
-        StringBuffer sb = new StringBuffer("[ ");
-        for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-            Procedure proc = wp.getProcedure(i);
-            if (proc.affichable) {
-                sb.append(proc.name);
-                sb.append(" ");
-            }
-        }
-        sb.append("] ");
-        return sb;
-    }
 
-    /**
-     * This methods returns a list that contains all variables name
-     *
-     * @return A list with all variables names
-     */
-
-    StringBuffer getAllVariables() {
-        StringBuffer sb = new StringBuffer("[ ");
-        Iterator<String> it = Interpreter.locale.keySet().iterator();
-        while (it.hasNext()) {
-            String name = it.next();
-            sb.append(name);
-            sb.append(" ");
-        }
-        it = wp.globals.keySet().iterator();
-        while (it.hasNext()) {
-            String key = it.next();
-            if (!Interpreter.locale.containsKey(key)) {
-                sb.append(key);
-                sb.append(" ");
-            }
-        }
-        sb.append("] ");
-        return sb;
-    }
-
-    /**
-     * This methods returns a list that contains all Property Lists name
-     *
-     * @return A list with all Property Lists names
-     */
-    StringBuffer getAllpropertyLists() {
-        StringBuffer sb = new StringBuffer("[ ");
-        Iterator<String> it = wp.getPropListKeys().iterator();
-        while (it.hasNext()) {
-            sb.append(it.next());
-            sb.append(" ");
-        }
-        sb.append("] ");
-        return sb;
-    }
-
-    /**
-     * Delete The variable called "name" from the workspace if it exists
-     *
-     * @param name The variable name
-     */
-    void deleteVariable(String name) {
-        if (!Interpreter.locale.isEmpty()) {
-            Interpreter.locale.remove(name);
-        } else {
-            wp.deleteVariable(name);
-        }
-    }
-
-    /**
-     * Delete the procedure called "name" from the workspace
-     *
-     * @param name The procedure name
-     */
-    void deleteProcedure(String name) {
-        for (int i = 0; i < wp.getNumberOfProcedure(); i++) {
-            Procedure procedure = wp.getProcedure(i);
-            if (procedure.name.equals(name)
-                    && procedure.affichable == true) {
-                wp.deleteProcedure(i);
-                break;
-            }
-        }
-    }
-
-    /**
-     * According to the type of the data, erase from workspace the resource called "name"
-     *
-     * @param name The name of the deleted resource, it couls be a list with all resource names
-     * @param type The type for the data, it could be "variable", "procedure" or "propertylist"
-     */
-
-    void erase(String name, String type) {
-        Interpreter.operande = false;
-        try {
-            if (isList(name)) {
-                name = getFinalList(name);
-                StringTokenizer st = new StringTokenizer(name);
-                while (st.hasMoreTokens()) {
-                    String item = st.nextToken();
-                    this.eraseItem(item, type);
-                }
-            } else {
-                name = getWord(name);
-                if (null != name) {
-                    this.eraseItem(name, type);
-                } else
-                    throw new LogoException(app, name
-                            + Logo.messages.getString("error.word"));
-
-            }
-        } catch (LogoException e) {
-        }
-    }
-
-    /**
-     * According to the type of the data, erase from workspace the resource called "name"
-     *
-     * @param name The name of the deleted resource
-     * @param type The type for the data, it could be "variable", "procedure" or "propertylist"
-     */
-    void eraseItem(String name, String type) {
-        if (type.equals("procedure")) {
-            this.deleteProcedure(name);
-        } else if (type.equals("variable")) {
-            this.deleteVariable(name);
-        } else if (type.equals("propertylist")) {
-            wp.removePropList(name);
-        }
-
-    }
-
-    String execute(StringBuffer instructions) throws LogoException {
-        if (!instructions.equals("")) {
-            instructionBuffer.insertCode(instructions);
-        }
-
-        while (instructionBuffer.getLength() != 0) {
-            if (app.error && LogoException.lance)
-                throw new LogoException(app, Logo.messages.getString("stop"));
-            while (app.animation.isOnPause()) { // Si l'on touche aux scrollbars
-                try {
-                    wait();
-                } catch (Exception e) {
-                }
-            }
-            // System.out.println("en_cours d'execution "+"\n"+ en_cours+"\n\n");
-//			System.out.println("nom "+nom);
-            // System.out.println("calcul \n"+calcul+"\n\n");
-            // System.out.println("nom "+nom.toString()+" locale "+locale+ "
-            // "+valeur+" stockvariable "+stockvariable);
-            // System.out.println("operande "+calcul+" "+operande+"debut"+instructionBuffer);
-
-
-            // Is this line really interesting??
-            if (instructionBuffer.getLength() == 0)
-                break;
-//			System.out.print("debut\n"+instructionBuffer+"\nfin\n------------------\n");
-            String element = instructionBuffer.getNextWord();
-//			System.out.println(app.animation.getPause()+element);
-
-            //			System.out.println("/"+instructionBuffer+"/");
-
-/*			if (element=="")
-
-					break;
-*/			/* ***********************************************
-			// si c'est une primitive ou une procedure *******
-			 * ***********************************************
-			 */
-            String element_minuscule = element.toLowerCase();
-            AbstractProcedure proc;
-            if (primitiveMap.containsKey(element_minuscule))
-                proc = primitiveMap.get(element_minuscule);
-            else
-                proc = wp.getProcedure(element_minuscule);
-            if (proc != null) {
-
-                // if (!calcul.empty()&&nom.isEmpty())
-                // throw new
-                // monException(cadre,Logo.messages.getString("que_faire")+"
-                // "+calcul.pop() +" gdfdsf");
-                // exécuter la procédure ou la primitive.
-                Stack<String> param = new Stack<String>();
-                if (isInfixedOperator(element_minuscule)) { // Si c'est un opérateur infixé
-                    deleteLineNumber();
-                    operateur = true;
-                    operande = false;
-                    /*
-                     * if (drapeau_ouvrante) { drapeau_ouvrante=false;
-                     *
-                     * if (i!=32&&i!=33) throw new LogoException(app,element+"
-                     * "+Logo.messages.getString("ne_peut_etre")); else
-                     * param.push("0"); }
-                     */
-                    // else
-                    if (calcul.isEmpty()) { // Si le + ou le - représente le
-                        // signe négatif ou positif
-                        if (!isPlusMinus(element))
-                            throw new LogoException(app, element + " "
-                                    + Logo.messages.getString("error.ne_peut_etre")); // d'un
-                        // nombre
-                        if (nom.isEmpty())
-                            param.push("0");
-                        else {
-                            String st = nom.peek();
-                            if (!testoperateur(st))
-                                param.push("0");
-                            else if (isTimesDiv(element)) { // Si le signe -
-                                // ou + suit un
-                                // * ou /
-                                instructionBuffer.deleteFirstWord(element);
-                                if (st.equals("*"))
-                                    instructionBuffer.insert("* ");
-                                else
-                                    instructionBuffer.insert("/ ");
-                                if (element.equals("+"))
-                                    return ("1"); // Si c'est un plus
-                                else
-                                    return ("-1"); // Si c'est un moins
-                            } else
-                                param.push("0");
-                        }
-                    } else if (nom.isEmpty()) {
-                        param.push(calcul.pop());
-                    } else {
-                        String st = nom.peek();
-                        if (testoperateur(st)) {
-                            if (prioriteinf(st, element)) {
-                                param.push(calcul.pop());
-                            } else
-                                return (calcul.pop());
-                        } else
-                            param.push(calcul.pop());
-                    }
-                } else if (operande && !element.equals(")")) {
-                    checkParenthesis();
-                    operande = false;
-                    break;
-                } // Si ce n'est pas l'opérateur de fin de parenthèse, on sort
-
-                /*Example:
-                 * To test  |	Formatted Form:
-                 * fd 5 	| 	fd 5 \l1 rt \l2
-                 * rt 		| --> The \l2 can't be removed before be
-                 * end		|		sure the rt has noproblem
-                 * */
-                if (!element.equals("\n")) deleteLineNumber();
-                instructionBuffer.deleteFirstWord(element);
-
-                // Case with parenthensis
-                // eg (sum 3 4 5)
-                // eg (myProcedure 2 3 4 5)
-                if (drapeau_ouvrante) {
-                    drapeau_ouvrante = false;
-                    int constantNumber = -1;
-                    if (!proc.isGeneral())
-                        constantNumber = proc.getArity();
-                    // Looking for all arguments (Number undefined)
-                    nom.push(element);
-                    int j = 0;
-                    while (true) {
-                        /* This line fixed the bug for primitive or procedure without arguments
-                         * eg: pr (pi+2)
-                         */
-                        if (constantNumber == 0) break;
-                        try {
-                            operande = operateur = drapeau_ouvrante = false;
-                            if (instructionBuffer.getNextWord().equals(")")) {
-                                if (constantNumber != -1) {
-                                    // If the primitive or the procedure doesn't
-                                    // accept optional parameters
-                                    if (j > constantNumber) {
-                                        throw new LogoException(
-                                                app,
-                                                Logo.messages
-                                                        .getString("too_much_arguments"));
-                                    } else if (j < constantNumber)
-                                        throw new LogoException(
-                                                app,
-                                                Logo.messages
-                                                        .getString("pas_assez_de")
-                                                        + " " + nom.peek());
-                                }
-                                break;
-                            }
-                            String a = execute(new StringBuffer());
-
-                            param.push(a);
-                        } catch (LogoException e) {
-                            throw e;
-                        }
-                        j++;
-                    }
-                    // If It's a procedure
-                    if (proc instanceof Procedure) {
-                        var userproc = (Procedure) proc;
-                        if (j > userproc.nbparametre + userproc.optVariables.size())
-                            throw new LogoException(app, Logo.messages
-                                    .getString("too_much_arguments"));
-                        else if (j < userproc.nbparametre)
-                            throw new LogoException(app, Logo.messages
-                                    .getString("pas_assez_de")
-                                    + " " + nom.peek());
-                        // Searching for optional arguments that are not defined
-
-                        if (j < userproc.optVariables.size() + userproc.nbparametre) {
-                            j = j - userproc.nbparametre;
-                            for (int c = j; c < userproc.optVariables.size(); c++) {
-                                try {
-                                    operande = operateur = drapeau_ouvrante = false;
-                                    String a = execute(userproc.optVariablesExp
-                                            .get(c));
-                                    param.push(a);
-                                } catch (LogoException e) {
-                                    throw e;
-                                }
-                            }
-                        }
-                    }
-
-                }
-                // classic case: predefined number of arguments
-                else {
-                    drapeau_ouvrante = false;
-                    // How many arguments for the procedure or the primitive
-                    int nbparametre = proc.getArity();
-                    // Looking for each arguments
-                    int j = 0;
-                    nom.push(element);
-                    while (j < nbparametre) {
-                        try {
-                            operande = operateur = drapeau_ouvrante = false;
-
-                            String a = execute(new StringBuffer());
-                            param.push(a);
-                            j++;
-                        } catch (LogoException e) {
-                            throw e;
-                        }
-                    }
-//					System.out.println(instructionBuffer.toString());
-//					System.out.println(nom+"arguments"+param);
-                    // Looking for Optional arguments in case of procedure
-                    if (proc instanceof Procedure) {
-                        var userproc = (Procedure) proc;
-                        nbparametre = userproc.optVariables.size();
-                        for (j = 0; j < nbparametre; j++) {
-                            try {
-                                operande = operateur = drapeau_ouvrante = false;
-                                String a = execute(userproc.optVariablesExp
-                                        .get(j));
-                                param.push(a);
-                            } catch (LogoException e) {
-                                throw e;
-                            }
-                        }
-                    }
-                }
-
-                nom.pop();
-                if (!app.error)
-                    proc.execute(param);
-                if (app.error)
-                    break;
-                if (drapeau_fermante && !calcul.empty()) {
-                    drapeau_fermante = false;
-                    operande = false;
-                    return calcul.pop();
-                }
-
-                // Tester si la procédure rend quelque chose lorsqu'attendu
-
-                if (!operande) {
-                    // dans le cas des primitives exec ou si
-                    if (renvoi_instruction) {
-                        renvoi_instruction = false;
-                    } else {
-                        if (!nom.isEmpty() && !app.error
-                                && !nom.peek().equals("\n")) {
-                            if (!element.equals("\n")) {
-                                // If it's the end of a loop
-                                // repeat 2 [fd 90 rt]
-                                if (element.equals("\\")) {
-                                    // The loop had been executed, we have to remove
-                                    // the loop instruction
-                                    int offset = instructionBuffer.indexOf(" \\ ");
-                                    instructionBuffer.delete(0, offset + 1);
-
-                                    throw new LogoException(app, Logo.messages
-                                            .getString("pas_assez_de")
-                                            + " " + nom.peek());
-                                }
-                                // (av 100) ---> OK
-                                // av av 20 ----> Bad
-                                if (!nom.peek().equals("("))
-                                    throw new LogoException(
-                                            app,
-                                            element
-                                                    + " "
-                                                    + Logo.messages
-                                                    .getString("ne_renvoie_pas")
-                                                    + " "
-                                                    + nom.peek());
-
-
-                            }
-                        }
-                    }
-                } else {
-                    // The primitive returns a word or a list.
-                    // There's no primitive or procedure waiting for it.
-                    if (!nom.isEmpty() && nom.peek().equals("\n"))
-                        throw new LogoException(app, Logo.messages.getString("error.whattodo") + " "
-                                + calcul.peek() + " ?");
-                }
-            }
-
-			/* ********************************
-			/ IF element IS A VARIABLE
-			********************************* */
-            else if (element.charAt(0) == ':'
-                    && element.length() > 1) {
-                // System.out.println(operande);
-                if (operande) {
-                    checkParenthesis();
-                    operande = false;
-                    break;
-                } else deleteLineNumber();
-                String value;
-                String variableName = element_minuscule.substring(1
-                );
-                // If the variable isn't local
-                if (!locale.containsKey(variableName)) {
-                    // check it's a global variable
-                    if (!wp.globals.containsKey(variableName))
-                        throw new LogoException(app, variableName + " "
-                                + Logo.messages.getString("error.novalue"));
-                    else
-                        value = wp.globals.get(variableName);
-                }
-                // If the variable is local
-                else {
-                    value = locale.get(variableName);
-                }
-
-                if (null == value)
-                    throw new LogoException(app, variableName + "  "
-                            + Logo.messages.getString("error.novalue"));
-                calcul.push(value);
-                operande = true;
-                operateur = false;
-                drapeau_ouvrante = false;
-                instructionBuffer.deleteFirstWord(element);
-            } else {
-                /* *****************************
-                 * IF element IS A NUMBER ******
-                 * ***************************/
-                try {
-                    Double.parseDouble(element);
-                    boolean deleteEndZero = false;
-                    if (element.endsWith(".0")) {
-                        deleteEndZero = true;
-                        element = element.substring(0, element.length() - 2);
-                    }
-/*					boolean addStartZero=false;
-					if (element.startsWith(".") || element.equals("")){
-						element = "0" + element;
-						addStartZero=true;
-					}*/
-                    calcul.push(element);
-                    if (operande) {
-                        checkParenthesis();
-                        calcul.pop();
-                        operande = false;
-                        break;
-                    } else deleteLineNumber();
-                    operande = true;
-                    operateur = false;
-                    drapeau_ouvrante = false;
-//					if (addStartZero) instructionBuffer.deleteFirstWord(element.substring(1));
-                    if (deleteEndZero) instructionBuffer.deleteFirstWord(element + ".0");
-                    else instructionBuffer.deleteFirstWord(element);
-
-                } catch (NumberFormatException e) {
-                    /* *********************************
-                     * IF element IS A SQUARE BRACKET [
-                     * 			OPEN
-                     *********************************** */
-                    if (element.equals("[")) {
-
-                        // Utilité de cette ligne?
-                        // if (!calcul.isEmpty()&&operateur==false) break;
-                        if (operande) {
-                            checkParenthesis();
-                            break;
-                        } else deleteLineNumber();
-                        operande = true;
-                        operateur = false;
-                        drapeau_ouvrante = false;
-                        instructionBuffer.deleteFirstWord(element);
-                        String a = chercheListe();
-                        calcul.push(a);
-                    }
-                    /* ***************************
-                     * IF element IS A PARENTHESIS
-                     * 				OPEN
-                     * *********************** */
-                    else if (element.equals("(")) {
-                        if (operande) {
-                            checkParenthesis();
-                            break;
-                        } else deleteLineNumber();
-                        drapeau_ouvrante = true;
-
-                        Interpreter.en_cours.push("(");
-                        int pos = chercheParenthese();
-                        if (pos == -1) {
-                            try {
-                                throw new LogoException(app, Logo.messages
-                                        .getString("parenthese_fermante"));
-                            } catch (LogoException e1) {
-                            }
-                        }
-                        instructionBuffer.deleteFirstWord(element);
-                        // System.out.println("&&"+instruction);
-                        Interpreter.nom.push("(");
-                    }
-                    /* **********************************
-                     * IF element IS A WORD
-                     * ************************** */
-                    else if (element.charAt(0) == '"') {
-                        try {
-                            String el = element.substring(1);
-                            Double.parseDouble(el);
-                            calcul.push(el);
-                        } catch (NumberFormatException e1) {
-                            calcul.push(element);
-                        }
-                        if (operande) {
-                            checkParenthesis();
-                            calcul.pop();
-                            operande = false;
-                            break;
-                        } else deleteLineNumber();
-                        operande = true;
-                        operateur = false;
-                        drapeau_ouvrante = false;
-                        instructionBuffer.deleteFirstWord(element);
-                    }
-                    // Si c'est le mot pour
-                    else if (element_minuscule.equals(Logo.messages
-                            .getString("pour"))) {
-                    instructionBuffer.deleteFirstWord(element);
-                    if (instructionBuffer.getLength() != 0) {
-                        element = instructionBuffer.getNextWord();
-                        element_minuscule = element.toLowerCase();
-                    } else
-                        throw new LogoException(app, Logo.messages
-                                .getString("pas_assez_de")
-                                + " "
-                                + "\""
-                                + Logo.messages.getString("pour") + "\"");
-                        String definition = Logo.messages.getString("pour")
-                                + " " + element + " ";
-                        instructionBuffer.deleteFirstWord(element);
-                        while (instructionBuffer.getLength() != 0) {
-                            element = instructionBuffer.getNextWord().toLowerCase();
-                            if (null == element)
-                                break;
-                            if (element.charAt(0) != ':'
-                                    || element.length() == 1)
-                                throw new LogoException(app, element
-                                        + " "
-                                        + Logo.messages
-                                        .getString("pas_argument"));
-                            definition += element + " ";
-                            instructionBuffer.deleteFirstWord(element);
-                        }
-                        if (app.editor.isVisible())
-                            throw new LogoException(app, Logo.messages
-                                    .getString("ferme_editeur"));
-                        else {
-                            app.editor.setVisible(true);
-                            app.editor.appendText(definition + "\n\n"
-                                    + Logo.messages.getString("fin"));
-                        }
-                    } else if (element.startsWith("\\l")) {
-                        if (operande) {
-                            break;
-                        }
-                        instructionBuffer.deleteFirstWord(element);
-                        lineNumber = element + " ";
-                        element = instructionBuffer.getNextWord();
-
-                    } else {
-                        deleteLineNumber();
-                        throw new LogoException(app, Logo.messages
-                                .getString("je_ne_sais_pas")
-                                + " " + element);
-                    }
-                }
-            }
-            // System.out.println("instruction "+instruction+" calcul "+calcul);
-        }
-        /* ******************************
-         *****      END OF THE MAIN LOOP
-         * ******************************/
-        // S'il n'y a rien à retourner.
-        if (calcul.isEmpty()) {
-            if (!nom.isEmpty()) {// &&!nom.peek().equals("\n")) {
-                while ((!nom.isEmpty()) && nom.peek().equals("\n"))
-                    nom.pop();
-                if (!nom.isEmpty()) {
-                    throw new LogoException(app, Logo.messages
-                            .getString("pas_assez_de")
-                            + " " + nom.peek());
-                }
-            }
-        }
-        // Sinon on retourne la valeur contenue dans la pile de calcul.
-        if (!calcul.isEmpty()) {
-            // S'il y a une procédure de lancer
-            // Ex: pour t -- 6 -- fin . Puis, av t.
-            if ((!nom.isEmpty()) && nom.peek().equals("\n")) {
-                String up = "";
-                int id = 0;
-                while (!nom.isEmpty() && nom.peek().equals("\n")) {
-                    nom.pop();
-                    id++;
-                }
-                if (!nom.isEmpty()) {
-                    up = nom.peek();
-                    try {
-                        throw new LogoException(app, en_cours.get(en_cours.size() - id)
-                                + " " + Logo.messages.getString("ne_renvoie_pas")
-                                + " " + up);
-                    } catch (LogoException e) {
-                    }
-                } else {
-                    try {
-                        throw new LogoException(app, Logo.messages
-                                .getString("error.whattodo")
-                                + " " + calcul.peek() + " ?");
-                    } catch (LogoException e) {
-                    }
-                }
-/*				}
-
-				if (!nom.isEmpty() && nom.peek().equals("\n")) {
-					up = en_cours.get(en_cours.size() - 2).toString();
-					try {
-						throw new LogoException(app, en_cours.peek() + " "
-								+ Logo.messages.getString("ne_renvoie_pas")
-								+ " " + up);
-					} catch (LogoException e) {
-					}
-				} else if (!nom.isEmpty()) {
-					up = nom.peek().toString();
-					try {
-						throw new LogoException(app, en_cours.peek() + " "
-								+ Logo.messages.getString("ne_renvoie_pas")
-								+ " " + up);
-					} catch (LogoException e) {
-					}
-				} else {
-					try {
-						throw new LogoException(app, Logo.messages
-								.getString("que_faire")
-								+ " " + calcul.peek() + " ?");
-					} catch (LogoException e) {
-					}}*/
-
-            }
-            // ///////////
-            else {
-                operande = false;
-                return (calcul.pop());
-            }
-        }
-        return ("");
-    }
-
-    private int chercheParenthese() { // position ou s'arrete la prochaine
-        // parenthese
-        boolean continuer = true;
-        int of_ouvrant;
-        int of_fermant = 0;
-        int from_index_ouvrant = 1;
-        int from_index_fermant = 1;
-        while (continuer) {
-            of_ouvrant = instructionBuffer.indexOf("(", from_index_ouvrant);
-            of_fermant = instructionBuffer.indexOf(")", from_index_fermant);
-            if (of_fermant == -1)
-                break;
-            if (of_ouvrant != -1 && of_ouvrant < of_fermant) {
-                from_index_ouvrant = of_ouvrant + 1;
-                from_index_fermant = of_fermant + 1;
-            } else
-                continuer = false;
-        }
-        return of_fermant;
-    }
-
-    protected String chercheListe() throws LogoException {
-        String liste = "[ ";
-        String element = "";
-        while (instructionBuffer.getLength() != 0) {
-            element = instructionBuffer.getNextWord();
-            // SI crochet ouvrant, on l'empile dans la pile de calcul
-            if (element.equals("[")) {
-                calcul.push("[");
-                instructionBuffer.deleteFirstWord(element);
-                liste += "[ ";
-            } else if (element.equals("]")) { // Si on atteint un crochet fermant
-                instructionBuffer.deleteFirstWord(element);
-                // if (((Stack)instruction.peek()).isEmpty()) instruction.pop();
-                liste += "] ";
-                if (calcul.empty()) {
-                    return (liste);
-                } // 1er cas: rien dans la pile de calcul, on renvoie la liste
-                else if (!calcul.peek().equals("[")) {
-                    return (liste);
-                } // 2eme cas: pas de crochet ouvrant en haut de la pile, idem
-                else
-                    calcul.pop(); // 3eme cas: un crochet ouvrant en haut de
-                // la pile, on l'enleve
-            } else {
-                instructionBuffer.deleteFirstWord(element);
-                liste += element + " ";
-            }
-        }
-        if (true)
-            throw new LogoException(app, Logo.messages
-                    .getString("erreur_crochet"));
-        return (null);
-    }
-
-    private boolean testoperateur(String st) { // l'élément trouvé est-il un
-        // opérateur
-        int i = "+-*/<>=!&|".indexOf(st);
-        return i != -1;
-    }
-
-    /**
-     * This method compares the two operators op and str.<br>
-     * Cette methode teste si l'operateur op (sommet de la pile d'appel)
-     * est de priorite strictement inferieur a str
-     *
-     * @param op  The first operator
-     * @param str The second operator
-     * @return true if op has a minor priority than str.
-     */
-
-    private boolean prioriteinf(String op, String str) { /*
-     * if (parenthesefermante>0) return(false); //
-     * else
-     */
-        if (isTimesDiv(str) && !isTimesDiv(op))
-            return (true);
-        else if (isPlusMinus(str) && isLogicOperator(op))
-            return (true);
-        else return ">=<=".indexOf(str) > -1 && "|&".indexOf(op) > -1;
-    }
-
-    protected void setWorkspace(Workspace workspace) {
-        wp = workspace;
-    }
-
-    private boolean hasGeneralForm(Primitive prim, Procedure proc) {
-        if (prim != null)
-            return prim.general;
-        else
-            return !proc.optVariables.isEmpty();
-    }
-
-    private void checkParenthesis() throws LogoException {
-        if (!nom.isEmpty()) {
-            String name = nom.peek();
-            if (name.equals("(")) {
-                throw new LogoException(app, Logo.messages.getString("too_much_arguments"));
-
-            }
-        }
-
-    }
-
-    private void deleteLineNumber() {
-        lineNumber = "";
-    }
 
     protected InstructionBuffer getInstructionBuffer() {
         return instructionBuffer;

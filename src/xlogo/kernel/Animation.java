@@ -12,58 +12,45 @@ import xlogo.gui.Application;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Stack;
-//Ce thread gère l'animation de la tortue pendant l'exécution 
-
 /**
- * This Thread is responsible of the turtle animation.
+ * This Thread is responsible for the turtle animation.
  * This animation has to be executed in a separated thread, else it will block
- * the event dispatcher thread 
+ * the event dispatcher thread
  */
 public class Animation extends Thread {
     public static boolean executionLaunched = false;
     private boolean pause = false;
-    private Application cadre;
+    private final ScrollListener scrollListener = new ScrollListener();
     private StringBuffer instruction;
-    private final Souris souris = new Souris();
+    private Application app;
 
     public Animation() {
     }
 
-    public Animation(Application cadre, StringBuffer instruction) {
-        this.cadre = cadre;
+    public Animation(Application app, StringBuffer instruction) {
+        this.app = app;
         this.instruction = instruction;
     }
 
     public void run() {
-        //	currentThread().setPriority(Thread.MIN_PRIORITY);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                cadre.setCommandEnabled(false);// la ligne de commandes
-                // n'est plus active
-            }
+        SwingUtilities.invokeLater(() -> {
+            app.setCommandEnabled(false);// the command line is no longer active
         });
         executionLaunched = true;
-        cadre.getDrawPanel().active_souris(); // On active les événements souris sur
-        // la zone de dessin
-        cadre.scrollPane.getVerticalScrollBar().addMouseListener(souris);
-        cadre.scrollPane.getHorizontalScrollBar().addMouseListener(souris);
+        app.getDrawPanel().activateScrollListener(); // We activate the scroll Listener events on the drawing area
+        app.scrollPane.getVerticalScrollBar().addMouseListener(scrollListener);
+        app.scrollPane.getHorizontalScrollBar().addMouseListener(scrollListener);
         try {
-            cadre.setKey(-1);
-            cadre.error = false;
+            app.setKey(-1);
+            app.error = false;
             LogoException.lance = false;
-            Interpreter.operande = Interpreter.operateur = Interpreter.drapeau_ouvrante = false;
-            cadre.getKernel().getInstructionBuffer().clear();
-            Interpreter.calcul = new Stack<String>();
-            Interpreter.nom = new Stack<String>();
-            Interpreter.locale = new HashMap<String, String>();
-            Interpreter.en_cours = new Stack<String>();
+            app.getKernel().getInstructionBuffer().clear();
+            Interpreter.reset();
             boolean b = true;
             while (b) {
-                String st = cadre.getKernel().execute(instruction);
+                String st = app.getKernel().execute(instruction);
                 if (!st.equals(""))
-                    throw new LogoException(cadre, Logo.messages
+                    throw new LogoException(app, Logo.messages
                             .getString("error.whattodo")
                             + " " + st + " ?");
                 if (Interpreter.actionInstruction.length() == 0) b = false;
@@ -74,13 +61,13 @@ public class Animation extends Thread {
             }
         } catch (LogoException e) {
         }
-        cadre.setCommandEnabled(true);
-        if (!cadre.viewer3DVisible()) cadre.focusCommandLine();
+        app.setCommandEnabled(true);
+        if (!app.viewer3DVisible()) app.focusCommandLine();
         executionLaunched = false;
-        cadre.error = false;
+        app.error = false;
         LogoException.lance = false;
-        cadre.scrollPane.getVerticalScrollBar().removeMouseListener(souris);
-        cadre.scrollPane.getHorizontalScrollBar().removeMouseListener(souris);
+        app.scrollPane.getVerticalScrollBar().removeMouseListener(scrollListener);
+        app.scrollPane.getHorizontalScrollBar().removeMouseListener(scrollListener);
     }
 
     protected boolean isOnPause() {
@@ -91,10 +78,11 @@ public class Animation extends Thread {
         pause = b;
     }
 
-    class Souris extends MouseAdapter { //Si on déplace les Scrollbar pendant
-        // le dessin
-        public Souris() {
-        } // Ceci permet d'interrompre momentanément l'exécution
+    class ScrollListener extends MouseAdapter {
+        // If we move the Scrollbars while drawing,
+        // this allows you to temporarily interrupt the execution
+        public ScrollListener() {
+        }
 
         public void mousePressed(MouseEvent e) {
             pause = true;

@@ -11,9 +11,10 @@ import java.math.BigDecimal;
 
 /**
  * This class saves all Loop Properties (repeat, while, for) such as increment, end integer ....
+ *
  * @author loic
  */
-public class LoopProperties {
+public class Loop {
     /**
      * The Instruction to execute on each iteration
      */
@@ -29,12 +30,13 @@ public class LoopProperties {
 
     /**
      * The super constructor for all loops
-     * @param counter The beginning integer
-     * @param end The end integer
+     *
+     * @param counter   The beginning integer
+     * @param end       The end integer
      * @param increment The increment between two values
-     * @param instr The instruction to execute each loop
+     * @param instr     The instruction to execute each loop
      */
-    LoopProperties(BigDecimal counter, BigDecimal end, BigDecimal increment, String instr) {
+    Loop(BigDecimal counter, BigDecimal end, BigDecimal increment, String instr) {
         this.counter = counter;
         this.end = end;
         this.increment = increment;

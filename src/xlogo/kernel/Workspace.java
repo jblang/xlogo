@@ -65,7 +65,7 @@ public class Workspace {
     public void deleteAllProcedures() {
         for (int i = procedures.size() - 1; i > -1; i--) {
             Procedure procedure = getProcedure(i);
-            if (procedure.affichable)
+            if (procedure.displayed)
                 deleteProcedure(i);
         }
     }
@@ -204,11 +204,11 @@ public class Workspace {
         for (int i = 0; i < getNumberOfProcedure(); i++) {
             Procedure procedure = getProcedure(i);
             sb.append(Logo.messages.getString("pour")).append(" ").append(procedure.name);
-            for (int j = 0; j < procedure.nbparametre; j++) {
-                sb.append(" :").append(procedure.variable.get(j));
+            for (int j = 0; j < procedure.arity; j++) {
+                sb.append(" :").append(procedure.variables.get(j));
             }
             sb.append("\n");
-            sb.append(procedure.instruction);
+            sb.append(procedure.body);
             sb.append(Logo.messages.getString("fin"));
             sb.append("\n\n");
         }
@@ -281,18 +281,18 @@ public class Workspace {
                 Procedure proc;
                 if (id == -1) {
                     proc = new Procedure(name, variables.size(), variables, optVariables, optVariablesExp, editable, app);
-                    proc.instruction = body.toString();
+                    proc.body = body.toString();
                     proc.comment = comment.toString();
                     this.procedureListPush(proc);
                 } else {          // If we redefine an existing procedure
                     proc = this.getProcedure(id);
-                    proc.instruction = body.toString();
-                    proc.instr = null;
+                    proc.body = body.toString();
+                    proc.formattedBody = null;
                     proc.comment = comment.toString();
-                    proc.variable = variables;
+                    proc.variables = variables;
                     proc.optVariables = optVariables;
-                    proc.optVariablesExp = optVariablesExp;
-                    proc.nbparametre = variables.size();
+                    proc.formattedOptVariables = optVariablesExp;
+                    proc.arity = variables.size();
                     this.setProcedureList(id, proc);
 
                 }
@@ -300,11 +300,11 @@ public class Workspace {
             // We create the formatted instruction strings for each procedure and the backups
             for (int j = 0; j < this.getNumberOfProcedure(); j++) {
                 Procedure pr = this.getProcedure(j);
-                pr.decoupe();
-                pr.instruction_sauve = pr.instruction;
-                pr.instr_sauve = pr.instr;
-                pr.variable_sauve = new ArrayList<>();
-                pr.variable_sauve.addAll(pr.variable);
+                pr.format();
+                pr.backupBody = pr.body;
+                pr.backupFormattedBody = pr.formattedBody;
+                pr.backupVariables = new ArrayList<>();
+                pr.backupVariables.addAll(pr.variables);
             }
 
             if (!defineSentence.toString().equals("") && editable) {
@@ -481,7 +481,7 @@ public class Workspace {
         // Vérifier si c'est le nom d'une procédure de démarrage
         for (int i = 0; i < this.getNumberOfProcedure(); i++) {
             Procedure procedure = this.getProcedure(i);
-            if (procedure.name.equals(mot) && !procedure.affichable)
+            if (procedure.name.equals(mot) && !procedure.displayed)
                 throw new SyntaxException(this, mot + " " + Logo.messages.getString("existe_deja"));
         }
         // Vérifier si ce n'est pas un nombre:

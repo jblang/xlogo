@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Kernel {
     protected static long chrono = 0;
-    protected static boolean mode_trace = false; // true si le mode trace est enclenchée (permet de suivre les procédures)
+    protected static boolean traceMode = false; // true si le mode trace est enclenchée (permet de suivre les procédures)
     protected ArrayFlow flows = new ArrayFlow(); // Contient les flux de lecture ou d'écriture
     private Interpreter interpreter;
     private Workspace wp;
@@ -34,7 +34,7 @@ public class Kernel {
     }
 
     protected String listSearch() throws LogoException {
-        return interpreter.chercheListe();
+        return interpreter.searchList();
     }
 
     public void fcfg(Color color) {

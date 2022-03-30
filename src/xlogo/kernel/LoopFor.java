@@ -2,7 +2,7 @@ package xlogo.kernel;
 
 import java.math.BigDecimal;
 
-public class LoopFor extends LoopProperties {
+public class LoopFor extends Loop {
     /**
      * This boolean indicates
      */
@@ -47,11 +47,11 @@ public class LoopFor extends LoopProperties {
         if (element.endsWith(".0")) element = element.substring(0, element.length() - 2);
         if (element.startsWith(".") || element.equals("")) element = "0" + element;
 
-        if (Interpreter.locale.containsKey(var)) {
+        if (Interpreter.locals.containsKey(var)) {
             if (first) conserver = true;
-            Interpreter.locale.put(var, element);
+            Interpreter.locals.put(var, element);
         } else {
-            Interpreter.locale.put(var, element);
+            Interpreter.locals.put(var, element);
         }
     }
 
@@ -60,7 +60,7 @@ public class LoopFor extends LoopProperties {
      */
     void DeleteVar() {
         if (!conserver) {
-            Interpreter.locale.remove(var);
+            Interpreter.locals.remove(var);
 
         }
     }

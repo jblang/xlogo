@@ -2,10 +2,9 @@ package xlogo.kernel;
 
 import java.math.BigDecimal;
 
-public class LoopFillPolygon extends LoopProperties {
+public class LoopFillPolygon extends Loop {
     /**
      * The super constructor for Fill Polygon Loops
-     *
      */
 
     LoopFillPolygon() {
