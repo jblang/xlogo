@@ -3,7 +3,6 @@ package xlogo.gui.preferences;
 import xlogo.Logo;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,14 +62,14 @@ public class AxisPanel extends JPanel implements ActionListener {
     }
 
     private void initGui() {
-        setBorder(BorderFactory.createTitledBorder(Logo.messages.getString("title_axis")));
+        setBorder(BorderFactory.createTitledBorder(Logo.getString("title_axis")));
 
-        xAxisEnabled = new JCheckBox(Logo.messages.getString("active_xaxis"));
+        xAxisEnabled = new JCheckBox(Logo.getString("active_xaxis"));
         xAxisEnabled.setSelected(Logo.config.isXAxisEnabled());
-        yAxisEnabled = new JCheckBox(Logo.messages.getString("active_yaxis"));
+        yAxisEnabled = new JCheckBox(Logo.getString("active_yaxis"));
         yAxisEnabled.setSelected(Logo.config.isYAxisEnabled());
-        xAxisLabel = new JLabel(Logo.messages.getString("pas"));
-        yAxisLabel = new JLabel(Logo.messages.getString("pas"));
+        xAxisLabel = new JLabel(Logo.getString("pas"));
+        yAxisLabel = new JLabel(Logo.getString("pas"));
         xAxisSpacing = new JTextField(String.valueOf(Logo.config.getXAxisSpacing()));
         yAxisSpacing = new JTextField(String.valueOf(Logo.config.getYAxisSpacing()));
         axisColor = new ColorPanel(new Color(Logo.config.getAxisColor()));

@@ -13,7 +13,7 @@ public class SyntaxException extends Exception {   // to generate in case of err
     SyntaxException(Workspace workspace, String message) {        // and variables
         this.editor = workspace.app.editor;
         MessageTextArea jt = new MessageTextArea(message);
-        JOptionPane.showMessageDialog(this.editor, jt, Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.editor, jt, Logo.getString("erreur"), JOptionPane.ERROR_MESSAGE);
         for (int i = 0; i < workspace.getNumberOfProcedure(); i++) { // We remember the old definitions of procedures
             Procedure pr = workspace.getProcedure(i);
             pr.variables = new ArrayList<>(pr.backupVariables);

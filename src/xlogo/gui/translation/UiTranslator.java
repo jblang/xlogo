@@ -1,9 +1,9 @@
 package xlogo.gui.translation;
 
+import xlogo.Language;
 import xlogo.Logo;
 import xlogo.gui.Application;
 import xlogo.gui.SearchFrame;
-import xlogo.resources.ResourceLoader;
 import xlogo.utils.Utils;
 
 import javax.swing.*;
@@ -38,8 +38,8 @@ public class UiTranslator extends JFrame implements ActionListener {
     }
 
     private void initGui() {
-        setIconImage(ResourceLoader.getAppIcon().getImage());
-        setTitle(Logo.messages.getString("menu.help.translatexlogo"));
+        setIconImage(Logo.getAppIcon().getImage());
+        setTitle(Logo.getString("menu.help.translatexlogo"));
         first = new FirstPanel(this);
         getContentPane().add(first);
         setVisible(true);
@@ -69,7 +69,7 @@ public class UiTranslator extends JFrame implements ActionListener {
             case UiTranslator.SEND:
                 String path = "";
                 JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
-                int retval = jf.showDialog(this, Logo.messages
+                int retval = jf.showDialog(this, Logo
                         .getString("menu.file.save"));
                 if (retval == JFileChooser.APPROVE_OPTION) {
                     path = jf.getSelectedFile().getPath();
@@ -77,12 +77,12 @@ public class UiTranslator extends JFrame implements ActionListener {
                     try {
                         Locale locale = null;
                         if (action.equals(UiTranslator.CREATE)) {
-                            locale = Logo.getLocale(0);
+                            locale = Language.byIndex(0).locale;
                         } else if (!action.equals(UiTranslator.CONSULT)) {
-                            locale = Logo.getLocale(Integer.parseInt(id));
+                            locale = Language.byIndex(Integer.parseInt(id)).locale;
                         }
                         Vector<String> v = bottom.getPrimitiveTable().getKeys();
-                        ResourceBundle rb = ResourceLoader.getPrimitiveBundle(locale);
+                        ResourceBundle rb = Logo.getPrimitiveBundle(locale);
                         for (int i = 0; i < v.size(); i++) {
                             String key = v.get(i);
                             if (action.equals(UiTranslator.CREATE)) {
@@ -95,7 +95,7 @@ public class UiTranslator extends JFrame implements ActionListener {
                         }
                         sb.append("\n---------------------------------------\n");
                         v = bottom.getMessageTable().getKeys();
-                        rb = ResourceLoader.getLanguageBundle(locale);
+                        rb = Logo.getLanguageBundle(locale);
                         for (int i = 0; i < v.size(); i++) {
                             String key = v.get(i);
                             if (action.equals(UiTranslator.CREATE)) {
@@ -111,7 +111,7 @@ public class UiTranslator extends JFrame implements ActionListener {
                         System.out.println("annulation");
                     }
                     catch (IOException e2) {
-                        app.updateHistory("erreur", Logo.messages.getString("error.ioecriture"));
+                        app.updateHistory("erreur", Logo.getString("error.ioecriture"));
                     }
                 }
                 break;

@@ -1,7 +1,6 @@
 package xlogo.gui.translation;
 
 import xlogo.Logo;
-import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,15 +24,15 @@ public class BottomPanel extends JPanel {
     private void initGui() {
         setLayout(new BorderLayout());
         tabbedPane = new JTabbedPane();
-        messageTable = new TranslationTable(translator, action, id, ResourceLoader::getLanguageBundle);
-        primitiveTable = new TranslationTable(translator, action, id, ResourceLoader::getPrimitiveBundle);
-        tabbedPane.add(primitiveTable, Logo.messages.getString("primitives"));
-        tabbedPane.add(messageTable, Logo.messages.getString("messages"));
+        messageTable = new TranslationTable(translator, action, id, Logo::getLanguageBundle);
+        primitiveTable = new TranslationTable(translator, action, id, Logo::getPrimitiveBundle);
+        tabbedPane.add(primitiveTable, Logo.getString("primitives"));
+        tabbedPane.add(messageTable, Logo.getString("messages"));
         javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(tabbedPane);
 
         add(scroll, BorderLayout.CENTER);
-        JButton searchButton = new JButton(ResourceLoader.getIcon("search"));
-        searchButton.setToolTipText(Logo.messages.getString("find"));
+        JButton searchButton = new JButton(Logo.getIcon("search"));
+        searchButton.setToolTipText(Logo.getString("find"));
         searchButton.addActionListener(translator);
         searchButton.setActionCommand(UiTranslator.SEARCH);
         searchButton.setSize(new java.awt.Dimension(100, 50));

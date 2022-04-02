@@ -27,8 +27,8 @@ public class LogoException extends Exception {
         while (!Interpreter.procedures.isEmpty() && Interpreter.procedures.peek().equals("("))
             Interpreter.procedures.pop();
         if (!cadre.error & !Interpreter.procedures.isEmpty()) {
-            cadre.updateHistory("erreur", Logo.messages.getString("dans") + " " + Interpreter.procedures.pop() + ", "
-                    + Logo.messages.getString("line") + " " + getLineNumber() + ":\n");
+            cadre.updateHistory("erreur", Logo.getString("dans") + " " + Interpreter.procedures.pop() + ", "
+                    + Logo.getString("line") + " " + getLineNumber() + ":\n");
         }
         if (!cadre.error) cadre.updateHistory("erreur", Utils.unescapeString(st) + "\n");
 

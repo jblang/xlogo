@@ -11,7 +11,6 @@ import xlogo.kernel.LogoException;
 import xlogo.kernel.Procedure;
 import xlogo.kernel.SyntaxException;
 import xlogo.kernel.Workspace;
-import xlogo.resources.ResourceLoader;
 import xlogo.utils.Utils;
 
 import javax.swing.*;
@@ -45,8 +44,8 @@ public class Editor extends JFrame implements SearchListener {
     public Editor(Application app) {
         this.app = app;
         this.workspace = app.getKernel().getWorkspace();
-        setIconImage(ResourceLoader.getAppIcon().getImage());
-        setTitle(Logo.messages.getString("editeur"));
+        setIconImage(Logo.getAppIcon().getImage());
+        setTitle(Logo.getString("editeur"));
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         initTextArea();
         initSearchDialogs();
@@ -70,9 +69,9 @@ public class Editor extends JFrame implements SearchListener {
 
     private void rstaButton(JToolBar parent, String iconName, String toolTip, int action) {
         var button = parent.add(RTextArea.getAction(action));
-        button.setIcon(ResourceLoader.getIcon(iconName));
+        button.setIcon(Logo.getIcon(iconName));
         button.setHideActionText(true);
-        button.setToolTipText(Logo.messages.getString(toolTip));
+        button.setToolTipText(Logo.getString(toolTip));
     }
 
     private void initSearchDialogs() {
@@ -87,7 +86,7 @@ public class Editor extends JFrame implements SearchListener {
     private void initMainCommand() {
         mainCommand = new JTextField();
         setMainCommand();
-        var label = new JLabel(Logo.messages.getString("mainCommand"), ResourceLoader.getIcon("run"), JLabel.LEFT);
+        var label = new JLabel(Logo.getString("mainCommand"), Logo.getIcon("run"), JLabel.LEFT);
         var panel = new JPanel();
         if (Logo.getMainCommand().length() < 30) mainCommand.setPreferredSize(new Dimension(150, 20));
         panel.add(label);
@@ -141,7 +140,7 @@ public class Editor extends JFrame implements SearchListener {
         if (!app.editor.isVisible()) {
             setVisible(true);
             toFront();
-            setTitle(Logo.messages.getString("editeur"));
+            setTitle(Logo.getString("editeur"));
             for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
                 Procedure procedure = workspace.getProcedure(i);
                 appendText(procedure.toString());

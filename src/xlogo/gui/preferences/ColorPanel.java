@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 
 public class ColorPanel extends JPanel implements ActionListener {
 
-    private final JButton chooseButton = new JButton(Logo.messages.getString("pref.highlight.other"));
+    private final JButton chooseButton = new JButton(Logo.getString("pref.highlight.other"));
     protected JComboBox<Integer> colorCombo;
     private Color customColor = Color.WHITE;
 

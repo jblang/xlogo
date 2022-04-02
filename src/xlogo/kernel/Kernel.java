@@ -73,11 +73,7 @@ public class Kernel {
         app.getDrawPanel().changeTurtleImage(i);
     }
 
-    public void initGraphics() {
-        app.getDrawPanel().initGraphics();
-    }
-
-    public void buildPrimitiveTreemap(int id) {
+    public void buildPrimitiveTreemap() {
         interpreter.buildPrimitiveTreemap();
     }
 

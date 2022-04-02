@@ -98,7 +98,7 @@ public class Procedure implements AbstractProcedure {
         StringBuilder sb = new StringBuilder();
         if (displayed) {
             sb.append(comment);
-            sb.append(Logo.messages.getString("pour")).append(" ").append(name);
+            sb.append(Logo.getString("pour")).append(" ").append(name);
             for (int j = 0; j < arity; j++) {
                 sb.append(" :");
                 sb.append(variables.get(j));
@@ -112,7 +112,7 @@ public class Procedure implements AbstractProcedure {
             }
             sb.append("\n");
             sb.append(body);
-            sb.append(Logo.messages.getString("fin"));
+            sb.append(Logo.getString("fin"));
             sb.append("\n");
         }
 //      System.out.println("a"+sb+"a");

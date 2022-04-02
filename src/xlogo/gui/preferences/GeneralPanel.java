@@ -1,6 +1,7 @@
 package xlogo.gui.preferences;
 
 import xlogo.Config;
+import xlogo.Language;
 import xlogo.Logo;
 import xlogo.gui.Application;
 import xlogo.gui.LanguageListRenderer;
@@ -18,7 +19,7 @@ import java.awt.*;
 public class GeneralPanel extends JPanel {
     private final Application app;
 
-    private final JList<String> languageList = new JList<>(Logo.nativeLanguages);
+    private final JList<Language> languageList = new JList<>(Language.values());
     private final JRadioButton lightLaf = new JRadioButton();
     private final JRadioButton nativeLaf = new JRadioButton();
     private final JRadioButton darkLaf = new JRadioButton();
@@ -32,22 +33,22 @@ public class GeneralPanel extends JPanel {
 
     private void initGui() {
         languageList.setCellRenderer(new LanguageListRenderer());
-        languageList.setSelectedIndex(Logo.config.getLanguage());
+        languageList.setSelectedIndex(Logo.config.getLanguage().ordinal());
         languageList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         var languageScroll = new JScrollPane(languageList);
 
-        darkLaf.setActionCommand(Logo.messages.getString("pref.general.darkLaf"));
+        darkLaf.setActionCommand(Logo.getString("pref.general.darkLaf"));
         darkLaf.setHorizontalAlignment(SwingConstants.LEFT);
         darkLaf.setHorizontalTextPosition(SwingConstants.LEFT);
-        darkLaf.setText(Logo.messages.getString("pref.general.darkLaf"));
-        lightLaf.setActionCommand(Logo.messages.getString("pref.general.lightLaf"));
+        darkLaf.setText(Logo.getString("pref.general.darkLaf"));
+        lightLaf.setActionCommand(Logo.getString("pref.general.lightLaf"));
         lightLaf.setHorizontalAlignment(SwingConstants.LEFT);
         lightLaf.setHorizontalTextPosition(SwingConstants.LEFT);
-        lightLaf.setText(Logo.messages.getString("pref.general.lightLaf"));
-        nativeLaf.setActionCommand(Logo.messages.getString("pref.general.nativeLaf"));
+        lightLaf.setText(Logo.getString("pref.general.lightLaf"));
+        nativeLaf.setActionCommand(Logo.getString("pref.general.nativeLaf"));
         nativeLaf.setHorizontalAlignment(SwingConstants.LEFT);
         nativeLaf.setHorizontalTextPosition(SwingConstants.LEFT);
-        nativeLaf.setText(Logo.messages.getString("pref.general.nativeLaf"));
+        nativeLaf.setText(Logo.getString("pref.general.nativeLaf"));
         nativeLaf.setVerticalAlignment(SwingConstants.CENTER);
         switch (Logo.config.getLookAndFeel()) {
             case Config.LAF_LIGHT:
@@ -65,28 +66,28 @@ public class GeneralPanel extends JPanel {
         lafButtonGroup.add(lightLaf);
         lafButtonGroup.add(nativeLaf);
 
-        var languageLabel = new JLabel(Logo.messages.getString("pref.general.lang"));
+        var languageLabel = new JLabel(Logo.getString("pref.general.lang"));
         languageLabel.setOpaque(true);
         languageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         languageLabel.setHorizontalTextPosition(SwingConstants.LEFT);
 
-        var themeLabel = new JLabel(Logo.messages.getString("pref.general.aspect"));
+        var themeLabel = new JLabel(Logo.getString("pref.general.aspect"));
         themeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         themeLabel.setHorizontalTextPosition(SwingConstants.LEFT);
 
-        var slowLabel = new JLabel(Logo.messages.getString("pref.general.slow"));
+        var slowLabel = new JLabel(Logo.getString("pref.general.slow"));
         slowLabel.setHorizontalAlignment(SwingConstants.LEFT);
         slowLabel.setHorizontalTextPosition(SwingConstants.LEFT);
         slowLabel.setVerticalAlignment(SwingConstants.BOTTOM);
         slowLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
 
-        var fastLabel = new JLabel(Logo.messages.getString("pref.general.fast"));
+        var fastLabel = new JLabel(Logo.getString("pref.general.fast"));
         fastLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         fastLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
         fastLabel.setVerticalAlignment(SwingConstants.BOTTOM);
         fastLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
 
-        var turtleSpeedLabel = new JLabel(Logo.messages.getString("pref.general.speed"));
+        var turtleSpeedLabel = new JLabel(Logo.getString("pref.general.speed"));
         speedSlider.setValue(speedSlider.getMaximum() - Logo.config.getTurtleSpeed());
         speedSlider.setMajorTickSpacing(10);
         speedSlider.setMinorTickSpacing(5);
@@ -133,10 +134,10 @@ public class GeneralPanel extends JPanel {
      * Apply any modification, if some application parameter have been modified with this panel.
      */
     protected void update() {
-        int indicator = languageList.getSelectedIndex();
-
-        if (indicator != Logo.config.getLanguage() && indicator != -1) {
-            app.changeLanguage(indicator);
+        Language lang = Language.byIndex(languageList.getSelectedIndex());
+        if (Logo.config.getLanguage() != lang) {
+            Logo.config.setLanguage(lang);
+            app.changeLanguage();
         }
         Logo.config.setTurtleSpeed(speedSlider.getMaximum() - speedSlider.getValue());
         if (nativeLaf.isSelected()) {

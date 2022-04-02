@@ -8,18 +8,15 @@
 package xlogo;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import xlogo.gui.Application;
 import xlogo.gui.LanguageListRenderer;
-import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * This class initializes the main frame, loads startup files and launches startup command
@@ -29,39 +26,10 @@ import java.util.ResourceBundle;
 public class Logo {
     public static final String VERSION = "1.0.0 beta 5";
     public static final String WEB_SITE = "github.com/jblang/xlogo";
-    public static final String[] nativeLanguages = {"Francais", "English", "عربية", "Español", "Português", "Esperanto", "Deutsch", "Galego", "Asturianu", "Ελληνικά", "Italiano", "Català", "Magyar"};
-    public static final String[] locales = {"fr", "en", "ar", "es", "pt", "eo", "de", "gl", "as", "el", "it", "ca", "hu"};
-    public static ResourceBundle messages;
-    public static String[] translatedLanguages;
     public static Config config = new Config();
     static long startupHour = Calendar.getInstance().getTimeInMillis();
     static String mainCommand = "";
     static boolean autoLaunch = false;
-
-    /**
-     * Sets the selected language for all messages
-     *
-     * @param id The integer that represents the language
-     */
-    public static void generateLanguage(int id) { // fixe la langue utilisée pour les messages
-        Locale locale = Logo.getLocale(id);
-        messages = ResourceLoader.getLanguageBundle(locale);
-        translatedLanguages = new String[]{
-                Logo.messages.getString("pref.general.french"),
-                Logo.messages.getString("pref.general.english"),
-                Logo.messages.getString("pref.general.arabic"),
-                Logo.messages.getString("pref.general.spanish"),
-                Logo.messages.getString("pref.general.portuguese"),
-                Logo.messages.getString("pref.general.esperanto"),
-                Logo.messages.getString("pref.general.german"),
-                Logo.messages.getString("pref.general.galician"),
-                Logo.messages.getString("pref.general.asturian"),
-                Logo.messages.getString("pref.general.greek"),
-                Logo.messages.getString("pref.general.italian"),
-                Logo.messages.getString("pref.general.catalan"),
-                Logo.messages.getString("pref.general.hungarian")
-        };
-    }
 
     /**
      * The main methods
@@ -69,12 +37,6 @@ public class Logo {
      * @param args The file *.lgo to load on startup
      */
     public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         config.getStartupFiles().addAll(Arrays.asList(args));
         config.getStartupFiles().add(0, "#####");
 
@@ -82,59 +44,25 @@ public class Logo {
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping("text/logo", "xlogo.kernel.LogoTokenMaker");
 
-        tryConfig();
-    }
-
-    private static void launchApp() {
-        readCommandLineConfig();
-        generateLanguage(config.getLanguage());
-        SwingUtilities.invokeLater(Application::new);
-    }
-
-    /**
-     * This method returns the Locale corresponding to the language "id"
-     *
-     * @param id The integer that represents the language
-     * @return The locale that corresponds to the desired language
-     */
-    public static Locale getLocale(int id) {
-        switch (id) {
-            case Config.LANGUAGE_FRENCH:
-                return new Locale("fr", "FR");
-            case Config.LANGUAGE_ENGLISH:
-                return new Locale("en", "US");
-            case Config.LANGUAGE_ARABIC:
-                return new Locale("ar", "MA");
-            case Config.LANGUAGE_SPANISH:
-                return new Locale("es", "ES");
-            case Config.LANGUAGE_PORTUGUESE:
-                return new Locale("pt", "BR");
-            case Config.LANGUAGE_ESPERANTO:
-                return new Locale("eo", "EO");
-            case Config.LANGUAGE_GERMAN:
-                return new Locale("de", "DE");
-            case Config.LANGUAGE_GALICIAN:
-                return new Locale("gl", "ES");
-            case Config.LANGUAGE_ASTURIAN:
-                return new Locale("as", "ES");
-            case Config.LANGUAGE_GREEK:
-                return new Locale("el", "GR");
-            case Config.LANGUAGE_ITALIAN:
-                return new Locale("it", "IT");
-            case Config.LANGUAGE_CATALAN:
-                return new Locale("ca", "ES");
-            case Config.LANGUAGE_HUNGARIAN:
-                return new Locale("hu", "HU");
-            default:
-                return null;
+        try {
+            config = Config.read();
+            launchApp();
+        } catch (Exception e) {
+            // Default to dark look and feel
+            try {
+                UIManager.setLookAndFeel(new FlatDarkLaf());
+            } catch (UnsupportedLookAndFeelException ex) {
+                ex.printStackTrace();
+            }
+            config.loadDarkEditorTheme();
+            // Prompt for language
+            SwingUtilities.invokeLater(Logo::askLanguage);
         }
     }
 
-    public static String getLocaleTwoLetters() {
-        if (config.getLanguage() > -1 && config.getLanguage() < locales.length)
-            return locales[config.getLanguage()];
-        else
-            return "en";
+    public static void launchApp() {
+        readCommandLineConfig();
+        SwingUtilities.invokeLater(Application::new);
     }
 
     /**
@@ -159,10 +87,9 @@ public class Logo {
                     config.getStartupFiles().remove(i);
                     if (i < config.getStartupFiles().size()) {
                         element = config.getStartupFiles().get(i);
-                        for (int j = 0; j < Logo.locales.length; j++) {
-                            if (Logo.locales[j].equals(element)) {
-                                config.setLanguage(j);
-                                Logo.generateLanguage(j);
+                        for (var lang : Language.values()) {
+                            if (lang.code.equals(element)) {
+                                config.setLanguage(lang);
                                 break;
                             }
                         }
@@ -204,27 +131,6 @@ public class Logo {
         }
     }
 
-    /**
-     * This method initializes all parameters from the file .xlogo
-     */
-    private static void tryConfig() {
-        try {
-            config = Config.read();
-            launchApp();
-        } catch (Exception e) {
-            // Default to dark look and feel
-            try {
-                UIManager.setLookAndFeel(new FlatDarkLaf());
-            } catch (UnsupportedLookAndFeelException ex) {
-                ex.printStackTrace();
-            }
-            config.loadDarkEditorTheme();
-            // Prompt for language
-            generateLanguage(Config.LANGUAGE_ENGLISH);
-            SwingUtilities.invokeLater(LanguageSelection::new);
-        }
-    }
-
     public static long getStartupHour() {
         return startupHour;
     }
@@ -241,33 +147,74 @@ public class Logo {
         return autoLaunch;
     }
 
-    static class LanguageSelection extends JFrame {
-        private final JList<String> languageList = new JList<>(Logo.nativeLanguages);
-
-        public LanguageSelection() {
-            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-            setIconImage(ResourceLoader.getAppIcon().getImage());
-            setLayout(new BorderLayout());
-            setTitle("XLogo");
-            JButton okButton = new JButton("OK");
-            getContentPane().add(okButton, BorderLayout.PAGE_END);
-
-            languageList.setCellRenderer(new LanguageListRenderer(true));
-            languageList.setSelectedIndex(Logo.config.getLanguage());
-            languageList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            languageList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-            languageList.setVisibleRowCount(4);
-            JScrollPane scroll = new JScrollPane(languageList);
-            getContentPane().add(scroll, BorderLayout.CENTER);
-            okButton.addActionListener(e -> {
-                config.setLanguage(languageList.getSelectedIndex());
-                dispose();
-                launchApp();
-            });
-            pack();
-            setLocationRelativeTo(null);
-            setVisible(true);
-        }
+    public static ImageIcon getIcon(String name) {
+        var res = Logo.class.getResource("resources/icons/" + name + ".svg");
+        if (res == null)
+            return null;
+        else
+            return new FlatSVGIcon(res);
     }
 
+    public static ImageIcon getAppIcon() {
+        return new ImageIcon(Objects.requireNonNull(Logo.class.getResource("resources/appicon.png")));
+    }
+
+    public static FlatSVGIcon getTurtle(int i) {
+        var res = Logo.class.getResource("resources/turtles/turtle" + i + ".svg");
+        if (res == null)
+            return null;
+        else
+            return new FlatSVGIcon(res);
+    }
+
+    public static ResourceBundle getLanguageBundle(Locale locale) {
+        return ResourceBundle.getBundle("xlogo.resources.language", locale);
+    }
+
+    public static ResourceBundle getPrimitiveBundle(Locale locale) {
+        return ResourceBundle.getBundle("xlogo.resources.primitives", locale);
+    }
+
+    static void askLanguage() {
+        var f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        f.setIconImage(getAppIcon().getImage());
+        f.setLayout(new BorderLayout());
+        f.setTitle("XLogo");
+        var ok = new JButton("OK");
+        f.getContentPane().add(ok, BorderLayout.PAGE_END);
+
+        var l = new JList<>(Language.values());
+        l.setCellRenderer(new LanguageListRenderer(true));
+        l.setSelectedIndex(config.getLanguage().ordinal());
+        l.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        l.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        l.setVisibleRowCount(4);
+        f.getContentPane().add(new JScrollPane(l), BorderLayout.CENTER);
+        ok.addActionListener(e -> {
+            config.setLanguage(Language.values()[l.getSelectedIndex()]);
+            f.dispose();
+            launchApp();
+        });
+        f.pack();
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+    }
+
+    public static String getLanguageCode() {
+        return config.getLanguage().code;
+    }
+
+    public static String getString(String string) {
+        return config.getLanguage().messages.getString(string);
+    }
+
+    public static String[] getTranslatedLanguages() {
+        var langs = Language.values();
+        var names = new String[langs.length];
+        int i = 0;
+        for (var lang : langs)
+            names[i++] = getString(lang.key);
+        return names;
+    }
 }

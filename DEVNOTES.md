@@ -45,15 +45,14 @@ Because not all the required libraries are available in MavenCentral, I am keepi
   - UI code is [Totally Gridbag](https://www.youtube.com/watch?v=UuLaxbFKAcc), but I'm [working](https://github.com/jblang/xlogo/blob/main/src/xlogo/gui/preferences/EditorPanel.java#L230-L250) [on it](https://github.com/jblang/xlogo/blob/main/src/xlogo/utils/GridBagPanel.java).
 
 ## Adding a Language
-- `Config.java`: add a `public static LANGUAGE_...` constant 
-- `Logo.java`:
-  - Add English name of language to `englishLanguage`
-  - Add two-letter ISO abbreviation to `locales`
-  - Add a new property key to `translationLanguage` in `generateLanguage()`
-  - Add a case for the new language in `getLocale()`
+- `xlogo/Language.java`: add an enum entry for the language with the following:
+  - `name` is the native name of the Language in its native script
+  - `code` is the two-letter ISO code of the language
+  - `country` is the two-letter ISO code of the country associated with the language
+  - `key` is the property key used to look up a localized version of the language name
 - Flag image: add a SVG with a flag representing the language in `resources/flags`. All current flags come from Wikimedia Commons.
-- GPL licence: Create an HTML file in the `resources/gpl` directory with a translation of the GPL 
-- Update language properties files genrated from Help->Translate
+- GPL licence: Create an HTML file in the `resources/gpl` directory with a translation of the GPL.
+- Update language properties files generated from Help->Translate
 
 ## Adding Primitives
 - In `xlogo/kernel/Primitives.java`: 

@@ -1,6 +1,5 @@
 package xlogo.gui;
 
-import xlogo.Config;
 import xlogo.Logo;
 
 import javax.swing.*;
@@ -47,7 +46,7 @@ public class SearchFrame extends JDialog implements ActionListener {
             labelResult.setText("");
         } else {
             // Not found
-            labelResult.setText(Logo.messages.getString("string_not_found"));
+            labelResult.setText(Logo.getString("string_not_found"));
         }
     }
 
@@ -76,20 +75,20 @@ public class SearchFrame extends JDialog implements ActionListener {
     }
 
     protected void setText() {
-        backward = new JRadioButton(Logo.messages.getString("backward"));
-        forward = new JRadioButton(Logo.messages.getString("forward"));
-        TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("direction"));
+        backward = new JRadioButton(Logo.getString("backward"));
+        forward = new JRadioButton(Logo.getString("forward"));
+        TitledBorder tb = BorderFactory.createTitledBorder(Logo.getString("direction"));
         buttonPanel.setBorder(tb);
-        find = new JButton(Logo.messages.getString("find"));
-        labelFind = new JLabel(Logo.messages.getString("find") + " :");
-        setTitle(Logo.messages.getString("find_replace"));
+        find = new JButton(Logo.getString("find"));
+        labelFind = new JLabel(Logo.getString("find") + " :");
+        setTitle(Logo.getString("find_replace"));
     }
 
     private void initGui() {
-        setTitle(Logo.messages.getString("find_replace"));
+        setTitle(Logo.getString("find_replace"));
         // Init the RadioButton for the direction search
-        backward = new JRadioButton(Logo.messages.getString("backward"));
-        forward = new JRadioButton(Logo.messages.getString("forward"));
+        backward = new JRadioButton(Logo.getString("backward"));
+        forward = new JRadioButton(Logo.getString("forward"));
         forward.setSelected(true);
         bg = new ButtonGroup();
         bg.add(forward);
@@ -98,16 +97,16 @@ public class SearchFrame extends JDialog implements ActionListener {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.add(forward);
         buttonPanel.add(backward);
-        TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("direction"));
+        TitledBorder tb = BorderFactory.createTitledBorder(Logo.getString("direction"));
         buttonPanel.setBorder(tb);
 
         // Init Buttons
-        find = new JButton(Logo.messages.getString("find"));
+        find = new JButton(Logo.getString("find"));
         find.addActionListener(this);
         find.setActionCommand(FIND);
 
         // Init JLabel and JCombobox
-        labelFind = new JLabel(Logo.messages.getString("find") + " :");
+        labelFind = new JLabel(Logo.getString("find") + " :");
         labelResult = new JLabel();
 
         comboFind = new JComboBox();

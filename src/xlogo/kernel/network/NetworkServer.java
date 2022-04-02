@@ -55,7 +55,7 @@ public class NetworkServer {
         try {
             serverSocket = new ServerSocket(Logo.config.getTcpPort());
         } catch (IOException e) {
-            throw (new LogoException(app, Logo.messages.getString("pb_port") + Logo.config.getTcpPort()));
+            throw (new LogoException(app, Logo.getString("pb_port") + Logo.config.getTcpPort()));
         }
         Socket clientSocket = null;
         try {
@@ -104,7 +104,7 @@ public class NetworkServer {
                 cf.append("distant", sentence);
                 while ((sentence = in.readLine()) != null) {
                     if (sentence.equals(NetworkServer.END_OF_FILE)) {
-                        cf.append("local", Logo.messages.getString("stop_chat"));
+                        cf.append("local", Logo.getString("stop_chat"));
                         break;
                     }
                     cf.append("distant", sentence);
@@ -117,7 +117,7 @@ public class NetworkServer {
             // ******************* Envoietcp **************************
             else {
                 app.updateHistory("normal", inputLine);
-                out.println(Logo.messages.getString("pref.ok"));
+                out.println(Logo.getString("pref.ok"));
                 out.close();
                 in.close();
                 clientSocket.close();
@@ -125,7 +125,7 @@ public class NetworkServer {
 
             }
         } catch (IOException e) {
-            throw (new LogoException(app, Logo.messages.getString("erreur_tcp")));
+            throw (new LogoException(app, Logo.getString("erreur_tcp")));
         }
         isActive = false;
     }

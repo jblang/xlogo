@@ -1,5 +1,6 @@
 package xlogo.gui.translation;
 
+import xlogo.Language;
 import xlogo.Logo;
 import xlogo.gui.LanguageListRenderer;
 
@@ -14,8 +15,8 @@ public class FirstPanel extends JPanel implements ActionListener {
     private JRadioButton completeButton;
     private JRadioButton createButton;
     private final ButtonGroup group = new ButtonGroup();
-    private JComboBox<String> comboLangModify;
-    private JComboBox<String> comboLangComplete;
+    private JComboBox<Language> comboLangModify;
+    private JComboBox<Language> comboLangComplete;
     private final UiTranslator tx;
 
     protected FirstPanel(UiTranslator tx) {
@@ -40,11 +41,11 @@ public class FirstPanel extends JPanel implements ActionListener {
 
         setLayout(new GridBagLayout());
 
-        JLabel label = new JLabel(Logo.messages.getString("translatewant"));
-        createButton = new JRadioButton(Logo.messages.getString("translatecreate"));
-        modifyButton = new JRadioButton(Logo.messages.getString("translatemodify"));
-        completeButton = new JRadioButton(Logo.messages.getString("translatecomplete"));
-        consultButton = new JRadioButton(Logo.messages.getString("translateconsult"));
+        JLabel label = new JLabel(Logo.getString("translatewant"));
+        createButton = new JRadioButton(Logo.getString("translatecreate"));
+        modifyButton = new JRadioButton(Logo.getString("translatemodify"));
+        completeButton = new JRadioButton(Logo.getString("translatecomplete"));
+        consultButton = new JRadioButton(Logo.getString("translateconsult"));
         createButton.setActionCommand(UiTranslator.CREATE);
         modifyButton.setActionCommand(UiTranslator.MODIFY);
         consultButton.setActionCommand(UiTranslator.CONSULT);
@@ -53,11 +54,11 @@ public class FirstPanel extends JPanel implements ActionListener {
         completeButton.addActionListener(this);
         modifyButton.addActionListener(this);
         consultButton.addActionListener(this);
-        comboLangModify = new JComboBox<>(Logo.translatedLanguages);
+        comboLangModify = new JComboBox<>(Language.values());
         comboLangModify.setRenderer(new LanguageListRenderer());
-        comboLangComplete = new JComboBox<>(Logo.translatedLanguages);
+        comboLangComplete = new JComboBox<>(Language.values());
         comboLangComplete.setRenderer(new LanguageListRenderer());
-        JButton validButton = new JButton(Logo.messages.getString("pref.ok"));
+        JButton validButton = new JButton(Logo.getString("pref.ok"));
         validButton.setActionCommand(UiTranslator.OK);
         validButton.addActionListener(tx);
         setSize(new Dimension(600, 120));

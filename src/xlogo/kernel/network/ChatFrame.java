@@ -2,7 +2,6 @@ package xlogo.kernel.network;
 
 import xlogo.Logo;
 import xlogo.gui.Application;
-import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -45,8 +44,8 @@ public class ChatFrame extends JFrame implements ActionListener {
     }
 
     private void initGui() {
-        setTitle(Logo.messages.getString("chat"));
-        setIconImage(ResourceLoader.getAppIcon().getImage());
+        setTitle(Logo.getString("chat"));
+        setIconImage(Logo.getAppIcon().getImage());
         dsd = new DefaultStyledDocument();
         textPane = new JTextPane();
         textPane.setDocument(dsd);
@@ -55,7 +54,7 @@ public class ChatFrame extends JFrame implements ActionListener {
         this.getContentPane().setLayout(new BorderLayout());
         textField = new JTextField();
         java.awt.FontMetrics fm = app.getGraphics().getFontMetrics(Logo.config.getFont());
-        int width = fm.stringWidth(Logo.messages.getString("stop_chat")) + 30;
+        int width = fm.stringWidth(Logo.getString("stop_chat")) + 30;
         if (width < 200) width = 200;
 
         textPane.setPreferredSize(new Dimension(width, 300));

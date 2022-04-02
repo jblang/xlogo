@@ -24,7 +24,7 @@ public class SoundPlayer {
     public static final int END_OF_TRACK = 47;
     static final int[] offsets = {0, 2, 4, 5, 7, 9, 11};
     private final Application cadre;
-    private final String[] notes = {Logo.messages.getString("note.do"), Logo.messages.getString("note.re"), Logo.messages.getString("note.mi"), Logo.messages.getString("note.fa"), Logo.messages.getString("note.sol"), Logo.messages.getString("note.la"), Logo.messages.getString("note.si")};
+    private final String[] notes = {Logo.getString("note.do"), Logo.getString("note.re"), Logo.getString("note.mi"), Logo.getString("note.fa"), Logo.getString("note.sol"), Logo.getString("note.la"), Logo.getString("note.si")};
     private Track track = null;
     private int instrument = 0; //instrument selectionne
     private int ticks = 0; // Temps écoulé depuis le début de la piste
@@ -128,7 +128,7 @@ public class SoundPlayer {
                         else element = "";
                     } catch (NumberFormatException e) {
                         if (!element.equals("") && isnotes(element) == -1 && !element.equals(":"))
-                            throw new LogoException(cadre, Logo.messages.getString("probleme_sequence"));
+                            throw new LogoException(cadre, Logo.getString("probleme_sequence"));
                     }
                 }
             }

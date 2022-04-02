@@ -1,5 +1,6 @@
 package xlogo.gui.translation;
 
+import xlogo.Language;
 import xlogo.Logo;
 import xlogo.gui.Searchable;
 
@@ -246,13 +247,13 @@ public class TranslationTable extends JPanel implements Searchable {
 
             if (action.equals(UiTranslator.CREATE)) {
                 // Initilaize all Column Names
-                String[] tmp = Logo.translatedLanguages;
+                String[] tmp = Logo.getTranslatedLanguages();
                 columnNames = new String[tmp.length + 1];
                 columnNames[0] = id;
                 for (int i = 1; i < columnNames.length; i++) {
                     columnNames[i] = tmp[i - 1];
                 }
-            } else columnNames = Logo.translatedLanguages;
+            } else columnNames = Logo.getTranslatedLanguages();
             buildRowData(loader, action, id);
         }
 
@@ -301,7 +302,7 @@ public class TranslationTable extends JPanel implements Searchable {
             ResourceBundle[] rb = new ResourceBundle[getColumnCount()];
             // initialize all ResourceBundle
             for (int i = 0; i < getColumnCount(); i++) {
-                Locale locale = Logo.getLocale(i);
+                Locale locale = Language.byIndex(i).locale;
                 // In CREATE Mode, when i=getColumnCount(), the last locale is null
                 if (null == locale) break;
                 rb[i] = loader.load(locale);

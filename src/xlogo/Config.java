@@ -35,20 +35,7 @@ public class Config {
     public static final int DRAW_QUALITY_LOW = 2;
     private int drawQuality = 0;
 
-    public static final int LANGUAGE_FRENCH = 0;
-    public static final int LANGUAGE_ENGLISH = 1;
-    public static final int LANGUAGE_ARABIC = 2;
-    public static final int LANGUAGE_SPANISH = 3;
-    public static final int LANGUAGE_PORTUGUESE = 4;
-    public static final int LANGUAGE_ESPERANTO = 5;
-    public static final int LANGUAGE_GERMAN = 6;
-    public static final int LANGUAGE_GALICIAN = 7;
-    public static final int LANGUAGE_ASTURIAN = 8;
-    public static final int LANGUAGE_GREEK = 9;
-    public static final int LANGUAGE_ITALIAN = 10;
-    public static final int LANGUAGE_CATALAN = 11;
-    public static final int LANGUAGE_HUNGARIAN = 12;
-    private int language = LANGUAGE_ENGLISH;
+    private Language language = Language.ENGLISH;
 
     public static final int LAF_NATIVE = 0;
     public static final int LAF_LIGHT = 1;
@@ -147,11 +134,11 @@ public class Config {
     /**
      * The selected language
      */
-    public int getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 
-    public void setLanguage(int language) {
+    public void setLanguage(Language language) {
         this.language = language;
     }
 

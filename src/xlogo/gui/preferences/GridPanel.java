@@ -57,10 +57,10 @@ public class GridPanel extends JPanel implements ActionListener {
     }
 
     private void initGui() {
-        gridEnabled = new JCheckBox(Logo.messages.getString("active_grid"));
+        gridEnabled = new JCheckBox(Logo.getString("active_grid"));
         gridEnabled.setSelected(Logo.config.isGridEnabled());
-        xSpacingLabel = new JLabel(Logo.messages.getString("xgrid"));
-        ySpacingLabel = new JLabel(Logo.messages.getString("ygrid"));
+        xSpacingLabel = new JLabel(Logo.getString("xgrid"));
+        ySpacingLabel = new JLabel(Logo.getString("ygrid"));
         xSpacing = new JTextField(String.valueOf(Logo.config.getXGridSpacing()));
         ySpacing = new JTextField(String.valueOf(Logo.config.getYGridSpacing()));
         colorPanelGrid = new ColorPanel(new Color(Logo.config.getGridColor()));
@@ -90,7 +90,7 @@ public class GridPanel extends JPanel implements ActionListener {
         ySpacing.setEnabled(Logo.config.isGridEnabled());
         colorPanelGrid.setEnabled(Logo.config.isGridEnabled());
 
-        TitledBorder tb = BorderFactory.createTitledBorder(Logo.messages.getString("draw_grid"));
+        TitledBorder tb = BorderFactory.createTitledBorder(Logo.getString("draw_grid"));
         setBorder(tb);
         gridEnabled.addActionListener(this);
     }

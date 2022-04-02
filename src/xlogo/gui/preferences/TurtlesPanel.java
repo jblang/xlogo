@@ -3,7 +3,6 @@ package xlogo.gui.preferences;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
 import xlogo.gui.Application;
-import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,7 +78,7 @@ public class TurtlesPanel extends JPanel {
 
         Icon(int number) {
             this.number = number;
-            FlatSVGIcon icon = ResourceLoader.getTurtle(number);
+            FlatSVGIcon icon = Logo.getTurtle(number);
             if (icon != null) {
                 float factor = (float) 70 / (float) icon.getIconHeight();
                 icon = icon.derive(factor);

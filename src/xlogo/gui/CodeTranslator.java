@@ -1,7 +1,7 @@
 package xlogo.gui;
 
+import xlogo.Language;
 import xlogo.Logo;
-import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,35 +24,35 @@ import java.util.*;
 public class CodeTranslator extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
 
-    private final JComboBox sourceLanguageCombo = new JComboBox(Logo.translatedLanguages);
-    private final JComboBox targetLanguageCombo = new JComboBox(Logo.translatedLanguages);
+    private final JComboBox sourceLanguageCombo = new JComboBox(Logo.getTranslatedLanguages());
+    private final JComboBox targetLanguageCombo = new JComboBox(Logo.getTranslatedLanguages());
     private final JTextArea sourceTextArea = new JTextArea();
     private final JTextArea targetTextArea = new JTextArea();
 
     private final TreeMap<String, String> tre = new TreeMap<>();
 
     public CodeTranslator() {
-        setTitle(Logo.messages.getString("menu.tools.translate"));
-        setIconImage(ResourceLoader.getAppIcon().getImage());
+        setTitle(Logo.getString("menu.tools.translate"));
+        setIconImage(Logo.getAppIcon().getImage());
         getContentPane().setLayout(new BorderLayout());
-        sourceLanguageCombo.setSelectedIndex(Logo.config.getLanguage());
-        targetLanguageCombo.setSelectedIndex(Logo.config.getLanguage());
+        sourceLanguageCombo.setSelectedIndex(Logo.config.getLanguage().ordinal());
+        targetLanguageCombo.setSelectedIndex(Logo.config.getLanguage().ordinal());
 
         JPanel sourceLanguagePanel = new JPanel();
-        JLabel sourceLanguageLabel = new JLabel(Logo.messages.getString("traduire_de") + " ");
+        JLabel sourceLanguageLabel = new JLabel(Logo.getString("traduire_de") + " ");
         sourceLanguagePanel.add(sourceLanguageLabel);
         sourceLanguagePanel.add(sourceLanguageCombo);
         JPanel targetLanguagePanel = new JPanel();
-        JLabel targetLanguageLabel = new JLabel(" " + Logo.messages.getString("vers") + " ");
+        JLabel targetLanguageLabel = new JLabel(" " + Logo.getString("vers") + " ");
         targetLanguagePanel.add(targetLanguageLabel);
         targetLanguagePanel.add(targetLanguageCombo);
 
-        JButton sourceCopyButton = new JButton(ResourceLoader.getIcon("copy"));
+        JButton sourceCopyButton = new JButton(Logo.getIcon("copy"));
         JPanel sourceEditPanel = new JPanel();
         sourceEditPanel.add(sourceCopyButton);
-        JButton sourceCutButton = new JButton(ResourceLoader.getIcon("cut"));
+        JButton sourceCutButton = new JButton(Logo.getIcon("cut"));
         sourceEditPanel.add(sourceCutButton);
-        JButton sourcePasteButton = new JButton(ResourceLoader.getIcon("paste"));
+        JButton sourcePasteButton = new JButton(Logo.getIcon("paste"));
         sourceEditPanel.add(sourcePasteButton);
 
         JPanel sourcePanel = new JPanel();
@@ -64,12 +64,12 @@ public class CodeTranslator extends JFrame implements ActionListener {
 
         getContentPane().add(sourcePanel, BorderLayout.WEST);
 
-        JButton targetCopyButton = new JButton(ResourceLoader.getIcon("copy"));
+        JButton targetCopyButton = new JButton(Logo.getIcon("copy"));
         JPanel targetEditPanel = new JPanel();
         targetEditPanel.add(targetCopyButton);
-        JButton targetCutButton = new JButton(ResourceLoader.getIcon("cut"));
+        JButton targetCutButton = new JButton(Logo.getIcon("cut"));
         targetEditPanel.add(targetCutButton);
-        JButton targetPasteButton = new JButton(ResourceLoader.getIcon("paste"));
+        JButton targetPasteButton = new JButton(Logo.getIcon("paste"));
         targetEditPanel.add(targetPasteButton);
 
         JPanel targetPanel = new JPanel();
@@ -80,7 +80,7 @@ public class CodeTranslator extends JFrame implements ActionListener {
         targetPanel.add(targetLanguagePanel, BorderLayout.NORTH);
 
         getContentPane().add(targetPanel, BorderLayout.EAST);
-        JButton translateButton = new JButton(Logo.messages.getString("traduire"));
+        JButton translateButton = new JButton(Logo.getString("traduire"));
         getContentPane().add(translateButton, BorderLayout.CENTER);
 
         sourceScrollPane.getViewport().add(sourceTextArea);
@@ -108,7 +108,7 @@ public class CodeTranslator extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
-        if (Logo.messages.getString("traduire").equals(cmd)) {
+        if (Logo.getString("traduire").equals(cmd)) {
             String texte = sourceTextArea.getText();
             texte = texte.replaceAll("\\t", "  ");
             ResourceBundle sourcePrimitives = generateLanguage(sourceLanguageCombo);
@@ -128,11 +128,11 @@ public class CodeTranslator extends JFrame implements ActionListener {
             }
             // ajout des mots clés pour et fin
             int id = sourceLanguageCombo.getSelectedIndex();
-            Locale locale = Logo.getLocale(id);
-            ResourceBundle res1 = ResourceLoader.getLanguageBundle(locale);
+            Locale locale = Language.byIndex(id).locale;
+            ResourceBundle res1 = Logo.getLanguageBundle(locale);
             id = targetLanguageCombo.getSelectedIndex();
-            locale = Logo.getLocale(id);
-            ResourceBundle res2 = ResourceLoader.getLanguageBundle(locale);
+            locale = Language.byIndex(id).locale;
+            ResourceBundle res2 = Logo.getLanguageBundle(locale);
             tre.put(res1.getString("pour"), res2.getString("pour"));
             tre.put(res1.getString("fin"), res2.getString("fin"));
             StringTokenizer st = new StringTokenizer(texte, " */+-\n|&()[]", true);
@@ -161,7 +161,7 @@ public class CodeTranslator extends JFrame implements ActionListener {
     private ResourceBundle generateLanguage(JComboBox jc) { // fixe la langue utilisée pour les messages
         Locale locale = null;
         int id = jc.getSelectedIndex();
-        locale = Logo.getLocale(id);
-        return ResourceLoader.getPrimitiveBundle(locale);
+        locale = Language.byIndex(id).locale;
+        return Logo.getPrimitiveBundle(locale);
     }
 }

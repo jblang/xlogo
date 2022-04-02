@@ -9,8 +9,8 @@ import java.awt.event.ActionListener;
 
 public class FogDialog extends JDialog implements ActionListener {
     private static final long serialVersionUID = 1L;
-    private final String[] type = {Logo.messages.getString("3d.fog.none"), Logo.messages.getString("3d.fog.linear"),
-            Logo.messages.getString("3d.fog.exponential")};
+    private final String[] type = {Logo.getString("3d.fog.none"), Logo.getString("3d.fog.linear"),
+            Logo.getString("3d.fog.exponential")};
     private JComboBox comboType;
     private PanelValue panelDensity;
     private PanelValue panelFront;
@@ -31,16 +31,16 @@ public class FogDialog extends JDialog implements ActionListener {
     private void initGui() {
         getContentPane().setLayout(new GridBagLayout());
         setSize(450, 200);
-        labelType = new JLabel(Logo.messages.getString("3d.fog.type"));
+        labelType = new JLabel(Logo.getString("3d.fog.type"));
         comboType = new JComboBox(type);
         comboType.setSelectedIndex(fog.getType());
 
-        panelDensity = new PanelValue(fog.getDensity(), Logo.messages.getString("3d.fog.density"));
-        panelFront = new PanelValue((int) (fog.getFront() * 1000), Logo.messages.getString("3d.fog.frontdistance"));
-        panelBack = new PanelValue((int) (fog.getBack() * 1000), Logo.messages.getString("3d.fog.backdistance"));
+        panelDensity = new PanelValue(fog.getDensity(), Logo.getString("3d.fog.density"));
+        panelFront = new PanelValue((int) (fog.getFront() * 1000), Logo.getString("3d.fog.frontdistance"));
+        panelBack = new PanelValue((int) (fog.getBack() * 1000), Logo.getString("3d.fog.backdistance"));
 
-        ok = new JButton(Logo.messages.getString("pref.ok"));
-        refresh = new JButton(Logo.messages.getString("3d.light.apply"));
+        ok = new JButton(Logo.getString("pref.ok"));
+        refresh = new JButton(Logo.getString("3d.light.apply"));
         labelType.setFont(Logo.config.getFont());
         comboType.setFont(Logo.config.getFont());
         ok.setFont(Logo.config.getFont());

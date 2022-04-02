@@ -50,7 +50,7 @@ public class Animation extends Thread {
             while (b) {
                 String st = app.getKernel().execute(instruction);
                 if (!st.equals(""))
-                    throw new LogoException(app, Logo.messages
+                    throw new LogoException(app, Logo
                             .getString("error.whattodo")
                             + " " + st + " ?");
                 if (Interpreter.actionInstruction.length() == 0) b = false;

@@ -64,7 +64,7 @@ public class EditorPanel extends GridBagPanel {
         gb.insets = new Insets(5, 5, 5, 5);
 
         preview = new RSyntaxTextArea(5, 80);
-        preview.setText(Logo.messages.getString("pref.highlight.example"));
+        preview.setText(Logo.getString("pref.highlight.example"));
         Logo.config.configureEditor(preview);
         preview.setEditable(false);
 

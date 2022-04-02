@@ -16,7 +16,6 @@ import xlogo.gui.translation.UiTranslator;
 import xlogo.kernel.*;
 import xlogo.kernel.network.NetworkServer;
 import xlogo.kernel.perspective.Viewer3D;
-import xlogo.resources.ResourceLoader;
 import xlogo.utils.ExtensionFilter;
 import xlogo.utils.ImageWriter;
 import xlogo.utils.Utils;
@@ -46,7 +45,7 @@ public class Application extends JFrame {
     public static String path = null;
     public static int fontId = getFontId(Logo.config.getFont());
     private final Kernel kernel;
-    private final DrawPanel drawPanel;
+    public final DrawPanel drawPanel;
     private final RSyntaxTextArea commandLine = new RSyntaxTextArea(1, 1);
     private final HistoryPanel historyPanel = new HistoryPanel(this);
     private final SoundPlayer soundPlayer = new SoundPlayer(this);
@@ -77,12 +76,12 @@ public class Application extends JFrame {
     public Application() {
         kernel = new Kernel(this);
         drawPanel = new DrawPanel(this);
-        resizeDrawingZone();
+        drawPanel.resizeDrawingZone(this);
         kernel.initInterprete();
         editor = new Editor(this);
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         setTitle("XLogo");
-        setIconImage(ResourceLoader.getAppIcon().getImage());
+        setIconImage(Logo.getAppIcon().getImage());
         createMenuBar();
         createContent();
         updateLocalization();
@@ -262,10 +261,10 @@ public class Application extends JFrame {
                 {"ColorChooser.previewText", "apercu"},
         };
         for (var p : pairs) {
-            UIManager.put(p[0], Logo.messages.getString(p[1]));
+            UIManager.put(p[0], Logo.getString(p[1]));
         }
-        commandLabel.setText(Logo.messages.getString("commande") + "  ");
-        menuItems.forEach(i -> i.setText(Logo.messages.getString(i.getActionCommand())));
+        commandLabel.setText(Logo.getString("commande") + "  ");
+        menuItems.forEach(i -> i.setText(Logo.getString(i.getActionCommand())));
         historyPanel.updateText();
     }
 
@@ -287,10 +286,10 @@ public class Application extends JFrame {
      */
     public void closeWindow() {
         setVisible(true);
-        String message = Logo.messages.getString("quitter?");
+        String message = Logo.getString("quitter?");
         MessageTextArea jt = new MessageTextArea(message);
-        String[] choice = {Logo.messages.getString("pref.ok"), Logo.messages.getString("pref.cancel")};
-        int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("menu.file.quit"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, ResourceLoader.getAppIcon(), choice, choice[0]);
+        String[] choice = {Logo.getString("pref.ok"), Logo.getString("pref.cancel")};
+        int val = JOptionPane.showOptionDialog(this, jt, Logo.getString("menu.file.quit"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, Logo.getAppIcon(), choice, choice[0]);
         if (val == JOptionPane.OK_OPTION) {
             try {
                 Logo.config.write();
@@ -301,9 +300,9 @@ public class Application extends JFrame {
 
     private void newFile() {
         var wp = kernel.getWorkspace();
-        String[] choice = {Logo.messages.getString("pref.ok"), Logo.messages.getString("pref.cancel")};
-        MessageTextArea jt = new MessageTextArea(Logo.messages.getString("enregistrer_espace"));
-        int val = JOptionPane.showOptionDialog(this, jt, Logo.messages.getString("enregistrer_espace"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, ResourceLoader.getAppIcon(), choice, choice[0]);
+        String[] choice = {Logo.getString("pref.ok"), Logo.getString("pref.cancel")};
+        MessageTextArea jt = new MessageTextArea(Logo.getString("enregistrer_espace"));
+        int val = JOptionPane.showOptionDialog(this, jt, Logo.getString("enregistrer_espace"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, Logo.getAppIcon(), choice, choice[0]);
 
         if (val == JOptionPane.OK_OPTION) {
             wp.deleteAllProcedures();
@@ -322,21 +321,21 @@ public class Application extends JFrame {
     }
 
     private void showCloseEditor() {
-        JOptionPane.showMessageDialog(this, Logo.messages.getString("ferme_editeur"), Logo.messages.getString("erreur"), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, Logo.getString("ferme_editeur"), Logo.getString("erreur"), JOptionPane.ERROR_MESSAGE);
     }
 
     private void openWorkspace() {
         JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
         String[] ext = {".lgo"};
-        jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_logo"), ext));
-        int val = jf.showDialog(this, Logo.messages.getString("menu.file.open"));
+        jf.addChoosableFileFilter(new ExtensionFilter(Logo.getString("fichiers_logo"), ext));
+        int val = jf.showDialog(this, Logo.getString("menu.file.open"));
         if (val == JFileChooser.APPROVE_OPTION) {
             String txt = "";
             String path = jf.getSelectedFile().getPath();
             try {
                 txt = Utils.readLogoFile(path);
             } catch (IOException e1) {
-                updateHistory("erreur", Logo.messages.getString("error.iolecture"));
+                updateHistory("erreur", Logo.getString("error.iolecture"));
             }
             if (!txt.equals("")) {
                 if (!editor.isVisible()) editor.setVisible(true);
@@ -358,9 +357,9 @@ public class Application extends JFrame {
         if (promptName || null == path) {
             JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
             String[] ext = {".lgo"};
-            jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("fichiers_logo"), ext));
+            jf.addChoosableFileFilter(new ExtensionFilter(Logo.getString("fichiers_logo"), ext));
 
-            int val = jf.showDialog(this, Logo.messages.getString("menu.file.save"));
+            int val = jf.showDialog(this, Logo.getString("menu.file.save"));
             if (val == JFileChooser.APPROVE_OPTION) {
                 path = jf.getSelectedFile().getPath();
                 String path2 = path.toLowerCase();  // on garde la casse du path pour les systemes d'exploitation faisant la diff�rence
@@ -389,7 +388,7 @@ public class Application extends JFrame {
             System.out.println("annulation");
         } // If the user cancels
         catch (IOException e2) {
-            updateHistory("erreur", Logo.messages.getString("error.ioecriture"));
+            updateHistory("erreur", Logo.getString("error.ioecriture"));
         }
     }
 
@@ -409,7 +408,7 @@ public class Application extends JFrame {
 
     void showColorChooser(boolean pen) {
         var title = pen ? "couleur_du_crayon" : "couleur_du_fond";
-        Color color = JColorChooser.showDialog(this, Logo.messages.getString(title), getCanvas().getScreenColor());
+        Color color = JColorChooser.showDialog(this, Logo.getString(title), getCanvas().getScreenColor());
         if (null != color) {
             var prim = Utils.primitiveName(pen ? "drawing.setpencolor" : "drawing.setscreencolor");
             updateHistory("commentaire", prim + " [" + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + "]\n");
@@ -430,9 +429,9 @@ public class Application extends JFrame {
             HelpSet hs = null;
             try {
                 String url = "http://downloads.tuxfamily.org/xlogo/downloads-";
-                url += Logo.getLocaleTwoLetters();
+                url += Logo.getLanguageCode();
                 url += "/javahelp/manual-";
-                url += Logo.getLocaleTwoLetters();
+                url += Logo.getLanguageCode();
                 url += ".hs";
                 java.net.URL hsURL = new java.net.URL(url);
                 hs = new HelpSet(null, hsURL);
@@ -447,14 +446,14 @@ public class Application extends JFrame {
     }
 
     private void showAbout() {
-        String message = Logo.messages.getString("message_a_propos1") + Logo.VERSION + "\n\n" + Logo.messages.getString("message_a_propos2") + " " + Logo.WEB_SITE;
+        String message = Logo.getString("message_a_propos1") + Logo.VERSION + "\n\n" + Logo.getString("message_a_propos2") + " " + Logo.WEB_SITE;
         MessageTextArea jt = new MessageTextArea(message);
-        JOptionPane.showMessageDialog(null, jt, Logo.messages.getString("menu.help.about"), JOptionPane.INFORMATION_MESSAGE, ResourceLoader.getAppIcon());
+        JOptionPane.showMessageDialog(null, jt, Logo.getString("menu.help.about"), JOptionPane.INFORMATION_MESSAGE, Logo.getAppIcon());
     }
 
     private void showLicence(boolean english) {
-        JFrame frame = new JFrame(Logo.messages.getString("menu.help.licence"));
-        frame.setIconImage(ResourceLoader.getAppIcon().getImage());
+        JFrame frame = new JFrame(Logo.getString("menu.help.licence"));
+        frame.setIconImage(Logo.getAppIcon().getImage());
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setSize(500, 500);
         LicensePane editorPane = new LicensePane();
@@ -463,7 +462,7 @@ public class Application extends JFrame {
         if (english) {
             path += "en";
         } else {
-            path += Logo.getLocaleTwoLetters();
+            path += Logo.getLanguageCode();
         }
         path += ".html";
         java.net.URL helpURL = Logo.class.getResource(path);
@@ -575,45 +574,13 @@ public class Application extends JFrame {
 
     /**
      * Modify the language for the interface
-     *
-     * @param id The integer representing the choosen language
-     */
-
-    public void changeLanguage(int id) {
-        Logo.config.setLanguage(id);
-        Logo.generateLanguage(id);
+     **/
+    public void changeLanguage() {
         updateLocalization();
-        kernel.buildPrimitiveTreemap(id);
+        kernel.buildPrimitiveTreemap();
         editor = new Editor(this);
         historyPanel.changeLanguage();
         if (null != viewer3D) viewer3D.setText();
-    }
-
-    /**
-     * Resize the dawing area
-     */
-    public void resizeDrawingZone() {
-        if (null != animation) {
-            animation.setPause(true);
-        }
-        // resize the drawing image
-        SwingUtilities.invokeLater(() -> {
-
-            MediaTracker tracker = new MediaTracker(drawPanel);
-            try {
-                tracker.waitForID(0);
-            } catch (InterruptedException ignored) {
-            }
-
-            drawPanel.setPreferredSize(new Dimension(Logo.config.getImageWidth(), Logo.config.getImageHeight()));
-            drawPanel.revalidate();
-            drawPanel.initGraphics();
-            kernel.initGraphics();
-            //drawPanel.repaint();
-
-            if (null != animation) animation.setPause(false);
-        });
-
     }
 
     /**

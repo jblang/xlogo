@@ -11,7 +11,6 @@ package xlogo.kernel;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import xlogo.Logo;
 import xlogo.gui.Application;
-import xlogo.resources.ResourceLoader;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
@@ -278,18 +277,18 @@ public class Turtle {
             String s = st.nextToken();
             try {
                 int j = Integer.parseInt(s);
-                if (j < 0 || j > 2) throw new LogoException(app, list + " " + Logo.messages.getString("pas_argument"));
+                if (j < 0 || j > 2) throw new LogoException(app, list + " " + Logo.getString("pas_argument"));
                 else {
                     if (i == 0) labelHorizontalAlignment = j;
                     else if (i == 1) labelVerticalAlignment = j;
                 }
             } catch (NumberFormatException e) {
-                throw new LogoException(app, list + " " + Logo.messages.getString("pas_argument"));
+                throw new LogoException(app, list + " " + Logo.getString("pas_argument"));
             }
 
             i++;
         }
-        if (i != 2) throw new LogoException(app, list + " " + Logo.messages.getString("pas_argument"));
+        if (i != 2) throw new LogoException(app, list + " " + Logo.getString("pas_argument"));
     }
 
     void setImage(int i) {
@@ -298,9 +297,9 @@ public class Turtle {
             this.width = 26;
             this.height = 26;
         } else {
-            FlatSVGIcon svg = ResourceLoader.getTurtle(i);
+            FlatSVGIcon svg = Logo.getTurtle(i);
             if (svg == null) {
-                svg = ResourceLoader.getTurtle(1);
+                svg = Logo.getTurtle(1);
             }
             float factor = (float) 70 / (float) Objects.requireNonNull(svg).getIconHeight();
             this.width = (int)(svg.getIconWidth() * factor);

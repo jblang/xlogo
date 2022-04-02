@@ -26,9 +26,9 @@ public class ImageWriter extends Thread {
     public int chooseFile() {
         JFileChooser jf = new JFileChooser();
         String[] ext = {".jpg", ".png"};
-        jf.addChoosableFileFilter(new ExtensionFilter(Logo.messages.getString("imagefile"),
+        jf.addChoosableFileFilter(new ExtensionFilter(Logo.getString("imagefile"),
                 ext));
-        int retval = jf.showDialog(owner, Logo.messages.getString("menu.file.save"));
+        int retval = jf.showDialog(owner, Logo.getString("menu.file.save"));
         // Si l'utilisateur appuie sur enregistrer du JFileChooser
         if (retval == JFileChooser.APPROVE_OPTION) {
             // On rajoute l'extension convenable au fichier
@@ -79,11 +79,11 @@ public class ImageWriter extends Thread {
         }
 
         private void initGui() {
-            setTitle(Logo.messages.getString("titredialogue2"));
+            setTitle(Logo.getString("titredialogue2"));
             prog.setIndeterminate(true);
             java.awt.FontMetrics fm = owner.getGraphics()
                     .getFontMetrics(Logo.config.getFont());
-            int width = fm.stringWidth(Logo.messages.getString("titredialogue2"));
+            int width = fm.stringWidth(Logo.getString("titredialogue2"));
             setSize(new Dimension(width + 150, 100));
             getContentPane().add(prog);
             setVisible(true);

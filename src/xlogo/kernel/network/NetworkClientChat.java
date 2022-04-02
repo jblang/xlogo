@@ -32,7 +32,7 @@ public class NetworkClientChat {
         try {
             this.ip = InetAddress.getByName(ip);
         } catch (UnknownHostException e) {
-            throw new LogoException(app, Logo.messages.getString("no_host") + " " + ip);
+            throw new LogoException(app, Logo.getString("no_host") + " " + ip);
         }
         this.st = st;
         init();
@@ -54,7 +54,7 @@ public class NetworkClientChat {
             out.println(cmd);
             while ((cmd = in.readLine()) != null) {
                 if (cmd.equals(NetworkServer.END_OF_FILE)) {
-                    cf.append("local", Logo.messages.getString("stop_chat"));
+                    cf.append("local", Logo.getString("stop_chat"));
                     break;
                 }
                 cf.append("distant", cmd);
@@ -63,7 +63,7 @@ public class NetworkClientChat {
             in.close();
             socket.close();
         } catch (IOException e) {
-            throw new LogoException(app, Logo.messages.getString("no_host") + ip.getHostAddress());
+            throw new LogoException(app, Logo.getString("no_host") + ip.getHostAddress());
         }
 
     }

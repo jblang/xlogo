@@ -1128,10 +1128,10 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         else
             longueur = findLength(0, diagonale, oldx, oldy);
         if (Math.abs(longueur) < Math.abs(arg))
-            throw new LogoException(app, Logo.messages
+            throw new LogoException(app, Logo
                     .getString("erreur_sortie1")
                     + "\n"
-                    + Logo.messages.getString("erreur_sortie2")
+                    + Logo.getString("erreur_sortie2")
                     + Math.abs((int) (longueur)));
         else {
             DrawPanel.windowMode = DrawPanel.WINDOW_CLASSIC;
@@ -1156,8 +1156,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 coords[i] = 1;
                 if (!st.hasMoreTokens())
                     throw new LogoException(app, prim
-                            + " " + Logo.messages.getString("n_aime_pas") + liste
-                            + Logo.messages.getString("comme_parametre"));
+                            + " " + Logo.getString("n_aime_pas") + liste
+                            + Logo.getString("comme_parametre"));
                 String element = st.nextToken();
                 if (element.equals("-")) {
                     if (st.hasMoreTokens())
@@ -1169,13 +1169,13 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
         } catch (NumberFormatException e) {
             throw new LogoException(app, prim
-                    + " " + Logo.messages.getString("n_aime_pas") + liste
-                    + Logo.messages.getString("comme_parametre"));
+                    + " " + Logo.getString("n_aime_pas") + liste
+                    + Logo.getString("comme_parametre"));
         }
         if (st.hasMoreTokens())
             throw new LogoException(app, prim
-                    + " " + Logo.messages.getString("n_aime_pas") + liste
-                    + Logo.messages.getString("comme_parametre"));
+                    + " " + Logo.getString("n_aime_pas") + liste
+                    + Logo.getString("comme_parametre"));
     }
 
     /**
@@ -1897,7 +1897,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             sb.append(c);
             i++;
         }
-        throw new LogoException(app, "[ " + list + " " + Logo.messages.getString("pas_liste"));
+        throw new LogoException(app, "[ " + list + " " + Logo.getString("pas_liste"));
     }
 
     protected void guiAction(String id, String liste) throws LogoException {
@@ -1922,7 +1922,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                         liste = liste.substring(sb.length() + 1).trim();
                         ((GuiMenu) gc).setAction(sb, i);
                         i++;
-                    } else throw new LogoException(app, liste.charAt(0) + " " + Logo.messages.getString("pas_liste"));
+                    } else throw new LogoException(app, liste.charAt(0) + " " + Logo.getString("pas_liste"));
                 }
                 GuiMenu gm = (GuiMenu) gc;
                 if (!gm.hasAction) {
@@ -1935,7 +1935,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     private boolean guiExist(String id) throws LogoException {
         if (guiMap.containsKey(id.toLowerCase())) return true;
-        else throw new LogoException(app, Logo.messages.getString("no_gui") + " " + id);
+        else throw new LogoException(app, Logo.getString("no_gui") + " " + id);
     }
 
     //	boolean access=false;
@@ -2472,6 +2472,33 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     public double getScaleX() { return scaleX; }
     public double getScaleY() { return scaleY; }
+
+    /**
+     * Resize the dawing area
+     * @param application
+     */
+    public void resizeDrawingZone(Application application) {
+        if (null != application.animation) {
+            application.animation.setPause(true);
+        }
+        // resize the drawing image
+        SwingUtilities.invokeLater(() -> {
+
+            MediaTracker tracker = new MediaTracker(this);
+            try {
+                tracker.waitForID(0);
+            } catch (InterruptedException ignored) {
+            }
+
+            setPreferredSize(new Dimension(Logo.config.getImageWidth(), Logo.config.getImageHeight()));
+            revalidate();
+            initGraphics();
+            //drawPanel.repaint();
+
+            if (null != application.animation) application.animation.setPause(false);
+        });
+
+    }
 
     class PositionJViewport implements Runnable {
         JViewport jv;

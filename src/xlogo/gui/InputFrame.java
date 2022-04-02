@@ -10,7 +10,6 @@ package xlogo.gui;
 
 
 import xlogo.Logo;
-import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,13 +19,13 @@ import java.awt.event.ActionListener;
 public class InputFrame extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
     private final JTextField texte = new JTextField();
-    private final JButton ok = new JButton(Logo.messages.getString("pref.ok"));
+    private final JButton ok = new JButton(Logo.getString("pref.ok"));
 
     public InputFrame() throws HeadlessException {
     }
 
     public InputFrame(String titre, int longueur) {
-        setIconImage(ResourceLoader.getAppIcon().getImage());
+        setIconImage(Logo.getAppIcon().getImage());
         getContentPane().setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         getContentPane().add(ok, BorderLayout.EAST);

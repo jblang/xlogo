@@ -16,9 +16,9 @@ import java.awt.event.ActionListener;
 public class LightDialog extends JDialog implements ActionListener {
     private static final long serialVersionUID = 1L;
     ColorPanel colorPanel;
-    private final String[] type = {Logo.messages.getString("3d.light.none"), Logo.messages.getString("3d.light.ambient"),
-            Logo.messages.getString("3d.light.directional"), Logo.messages.getString("3d.light.point"),
-            Logo.messages.getString("3d.light.spot")};
+    private final String[] type = {Logo.getString("3d.light.none"), Logo.getString("3d.light.ambient"),
+            Logo.getString("3d.light.directional"), Logo.getString("3d.light.point"),
+            Logo.getString("3d.light.spot")};
     private JComboBox comboType;
     private PanelPosition panelPosition;
     private PanelPosition panelDirection;
@@ -39,7 +39,7 @@ public class LightDialog extends JDialog implements ActionListener {
     private void initGui() {
         getContentPane().setLayout(new GridBagLayout());
         setSize(500, 200);
-        labelType = new JLabel(Logo.messages.getString("3d.light.type"));
+        labelType = new JLabel(Logo.getString("3d.light.type"));
         comboType = new JComboBox(type);
         comboType.setSelectedIndex(light.getType());
 
@@ -48,11 +48,11 @@ public class LightDialog extends JDialog implements ActionListener {
         else colorPanel = new ColorPanel(Color.white);
         colorPanel.setBackground(comboType.getBackground());
 
-        panelPosition = new PanelPosition(Logo.messages.getString("3d.light.position"), light.getPosition());
-        panelDirection = new PanelPosition(Logo.messages.getString("3d.light.direction"), light.getDirection());
+        panelPosition = new PanelPosition(Logo.getString("3d.light.position"), light.getPosition());
+        panelDirection = new PanelPosition(Logo.getString("3d.light.direction"), light.getDirection());
         panelAngle = new PanelAngle(light.getAngle());
-        ok = new JButton(Logo.messages.getString("pref.ok"));
-        refresh = new JButton(Logo.messages.getString("3d.light.apply"));
+        ok = new JButton(Logo.getString("pref.ok"));
+        refresh = new JButton(Logo.getString("3d.light.apply"));
         labelType.setFont(Logo.config.getFont());
         comboType.setFont(Logo.config.getFont());
         ok.setFont(Logo.config.getFont());
@@ -180,7 +180,7 @@ public class LightDialog extends JDialog implements ActionListener {
         }
 
         private void initGui() {
-            label = new JLabel(Logo.messages.getString("3d.light.angle"));
+            label = new JLabel(Logo.getString("3d.light.angle"));
             label.setFont(Logo.config.getFont());
             angle = new JTextField(String.valueOf(angleValue));
             angle.setSize(30, Logo.config.getFont().getSize() + 10);

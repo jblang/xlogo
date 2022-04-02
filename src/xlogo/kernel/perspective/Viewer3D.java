@@ -3,7 +3,6 @@ package xlogo.kernel.perspective;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import xlogo.Logo;
-import xlogo.resources.ResourceLoader;
 import xlogo.utils.ImageWriter;
 
 import javax.media.j3d.*;
@@ -71,12 +70,12 @@ public class Viewer3D extends JFrame {
     }
 
     public void setText() {
-        setTitle(Logo.messages.getString("3d.viewer"));
+        setTitle(Logo.getString("3d.viewer"));
     }
 
     private void initGui() {
         //this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setIconImage(ResourceLoader.getAppIcon().getImage());
+        setIconImage(Logo.getAppIcon().getImage());
         getContentPane().setLayout(new BorderLayout());
 
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -128,26 +127,26 @@ public class Viewer3D extends JFrame {
         var toolBar = new JToolBar();
         getContentPane().add(toolBar, BorderLayout.NORTH);
 
-        var screenshotButton = new JButton(ResourceLoader.getIcon("screenshot"));
+        var screenshotButton = new JButton(Logo.getIcon("screenshot"));
         screenshotButton.addActionListener(e -> saveScreenshot());
         toolBar.add(screenshotButton);
         toolBar.addSeparator();
 
-        var bulb = ResourceLoader.getIcon("bulb");
+        var bulb = Logo.getIcon("bulb");
         for (var i = 0; i < 4; i++) {
             final var light = lights[i];
             final var label = Integer.toString(i + 1);
             var button = new JButton(label, bulb);
             button.addActionListener(e -> {
-                String title = Logo.messages.getString("3d.light") + " " + label;
+                String title = Logo.getString("3d.light") + " " + label;
                 new LightDialog(this, light, title);
             });
             toolBar.add(button);
         }
         toolBar.addSeparator();
-        var fogButton = new JButton(ResourceLoader.getIcon("cloud"));
+        var fogButton = new JButton(Logo.getIcon("cloud"));
         fogButton.addActionListener(e -> {
-            new FogDialog(this, fog, Logo.messages.getString("3d.fog"));
+            new FogDialog(this, fog, Logo.getString("3d.fog"));
         });
         toolBar.add(fogButton);
 

@@ -44,16 +44,16 @@ public class PreferencesDialog extends JDialog {
         var editorPane = new JScrollPane(editorPanel);
 
         var tabs = new JTabbedPane();
-        tabs.add(generalPanel, Logo.messages.getString("pref.general"));
-        tabs.add(turtlesPane, Logo.messages.getString("pref.turtles"));
-        tabs.add(optionsPane, Logo.messages.getString("pref.options"));
-        tabs.add(editorPane, Logo.messages.getString("editeur"));
-        tabs.add(soundPanel, Logo.messages.getString("pref.sound"));
+        tabs.add(generalPanel, Logo.getString("pref.general"));
+        tabs.add(turtlesPane, Logo.getString("pref.turtles"));
+        tabs.add(optionsPane, Logo.getString("pref.options"));
+        tabs.add(editorPane, Logo.getString("editeur"));
+        tabs.add(soundPanel, Logo.getString("pref.sound"));
         getContentPane().add(tabs, BorderLayout.CENTER);
 
-        var okButton = new JButton(Logo.messages.getString("pref.ok"));
+        var okButton = new JButton(Logo.getString("pref.ok"));
         okButton.addActionListener(e -> updateAndClose());
-        var cancelButton = new JButton(Logo.messages.getString("pref.cancel"));
+        var cancelButton = new JButton(Logo.getString("pref.cancel"));
         cancelButton.addActionListener(e -> dispose());
 
         var buttonPanel = new JPanel();

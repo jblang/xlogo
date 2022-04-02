@@ -10,7 +10,6 @@ package xlogo.utils;
 import xlogo.Logo;
 import xlogo.kernel.Animation;
 import xlogo.kernel.Calculator;
-import xlogo.resources.ResourceLoader;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -202,10 +201,10 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (txt.startsWith("# " + Logo.messages.getString("mainCommand"))) {
+        if (txt.startsWith("# " + Logo.getString("mainCommand"))) {
             int id = txt.indexOf("\n");
             if (id != -1) {
-                Logo.setMainCommand(txt.substring(("# " + Logo.messages.getString("mainCommand")).length(), id).trim());
+                Logo.setMainCommand(txt.substring(("# " + Logo.getString("mainCommand")).length(), id).trim());
                 txt = txt.substring(id + 1);
             }
         }
@@ -215,7 +214,7 @@ public class Utils {
     public static void writeLogoFile(String path, String txt) throws IOException {
         try {
             if (!Logo.getMainCommand().trim().equals("")) {
-                String heading = "# " + Logo.messages.getString("mainCommand") + " " + Logo.getMainCommand() + "\n";
+                String heading = "# " + Logo.getString("mainCommand") + " " + Logo.getMainCommand() + "\n";
                 txt = heading + txt;
             }
             FileOutputStream f = new FileOutputStream(path);
@@ -232,8 +231,8 @@ public class Utils {
     }
 
     public static String primitiveName(String generic) {
-        Locale locale = Logo.getLocale(Logo.config.getLanguage());
-        ResourceBundle prim = ResourceLoader.getPrimitiveBundle(locale);
+        Locale locale = Logo.config.getLanguage().locale;
+        ResourceBundle prim = Logo.getPrimitiveBundle(locale);
         String st = prim.getString(generic);
         StringTokenizer str = new StringTokenizer(st);
         while (str.hasMoreTokens()) {
@@ -243,9 +242,9 @@ public class Utils {
     }
 
     public static JButton createButton(JToolBar parent, String iconName, String toolTip, ActionListener listener) {
-        var button = new JButton(ResourceLoader.getIcon(iconName));
+        var button = new JButton(Logo.getIcon(iconName));
         if (toolTip != null)
-            button.setToolTipText(Logo.messages.getString(toolTip));
+            button.setToolTipText(Logo.getString(toolTip));
         button.addActionListener(listener);
         parent.add(button);
         return button;

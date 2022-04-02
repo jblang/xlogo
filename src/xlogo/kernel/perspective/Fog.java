@@ -1,6 +1,9 @@
 package xlogo.kernel.perspective;
 
-import javax.media.j3d.*;
+import javax.media.j3d.BoundingSphere;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.ExponentialFog;
+import javax.media.j3d.LinearFog;
 import javax.vecmath.Color3f;
 
 public class Fog extends BranchGroup {
