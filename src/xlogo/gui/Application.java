@@ -188,7 +188,7 @@ public class Application extends JFrame {
         createButton(toolBar, "editSource", e -> showEditor());
         toolBar.addSeparator();
         runButton = createButton(toolBar, "run", e -> runMainCommand());
-        stopButton = createButton(toolBar, "application.tooltip.stop", e -> stopAnimation());
+        stopButton = createButton(toolBar, "stop", e -> stopAnimation());
         toolBar.addSeparator();
         zoomInButton = createButton(toolBar, "zoomIn", e -> zoomIn());
         zoomOutButton = createButton(toolBar, "zoomOut", e -> zoomOut());

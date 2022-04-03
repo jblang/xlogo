@@ -69,13 +69,323 @@ public class Interpreter {
         buildPrimitiveTreemap();
     }
 
+    final List<Primitive> primitives = List.of(
+            new Primitive("&", 1, false, this::andOp),
+            new Primitive("|", 1, false, this::orOp),
+            new Primitive("*", 1, false, this::multiplyOp),
+            new Primitive("+", 1, false, this::addOp),
+            new Primitive("-", 1, false, this::subtractOp),
+            new Primitive("/", 1, false, this::divideOp),
+            new Primitive("<", 1, false, this::isLessThan),
+            new Primitive("<=", 1, false, this::isLessThanOrEqual),
+            new Primitive("=", 1, false, this::isEqual),
+            new Primitive(">", 1, false, this::isGreaterThan),
+            new Primitive(">=", 1, false, this::isGreatherThanOrEqual),
+            new Primitive(")", 0, false, this::closeParen),
+            new Primitive("\\", 0, false, this::endLoop),
+            new Primitive("\\siwhile", 2, false, this::testWhile),
+            new Primitive("\\x", 0, false, this::endExecuteTcp),
+            new Primitive("\n", 0, false, this::endProc),
+            new Primitive("3d.downpitch", 1, false, this::pitchDown),
+            new Primitive("3d.leftroll", 1, false, this::rollLeft),
+            new Primitive("3d.lineend", 0, false, this::endLine),
+            new Primitive("3d.linestart", 0, false, this::startLine),
+            new Primitive("3d.orientation", 0, false, this::getOrientation),
+            new Primitive("3d.perspective", 0, false, this::enable3D),
+            new Primitive("3d.pitch", 0, false, this::getPitch),
+            new Primitive("3d.pointend", 0, false, this::endPoint),
+            new Primitive("3d.pointstart", 0, false, this::startPoint),
+            new Primitive("3d.polyend", 0, false, this::endPolygon),
+            new Primitive("3d.polystart", 0, false, this::startPolygon),
+            new Primitive("3d.polyview", 0, false, this::view3D),
+            new Primitive("3d.rightroll", 1, false, this::rollRight),
+            new Primitive("3d.roll", 0, false, this::getRoll),
+            new Primitive("3d.setorientation", 1, false, this::setOrientation),
+            new Primitive("3d.setpitch", 1, false, this::setPitch),
+            new Primitive("3d.setroll", 1, false, this::setRoll),
+            new Primitive("3d.setxyz", 3, false, this::setXYZ),
+            new Primitive("3d.setz", 1, false, this::setZ),
+            new Primitive("3d.textend", 0, false, this::endText),
+            new Primitive("3d.textstart", 0, false, this::startText),
+            new Primitive("3d.uppitch", 1, false, this::pitchUp),
+            new Primitive("color.black", 0, false, this::colorBlack),
+            new Primitive("color.blue", 0, false, this::colorBlue),
+            new Primitive("color.brown", 0, false, this::colorBrown),
+            new Primitive("color.cyan", 0, false, this::colorCyan),
+            new Primitive("color.darkblue", 0, false, this::colorDarkBlue),
+            new Primitive("color.darkgreen", 0, false, this::colorDarkGreen),
+            new Primitive("color.darkred", 0, false, this::colorDarkRed),
+            new Primitive("color.gray", 0, false, this::colorGray),
+            new Primitive("color.green", 0, false, this::colorGreen),
+            new Primitive("color.lightgray", 0, false, this::colorLightGray),
+            new Primitive("color.magenta", 0, false, this::colorMagenta),
+            new Primitive("color.orange", 0, false, this::colorOrange),
+            new Primitive("color.pink", 0, false, this::colorPink),
+            new Primitive("color.purple", 0, false, this::colorPurple),
+            new Primitive("color.red", 0, false, this::colorRed),
+            new Primitive("color.white", 0, false, this::colorWhite),
+            new Primitive("color.yellow", 0, false, this::colorYellow),
+            new Primitive("control.and", 2, true, this::and),
+            new Primitive("control.before?", 2, false, this::isBeforeWrap),
+            new Primitive("control.bye", 0, false, this::bye),
+            new Primitive("control.dountil", 2, false, this::doUntil),
+            new Primitive("control.dowhile", 2, false, this::doWhile),
+            new Primitive("control.empty?", 1, false, this::isEmpty),
+            new Primitive("control.equal?", 2, false, this::isEqual),
+            new Primitive("control.false", 0, false, this::falseValue),
+            new Primitive("control.for", 2, false, this::forLoop),
+            new Primitive("control.foreach", 3, false, this::forEach),
+            new Primitive("control.forever", 1, false, this::forever),
+            new Primitive("control.if", 2, false, this::ifThen),
+            new Primitive("control.ifelse", 3, false, this::ifThenElse),
+            new Primitive("control.integer?", 1, false, this::isInteger),
+            new Primitive("control.not", 1, false, this::not),
+            new Primitive("control.number?", 1, false, this::isNumber),
+            new Primitive("control.or", 2, true, this::or),
+            new Primitive("control.output", 1, false, this::output),
+            new Primitive("control.primitive?", 1, false, this::isPrimitive),
+            new Primitive("control.procedure?", 1, false, this::isProcedure),
+            new Primitive("control.repcount", 0, false, this::getRepCount),
+            new Primitive("control.repeat", 2, false, this::repeat),
+            new Primitive("control.resetall", 0, false, this::resetAll),
+            new Primitive("control.sentence", 2, true, this::sentence),
+            new Primitive("control.stop", 0, false, this::stop),
+            new Primitive("control.stopall", 0, false, this::stopAll),
+            new Primitive("control.true", 0, false, this::trueValue),
+            new Primitive("control.variable?", 1, false, this::isVariable),
+            new Primitive("control.while", 2, false, this::whileLoop),
+            new Primitive("control.word", 2, true, this::word),
+            new Primitive("control.word?", 1, false, this::isWord),
+            new Primitive("drawing.animation", 0, false, this::startAnimation),
+            new Primitive("drawing.arc", 3, false, this::arc),
+            new Primitive("drawing.axis", 1, false, this::drawBothAxes),
+            new Primitive("drawing.axiscolor", 0, false, this::getAxisColor),
+            new Primitive("drawing.back", 1, false, this::back),
+            new Primitive("drawing.changedirectory", 1, false, this::changeDirectory),
+            new Primitive("drawing.circle", 1, false, this::circle),
+            new Primitive("drawing.clearscreen", 0, false, this::clearScreenWrap),
+            new Primitive("drawing.distance", 1, false, this::distance),
+            new Primitive("drawing.dot", 1, false, this::dot),
+            new Primitive("drawing.drawingquality", 0, false, this::getDrawingQuality),
+            new Primitive("drawing.eraseturtle", 1, false, this::eraseTurtle),
+            new Primitive("drawing.fence", 0, false, this::fenceTurtle),
+            new Primitive("drawing.fill", 0, false, this::fill),
+            new Primitive("drawing.fillpolygon", 1, false, this::fillPolygon),
+            new Primitive("drawing.fillzone", 0, false, this::fillZone),
+            new Primitive("drawing.findcolor", 1, false, this::findColor),
+            new Primitive("drawing.fontjustify", 0, false, this::getFontJustify),
+            new Primitive("drawing.fontname", 0, false, this::getLabelFont),
+            new Primitive("drawing.fontsize", 0, false, this::getFontSize),
+            new Primitive("drawing.forward", 1, false, this::forward),
+            new Primitive("drawing.grid", 2, false, this::drawGrid),
+            new Primitive("drawing.grid?", 0, false, this::isGridEnabled),
+            new Primitive("drawing.gridcolor", 0, false, this::getGridColor),
+            new Primitive("drawing.heading", 0, false, this::heading),
+            new Primitive("drawing.hideturtle", 0, false, this::hideTurtle),
+            new Primitive("drawing.home", 0, false, this::home),
+            new Primitive("drawing.label", 1, false, this::label),
+            new Primitive("drawing.labellength", 1, false, this::getLabelLength),
+            new Primitive("drawing.left", 1, false, this::left),
+            new Primitive("drawing.loadimage", 1, false, this::loadImage),
+            new Primitive("drawing.pencolor", 0, false, this::penColor),
+            new Primitive("drawing.pendown", 0, false, this::penDown),
+            new Primitive("drawing.pendown?", 0, false, this::isPenDown),
+            new Primitive("drawing.penerase", 0, false, this::penErase),
+            new Primitive("drawing.penpaint", 0, false, this::penPaint),
+            new Primitive("drawing.penreverse", 0, false, this::penReverse),
+            new Primitive("drawing.penshape", 0, false, this::getPenShape),
+            new Primitive("drawing.penup", 0, false, this::penUp),
+            new Primitive("drawing.penwidth", 0, false, this::getPenWidth),
+            new Primitive("drawing.position", 0, false, this::position),
+            new Primitive("drawing.repaint", 0, false, this::refresh),
+            new Primitive("drawing.right", 1, false, this::right),
+            new Primitive("drawing.saveimage", 2, false, this::saveImage),
+            new Primitive("drawing.screencolor", 0, false, this::screenColor),
+            new Primitive("drawing.screensize", 0, false, this::getImageSize),
+            new Primitive("drawing.setaxiscolor", 1, false, this::setAxisColor),
+            new Primitive("drawing.setdrawingquality", 1, false, this::setDrawingQuality),
+            new Primitive("drawing.setfontjustify", 1, false, this::setFontJustify),
+            new Primitive("drawing.setfontname", 1, false, this::setLabelFont),
+            new Primitive("drawing.setfontsize", 1, false, this::setFontSize),
+            new Primitive("drawing.setgridcolor", 1, false, this::setGridColor),
+            new Primitive("drawing.setheading", 1, false, this::setHeading),
+            new Primitive("drawing.setpencolor", 1, false, this::setPenColor),
+            new Primitive("drawing.setpenshape", 1, false, this::setPenShape),
+            new Primitive("drawing.setpenwidth", 1, false, this::setPenWidth),
+            new Primitive("drawing.setposition", 1, false, this::setPos),
+            new Primitive("drawing.setscreencolor", 1, false, this::setScreenColor),
+            new Primitive("drawing.setscreensize", 1, false, this::setScreenSize),
+            new Primitive("drawing.setshape", 1, false, this::setShape),
+            new Primitive("drawing.setturtle", 1, false, this::setTurtle),
+            new Primitive("drawing.setturtlesmax", 1, false, this::setTurtlesMax),
+            new Primitive("drawing.setx", 1, false, this::setX),
+            new Primitive("drawing.setxy", 2, false, this::setXY),
+            new Primitive("drawing.sety", 1, false, this::setY),
+            new Primitive("drawing.setzoom", 1, false, this::setZoom),
+            new Primitive("drawing.shape", 0, false, this::getShape),
+            new Primitive("drawing.showturtle", 0, false, this::showTurtle),
+            new Primitive("drawing.stopanimation", 0, false, this::stopAnimation),
+            new Primitive("drawing.stopaxis", 0, false, this::disableAxes),
+            new Primitive("drawing.stopgrid", 0, false, this::disableGrid),
+            new Primitive("drawing.towards", 1, false, this::towards),
+            new Primitive("drawing.turtle", 0, false, this::getActiveTurtle),
+            new Primitive("drawing.turtles", 0, false, this::getTurtles),
+            new Primitive("drawing.turtlesmax", 0, false, this::getTurtlesMax),
+            new Primitive("drawing.visible?", 0, false, this::isVisible),
+            new Primitive("drawing.wash", 0, false, this::wash),
+            new Primitive("drawing.window", 0, false, this::windowTurtle),
+            new Primitive("drawing.wrap", 0, false, this::wrapTurtle),
+            new Primitive("drawing.x", 0, false, this::getX),
+            new Primitive("drawing.xaxis", 1, false, this::drawXAxis),
+            new Primitive("drawing.xaxis?", 0, false, this::isXAxisEnabled),
+            new Primitive("drawing.y", 0, false, this::getY),
+            new Primitive("drawing.yaxis", 1, false, this::drawYAxis),
+            new Primitive("drawing.yaxis?", 0, false, this::isYAxisEnabled),
+            new Primitive("drawing.z", 0, false, this::getZ),
+            new Primitive("drawing.zonesize", 0, false, this::getZoneSize),
+            new Primitive("drawing.zoom", 0, false, this::getZoom),
+            new Primitive("file.appendlineflow", 2, false, this::fileAppendLine),
+            new Primitive("file.closeflow", 1, false, this::closeFile),
+            new Primitive("file.directory", 0, false, this::getDirectory),
+            new Primitive("file.endflow?", 1, false, this::isEndOfFile),
+            new Primitive("file.files", 0, false, this::getFiles),
+            new Primitive("file.listflow", 0, false, this::getOpenFiles),
+            new Primitive("file.load", 1, false, this::load),
+            new Primitive("file.openflow", 2, false, this::openFile),
+            new Primitive("file.readcharflow", 1, false, this::fileReadChar),
+            new Primitive("file.readlineflow", 1, false, this::fileReadLine),
+            new Primitive("file.save", 2, false, this::save),
+            new Primitive("file.saved", 1, false, this::saveAll),
+            new Primitive("file.setdirectory", 1, false, this::setDirectory),
+            new Primitive("file.writelineflow", 2, false, this::fileWriteLine),
+            new Primitive("list.additem", 3, false, this::addItem),
+            new Primitive("list.butfirst", 1, false, this::butFirst),
+            new Primitive("list.butlast", 1, false, this::butLast),
+            new Primitive("list.count", 1, false, this::count),
+            new Primitive("list.first", 1, false, this::first),
+            new Primitive("list.fput", 2, false, this::fput),
+            new Primitive("list.item", 2, false, this::item),
+            new Primitive("list.last", 1, false, this::last),
+            new Primitive("list.list", 2, true, this::list),
+            new Primitive("list.list?", 1, false, this::isList),
+            new Primitive("list.lput", 2, false, this::lput),
+            new Primitive("list.member", 2, false, this::isMember71),
+            new Primitive("list.member?", 2, false, this::isMember69),
+            new Primitive("list.pick", 1, false, this::pick),
+            new Primitive("list.remove", 2, false, this::remove),
+            new Primitive("list.replace", 3, false, this::replaceItem),
+            new Primitive("list.reverse", 1, false, this::reverse),
+            new Primitive("math.abs", 1, false, this::abs),
+            new Primitive("math.acos", 1, false, this::acos),
+            new Primitive("math.asin", 1, false, this::asin),
+            new Primitive("math.atan", 1, false, this::atan),
+            new Primitive("math.cos", 1, false, this::cos),
+            new Primitive("math.difference", 2, false, this::difference),
+            new Primitive("math.digits", 0, false, this::getSignificantDigits),
+            new Primitive("math.div", 2, false, this::divide),
+            new Primitive("math.exp", 1, false, this::exp),
+            new Primitive("math.greater", 2, false, this::isGreaterThan),
+            new Primitive("math.greaterequal", 2, false, this::isGreatherThanOrEqual),
+            new Primitive("math.integer", 1, false, this::truncate),
+            new Primitive("math.less", 2, false, this::isLessThan),
+            new Primitive("math.lessequal", 2, false, this::isLessThanOrEqual),
+            new Primitive("math.log", 1, false, this::log),
+            new Primitive("math.log10", 1, false, this::log10),
+            new Primitive("math.minus", 1, false, this::minus),
+            new Primitive("math.mod", 2, false, this::mod),
+            new Primitive("math.pi", 0, false, this::pi),
+            new Primitive("math.power", 2, false, this::power),
+            new Primitive("math.product", 2, true, this::product),
+            new Primitive("math.quotient", 2, false, this::quotient),
+            new Primitive("math.random", 1, false, this::random),
+            new Primitive("math.randomfrac", 0, false, this::randomZeroToOne),
+            new Primitive("math.remainder", 2, false, this::remainder),
+            new Primitive("math.round", 1, false, this::round),
+            new Primitive("math.setdigits", 1, false, this::setSignificantDigits),
+            new Primitive("math.sin", 1, false, this::sin),
+            new Primitive("math.sqrt", 1, false, this::sqrt),
+            new Primitive("math.sum", 2, true, this::sum),
+            new Primitive("math.tan", 1, false, this::tan),
+            new Primitive("net.chattcp", 2, false, this::chatTcp),
+            new Primitive("net.executetcp", 2, false, this::executeTcp),
+            new Primitive("net.listentcp", 0, false, this::listenTcp),
+            new Primitive("net.sendtcp", 2, false, this::sendTcp),
+            new Primitive("sound.deletesequence", 0, false, this::deleteSequence),
+            new Primitive("sound.indexsequence", 0, false, this::getSequenceIndex),
+            new Primitive("sound.instrument", 0, false, this::getInstrument),
+            new Primitive("sound.mp3play", 1, false, this::playMP3),
+            new Primitive("sound.mp3stop", 0, false, this::stopMP3),
+            new Primitive("sound.play", 0, false, this::play),
+            new Primitive("sound.sequence", 1, false, this::sequence),
+            new Primitive("sound.setindexsequence", 1, false, this::setSequenceIndex),
+            new Primitive("sound.setinstrument", 1, false, this::setInstrument),
+            new Primitive("time.countdown", 1, false, this::countdown),
+            new Primitive("time.date", 0, false, this::getDate),
+            new Primitive("time.endcountdown?", 0, false, this::isCountdownEnded),
+            new Primitive("time.pasttime", 0, false, this::getTimePassed),
+            new Primitive("time.time", 0, false, this::getTime),
+            new Primitive("time.wait", 1, false, this::wait),
+            new Primitive("ui.character", 1, false, this::getCharacter),
+            new Primitive("ui.cleartext", 0, false, this::clearText),
+            new Primitive("ui.guiaction", 2, false, this::guiAction),
+            new Primitive("ui.guibutton", 2, false, this::guiButton),
+            new Primitive("ui.guidraw", 1, false, this::guiDraw),
+            new Primitive("ui.guimenu", 2, false, this::guiMenu),
+            new Primitive("ui.guiposition", 2, false, this::guiPosition),
+            new Primitive("ui.guiremove", 1, false, this::guiRemove),
+            new Primitive("ui.key?", 0, false, this::isKey),
+            new Primitive("ui.message", 1, false, this::message),
+            new Primitive("ui.mouse?", 0, false, this::isMouseEvent),
+            new Primitive("ui.mouseposition", 0, false, this::mousePosition),
+            new Primitive("ui.print", 1, true, this::print),
+            new Primitive("ui.read", 2, false, this::read),
+            new Primitive("ui.readcharacter", 0, false, this::readChar),
+            new Primitive("ui.readmouse", 0, false, this::mouseButton),
+            new Primitive("ui.separation", 0, false, this::getSeparation),
+            new Primitive("ui.setseparation", 1, false, this::setSeparation),
+            new Primitive("ui.setstyle", 1, false, this::setTextStyle),
+            new Primitive("ui.settextcolor", 1, false, this::setTextColor),
+            new Primitive("ui.settextname", 1, false, this::setTextFont),
+            new Primitive("ui.settextsize", 1, false, this::setTextSize),
+            new Primitive("ui.style", 0, false, this::getTextStyle),
+            new Primitive("ui.textcolor", 0, false, this::getTextColor),
+            new Primitive("ui.textname", 0, false, this::getTextFont),
+            new Primitive("ui.textsize", 0, false, this::getTextSize),
+            new Primitive("ui.unicode", 1, false, this::getUnicode),
+            new Primitive("ui.write", 1, false, this::write),
+            new Primitive("workspace.contents", 0, false, this::getContents),
+            new Primitive("workspace.define", 2, false, this::define),
+            new Primitive("workspace.edit", 1, false, this::edit),
+            new Primitive("workspace.editall", 0, false, this::editAll),
+            new Primitive("workspace.eraseall", 0, false, this::eraseAll),
+            new Primitive("workspace.eraseprocedure", 1, false, this::eraseProcedure),
+            new Primitive("workspace.erasepropertylist", 1, false, this::erasePropertyList),
+            new Primitive("workspace.erasevariable", 1, false, this::eraseVariable),
+            new Primitive("workspace.externalcommand", 1, false, this::runExternalCommand),
+            new Primitive("workspace.getproperty", 2, false, this::getProperty),
+            new Primitive("workspace.globalmake", 2, false, this::globalMakeWrap),
+            new Primitive("workspace.local", 1, false, this::localWrap),
+            new Primitive("workspace.localmake", 2, false, this::localMake),
+            new Primitive("workspace.primitives", 0, false, this::listPrimitives),
+            new Primitive("workspace.procedures", 0, false, this::procedures),
+            new Primitive("workspace.propertylist", 1, false, this::listProperties),
+            new Primitive("workspace.propertylists", 0, false, this::getPropertyLists),
+            new Primitive("workspace.putproperty", 3, false, this::setProperty),
+            new Primitive("workspace.removeproperty", 2, false, this::removeProperty),
+            new Primitive("workspace.run", 1, false, this::run),
+            new Primitive("workspace.stoptrace", 0, false, this::stopTrace),
+            new Primitive("workspace.text", 1, false, this::getProcedureBody),
+            new Primitive("workspace.thing", 1, false, this::getVariableValue),
+            new Primitive("workspace.trace", 0, false, this::trace),
+            new Primitive("workspace.variables", 0, false, this::listVariables)
+    );
+
     /**
      * Tests if "li" is a list
      *
      * @param li The String to test
      * @return true if it is a list, else false
      */
-    //
     protected static boolean isList(String li) {
         li = li.trim();
         return li.length() > 0 && li.charAt(0) == '[' && li.endsWith("]");
@@ -180,8 +490,8 @@ public class Interpreter {
         }
         sb.append("] ");
         return sb;
-    }    final List<Primitive> primitives = List.of(new Primitive("&", 1, false, this::andOp), new Primitive("|", 1, false, this::orOp), new Primitive("*", 1, false, this::multiplyOp), new Primitive("+", 1, false, this::addOp), new Primitive("-", 1, false, this::subtractOp), new Primitive("/", 1, false, this::divideOp), new Primitive("<", 1, false, this::isLessThan), new Primitive("<=", 1, false, this::isLessThanOrEqual), new Primitive("=", 1, false, this::isEqual), new Primitive(">", 1, false, this::isGreaterThan), new Primitive(">=", 1, false, this::isGreatherThanOrEqual), new Primitive(")", 0, false, this::closeParen), new Primitive("\\", 0, false, this::endLoop), new Primitive("\\siwhile", 2, false, this::testWhile), new Primitive("\\x", 0, false, this::endExecuteTcp), new Primitive("\n", 0, false, this::endProc), new Primitive("3d.downpitch", 1, false, this::pitchDown), new Primitive("3d.leftroll", 1, false, this::rollLeft), new Primitive("3d.lineend", 0, false, this::endLine), new Primitive("3d.linestart", 0, false, this::startLine), new Primitive("3d.orientation", 0, false, this::getOrientation), new Primitive("3d.perspective", 0, false, this::enable3D), new Primitive("3d.pitch", 0, false, this::getPitch), new Primitive("3d.pointend", 0, false, this::endPoint), new Primitive("3d.pointstart", 0, false, this::startPoint), new Primitive("3d.polyend", 0, false, this::endPolygon), new Primitive("3d.polystart", 0, false, this::startPolygon), new Primitive("3d.polyview", 0, false, this::view3D), new Primitive("3d.rightroll", 1, false, this::rollRight), new Primitive("3d.roll", 0, false, this::getRoll), new Primitive("3d.setorientation", 1, false, this::setOrientation), new Primitive("3d.setpitch", 1, false, this::setPitch), new Primitive("3d.setroll", 1, false, this::setRoll), new Primitive("3d.setxyz", 3, false, this::setXYZ), new Primitive("3d.setz", 1, false, this::setZ), new Primitive("3d.textend", 0, false, this::endText), new Primitive("3d.textstart", 0, false, this::startText), new Primitive("3d.uppitch", 1, false, this::pitchUp), new Primitive("color.black", 0, false, this::colorBlack), new Primitive("color.blue", 0, false, this::colorBlue), new Primitive("color.brown", 0, false, this::colorBrown), new Primitive("color.cyan", 0, false, this::colorCyan), new Primitive("color.darkblue", 0, false, this::colorDarkBlue), new Primitive("color.darkgreen", 0, false, this::colorDarkGreen), new Primitive("color.darkred", 0, false, this::colorDarkRed), new Primitive("color.gray", 0, false, this::colorGray), new Primitive("color.green", 0, false, this::colorGreen), new Primitive("color.lightgray", 0, false, this::colorLightGray), new Primitive("color.magenta", 0, false, this::colorMagenta), new Primitive("color.orange", 0, false, this::colorOrange), new Primitive("color.pink", 0, false, this::colorPink), new Primitive("color.purple", 0, false, this::colorPurple), new Primitive("color.red", 0, false, this::colorRed), new Primitive("color.white", 0, false, this::colorWhite), new Primitive("color.yellow", 0, false, this::colorYellow), new Primitive("control.and", 2, true, this::and), new Primitive("control.before?", 2, false, this::isBeforeWrap), new Primitive("control.bye", 0, false, this::bye), new Primitive("control.dountil", 2, false, this::doUntil), new Primitive("control.dowhile", 2, false, this::doWhile), new Primitive("control.empty?", 1, false, this::isEmpty), new Primitive("control.equal?", 2, false, this::isEqual), new Primitive("control.false", 0, false, this::falseValue), new Primitive("control.for", 2, false, this::forLoop), new Primitive("control.foreach", 3, false, this::forEach), new Primitive("control.forever", 1, false, this::forever), new Primitive("control.if", 2, false, this::ifThen), new Primitive("control.ifelse", 3, false, this::ifThenElse), new Primitive("control.integer?", 1, false, this::isInteger), new Primitive("control.not", 1, false, this::not), new Primitive("control.number?", 1, false, this::isNumber), new Primitive("control.or", 2, true, this::or), new Primitive("control.output", 1, false, this::output), new Primitive("control.primitive?", 1, false, this::isPrimitive), new Primitive("control.procedure?", 1, false, this::isProcedure), new Primitive("control.repcount", 0, false, this::getRepCount), new Primitive("control.repeat", 2, false, this::repeat), new Primitive("control.resetall", 0, false, this::resetAll), new Primitive("control.sentence", 2, true, this::sentence), new Primitive("control.stop", 0, false, this::stop), new Primitive("control.stopall", 0, false, this::stopAll), new Primitive("control.true", 0, false, this::trueValue), new Primitive("control.variable?", 1, false, this::isVariable), new Primitive("control.while", 2, false, this::whileLoop), new Primitive("control.word", 2, true, this::word), new Primitive("control.word?", 1, false, this::isWord), new Primitive("drawing.animation", 0, false, this::startAnimation), new Primitive("drawing.arc", 3, false, this::arc), new Primitive("drawing.axis", 1, false, this::drawBothAxes), new Primitive("drawing.axiscolor", 0, false, this::getAxisColor), new Primitive("drawing.back", 1, false, this::back), new Primitive("drawing.changedirectory", 1, false, this::changeDirectory), new Primitive("drawing.circle", 1, false, this::circle), new Primitive("drawing.clearscreen", 0, false, this::clearScreenWrap), new Primitive("drawing.distance", 1, false, this::distance), new Primitive("drawing.dot", 1, false, this::dot), new Primitive("drawing.drawingquality", 0, false, this::getDrawingQuality), new Primitive("drawing.eraseturtle", 1, false, this::eraseTurtle), new Primitive("drawing.fence", 0, false, this::fenceTurtle), new Primitive("drawing.fill", 0, false, this::fill), new Primitive("drawing.fillpolygon", 1, false, this::fillPolygon), new Primitive("drawing.fillzone", 0, false, this::fillZone), new Primitive("drawing.findcolor", 1, false, this::findColor), new Primitive("drawing.fontjustify", 0, false, this::getFontJustify), new Primitive("drawing.fontname", 0, false, this::getLabelFont), new Primitive("drawing.fontsize", 0, false, this::getFontSize), new Primitive("drawing.forward", 1, false, this::forward), new Primitive("drawing.grid", 2, false, this::drawGrid), new Primitive("drawing.grid?", 0, false, this::isGridEnabled), new Primitive("drawing.gridcolor", 0, false, this::getGridColor), new Primitive("drawing.heading", 0, false, this::heading), new Primitive("drawing.hideturtle", 0, false, this::hideTurtle), new Primitive("drawing.home", 0, false, this::home), new Primitive("drawing.label", 1, false, this::label), new Primitive("drawing.labellength", 1, false, this::getLabelLength), new Primitive("drawing.left", 1, false, this::left), new Primitive("drawing.loadimage", 1, false, this::loadImage), new Primitive("drawing.pencolor", 0, false, this::penColor), new Primitive("drawing.pendown", 0, false, this::penDown), new Primitive("drawing.pendown?", 0, false, this::isPenDown), new Primitive("drawing.penerase", 0, false, this::penErase), new Primitive("drawing.penpaint", 0, false, this::penPaint), new Primitive("drawing.penreverse", 0, false, this::penReverse), new Primitive("drawing.penshape", 0, false, this::getPenShape), new Primitive("drawing.penup", 0, false, this::penUp), new Primitive("drawing.penwidth", 0, false, this::getPenWidth), new Primitive("drawing.position", 0, false, this::position), new Primitive("drawing.repaint", 0, false, this::refresh), new Primitive("drawing.right", 1, false, this::right), new Primitive("drawing.saveimage", 2, false, this::saveImage), new Primitive("drawing.screencolor", 0, false, this::screenColor), new Primitive("drawing.screensize", 0, false, this::getImageSize), new Primitive("drawing.setaxiscolor", 1, false, this::setAxisColor), new Primitive("drawing.setdrawingquality", 1, false, this::setDrawingQuality), new Primitive("drawing.setfontjustify", 1, false, this::setFontJustify), new Primitive("drawing.setfontname", 1, false, this::setLabelFont), new Primitive("drawing.setfontsize", 1, false, this::setFontSize), new Primitive("drawing.setgridcolor", 1, false, this::setGridColor), new Primitive("drawing.setheading", 1, false, this::setHeading), new Primitive("drawing.setpencolor", 1, false, this::setPenColor), new Primitive("drawing.setpenshape", 1, false, this::setPenShape), new Primitive("drawing.setpenwidth", 1, false, this::setPenWidth), new Primitive("drawing.setposition", 1, false, this::setPos), new Primitive("drawing.setscreencolor", 1, false, this::setScreenColor), new Primitive("drawing.setscreensize", 1, false, this::setScreenSize), new Primitive("drawing.setshape", 1, false, this::setShape), new Primitive("drawing.setturtle", 1, false, this::setTurtle), new Primitive("drawing.setturtlesmax", 1, false, this::setTurtlesMax), new Primitive("drawing.setx", 1, false, this::setX), new Primitive("drawing.setxy", 2, false, this::setXY), new Primitive("drawing.sety", 1, false, this::setY), new Primitive("drawing.setzoom", 1, false, this::setZoom), new Primitive("drawing.shape", 0, false, this::getShape), new Primitive("drawing.showturtle", 0, false, this::showTurtle), new Primitive("drawing.stopanimation", 0, false, this::stopAnimation), new Primitive("drawing.stopaxis", 0, false, this::disableAxes), new Primitive("drawing.stopgrid", 0, false, this::disableGrid), new Primitive("drawing.towards", 1, false, this::towards), new Primitive("drawing.turtle", 0, false, this::getActiveTurtle), new Primitive("drawing.turtles", 0, false, this::getTurtles), new Primitive("drawing.turtlesmax", 0, false, this::getTurtlesMax), new Primitive("drawing.visible?", 0, false, this::isVisible), new Primitive("drawing.wash", 0, false, this::wash), new Primitive("drawing.window", 0, false, this::windowTurtle), new Primitive("drawing.wrap", 0, false, this::wrapTurtle), new Primitive("drawing.x", 0, false, this::getX), new Primitive("drawing.xaxis", 1, false, this::drawXAxis), new Primitive("drawing.xaxis?", 0, false, this::isXAxisEnabled), new Primitive("drawing.y", 0, false, this::getY), new Primitive("drawing.yaxis", 1, false, this::drawYAxis), new Primitive("drawing.yaxis?", 0, false, this::isYAxisEnabled), new Primitive("drawing.z", 0, false, this::getZ), new Primitive("drawing.zonesize", 0, false, this::getZoneSize), new Primitive("drawing.zoom", 0, false, this::getZoom), new Primitive("file.appendlineflow", 2, false, this::fileAppendLine), new Primitive("file.closeflow", 1, false, this::closeFile), new Primitive("file.directory", 0, false, this::getDirectory), new Primitive("file.endflow?", 1, false, this::isEndOfFile), new Primitive("file.files", 0, false, this::getFiles), new Primitive("file.listflow", 0, false, this::getOpenFiles), new Primitive("file.load", 1, false, this::load), new Primitive("file.openflow", 2, false, this::openFile), new Primitive("file.readcharflow", 1, false, this::fileReadChar), new Primitive("file.readlineflow", 1, false, this::fileReadLine), new Primitive("file.save", 2, false, this::save), new Primitive("file.saved", 1, false, this::saveAll), new Primitive("file.setdirectory", 1, false, this::setDirectory), new Primitive("file.writelineflow", 2, false, this::fileWriteLine), new Primitive("list.additem", 3, false, this::addItem), new Primitive("list.butfirst", 1, false, this::butFirst), new Primitive("list.butlast", 1, false, this::butLast), new Primitive("list.count", 1, false, this::count), new Primitive("list.first", 1, false, this::first), new Primitive("list.fput", 2, false, this::fput), new Primitive("list.item", 2, false, this::item), new Primitive("list.last", 1, false, this::last), new Primitive("list.list", 2, true, this::list), new Primitive("list.list?", 1, false, this::isList), new Primitive("list.lput", 2, false, this::lput), new Primitive("list.member", 2, false, this::isMember71), new Primitive("list.member?", 2, false, this::isMember69), new Primitive("list.pick", 1, false, this::pick), new Primitive("list.remove", 2, false, this::remove), new Primitive("list.replace", 3, false, this::replaceItem), new Primitive("list.reverse", 1, false, this::reverse), new Primitive("math.abs", 1, false, this::abs), new Primitive("math.acos", 1, false, this::acos), new Primitive("math.asin", 1, false, this::asin), new Primitive("math.atan", 1, false, this::atan), new Primitive("math.cos", 1, false, this::cos), new Primitive("math.difference", 2, false, this::difference), new Primitive("math.digits", 0, false, this::getSignificantDigits), new Primitive("math.div", 2, false, this::divide), new Primitive("math.exp", 1, false, this::exp), new Primitive("math.greater", 2, false, this::isGreaterThan), new Primitive("math.greaterequal", 2, false, this::isGreatherThanOrEqual), new Primitive("math.integer", 1, false, this::truncate), new Primitive("math.less", 2, false, this::isLessThan), new Primitive("math.lessequal", 2, false, this::isLessThanOrEqual), new Primitive("math.log", 1, false, this::log), new Primitive("math.log10", 1, false, this::log10), new Primitive("math.minus", 1, false, this::minus), new Primitive("math.mod", 2, false, this::mod), new Primitive("math.pi", 0, false, this::pi), new Primitive("math.power", 2, false, this::power), new Primitive("math.product", 2, true, this::product), new Primitive("math.quotient", 2, false, this::quotient), new Primitive("math.random", 1, false, this::random), new Primitive("math.randomfrac", 0, false, this::randomZeroToOne), new Primitive("math.remainder", 2, false, this::remainder), new Primitive("math.round", 1, false, this::round), new Primitive("math.setdigits", 1, false, this::setSignificantDigits), new Primitive("math.sin", 1, false, this::sin), new Primitive("math.sqrt", 1, false, this::sqrt), new Primitive("math.sum", 2, true, this::sum), new Primitive("math.tan", 1, false, this::tan), new Primitive("net.chattcp", 2, false, this::chatTcp), new Primitive("net.executetcp", 2, false, this::executeTcp), new Primitive("net.listentcp", 0, false, this::listenTcp), new Primitive("net.sendtcp", 2, false, this::sendTcp), new Primitive("sound.deletesequence", 0, false, this::deleteSequence), new Primitive("sound.indexsequence", 0, false, this::getSequenceIndex), new Primitive("sound.instrument", 0, false, this::getInstrument), new Primitive("sound.mp3play", 1, false, this::playMP3), new Primitive("sound.mp3stop", 0, false, this::stopMP3), new Primitive("sound.play", 0, false, this::play), new Primitive("sound.sequence", 1, false, this::sequence), new Primitive("sound.setindexsequence", 1, false, this::setSequenceIndex), new Primitive("sound.setinstrument", 1, false, this::setInstrument), new Primitive("time.countdown", 1, false, this::countdown), new Primitive("time.date", 0, false, this::getDate), new Primitive("time.endcountdown?", 0, false, this::isCountdownEnded), new Primitive("time.pasttime", 0, false, this::getTimePassed), new Primitive("time.time", 0, false, this::getTime), new Primitive("time.wait", 1, false, this::wait), new Primitive("ui.character", 1, false, this::getCharacter), new Primitive("ui.cleartext", 0, false, this::clearText), new Primitive("ui.guiaction", 2, false, this::guiAction), new Primitive("ui.guibutton", 2, false, this::guiButton), new Primitive("ui.guidraw", 1, false, this::guiDraw), new Primitive("ui.guimenu", 2, false, this::guiMenu), new Primitive("ui.guiposition", 2, false, this::guiPosition), new Primitive("ui.guiremove", 1, false, this::guiRemove), new Primitive("ui.key?", 0, false, this::isKey), new Primitive("ui.message", 1, false, this::message), new Primitive("ui.mouse?", 0, false, this::isMouseEvent), new Primitive("ui.mouseposition", 0, false, this::mousePosition), new Primitive("ui.print", 1, true, this::print), new Primitive("ui.read", 2, false, this::read), new Primitive("ui.readcharacter", 0, false, this::readChar), new Primitive("ui.readmouse", 0, false, this::mouseButton), new Primitive("ui.separation", 0, false, this::getSeparation), new Primitive("ui.setseparation", 1, false, this::setSeparation), new Primitive("ui.setstyle", 1, false, this::setTextStyle), new Primitive("ui.settextcolor", 1, false, this::setTextColor), new Primitive("ui.settextname", 1, false, this::setTextFont), new Primitive("ui.settextsize", 1, false, this::setTextSize), new Primitive("ui.style", 0, false, this::getTextStyle), new Primitive("ui.textcolor", 0, false, this::getTextColor), new Primitive("ui.textname", 0, false, this::getTextFont), new Primitive("ui.textsize", 0, false, this::getTextSize), new Primitive("ui.unicode", 1, false, this::getUnicode), new Primitive("ui.write", 1, false, this::write), new Primitive("workspace.contents", 0, false, this::getContents), new Primitive("workspace.define", 2, false, this::define), new Primitive("workspace.edit", 1, false, this::edit), new Primitive("workspace.editall", 0, false, this::editAll), new Primitive("workspace.eraseall", 0, false, this::eraseAll), new Primitive("workspace.eraseprocedure", 1, false, this::eraseProcedure), new Primitive("workspace.erasepropertylist", 1, false, this::erasePropertyList), new Primitive("workspace.erasevariable", 1, false, this::eraseVariable), new Primitive("workspace.externalcommand", 1, false, this::runExternalCommand), new Primitive("workspace.getproperty", 2, false, this::getProperty), new Primitive("workspace.globalmake", 2, false, this::globalMakeWrap), new Primitive("workspace.local", 1, false, this::localWrap), new Primitive("workspace.localmake", 2, false, this::localMake), new Primitive("workspace.primitives", 0, false, this::listPrimitives), new Primitive("workspace.procedures", 0, false, this::procedures), new Primitive("workspace.propertylist", 1, false, this::listProperties), new Primitive("workspace.propertylists", 0, false, this::getPropertyLists), new Primitive("workspace.putproperty", 3, false, this::setProperty), new Primitive("workspace.removeproperty", 2, false, this::removeProperty), new Primitive("workspace.run", 1, false, this::run), new Primitive("workspace.stoptrace", 0, false, this::stopTrace), new Primitive("workspace.text", 1, false, this::getProcedureBody), new Primitive("workspace.thing", 1, false, this::getVariableValue), new Primitive("workspace.trace", 0, false, this::trace), new Primitive("workspace.variables", 0, false, this::listVariables));
-
+    }
+    
     /**
      * This methods returns a list that contains all Property Lists name
      *
@@ -331,7 +641,7 @@ public class Interpreter {
                  * To test  |	Formatted Form:
                  * fd 5 	| 	fd 5 \l1 rt \l2
                  * rt 		| --> The \l2 can't be removed before be
-                 * end		|		sure the rt has noproblem
+                 * end		|		sure the rt has no problem
                  * */
                 if (!element.equals("\n")) deleteLineNumber();
                 instructionBuffer.deleteFirstWord(element);
@@ -541,11 +851,10 @@ public class Interpreter {
                         openParen = false;
                         instructionBuffer.deleteFirstWord(element);
                     } else if (lower.equals(Logo.getString("interpreter.keyword.to"))) {
-                        // If that's the word for
+                        // If it's the word to
                         instructionBuffer.deleteFirstWord(element);
                         if (instructionBuffer.getLength() != 0) {
                             element = instructionBuffer.getNextWord();
-                            lower = element.toLowerCase();
                         } else
                             throw new LogoException(app, Logo.getString("interpreter.error.insufficientInputs") + " " + "\"" + Logo.getString("interpreter.keyword.to") + "\"");
                         StringBuilder definition = new StringBuilder(Logo.getString("interpreter.keyword.to") + " " + element + " ");
@@ -570,7 +879,6 @@ public class Interpreter {
                         instructionBuffer.deleteFirstWord(element);
                         lineNumber = element + " ";
                         element = instructionBuffer.getNextWord();
-
                     } else {
                         deleteLineNumber();
                         throw new LogoException(app, Logo.getString("interpreter.error.unknownProcedure") + " " + element);
@@ -581,7 +889,7 @@ public class Interpreter {
         // END OF THE MAIN LOOP
         // If there's nothing to return.
         if (operands.isEmpty()) {
-            if (!consumers.isEmpty()) {// &&!nom.peek().equals("\n")) {
+            if (!consumers.isEmpty()) {
                 while ((!consumers.isEmpty()) && consumers.peek().equals("\n")) consumers.pop();
                 if (!consumers.isEmpty()) {
                     throw new LogoException(app, Logo.getString("interpreter.error.insufficientInputs") + " " + consumers.peek());
@@ -652,7 +960,7 @@ public class Interpreter {
                 list.append("] ");
                 if (operands.empty()) {
                     return (list.toString());
-                } // 1er cas: rien dans la pile de calcul, on renvoie la liste
+                } // 1st case: nothing in the calculation stack, we return the list
                 else if (!operands.peek().equals("[")) {
                     return (list.toString());
                 } // 2nd case: no opening bracket at the top of the stack, same
@@ -687,7 +995,6 @@ public class Interpreter {
             String name = consumers.peek();
             if (name.equals("(")) {
                 throw new LogoException(app, Logo.getString("interpreter.error.tooManyArguments"));
-
             }
         }
     }
@@ -792,7 +1099,6 @@ public class Interpreter {
             //				bug
             //				stop doesn't output to fd
             if (!Interpreter.consumers.isEmpty() && !Interpreter.consumers.peek().equals("\n")) {
-                //	System.out.println(Interpreter.nom);
                 throw new LogoException(app, Utils.primitiveName("control.stop") + " " + Logo.getString("interpreter.error.noOutput") + " " + Interpreter.consumers.peek());
             } else if (!Interpreter.consumers.isEmpty()) {
                 // Removing the character "\n"
@@ -804,7 +1110,6 @@ public class Interpreter {
                 // 				bug
                 //				bug2 doesn't output to fd
                 if (!Interpreter.consumers.isEmpty() && !Interpreter.consumers.peek().equals("\n")) {
-                    //	System.out.println(Interpreter.nom);
                     throw new LogoException(app, en_cours + " " + Logo.getString("interpreter.error.noOutput") + " " + Interpreter.consumers.peek());
                 }
             }
@@ -926,7 +1231,6 @@ public class Interpreter {
         ResourceBundle names_eo = Logo.getPrimitiveBundle(locale);
         locale = new Locale("de", "DE");
         ResourceBundle names_de = Logo.getPrimitiveBundle(locale);
-        //locale=new Locale("nl","NL");
         ResourceBundle[] names = {names_fr, names_en, names_es, names_pt, names_ar, names_eo, names_de};
         int i = 0;
         for (var prim : primitives) {
@@ -970,7 +1274,6 @@ public class Interpreter {
         ResourceBundle lang_eo = Logo.getLanguageBundle(locale);
         locale = new Locale("de", "DE");
         ResourceBundle lang_de = Logo.getLanguageBundle(locale);
-        //locale=new Locale("nl","NL");
         ResourceBundle[] lang = {lang_fr, lang_en, lang_es, lang_pt, lang_ar, lang_eo, lang_de};
         try {
             Enumeration<String> en = lang_fr.getKeys();
@@ -1171,11 +1474,9 @@ public class Interpreter {
             try {
                 Runtime.getRuntime().exec(cmd);
             } catch (IOException e2) {
-                //System.out.println("a");
             }
 
         } catch (LogoException e) {
-            //System.out.println("coucou");
         }
     }
 
@@ -1328,7 +1629,6 @@ public class Interpreter {
 
             for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
                 Procedure procedure = workspace.getProcedure(i);
-//							System.out.println(procedure.toString().length());
                 if (names.contains(procedure.name) && procedure.displayed) {
                     app.editor.appendText(procedure.toString());
                 }
@@ -1413,7 +1713,6 @@ public class Interpreter {
     void startText(Stack<String> param) {
         DrawPanel.record3D = DrawPanel.RECORD_3D_TEXT;
         app.initViewer3D();
-//                    	if (null==DrawPanel.listText) DrawPanel.listText=new java.util.Vector<TransformGroup>();
         DrawPanel.poly = null;
     }
 
@@ -1428,14 +1727,12 @@ public class Interpreter {
     void startPoint(Stack<String> param) {
         DrawPanel.record3D = DrawPanel.RECORD_3D_POINT;
         app.initViewer3D();
-//                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
         DrawPanel.poly = new ElementPoint(app);
     }
 
     void startLine(Stack<String> param) {
         DrawPanel.record3D = DrawPanel.RECORD_3D_LINE;
         app.initViewer3D();
-//                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
         DrawPanel.poly = new ElementLine(app);
         DrawPanel.poly.addVertex(new Point3d(kernel.getActiveTurtle().X / 1000, kernel.getActiveTurtle().Y / 1000, kernel.getActiveTurtle().Z / 1000), kernel.getActiveTurtle().penColor);
     }
@@ -1470,7 +1767,6 @@ public class Interpreter {
     void startPolygon(Stack<String> param) {
         DrawPanel.record3D = DrawPanel.RECORD_3D_POLYGON;
         app.initViewer3D();
-//                    	if (null==DrawPanel.listPoly) DrawPanel.listPoly=new java.util.Vector<Shape3D>();
         DrawPanel.poly = new ElementPolygon(app);
     }
 
@@ -2454,7 +2750,7 @@ public class Interpreter {
             if (error)
                 throw new LogoException(app, Logo.getString("interpreter.error.list.missingElement1") + " " + entier + " " + Logo.getString("interpreter.error.list.missingElement2") + liste + "]");
             reponse = "[ " + liste.substring(0, compteur) + mot;
-            // On extrait le mot suivant
+            // Extract the following word
             if (compteur + 1 < liste.length() && liste.charAt(compteur) == '[' && liste.charAt(compteur + 1) == ' ') {
                 compteur = extractList(liste, compteur + 2);
 
@@ -2690,10 +2986,10 @@ public class Interpreter {
         try {
             if (null == mot) {
                 throw new LogoException(app, Logo.getString("interpreter.error.wordRequired"));
-            } // si c'est une liste
+            } // if it's a list
             else if (wordPrefix.equals("")) {
                 throw new LogoException(app, Logo.getString("interpreter.error.variableInvalid"));
-            } // si c'est un nombre
+            } // if it's a number
             Interpreter.returnValue = true;
             String value;
             mot = mot.toLowerCase();
@@ -3110,7 +3406,7 @@ public class Interpreter {
         try {
             id = Integer.parseInt(param.get(0));
             if (id > -1 && id < Logo.config.getMaxTurtles()) {
-                // On compte le nombre de tortues à l'écran
+                // We count the number of turtles on the screen
                 int compteur = 0;
                 int premier_dispo = -1;
                 for (int i = 0; i < Logo.config.getMaxTurtles(); i++) {
@@ -3119,8 +3415,7 @@ public class Interpreter {
                         compteur++;
                     }
                 }
-                // On vérifie que ce n'est pas la seule tortue
-                // dispopnible:
+                // We check that this is not the only turtle available:
                 if (null != app.getDrawPanel().turtles[id]) {
                     if (compteur > 1) {
                         int tortue_utilisee = kernel.getActiveTurtle().id;
@@ -3132,11 +3427,7 @@ public class Interpreter {
                             app.getDrawPanel().visibleTurtles.remove(String.valueOf(id));
                         if (kernel.getActiveTurtle().id == id) {
                             app.getDrawPanel().turtle = app.getDrawPanel().turtles[premier_dispo];
-                            app.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon); // on
-                            // adapte
-                            // le
-                            // nouveau
-                            // crayon
+                            app.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon); // we adapt the new pencil
                             String police = app.getDrawPanel().getGraphicsFont().getName();
                             app.getDrawPanel().setFont(new Font(police, Font.PLAIN, kernel.getActiveTurtle().police));
 
@@ -3583,7 +3874,6 @@ public class Interpreter {
             param = new Stack<>();
             param.push("\"" + mot);
             String phrase = inputFrame.getText();
-            // phrase="[ "+Logo.rajoute_backslash(phrase)+" ] ";
             StringBuilder buffer = new StringBuilder();
             for (int j = 0; j < phrase.length(); j++) {
                 char c = phrase.charAt(j);
@@ -3853,14 +4143,14 @@ public class Interpreter {
         String mot;
         String liste = param.get(0).trim();
         mot = getWord(param.get(0));
-        if (null == mot) { // si c'est une liste ou un nombre
+        if (null == mot) { // if it is a list or a number
             try {
                 liste = getFinalList(liste).trim();
                 if (liste.equals("")) Interpreter.operands.push(Logo.getString("control.true"));
                 else Interpreter.operands.push(Logo.getString("control.false"));
             } catch (LogoException ignored) {
             }
-        } else { // Si c'est un mot
+        } else { // If it's a word
             if (mot.equals("")) Interpreter.operands.push(Logo.getString("interpreter.keyword.true"));
             else Interpreter.operands.push(Logo.getString("interpreter.keyword.false"));
         }
@@ -3908,10 +4198,9 @@ public class Interpreter {
     void first(Stack<String> param) {
         Interpreter.returnValue = true;
         String mot = getWord(param.get(0));
-        if (null == mot) { // SI c'est une liste
+        if (null == mot) { // IF this is a list
             try {
                 String liste = getFinalList(param.get(0));
-                // System.out.println("b"+item(liste, 1)+"b");
                 Interpreter.operands.push(item(liste, 1));
             } catch (LogoException ignored) {
             }
@@ -3932,7 +4221,7 @@ public class Interpreter {
     void last(Stack<String> param) {
         Interpreter.returnValue = true;
         String mot = getWord(param.get(0));
-        if (null == mot) { // Si c'est une liste
+        if (null == mot) { // If it's a list
             try {
                 String liste = getFinalList(param.get(0));
                 Interpreter.operands.push(item(liste, numberOfElements(liste)));
@@ -4111,7 +4400,7 @@ public class Interpreter {
             Interpreter.returnValue = true;
             String mot = getWord(param.get(0));
             if (null != mot && mot.equals("")) mot = "\\v";
-            // Si c'est une liste
+            // If it's a list
             Interpreter.operands.push(("[ " + liste).trim() + " " + Objects.requireNonNullElseGet(mot, () -> param.get(0).trim()) + " ] ");
         } catch (LogoException ignored) {
         }
@@ -4159,7 +4448,6 @@ public class Interpreter {
             String mot = getWord(mot2);
             if (null == mot) {
                 liste.append(mot2);
-                // System.out.println("a"+mot2+"a");
             } else {
                 if (mot.equals("")) mot = "\\v";
                 liste.append(mot).append(" ");
@@ -4223,7 +4511,6 @@ public class Interpreter {
             Interpreter.operands.push("[ " + Calculator.teste_fin_double(a) + " " + Calculator.teste_fin_double(b) + " ] ");
         } else {
             Interpreter.operands.push("[ " + kernel.getActiveTurtle().X + " " + kernel.getActiveTurtle().Y + " " + kernel.getActiveTurtle().Z + " ] ");
-
         }
     }
 
@@ -4505,7 +4792,6 @@ public class Interpreter {
             if (instruction.getLength() != 0) {
                 try {
                     String element = instruction.getNextWord();
-                    // System.out.println("a"+element+"a");
                     if (element.startsWith("\\l")) {
                         instruction.deleteFirstWord(element);
                         Interpreter.lineNumber = element + " ";
@@ -4780,7 +5066,7 @@ public class Interpreter {
         boolean b = false;
         String mot = getWord(param.get(1));
         StringBuilder liste = new StringBuilder("[ ");
-        if (null == mot) { // on travaille sur une liste
+        if (null == mot) { // we work on a list
             try {
                 liste = new StringBuilder(getFinalList(param.get(1)));
                 StringTokenizer st = new StringTokenizer(liste.toString());
@@ -4919,7 +5205,7 @@ public class Interpreter {
      * @param st The Object to convert
      * @return The word corresponding to st
      */
-    String getWord(Object st) { // Si c'est un mot
+    String getWord(Object st) { // If it's a word
         String liste = st.toString();
         if (liste.equals("\"")) {
             wordPrefix = "";
@@ -4946,7 +5232,7 @@ public class Interpreter {
      */
     String getList(String li) throws LogoException {
         li = li.trim();
-        // Retourne la liste sans crochets;
+        // Returns the list without brackets;
         if (li.charAt(0) == '[' && li.endsWith("]")) {
             li = li.substring(1, li.length() - 1).trim() + " ";
             if (!li.equals(" ")) return li;
@@ -5079,8 +5365,7 @@ public class Interpreter {
         } // If it's a number, it's returned.
         catch (Exception ignored) {
         }
-        if (element.startsWith("[")) return element + " "; // It's a list, we return it as
-        // quelle.
+        if (element.startsWith("[")) return element + " "; // It's a list, we return it as those.
         if (element.equals("\\v")) element = "";
         return "\"" + element; // It's necessarily a word, we send it back.
     }
@@ -5122,8 +5407,7 @@ public class Interpreter {
     }
 
     // How many characters in the word "mot"
-    int getWordLength(String mot) {// retourne le nombre de caractères
-        // d'un mot
+    int getWordLength(String mot) {
         int compteur = 0;
         boolean backslash = false;
         for (int i = 0; i < mot.length(); i++) {
