@@ -27,10 +27,10 @@ public class LogoException extends Exception {
         while (!Interpreter.procedures.isEmpty() && Interpreter.procedures.peek().equals("("))
             Interpreter.procedures.pop();
         if (!cadre.error & !Interpreter.procedures.isEmpty()) {
-            cadre.updateHistory("erreur", Logo.getString("dans") + " " + Interpreter.procedures.pop() + ", "
-                    + Logo.getString("line") + " " + getLineNumber() + ":\n");
+            cadre.updateHistory("application.error", Logo.getString("exception.message.in") + " " + Interpreter.procedures.pop() + ", "
+                    + Logo.getString("exception.message.lineNumber") + " " + getLineNumber() + ":\n");
         }
-        if (!cadre.error) cadre.updateHistory("erreur", Utils.unescapeString(st) + "\n");
+        if (!cadre.error) cadre.updateHistory("application.error", Utils.unescapeString(st) + "\n");
 
         cadre.focusCommandLine();
         cadre.error = true;
@@ -69,7 +69,7 @@ public class LogoException extends Exception {
         }
 
         public void run() {
-            cadre.updateHistory("erreur", msg);
+            cadre.updateHistory("application.error", msg);
         }
     }
 }

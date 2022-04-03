@@ -31,7 +31,7 @@ public class ElementPolygon extends Element3D {
      */
     public void addToScene() throws LogoException {
 
-        if (vertex.size() < 3) throw new LogoException(app, Logo.getString("error.3d.3vertex"));
+        if (vertex.size() < 3) throw new LogoException(app, Logo.getString("3d.error.vertex"));
 
         // Create normal vector
 
@@ -51,7 +51,7 @@ public class ElementPolygon extends Element3D {
                 break;
             }
         }
-        if (null == vec1) throw new LogoException(app, Logo.getString("error.3d.emptypolygon"));
+        if (null == vec1) throw new LogoException(app, Logo.getString("3d.error.emptyPolygon"));
         for (int i = 2; i < vertex.size(); i++) {
             point1 = vertex.get(i);
             //System.out.println(" point1 "+point1.x+" "+point1.y+" "+point1.z);
@@ -71,7 +71,7 @@ public class ElementPolygon extends Element3D {
                 //if (vec1.x!=0&& vec1.y!=0&& vec1.z!=0) 				System.out.println("coucou"+" vec1 "+vec1.x+" "+vec1.y+" "+vec1.z);
                 break;
             }
-            if (null == vec2) throw new LogoException(app, Logo.getString("error.3d.emptypolygon"));
+            if (null == vec2) throw new LogoException(app, Logo.getString("3d.error.emptyPolygon"));
         }
 
         // Create Geometry

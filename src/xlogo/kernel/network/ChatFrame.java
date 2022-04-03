@@ -44,7 +44,7 @@ public class ChatFrame extends JFrame implements ActionListener {
     }
 
     private void initGui() {
-        setTitle(Logo.getString("chat"));
+        setTitle(Logo.getString("network.chat"));
         setIconImage(Logo.getAppIcon().getImage());
         dsd = new DefaultStyledDocument();
         textPane = new JTextPane();
@@ -54,7 +54,7 @@ public class ChatFrame extends JFrame implements ActionListener {
         this.getContentPane().setLayout(new BorderLayout());
         textField = new JTextField();
         java.awt.FontMetrics fm = app.getGraphics().getFontMetrics(Logo.config.getFont());
-        int width = fm.stringWidth(Logo.getString("stop_chat")) + 30;
+        int width = fm.stringWidth(Logo.getString("network.chat.stop")) + 30;
         if (width < 200) width = 200;
 
         textPane.setPreferredSize(new Dimension(width, 300));

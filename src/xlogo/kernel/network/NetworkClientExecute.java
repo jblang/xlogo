@@ -33,7 +33,7 @@ public class NetworkClientExecute {
         try {
             this.ip = InetAddress.getByName(ip);
         } catch (UnknownHostException e) {
-            throw new LogoException(app, Logo.getString("no_host") + " " + ip);
+            throw new LogoException(app, Logo.getString("network.error.noHost") + " " + ip);
         }
         this.cmd = cmd;
         init();
@@ -64,7 +64,7 @@ public class NetworkClientExecute {
             in.close();
             socket.close();
         } catch (IOException e) {
-            throw new LogoException(app, Logo.getString("no_host") + ip.getHostAddress());
+            throw new LogoException(app, Logo.getString("network.error.noHost") + ip.getHostAddress());
         }
     }
 }

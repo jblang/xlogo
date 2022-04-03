@@ -26,13 +26,13 @@ public class BottomPanel extends JPanel {
         tabbedPane = new JTabbedPane();
         messageTable = new TranslationTable(translator, action, id, Logo::getLanguageBundle);
         primitiveTable = new TranslationTable(translator, action, id, Logo::getPrimitiveBundle);
-        tabbedPane.add(primitiveTable, Logo.getString("primitives"));
-        tabbedPane.add(messageTable, Logo.getString("messages"));
+        tabbedPane.add(primitiveTable, Logo.getString("translation.primitives"));
+        tabbedPane.add(messageTable, Logo.getString("translation.panel.messages"));
         javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(tabbedPane);
 
         add(scroll, BorderLayout.CENTER);
         JButton searchButton = new JButton(Logo.getIcon("search"));
-        searchButton.setToolTipText(Logo.getString("find"));
+        searchButton.setToolTipText(Logo.getString("search.find"));
         searchButton.addActionListener(translator);
         searchButton.setActionCommand(UiTranslator.SEARCH);
         searchButton.setSize(new java.awt.Dimension(100, 50));

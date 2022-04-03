@@ -51,8 +51,8 @@ public class ProcedureEraser extends JDialog implements ActionListener {
             }
         }
         procedureList = new JList(list);
-        JButton deleteButton = new JButton(Logo.getString("enlever"));
-        JLabel allProcedureLabel = new JLabel(Logo.getString("procedure_list"));
+        JButton deleteButton = new JButton(Logo.getString("startup.removeFile"));
+        JLabel allProcedureLabel = new JLabel(Logo.getString("procedureEraser.procedures"));
         JScrollPane scroll = new JScrollPane(procedureList);
 
         getContentPane().setLayout(new BorderLayout());

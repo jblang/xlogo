@@ -98,7 +98,7 @@ public class Application extends JFrame {
         generatePrimitives();
         if (Logo.isAutoLaunchEnabled()) {
             startAnimation(Utils.formatCode(Logo.getMainCommand()));
-            getHistoryPanel().setText("normal", Logo.getMainCommand() + "\n");
+            getHistoryPanel().setText("misc.message.normal", Logo.getMainCommand() + "\n");
         } else if (!Logo.config.getStartupCommand().equals("")) {
             animation = new Animation(this, Utils.formatCode(Logo.config.getStartupCommand()));
             animation.start();
@@ -141,43 +141,43 @@ public class Application extends JFrame {
 
         var fileMenu = createMenu("menu.file");
         menuBar.add(fileMenu);
-        createMenuItem(fileMenu, "nouveau", e -> newFile());
+        createMenuItem(fileMenu, "menu.file.new", e -> newFile());
         createMenuItem(fileMenu, "menu.file.open", e -> openWorkspace());
-        createMenuItem(fileMenu, "menu.file.saveas", e -> saveWorkspace(true));
+        createMenuItem(fileMenu, "menu.file.saveAs", e -> saveWorkspace(true));
         createMenuItem(fileMenu, "menu.file.save", e -> saveWorkspace(false));
 
         var fileImageMenu = createMenu(fileMenu, "menu.file.captureimage");
         createMenuItem(fileImageMenu, "menu.file.captureimage.clipboard", e -> copyImage());
-        createMenuItem(fileImageMenu, "menu.file.saveas", e -> saveImage());
+        createMenuItem(fileImageMenu, "menu.file.saveAs", e -> saveImage());
         createMenuItem(fileImageMenu, "menu.file.captureimage.print", e -> printImage());
 
-        var fileTextMenu = createMenu(fileMenu, "menu.file.textzone");
-        createMenuItem(fileTextMenu, "menu.file.textzone.rtf", e -> historyPanel.saveHistory());
+        var fileTextMenu = createMenu(fileMenu, "menu.file.text");
+        createMenuItem(fileTextMenu, "menu.file.saveRtf", e -> historyPanel.saveHistory());
         createMenuItem(fileMenu, "menu.file.quit", e -> closeWindow());
 
-        var editMenu = createMenu("menu.edition");
+        var editMenu = createMenu("menu.edit");
         menuBar.add(editMenu);
-        createMenuItem(editMenu, "menu.edition.cut", e -> cut());
-        createMenuItem(editMenu, "menu.edition.copy", e -> copy());
-        createMenuItem(editMenu, "menu.edition.paste", e -> paste());
-        createMenuItem(editMenu, "menu.edition.selectall", e -> selectAll());
+        createMenuItem(editMenu, "menu.edit.cut", e -> cut());
+        createMenuItem(editMenu, "menu.edit.copy", e -> copy());
+        createMenuItem(editMenu, "menu.edit.paste", e -> paste());
+        createMenuItem(editMenu, "menu.edit.selectAll", e -> selectAll());
         menuBar.add(editMenu);
 
         var toolsMenu = createMenu("menu.tools");
         menuBar.add(toolsMenu);
-        createMenuItem(toolsMenu, "menu.tools.pencolor", e -> showColorChooser(true));
-        createMenuItem(toolsMenu, "menu.tools.screencolor", e -> showColorChooser(false));
-        createMenuItem(toolsMenu, "menu.tools.startup", e -> showStartupFiles());
-        createMenuItem(toolsMenu, "menu.tools.translate", e -> showCodeTranslator());
-        createMenuItem(toolsMenu, "menu.tools.eraser", e -> showProcedureEraser());
+        createMenuItem(toolsMenu, "menu.tools.penColor", e -> showColorChooser(true));
+        createMenuItem(toolsMenu, "menu.tools.screenColor", e -> showColorChooser(false));
+        createMenuItem(toolsMenu, "menu.tools.startupFile", e -> showStartupFiles());
+        createMenuItem(toolsMenu, "menu.tools.codeTranslator", e -> showCodeTranslator());
+        createMenuItem(toolsMenu, "menu.tools.procedureEraser", e -> showProcedureEraser());
         createMenuItem(toolsMenu, "menu.tools.preferences", e -> showPreferences());
 
         var helpMenu = createMenu("menu.help");
         menuBar.add(helpMenu);
-        createMenuItem(helpMenu, "menu.help.online", this::showHelp);
+        createMenuItem(helpMenu, "menu.help.onlineManual", this::showHelp);
         createMenuItem(helpMenu, "menu.help.licence", e -> showLicence(true));
-        createMenuItem(helpMenu, "menu.help.translatedlicence", e -> showLicence(false));
-        createMenuItem(helpMenu, "menu.help.translatexlogo", e -> showUiTranslator());
+        createMenuItem(helpMenu, "menu.help.translatedLicense", e -> showLicence(false));
+        createMenuItem(helpMenu, "menu.help.translateXLogo", e -> showUiTranslator());
         createMenuItem(helpMenu, "menu.help.about", e -> showAbout());
 
         setJMenuBar(menuBar);
@@ -188,7 +188,7 @@ public class Application extends JFrame {
         createButton(toolBar, "editSource", e -> showEditor());
         toolBar.addSeparator();
         runButton = createButton(toolBar, "run", e -> runMainCommand());
-        stopButton = createButton(toolBar, "stop", e -> stopAnimation());
+        stopButton = createButton(toolBar, "application.tooltip.stop", e -> stopAnimation());
         toolBar.addSeparator();
         zoomInButton = createButton(toolBar, "zoomIn", e -> zoomIn());
         zoomOutButton = createButton(toolBar, "zoomOut", e -> zoomOut());
@@ -234,36 +234,36 @@ public class Application extends JFrame {
     public void updateLocalization() {
         // Internal text to use for JFileChooser and JColorChooser
         var pairs = new String[][]{
-                {"FileChooser.cancelButtonText", "pref.cancel"},
-                {"FileChooser.cancelButtonToolTipText", "pref.cancel"},
-                {"FileChooser.fileNameLabelText", "nom_du_fichier"},
-                {"FileChooser.upFolderToolTipText", "dossier_parent"},
-                {"FileChooser.lookInLabelText", "rechercher_dans"},
-                {"FileChooser.newFolderToolTipText", "nouveau_dossier"},
-                {"FileChooser.homeFolderToolTipText", "repertoire_accueil"},
-                {"FileChooser.filesOfTypeLabelText", "fichier_du_type"},
+                {"FileChooser.cancelButtonText", "button.cancel"},
+                {"FileChooser.cancelButtonToolTipText", "button.cancel"},
+                {"FileChooser.fileNameLabelText", "FileChooser.fileNameLabelText"},
+                {"FileChooser.upFolderToolTipText", "FileChooser.upFolderToolTipText"},
+                {"FileChooser.lookInLabelText", "FileChooser.lookInLabelText"},
+                {"FileChooser.newFolderToolTipText", "FileChooser.newFolderToolTipText"},
+                {"FileChooser.homeFolderToolTipText", "FileChooser.homeFolderToolTipText"},
+                {"FileChooser.filesOfTypeLabelText", "FileChooser.filesOfTypeLabelText"},
                 {"FileChooser.helpButtonText", "menu.help"},
-                {"ColorChooser.rgbNameText", "rgb"},
-                {"ColorChooser.rgbBlueText", "bleu"},
-                {"ColorChooser.rgbGreenText", "vert"},
-                {"ColorChooser.rgbRedText", "rouge"},
-                {"ColorChooser.swatchesNameText", "echantillon"},
-                {"ColorChooser.hsbNameText", "hsb"},
-                {"ColorChooser.hsbBlueText", "hsbbleu"},
-                {"ColorChooser.hsbGreenText", "hsbvert"},
-                {"ColorChooser.hsbRedText", "hsbrouge"},
-                {"ColorChooser.swatchesRecentText", "dernier"},
-                {"ColorChooser.previewText", "apercu"},
-                {"ColorChooser.sampleText", "echantillon_texte"},
-                {"ColorChooser.okText", "pref.ok"},
-                {"ColorChooser.resetText", "restaurer"},
-                {"ColorChooser.cancelText", "pref.cancel"},
-                {"ColorChooser.previewText", "apercu"},
+                {"ColorChooser.rgbNameText", "ColorChooser.rgbNameText"},
+                {"ColorChooser.rgbBlueText", "ColorChooser.rgbBlueText"},
+                {"ColorChooser.rgbGreenText", "ColorChooser.rgbGreenText"},
+                {"ColorChooser.rgbRedText", "ColorChooser.rgbRedText"},
+                {"ColorChooser.swatchesNameText", "ColorChooser.swatchesNameText"},
+                {"ColorChooser.hsbNameText", "ColorChooser.hsbNameText"},
+                {"ColorChooser.hsbBlueText", "ColorChooser.hsbBlueText"},
+                {"ColorChooser.hsbGreenText", "ColorChooser.hsbGreenText"},
+                {"ColorChooser.hsbRedText", "ColorChooser.hsbRedText"},
+                {"ColorChooser.swatchesRecentText", "ColorChooser.swatchesRecentText"},
+                {"ColorChooser.previewText", "ColorChooser.previewText"},
+                {"ColorChooser.sampleText", "ColorChooser.sampleText"},
+                {"ColorChooser.okText", "button.ok"},
+                {"ColorChooser.resetText", "ColorChooser.resetText"},
+                {"ColorChooser.cancelText", "button.cancel"},
+                {"ColorChooser.previewText", "ColorChooser.previewText"},
         };
         for (var p : pairs) {
             UIManager.put(p[0], Logo.getString(p[1]));
         }
-        commandLabel.setText(Logo.getString("commande") + "  ");
+        commandLabel.setText(Logo.getString("application.command") + "  ");
         menuItems.forEach(i -> i.setText(Logo.getString(i.getActionCommand())));
         historyPanel.updateText();
     }
@@ -286,9 +286,9 @@ public class Application extends JFrame {
      */
     public void closeWindow() {
         setVisible(true);
-        String message = Logo.getString("quitter?");
+        String message = Logo.getString("prompt.quit.confirm");
         MessageTextArea jt = new MessageTextArea(message);
-        String[] choice = {Logo.getString("pref.ok"), Logo.getString("pref.cancel")};
+        String[] choice = {Logo.getString("button.ok"), Logo.getString("button.cancel")};
         int val = JOptionPane.showOptionDialog(this, jt, Logo.getString("menu.file.quit"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, Logo.getAppIcon(), choice, choice[0]);
         if (val == JOptionPane.OK_OPTION) {
             try {
@@ -300,9 +300,9 @@ public class Application extends JFrame {
 
     private void newFile() {
         var wp = kernel.getWorkspace();
-        String[] choice = {Logo.getString("pref.ok"), Logo.getString("pref.cancel")};
-        MessageTextArea jt = new MessageTextArea(Logo.getString("enregistrer_espace"));
-        int val = JOptionPane.showOptionDialog(this, jt, Logo.getString("enregistrer_espace"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, Logo.getAppIcon(), choice, choice[0]);
+        String[] choice = {Logo.getString("button.ok"), Logo.getString("button.cancel")};
+        MessageTextArea jt = new MessageTextArea(Logo.getString("application.prompt.deleteWorkspace"));
+        int val = JOptionPane.showOptionDialog(this, jt, Logo.getString("application.prompt.deleteWorkspace"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, Logo.getAppIcon(), choice, choice[0]);
 
         if (val == JOptionPane.OK_OPTION) {
             wp.deleteAllProcedures();
@@ -321,13 +321,13 @@ public class Application extends JFrame {
     }
 
     private void showCloseEditor() {
-        JOptionPane.showMessageDialog(this, Logo.getString("ferme_editeur"), Logo.getString("erreur"), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, Logo.getString("application.message.closeEditor"), Logo.getString("application.error"), JOptionPane.ERROR_MESSAGE);
     }
 
     private void openWorkspace() {
         JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
         String[] ext = {".lgo"};
-        jf.addChoosableFileFilter(new ExtensionFilter(Logo.getString("fichiers_logo"), ext));
+        jf.addChoosableFileFilter(new ExtensionFilter(Logo.getString("application.filter.logoFiles"), ext));
         int val = jf.showDialog(this, Logo.getString("menu.file.open"));
         if (val == JFileChooser.APPROVE_OPTION) {
             String txt = "";
@@ -335,7 +335,7 @@ public class Application extends JFrame {
             try {
                 txt = Utils.readLogoFile(path);
             } catch (IOException e1) {
-                updateHistory("erreur", Logo.getString("error.iolecture"));
+                updateHistory("application.error", Logo.getString("file.error.read"));
             }
             if (!txt.equals("")) {
                 if (!editor.isVisible()) editor.setVisible(true);
@@ -357,7 +357,7 @@ public class Application extends JFrame {
         if (promptName || null == path) {
             JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
             String[] ext = {".lgo"};
-            jf.addChoosableFileFilter(new ExtensionFilter(Logo.getString("fichiers_logo"), ext));
+            jf.addChoosableFileFilter(new ExtensionFilter(Logo.getString("application.filter.logoFiles"), ext));
 
             int val = jf.showDialog(this, Logo.getString("menu.file.save"));
             if (val == JFileChooser.APPROVE_OPTION) {
@@ -388,7 +388,7 @@ public class Application extends JFrame {
             System.out.println("annulation");
         } // If the user cancels
         catch (IOException e2) {
-            updateHistory("erreur", Logo.getString("error.ioecriture"));
+            updateHistory("application.error", Logo.getString("file.error.write"));
         }
     }
 
@@ -407,7 +407,7 @@ public class Application extends JFrame {
     }
 
     void showColorChooser(boolean pen) {
-        var title = pen ? "couleur_du_crayon" : "couleur_du_fond";
+        var title = pen ? "application.penColor" : "application.screenColor";
         Color color = JColorChooser.showDialog(this, Logo.getString(title), getCanvas().getScreenColor());
         if (null != color) {
             var prim = Utils.primitiveName(pen ? "drawing.setpencolor" : "drawing.setscreencolor");
@@ -446,7 +446,7 @@ public class Application extends JFrame {
     }
 
     private void showAbout() {
-        String message = Logo.getString("message_a_propos1") + Logo.VERSION + "\n\n" + Logo.getString("message_a_propos2") + " " + Logo.WEB_SITE;
+        String message = Logo.getString("about.message.xlogoVersion") + Logo.VERSION + "\n\n" + Logo.getString("about.message.webSite") + " " + Logo.WEB_SITE;
         MessageTextArea jt = new MessageTextArea(message);
         JOptionPane.showMessageDialog(null, jt, Logo.getString("menu.help.about"), JOptionPane.INFORMATION_MESSAGE, Logo.getAppIcon());
     }
@@ -490,7 +490,7 @@ public class Application extends JFrame {
 
     private void runMainCommand() {
         startAnimation(Utils.formatCode(Logo.getMainCommand()));
-        getHistoryPanel().setText("normal", Logo.getMainCommand() + "\n");
+        getHistoryPanel().setText("misc.message.normal", Logo.getMainCommand() + "\n");
     }
 
     private void stopAnimation() {
@@ -523,7 +523,7 @@ public class Application extends JFrame {
             if (historyStack.size() > 49) historyStack.remove(0);
             historyStack.push(text); // Add text to the history
             historyIndex = historyStack.size(); // Readjust history index
-            historyPanel.setText("normal", text + "\n");
+            historyPanel.setText("misc.message.normal", text + "\n");
 
             // Remove any comments
             int a = text.indexOf("#");

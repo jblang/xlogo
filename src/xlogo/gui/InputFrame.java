@@ -19,7 +19,7 @@ import java.awt.event.ActionListener;
 public class InputFrame extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
     private final JTextField texte = new JTextField();
-    private final JButton ok = new JButton(Logo.getString("pref.ok"));
+    private final JButton ok = new JButton(Logo.getString("button.ok"));
 
     public InputFrame() throws HeadlessException {
     }

@@ -16,7 +16,7 @@ public class GuiMap extends HashMap<String, GuiComponent> {
 
     public void put(GuiComponent gc) throws LogoException {
         if (this.containsKey(gc.getId())) {
-            throw new LogoException(app, Logo.getString("gui_exists") + " " + gc.getId());
+            throw new LogoException(app, Logo.getString("interpreter.error.guiAlreadyExists") + " " + gc.getId());
         } else this.put(gc.getId(), gc);
     }
 

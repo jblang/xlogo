@@ -41,11 +41,11 @@ public class FirstPanel extends JPanel implements ActionListener {
 
         setLayout(new GridBagLayout());
 
-        JLabel label = new JLabel(Logo.getString("translatewant"));
-        createButton = new JRadioButton(Logo.getString("translatecreate"));
-        modifyButton = new JRadioButton(Logo.getString("translatemodify"));
-        completeButton = new JRadioButton(Logo.getString("translatecomplete"));
-        consultButton = new JRadioButton(Logo.getString("translateconsult"));
+        JLabel label = new JLabel(Logo.getString("translation.activity"));
+        createButton = new JRadioButton(Logo.getString("translation.create"));
+        modifyButton = new JRadioButton(Logo.getString("translation.modify"));
+        completeButton = new JRadioButton(Logo.getString("translation.complete"));
+        consultButton = new JRadioButton(Logo.getString("translation.consult"));
         createButton.setActionCommand(UiTranslator.CREATE);
         modifyButton.setActionCommand(UiTranslator.MODIFY);
         consultButton.setActionCommand(UiTranslator.CONSULT);
@@ -58,7 +58,7 @@ public class FirstPanel extends JPanel implements ActionListener {
         comboLangModify.setRenderer(new LanguageListRenderer());
         comboLangComplete = new JComboBox<>(Language.values());
         comboLangComplete.setRenderer(new LanguageListRenderer());
-        JButton validButton = new JButton(Logo.getString("pref.ok"));
+        JButton validButton = new JButton(Logo.getString("button.ok"));
         validButton.setActionCommand(UiTranslator.OK);
         validButton.addActionListener(tx);
         setSize(new Dimension(600, 120));

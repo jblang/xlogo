@@ -203,13 +203,13 @@ public class Workspace {
         }
         for (int i = 0; i < getNumberOfProcedure(); i++) {
             Procedure procedure = getProcedure(i);
-            sb.append(Logo.getString("pour")).append(" ").append(procedure.name);
+            sb.append(Logo.getString("interpreter.keyword.to")).append(" ").append(procedure.name);
             for (int j = 0; j < procedure.arity; j++) {
                 sb.append(" :").append(procedure.variables.get(j));
             }
             sb.append("\n");
             sb.append(procedure.body);
-            sb.append(Logo.getString("fin"));
+            sb.append(Logo.getString("interpreter.keyword.end"));
             sb.append("\n\n");
         }
         return (new String(sb));
@@ -224,7 +224,7 @@ public class Workspace {
         try {
             String input;
             while ((input = bfr.readLine()) != null) {
-                if (!input.startsWith(Logo.getString("pour"))) {
+                if (!input.startsWith(Logo.getString("interpreter.keyword.to"))) {
                     globals.put(input.substring(1), bfr.readLine());
                 } else break;
             }
@@ -308,7 +308,7 @@ public class Workspace {
             }
 
             if (!defineSentence.toString().equals("") && editable) {
-                app.updateHistory("commentaire", Logo.getString("definir") + " " + defineSentence.substring(0, defineSentence.length() - 2) + ".\n");
+                app.updateHistory("commentaire", Logo.getString("workspace.message.defined") + " " + defineSentence.substring(0, defineSentence.length() - 2) + ".\n");
                 app.updateProcedureEraser();
             }
         } catch (IOException ignored) {
@@ -321,7 +321,7 @@ public class Workspace {
         while (br.ready()) {
             line = br.readLine();
             if (null == line) break;
-            if (line.trim().equalsIgnoreCase(Logo.getString("fin"))) {
+            if (line.trim().equalsIgnoreCase(Logo.getString("interpreter.keyword.end"))) {
                 end = true;
                 break;
             } else {
@@ -336,7 +336,7 @@ public class Workspace {
         StringTokenizer st = new StringTokenizer(line);
         String token = st.nextToken();
         // The first word must be "to" (or "pour" in French)
-        if (!token.equalsIgnoreCase(Logo.getString("pour")))
+        if (!token.equalsIgnoreCase(Logo.getString("interpreter.keyword.to")))
             structureException();
         // The second word must be the name of the procedure
         if (st.hasMoreTokens()) name = st.nextToken().toLowerCase();
@@ -401,7 +401,7 @@ public class Workspace {
     }
 
     private void structureException() throws SyntaxException {
-        throw new SyntaxException(this, Logo.getString("erreur_editeur"));
+        throw new SyntaxException(this, Logo.getString("workspace.error.parseProcedures"));
     }
 
     // Check if the String st is a comment (starts with "#")
@@ -420,7 +420,7 @@ public class Workspace {
 
     private void hasSpecialCharacter(String var) throws SyntaxException {
         StringTokenizer check = new StringTokenizer(var, ":+-*/() []=<>&|", true);
-        String mess = Logo.getString("caractere_special_variable") + "\n" + Logo.getString("caractere_special2") + "\n" + Logo.getString("caractere_special3") + " :" + var;
+        String mess = Logo.getString("workspace.error.variableName") + "\n" + Logo.getString("workspace.error.prohibitedCharacters") + "\n" + Logo.getString("workspace.rename") + " :" + var;
         if (check.countTokens() > 1) throw new SyntaxException(this, mess);
         if (":+-*/() []=<>&|".contains(check.nextToken())) throw new SyntaxException(this, mess);
     }
@@ -482,22 +482,22 @@ public class Workspace {
         for (int i = 0; i < this.getNumberOfProcedure(); i++) {
             Procedure procedure = this.getProcedure(i);
             if (procedure.name.equals(mot) && !procedure.displayed)
-                throw new SyntaxException(this, mot + " " + Logo.getString("existe_deja"));
+                throw new SyntaxException(this, mot + " " + Logo.getString("workspace.error.alreadyExists"));
         }
         // Vérifier si ce n'est pas un nombre:
         try {
             Double.parseDouble(mot);
-            throw new SyntaxException(this, Logo.getString("erreur_nom_nombre_procedure"));
+            throw new SyntaxException(this, Logo.getString("workspace.error.procedueNameNumber"));
         } catch (NumberFormatException ignored) {
         }
         // Vérifier tout d'abord si le mot n'est pas une primitive.
         if (Interpreter.primitiveMap.containsKey(mot))
-            throw new SyntaxException(this, mot + " " + Logo.getString("existe_deja"));
+            throw new SyntaxException(this, mot + " " + Logo.getString("workspace.error.alreadyExists"));
         else {
             //ensuite s'il ne contient pas de caractères spéciaux "\"
             StringTokenizer decoupe = new StringTokenizer("a" + mot + "a", ":\\+-*/() []=<>&|"); //on rajoute une lettre au mot au cas où le caractere spécial se trouve en début ou en fin de mot.
             if (decoupe.countTokens() > 1)
-                throw new SyntaxException(this, Logo.getString("caractere_special1") + "\n" + Logo.getString("caractere_special2") + "\n" + Logo.getString("caractere_special3") + " " + mot);
+                throw new SyntaxException(this, Logo.getString("workspace.error.procedureName") + "\n" + Logo.getString("workspace.error.prohibitedCharacters") + "\n" + Logo.getString("workspace.rename") + " " + mot);
         }
         for (int i = 0; i < this.getNumberOfProcedure(); i++) {
             if (this.getProcedure(i).name.equals(mot)) return (i);

@@ -37,18 +37,18 @@ public class GeneralPanel extends JPanel {
         languageList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         var languageScroll = new JScrollPane(languageList);
 
-        darkLaf.setActionCommand(Logo.getString("pref.general.darkLaf"));
+        darkLaf.setActionCommand(Logo.getString("pref.theme.dark"));
         darkLaf.setHorizontalAlignment(SwingConstants.LEFT);
         darkLaf.setHorizontalTextPosition(SwingConstants.LEFT);
-        darkLaf.setText(Logo.getString("pref.general.darkLaf"));
-        lightLaf.setActionCommand(Logo.getString("pref.general.lightLaf"));
+        darkLaf.setText(Logo.getString("pref.theme.dark"));
+        lightLaf.setActionCommand(Logo.getString("pref.theme.light"));
         lightLaf.setHorizontalAlignment(SwingConstants.LEFT);
         lightLaf.setHorizontalTextPosition(SwingConstants.LEFT);
-        lightLaf.setText(Logo.getString("pref.general.lightLaf"));
-        nativeLaf.setActionCommand(Logo.getString("pref.general.nativeLaf"));
+        lightLaf.setText(Logo.getString("pref.theme.light"));
+        nativeLaf.setActionCommand(Logo.getString("pref.theme.native"));
         nativeLaf.setHorizontalAlignment(SwingConstants.LEFT);
         nativeLaf.setHorizontalTextPosition(SwingConstants.LEFT);
-        nativeLaf.setText(Logo.getString("pref.general.nativeLaf"));
+        nativeLaf.setText(Logo.getString("pref.theme.native"));
         nativeLaf.setVerticalAlignment(SwingConstants.CENTER);
         switch (Logo.config.getLookAndFeel()) {
             case Config.LAF_LIGHT:
@@ -66,28 +66,28 @@ public class GeneralPanel extends JPanel {
         lafButtonGroup.add(lightLaf);
         lafButtonGroup.add(nativeLaf);
 
-        var languageLabel = new JLabel(Logo.getString("pref.general.lang"));
+        var languageLabel = new JLabel(Logo.getString("pref.language"));
         languageLabel.setOpaque(true);
         languageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         languageLabel.setHorizontalTextPosition(SwingConstants.LEFT);
 
-        var themeLabel = new JLabel(Logo.getString("pref.general.aspect"));
+        var themeLabel = new JLabel(Logo.getString("pref.theme"));
         themeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         themeLabel.setHorizontalTextPosition(SwingConstants.LEFT);
 
-        var slowLabel = new JLabel(Logo.getString("pref.general.slow"));
+        var slowLabel = new JLabel(Logo.getString("pref.turtle.slow"));
         slowLabel.setHorizontalAlignment(SwingConstants.LEFT);
         slowLabel.setHorizontalTextPosition(SwingConstants.LEFT);
         slowLabel.setVerticalAlignment(SwingConstants.BOTTOM);
         slowLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
 
-        var fastLabel = new JLabel(Logo.getString("pref.general.fast"));
+        var fastLabel = new JLabel(Logo.getString("pref.turtle.fast"));
         fastLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         fastLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
         fastLabel.setVerticalAlignment(SwingConstants.BOTTOM);
         fastLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
 
-        var turtleSpeedLabel = new JLabel(Logo.getString("pref.general.speed"));
+        var turtleSpeedLabel = new JLabel(Logo.getString("pref.turtle.speed"));
         speedSlider.setValue(speedSlider.getMaximum() - Logo.config.getTurtleSpeed());
         speedSlider.setMajorTickSpacing(10);
         speedSlider.setMinorTickSpacing(5);

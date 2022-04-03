@@ -12,7 +12,7 @@ import java.awt.event.WindowEvent;
 
 public class SearchFrame extends JDialog implements ActionListener {
     private static final long serialVersionUID = 1L;
-    private final String FIND = "find";
+    private final String FIND = "search.find";
     Highlighter.HighlightPainter cyanPainter;
     private JButton find;
     private JRadioButton backward, forward;
@@ -46,7 +46,7 @@ public class SearchFrame extends JDialog implements ActionListener {
             labelResult.setText("");
         } else {
             // Not found
-            labelResult.setText(Logo.getString("string_not_found"));
+            labelResult.setText(Logo.getString("search.error.notFound"));
         }
     }
 
@@ -75,20 +75,20 @@ public class SearchFrame extends JDialog implements ActionListener {
     }
 
     protected void setText() {
-        backward = new JRadioButton(Logo.getString("backward"));
-        forward = new JRadioButton(Logo.getString("forward"));
-        TitledBorder tb = BorderFactory.createTitledBorder(Logo.getString("direction"));
+        backward = new JRadioButton(Logo.getString("translation.search.backward"));
+        forward = new JRadioButton(Logo.getString("translation.search.forward"));
+        TitledBorder tb = BorderFactory.createTitledBorder(Logo.getString("search.direction"));
         buttonPanel.setBorder(tb);
-        find = new JButton(Logo.getString("find"));
-        labelFind = new JLabel(Logo.getString("find") + " :");
-        setTitle(Logo.getString("find_replace"));
+        find = new JButton(Logo.getString("search.find"));
+        labelFind = new JLabel(Logo.getString("search.find") + " :");
+        setTitle(Logo.getString("search.replaceFind"));
     }
 
     private void initGui() {
-        setTitle(Logo.getString("find_replace"));
+        setTitle(Logo.getString("search.replaceFind"));
         // Init the RadioButton for the direction search
-        backward = new JRadioButton(Logo.getString("backward"));
-        forward = new JRadioButton(Logo.getString("forward"));
+        backward = new JRadioButton(Logo.getString("translation.search.backward"));
+        forward = new JRadioButton(Logo.getString("translation.search.forward"));
         forward.setSelected(true);
         bg = new ButtonGroup();
         bg.add(forward);
@@ -97,16 +97,16 @@ public class SearchFrame extends JDialog implements ActionListener {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.add(forward);
         buttonPanel.add(backward);
-        TitledBorder tb = BorderFactory.createTitledBorder(Logo.getString("direction"));
+        TitledBorder tb = BorderFactory.createTitledBorder(Logo.getString("search.direction"));
         buttonPanel.setBorder(tb);
 
         // Init Buttons
-        find = new JButton(Logo.getString("find"));
+        find = new JButton(Logo.getString("search.find"));
         find.addActionListener(this);
         find.setActionCommand(FIND);
 
         // Init JLabel and JCombobox
-        labelFind = new JLabel(Logo.getString("find") + " :");
+        labelFind = new JLabel(Logo.getString("search.find") + " :");
         labelResult = new JLabel();
 
         comboFind = new JComboBox();

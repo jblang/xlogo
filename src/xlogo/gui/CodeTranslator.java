@@ -32,18 +32,18 @@ public class CodeTranslator extends JFrame implements ActionListener {
     private final TreeMap<String, String> tre = new TreeMap<>();
 
     public CodeTranslator() {
-        setTitle(Logo.getString("menu.tools.translate"));
+        setTitle(Logo.getString("menu.tools.codeTranslator"));
         setIconImage(Logo.getAppIcon().getImage());
         getContentPane().setLayout(new BorderLayout());
         sourceLanguageCombo.setSelectedIndex(Logo.config.getLanguage().ordinal());
         targetLanguageCombo.setSelectedIndex(Logo.config.getLanguage().ordinal());
 
         JPanel sourceLanguagePanel = new JPanel();
-        JLabel sourceLanguageLabel = new JLabel(Logo.getString("traduire_de") + " ");
+        JLabel sourceLanguageLabel = new JLabel(Logo.getString("codeTranslator.translateFrom") + " ");
         sourceLanguagePanel.add(sourceLanguageLabel);
         sourceLanguagePanel.add(sourceLanguageCombo);
         JPanel targetLanguagePanel = new JPanel();
-        JLabel targetLanguageLabel = new JLabel(" " + Logo.getString("vers") + " ");
+        JLabel targetLanguageLabel = new JLabel(" " + Logo.getString("codeTranslator.translateTo") + " ");
         targetLanguagePanel.add(targetLanguageLabel);
         targetLanguagePanel.add(targetLanguageCombo);
 
@@ -80,7 +80,7 @@ public class CodeTranslator extends JFrame implements ActionListener {
         targetPanel.add(targetLanguagePanel, BorderLayout.NORTH);
 
         getContentPane().add(targetPanel, BorderLayout.EAST);
-        JButton translateButton = new JButton(Logo.getString("traduire"));
+        JButton translateButton = new JButton(Logo.getString("codeTranslator.translateButton"));
         getContentPane().add(translateButton, BorderLayout.CENTER);
 
         sourceScrollPane.getViewport().add(sourceTextArea);
@@ -108,7 +108,7 @@ public class CodeTranslator extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
-        if (Logo.getString("traduire").equals(cmd)) {
+        if (Logo.getString("codeTranslator.translateButton").equals(cmd)) {
             String texte = sourceTextArea.getText();
             texte = texte.replaceAll("\\t", "  ");
             ResourceBundle sourcePrimitives = generateLanguage(sourceLanguageCombo);
@@ -133,8 +133,8 @@ public class CodeTranslator extends JFrame implements ActionListener {
             id = targetLanguageCombo.getSelectedIndex();
             locale = Language.byIndex(id).locale;
             ResourceBundle res2 = Logo.getLanguageBundle(locale);
-            tre.put(res1.getString("pour"), res2.getString("pour"));
-            tre.put(res1.getString("fin"), res2.getString("fin"));
+            tre.put(res1.getString("interpreter.keyword.to"), res2.getString("interpreter.keyword.to"));
+            tre.put(res1.getString("interpreter.keyword.end"), res2.getString("interpreter.keyword.end"));
             StringTokenizer st = new StringTokenizer(texte, " */+-\n|&()[]", true);
             String traduc = "";
             while (st.hasMoreTokens()) {

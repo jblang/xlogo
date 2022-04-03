@@ -39,7 +39,7 @@ public class UiTranslator extends JFrame implements ActionListener {
 
     private void initGui() {
         setIconImage(Logo.getAppIcon().getImage());
-        setTitle(Logo.getString("menu.help.translatexlogo"));
+        setTitle(Logo.getString("menu.help.translateXLogo"));
         first = new FirstPanel(this);
         getContentPane().add(first);
         setVisible(true);
@@ -111,7 +111,7 @@ public class UiTranslator extends JFrame implements ActionListener {
                         System.out.println("annulation");
                     }
                     catch (IOException e2) {
-                        app.updateHistory("erreur", Logo.getString("error.ioecriture"));
+                        app.updateHistory("application.error", Logo.getString("file.error.write"));
                     }
                 }
                 break;

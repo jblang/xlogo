@@ -15,19 +15,19 @@ import java.awt.*;
  */
 public class OptionsPanel extends JPanel {
     private final Application app;
-    private final JCheckBox clearScreen = new JCheckBox(Logo.getString("effacer_editeur"));
+    private final JCheckBox clearScreen = new JCheckBox(Logo.getString("pref.options.clearScreen"));
     private final JCheckBox clearVariables = new JCheckBox(Logo.getString("pref.options.eraseVariables"));
 
     private final ColorPanel screenColorPanel = new ColorPanel(Logo.config.getScreenColor());
     private final ColorPanel penColorPanel = new ColorPanel(Logo.config.getPenColor());
-    private final String[] penShapeOptions = {Logo.getString("carre"), Logo.getString("rond")};
+    private final String[] penShapeOptions = {Logo.getString("pref.options.penShape.square"), Logo.getString("pref.options.penShape.round")};
     private final JComboBox<String> penShape = new JComboBox<>(penShapeOptions);
     private final JTextField maxTurtles = new JTextField();
     private final JTextField penSize = new JTextField();
     private final JTextField imageWidth = new JTextField(String.valueOf(Logo.config.getImageWidth()));
     private final JTextField imageHeight = new JTextField(String.valueOf(Logo.config.getImageHeight()));
     private final JTextField memoryLimit = new JTextField(String.valueOf(Logo.config.getMemoryLimit()));
-    private final String[] imageQualityOptions = {Logo.getString("normal"), Logo.getString("haut"), Logo.getString("bas")};
+    private final String[] imageQualityOptions = {Logo.getString("misc.message.normal"), Logo.getString("pref.options.imageQuality.high"), Logo.getString("pref.options.imageQuality.low")};
     private final JComboBox<String> imageQuality = new JComboBox<>(imageQualityOptions);
     private final GridPanel gridPanel = new GridPanel();
     private final AxisPanel axisPanel = new AxisPanel();
@@ -59,7 +59,7 @@ public class OptionsPanel extends JPanel {
                 1.0, 1.0, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL,
                 standard, 0, 0));
 
-        JLabel screenColorLabel = new JLabel(Logo.getString("screencolor"));
+        JLabel screenColorLabel = new JLabel(Logo.getString("pref.options.screenColor.default"));
         add(screenColorLabel, new GridBagConstraints(0, 2, 1, 1, 1.0,
                 1.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 standard, 0, 0));
@@ -67,7 +67,7 @@ public class OptionsPanel extends JPanel {
                 0.5, GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 standard, 0, 0));
 
-        JLabel penColorLabel = new JLabel(Logo.getString("pencolor"));
+        JLabel penColorLabel = new JLabel(Logo.getString("pref.options.penColor"));
         add(penColorLabel, new GridBagConstraints(2, 2, 1, 1, 1.0,
                 1.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 standard, 0, 0));
@@ -75,7 +75,7 @@ public class OptionsPanel extends JPanel {
                 1.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 standard, 0, 0));
 
-        JLabel penSizeLabel = new JLabel(Logo.getString("epaisseur_crayon"));
+        JLabel penSizeLabel = new JLabel(Logo.getString("pref.options.maxPenWidth"));
         add(penSizeLabel, new GridBagConstraints(0, 3, 1,
                 1, 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, standard, 0, 0));
@@ -83,7 +83,7 @@ public class OptionsPanel extends JPanel {
                 1.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 standard, 0, 0));
 
-        JLabel penShapeLabel = new JLabel(Logo.getString("forme_crayon"));
+        JLabel penShapeLabel = new JLabel(Logo.getString("pref.options.penShape"));
         add(penShapeLabel, new GridBagConstraints(2, 3, 1, 1,
                 1.0, 1.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 standard, 0, 0));
@@ -91,7 +91,7 @@ public class OptionsPanel extends JPanel {
                 GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 standard, 0, 0));
 
-        JLabel imageSizeLabel = new JLabel(Logo.getString("taille_dessin"));
+        JLabel imageSizeLabel = new JLabel(Logo.getString("pref.options.screenSize"));
         add(imageSizeLabel, new GridBagConstraints(0, 4, 1,
                 1, 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, standard, 0, 0));
@@ -99,7 +99,7 @@ public class OptionsPanel extends JPanel {
                 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, standard, 0, 0));
 
-        JLabel imageQualityLabel = new JLabel(Logo.getString("qualite_dessin"));
+        JLabel imageQualityLabel = new JLabel(Logo.getString("pref.options.drawQuality"));
         add(imageQualityLabel, new GridBagConstraints(2, 4, 1,
                 1, 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, standard, 0, 0));
@@ -107,7 +107,7 @@ public class OptionsPanel extends JPanel {
                 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, standard, 0, 0));
 
-        JLabel maxTurtlesLabel = new JLabel(Logo.getString("nb_tortues"));
+        JLabel maxTurtlesLabel = new JLabel(Logo.getString("pref.options.maxTurtles"));
         add(maxTurtlesLabel, new GridBagConstraints(0, 5, 1, 1, 1.0,
                 1.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 standard, 0, 0));
@@ -115,7 +115,7 @@ public class OptionsPanel extends JPanel {
                 1.0, GridBagConstraints.LINE_START, GridBagConstraints.NONE,
                 standard, 0, 0));
 
-        JLabel memoryLabel = new JLabel(Logo.getString("memoire"));
+        JLabel memoryLabel = new JLabel(Logo.getString("pref.options.memoryAllocation"));
         add(memoryLabel, new GridBagConstraints(0, 6, 1,
                 1, 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, standard, 0, 0));
@@ -123,7 +123,7 @@ public class OptionsPanel extends JPanel {
                 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, standard, 0, 0));
 
-        JLabel tcpPortLabel = new JLabel(Logo.getString("pref.options.tcp"));
+        JLabel tcpPortLabel = new JLabel(Logo.getString("pref.options.tcpPort"));
         add(tcpPortLabel, new GridBagConstraints(2, 6, 1,
                 1, 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, standard, 0, 0));

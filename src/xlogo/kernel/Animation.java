@@ -51,7 +51,7 @@ public class Animation extends Thread {
                 String st = app.getKernel().execute(instruction);
                 if (!st.equals(""))
                     throw new LogoException(app, Logo
-                            .getString("error.whattodo")
+                            .getString("interpreter.error.unusedOutput")
                             + " " + st + " ?");
                 if (Interpreter.actionInstruction.length() == 0) b = false;
                 else {

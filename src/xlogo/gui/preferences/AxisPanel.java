@@ -62,14 +62,14 @@ public class AxisPanel extends JPanel implements ActionListener {
     }
 
     private void initGui() {
-        setBorder(BorderFactory.createTitledBorder(Logo.getString("title_axis")));
+        setBorder(BorderFactory.createTitledBorder(Logo.getString("pref.options.axis.background")));
 
-        xAxisEnabled = new JCheckBox(Logo.getString("active_xaxis"));
+        xAxisEnabled = new JCheckBox(Logo.getString("pref.options.axis.x"));
         xAxisEnabled.setSelected(Logo.config.isXAxisEnabled());
-        yAxisEnabled = new JCheckBox(Logo.getString("active_yaxis"));
+        yAxisEnabled = new JCheckBox(Logo.getString("pref.options.axis.y"));
         yAxisEnabled.setSelected(Logo.config.isYAxisEnabled());
-        xAxisLabel = new JLabel(Logo.getString("pas"));
-        yAxisLabel = new JLabel(Logo.getString("pas"));
+        xAxisLabel = new JLabel(Logo.getString("pref.axis.distance"));
+        yAxisLabel = new JLabel(Logo.getString("pref.axis.distance"));
         xAxisSpacing = new JTextField(String.valueOf(Logo.config.getXAxisSpacing()));
         yAxisSpacing = new JTextField(String.valueOf(Logo.config.getYAxisSpacing()));
         axisColor = new ColorPanel(new Color(Logo.config.getAxisColor()));

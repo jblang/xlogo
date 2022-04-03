@@ -45,7 +45,7 @@ public class Editor extends JFrame implements SearchListener {
         this.app = app;
         this.workspace = app.getKernel().getWorkspace();
         setIconImage(Logo.getAppIcon().getImage());
-        setTitle(Logo.getString("editeur"));
+        setTitle(Logo.getString("editor"));
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         initTextArea();
         initSearchDialogs();
@@ -86,7 +86,7 @@ public class Editor extends JFrame implements SearchListener {
     private void initMainCommand() {
         mainCommand = new JTextField();
         setMainCommand();
-        var label = new JLabel(Logo.getString("mainCommand"), Logo.getIcon("run"), JLabel.LEFT);
+        var label = new JLabel(Logo.getString("editor.mainCommand"), Logo.getIcon("run"), JLabel.LEFT);
         var panel = new JPanel();
         if (Logo.getMainCommand().length() < 30) mainCommand.setPreferredSize(new Dimension(150, 20));
         panel.add(label);
@@ -96,19 +96,19 @@ public class Editor extends JFrame implements SearchListener {
 
     private void initToolBar() {
         var toolBar = new JToolBar(JToolBar.HORIZONTAL);
-        createButton(toolBar, "save", "lire_editeur", e -> saveEdits()).setMnemonic('Q');
-        createButton(toolBar, "cancel", "quit_editeur", e -> cancelEdits()).setMnemonic('C');
+        createButton(toolBar, "save", "editor.tooltip.save", e -> saveEdits()).setMnemonic('Q');
+        createButton(toolBar, "cancel", "editor.tooltip.cancel", e -> cancelEdits()).setMnemonic('C');
         toolBar.addSeparator();
-        createButton(toolBar, "print", "imprimer_editeur", e -> print());
+        createButton(toolBar, "print", "editor.tooltip.print", e -> print());
         toolBar.addSeparator();
-        rstaButton(toolBar, "cut", "menu.edition.cut", RTextArea.CUT_ACTION);
-        rstaButton(toolBar, "copy", "menu.edition.copy", RTextArea.COPY_ACTION);
-        rstaButton(toolBar, "paste", "menu.edition.paste", RTextArea.PASTE_ACTION);
+        rstaButton(toolBar, "cut", "menu.edit.cut", RTextArea.CUT_ACTION);
+        rstaButton(toolBar, "copy", "menu.edit.copy", RTextArea.COPY_ACTION);
+        rstaButton(toolBar, "paste", "menu.edit.paste", RTextArea.PASTE_ACTION);
         toolBar.addSeparator();
         rstaButton(toolBar, "undo", "editor.undo", RTextArea.UNDO_ACTION);
         rstaButton(toolBar, "redo", "editor.redo", RTextArea.REDO_ACTION);
         toolBar.addSeparator();
-        createButton(toolBar, "search", "find", e -> showReplace());
+        createButton(toolBar, "search", "search.find", e -> showReplace());
         getContentPane().add(toolBar, BorderLayout.NORTH);
     }
 
@@ -140,7 +140,7 @@ public class Editor extends JFrame implements SearchListener {
         if (!app.editor.isVisible()) {
             setVisible(true);
             toFront();
-            setTitle(Logo.getString("editeur"));
+            setTitle(Logo.getString("editor"));
             for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
                 Procedure procedure = workspace.getProcedure(i);
                 appendText(procedure.toString());

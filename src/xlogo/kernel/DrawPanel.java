@@ -1129,9 +1129,9 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             longueur = findLength(0, diagonale, oldx, oldy);
         if (Math.abs(longueur) < Math.abs(arg))
             throw new LogoException(app, Logo
-                    .getString("erreur_sortie1")
+                    .getString("drawPanel.error.turtleLeaving")
                     + "\n"
-                    + Logo.getString("erreur_sortie2")
+                    + Logo.getString("drawPanel.turtle.stepsRemaining")
                     + Math.abs((int) (longueur)));
         else {
             DrawPanel.windowMode = DrawPanel.WINDOW_CLASSIC;
@@ -1156,8 +1156,8 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                 coords[i] = 1;
                 if (!st.hasMoreTokens())
                     throw new LogoException(app, prim
-                            + " " + Logo.getString("n_aime_pas") + liste
-                            + Logo.getString("comme_parametre"));
+                            + " " + Logo.getString("interpreter.error.arguments.openBracket") + liste
+                            + Logo.getString("interpreter.error.arguments.closeBracket"));
                 String element = st.nextToken();
                 if (element.equals("-")) {
                     if (st.hasMoreTokens())
@@ -1169,13 +1169,13 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
         } catch (NumberFormatException e) {
             throw new LogoException(app, prim
-                    + " " + Logo.getString("n_aime_pas") + liste
-                    + Logo.getString("comme_parametre"));
+                    + " " + Logo.getString("interpreter.error.arguments.openBracket") + liste
+                    + Logo.getString("interpreter.error.arguments.closeBracket"));
         }
         if (st.hasMoreTokens())
             throw new LogoException(app, prim
-                    + " " + Logo.getString("n_aime_pas") + liste
-                    + Logo.getString("comme_parametre"));
+                    + " " + Logo.getString("interpreter.error.arguments.openBracket") + liste
+                    + Logo.getString("interpreter.error.arguments.closeBracket"));
     }
 
     /**
@@ -1897,7 +1897,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             sb.append(c);
             i++;
         }
-        throw new LogoException(app, "[ " + list + " " + Logo.getString("pas_liste"));
+        throw new LogoException(app, "[ " + list + " " + Logo.getString("interpreter.error.requireList"));
     }
 
     protected void guiAction(String id, String liste) throws LogoException {
@@ -1922,7 +1922,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
                         liste = liste.substring(sb.length() + 1).trim();
                         ((GuiMenu) gc).setAction(sb, i);
                         i++;
-                    } else throw new LogoException(app, liste.charAt(0) + " " + Logo.getString("pas_liste"));
+                    } else throw new LogoException(app, liste.charAt(0) + " " + Logo.getString("interpreter.error.requireList"));
                 }
                 GuiMenu gm = (GuiMenu) gc;
                 if (!gm.hasAction) {
@@ -1935,7 +1935,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
 
     private boolean guiExist(String id) throws LogoException {
         if (guiMap.containsKey(id.toLowerCase())) return true;
-        else throw new LogoException(app, Logo.getString("no_gui") + " " + id);
+        else throw new LogoException(app, Logo.getString("interpreter.error.guiUnknown") + " " + id);
     }
 
     //	boolean access=false;

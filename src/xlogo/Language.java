@@ -6,19 +6,19 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public enum Language {
-    FRENCH("Francais", "fr", "FR", "pref.general.french"),
-    ENGLISH("English", "en", "US", "pref.general.english"),
-    ARABIC("عربية", "ar", "MA", "pref.general.arabic"),
-    SPANISH("Español", "es", "ES", "pref.general.spanish"),
-    PORTUGUESE("Português", "pt", "BR", "pref.general.portuguese"),
-    ESPERANTO("Esperanto", "eo", "EO", "pref.general.esperanto"),
-    GERMAN("Deutsch", "de", "DE", "pref.general.german"),
-    GALICIAN("Galego", "gl", "ES", "pref.general.galician"),
-    ASTURIAN("Asturianu", "as", "ES", "pref.general.asturian"),
-    GREEK("Ελληνικά", "el", "GR", "pref.general.greek"),
-    ITALIAN("Italiano", "it", "IT", "pref.general.italian"),
-    CATALAN("Català", "ca", "ES", "pref.general.catalan"),
-    HUNGARIAN("Magyar", "hu", "HU", "pref.general.hungarian");
+    FRENCH("Francais", "fr", "FR", "language.french"),
+    ENGLISH("English", "en", "US", "language.english"),
+    ARABIC("عربية", "ar", "MA", "language.arabic"),
+    SPANISH("Español", "es", "ES", "language.spanish"),
+    PORTUGUESE("Português", "pt", "BR", "language.portuguese"),
+    ESPERANTO("Esperanto", "eo", "EO", "language.esperanto"),
+    GERMAN("Deutsch", "de", "DE", "language.german"),
+    GALICIAN("Galego", "gl", "ES", "language.galician"),
+    ASTURIAN("Asturianu", "as", "ES", "language.asturian"),
+    GREEK("Ελληνικά", "el", "GR", "language.greek"),
+    ITALIAN("Italiano", "it", "IT", "language.italian"),
+    CATALAN("Català", "ca", "ES", "language.catalan"),
+    HUNGARIAN("Magyar", "hu", "HU", "language.hungarian");
 
     public final String key;
     public final String name;

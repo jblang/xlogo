@@ -201,10 +201,10 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (txt.startsWith("# " + Logo.getString("mainCommand"))) {
+        if (txt.startsWith("# " + Logo.getString("editor.mainCommand"))) {
             int id = txt.indexOf("\n");
             if (id != -1) {
-                Logo.setMainCommand(txt.substring(("# " + Logo.getString("mainCommand")).length(), id).trim());
+                Logo.setMainCommand(txt.substring(("# " + Logo.getString("editor.mainCommand")).length(), id).trim());
                 txt = txt.substring(id + 1);
             }
         }
@@ -214,7 +214,7 @@ public class Utils {
     public static void writeLogoFile(String path, String txt) throws IOException {
         try {
             if (!Logo.getMainCommand().trim().equals("")) {
-                String heading = "# " + Logo.getString("mainCommand") + " " + Logo.getMainCommand() + "\n";
+                String heading = "# " + Logo.getString("editor.mainCommand") + " " + Logo.getMainCommand() + "\n";
                 txt = heading + txt;
             }
             FileOutputStream f = new FileOutputStream(path);

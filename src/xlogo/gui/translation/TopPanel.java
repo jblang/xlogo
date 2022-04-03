@@ -18,10 +18,10 @@ public class TopPanel extends JPanel {
 
     private void initGui() {
         setLayout(new FlowLayout());
-        area = new JTextArea(Logo.getString("translatemessage"));
+        area = new JTextArea(Logo.getString("translation.instructions"));
         area.setWrapStyleWord(true);
         area.setLineWrap(true);
-        sendButton = new JButton(Logo.getString("pref.ok"));
+        sendButton = new JButton(Logo.getString("button.ok"));
 
 
         area.setEditable(false);

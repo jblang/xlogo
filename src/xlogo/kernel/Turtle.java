@@ -277,18 +277,18 @@ public class Turtle {
             String s = st.nextToken();
             try {
                 int j = Integer.parseInt(s);
-                if (j < 0 || j > 2) throw new LogoException(app, list + " " + Logo.getString("pas_argument"));
+                if (j < 0 || j > 2) throw new LogoException(app, list + " " + Logo.getString("interpreter.error.invalidArgument"));
                 else {
                     if (i == 0) labelHorizontalAlignment = j;
                     else if (i == 1) labelVerticalAlignment = j;
                 }
             } catch (NumberFormatException e) {
-                throw new LogoException(app, list + " " + Logo.getString("pas_argument"));
+                throw new LogoException(app, list + " " + Logo.getString("interpreter.error.invalidArgument"));
             }
 
             i++;
         }
-        if (i != 2) throw new LogoException(app, list + " " + Logo.getString("pas_argument"));
+        if (i != 2) throw new LogoException(app, list + " " + Logo.getString("interpreter.error.invalidArgument"));
     }
 
     void setImage(int i) {

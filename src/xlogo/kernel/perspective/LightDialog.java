@@ -51,7 +51,7 @@ public class LightDialog extends JDialog implements ActionListener {
         panelPosition = new PanelPosition(Logo.getString("3d.light.position"), light.getPosition());
         panelDirection = new PanelPosition(Logo.getString("3d.light.direction"), light.getDirection());
         panelAngle = new PanelAngle(light.getAngle());
-        ok = new JButton(Logo.getString("pref.ok"));
+        ok = new JButton(Logo.getString("button.ok"));
         refresh = new JButton(Logo.getString("3d.light.apply"));
         labelType.setFont(Logo.config.getFont());
         comboType.setFont(Logo.config.getFont());

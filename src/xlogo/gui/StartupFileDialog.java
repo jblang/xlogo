@@ -35,13 +35,13 @@ public class StartupFileDialog extends JDialog implements ActionListener {
     private final JButton jButton4 = new JButton();
     private final JPanel p_executer = new JPanel();
     private final BorderLayout borderexec = new BorderLayout();
-    private final JLabel exec = new JLabel(" " + Logo.getString("procedure_demarrage") + " ");
+    private final JLabel exec = new JLabel(" " + Logo.getString("startup.command") + " ");
     private final JTextField proc_demarrage = new JTextField();
     private final GridBagLayout gridBagLayout1 = new GridBagLayout();
 
     public StartupFileDialog(Application cadre) throws HeadlessException {
         super(cadre);
-        setTitle(Logo.getString("menu.tools.startup"));
+        setTitle(Logo.getString("menu.tools.startupFile"));
         try {
             jbInit();
         } catch (Exception e) {
@@ -52,13 +52,13 @@ public class StartupFileDialog extends JDialog implements ActionListener {
     private void jbInit() throws Exception {
         this.getContentPane().setLayout(borderLayout1);
         jList1.setOpaque(true);
-        jLabel1.setText(Logo.getString("chemin") + " ");
+        jLabel1.setText(Logo.getString("startup.filePath") + " ");
         jPanel1.setLayout(borderLayout2);
 
-        jButton4.setText(Logo.getString("pref.ok"));
-        jButton2.setText(Logo.getString("ajouter"));
-        jButton1.setText(Logo.getString("parcourir"));
-        jButton3.setText(Logo.getString("enlever"));
+        jButton4.setText(Logo.getString("button.ok"));
+        jButton2.setText(Logo.getString("startup.addFile"));
+        jButton1.setText(Logo.getString("startup.browseFiles"));
+        jButton3.setText(Logo.getString("startup.removeFile"));
         jPanel2.setLayout(gridBagLayout1);
         this.getContentPane().add(scroll, BorderLayout.CENTER);
         this.getContentPane().add(jPanel1, BorderLayout.NORTH);
@@ -78,13 +78,13 @@ public class StartupFileDialog extends JDialog implements ActionListener {
         p_executer.add(exec, BorderLayout.WEST);
         this.getContentPane().add(p_executer, BorderLayout.SOUTH);
         jButton1.addActionListener(this);
-        jButton1.setActionCommand(Logo.getString("parcourir"));
+        jButton1.setActionCommand(Logo.getString("startup.browseFiles"));
         jButton2.addActionListener(this);
-        jButton2.setActionCommand(Logo.getString("ajouter"));
+        jButton2.setActionCommand(Logo.getString("startup.addFile"));
         jButton3.addActionListener(this);
-        jButton3.setActionCommand(Logo.getString("enlever"));
+        jButton3.setActionCommand(Logo.getString("startup.removeFile"));
         jButton4.addActionListener(this);
-        jButton4.setActionCommand(Logo.getString("pref.ok"));
+        jButton4.setActionCommand(Logo.getString("button.ok"));
         jTextField1.addActionListener(this);
         if (!Logo.config.getStartupCommand().equals("")) proc_demarrage.setText(Logo.config.getStartupCommand());
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -97,15 +97,15 @@ public class StartupFileDialog extends JDialog implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(Logo.getString("parcourir"))) {
+        if (e.getActionCommand().equals(Logo.getString("startup.browseFiles"))) {
             JFileChooser jf = new JFileChooser();
             String[] ext = {".lgo"};
-            jf.addChoosableFileFilter(new ExtensionFilter(Logo.getString("fichiers_logo"), ext));
+            jf.addChoosableFileFilter(new ExtensionFilter(Logo.getString("application.filter.logoFiles"), ext));
             int retval = jf.showDialog(this, Logo.getString("menu.file.open"));
             if (retval == JFileChooser.APPROVE_OPTION) {
                 jTextField1.setText(jf.getSelectedFile().getAbsolutePath());
             }
-        } else if (e.getActionCommand().equals(Logo.getString("enlever"))) {    //Enlever
+        } else if (e.getActionCommand().equals(Logo.getString("startup.removeFile"))) {    //Enlever
             if (!Logo.config.getStartupFiles().isEmpty()) {
                 int index = Logo.config.getStartupFiles().indexOf(jList1.getSelectedValue());
                 if (index != -1) {
@@ -114,7 +114,7 @@ public class StartupFileDialog extends JDialog implements ActionListener {
                 }
             }
         }
-        if (e.getActionCommand().equals(Logo.getString("pref.ok"))) {
+        if (e.getActionCommand().equals(Logo.getString("button.ok"))) {
             String texte = proc_demarrage.getText().trim();
             if (texte.equals("")) Logo.config.setStartupCommand("");
             else Logo.config.setStartupCommand(texte);

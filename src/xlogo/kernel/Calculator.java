@@ -145,7 +145,7 @@ public class Calculator {
             if (nombre < 0 || nombre == 0) {
                 String log = Utils.primitiveName("math.log");
                 throw new LogoException(app, log + " "
-                        + Logo.getString("attend_positif"));
+                        + Logo.getString("interpreter.error.requirePositive"));
             }
             return teste_fin_double(Math.log(nombre));
         } else {
@@ -153,7 +153,7 @@ public class Calculator {
             if (bd.signum() != 1) {
                 String log = Utils.primitiveName("math.log");
                 throw new LogoException(app, log + " "
-                        + Logo.getString("attend_positif"));
+                        + Logo.getString("interpreter.error.requirePositive"));
             }
             return logBD(bd).toPlainString();
         }
@@ -173,7 +173,7 @@ public class Calculator {
             if (number < 0) {
                 String sqrt = Utils.primitiveName("math.sqrt");
                 throw new LogoException(app, sqrt + " "
-                        + Logo.getString("attend_positif"));
+                        + Logo.getString("interpreter.error.requirePositive"));
             }
             return teste_fin_double(Math.sqrt(number));
         } else {
@@ -181,7 +181,7 @@ public class Calculator {
             if (bd.signum() == -1) {
                 String sqrt = Utils.primitiveName("math.sqrt");
                 throw new LogoException(app, sqrt + " "
-                        + Logo.getString("attend_positif"));
+                        + Logo.getString("interpreter.error.requirePositive"));
             }
             return sqrtBD(bd).toPlainString();
         }
@@ -214,13 +214,13 @@ public class Calculator {
             double b = numberDouble(param.get(1));
             if (b == 0)
                 throw new LogoException(app, Logo
-                        .getString("division_par_zero"));
+                        .getString("interpreter.error.divideByZero"));
             return (teste_fin_double(a / b));
         } else {
             BigDecimal a = new BigDecimal(param.get(0), mc);
             BigDecimal b = new BigDecimal(param.get(1), mc);
             if (b.signum() == 0) throw new LogoException(app, Logo
-                    .getString("division_par_zero"));
+                    .getString("interpreter.error.divideByZero"));
             return (a.divide(b, mc).stripTrailingZeros().toPlainString());
         }
     }
@@ -249,50 +249,50 @@ public class Calculator {
         try {
             BigDecimal a = numberDecimal(param.get(0));
             BigDecimal b = numberDecimal(param.get(1));
-            if (a.compareTo(b) < 0) return Logo.getString("vrai");
+            if (a.compareTo(b) < 0) return Logo.getString("interpreter.keyword.true");
         } catch (LogoException e) {
         }
-        return Logo.getString("faux");
+        return Logo.getString("interpreter.keyword.false");
     }
 
     protected String sup(Stack<String> param) {
         try {
             BigDecimal a = numberDecimal(param.get(0));
             BigDecimal b = numberDecimal(param.get(1));
-            if (a.compareTo(b) > 0) return Logo.getString("vrai");
+            if (a.compareTo(b) > 0) return Logo.getString("interpreter.keyword.true");
         } catch (LogoException e) {
         }
-        return Logo.getString("faux");
+        return Logo.getString("interpreter.keyword.false");
     }
 
     protected String infequal(Stack<String> param) {
         try {
             BigDecimal a = numberDecimal(param.get(0));
             BigDecimal b = numberDecimal(param.get(1));
-            if (a.compareTo(b) <= 0) return Logo.getString("vrai");
+            if (a.compareTo(b) <= 0) return Logo.getString("interpreter.keyword.true");
         } catch (LogoException e) {
         }
-        return Logo.getString("faux");
+        return Logo.getString("interpreter.keyword.false");
     }
 
     protected String supequal(Stack<String> param) {
         try {
             BigDecimal a = numberDecimal(param.get(0));
             BigDecimal b = numberDecimal(param.get(1));
-            if (a.compareTo(b) >= 0) return Logo.getString("vrai");
+            if (a.compareTo(b) >= 0) return Logo.getString("interpreter.keyword.true");
         } catch (LogoException e) {
         }
-        return Logo.getString("faux");
+        return Logo.getString("interpreter.keyword.false");
     }
 
     protected String equal(Stack<String> param) {
         try {
             BigDecimal a = numberDecimal(param.get(0));
             BigDecimal b = numberDecimal(param.get(1));
-            if (a.compareTo(b) == 0) return Logo.getString("vrai");
+            if (a.compareTo(b) == 0) return Logo.getString("interpreter.keyword.true");
         } catch (LogoException e) {
         }
-        return Logo.getString("faux");
+        return Logo.getString("interpreter.keyword.false");
     }
 
     protected String substract(Stack<String> param) throws LogoException {
@@ -318,14 +318,14 @@ public class Calculator {
             int bb = getInteger(b);
             if (bb == 0)
                 throw new LogoException(app, Logo
-                        .getString("division_par_zero"));
+                        .getString("interpreter.error.divideByZero"));
             return teste_fin_double(aa % bb);
         } else {
             BigDecimal aa = getBigInteger(a);
             BigDecimal bb = getBigInteger(b);
             if (bb.signum() == 0)
                 throw new LogoException(app, Logo
-                        .getString("division_par_zero"));
+                        .getString("interpreter.error.divideByZero"));
             return aa.remainder(bb, mc).stripTrailingZeros().toPlainString();
 
         }
@@ -337,7 +337,7 @@ public class Calculator {
             int bb = getInteger(b);
             if (bb == 0)
                 throw new LogoException(app, Logo
-                        .getString("division_par_zero"));
+                        .getString("interpreter.error.divideByZero"));
             double rem = aa % bb;
             if (aa * bb < 0 && rem != 0) rem = rem + bb;
             return teste_fin_double(rem);
@@ -346,7 +346,7 @@ public class Calculator {
             BigDecimal bb = getBigInteger(b);
             if (bb.signum() == 0)
                 throw new LogoException(app, Logo
-                        .getString("division_par_zero"));
+                        .getString("interpreter.error.divideByZero"));
             BigDecimal rem = aa.remainder(bb, mc);
             if (aa.multiply(bb).compareTo(BigDecimal.ZERO) == -1 && (!rem.equals(BigDecimal.ZERO)))
                 rem = rem.add(bb);
@@ -361,14 +361,14 @@ public class Calculator {
             double bb = numberDouble(b);
             if (bb == 0)
                 throw new LogoException(app, Logo
-                        .getString("division_par_zero"));
+                        .getString("interpreter.error.divideByZero"));
             return String.valueOf((int) (aa / bb));
         } else {
             BigDecimal aa = numberDecimal(a);
             BigDecimal bb = numberDecimal(b);
             if (bb.signum() == 0)
                 throw new LogoException(app, Logo
-                        .getString("division_par_zero"));
+                        .getString("interpreter.error.divideByZero"));
             return aa.divideToIntegralValue(bb, mc).stripTrailingZeros().toPlainString();
 
         }
@@ -390,7 +390,7 @@ public class Calculator {
             // Bug pr power -1 0.5
             Double p1 = p;
             if (p1.equals(Double.NaN))
-                throw new LogoException(app, Utils.primitiveName("math.power") + " " + Logo.getString("attend_positif"));
+                throw new LogoException(app, Utils.primitiveName("math.power") + " " + Logo.getString("interpreter.error.requirePositive"));
             // End Bug
             return teste_fin_double(p);
         } else {
@@ -898,7 +898,7 @@ public class Calculator {
             return (Double.parseDouble(st));
         } catch (NumberFormatException e) {
             throw new LogoException(app, st + " "
-                    + Logo.getString("pas_nombre"));
+                    + Logo.getString("interpreter.error.requireNumber"));
         }
     }
 
@@ -927,7 +927,7 @@ public class Calculator {
             return new BigDecimal(st, mc);
         } catch (NumberFormatException e) {
             throw new LogoException(app, st + " "
-                    + Logo.getString("pas_nombre"));
+                    + Logo.getString("interpreter.error.requireNumber"));
         }
 //		}
 
@@ -947,7 +947,7 @@ public class Calculator {
             return Integer.parseInt(st);
         } catch (NumberFormatException e) {
             throw new LogoException(app, st + " "
-                    + Logo.getString("pas_entier"));
+                    + Logo.getString("interpreter.error.requireInteger"));
         }
     }
 
@@ -965,7 +965,7 @@ public class Calculator {
             return new BigDecimal(new BigInteger(st));
         } catch (NumberFormatException e) {
             throw new LogoException(app, st + " "
-                    + Logo.getString("pas_entier"));
+                    + Logo.getString("interpreter.error.requireInteger"));
         }
     }
 

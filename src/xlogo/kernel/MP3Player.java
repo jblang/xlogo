@@ -31,7 +31,7 @@ public class MP3Player extends Thread {
                 player = new AdvancedPlayer(fr);
             } catch (java.net.MalformedURLException e1) {
 
-                throw new LogoException(app, Logo.getString("error.iolecture"));
+                throw new LogoException(app, Logo.getString("file.error.read"));
 
 
             } catch (IOException e2) {

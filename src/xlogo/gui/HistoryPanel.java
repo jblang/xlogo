@@ -58,13 +58,13 @@ public class HistoryPanel extends JPanel {
     public void setText(String style, String text) {
         try {
             int length = textPane.getDocument().getLength();
-            if (text.length() > 32000) throw new LogoException(app, Logo.getString("chaine_trop_longue"));
+            if (text.length() > 32000) throw new LogoException(app, Logo.getString("historyPanel.messageTooLong"));
             if (length + text.length() < 65000) {
                 try {
                     int offset = document.getLength();
                     document.insertString(offset, text, null);
                     switch (style) {
-                        case "erreur":
+                        case "application.error":
                             document.setCharacterAttributes(offset, text.length(), error, true);
                             break;
                         case "commentaire":
@@ -246,23 +246,23 @@ public class HistoryPanel extends JPanel {
         }
 
         void setMenuText() {
-            selectAllMenuItem.setText(Logo.getString("menu.edition.selectall"));
-            copyMenuItem.setText(Logo.getString("menu.edition.copy"));
-            saveMenuItem.setText(Logo.getString("menu.file.textzone.rtf"));
-            selectAllMenuItem.setActionCommand(Logo.getString("menu.edition.selectall"));
-            copyMenuItem.setActionCommand(Logo.getString("menu.edition.copy"));
-            saveMenuItem.setActionCommand(Logo.getString("menu.file.textzone.rtf"));
+            selectAllMenuItem.setText(Logo.getString("menu.edit.selectAll"));
+            copyMenuItem.setText(Logo.getString("menu.edit.copy"));
+            saveMenuItem.setText(Logo.getString("menu.file.saveRtf"));
+            selectAllMenuItem.setActionCommand(Logo.getString("menu.edit.selectAll"));
+            copyMenuItem.setActionCommand(Logo.getString("menu.edit.copy"));
+            saveMenuItem.setActionCommand(Logo.getString("menu.file.saveRtf"));
         }
 
         public void actionPerformed(ActionEvent e) {
             String cmd = e.getActionCommand();
-            if (Logo.getString("menu.edition.copy").equals(cmd)) {   //Copier
+            if (Logo.getString("menu.edit.copy").equals(cmd)) {   //Copier
                 copy();
-            } else if (Logo.getString("menu.edition.selectall").equals(cmd)) {   //Selectionner tout
+            } else if (Logo.getString("menu.edit.selectAll").equals(cmd)) {   //Selectionner tout
                 requestFocus();
                 selectAll();
                 app.focusCommandLine();
-            } else if (cmd.equals(Logo.getString("menu.file.textzone.rtf"))) {
+            } else if (cmd.equals(Logo.getString("menu.file.saveRtf"))) {
                 saveHistory();
             }
         }
@@ -272,7 +272,7 @@ public class HistoryPanel extends JPanel {
         try {
             JFileChooser jf = new JFileChooser(Utils.unescapeString(Logo.config.getDefaultFolder()));
             String[] ext = {".rtf"};
-            jf.addChoosableFileFilter(new ExtensionFilter(Logo.getString("fichiers_rtf"), ext));
+            jf.addChoosableFileFilter(new ExtensionFilter(Logo.getString("application.filter.rtfFiles"), ext));
             int val = jf.showDialog(app, Logo.getString("menu.file.save"));
             if (val == JFileChooser.APPROVE_OPTION) {
                 String path = jf.getSelectedFile().getPath();
