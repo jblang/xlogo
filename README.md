@@ -25,7 +25,7 @@ This version of XLogo is currently in beta status but is already more usable on 
 
 Pre-compiled jars available on the [Releases](https://github.com/jblang/xlogo/releases) page. You can also still download the [old version](http://xlogo.tuxfamily.org/en/download-en.html) from the XLogo website.
 
-Note: You will need Java 11 or later on your computer to run XLogo. If you don't already have a compatible JDK installed, [Microsoft](https://docs.microsoft.com/en-us/java/openjdk/download) offers free OpenJDK downloads for Windows, Mac, and Linux.
+Note: You will need Java 11 or later on your computer to run XLogo. If you don't already have a compatible JRE installed, [Adoptium](https://adoptium.net/temurin/releases?version=11) offers free OpenJDK downloads for Windows, Mac, and Linux.
 
 ## Documentation
 
