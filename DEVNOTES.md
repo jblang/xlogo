@@ -4,7 +4,7 @@ These instructions are for developers or advanced users who are comfortable comp
 
 ## Build Process
 
-- You'll need a JDK to compile and run XLogo. Many companies offer free [OpenJDK builds](https://sdkman.io/jdks). Any OpenJDK 17 build should work, so pick one you prefer.  I have primarily been using [Amazon Coretto 17](https://aws.amazon.com/corretto) for development.
+- You'll need a JDK to compile and run XLogo. Many companies offer free [OpenJDK builds](https://sdkman.io/jdks). Any OpenJDK 17 build should work, so pick one you prefer.  I have primarily been using [Eclipse Temurin 11](https://adoptium.net/temurin/releases?version=11) by Adoptium for development.
 - I'm using the free community edition of [IntelliJ IDEA](https://www.jetbrains.com/idea/download/) for development. There are project files in the repo with a pre-configured `Logo` run configuration.
 - The project contains an Ant build script, which I use to build the jars for release on GitHub. 
 
