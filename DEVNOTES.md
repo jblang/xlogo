@@ -4,36 +4,40 @@ These instructions are for developers or advanced users who are comfortable comp
 
 ## Build Process
 
-- You'll need a JDK to compile and run XLogo. Many companies offer free [OpenJDK builds](https://sdkman.io/jdks). Any OpenJDK 17 build should work, so pick one you prefer.  I have primarily been using [Eclipse Temurin 11](https://adoptium.net/temurin/releases?version=11) by Adoptium for development.
+- You'll need a JDK to compile and run XLogo. Any OpenJDK 11+ build should work. I primarily use [Eclipse Temurin 11](https://adoptium.net/temurin/releases?version=11) by Adoptium for development.
 - I'm using the free community edition of [IntelliJ IDEA](https://www.jetbrains.com/idea/download/) for development. There are project files in the repo with a pre-configured `Logo` run configuration.
-- The project contains an Ant build script, which I use to build the jars for release on GitHub. 
+- The project uses Maven for builds. All dependencies are managed via Maven repositories.
+
+### Build Commands
+
+```bash
+# Build shaded (fat) JAR with all dependencies
+mvn clean package
+
+# Quick build without shading (for development)
+mvn clean package -Pquick
+
+# Run from IDE or command line
+java -jar target/xlogo-1.0.0-beta5.jar
+```
 
 ## Dependencies
 
-Because not all the required libraries are available in MavenCentral, I am keeping the dependencies in the repo.  The jars were sourced from the following locations.
-  - Jars imported from original SVN repo:
-    - jh.jar: JavaHelp 2.0_03
-    - jl1.0.1.jar: JLayer 1.0.1 MP3 library
-  - Jars downloaded from maven.org:
-    - [flatlaf-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf/2.0.1/jar)
-    - [flatlaf-extras-2.0.1.jar](https://search.maven.org/artifact/com.formdev/flatlaf-extras/2.0.1/jar)
-    - [svgSalamander-1.1.3.jar](https://search.maven.org/artifact/com.formdev/svgSalamander/1.1.3/jar)
-    - [rsyntaxtextarea-3.1.6.jar](https://search.maven.org/artifact/com.fifesoft/rsyntaxtextarea/3.1.6/jar)
-    - [rstaui-3.1.4.jar](https://search.maven.org/artifact/com.fifesoft/rstaui/3.1.4/jar)
-    - [autocomplete-3.1.5.jar](https://search.maven.org/artifact/com.fifesoft/autocomplete/3.1.5/jar)
-  - Jars downloaded elsewhere:
-    - [Java3D 1.6.2](https://github.com/hharrison/java3d-core/releases/tag/1.6.2) from GitHub:
-      - j3dcore.jar
-      - j3dutils.jar
-      - vecmath.jar
-    - [JOGL/GlueGen 2.3.2](https://jogamp.org/deployment/v2.3.2/jar/) from jogamp.org:
-      - jogl-all*.jar
-      - gluegen-rt*.jar
+All dependencies are managed via Maven. Key dependencies include:
+
+- **UI Framework**: FlatLaf 2.0.1 (modern Swing look and feel)
+- **Code Editor**: RSyntaxTextArea 3.1.6 with autocomplete and UI extensions
+- **3D Graphics**:
+  - Java3D 1.6.0-scijava-2 from SciJava (uses `org.scijava.*` packages)
+  - JOGL 2.4.0-rc4 from [jzy3d repository](https://maven.jzy3d.org/releases/) (includes Apple Silicon support)
+- **Audio**: JLayer 1.0.1 for MP3 support
+- **Help**: JavaHelp 2.0.05
+
+Note: JOGL 2.4.0-rc4 is sourced from the jzy3d repository because the official jogamp Maven repository doesn't have ARM64 natives for macOS.
 
 ## Code Quality Issues
 
-- It would be nice to have automated dependency management, but the latest JOGL and Java3D jars don't seem to be available in MavenCentral.  If that ever gets resolved, I'll probably switch to Gradle.
-- There are no unit tests so it's easy to break things.  I have not yet started to remedy this.
+- There are no unit tests so it's easy to break things. I have not yet started to remedy this.
 - Bad naming conventions for variables, method names, and property keys:
   - French and English are inconsistently used throughout.
   - The Java style guide has not been followed. 

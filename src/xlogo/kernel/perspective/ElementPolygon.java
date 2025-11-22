@@ -11,10 +11,10 @@ import xlogo.Logo;
 import xlogo.gui.Application;
 import xlogo.kernel.LogoException;
 
-import javax.media.j3d.*;
-import javax.vecmath.Color3f;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3f;
+import org.scijava.java3d.*;
+import org.scijava.vecmath.Color3f;
+import org.scijava.vecmath.Point3d;
+import org.scijava.vecmath.Vector3f;
 
 /**
  * This class represent A polygon surface in 3D mode

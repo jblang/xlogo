@@ -1,15 +1,15 @@
 package xlogo.kernel.perspective;
 
-import com.sun.j3d.utils.geometry.Cylinder;
-import com.sun.j3d.utils.geometry.Sphere;
+import org.scijava.java3d.utils.geometry.Cylinder;
+import org.scijava.java3d.utils.geometry.Sphere;
 import xlogo.gui.Application;
 import xlogo.kernel.LogoException;
 
-import javax.media.j3d.*;
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Color3f;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
+import org.scijava.java3d.*;
+import org.scijava.vecmath.AxisAngle4d;
+import org.scijava.vecmath.Color3f;
+import org.scijava.vecmath.Point3d;
+import org.scijava.vecmath.Vector3d;
 
 public class ElementLine extends Element3D {
     /**

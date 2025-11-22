@@ -1,10 +1,10 @@
 package xlogo.kernel.perspective;
 
-import javax.media.j3d.*;
-import javax.vecmath.Color3f;
-import javax.vecmath.Point3d;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
+import org.scijava.java3d.*;
+import org.scijava.vecmath.Color3f;
+import org.scijava.vecmath.Point3d;
+import org.scijava.vecmath.Point3f;
+import org.scijava.vecmath.Vector3f;
 
 public class Light extends BranchGroup {
     protected final static int LIGHT_OFF = 0;
@@ -18,7 +18,7 @@ public class Light extends BranchGroup {
     private Point3f position;
     private Vector3f direction;
     private float angle = DEFAULT_ANGLE;
-    private javax.media.j3d.Light light;
+    private org.scijava.java3d.Light light;
 
     Light(int type) {
         super();

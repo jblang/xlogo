@@ -1,16 +1,16 @@
 package xlogo.kernel.perspective;
 
-import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
-import com.sun.j3d.utils.universe.SimpleUniverse;
+import org.scijava.java3d.utils.behaviors.vp.OrbitBehavior;
+import org.scijava.java3d.utils.universe.SimpleUniverse;
 import xlogo.Logo;
 import xlogo.utils.ImageWriter;
 
-import javax.media.j3d.*;
+import org.scijava.java3d.*;
 import javax.swing.*;
-import javax.vecmath.Color3f;
-import javax.vecmath.Point3d;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3d;
+import org.scijava.vecmath.Color3f;
+import org.scijava.vecmath.Point3d;
+import org.scijava.vecmath.Point3f;
+import org.scijava.vecmath.Vector3d;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 

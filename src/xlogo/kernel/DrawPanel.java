@@ -1,6 +1,6 @@
 package xlogo.kernel;
 
-import com.sun.j3d.utils.geometry.Text2D;
+import org.scijava.java3d.utils.geometry.Text2D;
 import xlogo.Config;
 import xlogo.Logo;
 import xlogo.gui.Application;
@@ -12,15 +12,15 @@ import xlogo.kernel.perspective.*;
 import xlogo.utils.Utils;
 
 import javax.imageio.ImageIO;
-import javax.media.j3d.Appearance;
-import javax.media.j3d.PolygonAttributes;
-import javax.media.j3d.Transform3D;
-import javax.media.j3d.TransformGroup;
+import org.scijava.java3d.Appearance;
+import org.scijava.java3d.PolygonAttributes;
+import org.scijava.java3d.Transform3D;
+import org.scijava.java3d.TransformGroup;
 import javax.swing.*;
-import javax.vecmath.Color3f;
-import javax.vecmath.Matrix3d;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
+import org.scijava.vecmath.Color3f;
+import org.scijava.vecmath.Matrix3d;
+import org.scijava.vecmath.Point3d;
+import org.scijava.vecmath.Vector3d;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;

@@ -1,4 +1,52 @@
 # Main Command: Go
+# Sierpenski pyramid with square base
+
+to sier :p :length
+    localmake "p :p - 1
+    localmake "length :length / 2
+    if :p > 0 [
+        repeat 2 [
+            sier :p :length forward :length
+            sier :p :length forward :length
+            right 90 forward :length * 2 right 90
+        ]
+        right 45 uppitch 45
+        forward :length
+        downpitch 45 left 45
+        sier :p :length
+        right 45 uppitch 45
+        back :length
+        downpitch 45 left 45
+    ]
+    if :p = 0 [pyramid 2*:length ]
+end
+
+
+to tri :a
+    polystart
+    repeat 3 [forward :a right 120]
+    polyend
+end
+
+to pyramid :a
+    hideturtle
+    # bottom square
+    setpencolor 6
+    polystart
+    repeat 4 [forward :a right 90]
+    polyend
+    # side faces
+    repeat 4 [
+        #fcc 1+repcount
+        right 45 uppitch 45
+        polystart forward :a back :a downpitch 45 left 45 forward :a polyend
+        right 90
+    ]
+end
+
+to sierpinski :p
+    resetall clearscreen 3d setscreencolor 0 sier :p 500 view3d
+end
 # SpiroCircle by Guy Walker
 # www.cr31.co.uk/logoarts
 
@@ -6,6 +54,88 @@ to new
   # set default screen, pen and turtle
   ResetAll SetScreenSize [400 400] HideTurtle
   SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to init
+  Make "A (1 + Random 7)
+  Make "B (1 + Random 5)
+  Make "W Minus :W
+end
+
+to title
+  SetPC White SetPW 3 Repeat 80 [
+    Dot Item RepCount :Points]
+  SetPos [-190 178] SetH 0 Label :Title
+end
+
+to chaos
+  SetH 0
+  While ["True] [Make "X Minus 160
+  Repeat 86 [Make "T :A*Sin (:T*180/Pi)
+  PenUp SetPos (List :X Minus 12) PenDown
+  SetPC Red Forward :T*34 Wait :Delay Refresh
+  SetPC Green Back :T*34
+  Make "XX :X+40
+  If :XX> 180 [Make "XX :XX-344]
+  PenUp SetPos (List :XX Minus 181) PenDown
+  SetPC Black Forward 340
+  KeyIP Make "X :X +4]]
+end
+
+to keyip
+  If Key? [
+  Make "Char ReadChar
+  If :Char=-38 [Make "A :A+0.1 Make "PC 7]
+  If :Char=-40 [Make "A :A-0.1 Make "PC 7]
+  If :A>5 [Make "A 5 Make "PC 1]
+  If :A<1 [Make "A 1 Make "PC 1]
+  Score :A :PC]
+end
+
+to score :a :pc
+  PenUp SetPos [126 184] SetH 90 SetPC Black SetPW 10
+  PenDown Forward 56
+  PenUp SetPos [130 180] SetH 0 SetPC :PC SetPW 1
+  Label Sentence [a=] :A
+end
+
+to go
+  New Animation Make "W 1
+  Forever [Init SetPC :A Spir]
+end
+
+to sqtri
+  PenUp SetXY 0 50 SetH -150 PenDown
+  Forward 80 Right 120 Forward 160
+  Right 120 Forward 119.28 Left 42.12 Forward 60 Right 90
+  Forward 104 Right 90 Forward 106 Right 90 Forward 53
+end
+
+to shape0
+  PenUp SetXY 0 50 SetH -42.12 PenDown
+  Forward 52 Right 90 Forward 45.5 Right 42.12
+  Forward 41 Right 120 Forward 80
+end
+
+to shape1
+  PenUp SetXY 0 50 SetH -150 -:OffSet PenDown
+  Forward 80 Right 120 Forward 80 Shape2
+  Right 180+:OffSet Forward 60.5 Right 90 Forward 52
+end
+
+to shape2
+  Left :OffSet Forward 80 Right 120 Forward 39 Shape3
+  Right 180 +:OffSet Forward 52 Right 90 Forward 46
+end
+
+to shape3
+  Left :OffSet Forward 80 Right 137.88 Forward 60 Right 90 Forward 52
+end
+
+to paint :angle
+  Make "OffSet 90*(1+Cos :Angle)
+  SetPC Gray SqTri SetPC Green Shape0 Shape1 
+  Refresh Wait 15 Wash
 end
 
 to spir
@@ -16,12 +146,6 @@ to spir
     Refresh Wash]      # put a wait in here if too fast
 end
 
-to init
-  Make "A (1 + Random 7)
-  Make "B (1 + Random 5)
-  Make "W Minus :W
-end
-
 to xycurve :r :theta
   Make "RotA :A*:Theta
   Make "RotB :B*:Theta
@@ -30,7 +154,193 @@ to xycurve :r :theta
   Output (List :X :Y)
 end
 
-to go
-  New Animation Make "W 1
-  Forever [Init SetPC :A Spir]
+to angcol :t
+  Make "Green Round 127*(1+Cos(:T+90)) 
+  Output ( List 255 :Green 100 )
+end
+
+to starmorph
+  Make "Col1 Absolute (:Col1-3)
+  Make "Col2 Absolute (:Col2-3)
+  For [Theta 0 90 0.5] [
+    Init :Theta
+    SetH 0 PenUp Right :Theta
+    Repeat 9 [
+      Forward :A Left 140
+      Forward :B Left 140
+      Make "X :X + :X 
+      Make "Y :Y + :Y]
+    SetXY Minus :X/9 Minus :Y/9
+    SetH 0 PenDown Right :Theta
+    Repeat 9 [
+      SetPC :Col1 Forward :A Left 140
+      SetPC :Col2 Forward :B Left 140]
+    Refresh Wait 2 Wash]
+end
+
+to display
+    # write header title and name
+  SetPC White SetH 0
+  SetPos [-190 184] Label Sentence [Tangram] :EndName
+end
+
+to slide
+  For [Step 0 64] [Wash
+  For [N 1 7] [
+    Make "DD :Step / Minus 64
+    SetX Delta :N :DD 1
+    SetY Delta :N :DD 2
+    SetH Delta :N :DD 3
+    Run Item :N :Tans]
+    Refresh]
+  Display Refresh Wait 120 
+end
+
+to delta :n :dd :m
+  Make "Differ (Item :M Item :N :Start) - (Item :M Item :N :End)
+  Output (Item :M Item :N :Start) + (:DD*:Differ)
+end
+
+to tri1 :side
+  Make "Slant :Side*SqRt 2
+  Right 45 Back 1.33*:Slant Left 45
+  SetPC Sentence [0 0] :Side * 5 PenDown
+  Forward 4*:Side Right 135 Forward 4*:Slant 
+  Right 135 Forward 4*:Side PenUp
+  Right 135 Forward 1.33*:Slant PenDown FillZone PenUp
+  Back 1.33*:Slant Left 45
+  SetPC White PenDown
+  Forward 4*:Side Right 135 Forward 4*:Slant 
+  Right 135 Forward 4*:Side PenUp
+end
+
+to tri2 :side
+  Make "Slant :Side*SqRt 2
+  Right 45 Back 1.33*:Slant Left 45
+  SetPC Sentence :Side * 5 [0 0] PenDown
+  Forward 4*:Side Right 135 Forward 4*:Slant 
+  Right 135 Forward 4*:Side PenUp
+  Right 135 Forward 1.33*:Slant Pd FillZone PenUp 
+  Back 1.33*:Slant Left 45
+  SetPC White PenDown
+  Forward 4*:Side Right 135 Forward 4*:Slant 
+  Right 135 Forward 4*:Side PenUp
+end
+
+to squ
+  Back 34 Left 45
+  SetPC [0 108 0] PenDown
+  Repeat 4 [Forward 48 Right 90] PenUp
+  Right 45 Forward 34 Pd FillZone Pu
+  Back 34 Left 45 SetPC White PenDown
+  Repeat 4 [Forward 48 Right 90] PenUp
+end
+
+to par
+  Back 24 Left 90
+  SetPC DarkGreen PenDown
+  Repeat 2 [Forward 48 rt 135 Forward 68 rt 45] PenUp
+  Right 90 Forward 24 Pd FillZone Pu
+  Back 24 Left 90 SetPC White PenDown
+  Repeat 2 [Forward 48 Right 135 Forward 68 Right 45] PenUp
+end
+
+to start
+  Output [[-45 0 -135] [0 46 -45] [46 -46 -90] [0 -34 0] [52 17 -45] [-34 -57 135] [24 0 45]]
+end
+
+to running_man
+  Output [[20 -67 0] [0 22 -180] [-30 -90 45] [0 90 20] [58 4 -90] [0 -135 225] [95 -90 180]]
+end
+
+to koch :level :side
+  If :Level < 1 [Forward :Side Stop]
+  Koch :Level-1 :Side/:Ratio Left :Angle
+  Koch :Level-1 :Side/:Ratio Right 2*:Angle
+  Koch :Level-1 :Side/:Ratio Left :Angle
+  Koch :Level-1 :Side/:Ratio
+end
+
+to distancebetween :pos1 :pos2
+  # return distance between two points
+  Make "Hor (First :Pos1) - (First :Pos2)
+  Make "Ver (Last :Pos1) - (Last :Pos2)
+  Output SquareRoot ( (Power :Hor 2) + (Power :Ver 2) ) 
+end
+
+to marks1
+  SetPC [64 64 64] SetPW 1
+  SetPos :FixedP Arc 140 350 57 PenDown Forward 200 Back 200
+  SetPos :CrankP Circle 60 PenUp
+  SetPC [0 0 200] SetPW 21 Dot :FixedP Dot :CrankP
+end
+
+to marks3
+  SetPC [64 64 64] SetPW 7
+  Dot :FixedP
+  Dot :PC Dot :PP Dot Last :Points
+end
+
+to drawcrank
+  SetH Towards MousePos Forward 60
+  SetPC Red SetPW 3 Circle 11 Back 60 PenDown
+  SetPC [0 160 0] SetPW 11 Forward 60 Make "PC Pos
+  SetPC [64 64 64] SetPW 7 Dot :CrankP
+end
+
+to cheb
+  Make "Dist DistanceBetween Pos :FixedP
+  Make "aa ((Power :Dist 2)+(Power :A 2)-(Power :B 2))/(2*:Dist)
+  SetH Towards :FixedP
+  Right ArcCosine :aa/:A
+  SetPC Green SetPW 11 Forward 2*:A PenUp
+  Make "Points ButFirst LPut Pos :Points 
+  Back :A  Make "PP Pos
+  SetPC [0 160 0] PenDown SetPos :FixedP PenUp
+end
+
+to gridd :m :n
+  # return X Y screen position
+  Make "X (:M*:Side) + :OffSetX
+  Make "Y (:N*:Side) + :OffSetY
+  Output List :X :Y
+end
+
+to drawgrid :order :depth
+  # draw M x N array of cubes
+  For (List "M 0 :Order-1) [
+    For (List "N 0 :Order-1) [
+    If 0 = Random :Order [
+      SetPos Gridd :M :N Cube :Side Wait 6] ] ]
+end
+
+to cube :side
+  # cube drawn from upper right front corner
+  Make "Col (List 63+Random 127 63+Random 127 63+Random 127)
+  SetPC White PenDown Left 90
+  Repeat 4 [Forward :Side Left 90]
+  FillPoly :Col Right 144
+  Repeat 2 [Forward :Side/2 Left 144 Forward :Side Left 36]
+  FillPoly Light :Col Right 126
+  Repeat 2 [Forward :Side Left 126 Forward :Side/2 Left 54]
+  FillPoly Dark :Col Right 180 PenUp
+end
+
+to fillpoly :col
+  PenUp Left 45 Forward 4 FillZone SetPC :Col Fill
+  Back 4 Right 45 SetPC White PenDown
+end
+
+to light :hue
+  # output rgb list midway between :hue and white
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (255+(First :Hue))/2 :Hue]
+  Output :Hue
+end
+
+to dark :hue
+  # output rgb list midway between :hue and black
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (First :Hue)/2 :Hue]
+  Output :Hue
 end

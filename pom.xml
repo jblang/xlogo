@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.xlogo</groupId>
+    <artifactId>xlogo</artifactId>
+    <version>1.0.0-beta5</version>
+    <packaging>jar</packaging>
+
+    <name>XLogo</name>
+    <description>Logo Interpreter written in Java</description>
+    <url>https://github.com/jblang/xlogo</url>
+
+    <licenses>
+        <license>
+            <name>GPL-3.0</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <!-- Dependencies -->
+        <flatlaf.version>3.6.2</flatlaf.version>
+        <rsyntaxtextarea.version>3.6.0</rsyntaxtextarea.version>
+        <rstaui.version>3.3.1</rstaui.version>
+        <autocomplete.version>3.3.2</autocomplete.version>
+        <jogl.version>v2.4.0-rc4</jogl.version>
+        <java3d.version>1.6.0-scijava-2</java3d.version>
+        <jlayer.version>1.0.1</jlayer.version>
+        <javahelp.version>2.0.05</javahelp.version>
+        <!-- Plugins -->
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
+        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
+    </properties>
+
+    <repositories>
+        <!-- Jzy3d repository for JOGL 2.4 with Apple Silicon support -->
+        <repository>
+            <id>jzy3d-releases</id>
+            <name>Jzy3d Releases</name>
+            <url>https://maven.jzy3d.org/releases/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- FlatLaf - Modern Swing Look and Feel -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+
+        <!-- RSyntaxTextArea - Syntax highlighting editor -->
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rsyntaxtextarea</artifactId>
+            <version>${rsyntaxtextarea.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rstaui</artifactId>
+            <version>${rstaui.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>autocomplete</artifactId>
+            <version>${autocomplete.version}</version>
+        </dependency>
+
+        <!-- JOGL - OpenGL binding -->
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all</artifactId>
+            <version>${jogl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt</artifactId>
+            <version>${jogl.version}</version>
+        </dependency>
+        <!-- JOGL/GlueGen native libraries (separate artifacts in jzy3d repo) -->
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all-natives-linux-amd64</artifactId>
+            <version>${jogl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all-natives-macosx-universal</artifactId>
+            <version>${jogl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all-natives-windows-amd64</artifactId>
+            <version>${jogl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt-natives-linux-amd64</artifactId>
+            <version>${jogl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt-natives-macosx-universal</artifactId>
+            <version>${jogl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt-natives-windows-amd64</artifactId>
+            <version>${jogl.version}</version>
+        </dependency>
+
+        <!-- JLayer - MP3 support -->
+        <dependency>
+            <groupId>javazoom</groupId>
+            <artifactId>jlayer</artifactId>
+            <version>${jlayer.version}</version>
+        </dependency>
+
+        <!-- JavaHelp -->
+        <dependency>
+            <groupId>javax.help</groupId>
+            <artifactId>javahelp</artifactId>
+            <version>${javahelp.version}</version>
+        </dependency>
+
+        <!-- Java3D - 3D Graphics (SciJava mavenized version) -->
+        <dependency>
+            <groupId>org.scijava</groupId>
+            <artifactId>j3dcore</artifactId>
+            <version>${java3d.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scijava</groupId>
+            <artifactId>j3dutils</artifactId>
+            <version>${java3d.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src</sourceDirectory>
+
+        <resources>
+            <resource>
+                <directory>src</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.png</include>
+                    <include>**/*.svg</include>
+                    <include>**/*.html</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>xlogo.Logo</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Creates fat jar with all dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>xlogo.Logo</mainClass>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <finalName>xlogo-${project.version}</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- Profile to skip shading for faster development builds -->
+        <profile>
+            <id>quick</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>xlogo.Logo</mainClass>
+                                    <addClasspath>true</addClasspath>
+                                    <classpathPrefix>lib/</classpathPrefix>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

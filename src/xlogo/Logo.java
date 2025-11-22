@@ -16,6 +16,9 @@ import xlogo.gui.LanguageListRenderer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -37,6 +40,14 @@ public class Logo {
      * @param args The file *.lgo to load on startup
      */
     public static void main(String[] args) {
+        // Check if we need to re-exec with proper JVM arguments
+        if (!"true".equals(System.getProperty("xlogo.launched"))) {
+            if (relaunchWithJvmArgs(args)) {
+                return; // Successfully relaunched, exit this instance
+            }
+            // If relaunch failed, continue with current JVM
+        }
+
         config.getStartupFiles().addAll(Arrays.asList(args));
         config.getStartupFiles().add(0, "#####");
 
@@ -57,6 +68,85 @@ public class Logo {
             config.loadDarkEditorTheme();
             // Prompt for language
             SwingUtilities.invokeLater(Logo::askLanguage);
+        }
+    }
+
+    /**
+     * Relaunches XLogo with proper JVM arguments for memory and JOGL compatibility.
+     *
+     * @param args The original command line arguments
+     * @return true if relaunch was successful, false if we should continue in current JVM
+     */
+    private static boolean relaunchWithJvmArgs(String[] args) {
+        try {
+            int memory = Math.max(getMemoryFromArgs(args), getMemoryFromFile());
+
+            Path jvm = Paths.get(System.getProperty("java.home"), "bin", "java");
+            String jarPath = Logo.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+
+            // Only relaunch if running from a JAR file
+            if (!jarPath.endsWith(".jar")) {
+                return false;
+            }
+
+            java.util.List<String> command = new ArrayList<>();
+            command.add(jvm.toString());
+            command.add("-Xmx" + memory + "m");
+            // Mark as launched to prevent infinite relaunch loop
+            command.add("-Dxlogo.launched=true");
+            // JOGL workarounds for Java 9+ (https://jogamp.org/bugzilla/show_bug.cgi?id=1317)
+            command.add("--add-exports=java.base/java.lang=ALL-UNNAMED");
+            command.add("--add-exports=java.desktop/sun.awt=ALL-UNNAMED");
+            command.add("--add-exports=java.desktop/sun.java2d=ALL-UNNAMED");
+            command.add("-jar");
+            command.add(jarPath);
+            command.addAll(Arrays.asList(args));
+
+            System.out.println("Relaunching XLogo with: " + String.join(" ", command));
+
+            ProcessBuilder pb = new ProcessBuilder(command);
+            pb.inheritIO();
+            pb.start();
+
+            // Exit immediately - the child process will continue running
+            System.exit(0);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Failed to relaunch XLogo: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Reads the memory limit from the -memory command line argument.
+     *
+     * @param args Command line arguments
+     * @return Memory in MB, or 0 if not specified
+     */
+    private static int getMemoryFromArgs(String[] args) {
+        for (int i = 0; i < args.length - 1; i++) {
+            if ("-memory".equals(args[i])) {
+                try {
+                    return Integer.parseInt(args[i + 1]);
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Reads the memory limit from ~/.xlogo/xmx.txt.
+     *
+     * @return Memory in MB, or default of 256 if file doesn't exist or is invalid
+     */
+    private static int getMemoryFromFile() {
+        int defaultMemory = 256;
+        Path xmxFile = Paths.get(System.getProperty("user.home"), ".xlogo", "xmx.txt");
+        try {
+            return Integer.parseInt(Files.readString(xmxFile).trim());
+        } catch (Exception e) {
+            return defaultMemory;
         }
     }
 

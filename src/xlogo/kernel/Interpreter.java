@@ -26,7 +26,7 @@ import xlogo.utils.Utils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.vecmath.Point3d;
+import org.scijava.vecmath.Point3d;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;

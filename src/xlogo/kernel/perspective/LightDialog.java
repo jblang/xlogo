@@ -5,10 +5,10 @@ import xlogo.gui.preferences.ColorPanel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.vecmath.Color3f;
-import javax.vecmath.Point3f;
-import javax.vecmath.Tuple3f;
-import javax.vecmath.Vector3f;
+import org.scijava.vecmath.Color3f;
+import org.scijava.vecmath.Point3f;
+import org.scijava.vecmath.Tuple3f;
+import org.scijava.vecmath.Vector3f;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

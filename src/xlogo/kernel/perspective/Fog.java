@@ -1,10 +1,10 @@
 package xlogo.kernel.perspective;
 
-import javax.media.j3d.BoundingSphere;
-import javax.media.j3d.BranchGroup;
-import javax.media.j3d.ExponentialFog;
-import javax.media.j3d.LinearFog;
-import javax.vecmath.Color3f;
+import org.scijava.java3d.BoundingSphere;
+import org.scijava.java3d.BranchGroup;
+import org.scijava.java3d.ExponentialFog;
+import org.scijava.java3d.LinearFog;
+import org.scijava.vecmath.Color3f;
 
 public class Fog extends BranchGroup {
     protected final static int FOG_OFF = 0;
@@ -15,7 +15,7 @@ public class Fog extends BranchGroup {
     private float density = 1;
     private float backDistance = 3.5f;
     private float frontDistance = 0.5f;
-    private javax.media.j3d.Fog fog;
+    private org.scijava.java3d.Fog fog;
 
     Fog(int type, Color3f color) {
         super();
