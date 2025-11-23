@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Getting Started - XLogo Manual</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; line-height: 1.5; background: #ffffff; color: #333333; }
+        h1 { color: #333; border-bottom: 2px solid #007acc; padding-bottom: 10px; }
+        h2 { color: #007acc; }
+        h3 { color: #555; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: monospace; color: #333; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; color: #333; }
+        .example { color: #c7254e; }
+        table { border-collapse: collapse; margin: 15px 0; width: 100%; }
+        td, th { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+        th { background: #f4f4f4; }
+        .tip { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 10px; margin: 15px 0; color: #333; }
+        a { color: #007acc; }
+    </style>
+</head>
+<body>
+    <h1>Getting Started</h1>
+
+    <p>To move the turtle, use predefined commands called <strong>primitives</strong>.
+    This chapter covers the basic primitives for controlling the turtle.</p>
+
+    <h2>Basic Movement Commands</h2>
+    <table>
+        <tr><th>Command</th><th>Short</th><th>Description</th><th>Example</th></tr>
+        <tr><td><code>forward</code></td><td><code>fd</code></td><td>Move forward</td><td class="example">fd 50</td></tr>
+        <tr><td><code>back</code></td><td><code>bk</code></td><td>Move backward</td><td class="example">bk 100</td></tr>
+        <tr><td><code>right</code></td><td><code>rt</code></td><td>Turn right (degrees)</td><td class="example">rt 90</td></tr>
+        <tr><td><code>left</code></td><td><code>lt</code></td><td>Turn left (degrees)</td><td class="example">lt 45</td></tr>
+        <tr><td><code>clearscreen</code></td><td><code>cs</code></td><td>Clear the drawing</td><td class="example">cs</td></tr>
+        <tr><td><code>showturtle</code></td><td><code>st</code></td><td>Show the turtle</td><td class="example">st</td></tr>
+        <tr><td><code>hideturtle</code></td><td><code>ht</code></td><td>Hide the turtle</td><td class="example">ht</td></tr>
+        <tr><td><code>penup</code></td><td><code>pu</code></td><td>Stop drawing</td><td class="example">pu</td></tr>
+        <tr><td><code>pendown</code></td><td><code>pd</code></td><td>Start drawing</td><td class="example">pd</td></tr>
+        <tr><td><code>repeat</code></td><td></td><td>Repeat commands</td><td class="example">repeat 4 [fd 50 rt 90]</td></tr>
+    </table>
+
+    <h2>Drawing Shapes</h2>
+
+    <h3>Square</h3>
+    <p>Move forward, turn 90 degrees, repeat 4 times:</p>
+    <pre>repeat 4 [fd 100 rt 90]</pre>
+
+    <h3>Triangle</h3>
+    <p>For an equilateral triangle, the external angle is 180 - 60 = 120 degrees:</p>
+    <pre>repeat 3 [fd 100 rt 120]</pre>
+
+    <h3>Any Regular Polygon</h3>
+    <p>For a polygon with <em>n</em> sides, the turning angle is 360/n:</p>
+    <pre>; Pentagon (5 sides): 360/5 = 72
+repeat 5 [fd 80 rt 72]
+
+; Hexagon (6 sides): 360/6 = 60
+repeat 6 [fd 60 rt 60]
+
+; Circle approximation (360 sides)
+repeat 360 [fd 2 rt 1]</pre>
+
+    <h2>Creating Procedures</h2>
+    <p>Save commands as reusable <strong>procedures</strong>. Open the editor and write:</p>
+    <pre>to square
+  repeat 4 [fd 100 rt 90]
+end</pre>
+    <p>Click the turtle button to save. Now type <code>square</code> to draw a square!</p>
+
+    <h3>Procedures with Parameters</h3>
+    <p>Make flexible procedures using variables (prefixed with <code>:</code>):</p>
+    <pre>to square :size
+  repeat 4 [fd :size rt 90]
+end</pre>
+    <p>Now <code>square 50</code> draws a small square, <code>square 200</code> draws a large one.</p>
+
+    <div class="tip">
+        <strong>Tip:</strong> Use <code>penup</code> (pu) to move without drawing,
+        then <code>pendown</code> (pd) to resume drawing.
+    </div>
+
+    <h2>Try It!</h2>
+    <p>Draw a house using these procedures:</p>
+    <pre>to house
+  square 100      ; main body
+  fd 100          ; move to roof position
+  triangle 100    ; roof
+end
+
+to triangle :size
+  repeat 3 [fd :size rt 120]
+end</pre>
+</body>
+</html>

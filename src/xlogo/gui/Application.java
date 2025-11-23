@@ -502,20 +502,33 @@ public class Application extends JFrame {
     private void showHelp(ActionEvent e) {
         new Thread(() -> {
             HelpSet hs = null;
+            String lang = Logo.getLanguageCode();
             try {
-                String url = "http://downloads.tuxfamily.org/xlogo/downloads-";
-                url += Logo.getLanguageCode();
-                url += "/javahelp/manual-";
-                url += Logo.getLanguageCode();
-                url += ".hs";
-                java.net.URL hsURL = new java.net.URL(url);
-                hs = new HelpSet(null, hsURL);
-                HelpBroker hb = hs.createHelpBroker();
-                new CSH.DisplayHelpFromSource(hb).actionPerformed(e);
+                // Try to load from bundled resources first
+                String resourcePath = "xlogo/resources/help/" + lang + "/manual-" + lang + ".hs";
+                java.net.URL hsURL = getClass().getClassLoader().getResource(resourcePath);
+
+                // Fall back to English if language-specific help not found
+                if (hsURL == null && !lang.equals("en")) {
+                    resourcePath = "xlogo/resources/help/en/manual-en.hs";
+                    hsURL = getClass().getClassLoader().getResource(resourcePath);
+                }
+
+                if (hsURL != null) {
+                    hs = new HelpSet(null, hsURL);
+                    HelpBroker hb = hs.createHelpBroker();
+                    new CSH.DisplayHelpFromSource(hb).actionPerformed(e);
+                } else {
+                    throw new Exception("Help files not found in application resources");
+                }
             } catch (Exception ee) {
-                // Say what the exception really is
-                System.out.println("HelpSet " + ee.getMessage());
-                if (null != hs) System.out.println("HelpSet " + hs.getHelpSetURL() + " not found");
+                System.err.println("HelpSet error: " + ee.getMessage());
+                SwingUtilities.invokeLater(() -> {
+                    JOptionPane.showMessageDialog(this,
+                        Logo.getString("error.helpNotFound"),
+                        Logo.getString("menu.help.onlineManual"),
+                        JOptionPane.ERROR_MESSAGE);
+                });
             }
         }).start();
     }

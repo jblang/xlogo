@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Primitives Reference - XLogo Manual</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; line-height: 1.5; background: #ffffff; color: #333333; }
+        h1 { color: #333; border-bottom: 2px solid #007acc; padding-bottom: 10px; }
+        h2 { color: #007acc; margin-top: 30px; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: monospace; color: #333; }
+        .prim { background: #f0f0f0; padding: 10px; margin: 10px 0; border-left: 4px solid #007acc; color: #333; }
+        .prim-name { font-weight: bold; color: #007acc; }
+        .prim-args { color: #666; font-style: italic; }
+        .example { color: #c7254e; }
+        a { color: #007acc; }
+    </style>
+</head>
+<body>
+    <h1>Primitives Reference</h1>
+    <p>The turtle is controlled by internal commands called <em>primitives</em>.</p>
+
+    <h2>Movement</h2>
+
+    <div class="prim">
+        <span class="prim-name">forward, fd</span> <span class="prim-args">n</span><br>
+        Move the turtle forward n steps. Example: <code class="example">fd 100</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">back, bk</span> <span class="prim-args">n</span><br>
+        Move the turtle backward n steps. Example: <code class="example">bk 50</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">right, rt</span> <span class="prim-args">n</span><br>
+        Turn the turtle n degrees to the right. Example: <code class="example">rt 90</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">left, lt</span> <span class="prim-args">n</span><br>
+        Turn the turtle n degrees to the left. Example: <code class="example">lt 45</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">home</span><br>
+        Return the turtle to position [0 0] facing up (heading 0).
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">setpos, setposition</span> <span class="prim-args">[x y]</span><br>
+        Move the turtle to coordinates [x y]. Example: <code class="example">setpos [100 -50]</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">setx</span> <span class="prim-args">x</span><br>
+        Move the turtle horizontally to x. Example: <code class="example">setx 100</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">sety</span> <span class="prim-args">y</span><br>
+        Move the turtle vertically to y. Example: <code class="example">sety -50</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">setxy</span> <span class="prim-args">x y</span><br>
+        Same as setpos [x y]. Example: <code class="example">setxy 100 -50</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">setheading, seth</span> <span class="prim-args">n</span><br>
+        Set the turtle's heading to n degrees (0 = up, like a compass). Example: <code class="example">seth 90</code>
+    </div>
+
+    <h2>Drawing Shapes</h2>
+
+    <div class="prim">
+        <span class="prim-name">circle</span> <span class="prim-args">radius</span><br>
+        Draw a circle with the given radius around the turtle. Example: <code class="example">circle 50</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">arc</span> <span class="prim-args">radius angle1 angle2</span><br>
+        Draw an arc with given radius between angle1 and angle2. Example: <code class="example">arc 50 0 90</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">dot</span> <span class="prim-args">[x y]</span><br>
+        Draw a dot at coordinates [x y]. Example: <code class="example">dot [100 100]</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">label</span> <span class="prim-args">text</span><br>
+        Write text at the turtle's position. Example: <code class="example">label [Hello World]</code>
+    </div>
+
+    <h2>Pen Control</h2>
+
+    <div class="prim">
+        <span class="prim-name">pendown, pd</span><br>
+        Lower the pen (turtle will draw when moving).
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">penup, pu</span><br>
+        Raise the pen (turtle moves without drawing).
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">penerase, pe</span><br>
+        Pen erases marks it passes over.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">penpaint, ppt</span><br>
+        Return to normal drawing mode.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">setpenwidth, setpw</span> <span class="prim-args">n</span><br>
+        Set pen thickness in pixels. Example: <code class="example">setpw 5</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">penwidth, pw</span><br>
+        Returns current pen thickness.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">setpenshape, setps</span> <span class="prim-args">0|1</span><br>
+        Set pen shape: 0 = square, 1 = round.
+    </div>
+
+    <h2>Colors</h2>
+
+    <div class="prim">
+        <span class="prim-name">setpencolor, setpc</span> <span class="prim-args">color</span><br>
+        Set the pen color. Use a color name or [r g b] list.<br>
+        Examples: <code class="example">setpc "red</code> or <code class="example">setpc [255 0 0]</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">setscreencolor, setsc</span> <span class="prim-args">color</span><br>
+        Set the background color. Example: <code class="example">setsc "blue</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">pencolor, pc</span><br>
+        Returns current pen color as [r g b].
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">screencolor, sc</span><br>
+        Returns current screen color as [r g b].
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">findcolor, fc</span> <span class="prim-args">[x y]</span><br>
+        Returns the color of the pixel at [x y].
+    </div>
+
+    <h2>Turtle Visibility</h2>
+
+    <div class="prim">
+        <span class="prim-name">showturtle, st</span><br>
+        Make the turtle visible.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">hideturtle, ht</span><br>
+        Hide the turtle (drawing is faster when hidden).
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">setshape</span> <span class="prim-args">n</span><br>
+        Set turtle shape (0-6). 0 is triangular.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">shape</span><br>
+        Returns current turtle shape number.
+    </div>
+
+    <h2>Screen Control</h2>
+
+    <div class="prim">
+        <span class="prim-name">clearscreen, cs</span><br>
+        Clear the drawing area and return turtle home.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">wash</span><br>
+        Clear the drawing area but keep turtle in place.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">resetall</span><br>
+        Reset all settings to defaults and clear screen.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">window</span><br>
+        Turtle can travel outside the drawing area.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">wrap</span><br>
+        Turtle wraps around to opposite side when leaving.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">fence</span><br>
+        Turtle is confined to the drawing area (error if it tries to leave).
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">perspective</span><br>
+        Enable 3D mode. Use window/wrap/fence to exit.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">setscreensize</span> <span class="prim-args">[w h]</span><br>
+        Set screen dimensions. Example: <code class="example">setscreensize [800 600]</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">screensize</span><br>
+        Returns current screen size as [w h].
+    </div>
+
+    <h2>Queries</h2>
+
+    <div class="prim">
+        <span class="prim-name">pos, position</span><br>
+        Returns turtle position as [x y]. Example: <code class="example">print pos</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">x</span><br>
+        Returns the turtle's x-coordinate.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">y</span><br>
+        Returns the turtle's y-coordinate.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">z</span><br>
+        Returns the turtle's z-coordinate (3D mode only).
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">heading</span><br>
+        Returns the turtle's current heading.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">towards</span> <span class="prim-args">[x y]</span><br>
+        Returns heading needed to face point [x y].
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">distance</span> <span class="prim-args">[x y]</span><br>
+        Returns distance from turtle to point [x y].
+    </div>
+
+    <h2>Control Structures</h2>
+
+    <div class="prim">
+        <span class="prim-name">repeat</span> <span class="prim-args">n [commands]</span><br>
+        Repeat commands n times. Example: <code class="example">repeat 4 [fd 100 rt 90]</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">if</span> <span class="prim-args">condition [commands]</span><br>
+        Execute commands if condition is true. Example: <code class="example">if :x > 10 [print "big]</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">ifelse</span> <span class="prim-args">condition [true-cmds] [false-cmds]</span><br>
+        Execute first list if true, second if false.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">for</span> <span class="prim-args">[var start end step] [commands]</span><br>
+        Loop with counter. Example: <code class="example">for [i 1 10 1] [print :i]</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">while</span> <span class="prim-args">[condition] [commands]</span><br>
+        Repeat while condition is true.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">stop</span><br>
+        Exit the current procedure.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">output, op</span> <span class="prim-args">value</span><br>
+        Return a value from a procedure. Example: <code class="example">output :x + 1</code>
+    </div>
+
+    <h2>Grid</h2>
+
+    <div class="prim">
+        <span class="prim-name">grid</span> <span class="prim-args">width height</span><br>
+        Draw a grid with given cell dimensions. Example: <code class="example">grid 50 50</code>
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">stopgrid</span><br>
+        Remove the grid.
+    </div>
+
+    <div class="prim">
+        <span class="prim-name">setgridcolor</span> <span class="prim-args">color</span><br>
+        Set the grid color. Example: <code class="example">setgridcolor "gray</code>
+    </div>
+
+</body>
+</html>

@@ -159,6 +159,9 @@
                     <include>**/*.png</include>
                     <include>**/*.svg</include>
                     <include>**/*.html</include>
+                    <include>**/*.hs</include>
+                    <include>**/*.jhm</include>
+                    <include>**/*.xml</include>
                 </includes>
             </resource>
         </resources>

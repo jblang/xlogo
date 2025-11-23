@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Interface - XLogo Manual</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; line-height: 1.5; background: #ffffff; color: #333333; }
+        h1 { color: #333; border-bottom: 2px solid #007acc; padding-bottom: 10px; }
+        h2 { color: #007acc; }
+        h3 { color: #555; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; color: #333; }
+        kbd { background: #eee; border: 1px solid #ccc; padding: 2px 6px; border-radius: 3px; font-family: monospace; color: #333; }
+        table { border-collapse: collapse; margin: 15px 0; }
+        td, th { border: 1px solid #ddd; padding: 8px 12px; }
+        th { background: #f4f4f4; }
+        a { color: #007acc; }
+    </style>
+</head>
+<body>
+    <h1>Interface Guide</h1>
+
+    <h2>The Main Window</h2>
+    <ul>
+        <li><strong>Menu Bar</strong> - File, Edit, Tools, Options, and Help menus</li>
+        <li><strong>Command Line</strong> - Enter Logo instructions here and press Enter to execute</li>
+        <li><strong>Drawing Area</strong> - The canvas where the turtle draws</li>
+        <li><strong>Tool Bar</strong> - Zoom, edit tools, and the Play button</li>
+        <li><strong>Command History</strong> - Shows previous commands and responses</li>
+        <li><strong>Stop Button</strong> - Interrupts program execution</li>
+        <li><strong>Editor Button</strong> - Opens the procedure editor</li>
+    </ul>
+
+    <h2>The Procedure Editor</h2>
+    <p>The editor lets you write and save procedures (reusable code). Open it by:</p>
+    <ul>
+        <li>Typing <code>ed</code> in the command line</li>
+        <li>Clicking the Editor button</li>
+        <li>Using the keyboard shortcut <kbd>Alt</kbd>+<kbd>E</kbd></li>
+    </ul>
+
+    <h3>Editor Buttons</h3>
+    <table>
+        <tr><th>Action</th><th>Description</th><th>Shortcut</th></tr>
+        <tr><td>Turtle icon</td><td>Save changes and close editor</td><td><kbd>Alt</kbd>+<kbd>Q</kbd></td></tr>
+        <tr><td>X icon</td><td>Close without saving</td><td><kbd>Alt</kbd>+<kbd>C</kbd></td></tr>
+        <tr><td>Print</td><td>Print editor contents</td><td></td></tr>
+        <tr><td>Copy/Cut/Paste</td><td>Standard clipboard operations</td><td></td></tr>
+        <tr><td>Find</td><td>Open Find/Replace dialog</td><td></td></tr>
+    </table>
+
+    <h3>Main Command</h3>
+    <p>At the bottom of the editor, you can define a "main command" - the instruction that runs
+    when you click the Play button in the main window. This command is saved with your .lgo file.</p>
+
+    <h2>File Menu</h2>
+    <ul>
+        <li><strong>New</strong> - Create a new workspace (clears all procedures and variables)</li>
+        <li><strong>Open</strong> - Open a saved .lgo file</li>
+        <li><strong>Save / Save As</strong> - Save your procedures</li>
+        <li><strong>Capture Image</strong> - Save the drawing area as an image</li>
+        <li><strong>Print</strong> - Print the current drawing</li>
+        <li><strong>Quit</strong> - Exit XLogo</li>
+    </ul>
+
+    <h2>Keyboard Shortcuts</h2>
+    <table>
+        <tr><th>Shortcut</th><th>Action</th></tr>
+        <tr><td><kbd>Up</kbd>/<kbd>Down</kbd> arrows</td><td>Navigate command history</td></tr>
+        <tr><td><kbd>Alt</kbd>+<kbd>E</kbd></td><td>Open editor</td></tr>
+        <tr><td><kbd>Alt</kbd>+<kbd>Q</kbd></td><td>Save and close editor</td></tr>
+        <tr><td><kbd>Alt</kbd>+<kbd>C</kbd></td><td>Close editor without saving</td></tr>
+    </table>
+</body>
+</html>
