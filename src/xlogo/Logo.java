@@ -34,12 +34,27 @@ public class Logo {
     static String mainCommand = "";
     static boolean autoLaunch = false;
 
+    // Configure macOS-specific settings before any Swing components are created
+    static {
+        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            // Use macOS screen menu bar instead of in-window menu
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            // Set application name shown in menu bar
+            System.setProperty("apple.awt.application.name", "XLogo");
+            // Follow macOS system appearance (dark/light mode)
+            System.setProperty("apple.awt.application.appearance", "system");
+        }
+    }
+
     /**
      * The main methods
      *
      * @param args The file *.lgo to load on startup
      */
     public static void main(String[] args) {
+        // Set macOS dock icon
+        setDockIcon();
+
         // Check if we need to re-exec with proper JVM arguments
         if (!"true".equals(System.getProperty("xlogo.launched"))) {
             if (relaunchWithJvmArgs(args)) {
@@ -94,6 +109,12 @@ public class Logo {
             command.add("-Xmx" + memory + "m");
             // Mark as launched to prevent infinite relaunch loop
             command.add("-Dxlogo.launched=true");
+            // macOS-specific settings for native menu bar and window theming
+            if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+                command.add("-Dapple.laf.useScreenMenuBar=true");
+                command.add("-Dapple.awt.application.name=XLogo");
+                command.add("-Dapple.awt.application.appearance=system");
+            }
             // JOGL workarounds for Java 9+ (https://jogamp.org/bugzilla/show_bug.cgi?id=1317)
             command.add("--add-exports=java.base/java.lang=ALL-UNNAMED");
             command.add("--add-exports=java.desktop/sun.awt=ALL-UNNAMED");
@@ -247,6 +268,30 @@ public class Logo {
 
     public static ImageIcon getAppIcon() {
         return new ImageIcon(Objects.requireNonNull(Logo.class.getResource("resources/appicon.png")));
+    }
+
+    /**
+     * Sets the taskbar/dock icon using the Taskbar API (Java 9+).
+     * Uses platform-appropriate icon (rounded for macOS, square for others).
+     * Silently fails on platforms that don't support it.
+     */
+    private static void setDockIcon() {
+        try {
+            if (Taskbar.isTaskbarSupported()) {
+                Taskbar taskbar = Taskbar.getTaskbar();
+                if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
+                    boolean isMac = System.getProperty("os.name").toLowerCase().contains("mac");
+                    Image icon = isMac ? getMacOSAppIcon().getImage() : getAppIcon().getImage();
+                    taskbar.setIconImage(icon);
+                }
+            }
+        } catch (Exception ignored) {
+            // Taskbar not supported on this platform
+        }
+    }
+
+    public static ImageIcon getMacOSAppIcon() {
+        return new ImageIcon(Objects.requireNonNull(Logo.class.getResource("resources/appicon-macos.png")));
     }
 
     public static FlatSVGIcon getTurtle(int i) {

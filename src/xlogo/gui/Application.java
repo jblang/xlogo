@@ -83,6 +83,7 @@ public class Application extends JFrame {
         setTitle("XLogo");
         setIconImage(Logo.getAppIcon().getImage());
         createMenuBar();
+        configureMacOSHandlers();
         createContent();
         updateLocalization();
         changeLookAndFeel();
@@ -128,59 +129,133 @@ public class Application extends JFrame {
     }
 
     private JMenuItem createMenuItem(JMenu parent, String key, ActionListener listener) {
+        return createMenuItem(parent, key, listener, null);
+    }
+
+    private JMenuItem createMenuItem(JMenu parent, String key, ActionListener listener, KeyStroke accelerator) {
         var item = new JMenuItem();
         item.setActionCommand(key);
         menuItems.add(item);
         item.addActionListener(listener);
+        if (accelerator != null) {
+            item.setAccelerator(accelerator);
+        }
         parent.add(item);
         return item;
     }
 
+    private KeyStroke cmdKey(int keyCode) {
+        return KeyStroke.getKeyStroke(keyCode, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
+    }
+
+    private KeyStroke cmdShiftKey(int keyCode) {
+        return KeyStroke.getKeyStroke(keyCode,
+            Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | InputEvent.SHIFT_DOWN_MASK);
+    }
+
     private void createMenuBar() {
         var menuBar = new JMenuBar();
+        boolean isMac = System.getProperty("os.name").toLowerCase().contains("mac");
 
+        // On macOS, set as default menu bar so it persists when other windows are active
+        // On other platforms, attach to this window only
+        if (isMac && Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.APP_MENU_BAR)) {
+                desktop.setDefaultMenuBar(menuBar);
+            }
+        }
+
+        // File menu - follows macOS HIG order
         var fileMenu = createMenu("menu.file");
         menuBar.add(fileMenu);
-        createMenuItem(fileMenu, "menu.file.new", e -> newFile());
-        createMenuItem(fileMenu, "menu.file.open", e -> openWorkspace());
-        createMenuItem(fileMenu, "menu.file.saveAs", e -> saveWorkspace(true));
-        createMenuItem(fileMenu, "menu.file.save", e -> saveWorkspace(false));
-
+        createMenuItem(fileMenu, "menu.file.new", e -> newFile(), cmdKey(KeyEvent.VK_N));
+        createMenuItem(fileMenu, "menu.file.open", e -> openWorkspace(), cmdKey(KeyEvent.VK_O));
+        if (isMac) {
+            createMenuItem(fileMenu, "menu.file.close", e -> closeActiveWindow(), cmdKey(KeyEvent.VK_W));
+        }
+        fileMenu.addSeparator();
+        createMenuItem(fileMenu, "menu.file.save", e -> saveWorkspace(false), cmdKey(KeyEvent.VK_S));
+        createMenuItem(fileMenu, "menu.file.saveAs", e -> saveWorkspace(true), cmdShiftKey(KeyEvent.VK_S));
+        fileMenu.addSeparator();
         var fileImageMenu = createMenu(fileMenu, "menu.file.captureimage");
         createMenuItem(fileImageMenu, "menu.file.captureimage.clipboard", e -> copyImage());
-        createMenuItem(fileImageMenu, "menu.file.saveAs", e -> saveImage());
-        createMenuItem(fileImageMenu, "menu.file.captureimage.print", e -> printImage());
-
+        createMenuItem(fileImageMenu, "menu.file.captureimage.save", e -> saveImage());
         var fileTextMenu = createMenu(fileMenu, "menu.file.text");
         createMenuItem(fileTextMenu, "menu.file.saveRtf", e -> historyPanel.saveHistory());
-        createMenuItem(fileMenu, "menu.file.quit", e -> closeWindow());
+        fileMenu.addSeparator();
+        createMenuItem(fileMenu, "menu.file.print", e -> printImage(), cmdKey(KeyEvent.VK_P));
+        if (!isMac) {
+            fileMenu.addSeparator();
+            createMenuItem(fileMenu, "menu.file.quit", e -> closeWindow(), cmdKey(KeyEvent.VK_Q));
+        }
 
+        // Edit menu - follows macOS HIG order
         var editMenu = createMenu("menu.edit");
         menuBar.add(editMenu);
-        createMenuItem(editMenu, "menu.edit.cut", e -> cut());
-        createMenuItem(editMenu, "menu.edit.copy", e -> copy());
-        createMenuItem(editMenu, "menu.edit.paste", e -> paste());
-        createMenuItem(editMenu, "menu.edit.selectAll", e -> selectAll());
-        menuBar.add(editMenu);
+        createMenuItem(editMenu, "menu.edit.cut", e -> cut(), cmdKey(KeyEvent.VK_X));
+        createMenuItem(editMenu, "menu.edit.copy", e -> copy(), cmdKey(KeyEvent.VK_C));
+        createMenuItem(editMenu, "menu.edit.paste", e -> paste(), cmdKey(KeyEvent.VK_V));
+        editMenu.addSeparator();
+        createMenuItem(editMenu, "menu.edit.selectAll", e -> selectAll(), cmdKey(KeyEvent.VK_A));
 
+        // Tools menu
         var toolsMenu = createMenu("menu.tools");
         menuBar.add(toolsMenu);
         createMenuItem(toolsMenu, "menu.tools.penColor", e -> showColorChooser(true));
         createMenuItem(toolsMenu, "menu.tools.screenColor", e -> showColorChooser(false));
+        toolsMenu.addSeparator();
         createMenuItem(toolsMenu, "menu.tools.startupFile", e -> showStartupFiles());
         createMenuItem(toolsMenu, "menu.tools.codeTranslator", e -> showCodeTranslator());
         createMenuItem(toolsMenu, "menu.tools.procedureEraser", e -> showProcedureEraser());
-        createMenuItem(toolsMenu, "menu.tools.preferences", e -> showPreferences());
+        toolsMenu.addSeparator();
+        createMenuItem(toolsMenu, "menu.tools.translateXLogo", e -> showUiTranslator());
+        if (!isMac) {
+            toolsMenu.addSeparator();
+            createMenuItem(toolsMenu, "menu.tools.preferences", e -> showPreferences(), cmdKey(KeyEvent.VK_COMMA));
+        }
 
+        // Window menu (macOS only)
+        if (isMac) {
+            var windowMenu = createMenu("menu.window");
+            menuBar.add(windowMenu);
+            createMenuItem(windowMenu, "menu.window.minimize", e -> minimizeActiveWindow(), cmdKey(KeyEvent.VK_M));
+            createMenuItem(windowMenu, "menu.window.zoom", e -> zoomActiveWindow());
+            windowMenu.addSeparator();
+            createMenuItem(windowMenu, "menu.window.bringAllToFront", e -> bringAllToFront());
+        }
+
+        // Help menu
         var helpMenu = createMenu("menu.help");
         menuBar.add(helpMenu);
         createMenuItem(helpMenu, "menu.help.onlineManual", this::showHelp);
+        helpMenu.addSeparator();
         createMenuItem(helpMenu, "menu.help.licence", e -> showLicence(true));
         createMenuItem(helpMenu, "menu.help.translatedLicense", e -> showLicence(false));
-        createMenuItem(helpMenu, "menu.help.translateXLogo", e -> showUiTranslator());
-        createMenuItem(helpMenu, "menu.help.about", e -> showAbout());
+        if (!isMac) {
+            helpMenu.addSeparator();
+            createMenuItem(helpMenu, "menu.help.about", e -> showAbout());
+        }
 
         setJMenuBar(menuBar);
+    }
+
+    private void configureMacOSHandlers() {
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
+                desktop.setAboutHandler(e -> showAbout());
+            }
+            if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
+                desktop.setPreferencesHandler(e -> showPreferences());
+            }
+            if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
+                desktop.setQuitHandler((e, response) -> {
+                    closeWindow();
+                    response.cancelQuit(); // closeWindow handles exit
+                });
+            }
+        }
     }
 
     private JToolBar createToolBar() {
@@ -902,6 +977,47 @@ public class Application extends JFrame {
     public void setZoomEnabled(boolean b) {
         zoomInButton.setEnabled(b);
         zoomOutButton.setEnabled(b);
+    }
+
+    // macOS Window menu actions
+
+    private void closeActiveWindow() {
+        Window window = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+        if (window != null) {
+            if (window == this) {
+                closeWindow();
+            } else {
+                window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+            }
+        }
+    }
+
+    private void minimizeActiveWindow() {
+        Window window = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+        if (window instanceof Frame) {
+            ((Frame) window).setExtendedState(Frame.ICONIFIED);
+        }
+    }
+
+    private void zoomActiveWindow() {
+        Window window = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+        if (window instanceof Frame) {
+            Frame frame = (Frame) window;
+            int state = frame.getExtendedState();
+            if ((state & Frame.MAXIMIZED_BOTH) != 0) {
+                frame.setExtendedState(state & ~Frame.MAXIMIZED_BOTH);
+            } else {
+                frame.setExtendedState(state | Frame.MAXIMIZED_BOTH);
+            }
+        }
+    }
+
+    private void bringAllToFront() {
+        for (Window window : Window.getWindows()) {
+            if (window.isVisible()) {
+                window.toFront();
+            }
+        }
     }
 
     /**
