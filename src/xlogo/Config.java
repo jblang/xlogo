@@ -37,10 +37,10 @@ public class Config {
 
     private Language language = Language.ENGLISH;
 
-    public static final int LAF_NATIVE = 0;
+    public static final int LAF_SYSTEM = 0;
     public static final int LAF_LIGHT = 1;
     public static final int LAF_DARK = 2;
-    private int lookAndFeel = LAF_DARK;
+    private int lookAndFeel = LAF_SYSTEM;
 
     private int imageWidth = 400;
     private int imageHeight = 400;

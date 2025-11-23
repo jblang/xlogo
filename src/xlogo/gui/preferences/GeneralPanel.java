@@ -21,7 +21,7 @@ public class GeneralPanel extends JPanel {
 
     private final JList<Language> languageList = new JList<>(Language.values());
     private final JRadioButton lightLaf = new JRadioButton();
-    private final JRadioButton nativeLaf = new JRadioButton();
+    private final JRadioButton systemLaf = new JRadioButton();
     private final JRadioButton darkLaf = new JRadioButton();
     private final JSlider speedSlider = new JSlider(0, 100);
 
@@ -45,11 +45,11 @@ public class GeneralPanel extends JPanel {
         lightLaf.setHorizontalAlignment(SwingConstants.LEFT);
         lightLaf.setHorizontalTextPosition(SwingConstants.LEFT);
         lightLaf.setText(Logo.getString("pref.theme.light"));
-        nativeLaf.setActionCommand(Logo.getString("pref.theme.native"));
-        nativeLaf.setHorizontalAlignment(SwingConstants.LEFT);
-        nativeLaf.setHorizontalTextPosition(SwingConstants.LEFT);
-        nativeLaf.setText(Logo.getString("pref.theme.native"));
-        nativeLaf.setVerticalAlignment(SwingConstants.CENTER);
+        systemLaf.setActionCommand(Logo.getString("pref.theme.system"));
+        systemLaf.setHorizontalAlignment(SwingConstants.LEFT);
+        systemLaf.setHorizontalTextPosition(SwingConstants.LEFT);
+        systemLaf.setText(Logo.getString("pref.theme.system"));
+        systemLaf.setVerticalAlignment(SwingConstants.CENTER);
         switch (Logo.config.getLookAndFeel()) {
             case Config.LAF_LIGHT:
                 lightLaf.setSelected(true);
@@ -57,14 +57,14 @@ public class GeneralPanel extends JPanel {
             case Config.LAF_DARK:
                 darkLaf.setSelected(true);
                 break;
-            case Config.LAF_NATIVE:
-                nativeLaf.setSelected(true);
+            case Config.LAF_SYSTEM:
+                systemLaf.setSelected(true);
                 break;
         }
         var lafButtonGroup = new ButtonGroup();
         lafButtonGroup.add(darkLaf);
         lafButtonGroup.add(lightLaf);
-        lafButtonGroup.add(nativeLaf);
+        lafButtonGroup.add(systemLaf);
 
         var languageLabel = new JLabel(Logo.getString("pref.language"));
         languageLabel.setOpaque(true);
@@ -110,7 +110,7 @@ public class GeneralPanel extends JPanel {
         add(lightLaf, new GridBagConstraints(1, 2, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
                 0, 0, 0, 0), 0, 0));
-        add(nativeLaf, new GridBagConstraints(1, 3, 1, 1, 1.0,
+        add(systemLaf, new GridBagConstraints(1, 3, 1, 1, 1.0,
                 1.0, GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
 
@@ -140,10 +140,10 @@ public class GeneralPanel extends JPanel {
             app.changeLanguage();
         }
         Logo.config.setTurtleSpeed(speedSlider.getMaximum() - speedSlider.getValue());
-        if (nativeLaf.isSelected()) {
-            if (Logo.config.getLookAndFeel() != Config.LAF_NATIVE) {
-                Logo.config.setLookAndFeel(Config.LAF_NATIVE);
-                Logo.config.loadLightEditorTheme();
+        if (systemLaf.isSelected()) {
+            if (Logo.config.getLookAndFeel() != Config.LAF_SYSTEM) {
+                Logo.config.setLookAndFeel(Config.LAF_SYSTEM);
+                // Editor theme will be set by changeLookAndFeel based on system dark mode
             }
         } else if (lightLaf.isSelected()) {
             if (Logo.config.getLookAndFeel() != Config.LAF_LIGHT) {

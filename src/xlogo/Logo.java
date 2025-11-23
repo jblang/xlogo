@@ -8,6 +8,9 @@
 package xlogo;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
@@ -74,13 +77,8 @@ public class Logo {
             config = Config.read();
             launchApp();
         } catch (Exception e) {
-            // Default to dark look and feel
-            try {
-                UIManager.setLookAndFeel(new FlatDarkLaf());
-            } catch (UnsupportedLookAndFeelException ex) {
-                ex.printStackTrace();
-            }
-            config.loadDarkEditorTheme();
+            // Default to system theme
+            applySystemTheme();
             // Prompt for language
             SwingUtilities.invokeLater(Logo::askLanguage);
         }
@@ -351,5 +349,71 @@ public class Logo {
         for (var lang : langs)
             names[i++] = getString(lang.key);
         return names;
+    }
+
+    /**
+     * Apply theme based on system dark mode setting
+     */
+    private static void applySystemTheme() {
+        try {
+            boolean isMac = System.getProperty("os.name").toLowerCase().contains("mac");
+            boolean useDark = isSystemDarkMode();
+            if (useDark) {
+                UIManager.setLookAndFeel(isMac ? new FlatMacDarkLaf() : new FlatDarkLaf());
+                config.loadDarkEditorTheme();
+            } else {
+                UIManager.setLookAndFeel(isMac ? new FlatMacLightLaf() : new FlatLightLaf());
+                config.loadLightEditorTheme();
+            }
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Detect if the system is in dark mode
+     */
+    public static boolean isSystemDarkMode() {
+        // macOS: check defaults read -g AppleInterfaceStyle
+        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            try {
+                Process process = Runtime.getRuntime().exec(
+                    new String[]{"defaults", "read", "-g", "AppleInterfaceStyle"});
+                process.waitFor();
+                java.io.BufferedReader reader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(process.getInputStream()));
+                String line = reader.readLine();
+                return line != null && line.toLowerCase().contains("dark");
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        // Windows: check registry for AppsUseLightTheme
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            try {
+                Process process = Runtime.getRuntime().exec(
+                    new String[]{"reg", "query",
+                        "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+                        "/v", "AppsUseLightTheme"});
+                process.waitFor();
+                java.io.BufferedReader reader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("AppsUseLightTheme")) {
+                        return line.contains("0x0");
+                    }
+                }
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        // Linux/other: check GTK theme name for "dark"
+        String gtkTheme = System.getenv("GTK_THEME");
+        if (gtkTheme != null && gtkTheme.toLowerCase().contains("dark")) {
+            return true;
+        }
+        // Default to light mode
+        return false;
     }
 }

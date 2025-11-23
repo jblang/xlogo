@@ -8,6 +8,8 @@ package xlogo.gui;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import xlogo.Config;
 import xlogo.Logo;
@@ -676,26 +678,36 @@ public class Application extends JFrame {
      */
     public void changeLookAndFeel() {
         try {
+            boolean isMac = System.getProperty("os.name").toLowerCase().contains("mac");
+            boolean useDark;
             switch (Logo.config.getLookAndFeel()) {
-                case Config.LAF_NATIVE:
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                case Config.LAF_SYSTEM:
+                    useDark = Logo.isSystemDarkMode();
                     break;
                 case Config.LAF_LIGHT:
-                    UIManager.setLookAndFeel(new FlatLightLaf());
+                    useDark = false;
                     break;
                 default:
-                    UIManager.setLookAndFeel(new FlatDarkLaf());
+                    useDark = true;
                     break;
+            }
+            if (useDark) {
+                UIManager.setLookAndFeel(isMac ? new FlatMacDarkLaf() : new FlatDarkLaf());
+                Logo.config.loadDarkEditorTheme();
+            } else {
+                UIManager.setLookAndFeel(isMac ? new FlatMacLightLaf() : new FlatLightLaf());
+                Logo.config.loadLightEditorTheme();
             }
             SwingUtilities.updateComponentTreeUI(this);
             editor.changeLookAndFeel();
             Logo.config.configureEditor(commandLine);
             commandLine.setHighlightCurrentLine(false);
             Logo.config.configureEditor(editor.textArea);
-        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Return the drawing area
