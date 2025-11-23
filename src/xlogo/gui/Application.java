@@ -277,7 +277,8 @@ public class Application extends JFrame {
     }
 
     private void createContent() {
-        historyPanel.setMinimumSize(new Dimension(600, 40));
+        historyPanel.setPreferredSize(new Dimension(drawPanel.getPreferredSize().width, 80));
+        historyPanel.setMinimumSize(new Dimension(0, 30));
 
         var commandPanel = new JPanel();
         commandPanel.setLayout(new BorderLayout());

@@ -57,11 +57,17 @@ public class HistoryPanel extends JPanel {
 
     public void setText(String style, String text) {
         try {
+            text = text.strip();
             int length = textPane.getDocument().getLength();
             if (text.length() > 32000) throw new LogoException(app, Logo.getString("historyPanel.messageTooLong"));
             if (length + text.length() < 65000) {
                 try {
                     int offset = document.getLength();
+                    // Add newline before new text if document isn't empty
+                    if (offset > 0) {
+                        document.insertString(offset, "\n", null);
+                        offset++;
+                    }
                     document.insertString(offset, text, null);
                     switch (style) {
                         case "application.error":
