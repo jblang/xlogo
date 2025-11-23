@@ -66,7 +66,7 @@ public class Calculator {
      * @return
      */
 
-    static protected String teste_fin_double(double d) {
+    static protected String formatDouble(double d) {
         String st = String.valueOf(d);
         if (st.endsWith(".0"))
             st = st.substring(0, st.length() - 2);
@@ -124,7 +124,7 @@ public class Calculator {
     protected String exp(String s) throws LogoException {
         if (lowPrecision) {
             double nombre = numberDouble(s);
-            return teste_fin_double(Math.exp(nombre));
+            return formatDouble(Math.exp(nombre));
         } else {
             BigDecimal bd = numberDecimal(s);
             return expBD(bd).toPlainString();
@@ -147,7 +147,7 @@ public class Calculator {
                 throw new LogoException(app, log + " "
                         + Logo.getString("interpreter.error.requirePositive"));
             }
-            return teste_fin_double(Math.log(nombre));
+            return formatDouble(Math.log(nombre));
         } else {
             BigDecimal bd = numberDecimal(s);
             if (bd.signum() != 1) {
@@ -175,7 +175,7 @@ public class Calculator {
                 throw new LogoException(app, sqrt + " "
                         + Logo.getString("interpreter.error.requirePositive"));
             }
-            return teste_fin_double(Math.sqrt(number));
+            return formatDouble(Math.sqrt(number));
         } else {
             BigDecimal bd = numberDecimal(s);
             if (bd.signum() == -1) {
@@ -215,7 +215,7 @@ public class Calculator {
             if (b == 0)
                 throw new LogoException(app, Logo
                         .getString("interpreter.error.divideByZero"));
-            return (teste_fin_double(a / b));
+            return (formatDouble(a / b));
         } else {
             BigDecimal a = new BigDecimal(param.get(0), mc);
             BigDecimal b = new BigDecimal(param.get(1), mc);
@@ -319,7 +319,7 @@ public class Calculator {
             if (bb == 0)
                 throw new LogoException(app, Logo
                         .getString("interpreter.error.divideByZero"));
-            return teste_fin_double(aa % bb);
+            return formatDouble(aa % bb);
         } else {
             BigDecimal aa = getBigInteger(a);
             BigDecimal bb = getBigInteger(b);
@@ -340,7 +340,7 @@ public class Calculator {
                         .getString("interpreter.error.divideByZero"));
             double rem = aa % bb;
             if (aa * bb < 0 && rem != 0) rem = rem + bb;
-            return teste_fin_double(rem);
+            return formatDouble(rem);
         } else {
             BigDecimal aa = getBigInteger(a);
             BigDecimal bb = getBigInteger(b);
@@ -392,7 +392,7 @@ public class Calculator {
             if (p1.equals(Double.NaN))
                 throw new LogoException(app, Utils.primitiveName("math.power") + " " + Logo.getString("interpreter.error.requirePositive"));
             // End Bug
-            return teste_fin_double(p);
+            return formatDouble(p);
         } else {
             // if the exposant is an integer
             try {
@@ -428,7 +428,7 @@ public class Calculator {
 
     protected String sin(String s) throws LogoException {
         if (lowPrecision) {
-            return teste_fin_double(Math.sin(Math
+            return formatDouble(Math.sin(Math
                     .toRadians(numberDouble(s))));
         } else {
             BigDecimal bd = numberDecimal(s);
@@ -439,7 +439,7 @@ public class Calculator {
 
     protected String cos(String s) throws LogoException {
         if (lowPrecision) {
-            return teste_fin_double(Math.cos(Math
+            return formatDouble(Math.cos(Math
                     .toRadians(numberDouble(s))));
         } else {
             BigDecimal bd = numberDecimal(s);
@@ -450,7 +450,7 @@ public class Calculator {
 
     protected String tan(String s) throws LogoException {
         if (lowPrecision) {
-            return teste_fin_double(Math.tan(Math
+            return formatDouble(Math.tan(Math
                     .toRadians(numberDouble(s))));
         } else {
             BigDecimal bd = numberDecimal(s);
@@ -460,7 +460,7 @@ public class Calculator {
 
     protected String atan(String s) throws LogoException {
         if (lowPrecision) {
-            return teste_fin_double(Math.toDegrees(Math
+            return formatDouble(Math.toDegrees(Math
                     .atan(numberDouble(s))));
         } else {
             BigDecimal bd = numberDecimal(s);
@@ -470,7 +470,7 @@ public class Calculator {
 
     protected String acos(String s) throws LogoException {
         if (lowPrecision) {
-            return teste_fin_double(Math.toDegrees(Math.acos(numberDouble(s))));
+            return formatDouble(Math.toDegrees(Math.acos(numberDouble(s))));
         } else {
             BigDecimal bd = numberDecimal(s);
             return toDegree(acosBD(bd)).toPlainString();
@@ -479,7 +479,7 @@ public class Calculator {
 
     protected String asin(String s) throws LogoException {
         if (lowPrecision) {
-            return teste_fin_double(Math.toDegrees(Math.asin(numberDouble(s))));
+            return formatDouble(Math.toDegrees(Math.asin(numberDouble(s))));
         } else {
             BigDecimal bd = numberDecimal(s);
             return toDegree(asinBD(bd)).toPlainString();

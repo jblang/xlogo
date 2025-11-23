@@ -237,6 +237,6 @@ public class OptionsPanel extends JPanel {
         Logo.config.setYAxisEnabled(b);
         Logo.config.setYAxisSpacing(axisPanel.getYAxis());
         Logo.config.setAxisColor(axisPanel.getAxisColor());
-        app.getKernel().vide_ecran();
+        app.getKernel().clearScreen();
     }
 }

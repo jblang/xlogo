@@ -584,7 +584,7 @@ public class Interpreter {
             instructionBuffer.insertCode(instructions);
         }
         while (instructionBuffer.getLength() != 0) {
-            if (app.error && LogoException.lance) throw new LogoException(app, Logo.getString("application.tooltip.stop"));
+            if (app.error && LogoException.thrown) throw new LogoException(app, Logo.getString("application.tooltip.stop"));
             while (app.animation.isOnPause()) { // If we touch the scrollbars
                 try {
                     wait();
@@ -1347,7 +1347,7 @@ public class Interpreter {
 
     void randomZeroToOne(Stack<String> param) {
         Interpreter.returnValue = true;
-        Interpreter.operands.push(Calculator.teste_fin_double(Math.random()));
+        Interpreter.operands.push(Calculator.formatDouble(Math.random()));
     }
 
     void fillPolygon(Stack<String> param) {
@@ -1366,24 +1366,24 @@ public class Interpreter {
         Interpreter.returnValue = true;
         try {
             primitive3D("drawing.z");
-            Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().Z));
+            Interpreter.operands.push(Calculator.formatDouble(kernel.getActiveTurtle().Z));
         } catch (LogoException ignored) {
         }
     }
 
     void getY(Stack<String> param) {
         Interpreter.returnValue = true;
-        Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().getY()));
+        Interpreter.operands.push(Calculator.formatDouble(kernel.getActiveTurtle().getY()));
     }
 
     void getX(Stack<String> param) {
         Interpreter.returnValue = true;
-        Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().getX()));
+        Interpreter.operands.push(Calculator.formatDouble(kernel.getActiveTurtle().getX()));
     }
 
     void getZoom(Stack<String> param) {
         Interpreter.returnValue = true;
-        Interpreter.operands.push(Calculator.teste_fin_double(DrawPanel.zoom));
+        Interpreter.operands.push(Calculator.formatDouble(DrawPanel.zoom));
     }
 
     void stopMP3(Stack<String> param) {
@@ -1836,9 +1836,9 @@ public class Interpreter {
         try {
             primitive3D("3d.orientation");
             Interpreter.returnValue = true;
-            String pitch = Calculator.teste_fin_double(kernel.getActiveTurtle().pitch);
-            String roll = Calculator.teste_fin_double(kernel.getActiveTurtle().roll);
-            String heading = Calculator.teste_fin_double(kernel.getActiveTurtle().heading);
+            String pitch = Calculator.formatDouble(kernel.getActiveTurtle().pitch);
+            String roll = Calculator.formatDouble(kernel.getActiveTurtle().roll);
+            String heading = Calculator.formatDouble(kernel.getActiveTurtle().heading);
             Interpreter.operands.push("[ " + roll + " " + pitch + " " + heading + " ] ");
         } catch (LogoException ignored) {
         }
@@ -1875,7 +1875,7 @@ public class Interpreter {
         try {
             primitive3D("3d.pitch");
             Interpreter.returnValue = true;
-            Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().pitch));
+            Interpreter.operands.push(Calculator.formatDouble(kernel.getActiveTurtle().pitch));
         } catch (LogoException ignored) {
         }
     }
@@ -1884,7 +1884,7 @@ public class Interpreter {
         try {
             primitive3D("3d.roll");
             Interpreter.returnValue = true;
-            Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().roll));
+            Interpreter.operands.push(Calculator.formatDouble(kernel.getActiveTurtle().roll));
         } catch (LogoException ignored) {
         }
     }
@@ -2270,7 +2270,7 @@ public class Interpreter {
             }
             Logo.config.setPenShape(i);
             app.getDrawPanel().updateAllTurtleShape();
-            app.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon);
+            app.getDrawPanel().setStroke(kernel.getActiveTurtle().pen);
         } catch (LogoException ignored) {
         }
     }
@@ -2278,7 +2278,7 @@ public class Interpreter {
     void getPenWidth(Stack<String> param) {
         Interpreter.returnValue = true;
         double penwidth = 2 * kernel.getActiveTurtle().getPenWidth();
-        Interpreter.operands.push(Calculator.teste_fin_double(penwidth));
+        Interpreter.operands.push(Calculator.formatDouble(penwidth));
     }
 
     void resetAll(Stack<String> param) {
@@ -2298,12 +2298,12 @@ public class Interpreter {
             Logo.config.setActiveTurtle(0);
         }
         DrawPanel.windowMode = DrawPanel.WINDOW_CLASSIC;
-        kernel.change_image_tortue(0);
+        kernel.changeTurtleImage(0);
         app.getDrawPanel().setScreenColor(Color.WHITE);
         app.getDrawPanel().setPenColor(Color.BLACK);
         app.getDrawPanel().setAnimation(false);
         Logo.config.setFont(new Font("dialog", Font.PLAIN, 12));
-        kernel.getActiveTurtle().police = 12;
+        kernel.getActiveTurtle().fontSize = 12;
         app.getDrawPanel().setGraphicsFont(Logo.config.getFont());
         HistoryPanel.printFontId = Application.getFontId(Logo.config.getFont());
         app.getHistoryPanel().setFontSize(12);
@@ -2906,7 +2906,7 @@ public class Interpreter {
 
     void getSeparation(Stack<String> param) {
         Interpreter.returnValue = true;
-        Interpreter.operands.push(Calculator.teste_fin_double(app.splitPane.getResizeWeight()));
+        Interpreter.operands.push(Calculator.formatDouble(app.splitPane.getResizeWeight()));
     }
 
     void setSeparation(Stack<String> param) {
@@ -3017,7 +3017,7 @@ public class Interpreter {
 
     void isMouseEvent(Stack<String> param) {
         Interpreter.returnValue = true;
-        if (app.getDrawPanel().get_lissouris()) Interpreter.operands.push(Logo.getString("interpreter.keyword.true"));
+        if (app.getDrawPanel().hasMouseEvent()) Interpreter.operands.push(Logo.getString("interpreter.keyword.true"));
         else Interpreter.operands.push(Logo.getString("interpreter.keyword.false"));
     }
 
@@ -3309,19 +3309,19 @@ public class Interpreter {
     }
 
     void mousePosition(Stack<String> param) {
-        Interpreter.operands.push(app.getDrawPanel().get_possouris());
+        Interpreter.operands.push(app.getDrawPanel().getMousePositionList());
         Interpreter.returnValue = true;
     }
 
     void mouseButton(Stack<String> param) {
-        while (!app.getDrawPanel().get_lissouris()) {
+        while (!app.getDrawPanel().hasMouseEvent()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ignored) {
             }
-            if (LogoException.lance) break;
+            if (LogoException.thrown) break;
         }
-        Interpreter.operands.push(String.valueOf(app.getDrawPanel().get_bouton_souris()));
+        Interpreter.operands.push(String.valueOf(app.getDrawPanel().getMouseButton()));
         Interpreter.returnValue = true;
     }
 
@@ -3368,7 +3368,7 @@ public class Interpreter {
     void getSequenceIndex(Stack<String> param) {
         Interpreter.returnValue = true;
         double d = (double) app.getSoundPlayer().getTicks() / 64;
-        Interpreter.operands.push(Calculator.teste_fin_double(d));
+        Interpreter.operands.push(Calculator.formatDouble(d));
     }
 
     void setInstrument(Stack<String> param) {
@@ -3380,11 +3380,11 @@ public class Interpreter {
     }
 
     void deleteSequence(Stack<String> param) {
-        app.getSoundPlayer().efface_sequence();
+        app.getSoundPlayer().clearSequence();
     }
 
     void play(Stack<String> param) {
-        app.getSoundPlayer().joue();
+        app.getSoundPlayer().play();
     }
 
     void getInstrument(Stack<String> param) {
@@ -3396,7 +3396,7 @@ public class Interpreter {
         String liste;
         try {
             liste = getFinalList(param.get(0));
-            app.getSoundPlayer().cree_sequence(Utils.formatCode(liste).toString());
+            app.getSoundPlayer().createSequence(Utils.formatCode(liste).toString());
         } catch (LogoException ignored) {
         }
     }
@@ -3427,9 +3427,9 @@ public class Interpreter {
                             app.getDrawPanel().visibleTurtles.remove(String.valueOf(id));
                         if (kernel.getActiveTurtle().id == id) {
                             app.getDrawPanel().turtle = app.getDrawPanel().turtles[premier_dispo];
-                            app.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon); // we adapt the new pencil
-                            String police = app.getDrawPanel().getGraphicsFont().getName();
-                            app.getDrawPanel().setFont(new Font(police, Font.PLAIN, kernel.getActiveTurtle().police));
+                            app.getDrawPanel().setStroke(kernel.getActiveTurtle().pen);
+                            String fontName = app.getDrawPanel().getGraphicsFont().getName();
+                            app.getDrawPanel().setFont(new Font(fontName, Font.PLAIN, kernel.getActiveTurtle().fontSize));
 
                         }
                     } else {
@@ -3450,16 +3450,16 @@ public class Interpreter {
 
     void setFontSize(Stack<String> param) {
         try {
-            kernel.getActiveTurtle().police = kernel.getCalculator().getInteger(param.get(0));
-            Font police = Logo.config.getFont();
-            app.getDrawPanel().setGraphicsFont(police.deriveFont((float) kernel.getActiveTurtle().police));
+            kernel.getActiveTurtle().fontSize = kernel.getCalculator().getInteger(param.get(0));
+            Font font = Logo.config.getFont();
+            app.getDrawPanel().setGraphicsFont(font.deriveFont((float) kernel.getActiveTurtle().fontSize));
         } catch (LogoException ignored) {
         }
     }
 
     void getFontSize(Stack<String> param) {
         Interpreter.returnValue = true;
-        Interpreter.operands.push(String.valueOf(kernel.getActiveTurtle().police));
+        Interpreter.operands.push(String.valueOf(kernel.getActiveTurtle().fontSize));
     }
 
     void setTurtle(Stack<String> param) {
@@ -3472,9 +3472,9 @@ public class Interpreter {
                     app.getDrawPanel().turtles[i].setVisible(false);
                 }
                 app.getDrawPanel().turtle = app.getDrawPanel().turtles[i];
-                app.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon);
-                String police = app.getDrawPanel().getGraphicsFont().getName();
-                app.getDrawPanel().setGraphicsFont(new Font(police, Font.PLAIN, kernel.getActiveTurtle().police));
+                app.getDrawPanel().setStroke(kernel.getActiveTurtle().pen);
+                String fontName = app.getDrawPanel().getGraphicsFont().getName();
+                app.getDrawPanel().setGraphicsFont(new Font(fontName, Font.PLAIN, kernel.getActiveTurtle().fontSize));
 
             } else {
                 try {
@@ -3572,7 +3572,7 @@ public class Interpreter {
             if (kernel.getActiveTurtle().id == 0) {
                 Logo.config.setActiveTurtle(i);
             }
-            kernel.change_image_tortue(i);
+            kernel.changeTurtleImage(i);
         } catch (LogoException ignored) {
         }
     }
@@ -3789,7 +3789,7 @@ public class Interpreter {
         try {
             Interpreter.returnValue = true;
             double distance = app.getDrawPanel().distance(getFinalList(param.get(0)));
-            Interpreter.operands.push(Calculator.teste_fin_double(distance));
+            Interpreter.operands.push(Calculator.formatDouble(distance));
         } catch (LogoException ignored) {
         }
     }
@@ -3799,9 +3799,9 @@ public class Interpreter {
             Interpreter.returnValue = true;
             if (DrawPanel.windowMode != DrawPanel.WINDOW_3D) {
                 double angle = app.getDrawPanel().to2D(getFinalList(param.get(0)));
-                Interpreter.operands.push(Calculator.teste_fin_double(angle));
+                Interpreter.operands.push(Calculator.formatDouble(angle));
             } else {
-                double[] orientation = app.getDrawPanel().vers3D(getFinalList(param.get(0)));
+                double[] orientation = app.getDrawPanel().towards3D(getFinalList(param.get(0)));
                 Interpreter.operands.push("[ " + orientation[0] + " " + orientation[1] + " " + orientation[2] + " ] ");
             }
         } catch (LogoException ignored) {
@@ -3823,7 +3823,7 @@ public class Interpreter {
                 Thread.sleep(100);
             } catch (InterruptedException ignored) {
             }
-            if (LogoException.lance) break;
+            if (LogoException.thrown) break;
         }
         Interpreter.operands.push(String.valueOf(app.getKey()));
         Interpreter.returnValue = true;
@@ -3925,7 +3925,7 @@ public class Interpreter {
                 if (kernel.getActiveTurtle().getPenWidth() != (float) nombre) DrawPanel.poly.addToScene();
             }
             kernel.getActiveTurtle().fixPenWidth((float) nombre);
-            app.getDrawPanel().setStroke(kernel.getActiveTurtle().crayon);
+            app.getDrawPanel().setStroke(kernel.getActiveTurtle().pen);
             if (DrawPanel.record3D == DrawPanel.RECORD_3D_LINE) {
                 DrawPanel.poly = new ElementLine(app);
                 DrawPanel.poly.addVertex(new Point3d(kernel.getActiveTurtle().X / 1000, kernel.getActiveTurtle().Y / 1000, kernel.getActiveTurtle().Z / 1000), kernel.getActiveTurtle().penColor);
@@ -4500,7 +4500,7 @@ public class Interpreter {
 
     void heading(Stack<String> param) {
         Interpreter.returnValue = true;
-        Interpreter.operands.push(Calculator.teste_fin_double(kernel.getActiveTurtle().heading));
+        Interpreter.operands.push(Calculator.formatDouble(kernel.getActiveTurtle().heading));
     }
 
     void position(Stack<String> param) {
@@ -4508,7 +4508,7 @@ public class Interpreter {
         if (DrawPanel.windowMode != DrawPanel.WINDOW_3D) {
             double a = kernel.getActiveTurtle().curX - Logo.config.getImageWidth() / 2.0;
             double b = Logo.config.getImageHeight() / 2.0 - kernel.getActiveTurtle().curY;
-            Interpreter.operands.push("[ " + Calculator.teste_fin_double(a) + " " + Calculator.teste_fin_double(b) + " ] ");
+            Interpreter.operands.push("[ " + Calculator.formatDouble(a) + " " + Calculator.formatDouble(b) + " ] ");
         } else {
             Interpreter.operands.push("[ " + kernel.getActiveTurtle().X + " " + kernel.getActiveTurtle().Y + " " + kernel.getActiveTurtle().Z + " ] ");
         }

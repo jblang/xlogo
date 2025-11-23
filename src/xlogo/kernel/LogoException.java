@@ -15,26 +15,25 @@ import java.util.Stack;
  */
 public class LogoException extends Exception {
     private static final long serialVersionUID = 1L;
-    public static boolean lance;
-    private Application cadre;
+    public static boolean thrown;
+    private Application app;
 
     public LogoException() {
     }
 
-    public LogoException(Application cadre, String st) {
-        this.cadre = cadre;
-//    if (st.equals("siwhile")) st=Logo.messages.getString("tantque");
+    public LogoException(Application app, String st) {
+        this.app = app;
         while (!Interpreter.procedures.isEmpty() && Interpreter.procedures.peek().equals("("))
             Interpreter.procedures.pop();
-        if (!cadre.error & !Interpreter.procedures.isEmpty()) {
-            cadre.updateHistory("application.error", Logo.getString("exception.message.in") + " " + Interpreter.procedures.pop() + ", "
+        if (!app.error & !Interpreter.procedures.isEmpty()) {
+            app.updateHistory("application.error", Logo.getString("exception.message.in") + " " + Interpreter.procedures.pop() + ", "
                     + Logo.getString("exception.message.lineNumber") + " " + getLineNumber() + ":\n");
         }
-        if (!cadre.error) cadre.updateHistory("application.error", Utils.unescapeString(st) + "\n");
+        if (!app.error) app.updateHistory("application.error", Utils.unescapeString(st) + "\n");
 
-        cadre.focusCommandLine();
-        cadre.error = true;
-        cadre.getKernel().getInstructionBuffer().clear();
+        app.focusCommandLine();
+        app.error = true;
+        app.getKernel().getInstructionBuffer().clear();
         Interpreter.operands = new Stack<String>();
         Interpreter.loops = new Stack<Loop>();
     }
@@ -42,7 +41,7 @@ public class LogoException extends Exception {
     private int getLineNumber() {
         String string = Interpreter.lineNumber;
 //	  System.out.println("bb"+string+"bb");
-        if (string.equals("")) string = cadre.getKernel().getInstructionBuffer().toString();
+        if (string.equals("")) string = app.getKernel().getInstructionBuffer().toString();
 //	  System.out.println("cc"+string+"cc");
         int id = string.indexOf("\\l");
         if (id != -1) {
@@ -60,16 +59,15 @@ public class LogoException extends Exception {
         return 1;
     }
 
-    // Thread permettant l'animation dans le dispatch event queue
-    class Affiche implements Runnable {
+    class DisplayMessage implements Runnable {
         String msg;
 
-        Affiche(String msg) {
+        DisplayMessage(String msg) {
             this.msg = msg;
         }
 
         public void run() {
-            cadre.updateHistory("application.error", msg);
+            app.updateHistory("application.error", msg);
         }
     }
 }

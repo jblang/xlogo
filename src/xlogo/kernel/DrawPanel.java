@@ -484,7 +484,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         return distance;
     }
 
-    protected double[] vers3D(String liste) throws LogoException {
+    protected double[] towards3D(String liste) throws LogoException {
         double[] tmp = new double[3];
         initCoords();
         extractCoords(liste, Utils.primitiveName("drawing.towards"));
@@ -1598,7 +1598,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
             if (record3D == DrawPanel.RECORD_3D_TEXT) {
                 Text2D text = new Text2D(
                         mot, new Color3f(turtle.penColor), Application.fonts[drawingFont].getName(),
-                        turtle.police, Font.PLAIN);
+                        turtle.fontSize, Font.PLAIN);
                 text.setRectangleScaleFactor(0.001f);
                 Appearance appear = text.getAppearance();
                 PolygonAttributes pa = new PolygonAttributes();
@@ -1625,7 +1625,7 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         g.setPaintMode();
         g.setColor(turtle.penColor);
         Font f = Application.fonts[drawingFont]
-                .deriveFont((float) turtle.police);
+                .deriveFont((float) turtle.fontSize);
         g.setFont(f);
         g.translate(x, y);
         g.rotate(angle);
@@ -2242,16 +2242,16 @@ public class DrawPanel extends JPanel implements MouseMotionListener, MouseListe
         readMouse = false;
     }
 
-    public boolean get_lissouris() {
+    public boolean hasMouseEvent() {
         return readMouse;
     }
 
-    public int get_bouton_souris() {
+    public int getMouseButton() {
         readMouse = false;
         return mouseButton;
     }
 
-    public String get_possouris() {
+    public String getMousePositionList() {
         readMouse = false;
         return mousePosition;
     }

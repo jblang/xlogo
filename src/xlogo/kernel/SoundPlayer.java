@@ -23,7 +23,7 @@ public class SoundPlayer {
     // These are some MIDI constants from the spec.  They aren't defined
     public static final int END_OF_TRACK = 47;
     static final int[] offsets = {0, 2, 4, 5, 7, 9, 11};
-    private final Application cadre;
+    private final Application app;
     private final String[] notes = {Logo.getString("sound.note.do"), Logo.getString("sound.note.re"), Logo.getString("sound.note.mi"), Logo.getString("sound.note.fa"), Logo.getString("sound.note.sol"), Logo.getString("sound.note.la"), Logo.getString("sound.note.si")};
     private Track track = null;
     private int instrument = 0; //instrument selectionne
@@ -34,10 +34,10 @@ public class SoundPlayer {
 
     /**
      * Builds our Sound Player
-     * @param cadre The main Frame
+     * @param app The main Frame
      */
-    public SoundPlayer(Application cadre) {
-        this.cadre = cadre;
+    public SoundPlayer(Application app) {
+        this.app = app;
         try {
             sequence = new Sequence(Sequence.PPQ, 16);
         } catch (InvalidMidiDataException e) {
@@ -65,7 +65,7 @@ public class SoundPlayer {
      * @param li This List contains the sequence of note to play
      * @throws LogoException If the sequence in't valid
      */
-    public void cree_sequence(String li) throws LogoException {
+    public void createSequence(String li) throws LogoException {
         // 16 ticks per quarter note.
         try {
 
@@ -128,7 +128,7 @@ public class SoundPlayer {
                         else element = "";
                     } catch (NumberFormatException e) {
                         if (!element.equals("") && isnotes(element) == -1 && !element.equals(":"))
-                            throw new LogoException(cadre, Logo.getString("sound.error.badSequence"));
+                            throw new LogoException(app, Logo.getString("sound.error.badSequence"));
                     }
                 }
             }
@@ -151,7 +151,7 @@ public class SoundPlayer {
     /**
      * Play the Track
      */
-    public void joue() {
+    public void play() {
         if (null != track) {
             try {
                 // Set up the Sequencer and Synthesizer objects
@@ -181,7 +181,7 @@ public class SoundPlayer {
                     while (temps > 0) { //On attends que la séquence soit jouée.
                         Thread.sleep(500);
                         temps -= 32;
-                        if (LogoException.lance && cadre.error) { //On a appuyé sur le bouton stop
+                        if (LogoException.thrown && app.error) {
                             sequencer.close();
                             synthesizer.close();
                             break;
@@ -198,7 +198,7 @@ public class SoundPlayer {
     /**
      * Delete the sequence in memory
      */
-    public void efface_sequence() {
+    public void clearSequence() {
         try {
             sequence = new Sequence(Sequence.PPQ, 16);
             track = null;

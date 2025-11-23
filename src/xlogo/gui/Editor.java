@@ -159,7 +159,7 @@ public class Editor extends JFrame implements SearchListener {
         clearText();
         setVisible(false);
         if (Logo.config.getEraseImage()) {
-            LogoException.lance = true;
+            LogoException.thrown = true;
             app.error = true;
             while (!app.isCommandEditable()) {
                 try {
@@ -167,7 +167,7 @@ public class Editor extends JFrame implements SearchListener {
                 } catch (InterruptedException ignored) {
                 }
             }
-            app.getKernel().vide_ecran();
+            app.getKernel().clearScreen();
         }
         if (null != app.tempPath) {
             app.tempPath = null;
@@ -195,19 +195,19 @@ public class Editor extends JFrame implements SearchListener {
         }
         setVisible(visible);
         app.focusCommandLine();
-        if (Logo.config.getEraseImage()) { //Effacer la zone de dessin
-            LogoException.lance = true;
+        if (Logo.config.getEraseImage()) {
+            LogoException.thrown = true;
             app.error = true;
             try {
                 while (!app.isCommandEditable()) Thread.sleep(100);
             } catch (InterruptedException ignored) {
             }
-            app.getKernel().vide_ecran();
+            app.getKernel().clearScreen();
             app.focusCommandLine();
         }
         if (Logo.config.getClearVariables()) {
             // Interrupt any running programs
-            LogoException.lance = true;
+            LogoException.thrown = true;
             app.error = true;
             try {
                 while (!app.isCommandEditable()) Thread.sleep(100);

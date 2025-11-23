@@ -79,7 +79,7 @@ public class Application extends JFrame {
         kernel = new Kernel(this);
         drawPanel = new DrawPanel(this);
         drawPanel.resizeDrawingZone(this);
-        kernel.initInterprete();
+        kernel.initInterpreter();
         editor = new Editor(this);
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         setTitle("XLogo");
@@ -585,7 +585,7 @@ public class Application extends JFrame {
     }
 
     private void stopAnimation() {
-        LogoException.lance = true;
+        LogoException.thrown = true;
         error = true;
         if (NetworkServer.isActive) {
             NetworkServer.stopServer();

@@ -64,8 +64,8 @@ public class Turtle {
      */
     public double Z;
     Color imageColorMode;
-    BasicStroke crayon = null;
-    int police = 12;
+    BasicStroke pen = null;
+    int fontSize = 12;
     // Image for the turtle
     // If null then draw the triangle
     Image image = null;
@@ -192,8 +192,8 @@ public class Turtle {
     public void fixPenWidth(float nb) {
         if (nb < 0) nb = 1;
         else if (Logo.config.getMaxPenWidth() != -1 && nb > Logo.config.getMaxPenWidth()) nb = 1;
-        if (Logo.config.getPenShape() == 0) crayon = new BasicStroke(nb, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
-        else crayon = new BasicStroke(nb, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
+        if (Logo.config.getPenShape() == 0) pen = new BasicStroke(nb, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
+        else pen = new BasicStroke(nb, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
         penWidth = nb / 2;
     }
 

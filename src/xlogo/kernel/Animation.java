@@ -43,7 +43,7 @@ public class Animation extends Thread {
         try {
             app.setKey(-1);
             app.error = false;
-            LogoException.lance = false;
+            LogoException.thrown = false;
             app.getKernel().getInstructionBuffer().clear();
             Interpreter.reset();
             boolean b = true;
@@ -65,7 +65,7 @@ public class Animation extends Thread {
         if (!app.viewer3DVisible()) app.focusCommandLine();
         executionLaunched = false;
         app.error = false;
-        LogoException.lance = false;
+        LogoException.thrown = false;
         app.scrollPane.getVerticalScrollBar().removeMouseListener(scrollListener);
         app.scrollPane.getHorizontalScrollBar().removeMouseListener(scrollListener);
     }

@@ -53,7 +53,7 @@ public class Kernel {
         app.getDrawPanel().setPenColor(color);
     }
 
-    public void vide_ecran() {
+    public void clearScreen() {
         app.getDrawPanel().clearScreen();
     }
 
@@ -69,7 +69,7 @@ public class Kernel {
         return app.getDrawPanel().getScreenColor();
     }
 
-    public void change_image_tortue(int i) {
+    public void changeTurtleImage(int i) {
         app.getDrawPanel().changeTurtleImage(i);
     }
 
@@ -86,7 +86,7 @@ public class Kernel {
 
     }
 
-    public void initInterprete() {
+    public void initInterpreter() {
         interpreter = new Interpreter(app);
     }
 

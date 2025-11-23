@@ -16,13 +16,13 @@ import java.awt.*;
  */
 public class TurtlesPanel extends JPanel {
     private static final long serialVersionUID = 1L;
-    Application cadre;
+    Application app;
     private final ButtonGroup buttonGroup3 = new ButtonGroup(); //Pour les images de tortue
     private final Icon[] icon = new Icon[7]; //POur les vignettes
     private final GridBagLayout gridBagLayout2 = new GridBagLayout();
 
-    protected TurtlesPanel(Application cadre) {
-        this.cadre = cadre;
+    protected TurtlesPanel(Application app) {
+        this.app = app;
         initGui();
     }
 
@@ -67,8 +67,8 @@ public class TurtlesPanel extends JPanel {
             }
         }
         if (turtle != -1) {
-            cadre.getKernel().getActiveTurtle().setShape(Logo.config.getActiveTurtle());
-            cadre.getKernel().change_image_tortue(turtle);
+            app.getKernel().getActiveTurtle().setShape(Logo.config.getActiveTurtle());
+            app.getKernel().changeTurtleImage(turtle);
         }
     }
 
