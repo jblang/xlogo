@@ -18,7 +18,7 @@ mvn compile          # Compile only
 
 **Build output:** `target/xlogo-1.0.0-beta5.jar` (shaded JAR with all dependencies, ~12MB)
 
-**Requirements:** JDK 11+ (tested with Eclipse Temurin 11/21)
+**Requirements:** JDK 21+ (tested with Eclipse Temurin 21)
 
 ## Running the Application
 
@@ -29,8 +29,6 @@ java -jar target/xlogo-1.0.0-beta5.jar -memory 512  # Set heap size
 ```
 
 The JAR self-relaunches with proper JVM arguments (heap size from `~/.xlogo/xmx.txt`, JOGL exports for Java 9+).
-
-IntelliJ IDEA has a pre-configured `Logo` run configuration.
 
 ## Testing
 
@@ -71,8 +69,8 @@ All dependencies managed via Maven (`pom.xml`):
 
 | Library | Version | Purpose |
 |---------|---------|---------|
-| FlatLaf | 2.0.1 | Modern Swing look & feel |
-| RSyntaxTextArea | 3.1.6 | Syntax-highlighting editor |
+| FlatLaf | 3.6.2 | Modern Swing look & feel |
+| RSyntaxTextArea | 3.6.0 | Syntax-highlighting editor |
 | JOGL/GlueGen | 2.4.0-rc4 | OpenGL binding (from jzy3d repo) |
 | Java3D (SciJava) | 1.6.0-scijava-2 | 3D graphics |
 | JavaHelp | 2.0.05 | Help system |
@@ -86,8 +84,8 @@ All dependencies managed via Maven (`pom.xml`):
 ## Adding Features
 
 ### Adding a New Primitive
-1. Add method in `Interpreter.java` with signature `void primitive(Stack<String> param)`
-2. Register in the `primitives` list with `new Primitive(key, arity, general, function)`
+1. Add method in `Interpreter.java` with signature `void methodName(Stack<String> params)`
+2. Register in the `primitives` list with `new Primitive(key, arity, general, this::methodName)`
 3. Add localized names to all `primitives_*.properties` files
 
 ### Adding a New Language
