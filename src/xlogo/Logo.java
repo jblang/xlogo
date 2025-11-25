@@ -95,7 +95,7 @@ public class Logo {
             int memory = Math.max(getMemoryFromArgs(args), getMemoryFromFile());
 
             var jvm = Paths.get(System.getProperty("java.home"), "bin", "java");
-            var jarPath = Logo.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            var jarPath = Paths.get(Logo.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toString();
 
             // Only relaunch if running from a JAR file
             if (!jarPath.endsWith(".jar")) {
