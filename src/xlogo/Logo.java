@@ -94,15 +94,15 @@ public class Logo {
         try {
             int memory = Math.max(getMemoryFromArgs(args), getMemoryFromFile());
 
-            Path jvm = Paths.get(System.getProperty("java.home"), "bin", "java");
-            String jarPath = Logo.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            var jvm = Paths.get(System.getProperty("java.home"), "bin", "java");
+            var jarPath = Logo.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 
             // Only relaunch if running from a JAR file
             if (!jarPath.endsWith(".jar")) {
                 return false;
             }
 
-            java.util.List<String> command = new ArrayList<>();
+            var command = new ArrayList<String>();
             command.add(jvm.toString());
             command.add("-Xmx" + memory + "m");
             // Mark as launched to prevent infinite relaunch loop
@@ -123,7 +123,7 @@ public class Logo {
 
             System.out.println("Relaunching XLogo with: " + String.join(" ", command));
 
-            ProcessBuilder pb = new ProcessBuilder(command);
+            var pb = new ProcessBuilder(command);
             pb.inheritIO();
             pb.start();
 
@@ -182,16 +182,13 @@ public class Logo {
         int i = 0;
         while (i < config.getStartupFiles().size()) {
             String element = config.getStartupFiles().get(i);
-            // AutoLaunch main Command on startup
-            // Choosing language
-            // Memory Heap Size
-            // TCP port
-            // Logo Files
             switch (element) {
+                // AutoLaunch main Command on startup
                 case "-a":
                     autoLaunch = true;
                     config.getStartupFiles().remove(i);
                     break;
+                // Choosing language
                 case "-lang":
                     config.getStartupFiles().remove(i);
                     if (i < config.getStartupFiles().size()) {
@@ -205,6 +202,7 @@ public class Logo {
                         config.getStartupFiles().remove(i);
                     }
                     break;
+                // Memory Heap Size
                 case "-memory":
                     config.getStartupFiles().remove(i);
                     if (i < config.getStartupFiles().size()) {
@@ -218,6 +216,7 @@ public class Logo {
                         }
                     }
                     break;
+                // TCP port
                 case "-tcp_port":
                     config.getStartupFiles().remove(i);
                     if (i < config.getStartupFiles().size()) {
@@ -233,6 +232,7 @@ public class Logo {
                         }
                     }
                     break;
+                // Logo Files
                 default:
                     i++;
                     break;
@@ -374,8 +374,9 @@ public class Logo {
      * Detect if the system is in dark mode
      */
     public static boolean isSystemDarkMode() {
+        String osName = System.getProperty("os.name").toLowerCase();
         // macOS: check defaults read -g AppleInterfaceStyle
-        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+        if (osName.contains("mac")) {
             try {
                 Process process = Runtime.getRuntime().exec(
                     new String[]{"defaults", "read", "-g", "AppleInterfaceStyle"});
@@ -389,7 +390,7 @@ public class Logo {
             }
         }
         // Windows: check registry for AppsUseLightTheme
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+        if (osName.contains("win")) {
             try {
                 Process process = Runtime.getRuntime().exec(
                     new String[]{"reg", "query",
