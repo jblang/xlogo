@@ -61,11 +61,26 @@ public class Interpreter {
     Stack<Workspace> savedWorkspace;
     String wordPrefix = "";
 
+    // Primitive groups for modular organization
+    final List<PrimitiveGroup> primitiveGroups;
+
     public Interpreter(Application app) {
         this.app = app;
         this.kernel = app.getKernel();
         this.workspace = kernel.getWorkspace();
         app.error = false;
+        this.primitiveGroups = List.of(
+            new MathPrimitives(this),
+            new ColorPrimitives(this),
+            new Primitives3D(this),
+            new TimePrimitives(this),
+            new SoundPrimitives(this),
+            new FilePrimitives(this),
+            new ListPrimitives(this),
+            new WorkspacePrimitives(this),
+            new UIPrimitives(this),
+            new NetPrimitives(this)
+        );
         buildPrimitiveTreemap();
     }
 
@@ -86,45 +101,8 @@ public class Interpreter {
             new Primitive("\\siwhile", 2, false, this::testWhile),
             new Primitive("\\x", 0, false, this::endExecuteTcp),
             new Primitive("\n", 0, false, this::endProc),
-            new Primitive("3d.downpitch", 1, false, this::pitchDown),
-            new Primitive("3d.leftroll", 1, false, this::rollLeft),
-            new Primitive("3d.lineend", 0, false, this::endLine),
-            new Primitive("3d.linestart", 0, false, this::startLine),
-            new Primitive("3d.orientation", 0, false, this::getOrientation),
-            new Primitive("3d.perspective", 0, false, this::enable3D),
-            new Primitive("3d.pitch", 0, false, this::getPitch),
-            new Primitive("3d.pointend", 0, false, this::endPoint),
-            new Primitive("3d.pointstart", 0, false, this::startPoint),
-            new Primitive("3d.polyend", 0, false, this::endPolygon),
-            new Primitive("3d.polystart", 0, false, this::startPolygon),
-            new Primitive("3d.polyview", 0, false, this::view3D),
-            new Primitive("3d.rightroll", 1, false, this::rollRight),
-            new Primitive("3d.roll", 0, false, this::getRoll),
-            new Primitive("3d.setorientation", 1, false, this::setOrientation),
-            new Primitive("3d.setpitch", 1, false, this::setPitch),
-            new Primitive("3d.setroll", 1, false, this::setRoll),
-            new Primitive("3d.setxyz", 3, false, this::setXYZ),
-            new Primitive("3d.setz", 1, false, this::setZ),
-            new Primitive("3d.textend", 0, false, this::endText),
-            new Primitive("3d.textstart", 0, false, this::startText),
-            new Primitive("3d.uppitch", 1, false, this::pitchUp),
-            new Primitive("color.black", 0, false, this::colorBlack),
-            new Primitive("color.blue", 0, false, this::colorBlue),
-            new Primitive("color.brown", 0, false, this::colorBrown),
-            new Primitive("color.cyan", 0, false, this::colorCyan),
-            new Primitive("color.darkblue", 0, false, this::colorDarkBlue),
-            new Primitive("color.darkgreen", 0, false, this::colorDarkGreen),
-            new Primitive("color.darkred", 0, false, this::colorDarkRed),
-            new Primitive("color.gray", 0, false, this::colorGray),
-            new Primitive("color.green", 0, false, this::colorGreen),
-            new Primitive("color.lightgray", 0, false, this::colorLightGray),
-            new Primitive("color.magenta", 0, false, this::colorMagenta),
-            new Primitive("color.orange", 0, false, this::colorOrange),
-            new Primitive("color.pink", 0, false, this::colorPink),
-            new Primitive("color.purple", 0, false, this::colorPurple),
-            new Primitive("color.red", 0, false, this::colorRed),
-            new Primitive("color.white", 0, false, this::colorWhite),
-            new Primitive("color.yellow", 0, false, this::colorYellow),
+            // 3D primitives moved to Primitives3D.java
+            // Color primitives moved to ColorPrimitives.java
             new Primitive("control.and", 2, true, this::and),
             new Primitive("control.before?", 2, false, this::isBeforeWrap),
             new Primitive("control.bye", 0, false, this::bye),
@@ -243,141 +221,14 @@ public class Interpreter {
             new Primitive("drawing.yaxis?", 0, false, this::isYAxisEnabled),
             new Primitive("drawing.z", 0, false, this::getZ),
             new Primitive("drawing.zonesize", 0, false, this::getZoneSize),
-            new Primitive("drawing.zoom", 0, false, this::getZoom),
-            new Primitive("file.appendlineflow", 2, false, this::fileAppendLine),
-            new Primitive("file.closeflow", 1, false, this::closeFile),
-            new Primitive("file.directory", 0, false, this::getDirectory),
-            new Primitive("file.endflow?", 1, false, this::isEndOfFile),
-            new Primitive("file.files", 0, false, this::getFiles),
-            new Primitive("file.listflow", 0, false, this::getOpenFiles),
-            new Primitive("file.load", 1, false, this::load),
-            new Primitive("file.openflow", 2, false, this::openFile),
-            new Primitive("file.readcharflow", 1, false, this::fileReadChar),
-            new Primitive("file.readlineflow", 1, false, this::fileReadLine),
-            new Primitive("file.save", 2, false, this::save),
-            new Primitive("file.saved", 1, false, this::saveAll),
-            new Primitive("file.setdirectory", 1, false, this::setDirectory),
-            new Primitive("file.writelineflow", 2, false, this::fileWriteLine),
-            new Primitive("list.additem", 3, false, this::addItem),
-            new Primitive("list.butfirst", 1, false, this::butFirst),
-            new Primitive("list.butlast", 1, false, this::butLast),
-            new Primitive("list.count", 1, false, this::count),
-            new Primitive("list.first", 1, false, this::first),
-            new Primitive("list.fput", 2, false, this::fput),
-            new Primitive("list.item", 2, false, this::item),
-            new Primitive("list.last", 1, false, this::last),
-            new Primitive("list.list", 2, true, this::list),
-            new Primitive("list.list?", 1, false, this::isList),
-            new Primitive("list.lput", 2, false, this::lput),
-            new Primitive("list.member", 2, false, this::isMember71),
-            new Primitive("list.member?", 2, false, this::isMember69),
-            new Primitive("list.pick", 1, false, this::pick),
-            new Primitive("list.remove", 2, false, this::remove),
-            new Primitive("list.replace", 3, false, this::replaceItem),
-            new Primitive("list.reverse", 1, false, this::reverse),
-            new Primitive("math.abs", 1, false, this::abs),
-            new Primitive("math.acos", 1, false, this::acos),
-            new Primitive("math.asin", 1, false, this::asin),
-            new Primitive("math.atan", 1, false, this::atan),
-            new Primitive("math.cos", 1, false, this::cos),
-            new Primitive("math.difference", 2, false, this::difference),
-            new Primitive("math.digits", 0, false, this::getSignificantDigits),
-            new Primitive("math.div", 2, false, this::divide),
-            new Primitive("math.exp", 1, false, this::exp),
-            new Primitive("math.greater", 2, false, this::isGreaterThan),
-            new Primitive("math.greaterequal", 2, false, this::isGreatherThanOrEqual),
-            new Primitive("math.integer", 1, false, this::truncate),
-            new Primitive("math.less", 2, false, this::isLessThan),
-            new Primitive("math.lessequal", 2, false, this::isLessThanOrEqual),
-            new Primitive("math.log", 1, false, this::log),
-            new Primitive("math.log10", 1, false, this::log10),
-            new Primitive("math.minus", 1, false, this::minus),
-            new Primitive("math.mod", 2, false, this::mod),
-            new Primitive("math.pi", 0, false, this::pi),
-            new Primitive("math.power", 2, false, this::power),
-            new Primitive("math.product", 2, true, this::product),
-            new Primitive("math.quotient", 2, false, this::quotient),
-            new Primitive("math.random", 1, false, this::random),
-            new Primitive("math.randomfrac", 0, false, this::randomZeroToOne),
-            new Primitive("math.remainder", 2, false, this::remainder),
-            new Primitive("math.round", 1, false, this::round),
-            new Primitive("math.setdigits", 1, false, this::setSignificantDigits),
-            new Primitive("math.sin", 1, false, this::sin),
-            new Primitive("math.sqrt", 1, false, this::sqrt),
-            new Primitive("math.sum", 2, true, this::sum),
-            new Primitive("math.tan", 1, false, this::tan),
-            new Primitive("net.chattcp", 2, false, this::chatTcp),
-            new Primitive("net.executetcp", 2, false, this::executeTcp),
-            new Primitive("net.listentcp", 0, false, this::listenTcp),
-            new Primitive("net.sendtcp", 2, false, this::sendTcp),
-            new Primitive("sound.deletesequence", 0, false, this::deleteSequence),
-            new Primitive("sound.indexsequence", 0, false, this::getSequenceIndex),
-            new Primitive("sound.instrument", 0, false, this::getInstrument),
-            new Primitive("sound.mp3play", 1, false, this::playMP3),
-            new Primitive("sound.mp3stop", 0, false, this::stopMP3),
-            new Primitive("sound.play", 0, false, this::play),
-            new Primitive("sound.sequence", 1, false, this::sequence),
-            new Primitive("sound.setindexsequence", 1, false, this::setSequenceIndex),
-            new Primitive("sound.setinstrument", 1, false, this::setInstrument),
-            new Primitive("time.countdown", 1, false, this::countdown),
-            new Primitive("time.date", 0, false, this::getDate),
-            new Primitive("time.endcountdown?", 0, false, this::isCountdownEnded),
-            new Primitive("time.pasttime", 0, false, this::getTimePassed),
-            new Primitive("time.time", 0, false, this::getTime),
-            new Primitive("time.wait", 1, false, this::wait),
-            new Primitive("ui.character", 1, false, this::getCharacter),
-            new Primitive("ui.cleartext", 0, false, this::clearText),
-            new Primitive("ui.guiaction", 2, false, this::guiAction),
-            new Primitive("ui.guibutton", 2, false, this::guiButton),
-            new Primitive("ui.guidraw", 1, false, this::guiDraw),
-            new Primitive("ui.guimenu", 2, false, this::guiMenu),
-            new Primitive("ui.guiposition", 2, false, this::guiPosition),
-            new Primitive("ui.guiremove", 1, false, this::guiRemove),
-            new Primitive("ui.key?", 0, false, this::isKey),
-            new Primitive("ui.message", 1, false, this::message),
-            new Primitive("ui.mouse?", 0, false, this::isMouseEvent),
-            new Primitive("ui.mouseposition", 0, false, this::mousePosition),
-            new Primitive("ui.print", 1, true, this::print),
-            new Primitive("ui.read", 2, false, this::read),
-            new Primitive("ui.readcharacter", 0, false, this::readChar),
-            new Primitive("ui.readmouse", 0, false, this::mouseButton),
-            new Primitive("ui.separation", 0, false, this::getSeparation),
-            new Primitive("ui.setseparation", 1, false, this::setSeparation),
-            new Primitive("ui.setstyle", 1, false, this::setTextStyle),
-            new Primitive("ui.settextcolor", 1, false, this::setTextColor),
-            new Primitive("ui.settextname", 1, false, this::setTextFont),
-            new Primitive("ui.settextsize", 1, false, this::setTextSize),
-            new Primitive("ui.style", 0, false, this::getTextStyle),
-            new Primitive("ui.textcolor", 0, false, this::getTextColor),
-            new Primitive("ui.textname", 0, false, this::getTextFont),
-            new Primitive("ui.textsize", 0, false, this::getTextSize),
-            new Primitive("ui.unicode", 1, false, this::getUnicode),
-            new Primitive("ui.write", 1, false, this::write),
-            new Primitive("workspace.contents", 0, false, this::getContents),
-            new Primitive("workspace.define", 2, false, this::define),
-            new Primitive("workspace.edit", 1, false, this::edit),
-            new Primitive("workspace.editall", 0, false, this::editAll),
-            new Primitive("workspace.eraseall", 0, false, this::eraseAll),
-            new Primitive("workspace.eraseprocedure", 1, false, this::eraseProcedure),
-            new Primitive("workspace.erasepropertylist", 1, false, this::erasePropertyList),
-            new Primitive("workspace.erasevariable", 1, false, this::eraseVariable),
-            new Primitive("workspace.externalcommand", 1, false, this::runExternalCommand),
-            new Primitive("workspace.getproperty", 2, false, this::getProperty),
-            new Primitive("workspace.globalmake", 2, false, this::globalMakeWrap),
-            new Primitive("workspace.local", 1, false, this::localWrap),
-            new Primitive("workspace.localmake", 2, false, this::localMake),
-            new Primitive("workspace.primitives", 0, false, this::listPrimitives),
-            new Primitive("workspace.procedures", 0, false, this::procedures),
-            new Primitive("workspace.propertylist", 1, false, this::listProperties),
-            new Primitive("workspace.propertylists", 0, false, this::getPropertyLists),
-            new Primitive("workspace.putproperty", 3, false, this::setProperty),
-            new Primitive("workspace.removeproperty", 2, false, this::removeProperty),
-            new Primitive("workspace.run", 1, false, this::run),
-            new Primitive("workspace.stoptrace", 0, false, this::stopTrace),
-            new Primitive("workspace.text", 1, false, this::getProcedureBody),
-            new Primitive("workspace.thing", 1, false, this::getVariableValue),
-            new Primitive("workspace.trace", 0, false, this::trace),
-            new Primitive("workspace.variables", 0, false, this::listVariables)
+            new Primitive("drawing.zoom", 0, false, this::getZoom)
+            // file.* primitives moved to FilePrimitives
+            // list.* primitives moved to ListPrimitives
+            // Math primitives moved to MathPrimitives.java
+            // net.* primitives moved to NetPrimitives
+            // sound.* primitives moved to SoundPrimitives
+            // time.* primitives moved to TimePrimitives
+            // ui.* primitives moved to UIPrimitives
     );
 
     /**
@@ -1035,18 +886,30 @@ public class Interpreter {
         primitiveMap = new TreeMap<>();
         Locale locale = Logo.config.getLanguage().locale;
         ResourceBundle names = Logo.getPrimitiveBundle(Objects.requireNonNull(locale));
+
+        // Add primitives from the inline list
         for (var prim : primitives) {
-            // read the standard number of arguments for the primitive
-            String name = prim.key;
-            if (!Interpreter.isOperator(name) && !Interpreter.isSpecialPrim(name)) {
-                name = names.getString(name);
+            registerPrimitive(prim, names);
+        }
+
+        // Add primitives from primitive groups
+        for (var group : primitiveGroups) {
+            for (var prim : group.getPrimitives()) {
+                registerPrimitive(prim, names);
             }
-            if (name.equals("\n")) {
-                primitiveMap.put(name, prim);
-            } else {
-                StringTokenizer st = new StringTokenizer(name.toLowerCase());
-                while (st.hasMoreTokens()) primitiveMap.put(st.nextToken(), prim);
-            }
+        }
+    }
+
+    private void registerPrimitive(Primitive prim, ResourceBundle names) {
+        String name = prim.key;
+        if (!Interpreter.isOperator(name) && !Interpreter.isSpecialPrim(name)) {
+            name = names.getString(name);
+        }
+        if (name.equals("\n")) {
+            primitiveMap.put(name, prim);
+        } else {
+            StringTokenizer st = new StringTokenizer(name.toLowerCase());
+            while (st.hasMoreTokens()) primitiveMap.put(st.nextToken(), prim);
         }
     }
 
@@ -1309,14 +1172,6 @@ public class Interpreter {
         }
     }
 
-    void mod(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().modulo(param.get(0), param.get(1)));
-        } catch (LogoException ignored) {
-        }
-    }
-
     void doWhile(Stack<String> param) {
         try {
             String li1 = getList(param.get(0));
@@ -1343,11 +1198,6 @@ public class Interpreter {
             app.getKernel().getInstructionBuffer().insert(instr + Interpreter.END_LOOP + " ");
         } catch (LogoException ignored) {
         }
-    }
-
-    void randomZeroToOne(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(Calculator.formatDouble(Math.random()));
     }
 
     void fillPolygon(Stack<String> param) {
@@ -1384,25 +1234,6 @@ public class Interpreter {
     void getZoom(Stack<String> param) {
         Interpreter.returnValue = true;
         Interpreter.operands.push(Calculator.formatDouble(DrawPanel.zoom));
-    }
-
-    void stopMP3(Stack<String> param) {
-        Interpreter.returnValue = false;
-        if (null != kernel.getMp3Player()) kernel.getMp3Player().getPlayer().close();
-    }
-
-    void playMP3(Stack<String> param) {
-        String mot;
-        Interpreter.returnValue = false;
-        if (kernel.getMp3Player() != null) kernel.getMp3Player().getPlayer().close();
-        mot = getWord(param.get(0));
-        try {
-            if (null == mot) throw new LogoException(app, Logo.getString("interpreter.error.wordRequired"));
-            MP3Player player = new MP3Player(app, mot);
-            kernel.setMp3Player(player);
-            kernel.getMp3Player().start();
-        } catch (LogoException ignored) {
-        }
     }
 
     void saveImage(Stack<String> param) {
@@ -1457,77 +1288,6 @@ public class Interpreter {
             }
             app.getDrawPanel().saveImage(word, coord);
             Interpreter.returnValue = false;
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void runExternalCommand(Stack<String> param) {
-        Interpreter.returnValue = false;
-        try {
-            String list = getFinalList(param.get(0));
-            int index = numberOfElements(list);
-            String[] cmd = new String[index];
-            for (int i = 0; i < index; i++) {
-                String liste1 = item(list, i + 1);
-                cmd[i] = Utils.unescapeString(getFinalList(liste1).trim());
-            }
-            try {
-                Runtime.getRuntime().exec(cmd);
-            } catch (IOException e2) {
-            }
-
-        } catch (LogoException e) {
-        }
-    }
-
-    void getProcedureBody(Stack<String> param) {
-        StringBuilder sb;
-        try {
-            String var = getWord(param.get(0));
-            if (null == var) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            int index = -1;
-            for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
-                if (workspace.getProcedure(i).name.equals(var)) {
-                    index = i;
-                    break;
-                }
-            }
-            if (index != -1) {
-                Procedure proc = workspace.getProcedure(index);
-                sb = new StringBuilder();
-                sb.append("[ [ ");
-                // Append variable names
-                for (int j = 0; j < proc.arity; j++) {
-                    sb.append(proc.variables.get(j));
-                    sb.append(" ");
-                }
-                for (int j = 0; j < proc.optVariables.size(); j++) {
-                    sb.append("[ ");
-                    sb.append(proc.optVariables.get(j));
-                    sb.append(" ");
-                    sb.append(proc.formattedOptVariables.get(j).toString());
-                    sb.append(" ] ");
-                }
-                sb.append("] ");
-                // Append body procedure
-                sb.append(proc.cutInList());
-                sb.append("] ");
-                Interpreter.returnValue = true;
-                Interpreter.operands.push(sb.toString());
-            } else throw new LogoException(app, var + " " + Logo.getString("interpreter.error.requireProcedure"));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void getSignificantDigits(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(String.valueOf(kernel.getCalculator().getDigits()));
-    }
-
-    void setSignificantDigits(Stack<String> param) {
-        Interpreter.returnValue = false;
-        try {
-            kernel.initCalculator(kernel.getCalculator().getInteger(param.get(0)));
         } catch (LogoException ignored) {
         }
     }
@@ -1607,40 +1367,6 @@ public class Interpreter {
         }
     }
 
-    void edit(Stack<String> param) {
-        String mot;
-        try {
-            mot = this.getWord(param.get(0));
-            if (null == mot) mot = this.getFinalList(param.get(0));
-            StringTokenizer st = new StringTokenizer(mot);
-            // Write all procedures names in a Vector
-            Vector<String> names = new Vector<>();
-            while (st.hasMoreTokens()) {
-                names.add(st.nextToken());
-            }
-            app.editor.setTitle(Logo.getString("editor"));
-
-            app.editor.setMainCommand();
-            app.editor.setTitle(Logo.getString("editor"));
-            app.editor.discardAllEdits();
-            app.editor.setVisible(true);
-            app.editor.toFront();
-            app.editor.requestFocus();
-
-            for (int i = 0; i < workspace.getNumberOfProcedure(); i++) {
-                Procedure procedure = workspace.getProcedure(i);
-                if (names.contains(procedure.name) && procedure.displayed) {
-                    app.editor.appendText(procedure.toString());
-                }
-            }
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void editAll(Stack<String> param) {
-        app.editor.open();
-    }
-
     void ifThenElse(Stack<String> param) {
         String liste;
         try {
@@ -1651,276 +1377,6 @@ public class Interpreter {
             liste = new String(Utils.formatCode(liste));
             ifThen(predicat, liste, liste2);
             Interpreter.evalReturnValue = true;
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void log(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().log(param.get(0)));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void exp(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().exp(param.get(0)));
-
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void erasePropertyList(Stack<String> param) {
-        Interpreter.returnValue = false;
-        this.erase(param.get(0), "propertylist");
-    }
-
-    void getContents(Stack<String> param) {
-        StringBuilder sb;
-        Interpreter.returnValue = true;
-        sb = new StringBuilder("[ ");
-        sb.append(this.getAllProcedures());
-        sb.append(this.getAllVariables());
-        sb.append(this.getAllpropertyLists());
-        sb.append("] ");
-        Interpreter.operands.push(new String(sb));
-    }
-
-    void getPropertyLists(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(new String(getAllpropertyLists()));
-    }
-
-    void listPrimitives(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(getAllPrimitives());
-    }
-
-    void endPoint(Stack<String> param) {
-        DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
-        try {
-            DrawPanel.poly.addToScene();
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void endText(Stack<String> param) {
-        DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
-    }
-
-    void startText(Stack<String> param) {
-        DrawPanel.record3D = DrawPanel.RECORD_3D_TEXT;
-        app.initViewer3D();
-        DrawPanel.poly = null;
-    }
-
-    void endLine(Stack<String> param) {
-        DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
-        try {
-            DrawPanel.poly.addToScene();
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void startPoint(Stack<String> param) {
-        DrawPanel.record3D = DrawPanel.RECORD_3D_POINT;
-        app.initViewer3D();
-        DrawPanel.poly = new ElementPoint(app);
-    }
-
-    void startLine(Stack<String> param) {
-        DrawPanel.record3D = DrawPanel.RECORD_3D_LINE;
-        app.initViewer3D();
-        DrawPanel.poly = new ElementLine(app);
-        DrawPanel.poly.addVertex(new Point3d(kernel.getActiveTurtle().X / 1000, kernel.getActiveTurtle().Y / 1000, kernel.getActiveTurtle().Z / 1000), kernel.getActiveTurtle().penColor);
-    }
-
-    void view3D(Stack<String> param) {
-        try {
-            primitive3D("3d.polyview");
-            app.viewerOpen();
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void endPolygon(Stack<String> param) {
-        DrawPanel.record3D = DrawPanel.RECORD_3D_NONE;
-        try {
-            DrawPanel.poly.addToScene();
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void listProperties(Stack<String> param) {
-        String mot;
-        try {
-            Interpreter.returnValue = true;
-            mot = getWord(param.get(0));
-            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            Interpreter.operands.push(workspace.displayPropList(mot));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void startPolygon(Stack<String> param) {
-        DrawPanel.record3D = DrawPanel.RECORD_3D_POLYGON;
-        app.initViewer3D();
-        DrawPanel.poly = new ElementPolygon(app);
-    }
-
-    void removeProperty(Stack<String> param) {
-        String mot;
-        String mot2;
-        try {
-            Interpreter.returnValue = false;
-            mot = getWord(param.get(0));
-            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            mot2 = getWord(param.get(1));
-            if (null == mot2) throw new LogoException(app, param.get(1) + " " + Logo.getString("interpreter.error.wordRequired"));
-            workspace.removePropList(mot, mot2);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void getProperty(Stack<String> param) {
-        String mot;
-        String mot2;
-        try {
-            Interpreter.returnValue = true;
-            mot = getWord(param.get(0));
-            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            mot2 = getWord(param.get(1));
-            if (null == mot2) throw new LogoException(app, param.get(1) + " " + Logo.getString("interpreter.error.wordRequired"));
-            String value = workspace.getPropList(mot, mot2);
-            if (value.startsWith("[")) value += " ";
-            Interpreter.operands.push(value);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void setProperty(Stack<String> param) {
-        String mot;
-        String mot2;
-        Interpreter.returnValue = false;
-        try {
-            mot = getWord(param.get(0));
-            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            mot2 = getWord(param.get(1));
-            if (null == mot2) throw new LogoException(app, param.get(1) + " " + Logo.getString("interpreter.error.wordRequired"));
-            workspace.addPropList(mot, mot2, param.get(2));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void setZ(Stack<String> param) {
-        delay();
-        try {
-            primitive3D("3d.setz");
-            app.getDrawPanel().setPosition(kernel.getActiveTurtle().X + " " + kernel.getActiveTurtle().Y + " " + kernel.getCalculator().numberDouble(param.get(0)));
-
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void setXYZ(Stack<String> param) {
-        try {
-            primitive3D("3d.setxyz");
-            app.getDrawPanel().setPosition(kernel.getCalculator().numberDouble(param.get(0)) + " " + kernel.getCalculator().numberDouble(param.get(1)) + " " + kernel.getCalculator().numberDouble(param.get(2)));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void getOrientation(Stack<String> param) {
-        try {
-            primitive3D("3d.orientation");
-            Interpreter.returnValue = true;
-            String pitch = Calculator.formatDouble(kernel.getActiveTurtle().pitch);
-            String roll = Calculator.formatDouble(kernel.getActiveTurtle().roll);
-            String heading = Calculator.formatDouble(kernel.getActiveTurtle().heading);
-            Interpreter.operands.push("[ " + roll + " " + pitch + " " + heading + " ] ");
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void setOrientation(Stack<String> param) {
-        try {
-            primitive3D("3d.setorientation");
-            delay();
-            app.getDrawPanel().setOrientation(getFinalList(param.pop()));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void setPitch(Stack<String> param) {
-        try {
-            primitive3D("3d.setpitch");
-            delay();
-            app.getDrawPanel().setPitch(kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void setRoll(Stack<String> param) {
-        try {
-            primitive3D("3d.setroll");
-            delay();
-            app.getDrawPanel().setRoll(kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void getPitch(Stack<String> param) {
-        try {
-            primitive3D("3d.pitch");
-            Interpreter.returnValue = true;
-            Interpreter.operands.push(Calculator.formatDouble(kernel.getActiveTurtle().pitch));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void getRoll(Stack<String> param) {
-        try {
-            primitive3D("3d.roll");
-            Interpreter.returnValue = true;
-            Interpreter.operands.push(Calculator.formatDouble(kernel.getActiveTurtle().roll));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void pitchDown(Stack<String> param) {
-        delay();
-        try {
-            primitive3D("3d.downpitch");
-            app.getDrawPanel().pitch(-kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void rollLeft(Stack<String> param) {
-        delay();
-        try {
-            primitive3D("3d.leftroll");
-            app.getDrawPanel().roll(-kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void pitchUp(Stack<String> param) {
-        delay();
-        try {
-            primitive3D("3d.uppitch");
-            app.getDrawPanel().pitch(kernel.getCalculator().numberDouble(param.pop()));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void rollRight(Stack<String> param) {
-        delay();
-        try {
-            primitive3D("3d.rightroll");
-            app.getDrawPanel().roll(kernel.getCalculator().numberDouble(param.pop()));
         } catch (LogoException ignored) {
         }
     }
@@ -1937,10 +1393,6 @@ public class Interpreter {
             }
         } catch (LogoException ignored) {
         }
-    }
-
-    void enable3D(Stack<String> param) {
-        app.getDrawPanel().perspective();
     }
 
     void setGridColor(Stack<String> param) {
@@ -2064,23 +1516,6 @@ public class Interpreter {
         }
     }
 
-    void guiMenu(Stack<String> param) {
-        String liste;
-        try {
-            String ident = getWord(param.get(0));
-            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            liste = getFinalList(param.get(1));
-            GuiMenu gm = new GuiMenu(ident.toLowerCase(), liste, app);
-            app.getDrawPanel().addToGuiMap(gm);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void stopTrace(Stack<String> param) {
-        Kernel.traceMode = false;
-        Interpreter.returnValue = false;
-    }
-
     void stopAnimation(Stack<String> param) {
         app.getDrawPanel().setAnimation(false);
         Interpreter.returnValue = false;
@@ -2125,59 +1560,6 @@ public class Interpreter {
                 throw new LogoException(app, name + " " + Logo.getString("interpreter.error.requirePositive"));
             }
             app.getDrawPanel().zoom(d, false);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void guiDraw(Stack<String> param) {
-        try {
-            String ident = getWord(param.get(0));
-            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            app.getDrawPanel().guiDraw(ident);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void guiPosition(Stack<String> param) {
-        String liste;
-        try {
-            String ident = getWord(param.get(0));
-            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            liste = getFinalList(param.get(1));
-            app.getDrawPanel().guiposition(ident, liste, Utils.primitiveName("ui.guiposition"));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void guiRemove(Stack<String> param) {
-        try {
-            String ident = getWord(param.get(0));
-            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            app.getDrawPanel().guiRemove(ident);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void guiAction(Stack<String> param) {
-        String liste;
-        try {
-            String ident = getWord(param.get(0));
-            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            liste = getFinalList(param.get(1));
-            app.getDrawPanel().guiAction(ident, liste);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void guiButton(Stack<String> param) {
-        String mot;
-        try {
-            String ident = getWord(param.get(0));
-            if (null == ident) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            mot = getWord(param.get(1));
-            if (null == mot) throw new LogoException(app, param.get(1) + " " + Logo.getString("interpreter.error.wordRequired"));
-            GuiButton gb = new GuiButton(ident.toLowerCase(), mot, app);
-            app.getDrawPanel().addToGuiMap(gb);
         } catch (LogoException ignored) {
         }
     }
@@ -2319,25 +1701,6 @@ public class Interpreter {
         app.getDrawPanel().zoom(1, false);
     }
 
-    void chatTcp(Stack<String> param) {
-        String mot;
-        String liste;
-        Interpreter.returnValue = false;
-        mot = getWord(param.get(0));
-        if (null == mot) {
-            try {
-                throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            } catch (LogoException ignored) {
-            }
-        }
-        mot = Objects.requireNonNull(mot).toLowerCase();
-        try {
-            liste = getFinalList(param.get(1));
-            new NetworkClientChat(app, mot, liste);
-        } catch (LogoException ignored) {
-        }
-    }
-
     void endExecuteTcp(Stack<String> param) {
         // \x internal operator to specify
         // the end of network instructions with
@@ -2345,51 +1708,6 @@ public class Interpreter {
         // have to replace workspace
         Interpreter.returnValue = false;
         kernel.setWorkspace(savedWorkspace.pop());
-    }
-
-    void executeTcp(Stack<String> param) {
-        String mot;
-        String liste;
-        mot = getWord(param.get(0));
-        if (null == mot) {
-            try {
-                throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            } catch (LogoException ignored) {
-            }
-        }
-        mot = Objects.requireNonNull(mot).toLowerCase();
-        try {
-            liste = getFinalList(param.get(1));
-            new NetworkClientExecute(app, mot, liste);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void listenTcp(Stack<String> param) {
-        Interpreter.returnValue = false;
-        if (null == savedWorkspace) savedWorkspace = new Stack<>();
-        savedWorkspace.push(workspace);
-        new NetworkServer(app);
-    }
-
-    void sendTcp(Stack<String> param) {
-        String liste;
-        String mot;
-        Interpreter.returnValue = true;
-        mot = getWord(param.get(0));
-        if (null == mot) {
-            try {
-                throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            } catch (LogoException ignored) {
-            }
-        }
-        mot = Objects.requireNonNull(mot).toLowerCase();
-        try {
-            liste = getFinalList(param.get(1));
-            NetworkClientSend ncs = new NetworkClientSend(app, mot, liste);
-            Interpreter.operands.push("[ " + ncs.getAnswer() + " ] ");
-        } catch (LogoException ignored) {
-        }
     }
 
     void getLabelLength(Stack<String> param) {
@@ -2426,82 +1744,6 @@ public class Interpreter {
         sb.append(y2);
         sb.append(" ] ");
         Interpreter.operands.push(new String(sb));
-    }
-
-    void getTextStyle(Stack<String> param) {
-        StringBuilder buffer = new StringBuilder();
-        int compteur = 0;
-        if (app.getHistoryPanel().isBold()) {
-            buffer.append(Logo.getString("style.bold").toLowerCase()).append(" ");
-            compteur++;
-        }
-        if (app.getHistoryPanel().isItalic()) {
-            buffer.append(Logo.getString("style.italic").toLowerCase()).append(" ");
-            compteur++;
-        }
-        if (app.getHistoryPanel().isUnderline()) {
-            buffer.append(Logo.getString("style.underline").toLowerCase()).append(" ");
-            compteur++;
-        }
-        if (app.getHistoryPanel().isSuperscript()) {
-            buffer.append(Logo.getString("style.superscript").toLowerCase()).append(" ");
-            compteur++;
-        }
-        if (app.getHistoryPanel().isSubscript()) {
-            buffer.append(Logo.getString("style.subscript").toLowerCase()).append(" ");
-            compteur++;
-        }
-        if (app.getHistoryPanel().isStrikethrough()) {
-            buffer.append(Logo.getString("style.strike").toLowerCase()).append(" ");
-            compteur++;
-        }
-        Interpreter.returnValue = true;
-        if (compteur == 0) Interpreter.operands.push("\"" + Logo.getString("style.none").toLowerCase());
-        else if (compteur == 1) Interpreter.operands.push("\"" + new String(buffer).trim());
-        else Interpreter.operands.push("[ " + new String(buffer) + "]");
-    }
-
-    void setTextStyle(Stack<String> param) {
-        String liste;
-        String mot;
-        try {
-            boolean bold = false;
-            boolean italic = false;
-            boolean underline = false;
-            boolean superscript = false;
-            boolean subscript = false;
-            boolean strikethrough = false;
-            mot = getWord(param.get(0));
-            if (null == mot) liste = getFinalList(param.get(0));
-            else liste = mot;
-            if (liste.trim().equals("")) liste = Logo.getString("style.none");
-            StringTokenizer st = new StringTokenizer(liste);
-            while (st.hasMoreTokens()) {
-                String element = st.nextToken().toLowerCase();
-                if (element.equals(Logo.getString("style.underline").toLowerCase())) {
-                    underline = true;
-                } else if (element.equals(Logo.getString("style.bold").toLowerCase())) {
-                    bold = true;
-                } else if (element.equals(Logo.getString("style.italic").toLowerCase())) {
-                    italic = true;
-                } else if (element.equals(Logo.getString("style.superscript").toLowerCase())) {
-                    superscript = true;
-                } else if (element.equals(Logo.getString("style.subscript").toLowerCase())) {
-                    subscript = true;
-                } else if (element.equals(Logo.getString("style.strike").toLowerCase())) {
-                    strikethrough = true;
-                } else if (element.equals(Logo.getString("style.none").toLowerCase())) {
-                    // ignored
-                } else throw new LogoException(app, Logo.getString("interpreter.error.setstyle"));
-            }
-            app.getHistoryPanel().setBold(bold);
-            app.getHistoryPanel().setItalic(italic);
-            app.getHistoryPanel().setUnderline(underline);
-            app.getHistoryPanel().setSuperscript(superscript);
-            app.getHistoryPanel().setSubscript(subscript);
-            app.getHistoryPanel().setStrikeThrough(strikethrough);
-        } catch (LogoException ignored) {
-        }
     }
 
     void closeParen(Stack<String> param) {
@@ -2594,188 +1836,8 @@ public class Interpreter {
         }
     }
 
-    void colorWhite(Stack<String> param) {
-        colorCode(7);
-    }
-
-    void colorCyan(Stack<String> param) {
-        colorCode(6);
-    }
-
-    void colorMagenta(Stack<String> param) {
-        colorCode(5);
-    }
-
-    void colorBlue(Stack<String> param) {
-        colorCode(4);
-    }
-
-    void colorYellow(Stack<String> param) {
-        colorCode(3);
-    }
-
-    void colorGreen(Stack<String> param) {
-        colorCode(2);
-    }
-
-    void colorRed(Stack<String> param) {
-        colorCode(1);
-    }
-
-    void colorBlack(Stack<String> param) {
-        colorCode(0);
-    }
-
-    void colorBrown(Stack<String> param) {
-        colorCode(16);
-    }
-
-    void colorPurple(Stack<String> param) {
-        colorCode(15);
-    }
-
-    void colorPink(Stack<String> param) {
-        colorCode(14);
-    }
-
-    void colorOrange(Stack<String> param) {
-        colorCode(13);
-    }
-
-    void colorDarkBlue(Stack<String> param) {
-        colorCode(12);
-    }
-
-    void colorDarkGreen(Stack<String> param) {
-        colorCode(11);
-    }
-
-    void colorDarkRed(Stack<String> param) {
-        colorCode(10);
-    }
-
-    void colorLightGray(Stack<String> param) {
-        colorCode(9);
-    }
-
-    void colorGray(Stack<String> param) {
-        colorCode(8);
-    }
-
-    void addItem(Stack<String> param) {
-        String mot;
-        String liste;
-        try {
-            String reponse;
-            liste = getFinalList(param.get(0));
-            int entier = kernel.getCalculator().getInteger(param.get(1));
-            mot = getWord(param.get(2));
-            if (null != mot && mot.equals("")) mot = "\\v";
-            if (null == mot) mot = "[ " + getFinalList(param.get(2)) + "]";
-            char element;
-            int compteur = 1;
-            boolean espace = true;
-            boolean crochet = false;
-            boolean error = true;
-            for (int j = 0; j < liste.length(); j++) {
-                if (compteur == entier) {
-                    error = false;
-                    compteur = j;
-                    break;
-                }
-                element = liste.charAt(j);
-                if (element == '[') {
-                    if (espace) crochet = true;
-                    espace = false;
-                }
-                if (element == ' ') {
-                    espace = true;
-                    if (crochet) {
-                        crochet = false;
-                        j = extractList(liste, j);
-                    }
-                    compteur++;
-                    if (j == liste.length() - 1 && compteur == entier) {
-                        error = false;
-                        compteur = liste.length();
-                    }
-                }
-            }
-            if (error && entier != compteur)
-                throw new LogoException(app, Logo.getString("interpreter.error.list.missingElement1") + " " + entier + " " + Logo.getString("interpreter.error.list.missingElement2") + liste + "]");
-            if (!liste.trim().equals(""))
-                reponse = "[ " + liste.substring(0, compteur) + mot + " " + liste.substring(compteur) + "] ";
-            else reponse = "[ " + mot + " ] ";
-            Interpreter.returnValue = true;
-            Interpreter.operands.push(reponse);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void replaceItem(Stack<String> param) {
-        String mot;
-        String liste;
-        try {
-            String reponse;
-            liste = getFinalList(param.get(0));
-            int entier = kernel.getCalculator().getInteger(param.get(1));
-            mot = getWord(param.get(2));
-            if (null != mot && mot.equals("")) mot = "\\v";
-            if (null == mot) mot = "[ " + getFinalList(param.get(2)) + "]";
-            char element;
-            int compteur = 1;
-            boolean espace = true;
-            boolean crochet = false;
-            boolean error = true;
-            for (int j = 0; j < liste.length(); j++) {
-                if (compteur == entier) {
-                    error = false;
-                    compteur = j;
-                    break;
-                }
-                element = liste.charAt(j);
-                if (element == '[') {
-                    if (espace) crochet = true;
-                    espace = false;
-                }
-                if (element == ' ') {
-                    espace = true;
-                    if (crochet) {
-                        crochet = false;
-                        j = extractList(liste, j);
-                    }
-                    compteur++;
-                }
-            }
-            if (error)
-                throw new LogoException(app, Logo.getString("interpreter.error.list.missingElement1") + " " + entier + " " + Logo.getString("interpreter.error.list.missingElement2") + liste + "]");
-            reponse = "[ " + liste.substring(0, compteur) + mot;
-            // Extract the following word
-            if (compteur + 1 < liste.length() && liste.charAt(compteur) == '[' && liste.charAt(compteur + 1) == ' ') {
-                compteur = extractList(liste, compteur + 2);
-
-            } else {
-                for (int i = compteur + 1; i < liste.length(); i++) {
-                    if (liste.charAt(i) == ' ') {
-                        compteur = i;
-                        break;
-                    }
-                }
-            }
-            reponse += liste.substring(compteur) + "] ";
-            Interpreter.returnValue = true;
-            Interpreter.operands.push(reponse);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void abs(Stack<String> param) {
-        try {
-            Interpreter.returnValue = true;
-            Interpreter.operands.push(kernel.getCalculator().abs(param.get(0)));
-        } catch (LogoException ignored) {
-        }
-    }
+    // Color primitives moved to ColorPrimitives.java
+    // List primitives moved to ListPrimitives.java
 
     void forLoop(Stack<String> param) {
         try {
@@ -2824,49 +1886,8 @@ public class Interpreter {
         }
     }
 
-    void getCharacter(Stack<String> param) {
-        try {
-            int i = kernel.getCalculator().getInteger(param.get(0));
-            if (i < 0 || i > 65535)
-                throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.unicode"));
-            else {
-                String st;
-                Interpreter.returnValue = true;
-                if (i == 92) st = "\"\\\\";
-                else if (i == 10) st = "\"\\n";
-                else if (i == 32) st = "\"\\e";
-                else {
-                    st = String.valueOf((char) i);
-                    try {
-                        Double.parseDouble(st);
-                    } catch (NumberFormatException e) {
-                        st = "\"" + st;
-                    }
-                }
-                Interpreter.operands.push(st);
-            }
-        } catch (LogoException ignored) {
-        }
-    }
-
     void stopAll(Stack<String> param) {
         app.error = true;
-    }
-
-    void getUnicode(Stack<String> param) {
-        String mot;
-        try {
-            mot = getWord(param.get(0));
-            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            else if (getWordLength(mot) != 1)
-                throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.requireCharacter"));
-            else {
-                Interpreter.returnValue = true;
-                String st = String.valueOf((int) Utils.unescapeString(itemWord(1, mot)).charAt(0));
-                Interpreter.operands.push(st);
-            }
-        } catch (LogoException ignored) {
-        }
     }
 
     void changeDirectory(Stack<String> param) {
@@ -2891,49 +1912,12 @@ public class Interpreter {
         }
     }
 
-    void trace(Stack<String> param) {
-        Kernel.traceMode = true;
-        Interpreter.returnValue = false;
-    }
-
-    void truncate(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().truncate(param.get(0)));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void getSeparation(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(Calculator.formatDouble(app.splitPane.getResizeWeight()));
-    }
-
-    void setSeparation(Stack<String> param) {
-        try {
-            double nombre = kernel.getCalculator().numberDouble(param.get(0));
-            if (nombre < 0 || nombre > 1)
-                throw new LogoException(app, nombre + " " + Logo.getString("interpreter.error.requireZeroToOne"));
-            app.splitPane.setResizeWeight(nombre);
-            app.splitPane.setDividerLocation(nombre);
-        } catch (LogoException ignored) {
-        }
-    }
-
     void isInteger(Stack<String> param) {
         Interpreter.returnValue = true;
         try {
             double ent = kernel.getCalculator().numberDouble(param.get(0));
             if ((int) ent == ent) Interpreter.operands.push(Logo.getString("interpreter.keyword.true"));
             else Interpreter.operands.push(Logo.getString("interpreter.keyword.false"));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void quotient(Stack<String> param) {
-        try {
-            Interpreter.returnValue = true;
-            Interpreter.operands.push(kernel.getCalculator().quotient(param.get(0), param.get(1)));
         } catch (LogoException ignored) {
         }
     }
@@ -2971,263 +1955,8 @@ public class Interpreter {
         app.getDrawPanel().fillZone();
     }
 
-    void write(Stack<String> param) {
-        String mot;
-        String par = param.get(0).trim();
-        if (isList(par)) par = formatList(par.substring(1, par.length() - 1));
-        mot = getWord(param.get(0));
-        if (null == mot) app.updateHistory("perso", Utils.unescapeString(par));
-        else app.updateHistory("perso", Utils.unescapeString(mot));
-    }
-
-    void getVariableValue(Stack<String> param) {
-        String mot;
-        mot = getWord(param.get(0));
-        try {
-            if (null == mot) {
-                throw new LogoException(app, Logo.getString("interpreter.error.wordRequired"));
-            } // if it's a list
-            else if (wordPrefix.equals("")) {
-                throw new LogoException(app, Logo.getString("interpreter.error.variableInvalid"));
-            } // if it's a number
-            Interpreter.returnValue = true;
-            String value;
-            mot = mot.toLowerCase();
-            if (!Interpreter.locals.containsKey(mot)) {
-                if (!workspace.globals.containsKey(mot))
-                    throw new LogoException(app, mot + " " + Logo.getString("interpreter.error.variableInvalid"));
-                else value = workspace.globals.get(mot);
-            } else {
-                value = Interpreter.locals.get(mot);
-            }
-            if (null == value) throw new LogoException(app, mot + "  " + Logo.getString("interpreter.error.variableInvalid"));
-            Interpreter.operands.push(value);
-        } catch (LogoException ignored) {
-        }
-    }
-
     void wash(Stack<String> param) {
         app.getDrawPanel().wash();
-    }
-
-    void listVariables(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(new String(getAllVariables()));
-    }
-
-    void isMouseEvent(Stack<String> param) {
-        Interpreter.returnValue = true;
-        if (app.getDrawPanel().hasMouseEvent()) Interpreter.operands.push(Logo.getString("interpreter.keyword.true"));
-        else Interpreter.operands.push(Logo.getString("interpreter.keyword.false"));
-    }
-
-    void fileAppendLine(Stack<String> param) {
-        String liste;
-        try {
-            int ident = kernel.getCalculator().getInteger(param.get(0));
-            int index = kernel.flows.search(ident);
-            liste = getFinalList(param.get(1));
-            if (index == -1) throw new LogoException(app, Logo.getString("flow.error.unknown") + " " + ident);
-            Flow flow = kernel.flows.get(index);
-            FlowWriter flowWriter;
-            // If the flow is a readable flow, throw an error
-            if (flow.isReader()) throw new LogoException(app, Logo.getString("flow.error.write"));
-                // Else if the flow is a writable flow , convert to MrFlowWriter
-            else if (flow.isWriter()) flowWriter = (FlowWriter) flow;
-                // Else the flow isn't defined yet, initialize
-            else flowWriter = new FlowWriter(flow);
-
-            // Write the line
-            flowWriter.append(Utils.unescapeString(liste));
-            kernel.flows.set(index, flowWriter);
-        } catch (IOException | LogoException ignored) {
-        }
-    }
-
-    void clearText(Stack<String> param) {
-        app.getHistoryPanel().clearText();
-    }
-
-    void closeFile(Stack<String> param) {
-        try {
-            int ident = kernel.getCalculator().getInteger(param.get(0));
-            int index = kernel.flows.search(ident);
-            if (index == -1) throw new LogoException(app, Logo.getString("flow.error.unknown") + " " + ident);
-            Flow flow = kernel.flows.get(index);
-            // If the flow is a readable flow
-            if (flow.isReader()) ((FlowReader) flow).close();
-                // Else if it's a writable flow
-            else if (flow.isWriter()) ((FlowWriter) flow).close();
-            kernel.flows.remove(index);
-        } catch (IOException | LogoException ignored) {
-        }
-    }
-
-    void openFile(Stack<String> param) {
-        String liste;
-        String mot;
-        try {
-            mot = getWord(param.get(1));
-            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            liste = Utils.unescapeString(Logo.config.getDefaultFolder()) + File.separator + Utils.unescapeString(mot);
-            int ident = kernel.getCalculator().getInteger(param.get(0));
-            if (kernel.flows.search(ident) == -1) kernel.flows.add(new Flow(ident, liste, false));
-            else throw new LogoException(app, ident + " " + Logo.getString("flow.error.open"));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void isEndOfFile(Stack<String> param) {
-        try {
-            int ident = kernel.getCalculator().getInteger(param.get(0));
-            int index = kernel.flows.search(ident);
-            if (index == -1) throw new LogoException(app, Logo.getString("flow.error.unknown") + " " + ident);
-            else {
-                Flow flow = kernel.flows.get(index);
-                FlowReader flowReader = null;
-                // If the flow isn't defined yet, initialize
-                if (!flow.isWriter() && !flow.isReader()) {
-                    flowReader = new FlowReader(flow);
-                } else if (flow.isReader()) flowReader = (FlowReader) flow;
-                if (null != flowReader) {
-                    if (flow.isFinished()) {
-                        Interpreter.returnValue = true;
-                        Interpreter.operands.push(Logo.getString("control.true"));
-                    } else {
-                        int read = flowReader.isReadable();
-                        Interpreter.returnValue = true;
-                        if (read == -1) {
-                            Interpreter.operands.push(Logo.getString("control.true"));
-                            flow.setFinished(true);
-                        } else {
-                            Interpreter.operands.push(Logo.getString("control.false"));
-                        }
-                    }
-                } else throw new LogoException(app, Logo.getString("flow.error.read"));
-            }
-        } catch (IOException | LogoException ignored) {
-        }
-    }
-
-    void fileWriteLine(Stack<String> param) {
-        String liste;
-        try {
-            int ident = kernel.getCalculator().getInteger(param.get(0));
-            int index = kernel.flows.search(ident);
-            liste = getFinalList(param.get(1));
-            if (index == -1) throw new LogoException(app, Logo.getString("flow.error.unknown") + " " + ident);
-            Flow flow = kernel.flows.get(index);
-            FlowWriter flowWriter;
-            // If the flow is a readable flow, throw an error
-            if (flow.isReader()) throw new LogoException(app, Logo.getString("flow.error.write"));
-                // Else if the flow is a writable flow , convert to MrFlowWriter
-            else if (flow.isWriter()) flowWriter = (FlowWriter) flow;
-                // Else the flow isn't defined yet, initialize
-            else flowWriter = new FlowWriter(flow);
-            // Write the line
-            flowWriter.write(Utils.unescapeString(liste));
-            kernel.flows.set(index, flowWriter);
-        } catch (IOException | LogoException ignored) {
-        }
-    }
-
-    void fileReadChar(Stack<String> param) {
-        try {
-            int ident = kernel.getCalculator().getInteger(param.get(0));
-            int index = kernel.flows.search(ident);
-            if (index == -1) throw new LogoException(app, Logo.getString("flow.error.unknown") + " " + ident);
-            Flow flow = kernel.flows.get(index);
-            FlowReader flowReader;
-            // If the flow is a writable flow, throw error
-            if (flow.isWriter()) throw new LogoException(app, Logo.getString("flow.error.read"));
-                // else if the flow is reader, convert to FlowReader
-            else if (flow.isReader()) {
-                flowReader = ((FlowReader) flow);
-            }
-            // else the flow isn't yet defined, initialize
-            else flowReader = new FlowReader(flow);
-
-            if (flowReader.isFinished())
-                throw new LogoException(app, Logo.getString("flow.error.eof") + " " + ident);
-
-            int character = ((FlowReader) flow).readChar();
-            if (character == -1) {
-                flow.setFinished(true);
-                throw new LogoException(app, Logo.getString("flow.error.eof") + " " + ident);
-            }
-            Interpreter.returnValue = true;
-            String car = String.valueOf(character);
-            if (car.equals("\\")) car = "\\\\";
-            Interpreter.operands.push(car);
-            kernel.flows.set(index, flowReader);
-        } catch (FileNotFoundException e1) {
-            try {
-                throw new LogoException(app, Logo.getString("file.error.read"));
-            } catch (LogoException ignored) {
-            }
-        } catch (IOException | LogoException ignored) {
-        }
-    }
-
-    void fileReadLine(Stack<String> param) {
-        try {
-            int ident = kernel.getCalculator().getInteger(param.get(0));
-            int index = kernel.flows.search(ident);
-            if (index == -1) throw new LogoException(app, Logo.getString("flow.error.unknown") + " " + ident);
-            Flow flow = kernel.flows.get(index);
-            FlowReader flowReader;
-            // If the flow is a writable flow, throw error
-            if (flow.isWriter()) throw new LogoException(app, Logo.getString("flow.error.read"));
-                // else if the flow is a readable flow, convert to FlowReader
-            else if (flow.isReader()) {
-                flowReader = ((FlowReader) flow);
-            }
-            // else the flow isn't yet defined, initialize
-            else flowReader = new FlowReader(flow);
-
-            if (flowReader.isFinished())
-                throw new LogoException(app, Logo.getString("flow.error.eof") + " " + ident);
-            // Reading line
-            String line = flowReader.readLine();
-            if (null == line) {
-                flow.setFinished(true);
-                throw new LogoException(app, Logo.getString("flow.error.eof") + " " + ident);
-            }
-            Interpreter.returnValue = true;
-            Interpreter.operands.push("[ " + Utils.formatCode(line.trim()) + " ] ");
-            kernel.flows.set(index, flowReader);
-        } catch (FileNotFoundException e1) {
-            try {
-                throw new LogoException(app, Logo.getString("file.error.read"));
-            } catch (LogoException ignored) {
-            }
-        } catch (IOException | LogoException ignored) {
-        }
-    }
-
-    void getOpenFiles(Stack<String> param) {
-        StringBuilder liste;
-        liste = new StringBuilder("[ ");
-        for (Flow flow : kernel.flows) {
-            liste.append("[ ").append(flow.getId()).append(" ").append(flow.getPath()).append(" ] ");
-        }
-        liste.append("] ");
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(liste.toString());
-    }
-
-    void getTextFont(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push("[ " + HistoryPanel.printFontId + " [ " + Application.fonts[HistoryPanel.printFontId].getFontName() + " ] ] ");
-    }
-
-    void setTextFont(Stack<String> param) {
-        try {
-            int int_police = kernel.getCalculator().getInteger(param.get(0));
-            HistoryPanel.printFontId = int_police % Application.fonts.length;
-            app.getHistoryPanel().setFontNumber(int_police);
-        } catch (LogoException ignored) {
-        }
     }
 
     void getLabelFont(Stack<String> param) {
@@ -3239,164 +1968,6 @@ public class Interpreter {
         try {
             int int_police = kernel.getCalculator().getInteger(param.get(0));
             app.getDrawPanel().drawingFont = int_police % Application.fonts.length;
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void isCountdownEnded(Stack<String> param) {
-        Interpreter.returnValue = true;
-        if (Calendar.getInstance().getTimeInMillis() > Kernel.chrono)
-            Interpreter.operands.push(Logo.getString("interpreter.keyword.true"));
-        else Interpreter.operands.push(Logo.getString("interpreter.keyword.false"));
-    }
-
-    void countdown(Stack<String> param) {
-        try {
-            int temps = kernel.getCalculator().getInteger(param.get(0));
-            Kernel.chrono = Calendar.getInstance().getTimeInMillis() + 1000L * temps;
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void getTimePassed(Stack<String> param) {
-        Interpreter.returnValue = true;
-        long heure_actuelle = Calendar.getInstance().getTimeInMillis();
-        Interpreter.operands.push(String.valueOf((heure_actuelle - Logo.getStartupHour()) / 1000));
-    }
-
-    void getTime(Stack<String> param) {
-        Calendar cal;
-        Interpreter.returnValue = true;
-        cal = Calendar.getInstance(Objects.requireNonNull(Logo.config.getLanguage().locale));
-        int heure = cal.get(Calendar.HOUR_OF_DAY);
-        int minute = cal.get(Calendar.MINUTE);
-        int seconde = cal.get(Calendar.SECOND);
-        Interpreter.operands.push("[ " + heure + " " + minute + " " + seconde + " ] ");
-    }
-
-    void getDate(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Calendar cal = Calendar.getInstance(Objects.requireNonNull(Logo.config.getLanguage().locale));
-        int jour = cal.get(Calendar.DAY_OF_MONTH);
-        int mois = cal.get(Calendar.MONTH) + 1;
-        int annee = cal.get(Calendar.YEAR);
-        Interpreter.operands.push("[ " + jour + " " + mois + " " + annee + " ] ");
-    }
-
-    void message(Stack<String> param) {
-        try {
-            StringBuilder list = new StringBuilder(getFinalList(param.get(0)));
-            StringTokenizer st = new StringTokenizer(list.toString());
-            // The message is cut into slices of acceptable lengths
-            FontMetrics fm = app.getGraphics().getFontMetrics(Logo.config.getFont());
-            list = new StringBuilder();
-            String tampon = "";
-            while (st.hasMoreTokens()) {
-                tampon += st.nextToken() + " ";
-                if (fm.stringWidth(tampon) > 200) {
-                    list.append(tampon).append("\n");
-                    tampon = "";
-                }
-            }
-            list.append(tampon);
-            list = new StringBuilder(Utils.unescapeString(list.toString()));
-
-            MessageTextArea jt = new MessageTextArea(list.toString());
-            JOptionPane.showMessageDialog(app, jt, "", JOptionPane.INFORMATION_MESSAGE, Logo.getAppIcon());
-
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void mousePosition(Stack<String> param) {
-        Interpreter.operands.push(app.getDrawPanel().getMousePositionList());
-        Interpreter.returnValue = true;
-    }
-
-    void mouseButton(Stack<String> param) {
-        while (!app.getDrawPanel().hasMouseEvent()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ignored) {
-            }
-            if (LogoException.thrown) break;
-        }
-        Interpreter.operands.push(String.valueOf(app.getDrawPanel().getMouseButton()));
-        Interpreter.returnValue = true;
-    }
-
-    void getTextColor(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Color c = app.getHistoryPanel().getTextColor();
-        Interpreter.operands.push("[ " + c.getRed() + " " + c.getGreen() + " " + c.getBlue() + " ] ");
-    }
-
-    void setTextColor(Stack<String> param) {
-        try {
-            if (isList(param.get(0))) {
-                app.getHistoryPanel().setTextColor(rgb(param.get(0), Utils.primitiveName("ui.settextcolor")));
-            } else {
-                int coul = kernel.getCalculator().getInteger(param.get(0)) % DrawPanel.defaultColors.length;
-                if (coul < 0) coul += DrawPanel.defaultColors.length;
-                app.getHistoryPanel().setTextColor(DrawPanel.defaultColors[coul]);
-            }
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void getTextSize(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(String.valueOf(app.getHistoryPanel().getFontSize()));
-    }
-
-    void setTextSize(Stack<String> param) {
-        try {
-            int i = kernel.getCalculator().getInteger(param.get(0));
-            app.getHistoryPanel().setFontSize(i);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void setSequenceIndex(Stack<String> param) {
-        try {
-            int i = kernel.getCalculator().getInteger(param.get(0));
-            app.getSoundPlayer().setTicks(i * 64);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void getSequenceIndex(Stack<String> param) {
-        Interpreter.returnValue = true;
-        double d = (double) app.getSoundPlayer().getTicks() / 64;
-        Interpreter.operands.push(Calculator.formatDouble(d));
-    }
-
-    void setInstrument(Stack<String> param) {
-        try {
-            int i = kernel.getCalculator().getInteger(param.get(0));
-            app.getSoundPlayer().setInstrument(i);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void deleteSequence(Stack<String> param) {
-        app.getSoundPlayer().clearSequence();
-    }
-
-    void play(Stack<String> param) {
-        app.getSoundPlayer().play();
-    }
-
-    void getInstrument(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(String.valueOf(app.getSoundPlayer().getInstrument()));
-    }
-
-    void sequence(Stack<String> param) {
-        String liste;
-        try {
-            liste = getFinalList(param.get(0));
-            app.getSoundPlayer().createSequence(Utils.formatCode(liste).toString());
         } catch (LogoException ignored) {
         }
     }
@@ -3505,66 +2076,6 @@ public class Interpreter {
         Interpreter.operands.push(String.valueOf(kernel.getActiveTurtle().id));
     }
 
-    void define(Stack<String> param) {
-        String mot;
-        try {
-            mot = getWord(param.get(0));
-            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            if (mot.equals("")) throw new LogoException(app, Logo.getString("interpreter.error.emptyProcedureBody"));
-            String list = getFinalList(param.get(1));
-            StringBuilder sb = new StringBuilder();
-            for (int i = 1; i <= numberOfElements(list); i++) {
-                String liste1 = item(list, i);
-                liste1 = getFinalList(liste1);
-
-                // First line
-                if (i == 1) {
-                    StringTokenizer st = new StringTokenizer(liste1);
-                    sb.append(Logo.getString("interpreter.keyword.to"));
-                    sb.append(" ");
-                    sb.append(mot);
-                    sb.append(" ");
-
-                    while (st.hasMoreTokens()) {
-                        // Optional variables
-                        String token = st.nextToken();
-                        if (token.equals("[")) {
-                            sb.append("[ :");
-                            while (st.hasMoreTokens()) {
-                                token = st.nextToken();
-                                if (token.equals("]")) {
-                                    sb.append("] ");
-                                    break;
-                                } else {
-                                    sb.append(token);
-                                    sb.append(" ");
-                                }
-                            }
-                        } else {
-                            sb.append(":");
-                            sb.append(token);
-                            sb.append(" ");
-                        }
-                    }
-                }
-                // Body of the procedure
-                else if (i > 1) {
-                    sb.append("\n");
-                    sb.append(liste1);
-                }
-            }
-            sb.append("\n");
-            sb.append(Logo.getString("interpreter.keyword.end"));
-            app.editor.appendText(new String(sb));
-        } catch (LogoException ignored) {
-        }
-        try {
-            app.editor.parseProcedures();
-            app.editor.clearText();
-        } catch (Exception ignored) {
-        }
-    }
-
     void setShape(Stack<String> param) {
         try {
             primitive2D("drawing.setshape");
@@ -3596,147 +2107,8 @@ public class Interpreter {
         Interpreter.operands.push(Logo.getString("interpreter.keyword.true"));
     }
 
-    void atan(Stack<String> param) {
-        try {
-            Interpreter.operands.push(kernel.getCalculator().atan(param.get(0)));
-            Interpreter.returnValue = true;
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void asin(Stack<String> param) {
-        try {
-            Interpreter.operands.push(kernel.getCalculator().asin(param.get(0)));
-            Interpreter.returnValue = true;
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void acos(Stack<String> param) {
-        try {
-            Interpreter.operands.push(kernel.getCalculator().acos(param.get(0)));
-            Interpreter.returnValue = true;
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void tan(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().tan(param.get(0)));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void pi(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(kernel.getCalculator().pi());
-    }
-
-    void load(Stack<String> param) {
-        String mot;
-        try {
-            mot = getWord(param.get(0));
-            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            String path = Utils.unescapeString(Logo.config.getDefaultFolder()) + File.separator + mot;
-            try {
-                String txt = Utils.readLogoFile(path);
-                app.editor.appendText(txt);
-            } catch (IOException e1) {
-                throw new LogoException(app, Logo.getString("file.error.read"));
-            }
-            try {
-                app.editor.parseProcedures();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            app.editor.clearText();
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void saveAll(Stack<String> param) {
-        String mot;
-        try {
-            mot = getWord(param.get(0));
-            if (null == mot) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            saveProcedures(mot, null);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void save(Stack<String> param) {
-        String mot;
-        String liste;
-        try {
-            mot = getWord(param.get(0));
-            if (null == mot) throw new LogoException(app, Logo.getString("interpreter.error.wordRequired"));
-            liste = getFinalList(param.get(1));
-            StringTokenizer st = new StringTokenizer(liste);
-            Stack<String> pile = new Stack<>();
-            while (st.hasMoreTokens()) pile.push(st.nextToken());
-            saveProcedures(mot, pile);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void getDirectory(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push("\"" + Logo.config.getDefaultFolder());
-    }
-
-    void setDirectory(Stack<String> param) {
-        String liste;
-        try {
-            liste = getWord(param.get(0));
-            if (null == liste) throw new LogoException(app, param.get(0) + " " + Logo.getString("interpreter.error.wordRequired"));
-            String chemin = Utils.unescapeString(liste);
-            if ((new File(chemin)).isDirectory() && !chemin.startsWith("..")) {
-                Logo.config.setDefaultFolder(Utils.escapeString(chemin));
-            } else throw new LogoException(app, liste + " " + Logo.getString("interpreter.error.invalidDirectory"));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void getFiles(Stack<String> param) {
-        String str = Utils.unescapeString(Logo.config.getDefaultFolder());
-        File f = new File(str);
-        StringBuilder file = new StringBuilder();
-        StringBuilder directory = new StringBuilder();
-        int nbdossier = 0;
-        int nbfichier = 0;
-        String[] l = f.list();
-        for (String s : Objects.requireNonNull(l)) {
-            if ((new File(str + File.separator + s)).isDirectory()) {
-                nbdossier++;
-                if (nbdossier % 5 == 0) directory.append(s).append("\n");
-                else directory.append(s).append(" ");
-            } else {
-                nbfichier++;
-                if (nbfichier % 5 == 0) file.append(s).append("\n");
-                else file.append(s).append(" ");
-            }
-        }
-        String texte = "";
-        if (!directory.toString().equals(""))
-            texte += Logo.getString("interpreter.message.folders") + ":\n" + directory + "\n";
-        if (!file.toString().equals("")) texte += Logo.getString("interpreter.message.files") + ":\n" + file + "\n";
-        app.updateHistory("commentaire", texte);
-    }
-
-    void run(Stack<String> param) {
-        String mot;
-        try {
-            mot = getWord(param.get(0));
-            if (null == mot) {
-                mot = getList(param.get(0).trim());
-                mot = new String(Utils.formatCode(mot));
-            } else mot = mot + " ";
-            app.getKernel().getInstructionBuffer().insert(mot);
-            Interpreter.evalReturnValue = true;
-        } catch (LogoException ignored) {
-        }
-    }
+    // Math trig primitives (atan, asin, acos, tan, pi) moved to MathPrimitives.java
+    // File I/O primitives moved to FilePrimitives.java
 
     void isProcedure(Stack<String> param) {
         String mot;
@@ -3817,19 +2189,6 @@ public class Interpreter {
         if (kernel.getActiveTurtle().isVisible()) app.getDrawPanel().eraseTurtle(true);
     }
 
-    void readChar(Stack<String> param) {
-        while (app.getKey() == -1) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ignored) {
-            }
-            if (LogoException.thrown) break;
-        }
-        Interpreter.operands.push(String.valueOf(app.getKey()));
-        Interpreter.returnValue = true;
-        app.setKey(-1);
-    }
-
     void fill(Stack<String> param) {
         app.getDrawPanel().fill();
     }
@@ -3846,59 +2205,6 @@ public class Interpreter {
                 } catch (LogoException ignored) {
                 }
             }
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void isKey(Stack<String> param) {
-        Interpreter.returnValue = true;
-        if (app.getKey() != -1) Interpreter.operands.push(Logo.getString("interpreter.keyword.true"));
-        else Interpreter.operands.push(Logo.getString("interpreter.keyword.false"));
-    }
-
-    void read(Stack<String> param) {
-        String mot;
-        try {
-            String liste = getFinalList(param.get(0));
-            mot = getWord(param.get(1));
-            if (null == mot) throw new LogoException(app, Logo.getString("interpreter.error.wordRequired"));
-            FontMetrics fm = app.getGraphics().getFontMetrics(Logo.config.getFont());
-            int longueur = fm.stringWidth(liste) + 100;
-            InputFrame inputFrame = new InputFrame(liste, longueur);
-            while (inputFrame.isVisible()) {
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException ignored) {
-                }
-            }
-            param = new Stack<>();
-            param.push("\"" + mot);
-            String phrase = inputFrame.getText();
-            StringBuilder buffer = new StringBuilder();
-            for (int j = 0; j < phrase.length(); j++) {
-                char c = phrase.charAt(j);
-                if (c == '\\') buffer.append("\\\\");
-                else buffer.append(c);
-            }
-            int offset = buffer.indexOf(" ");
-            if (offset != -1) {
-                buffer.insert(0, "[ ");
-                buffer.append(" ] ");
-            } else {
-                try {
-                    Double.parseDouble(phrase);
-                } catch (NumberFormatException e) {
-                    buffer.insert(0, "\"");
-                }
-            }
-            phrase = new String(buffer);
-            param.push(phrase);
-            globalMake(param);
-            String texte = liste + "\n" + phrase;
-            app.updateHistory("commentaire", Utils.unescapeString(texte) + "\n");
-            app.focusCommandLine();
-            inputFrame.dispose();
-            app.focusCommandLine();
         } catch (LogoException ignored) {
         }
     }
@@ -3999,55 +2305,6 @@ public class Interpreter {
         Interpreter.operands.push(result.toString());
     }
 
-    void eraseAll(Stack<String> param) {
-        workspace.deleteAllProcedures();
-        workspace.deleteAllVariables();
-        workspace.deleteAllPropertyLists();
-    }
-
-    void procedures(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(new String(getAllProcedures()));
-    }
-
-    void eraseVariable(Stack<String> param) {
-        erase(param.get(0), "variable");
-    }
-
-    void eraseProcedure(Stack<String> param) {
-        erase(param.get(0), "procedure");
-    }
-
-    void wait(Stack<String> param) {
-        try {
-            int temps = kernel.getCalculator().getInteger(param.get(0));
-            if (temps < 0) {
-                String attends = Utils.primitiveName("time.wait");
-                throw new LogoException(app, attends + " " + Logo.getString("interpreter.error.requirePositive"));
-            } else {
-                int nbsecondes = temps / 60;
-                int reste = temps % 60;
-                for (int i = 0; i < nbsecondes; i++) {
-                    Thread.sleep(1000);
-                    if (app.error) break;
-                }
-                if (!app.error) Thread.sleep(reste * 50 / 3);
-            }
-
-        } catch (LogoException | InterruptedException ignored) {
-        }
-    }
-
-    void random(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            int i = kernel.getCalculator().getInteger(param.get(0));
-            i = (int) Math.floor(Math.random() * i);
-            Interpreter.operands.push(String.valueOf(i));
-        } catch (LogoException ignored) {
-        }
-    }
-
     void setScreenColor(Stack<String> param) {
         try {
             Color color = null;
@@ -4084,54 +2341,6 @@ public class Interpreter {
         }
     }
 
-    void localMake(Stack<String> param) {
-        try {
-            local(param);
-            globalMake(param);
-            Interpreter.returnValue = false;
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void localWrap(Stack<String> param) {
-        try {
-            local(param);
-            Interpreter.returnValue = false;
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void globalMakeWrap(Stack<String> param) {
-        try {
-            globalMake(param);
-            Interpreter.returnValue = false;
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void sqrt(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().sqrt(param.get(0)));
-
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void isMember69(Stack<String> param) {
-        try {
-            isMember(param, 69);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void isMember71(Stack<String> param) {
-        try {
-            isMember(param, 71);
-        } catch (LogoException ignored) {
-        }
-    }
-
     void isBeforeWrap(Stack<String> param) {
         try {
             isBefore(param);
@@ -4157,13 +2366,6 @@ public class Interpreter {
         Interpreter.returnValue = true;
     }
 
-    void isList(Stack<String> param) {
-        String liste = param.get(0).trim();
-        if (isList(liste)) Interpreter.operands.push(Logo.getString("interpreter.keyword.true"));
-        else Interpreter.operands.push(Logo.getString("interpreter.keyword.false"));
-        Interpreter.returnValue = true;
-    }
-
     void isNumber(Stack<String> param) {
         try {
             Double.parseDouble(param.get(0));
@@ -4180,248 +2382,6 @@ public class Interpreter {
         if (null == mot) Interpreter.operands.push(Logo.getString("interpreter.keyword.false"));
         else Interpreter.operands.push(Logo.getString("interpreter.keyword.true"));
         Interpreter.returnValue = true;
-    }
-
-    void count(Stack<String> param) {
-        String mot;
-        Interpreter.returnValue = true;
-        mot = getWord(param.get(0));
-        if (null == mot) {
-            try {
-                String liste = getFinalList(param.get(0));
-                Interpreter.operands.push(String.valueOf(numberOfElements(liste)));
-            } catch (LogoException ignored) {
-            }
-        } else Interpreter.operands.push(String.valueOf(getWordLength(mot)));
-    }
-
-    void first(Stack<String> param) {
-        Interpreter.returnValue = true;
-        String mot = getWord(param.get(0));
-        if (null == mot) { // IF this is a list
-            try {
-                String liste = getFinalList(param.get(0));
-                Interpreter.operands.push(item(liste, 1));
-            } catch (LogoException ignored) {
-            }
-        } else if (getWordLength(mot) == 1) Interpreter.operands.push(wordPrefix + mot);
-        else {
-            String st = "";
-            try {
-                st = itemWord(1, mot);
-                Double.parseDouble(st);
-                Interpreter.operands.push(st);
-            } catch (LogoException ignored) {
-            } catch (NumberFormatException e2) {
-                Interpreter.operands.push("\"" + st);
-            }
-        }
-    }
-
-    void last(Stack<String> param) {
-        Interpreter.returnValue = true;
-        String mot = getWord(param.get(0));
-        if (null == mot) { // If it's a list
-            try {
-                String liste = getFinalList(param.get(0));
-                Interpreter.operands.push(item(liste, numberOfElements(liste)));
-            } catch (LogoException ignored) {
-            }
-        } else if (getWordLength(mot) == 1) Interpreter.operands.push(wordPrefix + mot);
-        else {
-            String st = "";
-            try {
-                st = itemWord(getWordLength(mot), mot);
-                Double.parseDouble(st);
-                Interpreter.operands.push(st);
-            } catch (NumberFormatException e1) {
-                Interpreter.operands.push("\"" + st);
-            } catch (LogoException ignored) {
-            }
-        }
-    }
-
-    void butFirst(Stack<String> param) {
-        String mot;
-        Interpreter.returnValue = true;
-        mot = getWord(param.get(0));
-        if (null == mot) {
-            try {
-                String liste = getFinalList(param.get(0)).trim();
-                String element = item(liste, 1);
-                int longueur = element.length();
-                if (element.startsWith("\"") || element.startsWith("[")) longueur--;
-                Interpreter.operands.push("[" + liste.substring(longueur) + " ] ");
-            } catch (LogoException ignored) {
-            }
-        } else if (mot.equals("")) {
-            try {
-                throw new LogoException(app, Logo.getString("interpreter.error.wordEmpty"));
-            } catch (LogoException ignored) {
-            }
-        } else if (getWordLength(mot) == 1) Interpreter.operands.push("\"");
-        else {
-            if (!mot.startsWith("\\")) mot = mot.substring(1);
-            else mot = mot.substring(2);
-            try {
-                Double.parseDouble(mot);
-                Interpreter.operands.push(mot);
-            } catch (NumberFormatException e) {
-                Interpreter.operands.push(wordPrefix + mot);
-            }
-        }
-    }
-
-    void butLast(Stack<String> param) {
-        String mot;
-        Interpreter.returnValue = true;
-        mot = getWord(param.get(0));
-        if (null == mot) {
-            try {
-                String liste = getFinalList(param.get(0)).trim();
-                String element = item(liste, numberOfElements(liste));
-                int longueur = element.length();
-
-                if (element.startsWith("\"") || element.startsWith("[")) longueur--;
-                Interpreter.operands.push("[ " + liste.substring(0, liste.length() - longueur) + "] ");
-            } catch (LogoException ignored) {
-            }
-        } else if (mot.equals("")) {
-            try {
-                throw new LogoException(app, Logo.getString("interpreter.error.wordEmpty"));
-            } catch (LogoException ignored) {
-            }
-        } else if (getWordLength(mot) == 1) Interpreter.operands.push("\"");
-        else {
-            String tmp = mot.substring(0, mot.length() - 1);
-            if (tmp.endsWith("\\")) tmp = tmp.substring(0, tmp.length() - 1);
-            try {
-                Double.parseDouble(tmp);
-                Interpreter.operands.push(tmp);
-            } catch (NumberFormatException e) {
-                Interpreter.operands.push(wordPrefix + tmp);
-            }
-        }
-    }
-
-    void item(Stack<String> param) {
-        String mot;
-        Interpreter.returnValue = true;
-        try {
-            mot = getWord(param.get(1));
-            if (null == mot)
-                Interpreter.operands.push(item(getFinalList(param.get(1)), kernel.getCalculator().getInteger(param.get(0))));
-            else {
-                int i = kernel.getCalculator().getInteger(param.get(0));
-                if (i < 1 || i > getWordLength(mot))
-                    throw new LogoException(app, Utils.primitiveName("list.item") + " " + Logo.getString("interpreter.error.arguments.openBracket") + i + " " + Logo.getString("interpreter.error.arguments.closeBracket") + ".");
-                else {
-                    String st = itemWord(i, mot);
-                    try {
-                        Double.parseDouble(st);
-                        Interpreter.operands.push(st);
-                    } catch (NumberFormatException e1) {
-                        Interpreter.operands.push("\"" + st);
-                    }
-                }
-            }
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void remove(Stack<String> param) {
-        String mot;
-        Interpreter.returnValue = true;
-        try {
-            StringBuilder list = new StringBuilder(getFinalList(param.get(1)));
-            StringTokenizer st = new StringTokenizer(list.toString());
-            list = new StringBuilder("[ ");
-            mot = getWord(param.get(0));
-            String str;
-            if (null != mot && mot.equals("")) mot = "\\v";
-            if (null == mot) mot = param.get(0).trim();
-
-            while (st.hasMoreTokens()) {
-                str = st.nextToken();
-                if (str.equals("[")) str = extractList(st);
-                if (!str.equals(mot)) list.append(str).append(" ");
-            }
-            Interpreter.operands.push(list.toString().trim() + " ] ");
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void pick(Stack<String> param) {
-        Interpreter.returnValue = true;
-        String mot = getWord(param.get(0));
-        if (null == mot) {
-            try {
-                String list = getFinalList(param.get(0));
-                int nombre = (int) Math.floor(numberOfElements(list) * Math.random()) + 1;
-                String tmp = item(list, nombre);
-                if (tmp.equals("\"\\v")) tmp = "\"";
-                Interpreter.operands.push(tmp);
-            } catch (LogoException ignored) {
-            }
-        } else {
-            int nombre = (int) Math.floor(Math.random() * getWordLength(mot)) + 1;
-            String st = "";
-            try {
-                st = itemWord(nombre, mot);
-                Double.parseDouble(st);
-                Interpreter.operands.push(st);
-            } catch (NumberFormatException e1) {
-                Interpreter.operands.push("\"" + st);
-            } catch (LogoException ignored) {
-            }
-        }
-    }
-
-    void reverse(Stack<String> param) {
-        try {
-            StringBuilder liste = new StringBuilder(getFinalList(param.get(0)).trim());
-            Interpreter.returnValue = true;
-            StringTokenizer st = new StringTokenizer(liste.toString());
-            liste = new StringBuilder(" ] ");
-            String element;
-            while (st.hasMoreTokens()) {
-                element = st.nextToken();
-                if (element.equals("[")) element = extractList(st);
-                liste.insert(0, " " + element);
-            }
-            Interpreter.operands.push("[" + liste);
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void lput(Stack<String> param) {
-        try {
-            String liste = getFinalList(param.get(1)).trim();
-            Interpreter.returnValue = true;
-            String mot = getWord(param.get(0));
-            if (null != mot && mot.equals("")) mot = "\\v";
-            // If it's a list
-            Interpreter.operands.push(("[ " + liste).trim() + " " + Objects.requireNonNullElseGet(mot, () -> param.get(0).trim()) + " ] ");
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void fput(Stack<String> param) {
-        try {
-            String liste = getFinalList(param.get(1));
-            Interpreter.returnValue = true;
-            String mot = getWord(param.get(0));
-            if (null != mot && mot.equals("")) mot = "\\v";
-            if (null == mot) {
-                if (!liste.equals(""))
-                    Interpreter.operands.push("[ " + param.get(0).trim() + " " + liste.trim() + " ] ");
-                else Interpreter.operands.push("[ " + param.get(0).trim() + " ] ");
-            } else {
-                if (!liste.equals("")) Interpreter.operands.push("[ " + mot + " " + liste.trim() + " ] ");
-                else Interpreter.operands.push("[ " + mot + " ] ");
-            }
-        } catch (LogoException ignored) {
-        }
     }
 
     void sentence(Stack<String> param) {
@@ -4441,21 +2401,6 @@ public class Interpreter {
         Interpreter.operands.push(liste + "] ");
     }
 
-    void list(Stack<String> param) {
-        StringBuilder liste = new StringBuilder("[ ");
-        Interpreter.returnValue = true;
-        for (String mot2 : param) {
-            String mot = getWord(mot2);
-            if (null == mot) {
-                liste.append(mot2);
-            } else {
-                if (mot.equals("")) mot = "\\v";
-                liste.append(mot).append(" ");
-            }
-        }
-        Interpreter.operands.push(liste + "] ");
-    }
-
     void not(Stack<String> param) {
         try {
             Interpreter.returnValue = true;
@@ -4466,37 +2411,7 @@ public class Interpreter {
         }
     }
 
-    void cos(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().cos(param.get(0)));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void sin(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().sin(param.get(0)));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void log10(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().log10(param.get(0)));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void round(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(String.valueOf(Math.round(kernel.getCalculator().numberDouble(param.get(0)))));
-        } catch (LogoException ignored) {
-        }
-    }
+    // Math trig/rounding primitives moved to MathPrimitives.java
 
     void heading(Stack<String> param) {
         Interpreter.returnValue = true;
@@ -4643,47 +2558,7 @@ public class Interpreter {
         }
     }
 
-    void remainder(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().remainder(param.get(0), param.get(1)));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void divide(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().divide(param));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void product(Stack<String> param) {
-        Interpreter.operands.push(kernel.getCalculator().multiply(param));
-        Interpreter.returnValue = true;
-    }
-
-    void minus(Stack<String> param) {
-        try {
-            Interpreter.operands.push(kernel.getCalculator().minus(param.get(0)));
-            Interpreter.returnValue = true;
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void difference(Stack<String> param) {
-        Interpreter.returnValue = true;
-        try {
-            Interpreter.operands.push(kernel.getCalculator().substract(param));
-        } catch (LogoException ignored) {
-        }
-    }
-
-    void sum(Stack<String> param) {
-        Interpreter.returnValue = true;
-        Interpreter.operands.push(kernel.getCalculator().add(param));
-    }
+    // Math arithmetic primitives moved to MathPrimitives.java
 
     void setHeading(Stack<String> param) {
         delay();
@@ -4810,18 +2685,6 @@ public class Interpreter {
         }
     }
 
-    void print(Stack<String> param) {
-        StringBuilder result = new StringBuilder();
-        for (String s : param) {
-            String par = s.trim();
-            if (isList(par)) par = formatList(par.substring(1, par.length() - 1));
-            String mot = getWord(s);
-            if (null == mot) result.append(Utils.unescapeString(par)).append(" ");
-            else result.append(Utils.unescapeString(mot)).append(" ");
-        }
-        app.updateHistory("perso", result + "\n");
-    }
-
     void hideTurtle(Stack<String> param) {
         if (kernel.getActiveTurtle().isVisible()) {
             app.getDrawPanel().toggleTurtle();
@@ -4852,14 +2715,6 @@ public class Interpreter {
 
     void clearScreenWrap(Stack<String> param) {
         app.getDrawPanel().clearScreen();
-    }
-
-    void power(Stack<String> param) {
-        try {
-            Interpreter.returnValue = true;
-            Interpreter.operands.push(kernel.getCalculator().power(param.get(0), param.get(1)));
-        } catch (LogoException ignored) {
-        }
     }
 
     void left(Stack<String> param) {
@@ -4915,17 +2770,6 @@ public class Interpreter {
     void primitive3D(String name) throws LogoException {
         if (DrawPanel.windowMode != DrawPanel.WINDOW_3D)
             throw new LogoException(app, Utils.primitiveName(name) + " " + Logo.getString("interpreter.error.only3d"));
-    }
-
-    /**
-     * Returns the code [r g b] for the color i
-     *
-     * @param i Integer representing the Color
-     */
-    void colorCode(int i) {
-        Interpreter.returnValue = true;
-        Color co = DrawPanel.defaultColors[i];
-        Interpreter.operands.push("[ " + co.getRed() + " " + co.getGreen() + " " + co.getBlue() + " ] ");
     }
 
     /**
@@ -5147,6 +2991,7 @@ public class Interpreter {
         Interpreter.operands.push(mot);
     }
 
+    // Operator versions of comparison (used for <, <=, >, >= operators)
     void isLessThanOrEqual(Stack<String> param) {
         Interpreter.returnValue = true;
         Interpreter.operands.push(kernel.getCalculator().infequal(param));
