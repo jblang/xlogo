@@ -1,0 +1,233 @@
+# Shape Library by Guy Walker
+# www.logoarts.co.uk
+
+to rarc :angle :radius
+  # clockwise arc drawn relative to turtle heading
+  Arc :Radius Heading :Angle+Heading Right :Angle
+end
+
+to arch :angle :radius
+  # symmetrical arc drawn relative to turtle heading
+  Arc :Radius Heading-:Angle/2 Heading+:Angle/2
+end
+
+to leftarc :angle :radius
+  # arc drawn relative to turtle position, angle & radius positive
+  PenUp Right 90 Back :Radius Left :Angle
+  Arc :Radius Heading Heading+:Angle
+  Forward :Radius Left 90 PenDown
+end
+
+#########################################
+
+to annulus :size
+  # annulus shape drawn from centre (tp)
+  Circle :Size/2
+  Circle :Size/4
+end
+
+to bean :size
+  # bean shape drawn from centre (tp)
+  rArc 180 :Size/2
+  Forward :Size/3 rArc 180 :Size/6
+  Forward :Size/3 rArc 180 :Size/6
+  Back :Size/3 rArc 180 :Size/6
+  Back :Size/3    # return to centre
+end
+
+to button :size :corner
+  # rounded corner shape drawn from centre (tp)
+  Forward :Size/2 Left 90 Back :Size/2-:Corner PenDown
+  Repeat 4 [Forward :Size-2*:Corner LeftArc 90 :Corner]
+  PenUp Forward :Size/2-:Corner Right 90 Back :Size/2   # return to centre
+end
+
+To Chevron :Size
+  # chevron shape drawn from centre (tp)
+  PenDown Left 45
+  Forward 1.414*:Size/2 Right 135 Forward :Size/2
+  Right 45 Forward 1.414*:Size/2 Right 90 Forward 1.414*:Size/2
+  Right 45 Forward :Size/2 Right 135 Forward 1.414*:Size/2
+  Left 45 PenUp
+End
+
+To Clam :Size
+  # optical clam shape drawn from centre (tp)
+  SetPC White Back :Size/3 Arch 108-PW 0.6*:Size
+  Forward :Size/3 Left 180
+  SetPC Black Back :Size/3 Arch 108-PW 0.6*:Size
+  Forward :Size/3 Left 180
+End
+
+To Cross :Side
+  # cross drawn from centre (tp)
+  Back :Side/2 Right 90 Back :Side/3 PenDown
+  Repeat 4 [
+    Forward :Side/1.5 Left 116.57
+    Forward :Side/2.7 Right 143.14
+    Forward :Side/2.7 Left 116.57]
+  PenUp Forward :Side/3 Left 90 Forward :Side/2     # r2c
+End
+
+to egg :size
+  # egg shape drawn from centre (tp)
+  Forward :Size/3 Left 45 rArc 90 0.292*:Size
+  Back :Size/1.414 rArc 45 :Size
+  Forward :Size/2 rArc 180 :Size/2
+  Back :Size/2 rArc 45 :Size
+  Forward :Size/1.414 Right 45 Back :Size/2    # return to centre
+end
+
+to heart :size
+  # heart shape drawn from centre (tp)
+  Forward :Size/4 Left 90 Back :Size/4
+  rArc 230 :Size/4 Forward 1.71*:Size Right 152.4
+  rArc 27.6 1.46*:Size Left 50
+  Forward 2.7*:Size Right 130
+  rArc 27.6 1.46*:Size Left 27.6 Forward 1.71*:Size Left 180
+  rArc 230 :Size/4 Forward :Size/4 Left 90 Back :Size/4  # return to centre
+end
+
+To Kite :Size
+  # kite shape drawn from centre (tp)
+  Back :Size/2 PenDown
+  Left 18.4 Forward :Size/1.26 Right 63.4
+  Forward :Size/2.82 Right 90 Forward :Size/2.82
+  Right 63.4 Forward :Size/1.26
+  PenUp Right 161.6 Forward :Size/2     # return to centre
+End
+
+to lens :size
+  # lens shape drawn from centre (tp)
+  Repeat 2 [
+    Back :Size/2 Arch 90 :Size/1.41
+    Forward :Size/2 Left 180]
+end
+
+to lune :size
+  # lune shape drawn from centre (tp)
+  Arch 240 :Size/2 Back :Size/2
+  Arch 120 :Size/2 Forward :Size/2
+end
+
+to occitan :size
+  # occitan shape drawn from centre (tp)
+  Repeat 2 [
+    Arch 90 :Size/2 Left 90 Back 1.4*:Size/2
+    Arch 90 :Size/2 Forward 1.4*:Size/2 Left 90]
+end
+
+to oval :size
+  # oval shape drawn from centre (tp)
+  Repeat 2 [
+    Back :Size/4 Arch 90 :Size/1.66 Forward :Size/4 Left 90
+    Forward :Size/4 Arch 90 :Size/4 Back :Size/4 Left 90]
+end
+
+To Pgram :Wide :High [:P 1]
+  # parallelogram shape drawn from centre (tp)
+  # default parity of 1, use minus 1 for mirror image
+  LocalMake "Ang ATan :Wide/(:High/2)     # inner angle
+  LocalMake "Len :Wide/ Sin :Ang     # side length
+  Back :High/4 Right :P*:Ang Back :Len/2 PenDown
+  Repeat 2 [
+    Forward :Len Left :P*:Ang Forward :High/2 Left :P*(180-:Ang)]
+  PenUp Forward :Len/2 Left :P*:Ang Forward :High/4     # r2c
+End
+
+To Pebble :Wide :High
+  # pebble shape drawn from centre (tp)
+  LocalMake "Diff Abs :Wide-:High
+  If :Wide > :High
+    [LocalMake "Rad :High/2 LocalMake "Vert 0 LocalMake "Horiz :Diff]
+    [LocalMake "Rad :Wide/2 LocalMake "Vert :Diff LocalMake "Horiz 0]
+  PenUp Back :High/2 Right 90 Back :Horiz/2 PenDown
+  Repeat 2 [
+    Forward :Horiz LeftArc 90 :Rad Forward :Vert LeftArc 90 :Rad]
+  PenUp Forward :Horiz/2 Left 90 Forward :High/2     # return to centre
+End
+
+To Polygon :N :Wide
+  # polygon of 'N' sides drawn from centre (tp)
+  Make "Side :Wide *Sin 180/:N     # length of one side
+  Right 180/:N Back :Wide/2 Right 90-180/:N PenDown
+  Repeat :N 
+    [Forward :Side Left 360/:N]
+  PenUp Left 90-180/:N Forward :Wide/2 Left 180/:N     # return to centre
+End
+
+to quatquetra :size
+  # quatquetra shape drawn from centre (tp)
+  Repeat 4 [
+    Back :Size/2 Arch 180 :Size/2
+    Forward :Size/2 Left 90]
+end
+
+To Rectangle :Wide :High
+  # rectangle (wide x high) drawn from centre (tp)
+  Back :High/2 Right 90 Back :Wide/2 PenDown
+  Repeat 2 [
+    Forward :Wide Left 90 Forward :High Left 90]
+  PenUp Forward :Wide/2 Left 90 Forward :High/2     # r2c
+End
+
+To RightAngTri :Size
+  # right angled triangle drawn from centre (tp)
+  Back :Size/4 Right 45
+  PenDown Forward 1.414*:Size/2
+  Left 135 Forward :Size
+  Left 135 Forward 1.414*:Size/2 PenUp
+  Left 135 Forward :Size/4     # return to centre
+End
+
+to salinon :size
+  # salinon shape drawn from centre (tp)
+  rArc 180 :Size/2 rArc 180 :Size/6
+  Forward :Size/3 rArc 180 :Size/6
+  Forward :Size/1.5 Left 180 rArc 180 :Size/6
+  Left 180 Forward :Size/3    # return to centre
+end
+
+To Sector :Angle :Rad1 :Rad2
+  # sector shape drawn from centre (tp)
+  Arch :Angle :Rad1
+  Arch :Angle :Rad2 Left :Angle/2
+  Forward :Rad1 PenDown Forward (:Rad2-:Rad1)
+  PenUp Back :Rad2 Right :Angle
+  Forward :Rad1 PenDown Forward (:Rad2-:Rad1)
+  PenUp Back :Rad2 Left :Angle/2     # return to centre
+End
+
+to square :side
+  # square (side x side) drawn from centre (tp)
+  Back :Side/2 Right 90 Back :Side/2 PenDown
+  Repeat 4 [
+    Forward :Side Left 90]
+  PenUp Forward :Side/2 Left 90 Forward :Side/2     # r2c
+end
+
+to star :size
+  # 5 pointed star shape drawn from centre (tp)
+  PenUp Forward :Size/2 Right 162 PenDown
+  Repeat 5 [
+    Forward :Size/2.76 Left 72 Forward :Size/2.76 Right 144]
+  PenUp Left 162 Back :Size/2     # return to centre
+end
+
+to triquetra :size
+  # triquetra shape drawn from centre (tp)
+  Make "Step :Size/2 *Tan 30
+  Repeat 3 [
+    Back :Step
+    Left 90 rArc 60 :Size/2
+    Right 60 rArc 60 :Size/2
+    Left 90 Forward :Step Left 120]
+end
+
+To Yin :Size [:P 1]
+  # yin shape drawn from centre (tp)
+  # default parity of 1, use minus 1 for mirror image
+  rArc 180 :Size/2 Forward :P*:Size/4
+  rArc 180 :Size/4 Forward :P*:Size/2
+  rArc 180 :Size/4 Forward :P*:Size/4 Left 180
+End

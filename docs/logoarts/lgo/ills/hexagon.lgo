@@ -1,0 +1,26 @@
+# Main Command: Go
+# Hexagon Arrows by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to triangle
+  PenDown Right 90 Forward 22
+  Left 120 Forward 44
+  Left 120 Forward 44
+  Left 120 Forward 22
+  Left 90
+  PenUp Forward 4 FillZone Back 4
+end
+
+to go
+  New SetPC [153 204 204]
+  SetX 120 Right 30 PenDown SetPW 2
+  Repeat 6 [Left 60 Forward 120 Wait 20]
+  SetPC [153 204 205] SetPW 1 Wait 60
+  Repeat 6 [Triangle Left 60 Forward 120 Wait 20]
+end

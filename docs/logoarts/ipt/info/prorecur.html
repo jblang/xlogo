@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><!-- #BeginTemplate "/Templates/info3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Resource | Procedures_Recursive | html</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="info">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Recursive</h2>
+			<p>- XLogo library of procedures</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<img src="../../art/img32/xlogo32.gif" alt="xlogo" width="32" height="32">
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>These procedures use recursive techniques. They can be very inefficient 
+					and are not always the best method to use.</p>
+				<p>Download library of <a href="../../lgo/lib/recur-lib.lgo">recursive procedures</a>.</p>
+				<p><span class="subh">Add</span><br>
+					Add two numbers, using recursion. <span class="var">I</span> must be greater 
+					than 0.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Add</span> :<span class="var">I</span> :<span class="var">J</span></span><br>
+						&nbsp; <span class="com"># return sum of two input numbers</span><br>
+						&nbsp; If <b>:</b><span class="var">I</span> = 0 [Output <b>:</b><span class="var">J</span>] [Output <span class="pro">Add</span> <b>:</b><span class="var">I</span>-1 <b>:</b><span class="var">J</span>+1]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">A</span> 36 Make &quot;<span class="var">B</span> 12<br>
+						&nbsp; Print (Sentence [The sum of] <b>:</b><span class="var">A</span> [and] <b>:</b><span class="var">B</span> [is] <span class="pro">Add</span> <b>:</b><span class="var">A</span> <b>:</b><span class="var">B</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><span class="subh">Factorial</span><br>
+					Return the factorial of a number. For example, factorial 6 = 6x5x4x3x2x1 
+					= 720. It is written 6! sometimes spoken as '6 bang'.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Factorial</span> :<span class="var">N</span></span><br>
+						&nbsp; <span class="com"># return factorial of N</span><br>
+						&nbsp; If <b>:</b><span class="var">N</span> = 1 [Output 1] [Output <b>:</b><span class="pro"><span class="var">N</span></span> * <span class="pro">Factorial</span> <b>:</b><span class="var">N</span>-<span class="var">1</span>]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">A</span> 12<br>
+						&nbsp; Make &quot;<span class="var">Factorial</span> <span class="pro">Factorial</span> <b>:</b><span class="var">A</span><br>
+						&nbsp; Print (Sentence [The factorial of] <b>:</b><span class="var">A</span> [is] <b>:</b><span class="var">Factorial</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><span class="subh">Fibonacci</span><br>
+					Return the Nth Fibonacci number. N must be greater than 0.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Fib</span> :<span class="var">N</span></span><br>
+						&nbsp; <span class="com"># return Nth Fibonacci number</span><br>
+						&nbsp; If <b>:</b><span class="var">N</span> &lt; 2 [Output <b>:</b><span class="var">N</span>] [Output (<span class="pro">Fib</span> <b>:</b><span class="var">N</span>-1) + <span class="pro">Fib</span> <b>:</b><span class="var">N</span>-2]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">N</span> 12<br>
+						&nbsp; Print (Sentence [The] <b>:</b><span class="var">N</span> [th Fibonacci number is] <span class="pro">Fib</span> <b>:</b><span class="var">N</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><span class="subh">Highest Common Factor (HCF)</span><br>
+					Also called Greatest Common Denominator (GCD) or Greatest Common Multiple 
+					(GCM).<br>
+					This procedure uses Euclid's algorithm (dating from ancient Greek times 
+					c.300BC), to generate the highest common factor (HCF) of two numbers. 
+					For example, the HCF of 18 and 24 is 6. Because 6 is the largest whole 
+					number that will divide into both 18 and 24 exactly.<br>
+					<span class="pro">HCF</span> 18 24 and <span class="pro">HCF</span> 24 
+					18 will produce the same result.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_HCF.lbi" --><p><span class="toenl">To <span class="pro">HCF</span> :<span class="var">I</span> :<span class="var">J</span></span><br>
+	&nbsp; <span class="com"># return highest common factor of two integers</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Rem</span> Modulo <b>:</b><span class="var">I</span> <b>:</b><span class="var">J</span><br>
+	&nbsp; If <b>:</b><span class="var">Rem</span> =0 [Output <b>:</b><span class="var">J</span>] 
+	[Output <span class="pro">HCF</span> <b>:</b><span class="var">J</span> <b>:</b><span class="var">Rem</span>]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">A</span> 3654 Make &quot;<span class="var">B</span> 1365<br>
+						&nbsp; Print (Sentence [Highest common factor of] <b>:</b><span class="var">A</span> [and] <b>:</b><span class="var">B</span> [is] <span class="pro">HCF</span> <b>:</b><span class="var">A</span> <b>:</b><span class="var">B</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><span class="subh">Lowest Common Multiple (LCM)</span><br>
+					This procedure returns the lowest common multiple of two values by using 
+					the highest common factor (HCF) procedure.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">LCM</span> :<span class="var">I</span> :<span class="var">J</span></span><br>
+						&nbsp; <span class="com"># return lowest common multiple of two integers</span><br>
+						&nbsp; Output <b>:</b><span class="var">I</span>*<b>:</b><span class="var">J</span> / <span class="pro">HCF</span> <b>:</b><span class="var">I</span> <b>:</b><span class="var">J</span><br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_HCF.lbi" --><p><span class="toenl">To <span class="pro">HCF</span> :<span class="var">I</span> :<span class="var">J</span></span><br>
+	&nbsp; <span class="com"># return highest common factor of two integers</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Rem</span> Modulo <b>:</b><span class="var">I</span> <b>:</b><span class="var">J</span><br>
+	&nbsp; If <b>:</b><span class="var">Rem</span> =0 [Output <b>:</b><span class="var">J</span>] 
+	[Output <span class="pro">HCF</span> <b>:</b><span class="var">J</span> <b>:</b><span class="var">Rem</span>]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">A</span> 9 Make &quot;<span class="var">B</span> 42<br>
+						&nbsp; Print (Sentence [Lowest common multiple of] <b>:</b><span class="var">A</span> [and] <b>:</b><span class="var">B</span> [is] <span class="pro">LCM</span> <b>:</b><span class="var">A</span> <b>:</b><span class="var">B</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><span class="subh">Sum 1 to N</span><br>
+					Return the sum of numbers 1 to N. eg Sum1toN 5 = 1+2+3+4+5 = 15.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Sum1toN</span> :<span class="var">N</span></span><br>
+						&nbsp; <span class="com"># return sum of integers 1 to N</span><br>
+						&nbsp; If <b>:</b><span class="var">N</span>&lt;1 [Output 0] [Output <b>:</b><span class="var">N</span>+ <span class="pro">Sum1toN</span> <b>:</b><span class="var">N</span>-1]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">N</span> 5<br>
+						&nbsp; Print (Sentence [The sum of 1 to] <b>:</b><span class="var">N</span> [is ]<span class="pro"> Sum1toN</span> <b>:</b><span class="var">N</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		
+		<div id="leco">
+			<p class="contents"><a href="../../prog/top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuInfo.lbi" --><ul>
+	<li><a href="books.html"> 
+		<script type="text/javascript"> blob("Books");</script> Books</a></li>
+	<li><a href="bookslogo.html"> 
+		<script type="text/javascript"> blob("Books_Logo");</script> &nbsp; &nbsp; logo</a></li>
+	<li><a href="booksfractals.html"> 
+		<script type="text/javascript"> blob("Books_Fractals");</script> &nbsp; &nbsp; fractals</a></li>
+	<li><a href="booksgrap.html"> 
+		<script type="text/javascript"> blob("Books_Graphics");</script> &nbsp; &nbsp; graphics</a></li>
+	<li><a href="booksmath.html"> 
+		<script type="text/javascript"> blob("Books_Maths");</script> &nbsp; &nbsp; maths</a></li>
+	<li><a href="bookslife.html"> 
+		<script type="text/javascript"> blob("Books_Life");</script> &nbsp; &nbsp; life</a></li>
+	<li><a href="bookspuzz.html"> 
+		<script type="text/javascript"> blob("Books_Puzzle");</script> &nbsp; &nbsp; puzzles</a></li>
+	<li><a href="booksmathgen.html"> 
+		<script type="text/javascript"> blob("Books_MathsGeneral");</script> &nbsp; &nbsp; mathsgen</a></li>
+	<li><a href="colorsalt.html"> 
+		<script type="text/javascript"> blob("Colors")</script> Colors</a></li>
+	<li><a href="genart.html"> 
+		<script type="text/javascript"> blob("Generative Art")</script> Generative</a></li>
+	<li><a href="glossary.html"> 
+		<script type="text/javascript"> blob("Glossary")</script> Glossary</a></li>
+	<li><a href="prolib.html"> 
+		<script type="text/javascript"> blob("Procedures")</script> Procedures</a></li>
+	<li><a href="proarc.html"> 
+		<script type="text/javascript"> blob("Procedures_Arc");</script> &nbsp; &nbsp; arc</a></li>
+	<li><a href="procol.html"> 
+		<script type="text/javascript"> blob("Procedures_Color");</script> &nbsp; &nbsp; color</a></li>
+	<li><a href="prolist.html"> 
+		<script type="text/javascript"> blob("Procedures_List");</script> &nbsp; &nbsp; list</a></li>
+	<li><a href="promath.html"> 
+		<script type="text/javascript"> blob("Procedures_Math");</script> &nbsp; &nbsp; math</a></li>
+	<li><a href="prorecur.html"> 
+		<script type="text/javascript"> blob("Procedures_Recursive");</script> &nbsp; &nbsp; recursive</a></li>
+	<li><a href="proshape.html"> 
+		<script type="text/javascript"> blob("Procedures_Shape");</script> &nbsp; &nbsp; shape</a></li>
+	<li><a href="turts.html"> 
+		<script type="text/javascript"> blob("Turtles")</script> Turtles</a></li>
+	<li><a href="tuts.html"> 
+		<script type="text/javascript"> blob("Tutorials")</script> Tutorial</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><img src="../../art/img100/xlogo100.gif" alt="xlogo" width="100" height="100"><br>
+				XLogo</p>
+			<!-- #EndEditable -->
+			<p>&nbsp;</p><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate --></html>

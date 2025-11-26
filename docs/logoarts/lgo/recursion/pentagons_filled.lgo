@@ -1,0 +1,37 @@
+# Main Command: Go 4
+# Pentagons (Filled) by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to display :order
+  # write header title and curve level
+  SetPC White
+  SetPos [-190 180] Label Sentence [Pentagon Fractal] :Order
+end
+
+to fill_in
+  SetPC DarkBlue Left 22 Forward 5 Fill
+  Back 5 Right 22 SetPC Brown
+end
+
+to pentagon :order :side
+  If :Order < 0 [Stop]
+  Right 180
+  Repeat 5 [
+    PenDown Forward :Side Left 72
+    Pentagon :Order-1 :Side/1.618]
+  PenUp Fill_In
+  Left 180
+end
+
+to go :order
+  New Display :Order
+  SetPC Brown Make "Side 64
+  SetPos List Minus :Side/2 Minus :Side/1.3 Left 90 
+  Pentagon :Order :Side
+end

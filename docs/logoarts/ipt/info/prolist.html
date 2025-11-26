@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/info3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Resource | Procedures_List | html</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="info">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Lists</h2>
+			<p>- XLogo library of procedures</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<img src="../../art/img32/xlogo32.gif" alt="xlogo" width="32" height="32">
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>These procedures can be copied and pasted into the Editor window as usual. 
+					Most do not produce any graphics. To test type <strong>Test</strong>. 
+					The results will show in the History window.</p>
+				<p>Download library of <a href="../../lgo/lib/list_lib.lgo">list procedures</a>.</p>
+				<p><a name="flatten"></a><span class="subh">Flatten</span><br>
+					Reduce a list which may contain other lists to a single list of items. eg Flatten [ a b [ c [ d e ] [f] [ [g h] ] i ] ] will result [ a b c d e f g h i ].</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Flatten</span> :<span class="var">myList</span></span><br>
+						&nbsp; <span class="com"># flatten list to single depth</span><br>
+						&nbsp; If Empty? <b>:</b><span class="var">myList</span> [Output [] ]<br>
+						&nbsp; If List? First <b>:</b><span class="var">myList</span> [<br>
+						&nbsp; &nbsp; Output (Se <span class="pro">Flatten</span> First <b>:</b><span class="var">myList</span> <span class="pro">Flatten</span> ButFirst <b>:</b><span class="var">myList</span>)]<br>
+						&nbsp; Output FPut First <b>:</b><span class="var">myList</span> <span class="pro">Flatten</span> ButFirst <b>:</b><span class="var">myList</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">myList</span> [ a b [ c [ d e ] [f] [ [g h] ] i ] ]<br>
+						&nbsp; Print (Sentence &quot;Flattened <b>:</b><span class="var">myList</span> &quot;is <span class="pro">Flatten</span> <b>:</b><span class="var">myList</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="highest"></a><span class="subh">Highest</span> (also see <a href="#lowest">Lowest</a>)<br>
+					Return the highest value within the list.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Highest</span> :<span class="var">myList</span></span><br>
+						&nbsp; <span class="com"># return highest value</span><br>
+						&nbsp; LocalMake &quot;<span class="var">Highest</span> First <b>:</b><span class="var">myList</span><br>
+						&nbsp; ForEach &quot;<span class="var">item</span> <b>:</b><span class="var">myList</span> [<br>
+						&nbsp; &nbsp; If Before? <b>:</b><span class="var">Highest</span><strong> :</strong><span class="var">item</span> [ Make &quot;<span class="var">Highest</span> <b>:</b><span class="var">item</span> ] ]<br>
+						&nbsp; Output <b>:</b><span class="var">Highest</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">myList</span> [1 7 -11 3 8 5]<br>
+						&nbsp; Print (Sentence &quot;[Highest item of] <b>:</b><span class="var">myList</span> &quot;is <span class="pro">Highest</span> <b>:</b><span class="var">myList</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="lowest"></a><span class="subh">Lowest</span> (also see <a href="#highest">Highest</a>)<br>
+					Return the lowest value within the list.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Lowest</span> :<span class="var">myList</span></span><br>
+						&nbsp; <span class="com"># return lowest value</span><br>
+						&nbsp; LocalMake &quot;<span class="var">Lowest</span> First <b>:</b><span class="var">myList</span><br>
+						&nbsp; ForEach &quot;<span class="var">item</span> <b>:</b><span class="var">myList</span> [<br>
+						&nbsp; &nbsp; If Before?<strong> :</strong><span class="var">item</span> <b>:</b><span class="var">Lowest</span> [Make &quot;<span class="var">Lowest</span> <b>:</b><span class="var">item</span>] ]<br>
+						&nbsp; Output <b>:</b><span class="var">Lowest</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">myList</span> [1 7 -11 3 8 5]<br>
+						&nbsp; Print (Sentence &quot;[Lowest item of] <b>:</b><span class="var">myList</span> &quot;is <span class="pro">Lowest</span> <b>:</b><span class="var">myList</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="mean"></a><span class="subh">Mean</span><br>
+					Return the mean or average value of a list of values.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Mean</span> :<span class="var">myList</span></span><br>
+						&nbsp; <span class="com"># return average value</span><br>
+						&nbsp; LocalMake &quot;<span class="var">Total</span> 0<br>
+						&nbsp; ForEach &quot;<span class="var">Item</span> <b>:</b><span class="var">myList</span> [<br>
+						&nbsp; &nbsp; LocalMake &quot;<span class="var">Total</span> <b>:</b><span class="var">Total</span> + <b>:</b><span class="var">Item</span> ]<br>
+						&nbsp; Output <b>:</b><span class="var">Total</span> / Count <b>:</b><span class="var">myList</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">myList</span> [1 7 -11 3 8 5]<br>
+						&nbsp; Print (Sentence &quot;[Mean value of] <b>:</b><span class="var">myList</span> &quot;is <span class="pro">Mean</span> <b>:</b><span class="var">myList</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="rotl"></a><span class="subh">Rotate Left</span> (also see <a href="#rotr">Rotate Right</a>)<br>
+					Return list with items rotated one place to the left.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">RoL</span> :<span class="var">myList</span></span><br>
+						&nbsp; <span class="com"># rotate list items left</span><br>
+						&nbsp; LocalMake &quot;<span class="var">FirstItem</span> First <b>:</b><span class="var">myList</span><br>
+						&nbsp; Output AddItem ButFirst <b>:</b><span class="var">myList</span> Count <b>:</b><span class="var">myList</span><strong> :</strong><span class="var">FirstItem</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">myList</span> [1 2 3 4 5]<br>
+						&nbsp; Print (Sentence &quot;Rotate <b>:</b><span class="var">myList</span> [left is] <span class="pro">RoL</span> <b>:</b><span class="var">myList</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="rotr"></a><span class="subh">Rotate Right</span> (also see <a href="#rotl">Rotate Left</a>)<br>
+					Return list with items rotated one place to the right.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">RoR</span> :<span class="var">myList</span></span><br>
+						&nbsp; <span class="com"># rotate list items right</span><br>
+						&nbsp; LocalMake &quot;<span class="var">LastItem</span> Last <b>:</b><span class="var">myList</span><br>
+						&nbsp; Output AddItem ButLast <b>:</b><span class="var">myList</span> 1 <b>:</b><span class="var">LastItem</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">myList</span> [1 2 3 4 5]<br>
+						&nbsp; Print (Sentence &quot;Rotate <b>:</b><span class="var">myList</span> [right is] <span class="pro">RoR</span> <b>:</b><span class="var">myList</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="shuffle"></a><span class="subh">Shuffle</span> (also see <a href="#sort">Sort</a>)<br>
+					This procedure shuffles a list.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Shuffle.lbi" --><p><span class="toenl">To <span class="pro">Shuffle</span> :<span class="var">myList</span></span><br>
+	&nbsp; <span class="com"># randomly shuffle list order</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Shuffled</span> [ ] <span class="var"></span><br>
+	&nbsp; Repeat Count <b>:</b><span class="var">myList</span> [<br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Select</span> Pick <b>:</b><span class="var">myList</span><br>
+	&nbsp; &nbsp; Make &quot;<span class="var">myList</span> Remove <b>:</b><span class="var">Select</span> <b>:</b><span class="var">myList</span><br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Shuffled</span> LPut <b>:</b><span class="var">Select</span> <b>:</b><span class="var">Shuffled</span>]<br>
+	&nbsp; Output <b>:</b><span class="var">Shuffled</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="sort"></a><span class="subh">Sort</span> (also see <a href="#shuffle">Shuffle</a>)<br>
+					This procedure sorts a list of items into alphabetical or numeric order. It uses the bubble sort method. There are more efficient methods if the list is  long.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Sort</span> :<span class="var">myList</span></span><br>
+						&nbsp; <span class="com"># sort list into alphabetical order</span><br>
+						&nbsp; LocalMake &quot;<span class="var">Num</span> Count <b>:</b><span class="var">myList</span><br>
+						&nbsp; Repeat (<b>:</b><span class="var">Num</span>-1) [<br>
+						&nbsp; &nbsp; For (List &quot;<span class="var">J</span> 1 (<b>:</b><span class="var">Num</span>-1)) 
+						[<br>
+						&nbsp; &nbsp; &nbsp; LocalMake &quot;<span class="var">FirstItem</span> Item <b>:</b><span class="var">J</span> <b>:</b><span class="var">myList</span><br>
+						&nbsp; &nbsp; &nbsp; LocalMake &quot;<span class="var">SecondItem</span> Item (<b>:</b><span class="var">J</span>+1) <b>:</b><span class="var">myList</span><br>
+						&nbsp; &nbsp; &nbsp; If Before? <b>:</b><span class="var">SecondItem</span> <b>:</b><span class="var">FirstItem</span> [ &nbsp; &nbsp; <span class="com">#swop the two items</span><br>
+						&nbsp; &nbsp; &nbsp; &nbsp; Make &quot;<span class="var">myList</span> SetItem <b>:</b><span class="var">myList</span> <b>:</b><span class="var">J</span> <b>:</b><span class="var">SecondItem</span><br>
+						&nbsp; &nbsp; &nbsp; &nbsp; Make &quot;<span class="var">myList</span> SetItem <b>:</b><span class="var">myList</span> (<b>:</b><span class="var">J</span>+1) <b>:</b><span class="var">FirstItem</span> ] ] ]<br>
+						&nbsp; Output <b>:</b><span class="var">myList</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="take" id="take"></a><span class="subh">Take</span> (Pick and Remove)<br>
+					<strong>Warning</strong> This is a bad example of code writing and serves as an example of how not to do it.<br>
+					Similar to primitive <strong>Pick</strong>, except that the chosen item is removed from the list. Note that all instances are removed, in the same way as  primitive <strong>Remove</strong>.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Take</span> :<span class="var">myLst</span></span><br>
+						&nbsp; <span class="com"># return one item taken away randomly from list</span><br>
+						&nbsp; LocalMake &quot;<span class="var">ThisItem</span> Pick Thing <b>:</b><span class="var">myLst</span><br>
+						&nbsp; Make <b>:</b><span class="var">myLst</span> Remove <b>:</b><span class="var">ThisItem</span> Thing <b>:</b><span class="var">myLst</span><br>
+						&nbsp; Output <b>:</b><span class="var">ThisItem</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">myList</span> [1 2 3 4 5]<br>
+						&nbsp; Repeat Count <b>:</b><span class="var">myList</span> [<br>
+						&nbsp; &nbsp; Print (Sentence <b>:</b><span class="var">myList</span> &quot;take (<span class="pro">Take</span> &quot;<span class="var">myList</span>) &quot;leaves <b>:</b><span class="var">myList</span>) ]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		
+		<div id="leco">
+			<p class="contents"><a href="../../prog/top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuInfo.lbi" --><ul>
+	<li><a href="books.html"> 
+		<script type="text/javascript"> blob("Books");</script> Books</a></li>
+	<li><a href="bookslogo.html"> 
+		<script type="text/javascript"> blob("Books_Logo");</script> &nbsp; &nbsp; logo</a></li>
+	<li><a href="booksfractals.html"> 
+		<script type="text/javascript"> blob("Books_Fractals");</script> &nbsp; &nbsp; fractals</a></li>
+	<li><a href="booksgrap.html"> 
+		<script type="text/javascript"> blob("Books_Graphics");</script> &nbsp; &nbsp; graphics</a></li>
+	<li><a href="booksmath.html"> 
+		<script type="text/javascript"> blob("Books_Maths");</script> &nbsp; &nbsp; maths</a></li>
+	<li><a href="bookslife.html"> 
+		<script type="text/javascript"> blob("Books_Life");</script> &nbsp; &nbsp; life</a></li>
+	<li><a href="bookspuzz.html"> 
+		<script type="text/javascript"> blob("Books_Puzzle");</script> &nbsp; &nbsp; puzzles</a></li>
+	<li><a href="booksmathgen.html"> 
+		<script type="text/javascript"> blob("Books_MathsGeneral");</script> &nbsp; &nbsp; mathsgen</a></li>
+	<li><a href="colorsalt.html"> 
+		<script type="text/javascript"> blob("Colors")</script> Colors</a></li>
+	<li><a href="genart.html"> 
+		<script type="text/javascript"> blob("Generative Art")</script> Generative</a></li>
+	<li><a href="glossary.html"> 
+		<script type="text/javascript"> blob("Glossary")</script> Glossary</a></li>
+	<li><a href="prolib.html"> 
+		<script type="text/javascript"> blob("Procedures")</script> Procedures</a></li>
+	<li><a href="proarc.html"> 
+		<script type="text/javascript"> blob("Procedures_Arc");</script> &nbsp; &nbsp; arc</a></li>
+	<li><a href="procol.html"> 
+		<script type="text/javascript"> blob("Procedures_Color");</script> &nbsp; &nbsp; color</a></li>
+	<li><a href="prolist.html"> 
+		<script type="text/javascript"> blob("Procedures_List");</script> &nbsp; &nbsp; list</a></li>
+	<li><a href="promath.html"> 
+		<script type="text/javascript"> blob("Procedures_Math");</script> &nbsp; &nbsp; math</a></li>
+	<li><a href="prorecur.html"> 
+		<script type="text/javascript"> blob("Procedures_Recursive");</script> &nbsp; &nbsp; recursive</a></li>
+	<li><a href="proshape.html"> 
+		<script type="text/javascript"> blob("Procedures_Shape");</script> &nbsp; &nbsp; shape</a></li>
+	<li><a href="turts.html"> 
+		<script type="text/javascript"> blob("Turtles")</script> Turtles</a></li>
+	<li><a href="tuts.html"> 
+		<script type="text/javascript"> blob("Tutorials")</script> Tutorial</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><img src="../../art/img100/xlogo100.gif" alt="xlogo" width="100" height="100"><br>
+				XLogo</p>
+			<!-- #EndEditable -->
+			<p>&nbsp;</p><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

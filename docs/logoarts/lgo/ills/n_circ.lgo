@@ -1,0 +1,45 @@
+# Main Command: Go 7
+# Negative Circles by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to init :order
+  # global values
+  Make "Size 378
+  Make "CellSize :Size/:Order
+  Make "OffSet :CellSize/2 - :Size/2
+  Make "Side :CellSize/1.4
+end
+
+to gridd :m :n
+  # return X Y screen position
+  Make "X (:M*:CellSize) + :OffSet
+  Make "Y (:N*:CellSize) + :OffSet
+  Output List :X :Y
+end
+
+to drawgrid :order
+  # draw M x N array of squares
+  For (List "N 0 :Order-1) [
+    For (List "M 0 :Order-1) [
+    SetPos Gridd :M :N
+    Cross :Side] ]
+end
+
+to go :order
+  # draw grid of squares
+  New Init :Order
+  DrawGrid :Order
+end
+
+to cross :side
+  # square (side x side) drawn from centre (tp)
+  Repeat 4 [
+    PenUp Forward 0.25*:Side PenDown Forward 0.75*:Side 
+    PenUp Back :Side Left 90]
+end

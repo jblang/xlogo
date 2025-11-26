@@ -1,0 +1,268 @@
+# Main Command: Go
+# 15 Puzzle by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init
+  Make "Home [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0]
+  Make "Tiles :Home
+  Make "TileSets [ 
+    [ [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0] [Classic] ]
+    [ [a b c d e f g h i j k l m n o 0] [Alphabet] ]
+    [ [R A T E Y O U R M I N D P A L 0] [watch those A's !] ]
+    [ [i ii iii iv v vi vii viii ix x xi xii xiii xiv xv 0] [Roman] ]
+    [ [1 2 3 4 5 6 7 8 9 10 11 12 13 15 14 0] [impossible, 1 swop] ]
+    [ [qq qr qs qt rq rr rs rt sq sr ss st tq tr ts tt] [Matrix] ] ]
+  Make "TileSel 1 Make "TileSet First (Item :TileSel :TileSets)
+  Make "Tabs [ [Quit] [Lights] [Chequer] [Tiles] [Reset] [Shuffle] ]
+  Make "GridPos False Make "Count 0
+  Make "Light? False Make "Cheque? False
+  Make "Shuffle? False Make "Win? False
+end
+
+to title
+  # write header
+  SetPC White SetFontSize 18
+  SetPos [-180 174] Label [15 Puzzle]
+end
+
+to tabs
+  For [M -1 4] [
+    SetPos ScreenPos List :M 5
+    SetPC Gray Button 56 11 Forward 14 SetPC [102 102 102] Fill
+    Make "Lab Item (:M+2) :Tabs
+    SetPC White SetFontSize 12 
+    SetX (First Pos) -1 - ((LabelLength :Lab)/2) SetY (Last Pos)
+    Label :Lab Wait 4]
+end
+
+to box
+  Home
+  SetPC [153 51 51] Button 306 40 Fill
+  SetPC [222 51 51] SetPW 2 Button 301 38 SetPW 1
+  SetPC Black Button 296 35 Button 242 14 Button 252 19
+  SetPC [222 51 51] SetPW 2 Button 247 17 SetPW 1
+  SetPC DarkGreen Fill
+end
+
+to button :size :corner
+  # rounded corner shape drawn from centre (tp)
+  PenUp Forward :Size/2 Left 90 Back :Size/2-:Corner PenDown
+  Repeat 4 [Forward :Size-2*:Corner LeftArc 90 :Corner]
+  PenUp Forward :Size/2-:Corner Right 90 Back :Size/2   # return to centre 
+end
+
+to leftarc :angle :radius
+  # arc drawn relative to turtle position
+  If :Radius <0 [Stop]
+  PenUp Right 90 Back :Radius
+  If :Angle <0 
+    [Arc :Radius Heading Heading-:Angle Left :Angle]
+    [Left :Angle Arc :Radius Heading Heading+:Angle]
+  Forward :Radius Left 90 PenDown 
+end
+
+to drawgrid
+  For [N 0 3] [
+    For [M 0 3] [
+    DrawTile List :M :N Wait 4] ]
+end
+
+to drawtile :gridmn
+  # draw tile at grid position
+  SetPos ScreenPos :GridMN
+  Make "Num TileNumber :GridMN
+  SetPC DarkGreen Button 58 12 FillZone   # erase tile
+  If Not (:Num = 0) [
+  Make "Icon Item :Num :TileSet
+  SetPC Black Button 58 12
+  If And :Cheque? OddTile :Num [
+  SetPC [0 102 204] Make "Rim [0 153 255] ] [
+  SetPC [0 153 204] Make "Rim [0 204 255] ]
+  Fill
+  SetPC Black Button 48 7
+  SetPC :Rim SetPW 2 Button 53 10 SetPW 1
+  If And :Light? (:Num = TileID :GridMN) [
+  SetPC [204 255 255] ] [SetPC [0 0 51] ]
+  SetFontSize 36 
+  SetX (First Pos) -1 - ((LabelLength :Icon)/2) SetY (Last Pos) - 14
+  Label :Icon]
+end
+
+to oddtile :num
+  Make "Odd Member :Num [2 4 5 7 10 12 13 15]
+  If :Odd = False [Output False] [Output True]
+end
+
+to tilenumber :gridmn
+  Output Item TileID :GridMN :Tiles
+end
+
+to tileid :gridmn
+  Output 1+(First :GridMN)+4*(Last :GridMN)
+end
+
+to screenpos :gridmn
+  # return X Y screen position
+  Make "X ((First :GridMN)*60) - 90
+  Make "Y Minus (((Last :GridMN)*60) - 90)
+  Output List :X :Y
+end
+
+to user
+  Make "Input ReadMouse   # wait for mouse input
+  Make "MouseGP Gridd MousePos
+  Make "NewGP :MouseGP
+  If Not OverTiles :MouseGP [
+    Make "NewGP False] [
+  If (TileNumber :MouseGP) = 0 [
+    Make "NewGP False] ]
+  If OverTabs :MouseGP [
+    Make "NewGP :MouseGP]
+  If :Input = 0 [
+    If :NewGP = :GridPos [Stop]
+    If Not (:GridPos = False) [
+      SetPC Black SetPos ScreenPos :GridPos Button 58 12 ]
+    If Not (:NewGP = False) [
+      SetPC Yellow SetPos ScreenPos :NewGP Button 58 12 ]
+    Make "GridPos :NewGP ]
+  If :Input = 1 [
+    If :NewGP = False [Stop]
+  If OverTabs :MouseGP [
+    Run Item (2+(First :NewGP)) :Tabs ] [
+      Make "BlankPos BlankNeigh :NewGP
+      If :BlankPos = False [Stop]
+      TileSwap :NewGP :BlankPos
+      If Not :Win? [Counter]
+      Make "GridPos False
+      If And :Shuffle? (:Tiles = :Home) [
+      Make "Win? True Halo Inform [!! Won !!]] ] ]
+end
+
+to gridd :msepos
+  # return grid position from mousepos
+  Make "M Round ((First :MsePos)+90) / 60
+  Make "N Round ((Minus (Last :MsePos))+90) / 60
+  Output List :M :N
+end
+
+to overtiles :gridmn
+  # return true if over tile area, else false
+  If Or Or Or ((First :GridMN)>3) ((First :GridMN)<0) 
+      ((Last :GridMN)>3) ((Last :GridMN)<0) [
+      Output False] [Output True]
+end
+
+to overtabs :gridmn
+  # return true if over tabs area, else false
+  If Or Or ((First :GridMN)>4) ((First :GridMN)<-1) (Not (Last :GridMN)=5)     [Output False] [Output True]
+end
+
+to blankneigh :gridmn
+  #return position of blank neighbour, else False
+  Make "Tile False
+  Repeat 4 [ 
+    Make "J Int Sin 90*RepCount Make "K Int Cos 90*RepCount 
+    Make "M (First :GridMN) +:J Make "N (Last :GridMN) +:K
+    If (OverTiles List :M :N) [
+      If (0 =TileNumber List :M :N) [Make "Tile List :M :N] ] ]
+  Output :Tile
+end
+
+to tileswap :tile1 :tile2
+  Make "Num1 TileNumber :Tile1
+  Make "Num2 TileNumber :Tile2
+  Make "Tiles SetItem :Tiles (TileID :Tile1) :Num2
+  Make "Tiles SetItem :Tiles (TileID :Tile2) :Num1
+  DrawTile :Tile1
+  DrawTile :Tile2
+end
+
+to quit
+  Inform [Thanks For Playing !]
+  StopAll
+end
+
+to lights
+  Make "Light? Not :Light?
+  DrawGrid
+end
+
+to chequer
+  Make "Cheque? Not :Cheque?
+  DrawGrid
+end
+
+to tiles
+  Make "TileSel :TileSel+1
+  If :TileSel > (Count :TileSets) [Make "TileSel 1]
+  Make "TileSet First (Item :TileSel :TileSets)
+  DrawGrid
+  If Not :Win? [Inform Last (Item :TileSel :TileSets)]
+end
+
+to reset
+  ResetCounter
+  Make "Shuffle? False 
+  Make "Tiles [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+  DrawGrid
+  Make "Tiles :Home
+  DrawGrid
+end
+
+to shuffle
+  ResetCounter
+  Make "Shuffle? True
+  Repeat 16 [
+    Make "Swap1 PickTile
+    Make "Swap2 :Swap1
+    While [:Swap1=:Swap2] [Make "Swap2 PickTile]
+    TileSwap :Swap1 :Swap2]
+end
+
+to picktile
+  Make "Tile List Random 4 Random 4
+  While [ (TileNumber :Tile) = 0] [Make "Tile List Random 4 Random 4]
+  Output :Tile
+end
+
+to counter
+  # increment counter
+  SetPC Black SetPW 18
+  SetPos [170 180] PenDown SetX 188 PenUp SetPW 1
+  SetPos [164 174] SetFontSize 12 SetPC White
+  Make "Count :Count+1 Label :Count
+end
+
+to resetcounter
+  SetPC Black SetPW 18
+  SetPos [170 180] PenDown SetX 188 PenUp SetPW 1
+  Make "Count 0
+  If :Win? [Make "Win? False Halo Inform Last (Item :TileSel :TileSets)]
+end
+
+to inform :info
+  SetPos [-100 -138]
+  SetPC [153 51 51] SetPW 20
+  PenDown SetX 100 PenUp SetPW 1
+  If :Win? [SetPC Yellow] [SetPC Black] SetFontSize 18
+  SetPos List Minus((LabelLength :Info)/2) Minus 144
+  Label :Info
+end
+
+to halo
+  If :Win? [SetPC Yellow] [SetPC Black]
+  Home For [Size 315 355 10] [Button :Size 50]
+end
+
+to go
+  New Init Title Wait 20
+  Box Wait 20 Tabs Wait 20 DrawGrid
+  Inform "Welcome
+  Forever [User]
+end

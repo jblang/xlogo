@@ -1,0 +1,27 @@
+# Main Command: Go
+# Neon by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to go
+  New SetPW 2
+  Repeat 4 [
+    Home Right 45+RepCount*90
+    Forward 120 Left 135 Rings]
+end
+
+to rings
+    For [Radius 20 60 20] [
+      SetPC White rArc 270 :Radius
+      SetPC Red rArc 90 :Radius]
+end
+
+to rarc :angle :radius
+  # clockwise arc drawn relative to turtle heading
+  Arc :Radius Heading :Angle+Heading Right :Angle
+end

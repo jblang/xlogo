@@ -1,0 +1,68 @@
+# Main Command: Go 22 21
+# Wanderer (Optimised) by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to cycles :ia2 :sa :ll
+  Make "A Pos
+  PenDown Repeat 720 [
+  Forward :LL Right :IA2 Make "IA2 :IA2+:SA
+    If (And (Round First Pos)=0 (Round Last Pos)=0 (Round Heading)=0)
+  [Output RepCount] ]
+  Output 720     # curve never closed
+end
+
+to fit2screen :ia :sa :ll :cy
+  Make "IA3 :IA
+  PenUp Home
+  Make "Xmax 0 Make "Xmin 0
+  Make "Ymax 0 Make "Ymin 0
+  Repeat :CY [Forward :LL Right :IA3 Make "IA3 :IA3+:SA
+  If X > :Xmax [Make "Xmax X]
+  If X < :Xmin [Make "Xmin X]
+  If Y > :Ymax [Make "Ymax Y]
+  If Y < :Ymin [Make "Ymin Y] ]
+  Make "Xsize :Xmax + Abs :Xmin
+  Make "Ysize :Ymax + Abs :Ymin
+  If :Xsize=:Ysize | :Xsize>:Ysize
+  [Make "Size :Xsize] [Make "Size :Ysize]
+  Make "Scale 360/:Size
+  Make "LengthNew :LL*:Scale
+  If ((Abs (:LengthNew - :LL))>:LL/10) [
+  Make "LL :LengthNew Fit2Screen :IA :SA :LL :CY]
+  Make "Xcent Minus Round (:Xmax + :Xmin) / 2
+  Make "Ycent Minus Round (:Ymax + :Ymin) / 2
+end
+
+to display :ia :sa :linelength :cy
+  Home SetPC White
+  SetPos [-192 184] Label [Happy Wanderer]
+  SetPos [74 184] Label Sentence [Initial Angle] :IA
+  SetPos [94 168] Label Sentence [Step Angle] :SA 
+  SetPos [-192 -176] Label Sentence [Steps] :CY
+  SetPos [-192 -190] Label Sentence [Line Length] Round :LineLength
+  SetPos [80 -190] Label List "Centre List :Xcent :Ycent
+end
+
+to angcol
+  Make "Red 255*Sin Heading/2
+  Output ( List :Red 255 0 )
+end
+
+to go :ia :sa
+  New SetPC Gray
+  Make "LL 15     # default line length
+  Make "CY Cycles :IA :SA :LL
+  Fit2Screen :IA :SA :LL :CY
+  New Display :IA :SA :LengthNew :CY
+  SetXY :Xcent :Ycent SetH 0 PenDown
+  Circle 2     # circle starting position
+  Repeat :CY [
+    SetPC AngCol Forward :LengthNew Right :IA
+  Make "IA :IA+:SA] 
+end

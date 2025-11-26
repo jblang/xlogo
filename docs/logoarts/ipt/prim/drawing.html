@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prim2.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Primitive | Drawing | html</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prim">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Drawing</h2>
+			<p>- turtle art</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<img src="../../art/img32/simple.gif" alt="simple" width="32" height="32">
+	</div>
+	<!-- band-->
+	
+	<div id="con2">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" --><br>
+				<table class="gray">
+					<tr>
+						<th>Primitive</th>
+						<th>Alt</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td width="134"><strong><span class="uline">Set</span>X</strong> x<br>
+							<strong><span class="uline">Set</span>Y</strong> y<br>
+							<strong>SetXY</strong> x y<br>
+							<strong><span class="uline">Set</span>Position</strong> [x y]<br>
+							<strong>Home</strong></td>
+						<td valign="top"><br>
+							<br>
+							<br>
+							<strong>SetPos</strong></td>
+						<td>Move turtle to horizontal position x.<br>
+							Move turtle to vertical position y.<br>
+							Move turtle to position (x y).<br>
+							Move turtle to position (x y).<br>
+							Move turtle to <strong>home</strong> position (0 0), heading 0.</td>
+					</tr>
+					<tr>
+						<td><strong><span class="uline">Set</span>Heading</strong> h<strong><br>
+							<span class="uline">Set</span>PenWidth</strong> w<br>
+							<strong><span class="uline">Set</span>PenShape</strong> n</td>
+						<td valign="top"><strong>SetH</strong><br>
+							<strong>SetPW</strong><br>
+							<strong>SetPS</strong></td>
+						<td><strong>Set</strong> turtle <strong>heading</strong> to h degrees, 
+							(cwise from North).<br>
+							<strong> Set width</strong> of <strong>pen</strong> nib to w pixels.<br>
+							<strong>Set shape</strong> of <strong>pen</strong> nib to 0 (square) or 1 (round).</td>
+					</tr>
+					<tr>
+						<td><strong>Window<br>
+							Wrap<br>
+							Fence<br>
+							Perspective</strong></td>
+						<td valign="top">&nbsp;</td>
+						<td>Turtle can move beyond the screen <strong>window</strong> edges.<br>
+							Turtle <strong>wraps</strong> from screen edge to the opposite side.<br>
+							Error message if turtle will move beyond the screen edge.<br>
+							Turtle moves in 3D space. (see <a href="pers.html">Perspective</a>)</td>
+					</tr>
+					<tr>
+						<td><strong>Circle</strong> r<strong><br>
+							Arc</strong> r h1 h2<strong><br>
+							Dot</strong> [x y]</td>
+						<td valign="top">&nbsp;</td>
+						<td>Draw <strong>circle</strong> of radius r steps. *<br>
+							Draw <strong>arc</strong> of radius r, from heading h1 cwise 
+							to h2. *<br>
+							Draw <strong>dot</strong> at position (x y) in pen 
+							color, shape and size. *</td>
+					</tr>
+					<tr>
+						<td><strong>Fill<br>
+							FillZone<br>
+							FillPolygon</strong> [list]</td>
+						<td valign="top">&nbsp;</td>
+						<td>Fill all neighbouring pixels of same color with pen color.<br>
+							As Fill, but until pen colored pixels are reached.<br>
+							Fill shape defined by instructions in list.</td>
+					</tr>
+					<tr>
+						<td valign="top"><strong>LoadImage</strong> [list]<br>
+							<br>
+							<strong>SaveImage</strong> &quot;name</td>
+						<td valign="top"><strong>LI<br>
+							<br>
+							</strong></td>
+						<td><strong>Load</strong> image file specified in list and place upper 
+							left corner at turtles position. (file format .png or .jpg)<br>
+							<strong>Save</strong> drawing area as name.png file.</td>
+					</tr>
+					<tr>
+						<td><strong>Distance</strong> [x y]<br>
+							<strong>Towards</strong> [x y]</td>
+						<td valign="top">&nbsp;</td>
+						<td>Return <strong>distance</strong> of turtle from point (x y), steps. 
+							*<br>
+							Return turtle heading if turned <strong>towards</strong> (x y), 
+							degrees. *</td>
+					</tr>
+				</table><!-- #BeginLibraryItem "/Library/Set.lbi" --><p class="set"> Underlined<strong> <span class="uline">Set</span></strong> can be removed from a primitive name in order to return information.<br>
+	eg. <strong>SetHeading</strong> sets the heading of the turtle. <strong>Heading</strong> returns the heading of the turtle.</p>
+<!-- #EndLibraryItem --><p>* turtle position and heading remain unchanged.</p>
+				<p class="subh">Note</p>
+				<ol>
+					<li>You use Towards like this:<br>
+						<strong>SetHeading Towards</strong> [0 0] -this will turn the turtle 
+						so that it is facing the origin.</li>
+					<li>The following primitives can be used to draw without lowering the 
+						pen. They are transparent, as the turtles position and heading remain 
+						unchanged.<br>
+						<strong>Arc</strong>, <strong>Circle</strong>, <strong>Dot</strong>, <strong>Fill</strong>, <strong>FillPolygon, FillZone</strong>, <strong>FindColor</strong>, <strong>Label</strong>.</li>
+					<li><strong>Arcs</strong> are always drawn clockwise from Angle1 to Angle2. 
+						The radius must be a positive value. If negative, no arc is drawn. The 
+						whole primitive is ignored, without producing any error message.</li>
+					<li><strong>SetPW</strong> to a negative value is the same as a positive 
+						value. There is no upper limit.</li>
+					<li><strong>SetPS 0</strong> The pen shape is always 'square' regardless 
+						of turtle orientation.</li>
+					<li>Cannot use <strong>FillPolygon</strong> to fill shapes drawn with <strong>Circle</strong> or <strong>Arc</strong>.</li>
+					<li><strong>Arc :Rad 0 360</strong> produces nothing. <strong>Arc :Rad 
+						0 370</strong> produces a 10 degree arc.</li>
+				</ol>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		
+		<div id="leco">
+			<div class="contents">
+				<a href="../../sitemap.html">Contents</a>
+			</div><!-- #BeginLibraryItem "/Library/MenuPrim.lbi" --><ul>
+	<li><a href="anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="axis_grid.html"> 
+		<script type="text/javascript"> blob("Axis Grid");</script> Axis / Grid</a></li>
+	<li><a href="basic.html"> 
+		<script type="text/javascript"> blob("Basic");</script> Basic</a></li>
+	<li><a href="boos.html"> 
+		<script type="text/javascript"> blob("Booleans");</script> Boolean</a></li>
+	<li><a href="color.html"> 
+		<script type="text/javascript"> blob("Color");</script> Color</a></li>
+	<li><a href="drawing.html"> 
+		<script type="text/javascript"> blob("Drawing");</script> Drawing</a></li>
+	<li><a href="files.html"> 
+		<script type="text/javascript"> blob("Files");</script> Files</a></li>
+	<li><a href="font_text.html"> 
+		<script type="text/javascript"> blob("Font Text");</script> Font / Text</a></li>
+	<li><a href="general.html"> 
+		<script type="text/javascript"> blob("General");</script> General</a></li>
+	<li><a href="gui.html"> 
+		<script type="text/javascript"> blob("GUI");</script> GUI</a></li>
+	<li><a href="lists.html"> 
+		<script type="text/javascript"> blob("Lists");</script> Lists</a></li>
+	<li><a href="loops.html"> 
+		<script type="text/javascript"> blob("Loops");</script> Loop</a></li>
+	<li><a href="maths.html"> 
+		<script type="text/javascript"> blob("Maths");</script> Math</a></li>
+	<li><a href="multip.html"> 
+		<script type="text/javascript"> blob("Multiple Turtles") </script> Multi Turtle</a></li>
+	<li><a href="network.html"> 
+		<script type="text/javascript"> blob("Network");</script> Network</a></li>
+	<li><a href="pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="prefs.html"> 
+		<script type="text/javascript"> blob("Preferences");</script> Preferences</a></li>
+	<li><a href="sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="symbols.html"> 
+		<script type="text/javascript"> blob("Symbols");</script> Symbols</a></li>
+	<li><a href="time_date.html"> 
+		<script type="text/javascript"> blob("Time Date");</script> Time / Date</a></li>
+	<li><a href="user.html"> 
+		<script type="text/javascript"> blob("User Input");</script> User Input</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con2 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

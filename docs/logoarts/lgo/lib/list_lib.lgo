@@ -1,0 +1,69 @@
+# Procedure List by Guy Walker
+# www.logoarts.co.uk
+
+to flatten :mylist
+  # flatten list to single depth 
+  If Empty? :myList [Output [] ]
+  If List? First :myList [
+    Output (Se Flatten First :myList Flatten ButFirst :myList)]
+  Output FPut First :myList Flatten ButFirst :myList
+end
+
+to highest :mylist
+  # return highest value
+  LocalMake "Highest First :myList
+  ForEach "item :myList [
+    If Before? :Highest :item [ Make "Highest :item ] ]
+  Output :Highest
+end
+
+to lowest :mylist
+  # return lowest value
+  LocalMake "Lowest First :myList
+  ForEach "item :myList [
+    If Before? :item :Lowest [ Make "Lowest :item ] ]
+  Output :Lowest
+end
+
+to mean :mylist
+  # return average value
+  LocalMake "Total 0 
+  ForEach "Item :myList [
+    LocalMake " Total :Total + :item ] 
+  Output :Total / Count :myList
+end
+
+to rol :mylist
+  # rotate list items left 
+  LocalMake "FirstItem First :myList
+  Output AddItem ButFirst :myList Count :myList :FirstItem
+end
+
+to ror :mylist
+  # rotate list items right 
+  LocalMake "LastItem Last :myList
+  Output AddItem ButLast :myList 1 :LastItem
+end
+
+to shuffle :mylist
+  # randomly shuffle list order
+  LocalMake "Shuffled [ ] 
+  Repeat Count :myList [
+    LocalMake "Select Pick :myList
+    Make "myList Remove :Select :myList
+    LocalMake "Shuffled LPut :Select :Shuffled]
+  Output :Shuffled
+end
+
+to sort :mylist
+  # sort list into alphabetical order 
+  LocalMake "Num Count :myList
+  Repeat (:Num-1) [
+    For (List "J 1 (:Num-1)) [
+      LocalMake "FirstItem Item :J :myList
+      LocalMake "SecondItem Item (:J+1) :myList
+      If Before? :SecondItem :FirstItem [     #swop the two items
+        Make "myList SetItem :myList :J :SecondItem
+        Make "myList SetItem :myList (:J+1) :FirstItem ] ] ]
+  Output :myList 
+end

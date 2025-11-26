@@ -1,0 +1,25 @@
+# Main Command: Go
+# Wanderer by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to wander :ia :sa :ll :cy
+  New SetPC White Display :IA :SA
+  Home SetPC Green PenDown 
+  Repeat :CY [Forward :LL Right :IA Make "IA :IA+:SA]
+end
+
+to display :ia :sa
+  SetXY -192 184 Label [Happy Wanderer]
+  SetPos [-40 184] Label Sentence [Initial Angle] :IA
+  SetPos [90 184] Label Sentence [Step Angle] :SA 
+end
+
+to go
+  Wander 25 54 15 180
+end

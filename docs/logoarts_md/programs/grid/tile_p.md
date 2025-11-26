@@ -1,0 +1,220 @@
+# Tile
+![Tile](../../art/400x400/tiles/6.png)
+
+A geometric tile pattern is formed when individual square tiles are fitted together in an array. Each tile can have 4 random rotations, with a color assigned to each. Most tiles are simple shapes that tile together well.  
+
+Some tiles could also be drawn as a mirror image. They are not used in this program, so no tiles are 'turned over'.
+
+Enter **GoX** for a series of random patterns.  
+
+Enter **Go Pattern Order** to draw a particular pattern.
+
+```logo
+To New
+ # set default screen, pen and turtle values
+ ResetAll SetScreenSize [400 400] HideTurtle
+ SetSC Black SetPC Green SetPS 1 PenUp
+End
+To GridSq :Order :Side
+ # draw tile at each column x row position
+ LocalMake "Offset (1+:Order)/2
+ LocalMake "Ps [] LocalMake "Total :Order*:Order
+ Repeat :Total [Make "Ps LPut RepCount :Ps] 
+ Repeat :Total [
+ LocalMake "P Pick :Ps
+ LocalMake "Ps Remove :P :Ps
+ LocalMake "Col 1+Mod :P-1 :Order
+ LocalMake "Row 1+Int (:P-1)/:Order
+ SetXY :Side*(:Col-:Offset) :Side*(:Row-:Offset)
+ Tile :Col :Row :Side]
+End
+To Tile :Col :Row :Side
+ # use global value of :Tile to draw selected tile
+ SetH Pick [0 90 180 270] # tile rotation
+ SetPC Item (1+Heading/90) [1 2 3 6]
+ # SetPC Pick [1 2 3 6] # comment in for random color
+ # SetPC :FlatCol # comment in for all one color
+ GlobalMake "Hue PenColor
+ Run Se (Word "Tile :TileNo) 0.95*:Side
+End
+To Tile1 :Side
+ Left 45 Arch 270 :Side/2 Right 45 Back :Side/2
+ PenDown Forward :Side/2 Right 90 Forward :Side/2
+ PenUp Back 3*:Side/4 SetPC Dark PenColor Fill
+ SetPC :Hue Forward :Side/2 Left 90 Arch 180 :Side/4
+ Forward :Side/8 SetPC Dark Dark PenColor Fill
+End
+To Tile2 :Side
+ Right 45 Kite 1.414*:Side
+ SetPC Dark PenColor Fill PenUp SetPC :Hue
+ Right 45 Forward :Side/2 Left 153.4
+ PenDown Forward :Side /2.7 Right 36.8 Forward :Side /2.7 PenUp
+ Right 150 Forward :Side/4
+ SetPC Dark Dark PenColor Fill
+End
+To Tile3 :Side
+ Right 45 Back 1.414*:Side/4 RightAngTri 1.414*:Side
+ SetPC Dark PenColor Fill SetPC :Hue
+ Right 45 Forward :Side/8 RightAngTri :Side/2
+ SetPC Dark Dark PenColor Fill
+End
+To Tile4 :Side
+ Right 45 Lens 1.414*:Side Left 45
+ SetPC Dark PenColor Fill
+ SetPC :Hue Lens :Side/1.38
+ SetPC Dark Dark PenColor Fill
+End
+To Tile5 :Side
+ Right 45 Back 1.414*:Side/2
+ SetPC Yellow SetPW :Side/10 Arch 90 :Side/2
+ Right 45 SetPW 1 SetPC :FlatCol SetPC Dark PenColor
+ PenDown Repeat 4 [
+ Forward :Side/4 PenUp Forward :Side/2 PenDown
+ Forward :Side/4 Left 90]
+ PenUp Forward :Side/2 Left 90 Forward :Side/2
+ Repeat 2 [
+ Back :Side/2 Arch 180 :Side/4
+ Back :Side/2 Arch 68 0.9*:Side Forward :Side
+ Back :Side/6 FillZone Forward :Side/6 Left 180]
+ SetPC :FlatCol Repeat 2 [
+ Back :Side/2 Arch 180 :Side/4
+ Back :Side/2 Arch 68 0.9*:Side Forward :Side Left 180]
+ Left 135 Back 1.414*:Side/2
+ SetPC Yellow SetPW :Side/10 Arch 90 :Side/2 SetPW 1
+End
+To Tile6 :Side
+ SetPC :FlatCol Back :Side/6 Left 90 PenDown
+ Forward :Side/2 Left 90 Forward :Side/3
+ Left 90 Forward :Side Left 90
+ Forward :Side/3 Left 90 Forward :Side/2
+ PenUp Forward :Side/6 Right 90 Back :Side/6
+ SetPC Dark PenColor Fill Forward :Side/6
+ SetPC Yellow PenDown Forward :Side/6 PenUp
+ Forward :Side/6 Circle :Side/6 SetPC Orange Fill
+End
+To Tile7 :Side
+ If Or (Heading =90) (Heading=270) [Right 26.5] [Right 63.5]
+ Square 0.74*:Side Back 0.37*:Side PenDown
+ Forward 0.37*:Side Right 90 Forward 0.37*:Side
+ PenUp Back :Side/2 SetPC Dark PenColor Fill
+ Right 30 Forward :Side/3
+ SetPC Dark PenColor Fill
+End
+To Tile8 :Side
+ Chevron :Side Chevron :Side/2
+ Forward 3*:Side/8 SetPC Dark PenColor Fill
+ Back :Side/4 SetPC Dark PenColor Fill
+End
+To Tile9 :Side
+ Right 45 Back 1.414 *:Side/6 Left 45 Square 2*:Side/3
+ SetPC Dark PenColor Fill SetPC :Hue
+ Forward :Side/3 PenDown Forward :Side/3
+ Right 45 Back 1.414 *:Side/3 PenUp Forward 1.414 *:Side/3
+ PenDown Right 45 Forward 2*:Side/3 Right 90 Forward 2*:Side/3
+ Right 45 Forward 1.414 *:Side/3 PenUp
+ Right 135 Forward 2*:Side/3 Right 45 PenDown Forward 1.414 *:Side/3
+ PenUp Right 135 Forward :Side/6 Right 90 Forward :Side/12
+ SetPC Dark Dark PenColor Fill Forward 2*:Side/3 Fill
+ Back :Side/6 SetPC Dark PenColor Fill
+End
+To Tile10 :Side
+ Back :Side/2 Right 90 Back :Side/2
+ PenDown Forward :Side Left 90 Forward :Side
+ Left 90 Forward :Side/3 Left 90 Forward 2*:Side/3
+ Right 90 Forward 2*:Side/3 Left 90 Forward :Side/3
+ PenUp Back :Side PenDown Repeat 4 [
+ Forward :Side/3 Left 90] PenUp
+ Left 45 Forward 1.414*:Side/6 SetPC Dark Dark PenColor Fill
+ Forward 2*1.414*:Side/3 SetPC :Hue SetPC Dark PenColor Fill
+End
+To Tile11 :Side
+ Right 90 Forward :Side/3 Left 90 Forward :Side/6
+ Repeat 2 [
+ SetPC Dark Dark PenColor
+ FillPolygon [PD (Pgram :Side/3 2*:Side/3 Minus 1)]
+ SetPC :Hue (Pgram :Side/3 2*:Side/3 Minus 1)
+ Left 90 Forward :Side/2 Left 90
+ SetPC Dark PenColor FillPolygon [PD Pgram 2*:Side/3 2*:Side/3]
+ SetPC :Hue Pgram 2*:Side/3 2*:Side/3
+ Right 90 Forward :Side/6 Left 90 Forward :Side/3]
+End
+To Tile12 :Side
+ Left 90 Forward :Side/4 Right 90 Forward :Side/4
+ Repeat 2 [
+ SetPC Dark Dark PenColor FillPolygon [PD Pgram :Side/2 :Side/2]
+ SetPC :Hue Pgram :Side/2 :Side/2 Right 90 Forward :Side/2 Right 90
+ SetPC Dark PenColor FillPolygon [ PD (Pgram :Side/2 :Side/2 Minus 1)]
+ SetPC :Hue (Pgram :Side/2 :Side/2 Minus 1) Forward :Side/2]
+End
+To GoX
+ Forever [Go (1+Random 12) (4+Random 5) Wait 240]
+End
+To Go :Tile :Order
+ New Make "Side Int 380/:Order # screen width 380
+ GlobalMake "TileNo :Tile
+ GlobalMake "FlatCol Pick [4 6 9 15] # flat color for tiles 5 and 6 
+ If :Order<6 [SetPW Abs (7-:Order)] # fat pen for low orders
+ GridSq :Order :Side
+End
+To Arch :Angle :Radius
+ # symmetrical arc drawn relative to turtle heading
+ Arc :Radius Heading-:Angle/2 
+ Heading+:Angle/2
+End
+To Chevron :Size
+ # chevron shape drawn from centre (tp)
+ Make "Offset :Size/4 # global offset fill
+ PenDown Left 45
+ Forward 1.414*:Size/2 Right 135 Forward :Size/2
+ Right 45 Forward 1.414*:Size/2 Right 90 Forward 1.414*:Size/2
+ Right 45 Forward :Size/2 Right 135 Forward 1.414*:Size/2
+ Left 45 PenUp
+End
+To Kite :Size
+ # kite shape drawn from centre (tp)
+ Back :Size/2 PenDown
+ Left 18.4 Forward :Size/1.26 Right 63.4
+ Forward :Size/2.82 Right 90 Forward :Size/2.82
+ Right 63.4 Forward :Size/1.26
+ PenUp Right 161.6 Forward :Size/2 # return to centre
+End
+To Lens :Size
+ # lens shape drawn from centre (tp)
+ Repeat 2 [
+ Back :Size/2 Arch 90 :Size/1.414
+ Forward :Size/2 Left 180]
+End
+To Pgram :Wide :High [:P 1]
+ # parallelogram shape drawn from centre (tp)
+ # default parity of 1, use minus 1 for mirror image
+ LocalMake "Ang ATan :Wide/(:High/2) # inner angle
+ LocalMake "Len :Wide/ Sin :Ang # side length
+ Back :High/4 Right :P*:Ang Back :Len/2 PenDown
+ Repeat 2 [
+ Forward :Len Left :P*:Ang Forward :High/2 Left :P*(180-:Ang)]
+ PenUp Forward :Len/2 Left :P*:Ang Forward :High/4 # r2c
+End
+To RightAngTri :Size
+ # right angled triangle drawn from centre (tp)
+ Back :Size/4 Right 45
+ PenDown Forward 1.414*:Size/2
+ Left 135 Forward :Size
+ Left 135 Forward 1.414*:Size/2 PenUp
+ Left 135 Forward :Size/4 # return to centre
+End
+To Square :Side
+ # square (side x side) drawn from centre (tp)
+ Back :Side/2 Right 90 Back :Side/2 PenDown
+ Repeat 4 [
+ Forward :Side Left 90]
+ PenUp Forward :Side/2 Left 90 Forward :Side/2 # r2c
+End
+To Dark :Hue
+ # output rgb list midway between :hue and black
+ Repeat 3 [
+ Make "Hue ButFirst LPut Int (First :Hue)/2 :Hue]
+ Output :Hue
+End
+```
+
+For a specific pattern, type **go tilepattern arraysize** eg **go 2 7** to run.

@@ -1,0 +1,87 @@
+# Arc Library by Guy Walker
+# www.logoarts.co.uk
+
+to rarc :angle :radius
+  # clockwise arc drawn relative to turtle heading
+  Arc :Radius Heading :Angle+Heading Right :Angle
+end
+
+to arch :angle :radius
+  # symmetrical arc drawn relative to turtle heading
+  Arc :Radius Heading-:Angle/2 Heading+:Angle/2
+end
+
+to leftarc :angle :radius
+  # arc drawn relative to turtle position, angle & radius positive
+  PenUp Right 90 Back :Radius Left :Angle 
+  Arc :Radius Heading Heading+:Angle 
+  Forward :Radius Left 90 PenDown 
+end
+
+to rightarc :angle :radius
+  # arc drawn relative to turtle position, angle & radius positive
+  PenUp Left 90 Back :Radius
+  Arc :Radius Heading Heading+:Angle
+  Right :Angle Forward :Radius Right 90 PenDown
+end
+
+
+
+# full arc procedures - more robust
+
+to rarc :angle :radius
+  # arc drawn relative to turtle heading
+  If :Angle <0 
+    [Arc :Radius :Angle+Heading Heading]
+    [Arc :Radius Heading :Angle+Heading]
+  Right :Angle
+end
+
+to arch :angle :radius
+  # symmetrical arc drawn relative to turtle heading
+  If (Absolute :Angle) <360 [
+    If :Angle <0
+      [Arc :Radius 180+Heading+:Angle/2 180+Heading-:Angle/2]
+      [Arc :Radius Heading-:Angle/2 Heading+:Angle/2] ]
+  [Circle :Radius]
+end
+
+to leftarc :angle :radius
+  # arc drawn relative to turtle position
+  If :Radius <0 [Print [Radius must be positive] StopAll]
+  If Not PenDown? [Forward :Radius Left :Angle Forward :Radius Stop] 
+  PenUp If :Angle <0
+    [Left 90 Back :Radius Arc :Radius Heading Heading-:Angle
+      Left :Angle Forward :Radius Right 90]
+    [Right 90 Back :Radius Left :Angle Arc :Radius Heading Heading+:Angle 
+      Forward :Radius Left 90]
+  PenDown
+end
+
+to rightarc :angle :radius
+  # arc drawn relative to turtle position
+  If :Radius <0 [Print [Radius must be positive] StopAll]
+  If Not PenDown? [Forward :Radius Right :Angle Forward :Radius Stop]
+  PenUp If :Angle <0
+    [Right 90 Back :Radius Right :Angle Arc :Radius Heading Heading-:Angle 
+      Forward :Radius Left 90]
+    [Left 90 Back :Radius Arc :Radius Heading Heading+:Angle 
+      Right :Angle Forward :Radius Right 90]
+  PenDown
+end
+
+
+
+# possible curve procedure for use with fillpolygon
+
+to curve :angle :radius
+  # curved arc drawn relative to turtle position
+  LocalMake "myHeading Heading
+  LocalMake "Steps 12+ Integer Absolute :Radius
+  LocalMake "StepSize ((2*Pi*:Radius) *(:Angle/360)) /:Steps
+  LocalMake "StepAngle :Angle/:Steps
+  Forward :StepSize/2
+  Repeat :Steps-1 [Right :StepAngle Forward :StepSize]
+  Right :StepAngle Forward :StepSize/2
+  SetH :myHeading+:Angle
+end

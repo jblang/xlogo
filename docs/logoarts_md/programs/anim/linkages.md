@@ -1,0 +1,59 @@
+# Linkages
+![Linkages](../../art/400x400/cheb.png)
+
+These mechanical linkages  convert angular (rotary) to straight line motion.
+
+```logo
+To New
+ # set default screen, pen and turtle values
+ ResetAll SetScreenSize [400 400] HideTurtle
+ SetSC Black SetPC Green SetPS 1 PenUp
+End
+to title
+ SetPC White SetPW 3 Repeat 80 [
+ Dot Item RepCount :Points]
+ SetPos [-190 178] SetH 0 Label :Title
+ end
+to distancebetween :pos1 :pos2
+ # return distance between two points
+ Make "Hor (First :Pos1) - (First :Pos2)
+ Make "Ver (Last :Pos1) - (Last :Pos2)
+ Output SqRt ( (Power :Hor 2) + (Power :Ver 2) )
+ end
+to marks1
+ SetPC [64 64 64] SetPW 1
+ SetPos :FixedP Arc 140 350 57 PenDown Forward 200 Back 200
+ SetPos :CrankP Circle 60 PenUp
+ SetPC [0 0 200] SetPW 21 Dot :FixedP Dot :CrankP
+ end
+to marks3
+ SetPC [64 64 64] SetPW 7
+ Dot :FixedP
+ Dot :PC Dot :PP Dot Last :Points
+ end
+to drawcrank
+ SetH Towards MousePos Forward 60
+ SetPC Red SetPW 3 Circle 11 Back 60 PenDown
+ SetPC [0 160 0] SetPW 11 Forward 60 Make "PC Pos
+ SetPC [64 64 64] SetPW 7 Dot :CrankP
+ end
+to cheb
+ Make "Dist DistanceBetween Pos :FixedP
+ Make "aa ((Power :Dist 2)+(Power :A 2)-(Power :B 2))/(2*:Dist)
+ SetH Towards :FixedP
+ Right ArcCosine :aa/:A
+ SetPC Green SetPW 11 Forward 2*:A PenUp
+ Make "Points ButFirst LPut Pos :Points
+ Back :A Make "PP Pos
+ SetPC [0 160 0] PenDown SetPos :FixedP PenUp
+ end
+to go
+New Animation Init
+ Forever [
+ If 95>DistanceBetween MousePos :CrankP [
+ Title Marks1 DrawCrank
+ Cheb
+ Marks3
+ Refresh Wash] ]
+ end
+```

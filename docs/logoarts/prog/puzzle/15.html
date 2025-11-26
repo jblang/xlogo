@@ -1,0 +1,384 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Puzzle | 15 Puzzle</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>15 Puzzle</h2>
+			<p>- Sam Lloyd</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g6/15.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>The classic 15 numbered tiles in a box.</p>
+				<p><strong>Instructions</strong><br>
+					Shuffle the tiles and attempt to return them to their initial positions.</p>
+				<p><strong>Controls</strong> Mouse only - no keyboard<br>
+					Click a tile to slide it into an adjacent space<br>
+					Click the tabs below the puzzle for more game options</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Home</span> [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0]<br>
+						&nbsp; Make &quot;<span class="var">Tiles</span> <b>:</b><span class="var">Home</span><br>
+						&nbsp; Make &quot;<span class="var">TileSets</span> [<br>
+						&nbsp; &nbsp; [ [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0] [Classic] ]<br>
+						&nbsp; &nbsp; [ [a b c d e f g h i j k l m n o 0] [Alphabet] ]<br>
+						&nbsp; &nbsp; [ [R A T E Y O U R M I N D P A L 0] [watch those A's !] ]<br>
+						&nbsp; &nbsp; [ [i ii iii iv v vi vii viii ix x xi xii xiii xiv xv 0] [Roman] ]<br>
+						&nbsp; &nbsp; [ [1 2 3 4 5 6 7 8 9 10 11 12 13 15 14 0] [impossible, 1 swop] ]<br>
+						&nbsp; &nbsp; [ [qq qr qs qt rq rr rs rt sq sr ss st tq tr ts tt] [Matrix] ] ]<br>
+						&nbsp; Make &quot;<span class="var">TileSel</span> 1 Make 
+						&quot;<span class="var">TileSet</span> First (Item <b>:</b><span class="var">TileSel</span> <b>:</b><span class="var">TileSets</span>)<br>
+						&nbsp; Make &quot;<span class="var">Tabs</span> [ [Quit] [Lights] [Chequer] [Tiles] [Reset] [Shuffle] ]<br>
+						&nbsp; Make &quot;<span class="var">GridPos</span> False Make &quot;<span class="var">Count</span> 0<br>
+						&nbsp; Make &quot;<span class="var">Light?</span> False Make &quot;<span class="var">Cheque?</span> False<br>
+						&nbsp; Make &quot;<span class="var">Shuffle?</span> False Make &quot;<span class="var">Win?</span> False<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Title</span></span><br>
+						&nbsp; <span class="com"># write header</span><br>
+						&nbsp; SetPC White SetFontSize 18<br>
+						&nbsp; SetPos [-180 174] Label [15 Puzzle]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tabs</span></span><br>
+						&nbsp; For [<span class="var">M</span> -1 4] [<br>
+						&nbsp; &nbsp; SetPos ScreenPos List <b>:</b><span class="var">M</span> 5<br>
+						&nbsp; &nbsp; SetPC Gray <span class="pro">Button</span> 56 11 Forward 14 SetPC [102 102 102] Fill<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Lab</span> Item (<b>:</b><span class="var">M</span>+2) <b>:</b><span class="var">Tabs</span><br>
+						&nbsp; &nbsp; SetPC White SetFontSize 12<br>
+						&nbsp; &nbsp; SetX (First Pos) -1 - ((LabelLength <b>:</b><span class="var">Lab</span>)/2) SetY (Last Pos)<br>
+						&nbsp; &nbsp; Label <b>:</b><span class="var">Lab</span> Wait 4]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Box</span></span><br>
+						&nbsp; Home<br>
+						&nbsp; SetPC [153 51 51] <span class="pro">Button</span> 306 40 Fill<br>
+						&nbsp; SetPC [222 51 51] SetPW 2 <span class="pro">Button</span> 301 38 SetPW 1<br>
+						&nbsp; SetPC Black <span class="pro">Button</span> 296 35 <span class="pro">Button</span> 242 14 <span class="pro">Button</span> 252 19<br>
+						&nbsp; SetPC [222 51 51] SetPW 2 <span class="pro">Button</span> 247 17 SetPW 1<br>
+						&nbsp; SetPC DarkGreen Fill<br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_Button.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#button">To <span class="pro">Button</span> :<span class="var">Size</span> :<span class="var">Corner</span></a></span><br>
+	&nbsp; <span class="com"># rounded corner shape drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">Size</span>/2 Right 90 Back <b>:</b><span class="var">Size</span>/2-<b>:</b><span class="var">Corner</span> PenDown<br>
+	&nbsp; Repeat 4 [Forward <b>:</b><span class="var">Size</span>-2*<b>:</b><span class="var">Corner</span> <span class="pro">LeftArc</span> 90 <b>:</b><span class="var">Corner</span>]<br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Size</span>/2-<b>:</b><span class="var">Corner</span> Left 90 Forward <b>:</b><span class="var">Size</span>/2 &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_LeftArc.lbi" --><p><span class="toenl"><a href="../../ipt/info/proarc.html#leftarc">To <span class="pro">LeftArc</span> :<span class="var">Angle</span> :<span class="var">Radius</span></a></span><br>
+	&nbsp; <span class="com"># arc drawn relative to turtle position, angle &amp; radius positive</span><br>
+	&nbsp; PenUp Right 90 Back <b>:</b><span class="var">Radius</span> Left <b>:</b><span class="var">Angle</span><br>
+	&nbsp; Arc <b>:</b><span class="var">Radius</span> Heading Heading+<b>:</b><span class="var">Angle</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Radius</span> Left 90 PenDown<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">DrawGrid</span></span><br>
+						&nbsp; For [<span class="var">N</span> 0 3] [<br>
+						&nbsp; &nbsp; For [<span class="var">M</span> 0 3] [<br>
+						&nbsp; &nbsp; <span class="pro">DrawTile</span> List <b>:</b><span class="var">M</span> <b>:</b><span class="var">N</span> Wait 4] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">DrawTile</span> :<span class="var">GridMN</span></span><br>
+						&nbsp; <span class="com"># draw tile at grid position</span><br>
+						&nbsp; SetPos ScreenPos <b>:</b><span class="var">GridMN</span><br>
+						&nbsp; Make &quot;<span class="var">Num</span> <span class="pro">TileNumber</span> <b>:</b><span class="var">GridMN</span><br>
+						&nbsp; SetPC DarkGreen <span class="pro">Button</span> 58 12 FillZone &nbsp; <span class="com"># erase tile</span><br>
+						&nbsp; If Not (<b>:</b><span class="var">Num</span> = 0) [<br>
+						&nbsp; Make &quot;<span class="var">Icon</span> Item <b>:</b><span class="var">Num</span> <b>:</b><span class="var">TileSet</span><br>
+						&nbsp; SetPC Black <span class="pro">Button</span> 58 12<br>
+						&nbsp; If And <b>:</b><span class="var">Cheque?</span> <span class="pro">OddTile</span> <b>:</b><span class="var">Num</span> [<br>
+						&nbsp; SetPC [0 102 204] Make &quot;<span class="var">Rim</span> [0 153 255] ] [<br>
+						&nbsp; SetPC [0 153 204] Make &quot;<span class="var">Rim</span> [0 204 255] ]<br>
+						&nbsp; Fill<br>
+						&nbsp; SetPC Black <span class="pro">Button</span> 48 7<br>
+						&nbsp; SetPC <b>:</b><span class="var">Rim</span> SetPW 2 <span class="pro">Button</span> 53 10 SetPW 1<br>
+						&nbsp; If And <b>:</b><span class="var">Light?</span> (<b>:</b><span class="var">Num</span> = <span class="pro">TileID</span> <b>:</b><span class="var">GridMN</span>) [<br>
+						&nbsp; SetPC [204 255 255] ] [SetPC [0 0 51] ]<br>
+						&nbsp; SetFontSize 36<br>
+						&nbsp; SetX (First Pos) -1 - ((LabelLength <b>:</b><span class="var">Icon</span>)/2) SetY (Last Pos) - 14<br>
+						&nbsp; Label <b>:</b><span class="var">Icon</span>]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">OddTile</span> :<span class="var">Num</span></span><br>
+						&nbsp; Make &quot;<span class="var">Odd</span> Member <b>:</b><span class="var">Num</span> [2 4 5 7 10 12 13 15]<br>
+						&nbsp; If <b>:</b><span class="var">Odd</span> = False [Output False] [Output True]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">TileNumber</span> :<span class="var">GridMN</span></span><br>
+						&nbsp; Output Item TileID <b>:</b><span class="var">GridMN</span> <b>:</b><span class="var">Tiles</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">TileID</span> :<span class="var">GridMN</span></span><br>
+						&nbsp; Output 1+(First <b>:</b><span class="var">GridMN</span>)+4*(Last <b>:</b><span class="var">GridMN</span>)<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">ScreenPos</span> :<span class="var">GridMN</span></span><br>
+						&nbsp; <span class="com"># return X Y screen position</span><br>
+						&nbsp; Make &quot;<span class="var">X</span> ((First <b>:</b><span class="var">GridMN</span>)*60) - 90<br>
+						&nbsp; Make &quot;<span class="var">Y</span> Minus (((Last <b>:</b><span class="var">GridMN</span>)*60) - 90)<br>
+						&nbsp; Output List <b>:</b><span class="var">X</span> <b>:</b><span class="var">Y</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">User</span></span><br>
+						&nbsp; Make &quot;<span class="var">Input</span> ReadMouse &nbsp; <span class="com"># wait for mouse input</span><br>
+						&nbsp; Make &quot;<span class="var">MouseGP</span> Gridd MousePos<br>
+						&nbsp; Make &quot;<span class="var">NewGP</span> <b>:</b><span class="var">MouseGP</span><br>
+						&nbsp; If Not <span class="pro">OverTiles</span> <b>:</b><span class="var">MouseGP</span> [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">NewGP</span> False] [<br>
+						&nbsp; If (<span class="pro">TileNumber</span> <b>:</b><span class="var">MouseGP</span>) = 0 [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">NewGP</span> False] ]<br>
+						&nbsp; If <span class="pro">OverTabs</span> <b>:</b><span class="var">MouseGP</span> [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">NewGP</span> <b>:</b><span class="var">MouseGP</span>]<br>
+						&nbsp; If <b>:</b><span class="var">Input</span> = 0 [<br>
+						&nbsp; &nbsp; If <b>:</b><span class="var">NewGP</span> = <b>:</b><span class="var">GridPos</span> [Stop]<br>
+						&nbsp; &nbsp; If Not (<b>:</b><span class="var">GridPos</span> = False) [<br>
+						&nbsp; &nbsp; &nbsp; SetPC Black SetPos <span class="pro">ScreenPos</span> <b>:</b><span class="var">GridPos</span> <span class="pro">Button</span> 58 12 ]<br>
+						&nbsp; &nbsp; If Not (<b>:</b><span class="var">NewGP</span> = False) [<br>
+						&nbsp; &nbsp; &nbsp; SetPC Yellow SetPos <span class="pro">ScreenPos</span> <b>:</b><span class="var">NewGP</span> <span class="pro">Button</span> 58 12 ]<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">GridPos</span> <b>:</b><span class="var">NewGP</span> ]<br>
+						&nbsp; If <b>:</b><span class="var">Input</span> = 1 [<br>
+						&nbsp; &nbsp; If <b>:</b><span class="var">NewGP</span> = False [Stop]<br>
+						&nbsp; If <span class="pro">OverTabs</span> <b>:</b><span class="var">MouseGP</span> [<br>
+						&nbsp; &nbsp; Run Item (2+(First <b>:</b><span class="var">NewGP</span>)) <b>:</b><span class="var">Tabs</span> ] [<br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">BlankPos</span> <span class="pro">BlankNeigh</span> <b>:</b><span class="var">NewGP</span><br>
+						&nbsp; &nbsp; &nbsp; If <b>:</b><span class="var">BlankPos</span> = False [Stop]<br>
+						&nbsp; &nbsp; &nbsp; <span class="pro">TileSwap</span> <b>:</b><span class="var">NewGP</span> <b>:</b><span class="var">BlankPos</span><br>
+						&nbsp; &nbsp; &nbsp; If Not <b>:</b><span class="var">Win?</span> [<span class="pro">Counter</span>]<br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">GridPos</span> False<br>
+						&nbsp; &nbsp; &nbsp; If And <b>:</b><span class="var">Shuffle?</span> (<b>:</b><span class="var">Tiles</span> = <b>:</b><span class="var">Home</span>) [<br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">Win?</span> True <span class="pro">Halo</span> <span class="pro">Inform</span> [!! Won !!]] ] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Gridd</span> :<span class="var">MsePos</span></span><br>
+						&nbsp; <span class="com"># return grid position from mousepos</span><br>
+						&nbsp; Make &quot;<span class="var">M</span> Round ((First <b>:</b><span class="var">MsePos</span>)+90) / 60<br>
+						&nbsp; Make &quot;<span class="var">N</span> Round ((Minus (Last <b>:</b><span class="var">MsePos</span>))+90) / 60<br>
+						&nbsp; Output List <b>:</b><span class="var">M</span> <b>:</b><span class="var">N</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">OverTiles</span> :<span class="var">GridMN</span></span><br>
+						&nbsp; <span class="com"># return true if over tile area, else false</span><br>
+						&nbsp; If Or Or Or ((First <b>:</b><span class="var">GridMN</span>)&gt;3) ((First <b>:</b><span class="var">GridMN</span>)&lt;0)<br>
+						&nbsp; &nbsp; &nbsp; ((Last<strong> :</strong><span class="var">GridMN</span>)&gt;3) ((Last <b>:</b><span class="var">GridMN</span>)&lt;0) [<br>
+						&nbsp; &nbsp; &nbsp; Output False] [Output True]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">OverTabs</span> :<span class="var">GridMN</span></span><br>
+						&nbsp; <span class="com"># return true if over tabs area, else false</span><br>
+						&nbsp; If Or Or ((First <b>:</b><span class="var">GridMN</span>)&gt;4) ((First <b>:</b><span class="var">GridMN</span>)&lt;-1) (Not (Last <b>:</b><span class="var">GridMN</span>)=5)
+						&nbsp; &nbsp; [Output False] [Output True]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">BlankNeigh</span> :<span class="var">GridMN</span></span><br>
+						&nbsp; <span class="com">#return position of blank neighbour, else False</span><br>
+						&nbsp; Make &quot;<span class="var">Tile</span> False<br>
+						&nbsp; Repeat 4 [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">J</span> Int Sin 90*RepCount Make &quot;<span class="var">K</span> Int Cos 90*RepCount<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">M</span> (First <b>:</b><span class="var">GridMN</span>) +<b>:</b><span class="var">J</span> Make &quot;<span class="var">N</span> (Last <b>:</b><span class="var">GridMN</span>) +<b>:</b><span class="var">K</span><br>
+						&nbsp; &nbsp; If (<span class="pro">OverTiles</span> List <b>:</b><span class="var">M</span><strong> :</strong><span class="var">N</span>) [<br>
+						&nbsp; &nbsp; &nbsp; If (0 =<span class="pro">TileNumber</span> List <b>:</b><span class="var">M</span> <b>:</b><span class="var">N</span>) [Make &quot;<span class="var">Tile</span> List <b>:</b><span class="var">M</span> <b>:</b><span class="var">N</span>] ] ]<br>
+						&nbsp; Output <b>:</b><span class="var">Tile</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">TileSwap</span> :<span class="var">Tile1</span> :<span class="var">Tile2</span></span><br>
+						&nbsp; Make &quot;<span class="var">Num1</span> <span class="pro">TileNumber</span> <b>:</b><span class="var">Tile1</span><br>
+						&nbsp; Make &quot;<span class="var">Num2</span> <span class="pro">TileNumber</span> <b>:</b><span class="var">Tile2</span><br>
+						&nbsp; Make &quot;<span class="var">Tiles</span> SetItem <b>:</b><span class="var">Tiles</span> (<span class="pro">TileID</span> <b>:</b><span class="var">Tile1</span>) <b>:</b><span class="var">Num2</span><br>
+						&nbsp; Make &quot;<span class="var">Tiles</span> SetItem <b>:</b><span class="var">Tiles</span> (<span class="pro">TileID</span> <b>:</b><span class="var">Tile2</span>) <b>:</b><span class="var">Num1</span><br>
+						&nbsp; <span class="pro">DrawTile</span> <b>:</b><span class="var">Tile1</span><br>
+						&nbsp; <span class="pro">DrawTile</span> <b>:</b><span class="var">Tile2</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Quit</span></span><br>
+						&nbsp; <span class="pro">Inform</span> [Thanks For Playing !]<br>
+						&nbsp; StopAll<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Lights</span></span><br>
+						&nbsp; Make &quot;<span class="var">Light?</span> Not <b>:</b><span class="var">Light?</span><br>
+						&nbsp; <span class="pro">DrawGrid</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Chequer</span></span><br>
+						&nbsp; Make &quot;<span class="var">Cheque?</span> Not <b>:</b><span class="var">Cheque?</span><br>
+						&nbsp; <span class="pro">DrawGrid</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tiles</span></span><br>
+						&nbsp; Make &quot;<span class="var">TileSel</span> <b>:</b><span class="var">TileSel</span>+1<br>
+						&nbsp; If <b>:</b><span class="var">TileSel</span> &gt; (Count <b>:</b><span class="var">TileSets</span>) [Make &quot;<span class="var">TileSel</span> 1]<br>
+						&nbsp; Make &quot;<span class="var">TileSet</span> First (Item <b>:</b><span class="var">TileSel</span> <b>:</b><span class="var">TileSets</span>)<br>
+						&nbsp; <span class="pro">DrawGrid</span><br>
+						&nbsp; If Not <b>:</b><span class="var">Win?</span> [Inform Last (Item <b>:</b><span class="var">TileSel</span> <b>:</b><span class="var">TileSets</span>)]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Reset</span></span><br>
+						&nbsp; <span class="pro">ResetCounter</span><br>
+						&nbsp; Make &quot;<span class="var">Shuffle?</span> False<br>
+						&nbsp; Make &quot;<span class="var">Tiles</span> [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]<br>
+						&nbsp; <span class="pro">DrawGrid</span><br>
+						&nbsp; Make &quot;<span class="var">Tiles</span> <b>:</b><span class="var">Home</span><br>
+						&nbsp; <span class="pro">DrawGrid</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Shuffle</span></span><br>
+						&nbsp; <span class="pro">ResetCounter</span><br>
+						&nbsp; Make &quot;<span class="var">Shuffle?</span> True<br>
+						&nbsp; Repeat 16 [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Swap1</span> <span class="pro">PickTile</span><br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Swap2</span> <b>:</b><span class="var">Swap1</span><br>
+						&nbsp; &nbsp; While [<b>:</b><span class="var">Swap1</span>=<b>:</b><span class="var">Swap2</span>] [Make &quot;<span class="var">Swap2</span> <span class="pro">PickTile</span>]<br>
+						&nbsp; &nbsp; <span class="pro">TileSwap</span> <b>:</b><span class="var">Swap1</span> <b>:</b><span class="var">Swap2</span>]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">PickTile</span></span><br>
+						&nbsp; Make &quot;<span class="var">Tile</span> List Random 4 Random 4<br>
+						&nbsp; While [ (<span class="pro">TileNumber</span> <b>:</b><span class="var">Tile</span>) = 0] [Make &quot;<span class="var">Tile</span> List Random 4 Random 4]<br>
+						&nbsp; Output <b>:</b><span class="var">Tile</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Counter</span></span><br>
+						&nbsp; <span class="com"># increment counter</span><br>
+						&nbsp; SetPC Black SetPW 18<br>
+						&nbsp; SetPos [170 180] PenDown SetX 188 PenUp SetPW 1<br>
+						&nbsp; SetPos [164 174] SetFontSize 12 SetPC White<br>
+						&nbsp; Make &quot;<span class="var">Count</span> <b>:</b><span class="var">Count</span>+1 Label <b>:</b><span class="var">Count</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">ResetCounter</span></span><br>
+						&nbsp; SetPC Black SetPW 18<br>
+						&nbsp; SetPos [170 180] PenDown SetX 188 PenUp SetPW 1<br>
+						&nbsp; Make &quot;<span class="var">Count</span> 0<br>
+						&nbsp; If <b>:</b><span class="var">Win?</span> [Make &quot;<span class="var">Win?</span> False <span class="pro">Halo</span> <span class="pro">Inform</span> Last (Item <b>:</b><span class="var">TileSel</span> <b>:</b><span class="var">TileSets</span>)]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Inform</span> :<span class="var">Info</span></span><br>
+						&nbsp; SetPos [-100 -138]<br>
+						&nbsp; SetPC [153 51 51] SetPW 20<br>
+						&nbsp; PenDown SetX 100 PenUp SetPW 1<br>
+						&nbsp; If <b>:</b><span class="var">Win?</span> [SetPC Yellow] [SetPC Black] SetFontSize 18<br>
+						&nbsp; SetPos List Minus((LabelLength <b>:</b><span class="var">Info</span>)/2) Minus 144<br>
+						&nbsp; Label <b>:</b><span class="var">Info</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Halo</span></span><br>
+						&nbsp; If <b>:</b><span class="var">Win?</span> [SetPC Yellow] [SetPC Black]<br>
+						&nbsp; Home For [<span class="var">Size</span> 315 355 10] [<span class="pro">Button</span> <b>:</b><span class="var">Size</span> 50]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New</span> <span class="pro">Init</span> <span class="pro">Title</span> Wait 20<br>
+						&nbsp; <span class="pro">Box</span> Wait 20 <span class="pro">Tabs</span> Wait 20 <span class="pro">DrawGrid</span><br>
+						&nbsp; <span class="pro">Inform</span> &quot;Welcome<br>
+						&nbsp; Forever [<span class="pro">User</span>]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/puzzle/15_puzzle.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/puzzle/15_puzzle.lgo">File</a></li>
+						<li><a href="../../pict/gall6/15_puzzle.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall6/15_puzzle.html"><img src="../../art/100g6/15.gif" alt="15 Puzzle" width="100" height="100"></a><br>
+				15 Puzzle</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

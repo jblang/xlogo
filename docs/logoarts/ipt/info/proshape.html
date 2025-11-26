@@ -1,0 +1,676 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/info3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Resource | Procedures_Shape | html</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="info">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Shapes</h2>
+			<p>- XLogo library of procedures</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<img src="../../art/img32/xlogo32.gif" alt="xlogo" width="32" height="32">
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>These procedures draw various shapes. Copy and paste into 
+					the Editor window as usual. Many are found in programs throughout this 
+					site. They are all transparent (turtle position and heading left unchanged). 
+					They assume turtle PenUp when called and leave the pen raised when finished.</p>
+				<p>Some of these procedures use the rArc, LeftArc, RightArc or Arch <a href="proarc.html">arc 
+					procedures</a>. You'll need to copy and paste these too.</p>
+				<p>Some shapes cannot be filled from the centre. Their procedures contain a global <strong>Offset</strong>, which can be used to correctly position the turtle.</p>
+				<p>Download complete library of <a href="../../lgo/lib/shape_lib.lgo">shape 
+					procedures</a> here.</p>
+				<p><a name="annulus"></a><span class="subh">Annulus</span><br>
+				</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Annulus.lbi" --><p><span class="toenl"><a href="proshape.html#annulus">To <span class="pro">Annulus</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># annulus shape drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Offset</span> <b>:</b><span class="var">Size</span>/3 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+	&nbsp; Circle <b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; Circle <b>:</b><span class="var">Size</span>/4<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="bean"></a><span class="subh">Bean</span><br>
+					Uses <a href="proarc.html#rarc">rArc</a> procedure.<br>
+				</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Bean</span> :<span class="var">Size</span></span><br>
+						&nbsp; <span class="com"># bean shape drawn from centre (tp)</span><br>
+						&nbsp; Make &quot;<span class="var">Offset</span> <b>:</b><span class="var">Size</span>/3 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+						&nbsp; <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/2<br>
+						&nbsp; Forward <b>:</b><span class="var">Size</span>/3 <span class="pro"></span> <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/6<br>
+						&nbsp; Forward <b>:</b><span class="var">Size</span>/3 <span class="pro"></span> <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/6<br>
+						&nbsp; Back <b>:</b><span class="var">Size</span>/3 <span class="pro"></span> <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/6<br>
+						&nbsp; Back <b>:</b><span class="var">Size</span>/3&nbsp; 
+						&nbsp; <span class="com"># return to centre</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="burst" id="burst"></a><span class="subh">Burst</span><br>
+					Draw star Burst with radiating spokes.<br>
+					<span class="fs10">Used in <a href="../../prog/demo/star.html">DemoStar</a> and <a href="../../prog/illusion/scintillate.html">Scintillate</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Burst.lbi" --><p><span class="toenl"><a href="proshape.html#burst">To <span class="pro">Burst</span> :<span class="var">Spokes</span> :<span class="var">Radius</span></a></span><br>
+	&nbsp; <span class="com"># star burst  drawn from centre (tp)</span><br>
+	&nbsp;&nbsp; Repeat <b>:</b><span class="var">Spokes</span> [<br>
+	&nbsp; &nbsp; PenDown Forward <b>:</b><span class="var">Radius</span><br>
+	&nbsp; &nbsp; PenUp Back <b>:</b><span class="var">Radius</span><br>
+	&nbsp; &nbsp; Right 360/<b>:</b><span class="var">Spokes</span> Wait 2]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="button"></a><span class="subh">Button</span><br>
+					Draw a square button with rounded corners. The value of side is the total 
+					width of the button. The corners need to be less than half the side. If 
+					not, a different shape is drawn (try it and see).<br>
+					Uses <a href="proarc.html#leftarc">LeftArc</a> procedure.<br>
+					<span class="fs10">Used in <a href="../../prog/puzzle/15.html">15 
+					Puzzle</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Button.lbi" --><p><span class="toenl"><a href="proshape.html#button">To <span class="pro">Button</span> :<span class="var">Size</span> :<span class="var">Corner</span></a></span><br>
+	&nbsp; <span class="com"># rounded corner shape drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">Size</span>/2 Right 90 Back <b>:</b><span class="var">Size</span>/2-<b>:</b><span class="var">Corner</span> PenDown<br>
+	&nbsp; Repeat 4 [Forward <b>:</b><span class="var">Size</span>-2*<b>:</b><span class="var">Corner</span> <span class="pro">LeftArc</span> 90 <b>:</b><span class="var">Corner</span>]<br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Size</span>/2-<b>:</b><span class="var">Corner</span> Left 90 Forward <b>:</b><span class="var">Size</span>/2 &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="chevron"></a><span class="subh">Chevron</span><br>
+					Draw chevron shape.<br>
+				</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Chevron.lbi" --><p><span class="toenl"><a href="proshape.html#chevron">To <span class="pro">Chevron</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># chevron shape drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Offset</span> <b>:</b><span class="var">Size</span>/4 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+	&nbsp; PenDown Left 45<br>
+	&nbsp; Forward 1.414*<b>:</b><span class="var">Size</span>/2 Right 135 Forward <b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; Right 45 Forward 1.414*<b>:</b><span class="var">Size</span>/2 Right 90 Forward 1.414*<b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; Right 45 Forward <b>:</b><span class="var">Size</span>/2 Right 135 Forward 1.414*<b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; Left 45 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="clam"></a><span class="subh">Clam</span><br>
+					Draw clam shape used in some illusions. Similar to lens shape but slightly fatter, with white topside and black underside.<br>
+				</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Clam.lbi" --><p><span class="toenl"><a href="proshape.html#chevron">To <span class="pro">Clam</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># optical clam shape drawn from centre (tp)</span><br>
+	&nbsp; SetPC White Back <b>:</b><span class="var">Size</span>/3 <span class="pro">Arch</span> 112 0.6*<b>:</b><span class="var">Size</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span>/3 Left 180<br>
+	&nbsp; SetPC Black Back <b>:</b><span class="var">Size</span>/3 <span class="pro">Arch</span> 112 0.6*<b>:</b><span class="var">Size</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span>/3 Left 180<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="clover" id="clover"></a><span class="subh">Clover</span><br>
+					Draw lucky 3 leaf clover shape. See <a href="../../prog/demo/clover.html">CloverLeaf</a> shapes.<br>
+					Uses <a href="proarc.html#arch">Arch</a> procedure.<br>
+				</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Clover.lbi" --><p><span class="toenl"><a href="proshape.html#clover">To <span class="pro">Clover</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># clover shape drawn from centre (tp)</span><br>
+	&nbsp; Repeat 3 [<span class="var"></span><br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/3.74 <span class="pro">Arch</span> 300 0.23*<b>:</b><span class="var">Size</span><br>
+	&nbsp; &nbsp; Back <b>:</b><span class="var">Size</span>/3.74 Left 120]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="cross"></a><span class="subh">Cross</span><br>
+				</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Cross</span> :<span class="var">Side</span></span><br>
+						&nbsp; <span class="com"># cross drawn from centre (tp)</span><br>
+						&nbsp; Back <b>:</b><span class="var">Side</span>/2 Right 90 Back <b>:</b><span class="var">Side</span>/3 PenDown<br>
+						&nbsp; Repeat 4 [<br>
+						&nbsp; &nbsp; Forward <b>:</b><span class="var">Side</span>/1.5 Left 116.57<br>
+						&nbsp; &nbsp; Forward <b>:</b><span class="var">Side</span>/2.7 Right 143.14<br>
+						&nbsp; &nbsp; Forward <b>:</b><span class="var">Side</span>/2.7 Left 116.57]<br>
+						&nbsp; PenUp Forward <b>:</b><span class="var">Side</span>/3 Left 90 Forward <b>:</b><span class="var">Side</span>/2 &nbsp; &nbsp; <span class="com"># r2c</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="egg"></a><span class="subh">Egg</span><br>
+					Uses <a href="proarc.html#rarc">rArc</a> procedure.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Egg.lbi" --><p><span class="toenl"><a href="proshape.html#egg">To <span class="pro">Egg</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># egg shape drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Size</span> <b>:</b><span class="var">Size</span>/1.3<br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span>/2.9 Left 45 <span class="pro">rArc</span> 90 0.292*<b>:</b><span class="var">Size</span><br>
+	&nbsp; Back <b>:</b><span class="var">Size</span>/1.414 <span class="pro">rArc</span> 45 <b>:</b><span class="var">Size</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span>/2 <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; Back <b>:</b><span class="var">Size</span>/2 <span class="pro">rArc</span> 45 <b>:</b><span class="var">Size</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span>/1.414 Right 45 Back <b>:</b><span class="var">Size</span>/2.9&nbsp; 
+	&nbsp; <span class="com"># r2c</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="heart"></a><span class="subh">Heart</span><br>
+					Uses <a href="proarc.html#rarc">rArc</a> procedure.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Heart.lbi" --><p><span class="toenl"><a href="proshape.html#heart">To <span class="pro">Heart</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># heart shape drawn from centre (tp)</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span>/4 ForEach &quot;<span class="var">P</span> [1 -1] [ &nbsp; &nbsp; <span class="com"># parity</span><br>
+	&nbsp; &nbsp; Left <b>:</b><span class="var">P</span>*90 Forward <b>:</b><span class="var">Size</span>/4 Right <b>:</b><span class="var">P</span>*90<br>
+	&nbsp; &nbsp; <span class="pro">Arch</span> 180 <b>:</b><span class="var">Size</span>/4<span class="pro"> </span>Right <b>:</b><span class="var">P</span>*90 Back <b>:</b><span class="var">Size</span>/15 Right <b>:</b><span class="var">P</span>*33.5<br>
+	&nbsp; &nbsp; <span class="pro">Arch</span> 67 49*<b>:</b><span class="var">Size</span>/60<br>
+	&nbsp; &nbsp; Left <b>:</b><span class="var">P</span>*33.5 Forward 19*<b>:</b><span class="var">Size</span>/60 Left <b>:</b><span class="var">P</span>*90]<br>
+	&nbsp; Back <b>:</b><span class="var">Size</span>/4 &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="hshoe" id="hshoe"></a><span class="subh">Horseshoe</span><br>
+					Uses <a href="proarc.html#arch">Arch</a> procedure.<br>
+					<span class="fs10">Used in <a href="../../prog/coding/shapes.html">Shapes</a>.</span>					<br>
+				</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Hshoe.lbi" --><p><span class="toenl"><a href="proshape.html#hshoe">To <span class="pro">Horseshoe</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># horseshoe shape drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Offset</span> <b>:</b><span class="var">Size</span>/3 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+	&nbsp; <span class="pro">Arch</span> 180 <b>:</b><span class="var">Size</span>/2 <span class="pro">Arch</span> 180 <b>:</b><span class="var">Size</span>/4<br>
+	&nbsp; ForEach &quot;<span class="var">P</span> [1 -1] [ &nbsp; &nbsp; <span class="com"># parity</span><br>
+	&nbsp; &nbsp; Left <b>:</b><span class="var">P</span>*90 Back <b>:</b><span class="var">Size</span>/2 Left <b>:</b><span class="var">P</span>*12.75<br>
+	&nbsp; &nbsp; <span class="pro">Arch</span> 25.5 <b>:</b><span class="var">Size</span> <span class="pro">Arch</span> 25.5 0.75*<b>:</b><span class="var">Size</span> Left <b>:</b><span class="var">P</span>*12.75<br>
+	&nbsp; &nbsp; Forward 0.875*<b>:</b><span class="var">Size</span> Left <b>:</b><span class="var">P</span>*90<span class="pro"> Arch</span> 180 <b>:</b><span class="var">Size</span>/8<br>
+	&nbsp; &nbsp; Right <b>:</b><span class="var">P</span>*90 Back 0.875*<b>:</b><span class="var">Size</span> Right <b>:</b><span class="var">P</span>*25.5<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/2 Right <b>:</b><span class="var">P</span>*90]<span class="com"></span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="kite"></a><span class="subh">Kite</span><br>
+					<span class="fs10">Used in <a href="../../prog/recur/edge.html">Edge</a> and <a href="../../prog/tree/kitetree.html">Kite Tree</a>.</span><br>
+				</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Kite.lbi" --><p><span class="toenl"><a href="proshape.html#kite">To <span class="pro">Kite</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># kite shape drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">Size</span>/2 PenDown<br>
+	&nbsp; Left 18.4 Forward <b>:</b><span class="var">Size</span>/1.26 Right 63.4<br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span>/2.82 Right 90 Forward <b>:</b><span class="var">Size</span>/2.82<br>
+	&nbsp; Right 63.4 Forward <b>:</b><span class="var">Size</span>/1.26<br>
+	&nbsp; PenUp Right 161.6 Forward <b>:</b><span class="var">Size</span>/2 &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="lens"></a><span class="subh">Lens</span><br>
+					Uses <a href="proarc.html#arch">Arch</a> procedure.<br>
+					(The shapes used in <a href="../../prog/tree/lune.html">LuneTree</a> are 
+					Lens shapes, drawn from one end to act as branches).<br>
+					<span class="fs10">Used in <a href="../../prog/recur/edge.html">Edge</a> <a href="../../prog/tree/lune.html">LuneTree</a> <a href="../../prog/grid/tile_p.html">TilePattern</a></span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Lens.lbi" --><p><span class="toenl"><a href="proshape.html#lens">To <span class="pro">Lens</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># lens shape drawn from centre (tp)</span><br>
+	&nbsp; Repeat 2 [<br>
+	&nbsp; &nbsp; Back <b>:</b><span class="var">Size</span>/2<span class="pro"> Arch</span> 90 <b>:</b><span class="var">Size</span>/1.414<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/2 Left 180]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="lenses"></a><span class="subh">Lenses</span><br>
+					See <a href="../../prog/demo/lens.html">Lens Shapes</a>.</p>
+				<p><a name="lune"></a><span class="subh">Lune</span><br>
+					Uses <a href="proarc.html#arch">Arch</a> procedure.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Lune.lbi" --><p><span class="toenl"><a href="proshape.html#lune">To <span class="pro">Lune</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># lune shape drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Offset</span> <b>:</b><span class="var">Size</span>/3 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+	&nbsp; <span class="pro">Arch</span> 240 <b>:</b><span class="var">Size</span>/2 Back <b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; <span class="pro">Arch</span> 120 <b>:</b><span class="var">Size</span>/2 Forward <b>:</b><span class="var">Size</span>/2<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="occitan"></a><span class="subh">Occitan</span><br>
+					Uses <a href="proarc.html#arch">Arch</a> procedure.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Occitan</span> :<span class="var">Size</span></span><br>
+						&nbsp; <span class="com"># occitan shape drawn from centre (tp)</span><br>
+						&nbsp; Repeat 2 [<br>
+						&nbsp; &nbsp; <span class="pro">Arch</span> 90 <b>:</b><span class="var">Size</span>/2 Left 90 Back 1.414*<b>:</b><span class="var">Size</span>/2<br>
+						&nbsp; &nbsp; <span class="pro">Arch</span> 90 <b>:</b><span class="var">Size</span>/2 Forward 1.414*<b>:</b><span class="var">Size</span>/2 Left 90]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="oval"></a><span class="subh">Oval</span><br>
+					Uses <a href="proarc.html#arch">Arch</a> procedure.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Oval.lbi" --><p><span class="toenl"><a href="proshape.html#oval">To <span class="pro">Oval</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># oval shape drawn from centre (tp)</span><br>
+	&nbsp; Repeat 2 [<br>
+	&nbsp; &nbsp; Back <b>:</b><span class="var">Size</span>/4<span class="pro"> Arch</span> 90 <b>:</b><span class="var">Size</span>/1.66 Forward <b>:</b><span class="var">Size</span>/4<span class="pro"></span> Left 90<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/4 <span class="pro">Arch</span> 90 <b>:</b><span class="var">Size</span>/4 Back <b>:</b><span class="var">Size</span>/4<span class="pro"></span> Left 90]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="pgram"></a><span class="subh">Parallelogram</span><br>
+					Draw a parallelogram from the centre <b>:</b><span class="var">Wide</span> wide and <b>:</b><span class="var">High</span> high.<br>
+					Subtract PenWidth from <b>:</b><span class="var">Wide</span> and <b>:</b><span class="var">High</span> for a parallelogram of 
+					exact size.<br>
+					Uses an optional variable <b>:</b><span class="var">P</span> of 1. Use a value of minus 1 for mirror image.<br>
+					<span class="fs10">Used in <a href="../../prog/grid/tile_p.html">TilePattern</a></span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Pgram.lbi" --><p><span class="toenl"><a href="proshape.html#pgram">To <span class="pro">Pgram</span> :<span class="var">Wide</span> :<span class="var">High</span> [<b>:</b><span class="var">P</span> 1]</a></span><br>
+	&nbsp; <span class="com"># parallelogram shape drawn from centre (tp)</span><br>
+	&nbsp; <span class="com"># default parity of 1, use minus 1 for mirror image</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Ang</span> ATan <b>:</b><span class="var">Wide</span>/(<b>:</b><span class="var">High</span>/2) &nbsp; &nbsp; <span class="com"># inner angle</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Len</span> <b>:</b><span class="var">Wide</span>/ Sin <b>:</b><span class="var">Ang</span> &nbsp; &nbsp; <span class="com"># side length</span><br>
+	&nbsp; Back <b>:</b><span class="var">High</span>/4 Right <b>:</b><span class="var">P</span>*<b>:</b><span class="var">Ang</span> Back <b>:</b><span class="var">Len</span>/2 PenDown<br>
+	&nbsp; Repeat 2 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Len</span> Left <b>:</b><span class="var">P</span>*<b>:</b><span class="var">Ang</span> Forward <b>:</b><span class="var">High</span>/2 Left <b>:</b><span class="var">P</span>*(180-<b>:</b><span class="var">Ang</span>)]<br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Len</span>/2 Left <b>:</b><span class="var">P</span>*<b>:</b><span class="var">Ang</span> Forward <b>:</b><span class="var">High</span>/4 &nbsp; &nbsp; <span class="com"># r2c</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="pebble"></a><span class="subh">Pebble</span><br>
+					Draw a pebble from the centre <b>:</b><span class="var">Wide</span> wide and <b>:</b><span class="var">High</span> high.<br>
+					Subtract PenWidth from <b>:</b><span class="var">Wide</span> and <b>:</b><span class="var">High</span> for a pebble of 
+					exact size.<br>
+					Uses <a href="proarc.html#leftarc">LeftArc</a> procedure.<br>
+					See <a href="../../prog/demo/pebble.html">Pebble Shapes</a>.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Pebble.lbi" --><p><span class="toenl"><a href="proshape.html#pebble">To <span class="pro">Pebble</span> :<span class="var">Wide</span> :<span class="var">High</span></a></span><br>
+	&nbsp; <span class="com"># pebble shape drawn from centre (tp)</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Diff</span> Abs <b>:</b><span class="var">Wide</span>-<b>:</b><span class="var">High</span><br>
+	&nbsp; If <b>:</b><span class="var">Wide</span> &gt; <b>:</b><span class="var">High</span><br>
+	&nbsp; &nbsp; [LocalMake &quot;<span class="var">Rad</span> <b>:</b><span class="var">High</span>/2 LocalMake &quot;<span class="var">Vert</span> 0 LocalMake &quot;<span class="var">Horiz</span> <b>:</b><span class="var">Diff</span>]<br>
+	&nbsp; &nbsp; [LocalMake &quot;<span class="var">Rad</span> <b>:</b><span class="var">Wide</span>/2 LocalMake &quot;<span class="var">Vert</span> <b>:</b><span class="var">Diff</span> LocalMake &quot;<span class="var">Horiz</span> 0]<br>
+	&nbsp; PenUp Back <b>:</b><span class="var">High</span>/2 Right 90 Back <b>:</b><span class="var">Horiz</span>/2 PenDown<br>
+	&nbsp; Repeat 2 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Horiz</span> <span class="pro">LeftArc</span> 90 <b>:</b><span class="var">Rad</span> Forward <b>:</b><span class="var">Vert</span> <span class="pro">LeftArc</span> 90 <b>:</b><span class="var">Rad</span>]<br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Horiz</span>/2 Left 90 Forward <b>:</b><span class="var">High</span>/2 &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="poly"></a><span class="subh">Polygon</span><br>
+					Draw a polygon of 'N' sides, with width 'Wide'. The polygon is drawn from the centre.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Polygon.lbi" --><p><span class="toenl"><a href="proshape.html">To <span class="pro">Polygon</span> :<span class="var">N</span> :<span class="var">Wide</span></a></span><br>
+	&nbsp; <span class="com"># polygon of 'N' sides drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Side</span> <b>:</b><span class="var">Wide</span> *Sin 180/<b>:</b><span class="var">N</span> &nbsp; &nbsp; <span class="com"># length of one side</span><br>
+	&nbsp; Right 180/<b>:</b><span class="var">N</span> Back <b>:</b><span class="var">Wide</span>/2 Right 90-180/<b>:</b><span class="var">N</span> PenDown<br>
+	&nbsp; Repeat <b>:</b><span class="var">N</span><br>
+	&nbsp; &nbsp; [Forward <b>:</b><span class="var">Side</span> Left 360/<b>:</b><span class="var">N</span>]<br>
+	&nbsp; PenUp Left 90-180/<b>:</b><span class="var">N</span> Forward <b>:</b><span class="var">Wide</span>/2 Left 180/<b>:</b><span class="var">N</span> &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="prop" id="prop"></a><span class="subh">Propeller</span><br>
+					Draw propeller shape.
+					See <a href="../../prog/demo/clover.html">CloverWave</a> shapes.<br>
+					Uses <a href="proarc.html#arch">Arch</a> procedure.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Prop.lbi" --><p><span class="toenl"><a href="proshape.html#prop">To <span class="pro">Propeller</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># propeller shape drawn from centre (tp)</span><br>
+	&nbsp; Repeat 3 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/3 <span class="pro">Arch</span> 240 <b>:</b><span class="var">Size</span>/6<br>
+	&nbsp; &nbsp; Back <b>:</b><span class="var">Size</span>/3 Left 60<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/3 Left 180 <span class="pro">Arch</span> 120 <b>:</b><span class="var">Size</span>/6 Left 180<br>
+	&nbsp; &nbsp; Back <b>:</b><span class="var">Size</span>/3 Left 60]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="quad" id="propeller2"></a><span class="subh">Quad</span><br>
+					Draw quad shape.
+					See <a href="../../prog/demo/clover.html">CloverWave</a> shapes.<br>
+					Uses <a href="proarc.html#arch">Arch</a> procedure.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Quad.lbi" --><p><span class="toenl"><a href="proshape.html#quad">To <span class="pro">Quad</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># quad shape drawn from centre (tp)</span><br>
+	&nbsp; Repeat 4 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/2.185 Left 180<br>
+	&nbsp; &nbsp; <span class="pro">Arch</span> 135 <b>:</b><span class="var">Size</span>/5.7 Left 180<br>
+	&nbsp; &nbsp; Back <b>:</b><span class="var">Size</span>/2.185 Left 45 Forward <b>:</b><span class="var">Size</span>/2.185<br>
+	&nbsp; &nbsp; <span class="pro">Arch</span> 225 <b>:</b><span class="var">Size</span>/5.7 Back <b>:</b><span class="var">Size</span>/2.185 Left 45]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="quatquetra"></a><span class="subh">Quatquetra</span><br>
+					Best to draw 4 <a href="proshape.html#lens">Lens</a> shapes if a filled Quatquetra needed.<br>
+					Uses <a href="proarc.html#arch">Arch</a> procedure.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Quatquetra</span> :<span class="var">Size</span></span><br>
+						&nbsp; <span class="com"># quatquetra shape drawn from centre (tp)</span><br>
+						&nbsp; Repeat 4 [<br>
+						&nbsp; &nbsp; Back <b>:</b><span class="var">Size</span>/2 <span class="pro">Arch</span> 180 <b>:</b><span class="var">Size</span>/2<br>
+						&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/2 Left 90]<span class="var"></span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="rectangle"></a><span class="subh">Rectangle</span><br>
+					Draw a rectangle from the centre with sides of <b>:</b><span class="var">Wide</span> wide and <b>:</b><span class="var">High</span> high.<br>
+					Subtract PenWidth from <b>:</b><span class="var">Wide</span> and <b>:</b><span class="var">High</span> for a rectangle 
+					of exact size.<br>
+					<span class="fs10">Used in <a href="../../prog/coding/chequer.html">Chequer</a>, <a href="../../prog/coding/rgbs.html">Swatches</a>, <a href="../../prog/illusion/white.html">White's 
+					Illusion</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Rectangle.lbi" --><p><span class="toenl"><a href="proshape.html#rectangle">To <span class="pro">Rectangle</span> :<span class="var">Wide</span> :<span class="var">High</span></a></span><br>
+	&nbsp; <span class="com"># rectangle (wide x high) drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">High</span>/2 Right 90 Back <b>:</b><span class="var">Wide</span>/2 PenDown<br>
+	&nbsp; Repeat 2 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Wide</span> Left 90 Forward <b>:</b><span class="var">High</span> Left 90]<br>
+	&nbsp; PenUp Forward<strong> :</strong><span class="var">Wide</span>/2 Left 90 Forward<strong> :</strong><span class="var">High</span>/2 &nbsp; &nbsp; <span class="com"># r2c</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="rhombus" id="rhombus"></a><span class="subh">Rhombus</span><br>
+					Draw a rhombus from the centre with width <b>:</b><span class="var">Size</span>.<br>
+					Subtract PenWidth from <b>:</b><span class="var">Size</span>for a rhombus of 
+					exact size.<br>
+					Uses an optional variable <b>:</b><span class="var">P</span> of 1. Use a value of minus 1 for mirror image.<br>
+					<span class="fs10">Used in <a href="../../prog/grid/tile_p.html">TilePattern</a></span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Rhombus.lbi" --><p><span class="toenl"><a href="proshape.html#rhombus">To <span class="pro">Rhombus</span> :<span class="var">Size</span><span class="var"></span> [<b>:</b><span class="var">P</span> 1]</a></span><br>
+	&nbsp; <span class="com"># rhombus shape drawn from centre (tp)</span><br>
+	&nbsp; <span class="com"># default parity of 1, use minus 1 for mirror image</span><br>
+	&nbsp; Back <b>:</b><span class="var">Size</span>/4 Right <b>:</b><span class="var">P</span>*63.4 Back <b>:</b><span class="var">Size</span>/1.79 PenDown<br>
+	&nbsp; Repeat 2 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/0.894 Left <b>:</b><span class="var">P</span>*63.4 Forward <b>:</b><span class="var">Size</span>/2 Left <b>:</b><span class="var">P</span>*116.6]<br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Size</span>/1.79 Left <b>:</b><span class="var">P</span>*63.4 Forward <b>:</b><span class="var">Size</span>/4 &nbsp; &nbsp; <span class="com"># r2c</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="rat"></a><span class="subh">Right Angled Triangle</span><br>
+					Draw a RAT from the centre with width <b>:</b><span class="var">Size</span>.<br>
+					<span class="fs10">Used in <a href="../../prog/grid/tile_p.html">TilePattern</a></span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_RAT.lbi" -->
+<p><span class="toenl"><a href="proshape.html#rat">To <span class="pro">RightAngTri</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># right angled triangle drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">Size</span>/4 Right 45<br>
+	&nbsp; PenDown Forward 1.414*<b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; Left 135 Forward <b>:</b><span class="var">Size</span><br>
+	&nbsp; Left 135 Forward 1.414*<b>:</b><span class="var">Size</span>/2 PenUp<br>
+	&nbsp; Left 135 Forward <b>:</b><span class="var">Size</span>/4 &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="sanilon"></a><span class="subh">Salinon</span><br>
+					Uses <a href="proarc.html#rarc">rArc</a> procedure.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Salinon</span> :<span class="var">Size</span></span><br>
+						&nbsp; <span class="com"># salinon shape drawn from centre (tp)</span><br>
+						&nbsp; <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/2 <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/6<br>
+						&nbsp; Forward <b>:</b><span class="var">Size</span>/3 <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/6<br>
+						&nbsp; Forward <b>:</b><span class="var">Size</span>/1.5 Left 180 <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/6<br>
+						&nbsp; Left 180 Forward <b>:</b><span class="var">Size</span>/3 &nbsp; 
+						&nbsp; <span class="com"># return to centre</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="sector" id="sector"></a><span class="subh">Sector</span><br>
+					Inner and outer radius (Rad1 and Rad2) can be in either order. If either is zero, then a 'slice of pie' shape is drawn.<br>
+					Uses <a href="proarc.html#arch">Arch</a> procedure.<br>
+					<span class="fs10">Used in <a href="../../prog/art/eye.html">Eye</a>.</span><br>
+				</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Sector.lbi" --><p><span class="toenl"><a href="proshape.html#sector">To <span class="pro">Sector</span> :<span class="var">Angle</span> :<span class="var">Rad1</span> :<span class="var">Rad2</span></a></span><br>
+	&nbsp; <span class="com"># sector shape drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Offset</span> (<b>:</b><span class="var">Rad1</span>+<b>:</b><span class="var">Rad2</span>) /2 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+	&nbsp; <span class="pro">Arch</span> <b>:</b><span class="var">Angle</span> <b>:</b><span class="var">Rad1</span><br>
+	&nbsp; <span class="pro">Arch</span> <b>:</b><span class="var">Angle</span> <b>:</b><span class="var">Rad2</span> Left <b>:</b><span class="var">Angle</span>/2<br>
+	&nbsp; Forward <b>:</b><span class="var">Rad1</span> PenDown Forward (<b>:</b><span class="var">Rad2</span>-<b>:</b><span class="var">Rad1</span>)<br>
+	&nbsp; PenUp Back <b>:</b><span class="var">Rad2</span> Right <b>:</b><span class="var">Angle</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Rad1</span> PenDown Forward (<b>:</b><span class="var">Rad2</span>-<b>:</b><span class="var">Rad1</span>)<br>
+	&nbsp; PenUp Back <b>:</b><span class="var">Rad2</span> Left <b>:</b><span class="var">Angle</span>/2 &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="square"></a><span class="subh">Square</span><br>
+					Draw a square from the centre with side length <b>:</b><span class="var">Side</span>.<br>
+					Subtract PenWidth from <b>:</b><span class="var">Side</span> for a square of exact size.<br>
+					<span class="fs10">Used in <a href="../../prog/art/cloverart.html">CloverArt</a>, <a href="../../prog/art/cond.html">Condensation</a>, <a href="../../prog/demo/chessboard.html">Chessboard</a>, <a href="../../prog/grid/gridart.html">GridArt</a>, <a href="../../prog/illusion/assim.html">Assimilation</a>, <a href="../../prog/illusion/bulge.html">Bulge</a>, <a href="../../prog/illusion/cafewall.html">CafeWall</a>, <a href="../../prog/illusion/grid.html">Grid</a>, <a href="../../prog/illusion/hermann.html">Hermann</a>, <a href="../../prog/illusion/intertwine.html">Intertwine</a>, <a href="../../prog/illusion/marbles.html">Marbles</a>, <a href="../../prog/illusion/orb.html">Orbinson</a>, <a href="../../prog/puzzle/ktour.html">KnightsTour</a>, <a href="../../prog/puzzle/partridge.html">Partridge</a>, <a href="../../prog/recur/edge.html">Edge</a>, <a href="../../prog/recur/spinningsqrs.html">SpinningSquares</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Square.lbi" --><p><span class="toenl"><a href="proshape.html#square">To <span class="pro">Square</span> :<span class="var">Side</span></a></span><br>
+	&nbsp; <span class="com"># square (side x side) drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">Side</span>/2 Right 90 Back <b>:</b><span class="var">Side</span>/2 PenDown<br>
+	&nbsp; Repeat 4 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Side</span> Left 90]<br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Side</span>/2 Left 90 Forward <b>:</b><span class="var">Side</span>/2 &nbsp; &nbsp; <span class="com"># r2c</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="star"></a><span class="subh">Star</span><br>
+					Draw a five pointed star from the centre with height <b>:</b><span class="var">Size</span>.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Star.lbi" --><p><span class="toenl"><a href="file:///Macintosh HD/Users/guy/My Sites/ipt/info/proshape.html#star">To <span class="pro">Star</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># 5 pointed star shape drawn from centre (tp)</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span>/2 Right 162 PenDown<br>
+	&nbsp; Repeat 5 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/2.76 Left 72 Forward <b>:</b><span class="var">Size</span>/2.76 Right 144]<br>
+	&nbsp; PenUp Left 162 Back <b>:</b><span class="var">Size</span>/2 &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="stars"></a><span class="subh">Stars</span><br>
+					See <a href="../../prog/demo/stars.html">Star Shapes</a>.</p>
+				<p><a name="triq"></a><span class="subh">Triquetra</span><br>
+					Uses <a href="proarc.html#rarc">rArc</a> procedure.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Triquetra</span> :<span class="var">Size</span></span><br>
+						&nbsp; <span class="com"># triquetra shape drawn from centre (tp)</span><br>
+						&nbsp; LocalMake &quot;<span class="var">Step</span> <b>:</b><span class="var">Size</span>/2 *Tan 30<br>
+						&nbsp; Repeat 3 [<br>
+						&nbsp; &nbsp; Back <b>:</b><span class="var">Step</span><br>
+						&nbsp; &nbsp; Left 90 <span class="pro">rArc</span> 60 <b>:</b><span class="var">Size</span>/2<br>
+						&nbsp; &nbsp; Right 60 <span class="pro">rArc</span> 60 <b>:</b><span class="var">Size</span>/2<br>
+						&nbsp; &nbsp; Left 90 Forward <b>:</b><span class="var">Step</span> Left 120]<span class="var"></span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="yin"></a><span class="subh">Yin</span><br>
+					Uses <a href="proarc.html#rarc">rArc</a> procedure.<br>
+					Uses an optional  argument <span class="toen">:<span class="var">Parity</span></span> of 1. Use a value of <strong>Minus 1</strong> for mirror image. eg <strong>(<span class="pro">Yin</span> <span class="toen">:<span class="var">Size</span></span> Minus 1)</strong> -in brackets. Instead of <strong><span class="pro">Yin</span> &nbsp;<span class="toen">:<span class="var">Size</span></span></strong> for normal shape.<br>
+					<span class="fs10">Used in <a href="../../prog/recur/yinyang.html">Yin Yang</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Yin.lbi" --><p><span class="toenl"><a href="proshape.html#yin">To <span class="pro">Yin</span> :<span class="var">Size</span> [<b>:</b><span class="var">Parity</span> 1]</a></span><br>
+	&nbsp; <span class="com"># yin shape drawn from centre (tp)</span><br>
+	&nbsp; <span class="com"># default parity of 1, use minus 1 for mirror image</span><br>
+	&nbsp; Make &quot;<span class="var">Offset</span> <b>:</b><span class="var">Size</span>/4 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+	&nbsp; <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/2 Back <b>:</b><span class="var">Parity </span>*<b>:</b><span class="var">Size</span>/4<span class="pro"></span><br>
+	&nbsp; <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/4 Back <b>:</b><span class="var">Parity </span>*<b>:</b><span class="var">Size</span>/2<span class="pro"></span><br>
+	&nbsp; <span class="pro">rArc</span> 180 <b>:</b><span class="var">Size</span>/4 Back <b>:</b><span class="var">Parity </span>*<b>:</b><span class="var">Size</span>/4 Left 180<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		
+		<div id="leco">
+			<p class="contents"><a href="../../prog/top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuInfo.lbi" --><ul>
+	<li><a href="books.html"> 
+		<script type="text/javascript"> blob("Books");</script> Books</a></li>
+	<li><a href="bookslogo.html"> 
+		<script type="text/javascript"> blob("Books_Logo");</script> &nbsp; &nbsp; logo</a></li>
+	<li><a href="booksfractals.html"> 
+		<script type="text/javascript"> blob("Books_Fractals");</script> &nbsp; &nbsp; fractals</a></li>
+	<li><a href="booksgrap.html"> 
+		<script type="text/javascript"> blob("Books_Graphics");</script> &nbsp; &nbsp; graphics</a></li>
+	<li><a href="booksmath.html"> 
+		<script type="text/javascript"> blob("Books_Maths");</script> &nbsp; &nbsp; maths</a></li>
+	<li><a href="bookslife.html"> 
+		<script type="text/javascript"> blob("Books_Life");</script> &nbsp; &nbsp; life</a></li>
+	<li><a href="bookspuzz.html"> 
+		<script type="text/javascript"> blob("Books_Puzzle");</script> &nbsp; &nbsp; puzzles</a></li>
+	<li><a href="booksmathgen.html"> 
+		<script type="text/javascript"> blob("Books_MathsGeneral");</script> &nbsp; &nbsp; mathsgen</a></li>
+	<li><a href="colorsalt.html"> 
+		<script type="text/javascript"> blob("Colors")</script> Colors</a></li>
+	<li><a href="genart.html"> 
+		<script type="text/javascript"> blob("Generative Art")</script> Generative</a></li>
+	<li><a href="glossary.html"> 
+		<script type="text/javascript"> blob("Glossary")</script> Glossary</a></li>
+	<li><a href="prolib.html"> 
+		<script type="text/javascript"> blob("Procedures")</script> Procedures</a></li>
+	<li><a href="proarc.html"> 
+		<script type="text/javascript"> blob("Procedures_Arc");</script> &nbsp; &nbsp; arc</a></li>
+	<li><a href="procol.html"> 
+		<script type="text/javascript"> blob("Procedures_Color");</script> &nbsp; &nbsp; color</a></li>
+	<li><a href="prolist.html"> 
+		<script type="text/javascript"> blob("Procedures_List");</script> &nbsp; &nbsp; list</a></li>
+	<li><a href="promath.html"> 
+		<script type="text/javascript"> blob("Procedures_Math");</script> &nbsp; &nbsp; math</a></li>
+	<li><a href="prorecur.html"> 
+		<script type="text/javascript"> blob("Procedures_Recursive");</script> &nbsp; &nbsp; recursive</a></li>
+	<li><a href="proshape.html"> 
+		<script type="text/javascript"> blob("Procedures_Shape");</script> &nbsp; &nbsp; shape</a></li>
+	<li><a href="turts.html"> 
+		<script type="text/javascript"> blob("Turtles")</script> Turtles</a></li>
+	<li><a href="tuts.html"> 
+		<script type="text/javascript"> blob("Tutorials")</script> Tutorial</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall12/shapes.html"><img src="../../art/100g10/h_shoe.gif" alt="xlogo" width="100" height="100"></a><br>
+				Shapes</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/annulus.gif" alt="annulus" width="64" height="64"><br>
+				Annulus</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/bean.gif" alt="bean" width="64" height="64"><br>
+				Bean</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/burst.gif" alt="burst" width="64" height="64"><br>
+				Burst</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/button.gif" alt="button" width="64" height="64"><br>
+				Button</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/cron.gif" alt="chevron" width="64" height="64"><br>
+				Chevron</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall12/shap_cl.html"><img src="../../art/img100/shapes/clleaf.gif" alt="clover leaf" width="64" height="64"></a><br>
+				Clover</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/cross.gif" alt="cross" width="64" height="64"><br>
+				Cross</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall12/shap_eg.html"><img src="../../art/img100/shapes/egg.gif" alt="egg" width="64" height="64"></a><br>
+				Egg</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall12/shap_he.html"><img src="../../art/img100/shapes/heart.gif" alt="heart" width="64" height="64"></a><br>
+				Heart</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall12/shapes.html"><img src="../../art/img100/shapes/hshoe.gif" alt="horseshoe" width="64" height="64"></a><br>
+				Hoseshoe</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/kite.gif" alt="kite" width="64" height="64"><br>
+				Kite</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall12/shap_le.html"><img src="../../art/img100/shapes/lens.gif" alt="lens" width="64" height="64"></a><br>
+				Lens</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><a href="../../prog/demo/lens.html"><img src="../../art/img100/shapes/lenses.gif" alt="lenses" width="64" height="64"></a><br>
+				Lenses</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/lune.gif" alt="lune" width="64" height="64"><br>
+				Lune</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/occitan.gif" alt="occitan" width="64" height="64"><br>
+				Occitan</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall12/shap_ov.html"><img src="../../art/img100/shapes/oval.gif" alt="oval" width="64" height="64"></a><br>
+				Oval</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/pgram.gif" alt="parellogram" width="64" height="64"><br>
+				Parallelogram<br>
+				Parity: 1</p>
+			<p><img src="../../art/img100/shapes/pgramp.gif" alt="parellogram" width="64" height="64"><br>
+				Parallelogram<br>
+				Parity: -1</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/pebble.gif" alt="pebble" width="64" height="64"><br>
+				Pebble</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><a href="../../prog/demo/polygon.html"><img src="../../art/img100/shapes/polys.gif" alt="polygons" width="64" height="64"></a><br>
+				Polygons</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall12/shap_pr.html"><img src="../../art/img100/shapes/prop.gif" alt="propeller" width="64" height="64"></a><br>
+				Propeller</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall12/shap_qa.html"><img src="../../art/img100/shapes/quad.gif" alt="quad" width="64" height="64"></a><br>
+				Quad</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/quatquetra.gif" alt="quatquetra" width="64" height="64"><br>
+				Quatquetra</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/rectangle.gif" alt="rectangle" width="64" height="64"><br>
+				Rectangle</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/rhombus.gif" alt="rhombus" width="64" height="64"><br>
+				Rhombus<br>
+				Parity: 1</p>
+			<p><img src="../../art/img100/shapes/rhombusp.gif" alt="rhombus" width="64" height="64"><br>
+				Rhombus<br>
+				Parity: -1</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/rat.gif" alt="right ang tri" width="64" height="64"><br>
+				Right Angled<br>
+				Triangle (RAT)</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/salinon.gif" alt="salinon" width="64" height="64"><br>
+				Salinon</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/sector.gif" alt="sector" width="64" height="64"><br>
+				Sector</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/square.gif" alt="square" width="64" height="64"><br>
+				Square</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/star.gif" alt="star" width="64" height="64"><br>
+				Star</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><a href="../../prog/demo/stars.html"><img src="../../art/img100/shapes/stars.gif" alt="star" width="64" height="64"></a><br>
+				Stars</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/triquetra.gif" alt="triquetra" width="64" height="64"><br>
+				Triquetra</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/yin.gif" alt="yin" width="64" height="64"><br>
+				Yin<br>
+				Parity: 1</p>
+			<p><img src="../../art/img100/shapes/yinp.gif" alt="yin" width="64" height="64"><br>
+				Yin<br>
+				Parity: -1</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<!-- #EndEditable -->
+			<p>&nbsp;</p><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

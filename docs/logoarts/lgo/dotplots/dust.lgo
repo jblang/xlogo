@@ -1,0 +1,40 @@
+# Main Command: Go
+# Dust by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to dust
+  Home Right Random 360 Forward :Max Make "Col 0
+    While [:Max < 182] [ 
+      While [:Col = 0] [
+      SetPC Black Dot Pos  # erase previous dot
+      SetH Towards [ 0 0 ]
+      Left 30 Right Random 420 Forward 1
+      Make "Col Vicinity
+      SetPC Yellow Dot Pos]
+    Make "MaxNew 2 + Distance [ 0 0 ]
+  If :MaxNew > :Max [ Make "Max :MaxNew] 
+  Dust ]
+end
+
+to vicinity
+  # check occupation of surrounding pixels
+  # return '1' if neighbouring dust is present
+  For [I -1 1] [
+    For [J -1 1] [
+    Make "R Item 1 FindColor List :I+X :J+Y 
+    If :R = 255 [Output 1] ] ]
+  Output 0
+end
+
+to go
+  New SetPC Yellow
+  Dot Pos  # draw a seed dust speck
+  Make "Max 4
+  Dust
+end

@@ -1,0 +1,311 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Spiral | Plastic Number</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Plastic Number</h2>
+			<p>- 1.3247</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g8/plastic32.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>This is a spiral of equalateral triangles, increasing in size by approx 1.3.<br>
+					A logarithmic spiral can be drawn through their corners. Here, the spiral 
+					is approximated by a 60 degree arc in each triangle.</p>
+				<p>The centre of each triangle is labelled with the length of it's side.<br>
+					Also, three lists are updated in turn with triangle corner coordinates, allowing three diagonals to be automatically drawn.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span> :<span class="var">N</span></span><br>
+						&nbsp; Make &quot;<span class="var">Parity</span> 0<br>
+						&nbsp; Repeat <b>:</b><span class="var">N</span> [<br>
+						&nbsp; &nbsp; Make Word &quot;Diag RepCount-1 List [0 0] [0 0] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Section</span> :<span class="var">Side</span></span><br>
+						&nbsp; <span class="com"># spiral of triangles</span><br>
+						&nbsp; If <b>:</b><span class="var">Side</span> &gt; 400 [Stop] 
+						&nbsp; &nbsp; <span class="com"># stop when side too long</span><br>
+						&nbsp; SetPC Green Repeat 2 [Forward <b>:</b><span class="var">Side</span> Right 120]<br>
+						&nbsp; SetPC Red <span class="pro">rArc</span> 60 <b>:</b><span class="var">Side</span> Left 60 &nbsp; &nbsp; <span class="com"># draw arc</span><br>
+						&nbsp; SetPC Green Repeat 2 [Forward <b>:</b><span class="var">Side</span> Right 120]<br>
+						&nbsp; <span class="pro">AddDiag</span> 3<br>
+						&nbsp; If <b>:</b><span class="var">Side</span> &gt; 30 [<span class="pro">AddInfo</span> 3 Integer <b>:</b><span class="var">Side</span>]<br>
+						&nbsp; Left 60 Wait 20<br>
+						&nbsp; Section <b>:</b><span class="var">Side</span>*1.3247 
+						&nbsp; &nbsp; <span class="com"># do again with larger side</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">AddInfo</span> :<span class="var">N</span> :<span class="var">Side</span></span><br>
+						&nbsp; <span class="com"># label size</span><br>
+						&nbsp; Make &quot;<span class="var">R</span> (<b>:</b><span class="var">Side</span>/2)*(1/(Sin (180/<b>:</b><span class="var">N</span>)) ) &nbsp; &nbsp; <span class="com"># Distance to polygon center</span><br>
+						&nbsp; Right 90-(180/<b>:</b><span class="var">N</span>) PenUp Forward <b>:</b><span class="var">R</span><br>
+						&nbsp; Make &quot;<span class="var">myH</span> Heading<br>
+						&nbsp; <span class="com"># Make &quot;Blue (:N * :Side) / 6</span> <span class="com">SetPC (List 0 0 :Blue) Fill SetPC White</span><br>
+						&nbsp; SetH 0 SetFontJustify [1 1] SetPC White Label <b>:</b><span class="var">Side</span><br>
+						&nbsp; SetH <b>:</b><span class="var">myH</span> Back <b>:</b><span class="var">R</span> Left 90-(180/<b>:</b><span class="var">N</span>) PenDown<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">AddDiag</span> :<span class="var">N</span></span><br>
+						&nbsp; <span class="com"># Add current turtle position to next diagonal list</span><br>
+						&nbsp; Make &quot;<span class="var">Name</span> Word &quot;Diag <b>:</b><span class="var">Parity</span><br>
+						&nbsp; Make <b>:</b><span class="var">Name</span> LPut Pos ButFirst Thing <b>:</b><span class="var">Name</span><br>
+						&nbsp; Make &quot;<span class="var">Parity</span> Mod <b>:</b><span class="var">Parity</span>+1 <b>:</b><span class="var">N</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Diagonals</span> :<span class="var">N</span></span><br>
+						&nbsp; <span class="com"># Draw diagonals 1 to N</span><br>
+						&nbsp; SetPC Blue <span class="pro"></span>Repeat <b>:</b><span class="var">N</span> [<br>
+						&nbsp; &nbsp; PenUp SetPos First Thing Word &quot;Diag RepCount-1<br>
+						&nbsp; &nbsp; PenDown SetPos Last Thing Word &quot;Diag RepCount-1 ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Display</span> :<span class="var">Title</span></span><br>
+						&nbsp; PenUp SetPC White SetH 0<br>
+						&nbsp; SetPos [-184 180] Label <b>:</b><span class="var">Title</span><br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_rArc.lbi" --><p><span class="toenl"><a href="../../ipt/info/proarc.html#rarc">To <span class="pro">rArc</span> :<span class="var">Angle</span> :<span class="var">Radius</span></a></span><br>
+	&nbsp; <span class="com"># clockwise arc drawn relative to turtle heading</span><br>
+	&nbsp; Arc <b>:</b><span class="var">Radius</span> Heading <b>:</b><span class="var">Angle</span>+Heading Right <b>:</b><span class="var">Angle</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New Init</span> 3<br>
+						&nbsp; <span class="pro">Display</span> [Plastic Number 1.3247]<br>
+						&nbsp; SetPos [78 -16] Left 90 PenDown<br>
+						&nbsp; <span class="pro">Section</span> 1.2 &nbsp; &nbsp; <span class="com"># begin with triangle of side 1.2</span><br>
+						&nbsp; <span class="pro">Diagonals</span> 3 Wait 20<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/spiral/plastic_number.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/spiral/plastic_number.lgo">File</a></li>
+						<li><a href="../../pict/gall8/plastic.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>Squares use the golden ratio of 1.618. Thier side lengths form a <a href="../../ipt/info/prorecur.html">Fibonacci</a> series. Modify the Section and Go procedures by pasting in the following code.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Section</span> :<span class="var">Side</span></span><br>
+						&nbsp; <span class="com"># spiral of squares</span><br>
+						&nbsp; If <b>:</b><span class="var">Side</span> &gt; 400 [Stop] &nbsp; &nbsp; <span class="com"># stop when side too long</span><br>
+						&nbsp; SetPC Green Repeat 3 [Forward <b>:</b><span class="var">Side</span> Right 90]<br>
+						&nbsp; SetPC Red <span class="pro">rArc</span> 90 <b>:</b><span class="var">Side</span> Left 90 &nbsp; &nbsp; <span class="com"># draw arc</span><br>
+						&nbsp; SetPC Green Repeat 2 [Forward <b>:</b><span class="var">Side</span> Right 90]<br>
+						&nbsp; <span class="pro">AddDiag</span> 2<br>
+						&nbsp; SetPC Green Repeat 1 [Forward <b>:</b><span class="var">Side</span> Right 90]<br>
+						&nbsp; If <b>:</b><span class="var">Side</span> &gt; 30 [<span class="pro">AddInfo</span> 4 Integer <b>:</b><span class="var">Side</span>]<br>
+						&nbsp; Left 90 Wait 20<br>
+						&nbsp; Section <b>:</b><span class="var">Side</span>*1.618 &nbsp; &nbsp; <span class="com"># do again with larger side</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New Init</span> 2<br>
+						&nbsp; <span class="pro">Display</span> [Plastic Number 1.618]<br>
+						&nbsp; SetPos [86 -20] PenDown<br>
+						&nbsp; <span class="pro">Section</span> 1.2 &nbsp; &nbsp; <span class="com"># begin with triangle of side 1.2</span><br>
+						&nbsp; <span class="pro">Diagonals</span> 2 Wait 20<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<!--<li><a href="../../lgo/anim/chaos.jnlp">On-Line</a></li>--> 
+						<!--<li><a href="#">File</a></li>-->
+						
+						<li><a href="../../pict/gall8/plasgold.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>Spiral of Hexagons.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Section</span> :<span class="var">Side</span></span><br>
+						&nbsp; <span class="com"># spiral of hexagons</span><br>
+						&nbsp; If <b>:</b><span class="var">Side</span> &gt; 130 [Stop] &nbsp; &nbsp; <span class="com"># stop when side too long</span><br>
+						&nbsp; SetPC Green Repeat 4 [Forward <b>:</b><span class="var">Side</span> Right 60]<br>
+						&nbsp; Forward <b>:</b><span class="var">Side</span>/2 Right 40<br>
+						&nbsp; SetPC Red <span class="pro">rArc</span> 100 1.32*<b>:</b><span class="var">Side</span> Left 100 &nbsp; &nbsp; <span class="com"># draw arc</span><br>
+						&nbsp; SetPC Green Left 40 Forward <b>:</b><span class="var">Side</span>/2 Right 60<br>
+						&nbsp; Repeat 4 [Forward <b>:</b><span class="var">Side</span> Right 60]<br>
+						&nbsp; <span class="pro">AddDiag</span> 3<br>
+						&nbsp; If <b>:</b><span class="var">Side</span> &gt; 14 [<span class="pro">AddInfo</span> 6 Integer <b>:</b><span class="var">Side</span>]<br>
+						&nbsp; Left 120 Wait 20<br>
+						&nbsp; Section <b>:</b><span class="var">Side</span>*1.2112 &nbsp; &nbsp; <span class="com"># do again with larger side</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New Init</span> 3<br>
+						&nbsp; <span class="pro">Display</span> [Plastic Hex 1.2112]<br>
+						&nbsp; SetPos [54 -12] PenDown<br>
+						&nbsp; <span class="pro">Section</span> 1.2 &nbsp; &nbsp; <span class="com"># begin with triangle of side 1.2</span><br>
+						&nbsp; <span class="pro">Diagonals</span> 3 Wait 20<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<!--<li><a href="../../lgo/anim/chaos.jnlp">On-Line</a></li>--> 
+						<!--<li><a href="#">File</a></li>-->
+						
+						<li><a href="../../pict/gall8/plashex.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>Spiral of Octagons.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Section</span> :<span class="var">Side</span></span><br>
+						&nbsp; <span class="com"># spiral of octagons</span><br>
+						&nbsp; If <b>:</b><span class="var">Side</span> &gt; 70 [Stop] &nbsp; &nbsp; <span class="com"># stop when side too long</span><br>
+						&nbsp; SetPC Green Repeat 6 [Forward <b>:</b><span class="var">Side</span> Right 45]<br>
+						&nbsp; SetPC Red Right 22 <span class="pro">rArc</span> 90 1.84*<b>:</b><span class="var">Side</span> Left 112 &nbsp; &nbsp; <span class="com"># draw arc</span><br>
+						&nbsp; SetPC Green Repeat 6 [Forward <b>:</b><span class="var">Side</span> Right 45]<br>
+						&nbsp; <span class="pro">AddDiag</span> 4<br>
+						&nbsp; If <b>:</b><span class="var">Side</span> &gt; 8 [<span class="pro">AddInfo</span> 8 Integer <b>:</b><span class="var">Side</span>]<br>
+						&nbsp; Left 135 Wait 20<br>
+						&nbsp; Section <b>:</b><span class="var">Side</span>*1.111 &nbsp; &nbsp; <span class="com"># do again with larger side</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New Init</span> 4<br>
+						&nbsp; <span class="pro">Display</span> [Plastic Octal 1.111]<br>
+						&nbsp; SetPos [42 -8] Right 90 PenDown<br>
+						&nbsp; <span class="pro">Section</span> 1.2 &nbsp; &nbsp; <span class="com"># begin with triangle of side 1.2</span><br>
+						&nbsp; <span class="pro">Diagonals</span> 4 Wait 20<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<!--<li><a href="../../lgo/anim/chaos.jnlp">On-Line</a></li>--> 
+						<!--<li><a href="#">File</a></li>-->
+						
+						<li><a href="../../pict/gall8/plasoct.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall8/plastic.html"><img src="../../art/100g8/plastic.gif" alt="Plastic Number" width="100" height="100"></a><br>
+				Plastic Number</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall8/plasgold.html"><img src="../../art/100g8/golden.gif" alt="Golden Number" width="100" height="100"></a><br>
+				Golden Number</p>
+			<p class="book">Book Info<br>
+				<a href="../../ipt/info/booksmath.html"><img src="../../art/books/cmc.jpg" alt="book cover" width="100" height="153"></a><br>
+				Pages 100-104</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

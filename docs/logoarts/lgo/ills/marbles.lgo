@@ -1,0 +1,50 @@
+# Main Command: Go 10
+# Marbles by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To GridSq :Order :Side
+  # draw tile at each column x row position
+  LocalMake "Offset (1+:Order)/2
+  For (List "Col 1 :Order) [
+    For (List "Row 1 :Order) [
+      SetXY :Side*(:Col-:Offset) :Side*(:Row-:Offset)
+      Tile :Col :Row :Side] ]
+End
+
+To Tile :Col :Row :Side
+  If Even (:Col+:Row) [Make "Hue 0 SetH 0] [Make "Hue 7 SetH 90]
+  SetPC Blue
+  Forward :Side/4 Right 90 Back :Side/4 Square (:Side/2)-1 Fill
+  Forward :Side/2 Left 90 Back :Side/2 Square (:Side/2)-1 Fill
+  Forward :Side/4 Right 90 Back :Side/4     # return to centre
+  SetPC :Hue Circle (:Side/2)-1 FillZone
+  SetPC Abs (:Hue-7) Circle (:Side/2)-1 Wait 2
+End
+
+To Square :Side
+  # square (side x side) drawn from centre (tp)
+  Back :Side/2 Right 90 Back :Side/2 PenDown
+  Repeat 4 [
+    Forward :Side Left 90]
+  PenUp Forward :Side/2 Left 90 Forward :Side/2     # r2c
+End
+
+To Even :Num
+  # return 'true' if Num even, else return 'false'
+  If (Mod :Num 2)=0 [Output "True] [Output "False]
+End
+
+To Go :Order
+  New SetSC White
+  Make "Side Int (370/:Order)
+  Make "Board :Order*:Side    # whole number of squares
+  SetPC Yellow Square :Board Fill
+  SetPC Black Square :Board
+  GridSq :Order :Side
+End

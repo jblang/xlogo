@@ -1,0 +1,66 @@
+# Procedure Library by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To GridSq :Order :Side
+  # draw tile at each column x row position
+  LocalMake "Offset (1+:Order)/2
+  For (List "Col 1 :Order) [
+    For (List "Row 1 :Order) [
+      SetXY :Side*(:Col-:Offset) :Side*(:Row-:Offset)
+      Tile :Col :Row :Side] ]
+End
+
+# Random GridSq
+
+To GridSq :Order :Side
+  # draw tile at each column x row position
+  LocalMake "Offset (1+:Order)/2
+  LocalMake "Ps [] LocalMake "Total :Order*:Order
+  Repeat :Total [Make "Ps LPut RepCount :Ps] 
+  Repeat :Total [
+    LocalMake "P Pick :Ps
+    LocalMake "Ps Remove :P :Ps
+    LocalMake "Col 1+Mod :P-1 :Order
+    LocalMake "Row 1+Int (:P-1)/:Order
+    SetXY :Side*(:Col-:Offset) :Side*(:Row-:Offset)
+    Tile :Col :Row :Side]
+End
+
+To GridRect :OrderH :OrderV :SqSize
+  # draw tile at each column x row grid position
+  LocalMake "OffsetH (1+ :OrderH) /2
+  LocalMake "OffsetV (1+ :OrderV) /2
+  LocalMake "SideH :SqSize /:OrderH
+  LocalMake "SideV :SqSize /:OrderV
+  For (List "Col 1 :OrderH) [
+    For (List "Row 1 :OrderV) [
+      SetXY :SideH*(:Col-:OffsetH) :SideV*(:Row-:OffsetV)
+      Tile :Col :Row :SideH :SideV] ]
+End
+
+To Jump :Side
+  # set turtle to random position & heading within square of size side
+  SetXY (Random :Side) - :Side/2 (Random :Side) - :Side/2
+  SetH Random 360
+End
+
+To rSetXY :X :Y
+  # set turtle XY position relative to current position
+  Right 90 Forward :X
+  Left 90 Forward :Y
+End
+
+To Title :Titles
+  # label upto 4 titles
+  Repeat Count :Titles [
+    SetPos [0 0] SetH 225
+    Right RepCount*90 Forward 264 SetH 0
+    If X>0 [SetFontJustify [2 1]] [SetFontJustify [0 1]] 
+    Label Item RepCount :Titles]
+End

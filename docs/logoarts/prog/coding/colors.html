@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Coding | Colors</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Colors</h2>
+			<p>- Light and Dark</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g5/swatch.gif" alt="RGB" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>This program draws a set of swatches using procedures 'Light' and 'Dark' 
+					to modify the XLogo colors; (Black Red Green Yellow Blue Magenta Cyan 
+					White Gray Orange Purple Aqua Leaf Lime and Rose).</p>
+				<p>Brown is Dark Orange and Pink is Light Magenta.</p>
+				<p>'Light Light' colors and 'Dark Dark' colors make good background and 
+					pen color with high contrast. eg. SetSC Dark Dark Blue.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">ColList</span> [Red Green Yellow Blue Magenta Cyan<br>
+						&nbsp; &nbsp; Gray Orange Purple Aqua Leaf Lime Rose]<br>
+						&nbsp; Make &quot;<span class="var">Mods</span> [ [Dark Dark] Dark [] Light [Light Light] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Swatch</span> :<span class="var">Col</span></span><br>
+						&nbsp; Right 90 PenDown Forward 32 PenUp<br>
+						&nbsp; Back 32 Left 90 Forward 27<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Display</span></span><br>
+						&nbsp; <span class="com"># write header title and color names</span><br>
+						&nbsp; SetPC White<br>
+						&nbsp; Repeat 13 [<br>
+						&nbsp; &nbsp; SetXY 140 27*RepCount -208<br>
+						&nbsp; &nbsp; Label Item RepCount <b>:</b><span class="var">ColList</span>]<br>
+						&nbsp; SetPos [-166 176]<br>
+						&nbsp; Label [Dark Dark \ \ \ Dark \ \ \ Color \ \ \ Light \ \ \ Light Light]<br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_Light.lbi" --><p><span class="toenl"><a href="../../ipt/info/procol.html#light">To <span class="pro">Light</span> :<span class="var">Hue</span></a></span><br>
+	&nbsp; <span class="com"># output rgb list midway between :hue and white</span><br>
+	&nbsp; Repeat 3 [<br>
+	&nbsp; &nbsp; Make &quot;<span class="var">Hue</span> ButFirst LPut Int (255+(First <b>:</b><span class="var">Hue</span>))/2 <b>:</b><span class="var">Hue</span>]<br>
+	&nbsp; Output <b>:</b><span class="var">Hue</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Dark.lbi" --><p><span class="toenl"><a href="../../ipt/info/procol.html#dark">To <span class="pro">Dark</span> :<span class="var">Hue</span></a></span><br>
+	&nbsp; <span class="com"># output rgb list midway between :hue and black</span><br>
+	&nbsp; Repeat 3 [<br>
+	&nbsp; &nbsp; Make &quot;<span class="var">Hue</span> ButFirst LPut Int (First <b>:</b><span class="var">Hue</span>)/2 <b>:</b><span class="var">Hue</span>]<br>
+	&nbsp; Output <b>:</b><span class="var">Hue</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Aqua.lbi" --><p><span class="toenl"><a href="../../ipt/info/procol.html#aqua">To <span class="pro">Aqua</span></a></span><br>
+	&nbsp; Output [0 128 255] &nbsp; &nbsp; <span class="com"># return aqua rgb color</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Leaf.lbi" --><p><span class="toenl"><a href="../../ipt/info/procol.html#leaf">To <span class="pro">Leaf</span></a></span><br>
+	&nbsp; Output [0 255 128] &nbsp; &nbsp; <span class="com"># return leaf rgb color</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Lime.lbi" --><p><span class="toenl"><a href="../../ipt/info/procol.html#lime">To <span class="pro">Lime</span></a></span><br>
+	&nbsp; Output [128 255 0] &nbsp; &nbsp; <span class="com"># return lime rgb color</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Rose.lbi" -->
+<p><span class="toenl"><a href="../../ipt/info/procol.html#rose">To <span class="pro">Rose</span></a></span><br>
+	&nbsp; Output [255 0 128] &nbsp; &nbsp; <span class="com"># return rose rgb color</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New</span> SetPS 0 SetPW 18 <span class="pro">Init</span> <span class="pro">Display</span><br>
+						&nbsp; Repeat 5 [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Mod</span> Item RepCount<strong> :</strong><span class="var">Mods</span><br>
+						&nbsp; &nbsp; SetPos List ((64*RepCount) -238) Minus 175<br>
+						&nbsp; &nbsp; Repeat 13 [<br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">PColor</span> Sentence <b>:</b><span class="var">Mod</span> Item RepCount <b>:</b><span class="var">ColList</span><br>
+						&nbsp; &nbsp; &nbsp; SetPC Run Sentence <b>:</b><span class="var">PColor</span> []<br>
+						&nbsp; &nbsp; &nbsp; Write <b>:</b><span class="var">PColor</span> Print List &quot;\ = PenColor<br>
+						&nbsp; &nbsp; &nbsp; Swatch <b>:</b><span class="var">PColor</span>]<br>
+						&nbsp; &nbsp; Print [] ] &nbsp; &nbsp; <span class="com"># blank line</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/coding/swatch.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/coding/swatch.lgo">File</a></li>
+						<li><a href="../../pict/gall5/swatches.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall5/swatches.html"><img src="../../art/100g5/swatch.gif" alt="Swatches" width="100" height="100"></a><br>
+				Swatches</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

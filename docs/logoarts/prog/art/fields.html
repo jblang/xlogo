@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Art | Fields</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Fields</h2>
+			<p>- stress line cracks</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g5/field.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>Imagine a field of mud or a clay tablet 
+					drying in the sun. Cracks appear at random as the mud shrinks. This 
+					program limits cracks to either horizontal or vertical. The crack 
+					however must choose the shortest distance and must not run parrallel 
+					too close to a previous crack. Longer cracks are also wider 
+					than shorter cracks.<br>
+					The result is a field of random vertical and horizontal lines. The 
+					procedure 'Colorize' fills in a few areas with color.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">DrawTile</span></span><br>
+						&nbsp; SetPos [-190 -190]<br>
+						&nbsp; PenDown Repeat 4 [Forward 380 Right 90] PenUp<br>
+						&nbsp; Home Fill<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Crack</span></span><br>
+						&nbsp; Make &quot;<span class="var">Point</span> <span class="pro">RandomPoint</span> SetPos <b>:</b><span class="var">Point</span><br>
+						&nbsp; If 0=(Item 2 FindColor Pos) [Make &quot;<span class="var">OnLine</span> <b>:</b><span class="var">OnLine</span>+1 Stop]<br>
+						&nbsp; Make &quot;<span class="var">PosList</span> <span class="pro">NESW</span><br>
+						&nbsp; Make &quot;<span class="var">DistV</span> (Item 1 <b>:</b><span class="var">PosList</span>) + (Item 3 <b>:</b><span class="var">PosList</span>)<br>
+						&nbsp; Make &quot;<span class="var">DistH</span> (Item 2 <b>:</b><span class="var">PosList</span>) + (Item 4 <b>:</b><span class="var">PosList</span>)<br>
+						&nbsp; If (<b>:</b><span class="var">DistV</span> &lt; <b>:</b><span class="var">DistH</span>) [<br>
+						&nbsp; &nbsp; If And ((Item 2 <b>:</b><span class="var">PosList</span>) &gt; 6) ((Item 4 <b>:</b><span class="var">PosList</span>) &gt; 6) [<span class="pro">LineV</span>]] [<br>
+						&nbsp; &nbsp; If And ((Item 1 <b>:</b><span class="var">PosList</span>) &gt; 6) ((Item 3 <b>:</b><span class="var">PosList</span>) &gt; 6) [<span class="pro">LineH</span>]]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">NESW</span></span><br>
+						&nbsp; <span class="com">#Return North East South and West distances</span><br>
+						&nbsp; Make &quot;<span class="var">PosList</span> []<br>
+						&nbsp; For [<span class="var">N</span> 0 3] [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Dist</span> 0<br>
+						&nbsp; &nbsp; SetPos <b>:</b><span class="var">Point</span> SetH <b>:</b><span class="var">N</span>*90<br>
+						&nbsp; &nbsp; While [255=(Item 1 FindColor Pos)] [<br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">Dist</span> <b>:</b><span class="var">Dist</span> + 1 Forward 1]<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">PosList</span> LPut <b>:</b><span class="var">Dist</span> <b>:</b><span class="var">PosList</span>]<br>
+						&nbsp; Output <b>:</b><span class="var">PosList</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">RandomPoint</span></span><br>
+						&nbsp; Output List (Random 360)-180 (Random 360)-180<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">LineH</span></span><br>
+						&nbsp; SetPos <b>:</b><span class="var">Point</span> SetH 90 Forward (Item 2 <b>:</b><span class="var">PosList</span>)-1<br>
+						&nbsp; SetPW Integer <b>:</b><span class="var">DistH</span>/32 
+						PenDown Back <b>:</b><span class="var">DistH</span>-2 PenUp<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">LineV</span></span><br>
+						&nbsp; SetPos <b>:</b><span class="var">Point</span> SetH 0 Forward (Item 1 <b>:</b><span class="var">PosList</span>)-1<br>
+						&nbsp; SetPW Integer <b>:</b><span class="var">DistV</span>/32 PenDown Back <b>:</b><span class="var">DistV</span>-2 PenUp<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Colorize</span></span><br>
+						&nbsp; Repeat 64 [<br>
+						&nbsp; &nbsp; SetPos <span class="pro">RandomPoint</span><br>
+						&nbsp; &nbsp; If 255=(Item 1 FindColor Pos) [<br>
+						&nbsp; &nbsp; &nbsp; SetPC (List (Integer 100 + Random 127) 127 0)<br>
+						&nbsp; &nbsp; Fill] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New</span> SetPC Orange <span class="pro">DrawTile</span><br>
+						&nbsp; Make &quot;<span class="var">OnLine</span> 0 SetPC Black<br>
+						&nbsp; While [<b>:</b><span class="var">OnLine</span> &lt; 64] [<span class="pro">Crack</span>]<br>
+						&nbsp; <span class="pro">Colorize</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/art/fields.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/art/fields.lgo">File</a></li>
+						<li><a href="../../pict/gall5/fields.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall5/fields.html"><img src="../../art/100g5/field.gif" alt="Fields" width="100" height="100"></a><br>
+				Fields</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

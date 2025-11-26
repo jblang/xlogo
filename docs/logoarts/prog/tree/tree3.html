@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Tree | Tree Generator</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Tree Generator</h2>
+			<p>- XLogo</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g3/tree.gif" alt="Red Vial" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>This program uses features from <a href="tree2.html">Random Trees</a> to generate a series of 'natural' looking trees. It does this by using 
+					three parameters:<br>
+					1) <strong>RandomAng</strong> This can be one of 8 values between 24 and 80 
+					degrees. It determines the angle between two branches and is the same 
+					for the whole tree.<br>
+					2) <strong>RanTreeAng</strong> This can be one of 5 values between 1/4 and 3/4 
+					of the RandomAng. It determines the angle from the end of one branch 
+					to the next drawn tree. It is different for each new tree.<br>
+					3) <strong>RanBraLen</strong> This can be one of 3 values 0.7, 0.75 or 0.8. 
+					It determines how much shorter branches in the next tree are. It is 
+					different for each new branch.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">TreeCol</span> <span class="var">:Length</span></span><br>
+						&nbsp; Make <span class="var">&quot;Green</span> Round 2.5*(100-<b>:</b><span class="var">Length</span>) &nbsp; &nbsp; <span class="com"># green depends on length</span><br>
+						&nbsp; Output ( List 255 <b>:</b><span class="var">Green</span> 0 ) &nbsp; &nbsp; <span class="com"># red set to 255 and blue to 0</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tree</span> :<span class="var">Length</span></span><br>
+						&nbsp; If <b>:</b><span class="var">Length</span>&lt; 10 [<span class="pro">Blossom</span> Stop] &nbsp; &nbsp; <span class="com"># ends recursion if branch too small</span><br>
+						&nbsp; SetPW <b>:</b><span class="var">Length</span>/9 &nbsp; &nbsp; <span class="com"># reduce pen width as branch length gets smaller</span><br>
+						&nbsp; SetPC <span class="pro">TreeCol</span> <b>:</b><span class="var">Length</span> &nbsp; &nbsp; <span class="com"># branch color depends on length</span><br>
+						&nbsp; LocalMake &quot;<span class="var">Angle</span> Pick [24 32 40 48 56 64 72]<br>
+						&nbsp; LocalMake &quot;<span class="var">TreeAngle</span> <b>:</b><span class="var">Angle</span>*Pick [0.25 0.375 0.5 0.625 0.75]<br>
+						&nbsp; Forward <b>:</b><span class="var">Length</span><br>
+						&nbsp; Left <b>:</b><span class="var">TreeAngle</span><br>
+						&nbsp; <span class="pro">Tree</span> <b>:</b><span class="var">Length</span> * Pick [0.7 0.75 0.8] Right <b>:</b><span class="var">Angle</span><br>
+						&nbsp; <span class="pro">Tree</span> <b>:</b><span class="var">Length</span> * Pick [0.7 0.75 0.8] Left <b>:</b><span class="var">Angle</span><br>
+						&nbsp; Right <b>:</b><span class="var">TreeAngle</span><br>
+						&nbsp; PenUp Back <b>:</b><span class="var">Length</span> PenDown &nbsp; &nbsp; <span class="com"># return to starting point</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Blossom</span></span><br>
+						&nbsp; Make &quot;<span class="var">myPenCol</span> PenColor Make &quot;<span class="var">myHeading</span> Heading<br>
+						&nbsp; SetPC 6 SetH 180<br>
+						&nbsp; Forward 5 Back 5 SetPC <b>:</b><span class="var">myPenCol</span> SetH<strong> :</strong><span class="var">myHeading</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; Repeat 99 [&nbsp; <span class="pro">New</span> Back 160 PenDown <span class="pro">Tree</span> 80 Wait 200]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/trees/tree_generator.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/trees/tree_generator.lgo">File</a></li>
+						<li><a href="../../pict/gall3/trees.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall3/trees.html"><img src="../../art/100g3/trees/treem2.gif" alt="Tree" width="100" height="100"></a><br>
+				Tree Generator</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

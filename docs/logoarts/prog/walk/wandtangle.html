@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Walk | Tangle Curves</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Tangle Curves</h2>
+			<p>- XLogo</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g3/tangle.gif" alt="Star" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>Tangle curves are derived from the function:<br>
+					360 * (Power <b>:</b><span class="var">I</span> 3) /<strong> :</strong><span class="var">N</span><br>
+					Try out the following code (copy and paste into the command line);</p>
+				<p>CS For [<span class="var">I</span> 0 141] [SetH (360*(Power <b>:</b><span class="var">I</span> 3)/141) Forward 16]</p>
+				<p>You'll get a tangle curve of order 141.<br>
+					For another curve, change both values of 141 in the above code to 1013.<br>
+					So why is this program so much longer ?<br>
+					Well, if you replace both values with a different number, you'll get a 
+					new curve. However, most curves will appear too large or too small, or 
+					be drawn off screen.<br>
+					Therefore, this program includes a <span class="pro">Fit2Screen</span> procedure, which calculates the line length and starting position to best 
+					fit the curve in the 400x400 window.<br>
+					You can comment out the <span class="pro">Fit2Screen</span> procedure 
+					to see its effect.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Tangle</span> :<span class="var">N</span></span><br>
+						&nbsp; Make &quot;<span class="var">LengthNew</span> 16<br>
+						&nbsp; <span class="pro">Fit2Screen</span> <b>:</b><span class="var">N</span> <b>:</b><span class="var">LengthNew</span> &nbsp; &nbsp; <span class="com"># comment out to skip curve optimisation</span><br>
+						&nbsp; Wash <span class="pro">Display</span> <b>:</b><span class="var">N</span> <b>:</b><span class="var">Xcent</span> <b>:</b><span class="var">Ycent</span> <b>:</b><span class="var">LengthNew</span><br>
+						&nbsp; SetXY <b>:</b><span class="var">Xcent</span> <b>:</b><span class="var">Ycent</span> PenDown<br>
+						&nbsp; For (List &quot;<span class="var">I</span> 0 <b>:</b><span class="var">N</span>) [<br>
+						&nbsp; &nbsp; SetPC <span class="pro">AngCol</span> <b>:</b><span class="var">I</span> <b>:</b><span class="var">N</span><br>
+						&nbsp; &nbsp; SetH <span class="pro">Function</span> <b>:</b><span class="var">I</span> <b>:</b><span class="var">N</span> Forward <b>:</b><span class="var">LengthNew</span>]<br>
+						&nbsp; PenUp<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Fit2Screen</span> :<span class="var">N</span> :<span class="var">Length</span></span><br>
+						&nbsp; Home<br>
+						&nbsp; Make &quot;<span class="var">Xmax</span> 0 Make &quot;<span class="var">Xmin</span> 0<br>
+						&nbsp; Make &quot;<span class="var">Ymax</span> 0 Make &quot;<span class="var">Ymin</span> 0<br>
+						&nbsp; For (List &quot;<span class="var">I</span> 0 <b>:</b><span class="var">N</span>) [<br>
+						&nbsp; &nbsp; SetH <span class="pro">Function</span> <b>:</b><span class="var">I</span> <b>:</b><span class="var">N</span> Forward <b>:</b><span class="var">Length</span><br>
+						&nbsp; &nbsp; If (X) &gt; <b>:</b><span class="var">Xmax</span> [Make &quot;<span class="var">Xmax</span> X]<br>
+						&nbsp; &nbsp; If (X) &lt; <b>:</b><span class="var">Xmin</span> [Make &quot;<span class="var">Xmin</span> X]<br>
+						&nbsp; &nbsp; If (Y) &gt; <b>:</b><span class="var">Ymax</span> [Make &quot;<span class="var">Ymax</span> Y]<br>
+						&nbsp; &nbsp; If (Y) &lt; <b>:</b><span class="var">Ymin</span> [Make &quot;<span class="var">Ymin</span> Y] ]<br>
+						&nbsp; Make &quot;<span class="var">Xsize</span> <b>:</b><span class="var">Xmax</span> + Abs <b>:</b><span class="var">Xmin</span><br>
+						&nbsp; Make &quot;<span class="var">Ysize</span> <b>:</b><span class="var">Ymax</span> + Abs <b>:</b><span class="var">Ymin</span><br>
+						&nbsp; If <b>:</b><span class="var">Xsize</span>=<b>:</b><span class="var">Ysize</span> | <b>:</b><span class="var">Xsize</span>&gt;<b>:</b><span class="var">Ysize</span><br>
+						&nbsp; &nbsp; [Make &quot;<span class="var">Size</span> <b>:</b><span class="var">Xsize</span>] [Make &quot;<span class="var">Size</span> <b>:</b><span class="var">Ysize</span>]<br>
+						&nbsp; Make &quot;<span class="var">Scale</span> 360/<b>:</b><span class="var">Size</span><br>
+						&nbsp; Make &quot;<span class="var">LengthNew</span> <b>:</b><span class="var">Length</span>*<b>:</b><span class="var">Scale</span><br>
+						&nbsp; If ((Abs (<b>:</b><span class="var">LengthNew</span> - <b>:</b><span class="var">Length</span>))&gt;<b>:</b><span class="var">Length</span>/10) [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Length</span> <b>:</b><span class="var">LengthNew</span> <span class="pro">Fit2Screen</span> <b>:</b><span class="var">N</span> <b>:</b><span class="var">Length</span>]<br>
+						&nbsp; Make &quot;<span class="var">Xcent</span> Minus (<b>:</b><span class="var">Xmax</span> + <b>:</b><span class="var">Xmin</span>)/2<br>
+						&nbsp; Make &quot;<span class="var">Ycent</span> Minus (<b>:</b><span class="var">Ymax</span> + <b>:</b><span class="var">Ymin</span>)/2<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Function</span> :<span class="var">I</span> :<span class="var">N</span></span><br>
+						&nbsp; Output (360*(Power <b>:</b><span class="var">I</span> <span class="red">3</span>)/<b>:</b><span class="var">N</span>)-90<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Display</span> :<span class="var">N</span> :<span class="var">Xcent</span> :<span class="var">Ycent</span> :<span class="var">LengthNew</span></span><br>
+						&nbsp; <span class="com"># write header and footer info</span><br>
+						&nbsp; SetH 0 SetPC White<br>
+						&nbsp; SetPos [-190 184] Label [Tangle Curve]<br>
+						&nbsp; SetPos [150 184] Label <b>:</b><span class="var">N</span><br>
+						&nbsp; SetPos [-190 -190] Label List Round <b>:</b><span class="var">Xcent</span> Round <b>:</b><span class="var">Ycent</span><br>
+						&nbsp; SetPos [150 -190] Label Round <b>:</b><span class="var">LengthNew</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">AngCol</span> :<span class="var">I</span> :<span class="var">N</span></span><br>
+						&nbsp; Make &quot;<span class="var">Green</span> Round 255*(Sin 180*<b>:</b><span class="var">I</span>/<b>:</b><span class="var">N</span>)<br>
+						&nbsp; Output ( List 255 <b>:</b><span class="var">Green</span> 0 )<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="com"># draw random tangle curves</span><br>
+						&nbsp; <span class="pro">New</span> Forever [<span class="pro">Tangle</span> Random 2048 Wait 88]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/walk/tangle_curves.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/walk/tangle_curves.lgo">File</a></li>
+						<li><a href="../../pict/gall3/tangles.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>Add the procedure <strong>GoC</strong> to draw tangle curves from order 
+					1 onwards. Or alter to spicify your own range.<br>
+					Add the procedure <strong>GoX</strong> followed by the order number to 
+					draw a specific tangle curve. Why not try out the curve for your year 
+					of birth?</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">GoC</span></span><br>
+						&nbsp; <span class="com"># draw tangle curves of order 1 to 2048</span><br>
+						&nbsp; <span class="pro">New</span> For [<span class="var">N</span> 1 2048] [<span class="pro">Tangle <b>:</b><span class="var">N</span></span> Wait 100]<br>
+						<strong>End</strong></p>
+					<p><span class="toen">To <span class="pro">GoX</span> :<span class="var">N</span></span><br>
+						&nbsp; <span class="com"># draw a specific tangle curve of order N</span><br>
+						&nbsp; <span class="pro">New</span> <span class="pro">Tangle</span> <b>:</b><span class="var">N</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p>In the function procedure, try changing the power value from <span class="red">3</span> (shown in red) to <span class="red">5</span> for a whole new set of tangle 
+					curves.<br>
+					Note that a value of 1 will create closed polygons of <strong>N</strong> sides, best seen with the <strong>GoC</strong> procedure.</p>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall3/tangles.html"><img src="../../art/100g3/tangles/1614.gif" alt="Tangle Curve" width="100" height="100"></a><br>
+				Tangle Curve</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/100g3/145_5.gif" alt="Tangle Curve" width="100" height="100"><br>
+				145<br>
+				5 fold symmetry</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/100g3/1815_3.gif" alt="Tangle Curve" width="100" height="100"><br>
+				1815 power 3</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/100g3/1815_5.gif" alt="Tangle Curve" width="100" height="100"><br>
+				1815 power 5</p>
+			<p class="book">Book Info<br>
+				<a href="../../ipt/info/booksmath.html"><img src="../../art/books/afm.jpg" alt="Another Fine Math" width="100" height="153"></a><br>
+				Pages 177-197</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

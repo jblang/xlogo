@@ -1,0 +1,24 @@
+# Main Command: Go
+# Tango by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to roam
+  Make "Angle 30 + Random 210
+  Arc :Radius Heading Heading+:Angle
+  SetH Heading + :Angle Forward :Radius Left 180 
+  Make "PenCol 8+Minus :PenCol SetPC :PenCol     # yellow/magenta
+  Wait 2
+end
+
+to go
+  New Wrap
+  Make "PenCol 2
+  Make "Radius 30 
+  Repeat 300 [Roam]
+end

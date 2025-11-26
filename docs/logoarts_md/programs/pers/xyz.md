@@ -1,0 +1,49 @@
+# XYZ Axis
+
+This draws X Y and Z axis in Red Green and Blue color. The turtle in the home position faces along the green y axis. It can be easier to start the turtle facing away from you with **Home Left 180**.  
+
+Using **Right 90 LeftRoll 90** each axis is visited in order Y X Z.
+
+```logo
+To New
+ # set default screen, pen and turtle values
+ ResetAll SetScreenSize [400 400] HideTurtle
+ SetSC Black SetPC Green SetPS 1 PenUp
+End
+To Init
+ # global values
+ GlobalMake "Order 4
+ GlobalMake "CellSize (First ScreenSize) /:Order
+ GlobalMake "OffSet ((First ScreenSize) -:CellSize) /2
+End
+To XYZ
+ # draw 6 axis as absolute positions
+ PenDown SetPW 3
+ Home SetPC Red SetPos [60 0 0] SetPos [-30 0 0]
+ Home SetPC Green SetPos [0 60 0] SetPos [0 -30 0]
+ Home SetPC Blue SetPos [0 0 60] SetPos [0 0 -30]
+ # draw 3 long axis and label
+ Home SetPW 1 Repeat 3 [
+ SetPC Item RepCount [2 1 4]
+ Back 360 PenDown
+ For [Num -4 2] [
+ Label :Num Forward 90 Wait 6]
+ Label Item RepCount [Y X Z]
+ Arrow Back 270
+ Right 90 LeftRoll 90]
+ # draw 3 arcs
+ Home Repeat 3 [
+ SetPC Item RepCount [3 5 6]
+ Arc 220 0 90 Right 90 LeftRoll 90]
+End
+To Arrow
+ # draw arrow
+ Right 20 Back 30 Forward 30
+ Left 40 Back 30 Forward 30 Right 20 PenUp
+End
+To Go
+ New Perspective CS PenUp
+ HideTurtle SetSC Black SetFS 40
+ XYZ
+End
+```

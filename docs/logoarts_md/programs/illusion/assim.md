@@ -1,0 +1,32 @@
+# Assimilation
+
+The background color looks darker behind black lines and lighter behind the white lines.
+
+```logo
+To New
+ # set default screen, pen and turtle values
+ ResetAll SetScreenSize [400 400] HideTurtle
+ SetSC Black SetPC Green SetPS 1 PenUp
+End
+To Square :Side
+ # square (side x side) drawn from centre (tp)
+ Back :Side/2 Right 90 Back :Side/2 PenDown
+ Repeat 4 [
+ Forward :Side Left 90]
+ PenUp Forward :Side/2 Left 90 Forward :Side/2 # r2c
+End
+To Go
+ New
+ SetSC [172 209 255] Wrap SetPW 3
+ SetPC White SetH 45
+ For [X 0 400 20] [
+ SetXY :X-200 Minus 200 PenDown Forward 566 PenUp]
+ Home SetPC [172 209 254] Square 120 FillZone
+ SetPC [172 209 255] Fill
+ SetPC Black SetH Minus 45
+ For [X 20 120 20] [
+ SetXY :X-60 Minus 60 PenDown Forward Sqrt (2*:X*:X) PenUp]
+ For [Y 20 120 20] [
+ SetXY 60 Minus :Y-60 PenDown Forward Sqrt (2*:Y*:Y) PenUp]
+End
+```

@@ -1,0 +1,40 @@
+# Main Command: GoX
+# Hilbert Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init :level
+  Make "Size 192/(Power 2 :Level)     # global value 
+  PenUp SetXY (:Size/2)-192 (:Size/2)-192
+  SetH 90 PenDown
+end
+
+to hilbert :level :parity
+  If :Level < 0 [Stop]
+  Left :Parity*90
+  Hilbert :Level-1 Minus :Parity
+  Forward :Size
+  Right :Parity*90
+  Hilbert :Level-1 :Parity
+  Forward :Size
+  Hilbert :Level-1 :Parity
+  Right :Parity*90
+  Forward :Size
+  Hilbert :Level-1 Minus :Parity
+  Left :Parity*90
+end
+
+to go :level
+  New Init :Level Hilbert :Level 1
+end
+
+to gox
+  New For [Level 0 4]
+  [SetPC :Level+1 SetPW 5-:Level
+  Init :Level Hilbert :Level 1 Wait 60]
+end

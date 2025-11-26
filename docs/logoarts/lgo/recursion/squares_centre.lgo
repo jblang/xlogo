@@ -1,0 +1,31 @@
+# Main Command: Go 4
+# Squares (Centre) by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to rsquare :order :side
+  If :Order < 0 [Stop]
+  Back :Side/2 Right 90 Back :Side/2
+  Repeat 4 [
+    SetPW :Order+1     # comment out for no line widths 
+    PenDown Forward :Side PenUp Left 90 Wait 1
+    RSquare :Order-1 :Side/2]     # Golden Ratio replace 2 with 1.62
+  Forward :Side/2 Left 90 Forward :Side/2
+  FillSquare     # comment out for no fills 
+end
+
+to fillsquare
+  SetPC DarkGreen Left 45 Forward 5 Fill
+  Back 10 Fill Forward 5 Right 45 SetPC Cyan
+end
+
+to go :order
+  New SetPC Cyan
+  Make "Side 192     # Replace 192 with 160 for Golden Ratio
+  RSquare :Order :Side
+end

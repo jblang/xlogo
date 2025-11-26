@@ -1,0 +1,349 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prim2.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Primitive | Color | html</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prim">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Colors</h2>
+			<p>- r g b mixing</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<img src="../../art/img32/simple.gif" alt="simple" width="32" height="32">
+	</div>
+	<!-- band-->
+	
+	<div id="con2">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" --><br>
+				<table class="gray">
+					<tr>
+						<th>Primitive</th>
+						<th>Alt</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td><strong><span class="uline">Set</span>ScreenColor</strong> [rr gg 
+							bb]<strong><br>
+							<span class="uline"> Set</span>PenColor</strong> [rr gg bb]</td>
+						<td><strong>SetSC</strong><br>
+							<strong>SetPC</strong></td>
+						<td><strong>Set</strong> (background) <strong>color</strong> of <strong>screen</strong> to [rr gg bb].<br>
+							<strong>Set color</strong> of turtle <strong>pen</strong> to [rr gg 
+							bb].</td>
+					</tr>
+					<tr>
+						<td><strong>PenPaint</strong><br>
+							<strong>PenReverse</strong><br>
+							<strong>PenErase</strong></td>
+						<td><strong>PPT</strong><br>
+							<strong>PX</strong><br>
+							<strong>PE</strong></td>
+						<td>Set pen to normal <strong>paint</strong> mode and lower pen.<br>
+							Set pen to <strong>reverse</strong> color mode and lower pen.<br>
+							Set pen to screen color and lower pen.</td>
+					</tr>
+					<tr>
+						<td><strong>FindColor</strong> [xx yy]</td>
+						<td><strong>FC</strong></td>
+						<td>Return <strong>color</strong> of pixel at point xx yy, [rr gg bb]. 
+							*</td>
+					</tr>
+				</table><!-- #BeginLibraryItem "/Library/Set.lbi" --><p class="set"> Underlined<strong> <span class="uline">Set</span></strong> can be removed from a primitive name in order to return information.<br>
+	eg. <strong>SetHeading</strong> sets the heading of the turtle. <strong>Heading</strong> returns the heading of the turtle.</p>
+<!-- #EndLibraryItem --><p>* turtle position and heading remain unchanged.</p>
+				<p>Colors are set by a list of the three primary colors of light; <span class="red">red</span>, <span class="green">green</span> and <span class="blue">blue</span>. Each 
+					color varies in intensity from 0 (min) to 255 (max).</p>
+				<p><span class="subh">Pen Colors</span><br>
+					As well as an [rr gg bb] list, pen and stage color can be set by (but 
+					not return) a name or single number.<br>
+					So, <strong>SetPC 2</strong> = <strong>SetPC Green</strong> = <strong>SetPC 
+					[0 255 0]</strong>. <br>
+					See <a href="../../pict/gall1/r_g_b.html">RGB Cols</a> and <a href="../../pict/gall5/swatches.html">Swatches (Light&amp;Dark)</a> and <a href="../../pict/gall9/rgb3.html">Swatches (RGB)</a>.</p>
+				<table class="blackbg">
+					<tr>
+						<td align="center" width="20%"><img src="../../art/img100/colors.gif" alt="Color Palettes" width="100" height="100"><br>
+							<table class="white">
+								<tr>
+									<td bgcolor="#000000"><div align="center">
+											<span class="white">0 0 0</span>
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Black 0</span></td>
+						<td align="center" width="20%"><table>
+								<tr>
+									<td bgcolor="#FF0000"><div align="center">
+											255 0 0
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Red 1</span><br>
+							<table>
+								<tr>
+									<td bgcolor="#00FF00"><div align="center">
+											0 255 0
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Green 2<br>
+							</span>
+							<table>
+								<tr>
+									<td bgcolor="#FFFF00"><div align="center">
+											255 255 0
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Yellow 3</span><br>
+							<table>
+								<tr>
+									<td bgcolor="#0000FF"><div align="center">
+											<span class="white">0 0 255</span>
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Blue 4</span></td>
+						<td align="center" width="20%"><table>
+								<tr>
+									<td bgcolor="#FF00FF"><div align="center">
+											255 0 255
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Magenta 5</span><br>
+							<table>
+								<tr>
+									<td bgcolor="#00FFFF"><div align="center">
+											0 255 255
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Cyan 6</span><br>
+							<table>
+								<tr>
+									<td bgcolor="#FFFFFF"><div align="center">
+											255 255 255
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">White 7<br>
+							</span>
+							<table>
+								<tr>
+									<td bgcolor="#808080"><div align="center">
+											128 128 128
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Gray 8</span></td>
+						<td align="center" width="20%"><table>
+								<tr>
+									<td bgcolor="#C0C0C0"><div align="center">
+											192 192 192
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">LightGray 9</span><br>
+							<table>
+								<tr>
+									<td bgcolor="#800000"><div align="center">
+											<span class="white">128 0 0</span>
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">DarkRed 10<br>
+							</span>
+							<table>
+								<tr>
+									<td bgcolor="#008000"><div align="center">
+											<span class="white">0 128 0</span>
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">DarkGreen11</span>
+							<table>
+								<tr>
+									<td bgcolor="#000080"><div align="center">
+											<span class="white">0 0 128</span>
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">DarkBlue 12</span></td>
+						<td align="center" width="20%"><table>
+								<tr>
+									<td bgcolor="#FF8000"><div align="center">
+											255 128 0
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Orange 13<br>
+							</span>
+							<table>
+								<tr>
+									<td bgcolor="#FFAFAF"><div align="center">
+											255 175 175
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Pink 14<br>
+							</span>
+							<table>
+								<tr>
+									<td bgcolor="#8000FF"><div align="center">
+											<span class="white">128 0 255</span>
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Purple 15<br>
+							</span>
+							<table>
+								<tr>
+									<td bgcolor="#996600"><div align="center">
+											<span class="white">153 102 0</span>
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Brown 16</span></td>
+					</tr>
+				</table>
+				<p>By rearranging the values 0, 128 and 255 we can create four more colors 
+					besides Orange and Purple. Aqua and Leaf are the most different (useful). Lime is similar to Green and Rose is similar to Magenta. <a href="../info/procol.html#aqua">Aqua</a>, <a href="../info/procol.html#leaf">Leaf</a>, <a href="../info/procol.html#lime">Lime</a> and <a href="../info/procol.html#rose">Rose</a> are library procedures.</p>
+				<table class="blackbg">
+					<tr>
+						<td align="center"><table>
+								<tr>
+									<td bgcolor="#0080FF"><div align="center">
+											0 128 255
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Aqua</span></td>
+						<td align="center"><table>
+								<tr>
+									<td bgcolor="#00FF80"><div align="center">
+											0 255 128
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Leaf</span></td>
+						<td align="center"><table>
+								<tr>
+									<td bgcolor="#80FF00"><div align="center">
+											128 255 0
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Lime</span></td>
+						<td align="center"><table>
+								<tr>
+									<td bgcolor="#FF0080"><div align="center">
+											255 0 128
+										</div></td>
+								</tr>
+							</table>
+							<span class="white">Rose</span></td>
+					</tr>
+				</table>
+				<p class="subh">Note</p>
+				<ol>
+					<li>Aqua, Leaf, Lime and Rose are four extra colors used in many programs. 
+						Along with Orange and Purple they comprise the 6 arrangements of values 
+						0, 128 and 255. See <a href="../info/colorsalt.html">Alternative Colors</a> for more color rgb values.</li>
+					<li><strong>SetSC</strong> will wash the drawing 
+						area and reset the turtle to the home position.</li>
+					<li><strong>PX</strong> works by subtracting the current pen color from 
+						the screen color to generate a 'difference' color. This is then added 
+						to colors the pen draws over. So if it draws over the same color as 
+						the pen color the result will be the screen color.</li>
+				</ol>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		
+		<div id="leco">
+			<div class="contents">
+				<a href="../../sitemap.html">Contents</a>
+			</div><!-- #BeginLibraryItem "/Library/MenuPrim.lbi" --><ul>
+	<li><a href="anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="axis_grid.html"> 
+		<script type="text/javascript"> blob("Axis Grid");</script> Axis / Grid</a></li>
+	<li><a href="basic.html"> 
+		<script type="text/javascript"> blob("Basic");</script> Basic</a></li>
+	<li><a href="boos.html"> 
+		<script type="text/javascript"> blob("Booleans");</script> Boolean</a></li>
+	<li><a href="color.html"> 
+		<script type="text/javascript"> blob("Color");</script> Color</a></li>
+	<li><a href="drawing.html"> 
+		<script type="text/javascript"> blob("Drawing");</script> Drawing</a></li>
+	<li><a href="files.html"> 
+		<script type="text/javascript"> blob("Files");</script> Files</a></li>
+	<li><a href="font_text.html"> 
+		<script type="text/javascript"> blob("Font Text");</script> Font / Text</a></li>
+	<li><a href="general.html"> 
+		<script type="text/javascript"> blob("General");</script> General</a></li>
+	<li><a href="gui.html"> 
+		<script type="text/javascript"> blob("GUI");</script> GUI</a></li>
+	<li><a href="lists.html"> 
+		<script type="text/javascript"> blob("Lists");</script> Lists</a></li>
+	<li><a href="loops.html"> 
+		<script type="text/javascript"> blob("Loops");</script> Loop</a></li>
+	<li><a href="maths.html"> 
+		<script type="text/javascript"> blob("Maths");</script> Math</a></li>
+	<li><a href="multip.html"> 
+		<script type="text/javascript"> blob("Multiple Turtles") </script> Multi Turtle</a></li>
+	<li><a href="network.html"> 
+		<script type="text/javascript"> blob("Network");</script> Network</a></li>
+	<li><a href="pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="prefs.html"> 
+		<script type="text/javascript"> blob("Preferences");</script> Preferences</a></li>
+	<li><a href="sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="symbols.html"> 
+		<script type="text/javascript"> blob("Symbols");</script> Symbols</a></li>
+	<li><a href="time_date.html"> 
+		<script type="text/javascript"> blob("Time Date");</script> Time / Date</a></li>
+	<li><a href="user.html"> 
+		<script type="text/javascript"> blob("User Input");</script> User Input</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con2 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

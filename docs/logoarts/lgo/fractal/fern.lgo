@@ -1,0 +1,31 @@
+# Main Command: Go
+# Fern by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to hue :angle
+  # Green from 187 to 252
+  Make "Green 0.18*:Angle + 187
+  Output ( List 215 :Green 88 )
+end
+
+to fern :size
+  If :Size < 5 [Stop]
+  SetPC Hue Heading
+  Forward :Size / 20
+  Left 80 Fern :Size * 0.3
+  Right 82 Forward :Size / 20
+  Right 80 Fern :Size * 0.3
+  Left 78 Fern :Size * 0.9
+  Left 2 Back :Size / 20
+  Left 2 Back :Size / 20
+end
+
+to go
+  New SetPos [-50 -170] PenDown Fern 440
+end

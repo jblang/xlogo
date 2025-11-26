@@ -1,0 +1,64 @@
+# Main Command: Go 4
+# Dragon Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to display :level
+  # write header title and curve level
+  SetPC White SetPos [-190 184] 
+  Label Sentence [Dragon Curve Level] :Level
+end
+
+to dragon :level :curve
+  If :Level = 0 [Output :Curve]
+  Make "ReflectCurve Reverse :Curve
+  For (List "N 1 Count :Curve) [
+    Make "Turn Item :N :ReflectCurve
+    If :Turn = "L [Make "ReflectCurve SetItem :ReflectCurve :N "R]
+    [Make "ReflectCurve SetItem :ReflectCurve :N "L] ]
+  Make "Curve Sentence Sentence :Curve "L :ReflectCurve
+  Output Dragon :Level-1 :Curve
+end
+
+to draw :level :curve
+  Make "Root2 SquareRoot 2
+  Make "Dist 4*Power (:Root2) (9-:Level)
+  Make "Dis 0.05 *Pi*:Dist
+  Forward :Dist
+  For (List "N 1 Count :Curve) [
+    Make "Turn Item :N :Curve
+    If :Turn = "L [TurnLeft :Dis] [TurnRite :Dis]]
+  Forward :Dist
+end
+
+to turnleft :dis
+  Left 4.5 Repeat 10 [Forward :Dis Left 9] Right 4.5
+end
+
+to turnrite :dis
+  Right 4.5 Repeat 10 [Forward :Dis Right 9] Left 4.5
+end
+
+to go :level
+  New Display :Level SetPC Green
+  Home SetX Minus 110
+  Right (45 *:Level)-225 PenDown
+  #draw dragon curve list
+  Draw :Level Dragon :Level [L]
+end
+
+to draw2 :level :curve
+  Make "Root2 SquareRoot 2
+  Make "Dist 4*Power (:Root2) (9-:Level)
+  Forward :Dist
+  For (List "N 1 Count :Curve) [
+    Make "Turn Item :N :Curve
+    If :Turn = "L [Forward :Dist Left 90 Forward :Dist]
+    [Forward :Dist Right 90 Forward :Dist]]
+  Forward :Dist
+end

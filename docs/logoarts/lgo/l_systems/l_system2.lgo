@@ -1,0 +1,133 @@
+# Main Command: GoX
+# L_System2 by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to display :lsys :order
+  # write header title, curve depth and info 
+  SetPC White SetH 0 
+  SetPos [-190 184] Label List (Word "L-System_ :LSys ":) :Name
+  SetPos [-190 -178] Label (List "RuleX: "X= :RuleX)
+  SetPos [-190 -192] Label (List "RuleY: "Y= :RuleY)
+  SetPos [130 -192] Label List "Axiom: :Axiom
+  SetPos [130 184] Label List "Order: :Order
+  SetPos [130 170] Label List "Angle: :Angle
+end
+
+to generate :string :order
+  If :Order < 1 [Output :String]
+  Output Generate (ReWrite :String) :Order-1
+end
+
+to rewrite :string
+  # replace every X and Y with rule
+  Make "NewString "
+  For (List "N 1 Count :String) [
+    Make "Symbol Item :N :String
+    If :Symbol = "X [Make "NewString Word :NewString :RuleX] [
+    If :Symbol = "Y [Make "NewString Word :NewString :RuleY] [
+    Make "NewString Word :NewString :Symbol] ] ]
+  Output :NewString
+end
+
+to draw :string
+  # render each symbol in string
+  ForEach "Symbol :String [
+    If :Symbol = "F [Forward :Step] [
+    If :Symbol = "+ [Right :Angle] [
+    If :Symbol = "- [Left :Angle] ] ] ]
+end
+
+to l_sys1 :order
+  Make "Name "Hilbert_Curve
+  Make "Scale (Power 2 :Order)-1
+  Make "Angle 90
+  Make "Axiom "X
+  Make "RuleX "-YF+XFX+FY-
+  Make "RuleY "+XF-YFY-FX+
+  Make "Screen 320
+  SetPos [-160 -160] SetH 90
+end
+
+to l_sys2 :order
+  Make "Name "Arrowhead_Curve
+  Make "Scale Power 2 :Order
+  Make "Angle 60
+  Make "Axiom "YF
+  Make "RuleX "YF-XF-Y
+  Make "RuleY "XF+YF+X
+  Make "Screen 360
+  SetPos [-180 -160] SetH 90 If Odd :Order [Left 60]
+end
+
+to l_sys3 :order
+  Make "Name "Peano_Gosper_Curve
+  Make "Scale Power (Power 7 0.5) :Order
+  Make "Angle 60
+  Make "Axiom "FX
+  Make "RuleY "Y-XF--XF+FY++FYFY+XF-
+  Make "RuleX "+FY-XFXF--XF-FY++FY+X
+  Make "Screen 300
+  SetPos [-160 110] SetH 90 Right 19.1*:Order
+end
+
+to l_sys4 :order
+  Make "Name "Hilbert2_Curve
+  Make "Scale (Power 3 :Order)
+  Make "Angle 90
+  Make "Axiom "X
+  Make "RuleX "XFYFX-F-YFXFY+F+XFYFX
+  Make "RuleY "YFXFY+F+XFYFX-F-YFXFY
+  Make "Screen 320
+  SetPos [-180 -160] SetH 90
+end
+
+to l_sys5 :order
+  Make "Name "Dragon_Curve
+  Make "Scale (Power 1.414 :Order) + :Order-3   #pr :Scale
+  Make "Angle 90
+  Make "Axiom "FX
+  Make "RuleX "X-YF-
+  Make "RuleY "+FX+Y
+  Make "Screen 320
+  SetPos [-100 40] SetH 90 Right 45*:Order
+end
+
+to odd :num
+  # return True if Num odd, else return False 
+  If Not (Mod :Num 2) = 0 [Output "True] [Output "False]
+end
+
+to go :lsys :order
+  New
+  Run Word "L_Sys :LSys :Order 
+  Display :LSys :Order SetPC Green
+  Run Word "L_Sys :LSys :Order 
+  Make "Step :Screen/:Scale
+  Make "DrawString Generate :Axiom :Order
+  If :Order < 2 [Print :DrawString] [Print [printout supressed] ]
+  PenDown Draw :DrawString PenUp
+end
+
+to gox
+  New Make "Order 3 
+  For [LSys 1 5] [
+    Wash Home
+    Run Word "L_Sys :LSys :Order 
+    Display :LSys :Order
+    Make "DrawString :Axiom
+    For (List "Ord 1 :Order) [
+      Run Word "L_Sys :LSys :Ord   # start pos
+      Make "DrawString ReWrite :DrawString
+      SetPC Item :Ord [2 1 4 5]
+      SetPW Item (:Order+1)-:Ord [1 3 5 7]
+    If :LSys = 5 [Run Word "L_Sys :LSys :Ord+3]   # Dragon Curve 
+    Make "Step :Screen/:Scale
+    PenDown Draw :DrawString PenUp
+  Wait 60] Wait 120]
+end

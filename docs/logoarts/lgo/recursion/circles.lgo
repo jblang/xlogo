@@ -1,0 +1,27 @@
+# Main Command: Go
+# Circles by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to circ :size
+  If :Size < 5 [Stop] 
+  Circle :Size
+  Repeat :Order [
+    Forward :Size-:K*:Size 
+    Circ :K*:Size 
+    Back :Size-:K*:Size 
+    Left 360/:Order]
+end
+
+to go
+  New
+  For [Ord 2 7] [
+    GlobalMake "Order :Ord Wash
+    Make "K (Sin 180/:Order) / ((Sin 180/:Order)+1)
+    Circ 190 Wait 100]
+end

@@ -1,0 +1,45 @@
+# Main Command: Go
+# 3D Surface by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to gridpos :i :j
+  Make "ZZ Function :I :J
+  SetPC Color :I :J
+  Make "XX 24*((5*:I)-(3*:J)) 
+  Make "YY 9*((3*:I)+(5*:J)) + :ZZ -16
+  Output List :XX :YY
+end
+
+to function :x :y
+  # Output 0   # flat plane 
+  # Output 96*(Cos (90* :X))*(Cos (90* :Y))
+  # Output 64*(Cos (270* :X))*(Cos (270* :Y))
+  # Output 8*Cos 900*Sqrt ((Power :X 2)+(Power :Y 2))
+  Output 96*Cos 360*Sqrt ((Power :X 2)+(Power :Y 2))
+end
+
+to drawgrid
+  For (List "L 1 Minus 1 Minus 2/:Size) [PenUp
+    For (List "J 1 Minus 1 Minus 2/:Size) [
+      SetPos GridPos :L :J PenDown] PenUp     # vertical lines
+    For (List "I Minus 1 1 2/:Size) [
+      SetPos GridPos :I :L PenDown]]     # horizontal lines
+end
+
+to color :i :j
+  # shade green 
+  Make "Green 163-46*(:I + :J)
+  Output (List 0 :Green 0)
+end
+
+to go
+  New
+  GlobalMake "Size 24     # increase (eg 32) for finer grid
+  DrawGrid
+end

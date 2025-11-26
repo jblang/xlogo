@@ -1,0 +1,17 @@
+# Main Command: Go 14
+# Spirals by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to go :n
+  New PenDown 
+  # Archimedes spiral
+  Repeat :N * 360 [Forward 1 Right :N / SqRt RepCount] 
+  # comment in for logarithmic spiral
+  # Repeat :N * 360 [Forward 1 Right 1500 / RepCount] 
+end

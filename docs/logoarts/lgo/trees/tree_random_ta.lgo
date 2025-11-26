@@ -1,0 +1,32 @@
+# Main Command: Go
+# Tree (Random Tree Angle) by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to tree :length
+  If :Length< 10 [Stop]     # ends recursion if branch length too small
+  SetPW :Length/9     # reduce pen width as branch length gets smaller
+  SetPC TreeCol :Length     # branch color depends on length
+  LocalMake "TreeAngle :Angle*Pick [0.25 0.375 0.5 0.625 0.75]
+  Forward :Length
+  Left :TreeAngle
+  Tree :Length*0.75 Right :Angle     # tree proc with 3/4 branch length
+  Tree :Length*0.75 Left :Angle
+  Right :TreeAngle
+  PenUp Back :Length PenDown     # return to starting point
+end
+
+to treecol :length
+  Make "Green Round 2.5*(100-:Length)     # green depends on length
+  Output ( List 255 :Green 0 )     # red set to 255 and blue to 0
+end
+
+to go
+  Repeat 12 [  New PenUp Back 160 PenDown
+  Make "Angle 60 Tree 80 Wait 200]
+end

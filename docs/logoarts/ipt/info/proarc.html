@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><!-- #BeginTemplate "/Templates/info3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Resource | Procedures_Arc | html</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="info">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Arcs</h2>
+			<p>- XLogo library of procedures</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<img src="../../art/img32/xlogo32.gif" alt="xlogo" width="32" height="32">
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>This library of procedures draws arcs in various manners. They are used by programs throughout this 
+					site including many of the <a href="proshape.html">shape procedures</a>. 
+					They can be copied and pasted into the Editor window as usual.</p>
+				<p>I prefer not to use the <a href="../prim/drawing.html">Arc primitive</a> directly. It is difficult to 'read', uses three arguments, often requires 
+					the Minus primitive, and uses absolute headings which are not very logo 
+					like. Instead use rArc (relarive Arc).</p>
+				<p>Download complete library of <a href="../../lgo/lib/arcs_lib.lgo">arc 
+					procedures</a>.</p>
+				<p><a name="rarc"></a><span class="subh">rArc</span><br>
+					Draw a clockwise arc relative to the turtles heading. The turtle turns 
+					to face the end of the arc. Both <strong>:Angle</strong> and <strong>:Radius</strong> arguments are positive. Putting the angle first makes turtle movements 
+					easier to follow.<br>
+					Used in many programs instead of primitive Arc.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_rArc.lbi" --><p><span class="toenl"><a href="proarc.html#rarc">To <span class="pro">rArc</span> :<span class="var">Angle</span> :<span class="var">Radius</span></a></span><br>
+	&nbsp; <span class="com"># clockwise arc drawn relative to turtle heading</span><br>
+	&nbsp; Arc <b>:</b><span class="var">Radius</span> Heading <b>:</b><span class="var">Angle</span>+Heading Right <b>:</b><span class="var">Angle</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="arch"></a><span class="subh">Arch</span><br>
+					The Arch procedure draws a symmetrical arch relative to the turtle 
+					heading. The turtle is left unmoved. Both <strong>:Angle</strong> and <strong>:Radius</strong> arguments are positive.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Arch.lbi" --><p><span class="toenl"><a href="proarc.html#arch">To <span class="pro">Arch</span> :<span class="var">Angle</span> :<span class="var">Radius</span></a></span><br>
+	&nbsp; <span class="com"># symmetrical arc drawn relative to turtle heading</span><br>
+	&nbsp; Arc <b>:</b><span class="var">Radius</span> Heading-<b>:</b><span class="var">Angle</span>/2 
+	Heading+<b>:</b><span class="var">Angle</span>/2<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="leftarc"></a><span class="subh">LeftArc</span> (also see <a href="#rightarc">RightArc</a>)<br>
+					Move turtle along a  curved arc to the left. Similar to Left with a radius 
+					of zero. Both <strong>:Angle</strong> and <strong>:Radius</strong> arguments must be positive.<br>
+				</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_LeftArc.lbi" --><p><span class="toenl"><a href="proarc.html#leftarc">To <span class="pro">LeftArc</span> :<span class="var">Angle</span> :<span class="var">Radius</span></a></span><br>
+	&nbsp; <span class="com"># arc drawn relative to turtle position, angle &amp; radius positive</span><br>
+	&nbsp; PenUp Right 90 Back <b>:</b><span class="var">Radius</span> Left <b>:</b><span class="var">Angle</span><br>
+	&nbsp; Arc <b>:</b><span class="var">Radius</span> Heading Heading+<b>:</b><span class="var">Angle</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Radius</span> Left 90 PenDown<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="rightarc"></a><span class="subh">RightArc</span> (also see <a href="#leftarc">LeftArc</a>)<br>
+					Move turtle along a  curved arc to the right. Similar to Right with a 
+					radius of zero. Both <strong>:Angle</strong> and <strong>:Radius</strong> arguments must be 
+					positive.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_RightArc.lbi" --><p><span class="toenl"><a href="proarc.html#rightarc">To <span class="pro">RightArc</span> :<span class="var">Angle</span> :<span class="var">Radius</span></a></span><br>
+	&nbsp; <span class="com"># arc drawn relative to turtle position, angle & radius 
+	positive</span><br>
+	&nbsp; PenUp Left 90 Back <b>:</b><span class="var">Radius<br>
+	</span>&nbsp; Arc <b>:</b><span class="var">Radius</span> Heading 
+	Heading+<b>:</b><span class="var">Angle<br>
+	</span>&nbsp; Right <b>:</b><span class="var">Angle</span> Forward <b>:</b><span class="var">Radius</span> Right 90 PenDown<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p>&nbsp;</p>
+				<hr align="center">
+				<p><span class="subh">'Full' Arc Procedures</span></p>
+				<p>The above Arcs are simplified for use as library procedures in programs 
+					on this site. Below are more complete Arc procedures which allow for negative 
+					angles and angles greater than 360 degrees etc.</p>
+				<p><span class="subh">rArc<br>
+					</span>Allow for anti-clockwise arcs if <strong>:Angle</strong> is negative.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">rArc</span> :<span class="var">Angle</span> :<span class="var">Radius</span></span><br>
+						&nbsp; <span class="com"># arc drawn relative to turtle heading</span><br>
+						&nbsp; If <b>:</b><span class="var">Angle</span> &lt;0<br>
+						&nbsp; &nbsp; [Arc <b>:</b><span class="var">Radius</span> <b>:</b><span class="var">Angle</span>+Heading Heading]<br>
+						&nbsp; &nbsp; [Arc <b>:</b><span class="var">Radius</span> Heading <b>:</b><span class="var">Angle</span>+Heading]<br>
+						&nbsp; Right <b>:</b><span class="var">Angle</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p>Or</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">rArc</span> :<span class="var">Angle</span> :<span class="var">Radius</span></span><br>
+						&nbsp; <span class="com"># arc drawn relative to turtle heading</span><br>
+						&nbsp;  LocalMake &quot;<span class="var">H1</span> ((Minus <b>:</b><span class="var">Angle</span>) +Abs <b>:</b><span class="var">Angle</span>) /-2<br>
+&nbsp; LocalMake &quot;<span class="var">H2</span>  ((Minus <b>:</b><span class="var">Angle</span>) -Abs <b>:</b><span class="var">Angle</span>) /-2<br>
+&nbsp; Arc <b>:</b><span class="var">Radius</span> <b>:</b><span class="var">H1</span> +Heading <b>:</b><span class="var">H2</span> +Heading<br>
+						&nbsp; Right <b>:</b><span class="var">Angle</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><span class="subh">Arch</span><br>
+					Draw an arch behind the turtle if <strong>:Angle</strong> is negative.<br>
+					Draw a circle if <strong>:Angle</strong> is greater than 360 degrees.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Arch</span> :<span class="var">Angle</span> :<span class="var">Radius</span></span><br>
+						&nbsp; <span class="com"># symmetrical arc drawn relative to turtle 
+						heading</span><br>
+						&nbsp; If (Absolute <b>:</b><span class="var">Angle</span>) 
+						&lt;360 [<br>
+						&nbsp; &nbsp; If <b>:</b><span class="var">Angle</span> &lt;0<br>
+						&nbsp; &nbsp; &nbsp; [Arc <b>:</b><span class="var">Radius</span> 180+Heading+<b>:</b><span class="var">Angle</span>/2 180+Heading-<b>:</b><span class="var">Angle</span>/2]<br>
+						&nbsp; &nbsp; &nbsp; [Arc <b>:</b><span class="var">Radius</span> Heading-<b>:</b><span class="var">Angle</span>/2 Heading+<b>:</b><span class="var">Angle</span>/2] ]<br>
+						&nbsp; [Circle <b>:</b><span class="var">Radius</span>]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><span class="subh">LeftArc</span> (also see RightArc)<br>
+					StopAll and show error message if <strong>:Radius</strong> is negative as incorrect 
+					arc will be drawn.<br>
+					If <strong>:Angle</strong> is negative then similar to <strong>RightArc</strong>.<br>
+					If the pen is up, no curve is drawn.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">LeftArc</span> :<span class="var">Angle</span> :<span class="var">Radius</span></span><br>
+						&nbsp; <span class="com"># arc drawn relative to turtle position</span><br>
+						&nbsp; If <b>:</b><span class="var">Radius</span> &lt;0 [Print 
+						[Radius must be positive] StopAll]<br>
+						&nbsp; If Not PenDown? [Forward <b>:</b><span class="var">Radius</span> Left <b>:</b><span class="var">Angle</span> Forward <b>:</b><span class="var">Radius</span> Stop]<br>
+						&nbsp; PenUp If <b>:</b><span class="var">Angle</span> &lt;0<br>
+						&nbsp; &nbsp; [Left 90 Back <b>:</b><span class="var">Radius</span> Arc <b>:</b><span class="var">Radius</span> Heading Heading-<b>:</b><span class="var">Angle</span><br>
+						&nbsp; &nbsp; &nbsp; Left <b>:</b><span class="var">Angle</span> Forward <b>:</b><span class="var">Radius</span> Right 90]<br>
+						&nbsp; &nbsp; [Right 90 Back <b>:</b><span class="var">Radius</span> Left <b>:</b><span class="var">Angle</span> Arc <b>:</b><span class="var">Radius</span> Heading Heading+<b>:</b><span class="var">Angle</span><br>
+						&nbsp; &nbsp; &nbsp; Forward <b>:</b><span class="var">Radius</span> Left 90]<br>
+						&nbsp; PenDown<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><span class="subh">RightArc</span> (also see LeftArc)<br>
+					StopAll and error message if <strong>:Radius</strong> is negative as incorrect arc 
+					will be drawn.<br>
+					If <strong>:Angle</strong> is negative then similar to <strong>LeftArc</strong>.<br>
+					If the pen is up, no curve is drawn.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">RightArc</span> :<span class="var">Angle</span> :<span class="var">Radius</span></span><br>
+						&nbsp; <span class="com"># arc drawn relative to turtle position</span><br>
+						&nbsp; If <b>:</b><span class="var">Radius</span> &lt;0 [Print 
+						[Radius must be positive] StopAll]<br>
+						&nbsp; If Not PenDown? [Forward <b>:</b><span class="var">Radius</span> Right <b>:</b><span class="var">Angle</span> Forward <b>:</b><span class="var">Radius</span> Stop]<br>
+						&nbsp; PenUp If <b>:</b><span class="var">Angle</span> &lt;0<br>
+						&nbsp; &nbsp; [Right 90 Back <b>:</b><span class="var">Radius</span> Right <b>:</b><span class="var">Angle</span> Arc <b>:</b><span class="var">Radius</span> Heading Heading-<b>:</b><span class="var">Angle</span><br>
+						&nbsp; &nbsp; &nbsp; Forward <b>:</b><span class="var">Radius</span> Left 90]<br>
+						&nbsp; &nbsp; [Left 90 Back <b>:</b><span class="var">Radius</span> Arc <b>:</b><span class="var">Radius</span> Heading Heading+<b>:</b><span class="var">Angle</span><br>
+						&nbsp; &nbsp; &nbsp; Right <b>:</b><span class="var">Angle</span> Forward <b>:</b><span class="var">Radius</span> Right 90]<br>
+						&nbsp; PenDown<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p>&nbsp;</p>
+				<hr align="center">
+				<p><span class="subh">Curve</span></p>
+				<p>Arcs (and circles) cannot be filled using the <a href="../prim/drawing.html">FillPolygon</a> primitive. They have to be drawn as a series of small steps. Here is a 
+					possible procedure to do this.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Curve</span> :<span class="var">Angle</span> :<span class="var">Radius</span></span><br>
+						&nbsp; <span class="com"># curved arc drawn relative to turtle position</span><br>
+						&nbsp; LocalMake &quot;<span class="var">myHeading</span> Heading<br>
+						&nbsp; LocalMake &quot;<span class="var">Steps</span> 12+Integer Absolute <b>:</b><span class="var">Radius</span><br>
+						&nbsp; LocalMake &quot;<span class="var">StepSize</span> ((2*Pi*<b>:</b><span class="var">Radius</span>) 
+						*(<b>:</b><span class="var">Angle</span>/360)) /<b>:</b><span class="var">Steps</span><br>
+						&nbsp; LocalMake &quot;<span class="var">StepAngle</span> <b>:</b><span class="var">Angle</span>/<b>:</b><span class="var">Steps</span><br>
+						&nbsp; Forward :<span class="var">StepSize</span>/2<br>
+						&nbsp; Repeat <b>:</b><span class="var">Steps</span>-1 [Right <b>:</b><span class="var">StepAngle</span> Forward <b>:</b><span class="var">StepSize</span>]<br>
+						&nbsp; Right <b>:</b><span class="var">StepAngle</span> Forward <b>:</b><span class="var">StepSize</span>/2<br>
+						&nbsp; SetH <b>:</b><span class="var">myHeading</span>+<b>:</b><span class="var">Angle</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		
+		<div id="leco">
+			<p class="contents"><a href="../../prog/top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuInfo.lbi" --><ul>
+	<li><a href="books.html"> 
+		<script type="text/javascript"> blob("Books");</script> Books</a></li>
+	<li><a href="bookslogo.html"> 
+		<script type="text/javascript"> blob("Books_Logo");</script> &nbsp; &nbsp; logo</a></li>
+	<li><a href="booksfractals.html"> 
+		<script type="text/javascript"> blob("Books_Fractals");</script> &nbsp; &nbsp; fractals</a></li>
+	<li><a href="booksgrap.html"> 
+		<script type="text/javascript"> blob("Books_Graphics");</script> &nbsp; &nbsp; graphics</a></li>
+	<li><a href="booksmath.html"> 
+		<script type="text/javascript"> blob("Books_Maths");</script> &nbsp; &nbsp; maths</a></li>
+	<li><a href="bookslife.html"> 
+		<script type="text/javascript"> blob("Books_Life");</script> &nbsp; &nbsp; life</a></li>
+	<li><a href="bookspuzz.html"> 
+		<script type="text/javascript"> blob("Books_Puzzle");</script> &nbsp; &nbsp; puzzles</a></li>
+	<li><a href="booksmathgen.html"> 
+		<script type="text/javascript"> blob("Books_MathsGeneral");</script> &nbsp; &nbsp; mathsgen</a></li>
+	<li><a href="colorsalt.html"> 
+		<script type="text/javascript"> blob("Colors")</script> Colors</a></li>
+	<li><a href="genart.html"> 
+		<script type="text/javascript"> blob("Generative Art")</script> Generative</a></li>
+	<li><a href="glossary.html"> 
+		<script type="text/javascript"> blob("Glossary")</script> Glossary</a></li>
+	<li><a href="prolib.html"> 
+		<script type="text/javascript"> blob("Procedures")</script> Procedures</a></li>
+	<li><a href="proarc.html"> 
+		<script type="text/javascript"> blob("Procedures_Arc");</script> &nbsp; &nbsp; arc</a></li>
+	<li><a href="procol.html"> 
+		<script type="text/javascript"> blob("Procedures_Color");</script> &nbsp; &nbsp; color</a></li>
+	<li><a href="prolist.html"> 
+		<script type="text/javascript"> blob("Procedures_List");</script> &nbsp; &nbsp; list</a></li>
+	<li><a href="promath.html"> 
+		<script type="text/javascript"> blob("Procedures_Math");</script> &nbsp; &nbsp; math</a></li>
+	<li><a href="prorecur.html"> 
+		<script type="text/javascript"> blob("Procedures_Recursive");</script> &nbsp; &nbsp; recursive</a></li>
+	<li><a href="proshape.html"> 
+		<script type="text/javascript"> blob("Procedures_Shape");</script> &nbsp; &nbsp; shape</a></li>
+	<li><a href="turts.html"> 
+		<script type="text/javascript"> blob("Turtles")</script> Turtles</a></li>
+	<li><a href="tuts.html"> 
+		<script type="text/javascript"> blob("Tutorials")</script> Tutorial</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><img src="../../art/img100/xlogo100.gif" alt="xlogo" width="100" height="100"><br>
+				XLogo</p>
+			<p>&nbsp;</p>
+			<p><a href="#"><img src="../../art/img100/hearts.gif" alt="xlogo" width="100" height="100"></a><br>
+				Hearts</p>
+			<p>&nbsp;</p>
+			<!-- #EndEditable -->
+			<p>&nbsp;</p><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate --></html>

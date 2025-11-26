@@ -1,0 +1,24 @@
+# Main Command: Go
+# Orbinson by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to square :side
+  # square (side x side) drawn from centre (tp)
+  Back :Side/2 Right 90 Back :Side/2 PenDown
+  Repeat 4 [
+    Forward :Side Left 90]
+  PenUp Forward :Side/2 Left 90 Forward :Side/2     # return to centre
+end
+
+to go
+  New SetPC Red SetPW 3
+  SetPos [0 -70] Square 200
+  SetPos [0 275] SetH 204 SetPW 1 SetPC Yellow PenDown
+  Repeat 17 [Forward 510 Back 510 Left 3]
+end

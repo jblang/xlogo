@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Puzzle | Partridge</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Partridge Puzzle</h2>
+			<p>- square disection</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g7/partridge32.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>A famous puzzle which asks if a square can be divided into a consecutive number of smaller squares. Here, a 36x36 square is disected into 36 squares of size one 1x1 to eight 8x8 squares.</p>
+				<p>1x1+2(2x2)+3(3x3)+4(4x4)+5(5x5)+6(6x6)+7(7x7)+8(8x8)=36x36</p>
+				<p>This program does not calculate a solution. It simply draws two possible solutions using a list of all the squares centre points.</p>
+				<p>By the way, the puzzle of using a 70x70 square is still unresolved.<br>
+					1x1+2(2x2)+3(3x3)+........................+23(23x23)+24(24x24)=70x70</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Centres1</span> [[30.5 31.5] [22 14] [29 17]<br>
+						&nbsp; [14.5 9.5] [31.5 29.5] [34.5 29.5] [15 13] [19 13] [25 34] [29 34]<br>
+						&nbsp; [18.5 8.5] [25.5 15.5] [8.5 17.5] [13.5 17.5] [33.5 33.5]<br>
+						&nbsp; [19 3] [25 3] [3 11] [3 17] [33 19] [33 25] [24.5 9.5] [9.5 11.5] [19.5 &nbsp; 18.5] [26.5 21.5] [19.5 25.5] [26.5 28.5] [19.5 32.5]<br>
+						&nbsp; [4 4] [12 4] [32 4] [32 12] [4 24] [12 24] [4 32] [12 32]]<br>
+						&nbsp; Make &quot;<span class="var">Centres2</span> [[21.5 14.5] [23 15] [23 17]<br>
+						&nbsp; [22.5 9.5] [22.5 12.5] [20.5 16.5] [26 14] [26 18] [26 22] [26 26]<br>
+						&nbsp; [21.5 20.5] [9.5 23.5] [21.5 25.5] [9.5 28.5] [9.5 33.5]<br>
+						&nbsp; [27 3] [33 3] [27 9] [33 9] [10 18] [16 18]<br>
+						&nbsp; [3.5 11.5] [10.5 11.5] [17.5 11.5] [3.5 18.5] [15.5 24.5] [3.5 25.5] [3.5 32.5]<br>
+						&nbsp; [4 4] [12 4] [20 4] [32 16] [32 24] [16 32] [24 32] [32 32]]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Draw</span> :<span class="var">Centres</span></span><br>
+						&nbsp; For [Size 1 8] [<br>
+						&nbsp; &nbsp; Repeat <b>:</b><span class="var">Size</span> [<br>
+						&nbsp; &nbsp; &nbsp; SetPC Item :<span class="var">Size</span> [1 2 3 8 12 13 15 16]<br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">Centre</span> First <b>:</b><span class="var">Centres</span><br>
+						&nbsp; &nbsp; &nbsp; SetXY 10*((First <b>:</b><span class="var">Centre</span>)-18) Minus 10*((Last <b>:</b><span class="var">Centre</span>)-18)<br>
+						&nbsp; &nbsp; &nbsp; <span class="pro">Square</span> 10*<b>:</b><span class="var">Size</span>-PenWidth&nbsp; 
+						&nbsp; <span class="com"># exact size</span><br>
+						&nbsp; &nbsp; &nbsp; SetPC <span class="pro">Light</span> PenColor Fill<br>
+						&nbsp; &nbsp; &nbsp; If :<span class="var">Size</span>&gt;1 [SetPC Black Back 5 Right 90 Back 3 Left 90 Label <b>:</b><span class="var">Size</span>] 
+						&nbsp; &nbsp; Wait 6<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Centres</span> ButFirst <b>:</b><span class="var">Centres</span>]]<br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_Square.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#square">To <span class="pro">Square</span> :<span class="var">Side</span></a></span><br>
+	&nbsp; <span class="com"># square (side x side) drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">Side</span>/2 Right 90 Back <b>:</b><span class="var">Side</span>/2 PenDown<br>
+	&nbsp; Repeat 4 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Side</span> Left 90]<br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Side</span>/2 Left 90 Forward <b>:</b><span class="var">Side</span>/2 &nbsp; &nbsp; <span class="com"># r2c</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Light.lbi" --><p><span class="toenl"><a href="../../ipt/info/procol.html#light">To <span class="pro">Light</span> :<span class="var">Hue</span></a></span><br>
+	&nbsp; <span class="com"># output rgb list midway between :hue and white</span><br>
+	&nbsp; Repeat 3 [<br>
+	&nbsp; &nbsp; Make &quot;<span class="var">Hue</span> ButFirst LPut Int (255+(First <b>:</b><span class="var">Hue</span>))/2 <b>:</b><span class="var">Hue</span>]<br>
+	&nbsp; Output <b>:</b><span class="var">Hue</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New</span> <span class="pro">Init</span><br>
+						&nbsp; <span class="pro">Draw</span> <b>:</b><span class="var">Centres1</span> Wait 300 Wash<br>
+						&nbsp; <span class="pro">Draw</span> <b>:</b><span class="var">Centres2</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/puzzle/partridge.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/puzzle/partridge.lgo">File</a></li>
+						<li><a href="../../pict/gall7/partridge.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall7/partridge.html"><img src="../../art/100g7/partridge.gif" alt="Partridge" width="100" height="100"></a><br>
+				Partridge</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

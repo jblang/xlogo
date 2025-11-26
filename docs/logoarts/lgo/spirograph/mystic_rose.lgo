@@ -1,0 +1,38 @@
+# Main Command: GoX
+# Mystic Rose by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to display :c
+  SetPC White 
+  SetPos [-190 184] Label Sentence [Mystic Rose] :C
+end
+
+to mrose :c
+  SetPC Cyan
+  Make "T 0 Make "S 0
+  Make "Angle 360 / :C
+  Repeat (:C-1) [
+    For (List "Count :S :C) [
+      PenUp
+      SetXY 190*Sin (:Angle * :S) 190*Cos (:Angle * :S)
+      PenDown
+      SetXY 190*Sin (:Angle * :Count) 190*Cos (:Angle * :Count) 
+      Make "T :T+1 Wait 1]
+    Make "S :S+1]
+  PenUp 
+end
+
+to gox
+  New For [C 2 16] [
+  Wash Display :C MRose :C Wait 100]
+end
+
+to go :c
+  New Display :C MRose :C
+end

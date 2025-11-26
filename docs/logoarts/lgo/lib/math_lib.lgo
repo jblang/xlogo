@@ -1,0 +1,81 @@
+# Maths Library by Guy Walker
+# www.logoarts.co.uk
+
+To Dec2Bin :Num
+  # convert decimal number Num to an 8 item binary list
+  If :Num >255 [Print [Rule is too large!] Stop]
+  LocalMake "Bin []
+  For [C 7 0 -1] [
+    LocalMake "Bin LPut (Quotient :Num Power 2 :C) :Bin
+    LocalMake "Num :Num -((Power 2 :C) *Last :Bin)]
+  Output :Bin
+End
+
+to distancebetween :point1 :point2
+  # return distance between two points
+  Make "Hor (First :Point1) - (First :Point2)
+  Make "Ver (Last :Point1) - (Last :Point2)
+  Output SqRt ((Power :Hor 2) + (Power :Ver 2))
+end
+
+To Even? :Num
+  # return 'true' if Num even, else return 'false'
+  If (Mod :Num 2)=0 [Output "True] [Output "False]
+End
+
+to least :i :j
+  # return lowest value 
+  If Before :I :J [Output :I] [Output :J] 
+end
+
+to most :i :j
+  # return greatest value 
+  If Before :I :J [Output :J] [Output :I] 
+end
+
+to odd :num
+  # return True if Num odd, else return False 
+  If Not (Mod :Num 2) = 0 [Output "True] [Output "False]
+end
+
+To PtoR :RadDist :Theta
+  # convert polar to rectangular co-ordinates
+  LocalMake "X :RadDist *Sin :Theta
+  LocalMake "Y :RadDist *Cos :Theta
+  Output List :X :Y
+End
+
+To RtoP :X :Y
+  # convert rectangular to polar co-ordinates
+  LocalMake "Dist Sqrt ((Power :X 2) +(Power :Y 2))
+  If :X<0 [Output List :Dist 180 +ATan :Y/:X] [
+    # else :X >0
+    If :Y<0 [Output List :Dist 360 +ATan :Y/:X]
+    [Output List :Dist ATan :Y/:X]]
+  # else :X =0
+  If :Y<=0 [Output List :Dist 270] [Output List :Dist 90]
+End
+
+To RtoP :X :Y
+  # use a second turtle to convert rectangular to polar co-ordinates
+  SetTurtle 1 PenUp SetXY :X :Y
+  LocalMake "RadDist Sqrt ((Power :X 2)+(Power :Y 2))
+  SetHeading Towards [0 0]
+  LocalMake "myHeading Mod Int (Heading+180) 360 SetTurtle 0
+  Output List :RadDist :myHeading
+End
+
+To Root2
+  # return sqrt of 2 (approx 1.414)
+  Output Power 2 0.5
+End
+
+To Root3
+  # return sqrt of 3 (approx 1.732)
+  Output Power 3 0.5
+End
+
+to sign :num 
+  # return sign (-1 or 1) of number 
+  If :Num < 0 [Output Minus 1] [Output 1] 
+end

@@ -1,0 +1,50 @@
+# Main Command: GoX
+# Lune (90) by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to init
+  # make Angle and Scale global values
+  GlobalMake "Angle 90
+  GlobalMake "Scale 2 
+end
+
+to tree :size :order
+  If :Order < 0 [Stop]     # ends recursion if order < 0
+  Forward :Size/2 Left 90
+  Lens :Angle :Size 
+  Right 90 Forward :Size/2 Left :Angle
+  Tree :Size/:Scale :Order -1 Right :Angle
+  Tree :Size/:Scale :Order -1 Right :Angle
+  Tree :Size/:Scale :Order -1 
+  Left :Angle Back :Size
+end
+
+to arch :angle :radius
+  # symmetrical arc drawn relative to turtle heading
+  Arc :Radius Heading-:Angle/2 Heading+:Angle/2
+end
+
+to lens :angle :size
+  # lens shape drawn from centre (tp)
+  Make "Dist (:Size/2)/Tan :Angle/2
+  Repeat 2 [
+    Back :Dist Arch :Angle (:Size/2) / Sin :Angle/2
+    Forward :Dist Left 180]
+  SetPC DarkRed Fill SetPC Green     # comment out for lines only
+end
+
+to go :order
+  New Init Back 192 
+  Tree 200 :Order
+end
+
+to gox
+  New Init Left 45 Repeat 4 [
+    Tree 140 4 Right 90] 
+end

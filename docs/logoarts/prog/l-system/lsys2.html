@@ -1,0 +1,280 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | L-System | L-System 2</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>L-System</h2>
+			<p>- double X Y replacement rule</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g8/lsys232.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>Five different fractal curves are drawn using L-Systems with two replacement rules X and Y. There is no replacement for F (as in single L-Systems). Each system also includes a Start position and initial Size (Screen Size). This ensures each curve fits the drawing screen.<br>
+					All curves produce a single continuous line.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Display</span> :<span class="var">LSys</span> :<span class="var">Order</span></span><br>
+						&nbsp; <span class="com"># write header title, curve depth and info</span><br>
+						&nbsp; SetPC White SetH 0<br>
+						&nbsp; SetPos [-190 184] Label List (Word &quot;L-System_ :LSys &quot;:) :Name<br>
+						&nbsp; SetPos [-190 -178] Label (List &quot;RuleX: &quot;X= :RuleX)<br>
+						&nbsp; SetPos [-190 -192] Label (List &quot;RuleY: &quot;Y= :RuleY)<br>
+						&nbsp; SetPos [130 -192] Label List &quot;Axiom: <b>:</b>Axiom<br>
+						&nbsp; SetPos [130 184] Label List &quot;Order: <b>:</b>Order<br>
+						&nbsp; SetPos [130 170] Label List &quot;Angle: <b>:</b>Angle<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Generate</span> :<span class="var">String</span> :<span class="var">Order</span></span><br>
+						&nbsp; If <b>:</b>Order &lt; 1 [Output <b>:</b>String]<br>
+						&nbsp; Output Generate (ReWrite <b>:</b>String) <b>:</b>Order-1<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">ReWrite</span> :<span class="var">String</span></span><br>
+						&nbsp; <span class="com"># replace every X and Y with rule</span><br>
+						&nbsp; Make &quot;NewString &quot;<br>
+						&nbsp; For (List &quot;N 1 Count <b>:</b>String) [<br>
+						&nbsp; &nbsp; Make &quot;Symbol Item <b>:</b>N <b>:</b>String<br>
+						&nbsp; &nbsp; If :Symbol = &quot;X [Make &quot;NewString Word :NewString :RuleX] [<br>
+						&nbsp; &nbsp; If :Symbol = &quot;Y [Make &quot;NewString Word :NewString :RuleY] [<br>
+						&nbsp; &nbsp; Make &quot;NewString Word :NewString :Symbol] ] ]<br>
+						&nbsp; Output :NewString<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Draw</span> :<span class="var">String</span></span><br>
+						&nbsp; <span class="com"># render each symbol in string</span><br>
+						&nbsp; ForEach &quot;Symbol :String [<br>
+						&nbsp; &nbsp; If <b>:</b>Symbol = &quot;F [Forward <b>:</b>Step] [<br>
+						&nbsp; &nbsp; If <b>:</b>Symbol = &quot;+ [Right <b>:</b>Angle] [<br>
+						&nbsp; &nbsp; If <b>:</b>Symbol = &quot;- [Left <b>:</b>Angle] ] ] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">L_Sys1</span> :<span class="var">Order</span></span><br>
+						&nbsp; Make &quot;Name &quot;Hilbert_Curve<br>
+						&nbsp; Make &quot;Scale (Power 2 <b>:</b>Order)-1<br>
+						&nbsp; Make &quot;Angle 90<br>
+						&nbsp; Make &quot;Axiom &quot;X<br>
+						&nbsp; Make &quot;RuleX &quot;-YF+XFX+FY-<br>
+						&nbsp; Make &quot;RuleY &quot;+XF-YFY-FX+<br>
+						&nbsp; Make &quot;Screen 320<br>
+						&nbsp; SetPos [-160 -160] SetH 90<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">L_Sys2</span> :<span class="var">Order</span></span><br>
+						&nbsp; Make &quot;Name &quot;Arrowhead_Curve<br>
+						&nbsp; Make &quot;Scale Power 2 <b>:</b>Order<br>
+						&nbsp; Make &quot;Angle 60<br>
+						&nbsp; Make &quot;Axiom &quot;YF<br>
+						&nbsp; Make &quot;RuleX &quot;YF-XF-Y<br>
+						&nbsp; Make &quot;RuleY &quot;XF+YF+X<br>
+						&nbsp; Make &quot;Screen 360<br>
+						&nbsp; SetPos [-180 -160] SetH 90 If Odd? <b>:</b>Order [Left 60]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">L_Sys3</span> :<span class="var">Order</span></span><br>
+						&nbsp; Make &quot;Name &quot;Peano_Gosper_Curve<br>
+						&nbsp; Make &quot;Scale Power (Power 7 0.5) <b>:</b>Order<br>
+						&nbsp; Make &quot;Angle 60<br>
+						&nbsp; Make &quot;Axiom &quot;FX<br>
+						&nbsp; Make &quot;RuleY &quot;Y-XF--XF+FY++FYFY+XF-<br>
+						&nbsp; Make &quot;RuleX &quot;+FY-XFXF--XF-FY++FY+X<br>
+						&nbsp; Make &quot;Screen 300<br>
+						&nbsp; SetPos [-160 110] SetH 90 Right 19.1*<b>:</b>Order<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">L_Sys4</span> :<span class="var">Order</span></span><br>
+						&nbsp; Make &quot;Name &quot;Hilbert2_Curve<br>
+						&nbsp; Make &quot;Scale (Power 3 <b>:</b>Order)<br>
+						&nbsp; Make &quot;Angle 90<br>
+						&nbsp; Make &quot;Axiom &quot;X<br>
+						&nbsp; Make &quot;RuleX &quot;XFYFX-F-YFXFY+F+XFYFX<br>
+						&nbsp; Make &quot;RuleY &quot;YFXFY+F+XFYFX-F-YFXFY<br>
+						&nbsp; Make &quot;Screen 320<br>
+						&nbsp; SetPos [-180 -160] SetH 90<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">L_Sys5</span> :<span class="var">Order</span></span><br>
+						&nbsp; Make &quot;Name &quot;Dragon_Curve<br>
+						&nbsp; Make &quot;Scale (Power 1.414 :Order) + :Order-3 &nbsp; #pr :Scale<br>
+						&nbsp; Make &quot;Angle 90<br>
+						&nbsp; Make &quot;Axiom &quot;FX<br>
+						&nbsp; Make &quot;RuleX &quot;X-YF-<br>
+						&nbsp; Make &quot;RuleY &quot;+FX+Y<br>
+						&nbsp; Make &quot;Screen 320<br>
+						&nbsp; SetPos [-100 40] SetH 90 Right 45*<b>:</b>Order<br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_Odd.lbi" --><p><span class="toenl"><a href="../../ipt/info/promath.html#odd">To <span class="pro">Odd?</span> :<span class="var">Num</span></a></span><br>
+	&nbsp; <span class="com"># return 'true' if Num odd, else return 'false'</span><br>
+	&nbsp; If Not (Mod <b>:</b><span class="var">Num</span> 2) = 0 [Output &quot;True] [Output &quot;False]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Go</span> :<span class="var">LSys</span> :<span class="var">Order</span></span><br>
+						&nbsp; New<br>
+						&nbsp; Run Word &quot;L_Sys :LSys :Order<br>
+						&nbsp; Display :LSys :Order SetPC Green<br>
+						&nbsp; Run Word &quot;L_Sys :LSys :Order<br>
+						&nbsp; Make &quot;Step :Screen/:Scale<br>
+						&nbsp; Make &quot;DrawString Generate :Axiom :Order<br>
+						&nbsp; If :Order &lt; 2 [Print :DrawString] [Print [printout supressed] ]<br>
+						&nbsp; PenDown Draw :DrawString PenUp<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">GoX</span></span><br>
+						&nbsp; New Make &quot;Order 3<br>
+						&nbsp; For [LSys 1 5] [<br>
+						&nbsp; &nbsp; Wash Home<br>
+						&nbsp; &nbsp; Run Word &quot;L_Sys :LSys :Order<br>
+						&nbsp; &nbsp; Display :LSys :Order<br>
+						&nbsp; &nbsp; Make &quot;DrawString :Axiom<br>
+						&nbsp; &nbsp; For (List &quot;Ord 1 :Order) [<br>
+						&nbsp; &nbsp; &nbsp; Run Word &quot;L_Sys :LSys :Ord &nbsp; &nbsp; <span class="com"># start pos</span><br>
+						&nbsp; &nbsp; &nbsp; Make &quot;DrawString ReWrite :DrawString<br>
+						&nbsp; &nbsp; &nbsp; SetPC Item :Ord [2 1 4 5]<br>
+						&nbsp; &nbsp; &nbsp; SetPW Item (:Order+1)-:Ord [1 3 5 7]<br>
+						&nbsp; &nbsp; If :LSys = 5 [Run Word &quot;L_Sys :LSys :Ord+3] &nbsp; &nbsp; <span class="com">#Dragon Curve</span><br>
+						&nbsp; &nbsp; Make &quot;Step :Screen/:Scale<br>
+						&nbsp; &nbsp; PenDown Draw :DrawString PenUp<br>
+						&nbsp; Wait 60] Wait 120]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>GoX</strong></span></li>
+						<li><a href="../../lgo/l_systems/l_system2.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/l_systems/l_system2.lgo">File</a></li>
+						<li><a href="../../pict/gall8/lsys2.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>For individual curves, type <strong>go + LSystem + Order</strong> to run. For example <strong>Go 1 4</strong> will draw LSystem 1 to level 4.</p>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall8/lsys2.html"><img src="../../art/100g8/lsys2.gif" alt="LSys2" width="100" height="100"></a><br>
+				L-Sys Double</p>
+			<p>&nbsp;</p>
+			<table class="gray">
+				<tr>
+					<th align="center">Rules</th>
+				</tr>
+				<tr>
+					<td align="center"><strong>F</strong> forward step<br>
+						<strong>+</strong> right turn<br>
+						<strong>-</strong> left turn</td>
+				</tr>
+			</table>
+			<p>&nbsp;</p>
+			<p class="book">Book Info<br>
+				<a href="../../ipt/info/booksmath.html"><img src="../../art/books/cbn.jpg" alt="Computational Beauty Of nature" width="100" height="114"></a><br>
+				Pages 72-92</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

@@ -1,0 +1,48 @@
+# Main Command: GoX
+# C_Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init :order
+  # make Length and Angle global values
+  Make "Size 8*Power (SqRt 2) (9-:Order)
+  Make "Angle 90
+end
+
+to display :order
+  # write header title and curve level
+  SetPC White
+  SetPos [-190 184] Label Sentence [C_Curve Order] :Order
+end
+
+to c_curve :order
+  If :Order < 1 [Forward :Size Stop]  # ie if = 0
+  Right 45 
+  C_Curve :Order-1
+  Left 90
+  C_Curve :Order-1
+  Right 45 
+end
+
+to go :order
+  New Init :Order Display :Order
+  SetPos [-94 0] SetPC Green Right 90 PenDown
+  C_Curve :Order
+  # Right 180 C_Curve :Order          # comment in for double C curve
+end
+
+to gox
+  # Animation of curves 0-11
+  New Animation
+  For [Order 0 11] [Wash          # comment out Wash for overlaid curves
+  Init :Order Display :Order
+  SetPos [-94 0] SetPC Green Right 90 PenDown
+  C_Curve :Order
+  # Right 180 C_Curve :Order          # comment in for double C curve 
+  Refresh Wait 80 PenUp Home]
+end

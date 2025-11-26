@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Spirograph | Spiro</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Spiro</h2>
+			<p>- XLogo</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g1/spiro.gif" alt="Blue Ball" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>This program draws a series of 
+					12 random Spirograph-like patterns. Type in <strong>Go</strong> again to see 
+					12 more.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Spir</span></span><br>
+						&nbsp; SetPos <span class="pro">XYCurve</span> 0 PenDown<br>
+						&nbsp; For [<span class="var">T</span> 1 360] [SetPC <span class="pro">Hue2</span> <b>:</b><span class="var">T</span> SetPos <span class="pro">XYCurve</span> <b>:</b><span class="var">T</span>]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Rand</span></span><br>
+						&nbsp; Make &quot;<span class="var">R</span> Pick [80 90 100 110 120]<br>
+						&nbsp; Make &quot;<span class="var">S</span> 160-<b>:</b><span class="var">R</span><br>
+						&nbsp; Make &quot;<span class="var">A</span> (1 + Random 9)<br>
+						&nbsp; Make &quot;<span class="var">B</span> (1 + Random 9)<br>
+						&nbsp; Make &quot;<span class="var">C</span> (1 + Random 9)<br>
+						&nbsp; Make &quot;<span class="var">D</span> (1 + Random 9)<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Display</span></span><br>
+						&nbsp; <span class="com"># write header title and footer values</span><br>
+						&nbsp; SetPC White<br>
+						&nbsp; SetPos [-190 184] Label &quot;Spirograph<br>
+						&nbsp; SetPos [-190 -190] Label ( List &quot;ABCD= <b>:</b><span class="var">A</span> <b>:</b><span class="var">B</span> <b>:</b><span class="var">C</span> <b>:</b><span class="var">D</span> )<br>
+						&nbsp; SetPos [110 -190] Label ( List &quot;RS= <b>:</b><span class="var">R</span> <b>:</b><span class="var">S</span> )<br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_Hue2.lbi" --><p><span class="toenl"><a href="../../ipt/info/procol.html#hue2">To <span class="pro">Hue2</span> :<span class="var">Theta</span></a></span><br>
+	&nbsp; <span class="com"># Output RGB hue list from angle :Theta</span><br>
+	&nbsp; Make &quot;<span class="var">Red</span> Abs 255*Sin <b>:</b><span class="var">Theta</span><br>
+	&nbsp; Make &quot;<span class="var">Green</span> Abs 255*Sin (<b>:</b><span class="var">Theta</span>+120)<br>
+	&nbsp; Make &quot;<span class="var">Blue</span> Abs 255*Sin (<b>:</b><span class="var">Theta</span>+240)<br>
+	&nbsp; Output (List <b>:</b><span class="var">Red</span> <b>:</b><span class="var">Green</span> <b>:</b><span class="var">Blue</span>)<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">XYCurve</span> :<span class="var">T</span></span><br>
+						&nbsp; Make &quot;<span class="var">X</span> <b>:</b><span class="var">R</span>*(Sin <b>:</b><span class="var">A</span>*<b>:</b><span class="var">T</span>) + <b>:</b><span class="var">S</span>*(Sin <b>:</b><span class="var">B</span>*<b>:</b><span class="var">T</span>)<br>
+						&nbsp; Make &quot;<span class="var">Y</span> <b>:</b><span class="var">R</span>*(Cos <b>:</b><span class="var">C</span>*<b>:</b><span class="var">T</span>) <span class="red">+</span> <b>:</b><span class="var">S</span>*(Cos <b>:</b><span class="var">D</span>*<b>:</b><span class="var">T</span>)<br>
+						&nbsp; Output (List <b>:</b><span class="var">X</span> <b>:</b><span class="var">Y</span>)<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; Repeat 12 [&nbsp; <span class="pro">New</span> <span class="pro">Rand</span> <span class="pro">Display</span> <span class="pro">Spir</span> Wait 200]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/spirograph/spiro.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/spirograph/spiro.lgo">File</a></li>
+						<li><a href="../../pict/gall1/spiro.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>Paste any <strong>one</strong> of the following 'XYCurves' into XLogo to generate 
+					a different set of spirograph patterns.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">XYCurve</span> :<span class="var">S</span> :<span class="var">T</span></span><br>
+						&nbsp; <span class="com"># spiros</span><br>
+						&nbsp; Make &quot;<span class="var">X</span> <b>:</b><span class="var">R</span>*(Cos <b>:</b><span class="var">A</span>*<b>:</b><span class="var">T</span>) + <b>:</b><span class="var">S</span>*(Sin <b>:</b><span class="var">B</span>*<b>:</b><span class="var">T</span>)<br>
+						&nbsp; Make &quot;<span class="var">Y</span> <b>:</b><span class="var">R</span>*(Sin <b>:</b><span class="var">C</span>*<b>:</b><span class="var">T</span>) <span class="red">+</span> <b>:</b><span class="var">S</span>*(Cos <b>:</b><span class="var">D</span>*<b>:</b><span class="var">T</span>)<br>
+						&nbsp; Output List <b>:</b><span class="var">X</span> <b>:</b><span class="var">Y</span><br>
+						<span class="toen">End</span></p>
+					<hr>
+					<p><span class="toen">To <span class="pro">XYCurve</span> :<span class="var">S</span> :<span class="var">T</span></span><br>
+						&nbsp; <span class="com"># flowers -note C &amp; D not used</span><br>
+						&nbsp; Make &quot;<span class="var">X</span> <b>:</b><span class="var">R</span>*(Cos <b>:</b><span class="var">A</span>*<b>:</b><span class="var">T</span>) + <b>:</b><span class="var">S</span>*(Sin <b>:</b><span class="var">B</span>*<b>:</b><span class="var">T</span>)<br>
+						&nbsp; Make &quot;<span class="var">Y</span> <b>:</b><span class="var">R</span>*(Sin <b>:</b><span class="var">A</span>*<b>:</b><span class="var">T</span>) <span class="red">+</span> <b>:</b><span class="var">S</span>*(Cos <b>:</b><span class="var">B</span>*<b>:</b><span class="var">T</span>)<br>
+						&nbsp; Output List <b>:</b><span class="var">X</span> <b>:</b><span class="var">Y</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p>Change the red <span class="red">+</span> to a <span class="red">-</span> for two more XYCurves.</p>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall1/spiro.html"><img src="../../art/100g1/spiro.gif" alt="Spiro" width="100" height="100"></a><br>
+				Spiro</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

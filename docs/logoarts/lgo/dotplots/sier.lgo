@@ -1,0 +1,23 @@
+# Main Command: Go
+# Sierpinski_Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to sier
+  Make "Corner 1+Random 3    # choose random corner
+  Make "CornerPos Item :Corner [ [190 -180] [-190 -180] [0 160] ]
+  SetH Towards :CornerPos    # turn to face corner
+  Forward (Distance :CornerPos)/2   # move half way towards corner
+  PenDown Forward 0 PenUp   # plot pixel
+  SetPC Run Item :Corner [Green Yellow Magenta]
+end
+
+to go
+  New SetPC Black
+  Repeat 40000 [Sier]   # repeat 40000 times
+end

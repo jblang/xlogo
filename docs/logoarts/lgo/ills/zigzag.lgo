@@ -1,0 +1,26 @@
+# Main Command: Go
+# ZigZag by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to zigzag
+  # Draw a zig zag line 
+  PenDown Repeat 4 [
+    Right 55 Forward 80 Left 110 Forward 80 Right 55]
+end
+
+to go
+  New SetPC White 
+  For [X -170 130 40] [
+    SetXY :X Minus 183
+    ZigZag PenUp]
+  SetPC Red SetH 90
+  For [Y -160 170 46] [
+    SetXY Minus 180 :Y
+    PenDown Forward 360 PenUp]
+end

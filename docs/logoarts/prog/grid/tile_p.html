@@ -1,0 +1,372 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Grid | Tile Patterns</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Tile</h2>
+			<p>- random patterns</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g9/tiles32/06.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>A geometric tile pattern is formed when individual square tiles are fitted together in an array. Each tile can have 4 random rotations, with a color assigned to each. Most tiles are simple shapes that tile together well.<br>
+					Some tiles could also be drawn as a mirror image. They are not used in this program, so no tiles are 'turned over'.</p>
+				<p>Enter <strong>GoX</strong> for a series of random patterns.<br>
+					Enter <strong>Go Pattern Order</strong> to draw a particular pattern.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_GridSq2.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#gridsq2">To <span class="pro">GridSq</span> :<span class="var">Order</span> :<span class="var">Side</span></a></span><br>
+	&nbsp; <span class="com"># draw tile at each column x row  position</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Offset</span> (1+<b>:</b><span class="var">Order</span>)/2<br>
+	&nbsp; LocalMake &quot;<span class="var">Ps</span> [] LocalMake &quot;Total <b>:</b><span class="var">Order</span>*<b>:</b><span class="var">Order</span><br>
+	&nbsp; Repeat <b>:</b><span class="var">Total</span> [Make &quot;<span class="var">Ps</span> LPut RepCount <b>:</b><span class="var">Ps</span>] <br>
+	&nbsp; Repeat <b>:</b><span class="var">Total</span> [<br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">P</span> Pick <b>:</b><span class="var">Ps</span><br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Ps</span> Remove <b>:</b><span class="var">P</span> <b>:</b><span class="var">Ps</span><br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Col</span>  1+Mod <b>:</b><span class="var">P</span>-1 <b>:</b><span class="var">Order</span><br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Row</span> 1+Int (<b>:</b><span class="var">P</span>-1)/<b>:</b><span class="var">Order</span><br>
+	&nbsp; &nbsp; SetXY <b>:</b><span class="var">Side</span>*(<b>:</b><span class="var">Col</span>-<b>:</b><span class="var">Offset</span>) <b>:</b><span class="var">Side</span>*(<b>:</b><span class="var">Row</span>-<b>:</b><span class="var">Offset</span>)<br>
+	&nbsp; &nbsp; <span class="pro">Tile</span> <b>:</b><span class="var">Col</span> <b>:</b><span class="var">Row</span> <b>:</b><span class="var">Side</span>]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To<span class="pro"> Tile</span> :<span class="var">Col</span> :<span class="var">Row</span> :<span class="var">Side</span></span><br>
+						&nbsp; <span class="com"># use global value of :Tile to draw selected tile</span><br>
+						&nbsp; SetH Pick [0 90 180 270]<span class="com"> &nbsp; &nbsp; # tile rotation</span><br>
+						&nbsp; SetPC Item (1+Heading/90) [1 2 3 6]<br>
+						&nbsp; # SetPC Pick [1 2 3 6]<span class="com"> &nbsp; &nbsp; # comment in for random color</span><br>
+						&nbsp; # SetPC <b>:</b><span class="var">FlatCol</span> &nbsp; &nbsp; <span class="com"># comment in for all one color</span><br>
+						&nbsp; GlobalMake &quot;<span class="var">Hue</span> PenColor<br>
+						&nbsp; Run Se (Word "<span class="pro">Tile</span> <b>:</b><span class="var">TileNo</span>) 0.95*<b>:</b><span class="var">Side</span><br>
+						<span class="toen">End</span> </p>
+					<p><span class="toen">To <span class="pro">Tile1</span> :<span class="var">Side</span></span><br>
+						&nbsp; Left 45 Arch 270 <b>:</b><span class="var">Side</span>/2 Right 45 Back <b>:</b><span class="var">Side</span>/2<br>
+						&nbsp; PenDown Forward <b>:</b><span class="var">Side</span>/2 Right 90 Forward <b>:</b><span class="var">Side</span>/2<br>
+						&nbsp; PenUp Back 3*<b>:</b><span class="var">Side</span>/4 SetPC <span class="pro">Dark</span> PenColor Fill<br>
+						&nbsp; SetPC <b>:</b><span class="var">Hue</span> Forward <b>:</b><span class="var">Side</span>/2 Left 90 Arch 180 <b>:</b><span class="var">Side</span>/4<br>
+						&nbsp; Forward <b>:</b><span class="var">Side</span>/8 SetPC <span class="pro">Dark</span> <span class="pro">Dark</span> PenColor Fill<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tile2</span> :<span class="var">Side</span></span><br>
+						&nbsp; Right 45 <span class="pro">Kite</span> 1.414*<b>:</b><span class="var">Side</span><br>
+						&nbsp; SetPC <span class="pro">Dark</span> PenColor Fill PenUp SetPC <b>:</b><span class="var">Hue</span><br>
+						&nbsp; Right 45 Forward <b>:</b><span class="var">Side</span>/2 Left 153.4<br>
+						&nbsp; PenDown Forward <b>:</b><span class="var">Side</span> /2.7 Right 36.8 Forward <b>:</b><span class="var">Side</span> /2.7 PenUp<br>
+						&nbsp; Right 150 Forward <b>:</b><span class="var">Side</span>/4<br>
+						&nbsp; SetPC <span class="pro">Dark</span> <span class="pro">Dark</span> PenColor Fill<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tile3</span> :<span class="var">Side</span></span><br>
+						&nbsp; Right 45 Back 1.414*<b>:</b><span class="var">Side</span>/4 RightAngTri 1.414*<b>:</b><span class="var">Side</span><br>
+						&nbsp; SetPC <span class="pro">Dark</span> PenColor Fill SetPC <b>:</b><span class="var">Hue</span><br>
+						&nbsp; Right 45 Forward <b>:</b><span class="var">Side</span>/8 RightAngTri <b>:</b><span class="var">Side</span>/2<br>
+						&nbsp; SetPC <span class="pro">Dark</span> <span class="pro">Dark</span> PenColor Fill<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tile4</span> :<span class="var">Side</span></span><br>
+						&nbsp; Right 45 <span class="pro">Lens</span> 1.414*<b>:</b><span class="var">Side</span> Left 45<br>
+						&nbsp; SetPC <span class="pro">Dark</span> PenColor Fill<br>
+						&nbsp; SetPC <b>:</b><span class="var">Hue</span> <span class="pro">Lens</span> <b>:</b><span class="var">Side</span>/1.38<br>
+						&nbsp; SetPC <span class="pro">Dark</span> <span class="pro">Dark</span> PenColor Fill<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tile5</span> :<span class="var">Side</span></span><br>
+						&nbsp; Right 45 Back 1.414*<b>:</b><span class="var">Side</span>/2<br>
+						&nbsp; SetPC Yellow SetPW <b>:</b><span class="var">Side</span>/10 Arch 90 <b>:</b><span class="var">Side</span>/2<br>
+						&nbsp; Right 45 SetPW 1 SetPC <b>:</b><span class="var">FlatCol</span> SetPC <span class="pro">Dark</span> PenColor<br>
+						&nbsp; PenDown Repeat 4 [<br>
+						&nbsp; &nbsp; Forward <b>:</b><span class="var">Side</span>/4 PenUp Forward <b>:</b><span class="var">Side</span>/2 PenDown<br>
+						&nbsp; &nbsp; Forward <b>:</b><span class="var">Side</span>/4 Left 90]<br>
+						&nbsp; PenUp Forward <b>:</b><span class="var">Side</span>/2 Left 90 Forward <b>:</b><span class="var">Side</span>/2<br>
+						&nbsp; Repeat 2 [<br>
+						&nbsp; &nbsp; Back <b>:</b><span class="var">Side</span>/2 <span class="pro">Arch</span> 180 <b>:</b><span class="var">Side</span>/4<br>
+						&nbsp; &nbsp; Back <b>:</b><span class="var">Side</span>/2 <span class="pro">Arch</span> 68 0.9*<b>:</b><span class="var">Side</span> Forward <b>:</b><span class="var">Side</span><br>
+						&nbsp; &nbsp; Back <b>:</b><span class="var">Side</span>/6 FillZone Forward <b>:</b><span class="var">Side</span>/6 Left 180]<br>
+						&nbsp; SetPC <b>:</b><span class="var">FlatCol</span> Repeat 2 [<br>
+						&nbsp; &nbsp; Back <b>:</b><span class="var">Side</span>/2 <span class="pro">Arch</span> 180 <b>:</b><span class="var">Side</span>/4<br>
+						&nbsp; &nbsp; Back <b>:</b><span class="var">Side</span>/2 <span class="pro">Arch</span> 68 0.9*<b>:</b><span class="var">Side</span> Forward <b>:</b><span class="var">Side</span> Left 180]<br>
+						&nbsp; Left 135 Back 1.414*<b>:</b><span class="var">Side</span>/2<br>
+						&nbsp; SetPC Yellow SetPW <b>:</b><span class="var">Side</span>/10 Arch 90 <b>:</b><span class="var">Side</span>/2 SetPW 1<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tile6</span> :<span class="var">Side</span></span><br>
+						&nbsp; SetPC <b>:</b><span class="var">FlatCol</span> Back <b>:</b><span class="var">Side</span>/6 Left 90 PenDown<br>
+						&nbsp; Forward <b>:</b><span class="var">Side</span>/2 Left 90 Forward <b>:</b><span class="var">Side</span>/3<br>
+						&nbsp; Left 90 Forward <b>:</b><span class="var">Side</span> Left 90<br>
+						&nbsp; Forward <b>:</b><span class="var">Side</span>/3 Left 90 Forward <b>:</b><span class="var">Side</span>/2<br>
+						&nbsp; PenUp Forward <b>:</b><span class="var">Side</span>/6 Right 90 Back <b>:</b><span class="var">Side</span>/6<br>
+						&nbsp; SetPC <span class="pro">Dark</span> PenColor Fill Forward <b>:</b><span class="var">Side</span>/6<br>
+						&nbsp; SetPC Yellow PenDown Forward <b>:</b><span class="var">Side</span>/6 PenUp<br>
+						&nbsp; Forward <b>:</b><span class="var">Side</span>/6 Circle <b>:</b><span class="var">Side</span>/6 SetPC Orange Fill<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tile7</span> :<span class="var">Side</span></span><br>
+						&nbsp; If Or (Heading =90) (Heading=270) [Right 26.5] [Right 63.5]<br>
+						&nbsp; <span class="pro">Square</span> 0.74*<b>:</b><span class="var">Side</span> Back 0.37*<b>:</b><span class="var">Side</span> PenDown<br>
+						&nbsp; Forward 0.37*<b>:</b><span class="var">Side</span> Right 90 Forward 0.37*<b>:</b><span class="var">Side</span><br>
+						&nbsp; PenUp Back <b>:</b><span class="var">Side</span>/2 SetPC <span class="pro">Dark</span> PenColor Fill<br>
+						&nbsp; Right 30 Forward <b>:</b><span class="var">Side</span>/3<br>
+						&nbsp; SetPC <span class="pro">Dark</span> PenColor Fill<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tile8</span> :<span class="var">Side</span></span><br>
+						&nbsp; <span class="pro">Chevron</span> <b>:</b><span class="var">Side</span> Chevron <b>:</b><span class="var">Side</span>/2<br>
+						&nbsp; Forward 3*<b>:</b><span class="var">Side</span>/8 SetPC <span class="pro">Dark</span> PenColor Fill<br>
+						&nbsp; Back <b>:</b><span class="var">Side</span>/4 SetPC <span class="pro">Dark</span> PenColor Fill<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tile9</span> :<span class="var">Side</span></span><br>
+						&nbsp; Right 45 Back 1.414 *<b>:</b><span class="var">Side</span>/6 Left 45 <span class="pro">Square</span> 2*<b>:</b><span class="var">Side</span>/3<br>
+						&nbsp; SetPC <span class="pro">Dark</span> PenColor Fill SetPC <b>:</b><span class="var">Hue</span><br>
+						&nbsp; Forward <b>:</b><span class="var">Side</span>/3 PenDown Forward :Side/3<br>
+						&nbsp; Right 45 Back 1.414 *<b>:</b><span class="var">Side</span>/3 PenUp Forward 1.414 *<b>:</b><span class="var">Side</span>/3<br>
+						&nbsp; PenDown Right 45 Forward 2*<b>:</b><span class="var">Side</span>/3 Right 90 Forward 2*<b>:</b><span class="var">Side</span>/3<br>
+						&nbsp; Right 45 Forward 1.414 *<b>:</b><span class="var">Side</span>/3 PenUp<br>
+						&nbsp; Right 135 Forward 2*<b>:</b><span class="var">Side</span>/3 Right 45 PenDown Forward 1.414 *<b>:</b><span class="var">Side</span>/3<br>
+						&nbsp; PenUp Right 135 Forward <b>:</b><span class="var">Side</span>/6 Right 90 Forward <b>:</b><span class="var">Side</span>/12<br>
+						&nbsp; SetPC <span class="pro">Dark</span> <span class="pro">Dark</span> PenColor Fill Forward 2*<b>:</b><span class="var">Side</span>/3 Fill<br>
+						&nbsp; Back <b>:</b><span class="var">Side</span>/6 SetPC <span class="pro">Dark</span> PenColor Fill<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tile10</span> :<span class="var">Side</span></span><br>
+						&nbsp; Back <b>:</b><span class="var">Side</span>/2 Right 90 Back <b>:</b><span class="var">Side</span>/2<br>
+						&nbsp; PenDown Forward <b>:</b><span class="var">Side</span> Left 90 Forward <b>:</b><span class="var">Side</span><br>
+						&nbsp; Left 90 Forward <b>:</b><span class="var">Side</span>/3 Left 90 Forward 2*<b>:</b><span class="var">Side</span>/3<br>
+						&nbsp; Right 90 Forward 2*<b>:</b><span class="var">Side</span>/3 Left 90 Forward <b>:</b><span class="var">Side</span>/3<br>
+						&nbsp; PenUp Back <b>:</b><span class="var">Side</span> PenDown Repeat 4 [<br>
+						&nbsp; &nbsp; Forward <b>:</b><span class="var">Side</span>/3 Left 90] PenUp<br>
+						&nbsp; Left 45 Forward 1.414*<b>:</b><span class="var">Side</span>/6 SetPC <span class="pro">Dark</span> <span class="pro">Dark</span> PenColor Fill<br>
+						&nbsp; Forward 2*1.414*<b>:</b><span class="var">Side</span>/3 SetPC <b>:</b><span class="var">Hue</span> SetPC <span class="pro">Dark</span> PenColor Fill<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tile11</span> :<span class="var">Side</span></span><br>
+						&nbsp; Right 90 Forward <b>:</b><span class="var">Side</span>/3 Left 90 Forward <b>:</b><span class="var">Side</span>/6<br>
+						&nbsp; Repeat 2 [<br>
+						&nbsp; &nbsp; SetPC <span class="pro">Dark</span> <span class="pro">Dark</span> PenColor<br>
+						&nbsp; &nbsp; FillPolygon [PD (<span class="pro">Pgram</span> <b>:</b><span class="var">Side</span>/3 2*<b>:</b><span class="var">Side</span>/3 Minus 1)]<br>
+						&nbsp; SetPC <b>:</b><span class="var">Hue</span> (<span class="pro">Pgram</span> <b>:</b><span class="var">Side</span>/3 2*<b>:</b><span class="var">Side</span>/3 Minus 1)<br>
+						&nbsp; Left 90 Forward <b>:</b><span class="var">Side</span>/2 Left 90<br>
+						&nbsp; SetPC <span class="pro">Dark</span> PenColor FillPolygon [PD <span class="pro">Pgram</span> 2*<b>:</b><span class="var">Side</span>/3 2*<b>:</b><span class="var">Side</span>/3]<br>
+						&nbsp; SetPC <b>:</b><span class="var">Hue</span> <span class="pro">Pgram</span> 2*<b>:</b><span class="var">Side</span>/3 2*<b>:</b><span class="var">Side</span>/3<br>
+						&nbsp; Right 90 Forward <b>:</b><span class="var">Side</span>/6 Left 90 Forward <b>:</b><span class="var">Side</span>/3]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tile12</span> :<span class="var">Side</span></span><br>
+						&nbsp; Left 90 Forward <b>:</b><span class="var">Side</span>/4 Right 90 Forward <b>:</b><span class="var">Side</span>/4<br>
+						&nbsp; Repeat 2 [<br>
+						&nbsp; &nbsp; SetPC <span class="pro">Dark</span> <span class="pro">Dark</span> PenColor FillPolygon [PD <span class="pro">Pgram</span> <b>:</b><span class="var">Side</span>/2 <b>:</b><span class="var">Side</span>/2]<br>
+						&nbsp; SetPC <b>:</b><span class="var">Hue</span> <span class="pro">Pgram</span> <b>:</b><span class="var">Side</span>/2 <b>:</b><span class="var">Side</span>/2 Right 90 Forward <b>:</b><span class="var">Side</span>/2 Right 90<br>
+						&nbsp; SetPC <span class="pro">Dark</span> PenColor FillPolygon [ PD (<span class="pro">Pgram</span> <b>:</b><span class="var">Side</span>/2 <b>:</b><span class="var">Side</span>/2 Minus 1)]<br>
+						&nbsp; SetPC <b>:</b><span class="var">Hue</span> (<span class="pro">Pgram</span> <b>:</b><span class="var">Side</span>/2 <b>:</b><span class="var">Side</span>/2 Minus 1) Forward <b>:</b><span class="var">Side</span>/2]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">GoX</span></span><br>
+						&nbsp; Forever [<span class="pro">Go</span> (1+Random 12) (4+Random 5) Wait 240]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span> :<span class="var">Tile</span> :<span class="var">Order</span></span><br>
+						&nbsp; <span class="pro">New</span> Make &quot;<span class="var">Side</span> Int 380/<b>:</b><span class="var">Order</span> &nbsp; &nbsp; <span class="com"># screen width 380</span><br>
+						&nbsp; GlobalMake &quot;<span class="var">TileNo</span> <b>:</b><span class="var">Tile</span><br>
+						&nbsp; GlobalMake &quot;<span class="var">FlatCol</span> Pick [4 6 9 15]<span class="com"> &nbsp; &nbsp; # flat color for tiles 5 and 6</span> <br>
+						&nbsp; If <b>:</b><span class="var">Order</span>&lt;6 [SetPW Abs (7-<b>:</b><span class="var">Order</span>)]<span class="com"> &nbsp; &nbsp; # fat pen for low orders</span><br>
+						&nbsp; <span class="pro">GridSq</span> <b>:</b><span class="var">Order</span> <b>:</b><span class="var">Side</span><br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_Arch.lbi" --><p><span class="toenl"><a href="../../ipt/info/proarc.html#arch">To <span class="pro">Arch</span> :<span class="var">Angle</span> :<span class="var">Radius</span></a></span><br>
+	&nbsp; <span class="com"># symmetrical arc drawn relative to turtle heading</span><br>
+	&nbsp; Arc <b>:</b><span class="var">Radius</span> Heading-<b>:</b><span class="var">Angle</span>/2 
+	Heading+<b>:</b><span class="var">Angle</span>/2<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Chevron.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#chevron">To <span class="pro">Chevron</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># chevron shape drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Offset</span> <b>:</b><span class="var">Size</span>/4 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+	&nbsp; PenDown Left 45<br>
+	&nbsp; Forward 1.414*<b>:</b><span class="var">Size</span>/2 Right 135 Forward <b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; Right 45 Forward 1.414*<b>:</b><span class="var">Size</span>/2 Right 90 Forward 1.414*<b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; Right 45 Forward <b>:</b><span class="var">Size</span>/2 Right 135 Forward 1.414*<b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; Left 45 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Kite.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#kite">To <span class="pro">Kite</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># kite shape drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">Size</span>/2 PenDown<br>
+	&nbsp; Left 18.4 Forward <b>:</b><span class="var">Size</span>/1.26 Right 63.4<br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span>/2.82 Right 90 Forward <b>:</b><span class="var">Size</span>/2.82<br>
+	&nbsp; Right 63.4 Forward <b>:</b><span class="var">Size</span>/1.26<br>
+	&nbsp; PenUp Right 161.6 Forward <b>:</b><span class="var">Size</span>/2 &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Lens.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#lens">To <span class="pro">Lens</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># lens shape drawn from centre (tp)</span><br>
+	&nbsp; Repeat 2 [<br>
+	&nbsp; &nbsp; Back <b>:</b><span class="var">Size</span>/2<span class="pro"> Arch</span> 90 <b>:</b><span class="var">Size</span>/1.414<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/2 Left 180]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Pgram.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#pgram">To <span class="pro">Pgram</span> :<span class="var">Wide</span> :<span class="var">High</span> [<b>:</b><span class="var">P</span> 1]</a></span><br>
+	&nbsp; <span class="com"># parallelogram shape drawn from centre (tp)</span><br>
+	&nbsp; <span class="com"># default parity of 1, use minus 1 for mirror image</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Ang</span> ATan <b>:</b><span class="var">Wide</span>/(<b>:</b><span class="var">High</span>/2) &nbsp; &nbsp; <span class="com"># inner angle</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Len</span> <b>:</b><span class="var">Wide</span>/ Sin <b>:</b><span class="var">Ang</span> &nbsp; &nbsp; <span class="com"># side length</span><br>
+	&nbsp; Back <b>:</b><span class="var">High</span>/4 Right <b>:</b><span class="var">P</span>*<b>:</b><span class="var">Ang</span> Back <b>:</b><span class="var">Len</span>/2 PenDown<br>
+	&nbsp; Repeat 2 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Len</span> Left <b>:</b><span class="var">P</span>*<b>:</b><span class="var">Ang</span> Forward <b>:</b><span class="var">High</span>/2 Left <b>:</b><span class="var">P</span>*(180-<b>:</b><span class="var">Ang</span>)]<br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Len</span>/2 Left <b>:</b><span class="var">P</span>*<b>:</b><span class="var">Ang</span> Forward <b>:</b><span class="var">High</span>/4 &nbsp; &nbsp; <span class="com"># r2c</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_RAT.lbi" -->
+<p><span class="toenl"><a href="../../ipt/info/proshape.html#rat">To <span class="pro">RightAngTri</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># right angled triangle drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">Size</span>/4 Right 45<br>
+	&nbsp; PenDown Forward 1.414*<b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; Left 135 Forward <b>:</b><span class="var">Size</span><br>
+	&nbsp; Left 135 Forward 1.414*<b>:</b><span class="var">Size</span>/2 PenUp<br>
+	&nbsp; Left 135 Forward <b>:</b><span class="var">Size</span>/4 &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Square.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#square">To <span class="pro">Square</span> :<span class="var">Side</span></a></span><br>
+	&nbsp; <span class="com"># square (side x side) drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">Side</span>/2 Right 90 Back <b>:</b><span class="var">Side</span>/2 PenDown<br>
+	&nbsp; Repeat 4 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Side</span> Left 90]<br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Side</span>/2 Left 90 Forward <b>:</b><span class="var">Side</span>/2 &nbsp; &nbsp; <span class="com"># r2c</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Dark.lbi" --><p><span class="toenl"><a href="../../ipt/info/procol.html#dark">To <span class="pro">Dark</span> :<span class="var">Hue</span></a></span><br>
+	&nbsp; <span class="com"># output rgb list midway between :hue and black</span><br>
+	&nbsp; Repeat 3 [<br>
+	&nbsp; &nbsp; Make &quot;<span class="var">Hue</span> ButFirst LPut Int (First <b>:</b><span class="var">Hue</span>)/2 <b>:</b><span class="var">Hue</span>]<br>
+	&nbsp; Output <b>:</b><span class="var">Hue</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>GoX</strong></span></li>
+						<li><a href="../../lgo/grid/tile_p.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/grid/tile_p.lgo">File</a></li>
+						<li><a href="../../pict/gall9/tile_p.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>For a specific pattern, type <strong>go tilepattern arraysize</strong> eg <strong>go 2 7</strong> to run.</p>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall9/tile_p.html"><img src="../../art/100g9/tiles/6.gif" alt="YinYang" width="100" height="100" border="0"></a><br>
+				Tile Pattern</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall9/tile01.html"><img src="../../art/32g9/tiles32/01.gif" alt="" width="32" height="32" border="0"></a> Tile 01</p>
+			<p><a href="../../pict/gall9/tile02.html"><img src="../../art/32g9/tiles32/02.gif" alt="" width="32" height="32" border="0"></a> Tile 02</p>
+			<p><a href="../../pict/gall9/tile03.html"><img src="../../art/32g9/tiles32/03.gif" alt="" width="32" height="32" border="0"></a> Tile 03</p>
+			<p><a href="../../pict/gall9/tile04.html"><img src="../../art/32g9/tiles32/04.gif" alt="" width="32" height="32" border="0"></a> Tile 04</p>
+			<p><a href="../../pict/gall9/tile05.html"><img src="../../art/32g9/tiles32/05.gif" alt="" width="32" height="32"></a> Tile 05</p>
+			<p><a href="../../pict/gall9/tile06.html"><img src="../../art/32g9/tiles32/06.gif" alt="" width="32" height="32"></a> Tile 06</p>
+			<p><a href="../../pict/gall9/tile07.html"><img src="../../art/32g9/tiles32/07.gif" alt="" width="32" height="32"></a> Tile 07</p>
+			<p><a href="../../pict/gall9/tile08.html"><img src="../../art/32g9/tiles32/08.gif" alt="" width="32" height="32" border="0"></a> Tile 08</p>
+			<p><a href="../../pict/gall9/tile09.html"><img src="../../art/32g9/tiles32/09.gif" alt="" width="32" height="32" border="0"></a> Tile 09</p>
+			<p><a href="../../pict/gall9/tile10.html"><img src="../../art/32g9/tiles32/10.gif" alt="" width="32" height="32" border="0"></a> Tile 10</p>
+			<p><a href="../../pict/gall9/tile11.html"><img src="../../art/32g9/tiles32/11.gif" alt="" width="32" height="32" border="0"></a> Tile 11</p>
+			<p><a href="../../pict/gall9/tile12.html"><img src="../../art/32g9/tiles32/12.gif" alt="" width="32" height="32" border="0"></a> Tile 12</p>
+			<p>&nbsp;</p>
+			<p>Also see <img src="../../art/32g7/tiles32/32.gif" width="32" height="32"><br>
+				<a href="tile_p.html">Tile Arrays</a></p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

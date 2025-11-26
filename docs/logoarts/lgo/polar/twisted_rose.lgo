@@ -1,0 +1,43 @@
+# Main Command: Go
+# Twisted Rose Curves by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+To PtoR :RadDist :Theta
+  # convert polar to rectangular co-ordinates
+  LocalMake "X :RadDist *Sin :Theta
+  LocalMake "Y :RadDist *Cos :Theta
+  Output List :X :Y
+End
+
+to spiral :ang
+  # Twisted Rose Curve
+  Make "Radius 180*Sin(6*:Ang)
+  Make "Angle :Ang + (:Radius/4)
+  Output PtoR :Radius :Angle 
+end
+
+to go
+  New SetPC Yellow
+  For [Ang 0 360] [
+    SetPos Spiral :Ang PenDown]
+end
+
+to spiral2 :angle
+  # Twisted Rose Curve2
+  Make "Radius 180*Sin(4*:Angle)
+  Make "Angle :Angle + :Radius
+  Output P2R :Radius :Angle 
+end
+
+to spiral3 :angle
+  # Twisted Rose Simple
+  Make "Radius 160*Sin :Angle
+  Make "Angle :Angle + :Radius
+  Output P2R :Radius :Angle 
+end

@@ -1,0 +1,65 @@
+# Color Library by Guy Walker
+# www.logoarts.co.uk
+
+To Aqua
+  Output [0 128 255]     # return aqua rgb color
+End
+
+To Dark :Hue
+  # output rgb list midway between :hue and black
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (First :Hue)/2 :Hue]
+  Output :Hue
+End
+
+To Hex :Num
+  # convert hexadecimal value to RGB list
+  If Not (Count :Num)=1 [Print [Hex value must be single number!] StopAll]
+  ForEach "Hex First :Num [
+    If Not Number? :Hex [
+      Make "Hex Unicode :Hex
+      If (:Hex>96) [Make "Hex :Hex-87]     # A to F
+      If (:Hex>64) [Make "Hex :Hex-55]     # a to f
+      If Or (:Hex<10) (:Hex>15) [Print [Hex value 0-9 and a-f only!] StopAll]]
+    Make "Num LPut 17*:Hex :Num]
+  Output ButFirst :Num
+End
+
+To Hue :Theta
+  # Output RGB hue list from angle :Theta
+  Make "Red Round 127.5*(1+Sin :Theta)
+  Make "Green Round 127.5*(1+Sin (:Theta+120))
+  Make "Blue Round 127.5*(1+Sin (:Theta+240))
+  Output (List :Red :Green :Blue)
+End
+
+To Hue2 :Theta
+  # Output RGB hue list from angle :Theta
+  Make "Red Abs 255*Sin :Theta
+  Make "Green Abs 255*Sin (:Theta+120)
+  Make "Blue Abs 255*Sin (:Theta+240)
+  Output (List :Red :Green :Blue)
+End
+
+To Invert :Color
+  # return invert or negative color
+  LocalMake "Red 128+(127-Item 1 :Color)
+  LocalMake "Green 128+(127-Item 2 :Color)
+  LocalMake "Blue 128+(127-Item 3 :Color)
+  Output (List :Red :Green :Blue)
+End
+
+To Leaf
+  Output [0 255 128]     # return leaf rgb color
+End
+
+To Light :Hue
+  # output rgb list midway between :hue and white
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (255+(First :Hue))/2 :Hue]
+  Output :Hue
+End
+
+To Rose
+  Output [255 0 128]     # return rose rgb color
+End

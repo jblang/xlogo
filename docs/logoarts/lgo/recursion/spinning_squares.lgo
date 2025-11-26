@@ -1,0 +1,38 @@
+# Main Command: Go
+# Spinning Squares by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to spinsquare :side
+  If :Side < 12 [Stop]
+  SetPC Hue 1.4*:Side
+  Square :Side
+  Left 4
+  SpinSquare :Side-8
+end
+
+To Hue :Theta
+  # Output RGB hue list from angle :Theta
+  Make "Red Round 127.5*(1+Sin :Theta)
+  Make "Green Round 127.5*(1+Sin (:Theta+120))
+  Make "Blue Round 127.5*(1+Sin (:Theta+240))
+  Output (List :Red :Green :Blue)
+End
+
+to square :side
+  # square (side x side) drawn from centre (tx)
+  LocalMake "Half :Side/2 
+  PenUp Back :Half Right 90 Back :Half
+  PenDown Repeat 4 [ 
+    Forward :Side Left 90] 
+  PenUp Forward :Half Left 90 Forward :Half 
+end
+
+to go
+  New Right 6 SpinSquare 340
+end

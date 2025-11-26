@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/info3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Resource | Procedures | Library</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="info">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Procedure Library</h2>
+			<p>- XLogo</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<img src="../../art/img32/xlogo32.gif" alt="xlogo" width="32" height="32">
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>This section contains libraries of common procedures which are used throughout the 
+					programs on this site. They are divided into Arcs, Colors, Lists, Maths, 
+					Recursive and Shapes.<br>
+					In this site, the 'To' and 'End' lines appear with a gray background 
+					to identify the procedure as a common library item.<br>
+					Some also have a Test procedure to make checking easier.</p>
+				<p>You can keep these procedures in a special Start Up file. They are 
+					automatically loaded and available for use when XLogo starts up. In 
+					which case, they are called 'Pseudo Primitives' as they cannot be edited 
+					within XLogo.</p>
+				<p>Download complete library of these <a href="../../lgo/lib/proc_lib.lgo">procedures</a>.</p>
+				<p><a name="new"></a><span class="subh">New</span><br>
+					Set defaults for a new drawing. This ensures programs will always work in exactly the 
+					same way. Avoid <strong>CS</strong>, as it uses screen and pen color preferences that are different for each user.<br>
+					Used in all programs!</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="arrow" id="arrow"></a><span class="subh">Arrow</span><br> 
+					Draw a simple arrow head, usually at the end of a line.
+</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Arrow.lbi" --><p><span class="toenl"><a href="prolib.html#arrow">To <span class="pro">Arrow</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># draw simple end-of-line arrow (tp)</span><br>
+	&nbsp; Left 15 Back <b>:</b><span class="var">Size</span> PenDown<br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span> Right 30 
+	Back <b>:</b><span class="var">Size</span> <br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Size</span> Left 15<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="gridsq"></a><span class="subh">GridSq</span><br>
+					Uses a nested loop to step through successive column by row grid positions. Interchangeable with GridSq below.<br>
+					<span class="fs10">Used in <a href="../../prog/demo/chessboard.html">Chessboard</a>, <a href="../../prog/illusion/bulge.html">Bulge</a>, <a href="../../prog/illusion/fraser.html">Fraser</a>, <a href="../../prog/illusion/seaweed.html">Seaweed</a> and <a href="../../prog/illusion/scintillate.html">Scintillate</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_GridSq.lbi" --><p><span class="toenl"><a href="prolib.html#gridsq">To <span class="pro">GridSq</span> :<span class="var">Order</span> :<span class="var">Side</span></a></span><br>
+	&nbsp; <span class="com"># draw tile at each column x row  position</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Offset</span> (1+<b>:</b><span class="var">Order</span>)/2<br>
+	&nbsp; For (List &quot;<span class="var">Col</span> 1 <b>:</b><span class="var">Order</span>) [<br>
+	&nbsp; &nbsp; For (List &quot;<span class="var">Row</span> 1 <b>:</b><span class="var">Order</span>) [<br>
+	&nbsp; &nbsp; &nbsp; SetXY <b>:</b><span class="var">Side</span>*(<b>:</b><span class="var">Col</span>-<b>:</b><span class="var">Offset</span>) <b>:</b><span class="var">Side</span>*(<b>:</b><span class="var">Row</span>-<b>:</b><span class="var">Offset</span>)<br>
+	&nbsp; &nbsp; &nbsp; <span class="pro">Tile</span> <b>:</b><span class="var">Col</span> <b>:</b><span class="var">Row</span> <b>:</b><span class="var">Side</span>] ]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="gridsq2"></a><span class="subh">GridSq</span><br>
+					Draw tiles randomly, by picking a random position from a list of all positions. Interchangeable with GridSq above.<br>
+					<span class="fs10">Used in <a href="../../prog/grid/tile_a.html">Tile Array</a> and <a href="../../prog/grid/tile_p.html">Tile Pattern</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_GridSq2.lbi" --><p><span class="toenl"><a href="prolib.html#gridsq2">To <span class="pro">GridSq</span> :<span class="var">Order</span> :<span class="var">Side</span></a></span><br>
+	&nbsp; <span class="com"># draw tile at each column x row  position</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Offset</span> (1+<b>:</b><span class="var">Order</span>)/2<br>
+	&nbsp; LocalMake &quot;<span class="var">Ps</span> [] LocalMake &quot;Total <b>:</b><span class="var">Order</span>*<b>:</b><span class="var">Order</span><br>
+	&nbsp; Repeat <b>:</b><span class="var">Total</span> [Make &quot;<span class="var">Ps</span> LPut RepCount <b>:</b><span class="var">Ps</span>] <br>
+	&nbsp; Repeat <b>:</b><span class="var">Total</span> [<br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">P</span> Pick <b>:</b><span class="var">Ps</span><br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Ps</span> Remove <b>:</b><span class="var">P</span> <b>:</b><span class="var">Ps</span><br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Col</span>  1+Mod <b>:</b><span class="var">P</span>-1 <b>:</b><span class="var">Order</span><br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Row</span> 1+Int (<b>:</b><span class="var">P</span>-1)/<b>:</b><span class="var">Order</span><br>
+	&nbsp; &nbsp; SetXY <b>:</b><span class="var">Side</span>*(<b>:</b><span class="var">Col</span>-<b>:</b><span class="var">Offset</span>) <b>:</b><span class="var">Side</span>*(<b>:</b><span class="var">Row</span>-<b>:</b><span class="var">Offset</span>)<br>
+	&nbsp; &nbsp; <span class="pro">Tile</span> <b>:</b><span class="var">Col</span> <b>:</b><span class="var">Row</span> <b>:</b><span class="var">Side</span>]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p>Make GridSq relative by changing the last 3 lines to</p>
+				<div class="codearea">
+					<p> &nbsp; &nbsp; <span class="pro">rSetXY</span> <b>:</b><span class="var">Side</span>*(<b>:</b><span class="var">Col</span>-<b>:</b><span class="var">Offset</span>) <b>:</b><span class="var">Side</span>*(<b>:</b><span class="var">Row</span>-<b>:</b><span class="var">Offset</span>)<br>
+						&nbsp; &nbsp; <span class="pro">Tile</span> <b>:</b><span class="var">Col</span> <b>:</b><span class="var">Row</span> <b>:</b><span class="var">Side</span><br>
+						&nbsp; &nbsp; <span class="pro">rSetXY</span> Minus <b>:</b><span class="var">Side</span>*(<b>:</b><span class="var">Col</span>-<b>:</b><span class="var">Offset</span>) Minus <b>:</b><span class="var">Side</span>*(<b>:</b><span class="var">Row</span>-<b>:</b><span class="var">Offset</span>) ]<br>
+					</p>
+				</div>
+				<p><a name="gridrect"></a><span class="subh">GridRect</span><br>
+					Uses a nested loop to step through successive column by row grid positions. Seperate Horizontal and Vertical values of Order are used, allowing a rectangular grid.<br>
+					<span class="fs10">Used in <a href="../../prog/coding/chequer.html">ChequerGrid</a>, <a href="../../prog/coding/rgbs.html">RGB Swatch</a></span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_GridRect.lbi" --><p><span class="toenl"><a href="prolib.html#gridrect">To <span class="pro">GridRect</span> :<span class="var">OrderH</span> :<span class="var">OrderV</span> :<span class="var">SqSize</span></a></span><br>
+	&nbsp; <span class="com"># draw tile at each column x row grid position</span><br>
+	&nbsp; LocalMake &quot;<span class="var">OffsetH</span> (1+ <b>:</b><span class="var">OrderH</span>) /2<br>
+	&nbsp; LocalMake &quot;<span class="var">OffsetV</span> (1+ <b>:</b><span class="var">OrderV</span>) /2<br>
+	&nbsp; LocalMake &quot;<span class="var">SideH</span> <b>:</b><span class="var">SqSize</span> /<b>:</b><span class="var">OrderH</span><br>
+	&nbsp; LocalMake &quot;<span class="var">SideV</span> <b>:</b><span class="var">SqSize</span> /<b>:</b><span class="var">OrderV</span><br>
+	&nbsp; For (List &quot;<span class="var">Col</span> 1 <b>:</b><span class="var">OrderH</span>) [<br>
+	&nbsp; &nbsp; For (List &quot;<span class="var">Row</span> 1 <b>:</b><span class="var">OrderV</span>) [<br>
+	&nbsp; &nbsp; &nbsp; SetXY <b>:</b><span class="var">SideH</span>*(<b>:</b><span class="var">Col</span>-<b>:</b><span class="var">OffsetH</span>) <b>:</b><span class="var">SideV</span>*(<b>:</b><span class="var">Row</span>-<b>:</b><span class="var">OffsetV</span>)<br>
+	&nbsp; &nbsp; &nbsp; <span class="pro">Tile</span> <b>:</b><span class="var">Col</span> <b>:</b><span class="var">Row</span> <b>:</b><span class="var">SideH</span> <b>:</b><span class="var">SideV</span>] ]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="grout" id="grout"></a><span class="subh">Grout</span><br>
+Draw a series of horizontal and vertical lines to form a grid of grout lines between square tiles.<br>
+<span class="fs10">Used in <a href="../../prog/puzzle/15.html">15 
+					Puzzle</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Grout.lbi" --><p><span class="toenl"><a href="prolib.html#grout">To <span class="pro">Grout</span> :<span class="var">Size</span> :<span class="var">Order</span></a></span><br>
+	&nbsp; <span class="com"># draw centred square grid with :order divisions</span><br>
+	&nbsp; SetPC [64 64 64] SetPW 1<br>
+	&nbsp; For (List &quot;<span class="var">Point</span> 0 <b>:</b><span class="var">Size</span>+1 <b>:</b><span class="var">Size</span>/<b>:</b><span class="var">Order</span>) [<br>
+	&nbsp; &nbsp; SetXY <b>:</b><span class="var">Point</span>-<b>:</b><span class="var">Size</span>/2 <b>:</b><span class="var">Size</span>/2 SetH 180<br>
+	&nbsp; &nbsp; PenDown Forward <b>:</b><span class="var">Size</span> PenUp<br>
+	&nbsp; &nbsp; SetXY <b>:</b><span class="var">Size</span>/2 <b>:</b><span class="var">Point</span>-<b>:</b><span class="var">Size</span>/2 SetH 270<br>
+	&nbsp; &nbsp; PenDown Forward <b>:</b><span class="var">Size</span> PenUp Wait 2]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="jump"></a><span class="subh">Jump</span><br>
+					Turtles don't normally jump, but if they did, they would jump to a random 
+					position within a square area of side :Side.<br>
+					<span class="fs10">Used in <a href="../../prog/demo/star.html">DemoStar</a>, <a href="../../prog/coding/dots.html">Dots</a>, <a href="../../prog/art/shapes.html">Shapes</a> and <a href="../../prog/art/wire.html">WireShapes</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Jump.lbi" --><p><span class="toenl"><a href="prolib.html#jump">To <span class="pro">Jump</span> :<span class="var">Side</span></a></span><br>
+	&nbsp; <span class="com"># set turtle to random position within square of size side</span><br>
+	&nbsp; SetXY (Random <b>:</b><span class="var">Side</span>) - <b>:</b><span class="var">Side</span>/2 (Random <b>:</b><span class="var">Side</span>) - <b>:</b><span class="var">Side</span>/2<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="rsetxy"></a><span class="subh">rSetXY</span><br>
+					Move turtle to new XY position relative to current position. Turtle heading remains unchanged.<span class="fs10"></span></p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">rSetXY</span> :<span class="var">DistX</span> :<span class="var">DistY</span></span><br>
+						&nbsp; <span class="com"># set turtle XY position relative to current position</span><br>
+						&nbsp; Right 90 Forward <b>:</b><span class="var">DistX</span><br>
+						&nbsp; Left 90 Forward <b>:</b><span class="var">DistY</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="title"></a><span class="subh">Title</span><br>
+Label titles in each corner of the screen.<span class="fs10"></span> Titles is a list of upto 4 items. An empty list labels nothing.<br>
+<span class="fs10">Used in <a href="../../prog/walk/ringwave.html">Ring Wave</a></span>. </p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Title.lbi" --><p><span class="toenl"><a href="prolib.html#title">To <span class="pro">Title</span> :<span class="var">Titles</span></a></span><br>
+	&nbsp; <span class="com"># label up to 4 titles</span><br>
+	&nbsp; SetPC White Repeat Count <b>:</b><span class="var">Titles</span> [<br>
+	&nbsp; &nbsp; Home Right (RepCount*90) -135 Forward 262 SetH 0<br>
+	&nbsp; &nbsp; If X&gt;0 [SetFontJustify [2 1]] [SetFontJustify [0 1]]<br>
+	&nbsp; &nbsp; Label Item RepCount <b>:</b><span class="var">Titles</span>]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="ask" id="ask"></a><span class="subh">Ask</span><br>
+					Allow the user to select items from a list of possible items. Each item is listed with a numerical key to select.<br>
+					No selection (just hit return key) selects all items. User can enter item numbers with no spaces (eg 135) if all item numbers less than 9. Selecting items outside the range will return an error.<br>
+					Returns user selection as a  list of items.<br>
+				<span class="fs10">Used in <a href="../../prog/coding/shapes.html">Ring Wave</a></span>.				</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Ask.lbi" --><p><span class="toenl"><a href="prolib.html#ask">To <span class="pro">Ask</span> :<span class="var">Items</span></a></span><br>
+	&nbsp; <span class="com"># return list of user selected items</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Say</span> List &quot;Select: [_ all]<br>
+	&nbsp; Repeat Count <b>:</b><span class="var">Items</span> [<br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Say</span> LPut List RepCount (Item RepCount <b>:</b><span class="var">Items</span>) <b>:</b><span class="var">Say</span>]<br>
+	&nbsp; Read <b>:</b><span class="var">Say</span> &quot;<span class="var">Input</span><br>
+	&nbsp; If <b>:</b><span class="var">Input</span> = &quot; [Print &quot;all Output ButFirst ButFirst <b>:</b><span class="var">Say</span>] &nbsp; &nbsp; &nbsp; <span class="com"># all if no entry</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Selection</span> []<br>
+	&nbsp; ForEach &quot;<span class="var">ItemNo</span> <b>:</b><span class="var">Input</span> [<br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Selection</span> LPut (Item <b>:</b><span class="var">ItemNo</span>+2 <b>:</b><span class="var">Say</span>) <b>:</b><span class="var">Selection</span>]<br>
+	&nbsp; Print  <b>:</b><span class="var">Selection</span> Output <b>:</b><span class="var">Selection</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+<p><a name="ask2" id="ask2"></a><span class="subh">Ask2</span><br>
+					Allow the user to select items from a list of possible items. Each item is listed with a numerical key to select.<br>
+				No selection (just hit return key) selects all items. User can enter item numbers with no spaces (eg 135) if all item numbers less than 9. Selecting items outside the range will return an error.<br>
+				Returns user selection as a numercal list, with duplicate entries removed.<br>
+				<span class="fs10">Used in <a href="../../prog/pers/platonic.html">Platonic Solid</a></span>.				</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Ask2.lbi" --><p><span class="toenl"><a href="prolib.html#ask2">To <span class="pro">Ask2</span> :<span class="var">Items</span></a></span><br>
+	&nbsp; <span class="com"># return numerical list of user selected items, duplicates removed</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Say</span> [Select: _all] LocalMake &quot;<span class="var">All</span> []<br>
+	&nbsp; Repeat Count <b>:</b><span class="var">Items</span> [<br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Say</span> LPut (Word RepCount &quot;_ Item RepCount <b>:</b><span class="var">Items</span>) <b>:</b><span class="var">Say</span><br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">All</span> LPut RepCount <b>:</b><span class="var">All</span>] <br>
+	&nbsp; Read <b>:</b><span class="var">Say</span> &quot;<span class="var">Input</span><br>
+	&nbsp; If <b>:</b><span class="var">Input</span> = &quot; [Print &quot;all Output <b>:</b><span class="var">All</span>] &nbsp; &nbsp; &nbsp; <span class="com"># all if no entry</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Selection</span> []<br>
+	&nbsp; ForEach &quot;<span class="var">ItemNo</span> <b>:</b><span class="var">Input</span> [<br>
+	&nbsp; &nbsp; If Not Member <b>:</b><span class="var">ItemNo</span> <b>:</b><span class="var">Selection</span> [<br>
+	&nbsp; &nbsp; &nbsp; LocalMake &quot;<span class="var">Selection</span> LPut <b>:</b><span class="var">ItemNo</span><b> :</b><span class="var">Selection</span>] ]<br>
+	&nbsp; Print <b>:</b><span class="var">Selection</span> Output <b>:</b><span class="var">Selection</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		
+		<div id="leco">
+			<p class="contents"><a href="../../prog/top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuInfo.lbi" --><ul>
+	<li><a href="books.html"> 
+		<script type="text/javascript"> blob("Books");</script> Books</a></li>
+	<li><a href="bookslogo.html"> 
+		<script type="text/javascript"> blob("Books_Logo");</script> &nbsp; &nbsp; logo</a></li>
+	<li><a href="booksfractals.html"> 
+		<script type="text/javascript"> blob("Books_Fractals");</script> &nbsp; &nbsp; fractals</a></li>
+	<li><a href="booksgrap.html"> 
+		<script type="text/javascript"> blob("Books_Graphics");</script> &nbsp; &nbsp; graphics</a></li>
+	<li><a href="booksmath.html"> 
+		<script type="text/javascript"> blob("Books_Maths");</script> &nbsp; &nbsp; maths</a></li>
+	<li><a href="bookslife.html"> 
+		<script type="text/javascript"> blob("Books_Life");</script> &nbsp; &nbsp; life</a></li>
+	<li><a href="bookspuzz.html"> 
+		<script type="text/javascript"> blob("Books_Puzzle");</script> &nbsp; &nbsp; puzzles</a></li>
+	<li><a href="booksmathgen.html"> 
+		<script type="text/javascript"> blob("Books_MathsGeneral");</script> &nbsp; &nbsp; mathsgen</a></li>
+	<li><a href="colorsalt.html"> 
+		<script type="text/javascript"> blob("Colors")</script> Colors</a></li>
+	<li><a href="genart.html"> 
+		<script type="text/javascript"> blob("Generative Art")</script> Generative</a></li>
+	<li><a href="glossary.html"> 
+		<script type="text/javascript"> blob("Glossary")</script> Glossary</a></li>
+	<li><a href="prolib.html"> 
+		<script type="text/javascript"> blob("Procedures")</script> Procedures</a></li>
+	<li><a href="proarc.html"> 
+		<script type="text/javascript"> blob("Procedures_Arc");</script> &nbsp; &nbsp; arc</a></li>
+	<li><a href="procol.html"> 
+		<script type="text/javascript"> blob("Procedures_Color");</script> &nbsp; &nbsp; color</a></li>
+	<li><a href="prolist.html"> 
+		<script type="text/javascript"> blob("Procedures_List");</script> &nbsp; &nbsp; list</a></li>
+	<li><a href="promath.html"> 
+		<script type="text/javascript"> blob("Procedures_Math");</script> &nbsp; &nbsp; math</a></li>
+	<li><a href="prorecur.html"> 
+		<script type="text/javascript"> blob("Procedures_Recursive");</script> &nbsp; &nbsp; recursive</a></li>
+	<li><a href="proshape.html"> 
+		<script type="text/javascript"> blob("Procedures_Shape");</script> &nbsp; &nbsp; shape</a></li>
+	<li><a href="turts.html"> 
+		<script type="text/javascript"> blob("Turtles")</script> Turtles</a></li>
+	<li><a href="tuts.html"> 
+		<script type="text/javascript"> blob("Tutorials")</script> Tutorial</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><img src="../../art/img100/xlogo100.gif" alt="xlogo" width="100" height="100"><br>
+				XLogo</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/arrow.gif" alt="arrow" width="64" height="64"><br>
+				Arrow</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><img src="../../art/img100/shapes/grout.gif" alt="grout" width="64" height="64"><br>
+				Grout</p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<!-- #EndEditable -->
+			<p>&nbsp;</p><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

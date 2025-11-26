@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Demo | Please Wait</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Please Wait...</h2>
+			<p>- XLogo</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g4/pwait.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>An example of creating a sentence from 
+					words randomly picked from a list.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Word1</span> Pick [ 
+						Accessing Allocating Assessing Calculating Clearing Compacting 
+						Comparing Configuring Confirming Correcting Deleting Detecting 
+						Determining Downloading Eliminating Enabling Executing Expanding 
+						Forwarding Generating Identifying Incrementing Initialising 
+						Interpreting Not_Found Preparing Processing Reading Releasing 
+						Repairing Retrieving Searching_For Terminating Transferring 
+						Tracking Updating Writing ]<br>
+						<br>
+						&nbsp; Make &quot;<span class="var">Word2</span> Pick 
+						[ anticipated asynchronous available bad centralised conflicting 
+						corrupt crashed critical damaged default failed fragmented global 
+						illegal incompatible incorrect independent integral invalid 
+						missing modified multi obsolete out-of-range primary priority 
+						purged redundant reserved split suspended tempory terminated 
+						unstable unsupported ]<br>
+						<br>
+						&nbsp; Make &quot;<span class="var">Word3</span> Pick 
+						[ application binary buffer bus cache compiler control data-base 
+						destination device display directory emulator environment feedback 
+						group image interpolation interrupt management media memory 
+						menu network operator processor program self-test session software 
+						system target timing user ]<br>
+						<br>
+						&nbsp; Make &quot;<span class="var">Word4</span> Pick 
+						[ activity addresses attributes characters codes commands components 
+						contents continuity counters co-ordinates elements errors fields 
+						files formats functions information levels modes options over-run 
+						procedures profiles protection requests resources routines sectors 
+						store structure support threads utilities values variables ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New</span> SetPos [-180 150]<br>
+						&nbsp; Repeat 16 [ <span class="pro">Init</span><br>
+						&nbsp; &nbsp; Label ( List Repcount <b>:</b><span class="var">Word1</span> <b>:</b><span class="var">Word2</span> <b>:</b><span class="var">Word3</span> <b>:</b><span class="var">Word4</span> )<br>
+						&nbsp; &nbsp; Back 20 Wait 88]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/demo/please_wait.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/demo/please_wait.lgo">File</a></li>
+						<li><a href="../../pict/gall4/pwait.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p class="subh">Haiku poetry.</p>
+				<p>Three lines which rarely rhyme. Usually of nature and seasons.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;AdjList [calm cool tiny new fresh early first light soft sudden]<br>
+						&nbsp; Make &quot;NounList [showers dawn dew moon evening stars mist blossoms sun leaves snow breeze buds flowers trees]<br>
+						&nbsp; Make &quot;VerbList [fall open close greet serenade blow pile swim float catch hold fade]<br>
+						&nbsp; Make &quot;Adj<strong> :</strong>AdjList<br>
+						&nbsp; Make &quot;Noun<strong> :</strong>NounList<br>
+						&nbsp; Make &quot;Verb<strong> :</strong>VerbList<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">PickNoun</span></span><br>
+						&nbsp; Make &quot;<span class="var">Selection</span> Pick<strong> :</strong><span class="var">Noun</span><br>
+						&nbsp; Make &quot;<span class="var">Noun</span> Remove<strong> :</strong><span class="var">Selection</span><strong> :</strong><span class="var">Noun</span><br>
+						&nbsp; Output<strong> :</strong><span class="var">Selection</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">PickAdj</span></span><br>
+						&nbsp; Make &quot;<span class="var">Selection</span> Pick<strong> :</strong><span class="var">Adj</span><br>
+						&nbsp; Make &quot;<span class="var">Adj</span> Remove<strong> :</strong><span class="var">Selection</span><strong> :</strong><span class="var">Adj</span><br>
+						&nbsp; Output<strong> :</strong><span class="var">Selection</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">PickVerb</span></span><br>
+						&nbsp; Make &quot;<span class="var">Selection</span> Pick<strong> :</strong><span class="var">Verb</span><br>
+						&nbsp; Make &quot;<span class="var">Verb</span> Remove<strong> :</strong><span class="var">Selection</span><strong> :</strong><span class="var">Verb</span><br>
+						&nbsp; Output<strong> :</strong><span class="var">Selection</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New</span> Init SetFontSize 22<br>
+						&nbsp; SetPos [-180 102]<br>
+						&nbsp; Label (List <span class="pro">PickAdj</span> <span class="pro">PickAdj</span> <span class="pro">PickNoun</span> <span class="pro">PickVerb</span>) Wait 30<br>
+						&nbsp; SetPos [-180 70]<br>
+						&nbsp; Label (List Pick [in with of so through on] <span class="pro"><br>
+						&nbsp; PickAdj</span> <span class="pro">PickNoun</span> PickVerb &quot;and) Wait 30<br>
+						&nbsp; SetPos [-180 38]<br>
+						&nbsp; Label (List <span class="pro">PickVerb</span> &quot;the <span class="pro">PickAdj</span> <span class="pro">PickAdj</span> <span class="pro">PickNoun</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/demo/haiku.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/demo/haiku.lgo">File</a></li>
+						<li><a href="../../pict/gall4/pwaithaiku.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall4/pwait.html"><img src="../../art/100g4/pwait.gif" alt="Please Wait..." width="100" height="100"></a><br>
+				Please Wait...</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

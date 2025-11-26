@@ -1,0 +1,101 @@
+# Main Command: GoX
+# Peano Curve by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To Init :Level
+  GlobalMake "Size (SqRt 2)*(64/(Power 3 :Level))
+  PenUp SetPos [-192 -192] SetH 45 Forward :Size
+  PenDown     # comment out for curved corners
+End
+
+To Peano :Level
+  If :Level < 0 [Stop]
+  Peano :Level-1
+  Left90 :Size Peano :Level-1
+  Repeat 3 [Rite90 :Size Peano :Level-1]
+  Repeat 3 [Left90 :Size Peano :Level-1]
+  Rite90 :Size Peano :Level-1
+End
+
+To Left90 :Radius
+  Forward :Radius Left 90
+  Forward :Radius
+End
+
+To Rite90 :Radius
+  Forward :Radius Right 90
+  Forward :Radius
+End
+
+To rArc :Angle :Radius
+  # clockwise arc drawn relative to turtle heading
+  Arc :Radius Heading :Angle+Heading Right :Angle
+End
+
+To Go :Level
+  New Init :Level Peano :Level
+End
+
+To GoX
+  New For [Level 0 3] [
+    SetPC :Level+1 SetPW 7-(2*:Level)
+    Init :Level Peano :Level Wait 30]
+End
+
+to left90_c :radius
+  # curved left 90 corner 
+  Right 90 Back :Radius Left 90
+  rArc 90 :Radius
+  Left 90 Forward :Radius Left 90 
+end
+
+to rite90_c :radius
+  # curved right 90 corner 
+  Left 90 Back :Radius
+  rArc 90 :Radius
+  Forward :Radius Right 90
+end
+
+to left90_o :radius
+  # octogon corner 
+  Forward 0.4142*:Radius Left 45
+  Forward 0.8284*:Radius Left 45
+  Forward 0.4142*:Radius
+end
+
+to rite90_o :radius
+  # octogon corner 
+  Forward 0.4142*:Radius Right 45
+  Forward 0.8284*:Radius Right 45
+  Forward 0.4142*:Radius
+end
+
+to left90_s :radius
+  # left 45 turn 
+  Left 45 Forward 1.414*:Radius Left 45
+end
+
+to rite90_s :radius
+  # right 45 turn 
+  Right 45 Forward 1.414*:Radius Right 45
+end
+
+to left90_a :radius
+  # anti-curve left 90 corner 
+  Forward :Radius Left 180
+  rArc 90 :Radius
+  Forward :Radius 
+end
+
+to rite90_a :radius
+  # anti-curve right 90 corner
+  Forward :Radius Right 90
+  rArc 90 :Radius
+  Left 90 Forward :Radius 
+end

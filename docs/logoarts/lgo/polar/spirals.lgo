@@ -1,0 +1,44 @@
+# Main Command: Go
+# Spirals by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to p2r :radius :angle
+  Make "X :Radius * Cos :Angle
+  Make "Y :Radius * Sin :Angle
+  Output List :X :Y
+end
+
+to spiral :angle
+  # Archimides Spiral 
+  Make "Radius :Angle/20
+end
+
+to go
+  New SetPC Yellow
+  For [Angle 0 3600] [
+    Spiral :Angle
+    SetPos P2R :Radius :Angle PenDown]
+end
+
+to spiral1 :angle
+  # Fermats Spiral 
+  Make "Radius 3*Power :Angle 0.5
+end
+
+to spiral2 :angle
+  # Equiangular Spiral
+  Make "Radius Power 1.002 :Angle
+end
+
+to spiral3 :angle
+  # Archimides Daisy
+  Make "Offset Sin 7.05*:Angle
+  Make "Radius :Angle/52 + (Power (:Angle/2000) 2) * :Offset
+  SetPC ( List 0 (Round 127.5 * (1+:Offset)) 255 )
+end

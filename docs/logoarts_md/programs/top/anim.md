@@ -1,0 +1,7 @@
+# Animations
+![Animations](../../art/400x400/chaos.png)
+
+| To create animations, XLogo must first be put into animation mode by 
+the commandAnimation. Drawing no longer updates the screen but instead changes are stored. TheRefreshcommand updates the graphics screen, as the next 'frame' in the animation. Usually 
+done once per main loop of the program. All the stored changes appear 
+immediately. A camera icon in the Text Area will remind you animation is on. To return to normal drawing mode, enterStopAnimation, or click the camera icon. See Animationprimitives. See also: LED DisplayScrolling dot matrix text. MicrobesAnimated single cell pond life. Pi IslandA random calculation of pi. Polygon WeaverTwo random polygons are woven together. TreeAnimRecursive tree animation, branch angle from 0 to 180 degrees. | Chaos TheoryGraphic representation of the chaotic behaviour of a simple equation.CubeTumbling cube corners. Shows the kind of maths needed for 3D programming.Dudeney's DisectionOld puzzle of an oscillating square to triangle disection.LinkagesMechanical straight line motion.OscilloscopeDisplay of rotating sine waves from the days of old oscilloscopes.Peano CesaroVariable angle Peano curve.SpiroCircleMorphing display of outer circle to different spiro / cycloid patterns.StarMorphEvolving red and green star shape, moving and rotating.TangramTangram pieces sliding between random pictures. |

@@ -1,0 +1,40 @@
+# Main Command: Go
+# Seaweed by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To GridSq :Order :Side
+  # draw tile at each column x row position
+  LocalMake "Offset (1+:Order)/2
+  For (List "Col 1 :Order) [
+    For (List "Row 1 :Order) [
+      SetXY :Side*(:Col-:Offset) :Side*(:Row-:Offset)
+      Tile :Col :Row :Side] ]
+End
+
+To Tile :Col :Row :Side
+  If (Or :Col<3 :Col>9) [Stop]
+  If (Mod (:Col+:Row) 6) <3 [SetH 0] [SetH 90]
+  If (Mod (:Col+:Row) 2) =0 [SetPC DarkGreen] [SetPC White]
+  SetX X+X/1.9     # spread columns
+  Seaweed Fill Wait 3
+End
+
+To Seaweed
+  # fixed size tile drawn from centre (tp)
+  Back 14.5 Right 90 Back 14.5 PenDown
+  Repeat 2 [
+    Forward 14 Left 90 Forward 3 Right 90 Forward 12
+    Left 90 Forward 12 Right 90 Forward 3 Left 90 Forward 14 Left 90]
+    PenUp Forward 14.5 Left 90 Forward 14.5     # return to centre
+End
+
+To Go
+  New SetSC [0 191 191]
+  GridSq 11 30
+End

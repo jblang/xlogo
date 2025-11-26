@@ -1,0 +1,312 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | L-System | Weeds</title>
+<style type="text/css">
+<!--
+.style1 {
+	color: black
+}
+-->
+</style>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Weeds</h2>
+			<p>- XLogo</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g6/weed.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>The following programs draw a series of weed / tree / leaf like structures. They all start at the bottom of the drawing area and each uses an axiom of just 'Rule'. </p>
+				<table>
+					<tr>
+						<td valign="top"><p>At each new depth, the <br>
+								contents of list 'Rule' are<br>
+								substituted for the word <br>
+								'rule' in the DrawList. </p>
+							<p>Once the DrawList has <br>
+								been calculated, the <br>
+								image is then drawn.</p></td>
+						<td><table align="center" class="gray">
+								<tr>
+									<th align="center">Ins</th>
+									<th align="center">Action</th>
+								</tr>
+								<tr>
+									<td align="center">d<br>
+										p<br>
+										n<br>
+										s<br>
+										r</td>
+									<td align="center">draw line of fixed length<br>
+										positive angle (right turn)<br>
+										negative angle (left turn)<br>
+										save turtles position and heading<br>
+										restore turtles position and heading</td>
+								</tr>
+							</table></td>
+					</tr>
+				</table>
+				<br>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Length</span> 200 Make 
+						&quot;<span class="var">Delta</span> 0.65 Make &quot;<span class="var">Angle</span> 20<br>
+						&nbsp; Make &quot;<span class="var">Rule</span> [ d s n n rule r s p rule r n rule ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Display</span> :<span class="var">Depth</span></span><br>
+						&nbsp; <span class="com"># write header title, curve depth and info</span><br>
+						&nbsp; SetPC White<br>
+						&nbsp; SetPos [-190 184] Label &quot;L-Curve<br>
+						&nbsp; SetPos [-190 -192] Label List &quot;Rule:<strong> :</strong><span class="var">Rule</span><br>
+						&nbsp; SetPos [130 184] Label List &quot;Delta:<strong> :</strong><span class="var">Delta</span><br>
+						&nbsp; SetPos [130 170] Label List &quot;Angle:<strong> :</strong><span class="var">Angle</span><br>
+						&nbsp; SetPos [130 156] Label List &quot;Depth:<strong> :</strong><span class="var">Depth</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Generate</span> :<span class="var">DrawList</span> :<span class="var">Rule</span> :<span class="var">Dep</span></span><br>
+						&nbsp; Make &quot;<span class="var">NewList</span> [ ]<br>
+						&nbsp; Repeat (Count<strong> :</strong><span class="var">DrawList</span>) [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">ThisItem</span> Item RepCount<strong> :</strong><span class="var">DrawList</span><br>
+						&nbsp; &nbsp; If<strong> :</strong><span class="var">ThisItem</span> = &quot;rule [<br>
+						&nbsp; &nbsp; &nbsp; Repeat (Count<strong> :</strong><span class="var">Rule</span>) [<br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">ThisItem2</span> Item RepCount<strong> :</strong><span class="var">Rule</span><br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">NewList</span> LPut<strong> :</strong><span class="var">ThisItem2</span><strong> :</strong><span class="var">NewList</span><br>
+						&nbsp; &nbsp; &nbsp; If<strong> :</strong><span class="var">ThisItem2</span> = &quot;d [ Make &quot;<span class="var">NewList</span> LPut<strong> :</strong><span class="var">Dep</span><strong> :</strong><span class="var">NewList</span> ] ] ]<br>
+						&nbsp; &nbsp; [ Make &quot;<span class="var">NewList</span> LPut<strong> :</strong><span class="var">ThisItem</span><strong> :</strong><span class="var">NewList</span> ] ]<br>
+						&nbsp; Output<strong> :</strong><span class="var">NewList</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">d</span> :<span class="var">Dep</span></span><br>
+						&nbsp; <span class="com">#SetPW<strong> :</strong>Depth -<strong> :</strong>Dep</span><br>
+						&nbsp; Make &quot;<span class="var">Green</span> Round 255/ (<b>:</b><span class="var">Depth</span>-<b>:</b><span class="var">Dep</span> )&nbsp; &nbsp; <span class="com"># green depends on length</span><br>
+						&nbsp; SetPC ( List 255<strong> :</strong><span class="var">Green</span> 0 ) &nbsp; &nbsp; <span class="com"># red set to 255 and blue to 0</span><br>
+						&nbsp; Forward<strong> :</strong><span class="var">Length</span> * Power<strong> :</strong><span class="var">Delta</span><strong> :</strong><span class="var">Dep</span> SetPos Pos<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">p</span></span><br>
+						&nbsp; Right<strong> :</strong><span class="var">Angle</span> SetH Heading<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">n</span></span><br>
+						&nbsp; Left<strong> :</strong><span class="var">Angle</span> SetH Heading<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">s</span></span><br>
+						&nbsp; Make &quot;<span class="var">Positions</span> Lput List Position Heading<strong> :</strong><span class="var">Positions</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">r</span></span><br>
+						&nbsp; Make &quot;<span class="var">myPos</span> Last<strong> :</strong><span class="var">Positions</span><br>
+						&nbsp; PenUp SetPos First<strong> :</strong><span class="var">myPos</span><br>
+						&nbsp; SetH Last<strong> :</strong><span class="var">myPos</span> PenDown<br>
+						&nbsp; Make &quot;<span class="var">Positions</span> ButLast<strong> :</strong><span class="var">Positions</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Rule</span></span><br>
+						&nbsp; SetPC Red Forward 1 &nbsp; &nbsp; <span class="com"># 4 for fixed length weeds</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span> :<span class="var">De</span></span><br>
+						&nbsp; Make &quot;<span class="var">Depth</span><strong> :</strong><span class="var">De</span><br>
+						&nbsp; <span class="pro">New</span> <span class="pro">Init</span> Display<strong> :</strong><span class="var">Depth</span><br>
+						&nbsp; Make &quot;<span class="var">Positions</span> [ ]<br>
+						&nbsp; Make &quot;<span class="var">DrawList</span> [rule]<br>
+						&nbsp; Repeat<strong> :</strong><span class="var">Depth</span>-1 [ Make &quot;<span class="var">DrawList</span> <span class="pro">Generate</span><strong> :</strong><span class="var">DrawList</span><strong> :</strong><span class="var">Rule</span> RepCount]<br>
+						&nbsp; <span class="com">#SetPC Orange SetPW<strong> :</strong>Depth-1 Dot Pos</span><br>
+						&nbsp; SetPos [0 -170]<br>
+						&nbsp; PenDown Run<strong> :</strong><span class="var">DrawList</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go 4</strong></span></li>
+						<li><a href="../../lgo/l_systems/weeds.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/l_systems/weeds.lgo">File</a></li>
+						<li><a href="../../pict/gall6/weed0.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>Type <strong>go + level</strong> for example <strong>Go 5</strong> to run.</p>
+				<p>Replace Init procedure for different rules.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Length</span> 100 Make 
+						&quot;<span class="var">Delta</span> 0.65 Make &quot;<span class="var">Angle</span> 25<br>
+						&nbsp; Make &quot;<span class="var">Rule</span> [ d s p rule r d s n rule r p rule ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Length</span> 220 Make 
+						&quot;<span class="var">Delta</span> 0.65 Make &quot;<span class="var">Angle</span> 90<br>
+						&nbsp; Make &quot;<span class="var">Rule</span> [ d s p rule r s n rule r ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Length</span> 200 Make 
+						&quot;<span class="var">Delta</span> 0.65 Make &quot;<span class="var">Angle</span> 45<br>
+						&nbsp; Make &quot;<span class="var">Rule</span> [ d s p rule r s n rule r ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Length</span> 200 Make 
+						&quot;<span class="var">Delta</span> 0.65 Make &quot;<span class="var">Angle</span> 25<br>
+						&nbsp; Make &quot;<span class="var">Rule</span> [ d s p rule r s n rule r ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Length</span> 200 Make 
+						&quot;<span class="var">Delta</span> 0.45 Make &quot;<span class="var">Angle</span> 25<br>
+						&nbsp; Make &quot;<span class="var">Rule</span> [ d s n rule r d s p rule r rule ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Length</span> 140 Make 
+						&quot;<span class="var">Delta</span> 0.45 Make &quot;<span class="var">Angle</span> 20<br>
+						&nbsp; Make &quot;<span class="var">Rule</span> [ d s n n n rule r s p p p rule r d s n n rule r s p p rule r d rule ]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/l_systems/weeds.jnlp">On-Line</a></li>
+						<!--<li><a href="#">File</a></li>-->
+						<li><a href="../../pict/gall6/weed1.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p><span class="button">Paste <strong>one</strong> of the above into XLogo.</span></p>
+				<p>For this fixed length weed, also change the rule procedure to 'Forward 4'.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Length</span> 0 Make &quot;<span class="var">Delta</span> 0 Make &quot;<span class="var">Angle</span> 25<br>
+						&nbsp; Make &quot;Rule [ rule s n rule r rule s p rule r rule ]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/l_systems/weeds.jnlp">On-Line</a></li>
+						<!--<li><a href="#">File</a></li>-->
+						<li><a href="../../pict/gall6/weed5.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall6/weed0.html"><img src="../../art/100g6/weed.gif" alt="Weed" width="100" height="100"></a><br>
+				Weed L-Curve</p>
+			<p class="book">Book Info<br>
+				<a href="../../ipt/info/booksmath.html"><img src="../../art/books/cbn.jpg" alt="Computational Beauty Of nature" width="100" height="114"></a><br>
+				Pages 72-92</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

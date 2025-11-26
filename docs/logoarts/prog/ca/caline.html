@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Cellular Automata | Single Line CA</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Single Line CA</h2>
+			<p>- XLogo</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g3/ca.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>Single Line or 1-Dimensional CA are built up line 
+					by line. The first line or seed line is a single central dot. Each 
+					dot can be on (green) or off (black/dark blue). A 'rule' determines 
+					which dots are to be drawn. All rules below 255 will draw a pattern. 
+					Some 'good' rules are:</p>
+				<p><strong>Go 30</strong> random pattern<br>
+					<strong>Go 90</strong> nested pattern<br>
+					<strong>Go 110</strong> random pattern<br>
+					<strong>Go 250</strong> checkerboard pattern</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Size</span> <font color="#FF0000">2</font><br>
+						&nbsp; SetPW<strong> :</strong><span class="var">Size</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Display</span> :<span class="var">Rule</span> :<span class="var">BinList</span></span><br>
+						&nbsp; <span class="com"># write header info</span><br>
+						&nbsp; SetPC White PenUp<br>
+						&nbsp; SetPos [-190 184] Label [1D Cellular Automata]<br>
+						&nbsp; SetPos [70 184] Label List &quot;Rule<strong> :</strong><span class="var">Rule</span><br>
+						&nbsp; SetPos [70 170] Label<strong> :</strong><span class="var">BinList</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Draw</span> :<span class="var">CAList</span></span><br>
+						&nbsp; PenDown For (List &quot;<span class="var">N</span> 1 (Count<strong> :</strong><span class="var">CAList</span>)) [<br>
+						&nbsp; &nbsp; SetPC (List 0 (255*Item<strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">CAList</span>) 64)<br>
+						&nbsp; &nbsp; Forward<strong> :</strong><span class="var">Size</span>]<br>
+						&nbsp; SetPC Black Forward 0 PenUp<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">NextLine</span> :<span class="var">CAList</span></span><br>
+						&nbsp; Make &quot;<span class="var">NewCAList</span> []<br>
+						&nbsp; Make &quot;<span class="var">CAList</span> Sentence<strong> :</strong><span class="var">CAList</span> [0 0] &nbsp; &nbsp; <span class="com">#add 0 0 to end</span><br>
+						&nbsp; Make &quot;<span class="var">LL</span> [0 0 0]<br>
+						&nbsp; For (List &quot;<span class="var">N</span> 1 (Count<strong> :</strong><span class="var">CAList</span>)) [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">LL</span> ButFirst LPut Item <b>:</b><span class="var">N</span><strong> :</strong><span class="var">CAList</span><strong> :</strong><span class="var">LL</span><br>
+						&nbsp; &nbsp; <span class="com">#convert LL into a decimal number</span><br>
+						&nbsp; &nbsp; Make &quot;<span class="var">X</span> <span class="pro">Bin2Dec</span><strong> :</strong><span class="var">LL</span><br>
+						&nbsp; &nbsp; <span class="com">#convert x to item x of binlist</span><br>
+						&nbsp; &nbsp; Make &quot;<span class="var">X</span> Item (8-<b>:</b><span class="var">X</span>)<strong> :</strong><span class="var">BinList</span><br>
+						&nbsp; &nbsp; <span class="com">#add x to newcalist</span><br>
+						&nbsp; &nbsp; Make &quot;<span class="var">NewCAList</span> LPut<strong> :</strong><span class="var">X</span><strong> :</strong><span class="var">NewCAList</span>]<br>
+						&nbsp; Output<strong> :</strong><span class="var">NewCAList</span><br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_Dec2Bin.lbi" --><p><span class="toenl"><a href="../../ipt/info/promath.html#d2b">To <span class="pro">Dec2Bin</span> :<span class="var">Num</span></a></span><br>
+	&nbsp; <span class="com"># convert decimal number Num to an 8 item binary list</span><br>
+	&nbsp; If<strong> :</strong><span class="var">Num</span> &gt;255 [Print [Rule is too large!] Stop]<br>
+	&nbsp; LocalMake &quot;<span class="var">Bin</span> []<br>
+	&nbsp; For [<span class="var">C</span> 7 0 -1] [<br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Bin</span> LPut (Quotient<strong> :</strong><span class="var">Num</span> Power 2<strong> :</strong><span class="var">C</span>)<strong> :</strong><span class="var">Bin</span><br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Num</span><strong> :</strong><span class="var">Num</span> -((Power 2<strong> :</strong><span class="var">C</span>) *Last<strong> :</strong><span class="var">Bin</span>)]<br>
+	&nbsp; Output<strong> :</strong><span class="var">Bin</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Bin2Dec</span> :<span class="var">BinList</span></span><br>
+						&nbsp; <span class="com">#return the decimal value of a 3 bit binary list</span><br>
+						&nbsp; Output (4*Item 1<strong> :</strong><span class="var">BinList</span>)+(2*Item 2<strong> :</strong><span class="var">BinList</span>)+(Item 3<strong> :</strong><span class="var">BinList</span>)<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span> :<span class="var">Rule</span></span><br>
+						&nbsp; <span class="pro">New</span> SetPS 0 <span class="pro">Init</span><br>
+						&nbsp; Make &quot;<span class="var">BinList</span> <span class="pro">Dec2Bin</span><strong> :</strong><span class="var">Rule</span><br>
+						&nbsp; <span class="pro">Display</span><strong> :</strong><span class="var">Rule</span><strong> :</strong><span class="var">BinList</span> SetH 90<br>
+						&nbsp; Make &quot;<span class="var">CAList</span> [1]<br>
+						&nbsp; For (List &quot;<span class="var">N</span> 0 191<strong> :</strong><span class="var">Size</span>) [<br>
+						&nbsp; &nbsp; SetXY (0-<b>:</b><span class="var">N</span>) (150-<b>:</b><span class="var">N</span>)<br>
+						&nbsp; &nbsp; Draw<strong> :</strong><span class="var">CAList</span><br>
+						&nbsp; &nbsp; Make &quot;<span class="var">CAList</span> <span class="pro">NextLine</span><strong> :</strong><span class="var">CAList</span>]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go 30</strong></span></li>
+						<li><a href="../../lgo/ca/ca_line.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/ca/ca_line.lgo">File</a></li>
+						<li><a href="../../pict/gall3/ca.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>Try different rule numbers instead of 30. <strong>Enter Go 90</strong>, 110 or 250.<br>
+					You can change the resolution of the ca by altering the <b>:</b><span class="var">Size</span> shown in red in the Init procedure.</p>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall3/ca.html"><img src="../../art/100g3/ca.gif" alt="Single Line CA" width="100" height="100"></a><br>
+				SingleLine CA</p>
+			<p class="goo"><em>More to explore</em>...<br>
+				<a href="http://www.google.co.uk" target="_blank"><img src="../../art/bits/google.gif" width="70" height="23" alt="Google"></a><br>
+				Artificial Life<br>
+				CellularAutomata<br>
+				'Game Of Life'<br>
+				Simulation</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

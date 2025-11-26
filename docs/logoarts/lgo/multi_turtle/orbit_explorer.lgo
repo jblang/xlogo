@@ -1,0 +1,44 @@
+# Main Command: Go 3
+# Orbits by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init :n
+  If :N <2 [Print [Need more than one turtle!] Stop]
+  # Make "Weights [8 -4 2]
+  # Make "Weights [8 -4 24]
+  # Make "Weights [8 -14 11]   # neat
+  # Make "Weights [13 -5 -9]
+  Make "Weights [20 -14 8] 
+  Repeat :N [
+    SetTurtle RepCount
+    Make "Angle RepCount*360/:N
+    SetPC Hue :Angle PenUp 
+    SetXY (40*Sin :Angle) (40*Cos :Angle) PenDown]
+end
+
+To Hue :Theta
+  # Output RGB hue list from angle :Theta
+  Make "Red Round 127.5*(1+Sin :Theta)
+  Make "Green Round 127.5*(1+Sin (:Theta+120))
+  Make "Blue Round 127.5*(1+Sin (:Theta+240))
+  Output (List :Red :Green :Blue)
+End
+
+to go :n
+  New SetTurtlesMax :N+2 Init :N
+  Forever [
+    Repeat :N [
+      SetTurtle RepCount Make "myPos Pos
+      SetTurtle RepCount+1
+      If RepCount+1>:N [SetTurtle 1]
+      HideTurtle SetH Towards :myPos
+      Make "Dist Distance :myPos
+      Left 90 ShowTurtle
+      Forward (Item RepCount :Weights) /:Dist ] ]
+end

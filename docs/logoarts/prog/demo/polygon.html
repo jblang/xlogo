@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Demo | Polygons</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Polygons</h2>
+			<p>- edge and center nested</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g2/polygons.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>This program draws a series of nested polygons. It has 2 procedures: New and Go. To run the program:</p>
+				<ol>
+					<li>Hi-light <strong>all</strong> the code in the yellow box (click and drag).</li>
+					<li><strong>Copy</strong> the code (Edit Copy).</li>
+					<li>Switch to <strong>XLogo</strong> and open the <strong>Editor</strong> window.</li>
+					<li><strong>Paste</strong> in the code (Edit Paste).</li>
+					<li>Press the <strong>Penguin</strong> button to save the code and close the Editor.</li>
+					<li>Type in '<strong>go</strong>' and press &lt;Enter&gt; to run the program.</li>
+				</ol>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New</span> Back 180 Right 90 Back 40 PenDown<br>
+						&nbsp; For [<span class="var">N</span> 3 14] [<br>
+						&nbsp; &nbsp; Repeat <b>:</b><span class="var">N</span> [Forward 80 Left 360/<b>:</b><span class="var">N</span>] Wait 30]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/demo/poly_edge.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/demo/poly_edge.lgo">File</a></li>
+						<li><a href="../../pict/gall2/polygons.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>XLogo should create the graphic as shown on the right.<br>
+					To clear the graphics window and reset the turtle, type in '<strong>new</strong>'.<br>
+					Check out the code comments and explanation below.</p>
+				<p><strong>Polygon Names:</strong> Triangle, Square, Pentagon, Hexagon, 
+					Heptagon, Octagon, Nonagon, Decagon, Undecagon, and Dodecagon. Sides of 
+					13 and 14 have no name.</p>
+				<div class="codearea">
+					<p><span class="com">'<strong>New</strong>' resets all XLogo parameters, 
+						sets the screen to size 400x400 black, hides the turtle, raises the 
+						pen and sets its color to green.</span></p>
+					<p><span class="com">'<strong>Go</strong>' calls the New procedure and 
+						moves the turtle to the lower left facing right. It then draws twelve 
+						N-sided polygons for values of N from 3 to 14.</span></p>
+				</div>
+				<p>&nbsp;</p>
+				<p>This code will draw a polygon from the centre, which can be more useful 
+					when building programs. As N gets larger, the polygon tends to a circle.<br>
+					The polygon procedure is a library item. See <a href="../../ipt/info/proshape.html">Shapes</a> for more ideas and library procedures.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Polygon.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html">To <span class="pro">Polygon</span> :<span class="var">N</span> :<span class="var">Wide</span></a></span><br>
+	&nbsp; <span class="com"># polygon of 'N' sides drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Side</span> <b>:</b><span class="var">Wide</span> *Sin 180/<b>:</b><span class="var">N</span> &nbsp; &nbsp; <span class="com"># length of one side</span><br>
+	&nbsp; Right 180/<b>:</b><span class="var">N</span> Back <b>:</b><span class="var">Wide</span>/2 Right 90-180/<b>:</b><span class="var">N</span> PenDown<br>
+	&nbsp; Repeat <b>:</b><span class="var">N</span><br>
+	&nbsp; &nbsp; [Forward <b>:</b><span class="var">Side</span> Left 360/<b>:</b><span class="var">N</span>]<br>
+	&nbsp; PenUp Left 90-180/<b>:</b><span class="var">N</span> Forward <b>:</b><span class="var">Wide</span>/2 Left 180/<b>:</b><span class="var">N</span> &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New</span> For [N 3 9] [<br>
+						&nbsp; &nbsp; <span class="pro">Polygon</span> <b>:</b><span class="var">N</span> 384 Wait 30]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/demo/poly_cent.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/demo/poly_cent.lgo">File</a></li>
+						<li><a href="../../pict/gall2/polys.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall2/polygons.html"><img src="../../art/100g2/polygons.gif" alt="Polygons" width="100" height="100"></a><br>
+				Polygon Edge</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall2/polys.html"><img src="../../art/100g2/polys.gif" alt="Polys" width="100" height="100"></a><br>
+				Polygon Center</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

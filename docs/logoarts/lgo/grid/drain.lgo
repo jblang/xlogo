@@ -1,0 +1,54 @@
+# Main Command: Go 11
+# Drain by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to init :order
+  # global values
+  Make "Total Power :Order 2
+  Make "CellSize 380/:Order
+  Make "OffSet (0.5*:CellSize)-190
+  Make "Side 180/:Order
+  Make "ColStep 255/:Total 
+  Make "Count 0 
+end
+
+to gridpos :m :n
+  # return X Y screen position
+  Make "X (:N*:CellSize) + :OffSet
+  Make "Y (:M*:CellSize) + :OffSet
+  Output List :X :Y
+end
+
+to setpen
+  # set pen width and color
+  SetPW :Side     # + 1 - (:Side* (:Count/:Total))
+  # Comment in the rest of the above line for variable pen widths
+  Make "Col 255 - 0.75*(:Count * :ColStep)
+  SetPC ( List 1 :Col 255 )
+end
+
+to centrand
+  # random position in central third of grid
+  Make "ThOrder Round :Order/3
+  Output :ThOrder + Random :ThOrder
+end
+
+to go :ord
+  New Make "Order :Ord Init :Order
+  SetPos GridPos CentRand CentRand
+  SetPen Dot Pos
+  While [:Count < (:Total-1)] [
+    SetPos GridPos Random :Order Random :Order
+    If ((First FindColor Pos) = 0) [
+      SetH 90 * Random 4 Forward :CellSize
+    If ((First FindColor Pos) = 1) [
+      Back :CellSize SetPC [1 0 0] SetPW 4 Dot Pos
+      SetPen PenDown Forward :CellSize PenUp
+      Make "Count :Count+1]]]
+end

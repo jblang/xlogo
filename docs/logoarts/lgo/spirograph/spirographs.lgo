@@ -1,0 +1,45 @@
+# Main Command: Go
+# Spirographs by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to spir
+  For [S 10 70 5] [
+    PenUp SetPos XYCurve :S 0 PenDown SetPC Hue2 :S+10*:B
+    For [T 1 360] [SetPos XYCurve :S :T]]
+end
+
+to xycurve :s :t
+  Make "X 120 * (Sin :S+:A*:T) + :S * (Cos (:B*:T))
+  Make "Y 120 * (Cos :S+:A*:T) + :S * (Sin (:B*:T))
+  Output (List :X :Y)
+end
+
+to rand2
+  Make "A (Pick [-1 1]) * Pick [1 2]
+  Make "B (Pick [-1 1]) * Pick [2 3 4 5 6]
+end
+
+to display
+  # write header title and footer values
+  SetPC White
+  SetPos [-190 184] Label "Spirograph
+  SetPos [-190 -190] Label ( List "A\ B\ = :A :B )
+end
+
+To Hue2 :Theta
+  # Output RGB hue list from angle :Theta
+  Make "Red Abs 255*Sin :Theta
+  Make "Green Abs 255*Sin (:Theta+120)
+  Make "Blue Abs 255*Sin (:Theta+240)
+  Output (List :Red :Green :Blue)
+End
+
+to go
+  Repeat 12 [New Rand2 Display Spir Wait 200]
+end

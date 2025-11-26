@@ -1,0 +1,131 @@
+# Main Command: Go
+# Plastic Number by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init :n
+  SetTurtle 1 SetPC White PenUp SetTurtle 0 
+  Make "Parity 0
+  Repeat :N [
+    Make Word "Diag RepCount-1 List [0 0] [0 0] ]
+end
+
+to section :side
+  If :Side > 400 [Stop]     # stop when side too long 
+  SetPC Green Repeat 2 [Forward :Side Right 120] 
+  SetPC Red rArc :Side 0 60     # draw curve 
+  SetPC Green Repeat 2 [Forward :Side Right 120] 
+  AddDiag 3 
+  If :Side > 30 [AddInfo 3 Integer :Side]
+  Left 60 Wait 20
+  Section :Side*1.3247     # do again with larger side
+end
+
+to addinfo :n :side
+  # Use a second turtle to prevent position rounding error 
+  Make "myPos Pos Make "myHead Heading
+  SetTurtle 1 SetPos :myPos SetH :myHead
+  Make "R (:Side/2)*(1/(Sin (180/:N)) )     # Distance to polygon center
+  Right 90-(180/:N) Forward :R
+  # Make "Blue (:N * :Side) / 6 
+  # SetPC (List 0 0 :Blue) Fill SetPC White
+  SetH 0 SetFontJustify [1 1] Label :Side
+  SetTurtle 0
+end
+
+to adddiag :n
+  # Add current turtle position to next diagonal list 
+  Make "Name Word "Diag :Parity
+  Make :Name LPut Pos ButFirst Thing :Name
+  Make "Parity Mod :Parity+1 :N
+end
+
+to diagonals :n
+  # Draw diagonals 1 to N 
+  Repeat :N [
+    PenUp SetPos First Thing Word "Diag RepCount-1
+    PenDown SetPos Last Thing Word "Diag RepCount-1 ]
+end
+
+to display :title
+  PenUp SetPC White SetH 0
+  SetPos [-184 180] Label :Title
+end
+
+to rarc :radius :angle1 :angle2
+  # arc drawn relative to turtle heading 
+  Arc :Radius :Angle1+Heading :Angle2+Heading 
+end
+
+to go
+  New Init 3 
+  Display [Plastic Number 1.3247]
+  SetPos [78 -16] Left 90 PenDown
+  Section 1.2     # begin with triangle of side 1.2
+  SetPC Blue Diagonals 3 Wait 20 
+end
+
+to section4 :side
+  If :Side > 400 [Stop]     # stop when side too long 
+  SetPC Green Repeat 3 [Forward :Side Right 90] 
+  SetPC Red rArc :Side 0 90     # draw curve 
+  SetPC Green Repeat 2 [Forward :Side Right 90] 
+  AddDiag 2
+  SetPC Green Repeat 1 [Forward :Side Right 90] 
+  If :Side > 30 [AddInfo 4 Integer :Side]
+  Left 90 Wait 20
+  Section :Side*1.618     # do again with larger side
+end
+
+to go4
+  New Init 2 
+  Display [Plastic Number 1.618]
+  SetPos [86 -20] PenDown
+  Section 1.2     # begin with triangle of side 1.2
+  SetPC Blue Diagonals 2 Wait 20 
+end
+
+to section6 :side
+  If :Side > 130 [Stop]     # stop when side too long 
+  SetPC Green Repeat 4 [Forward :Side Right 60] 
+  Forward :Side/2 Right 40
+  SetPC Red rArc 1.32*:Side 0 100     # draw curve 
+  Left 40 Forward :Side/2 Right 60
+  SetPC Green Repeat 4 [Forward :Side Right 60] 
+  AddDiag 3 
+  If :Side > 14 [AddInfo 6 Integer :Side]
+  Left 120 Wait 20
+  Section :Side*1.2112     # do again with larger side
+end
+
+to go6
+  New Init 3 
+  Display [Plastic Hex 1.2112]
+  SetPos [54 -12] PenDown
+  Section 1.2     # begin with triangle of side 1.2
+  SetPC Blue Diagonals 3 Wait 20 
+end
+
+to section8 :side
+  If :Side > 70 [Stop]     # stop when side too long 
+  SetPC Green Repeat 6 [Forward :Side Right 45] 
+  SetPC Red rArc 1.84*:Side 22 112     # draw curve 
+  SetPC Green Repeat 6 [Forward :Side Right 45] 
+  AddDiag 4 
+  If :Side > 8 [AddInfo 8 Integer :Side]
+  Left 135 Wait 20
+  Section :Side*1.111     # do again with larger side
+end
+
+to go8
+  New Init 4 
+  Display [Plastic Octal 1.111]
+  SetPos [42 -8] Right 90 PenDown
+  Section 1.2     # begin with triangle of side 1.2
+  SetPC Blue Diagonals 4 Wait 20 
+end

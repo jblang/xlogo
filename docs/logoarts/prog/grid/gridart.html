@@ -1,0 +1,322 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Grid | Grid Art</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Grids</h2>
+			<p>- and art?</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g1/grid.gif" alt="Lattice" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>Grids are a useful starting point in many Logo programs.<br>
+					Here they've been extended into a kind of art, all of thier 
+					own.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span> :<span class="var">Order</span></span><br>
+						&nbsp; <span class="com"># global values</span><br>
+						&nbsp; Make &quot;<span class="var">Size</span> 378<br>
+						&nbsp; Make &quot;<span class="var">CellSize</span> <b>:</b><span class="var">Size</span>/<b>:</b><span class="var">Order</span><br>
+						&nbsp; Make &quot;<span class="var">OffSet</span> <b>:</b><span class="var">CellSize</span>/2 - <b>:</b><span class="var">Size</span>/2<br>
+						&nbsp; Make &quot;<span class="var">Side</span><strong> :</strong><span class="var">CellSize</span>/1.4<br>
+						&nbsp; Make &quot;<span class="var">Total</span> Power <b>:</b><span class="var">Order</span> 2<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Gridd</span> <b>:</b><span class="var">M</span> <b>:</b><span class="var">N</span></span><br>
+						&nbsp; <span class="com"># return X Y screen position</span><br>
+						&nbsp; Make &quot;<span class="var">X</span> (<b>:</b><span class="var">N</span>*<b>:</b><span class="var">CellSize</span>) + <b>:</b><span class="var">OffSet</span><br>
+						&nbsp; Make &quot;<span class="var">Y</span> (<b>:</b><span class="var">M</span>*<b>:</b><span class="var">CellSize</span>) + <b>:</b><span class="var">OffSet</span><br>
+						&nbsp; Output List <b>:</b><span class="var">X</span> <b>:</b><span class="var">Y</span><br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_Square.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#square">To <span class="pro">Square</span> :<span class="var">Side</span></a></span><br>
+	&nbsp; <span class="com"># square (side x side) drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">Side</span>/2 Right 90 Back <b>:</b><span class="var">Side</span>/2 PenDown<br>
+	&nbsp; Repeat 4 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Side</span> Left 90]<br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Side</span>/2 Left 90 Forward <b>:</b><span class="var">Side</span>/2 &nbsp; &nbsp; <span class="com"># r2c</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Hue2.lbi" --><p><span class="toenl"><a href="../../ipt/info/procol.html#hue2">To <span class="pro">Hue2</span> :<span class="var">Theta</span></a></span><br>
+	&nbsp; <span class="com"># Output RGB hue list from angle :Theta</span><br>
+	&nbsp; Make &quot;<span class="var">Red</span> Abs 255*Sin <b>:</b><span class="var">Theta</span><br>
+	&nbsp; Make &quot;<span class="var">Green</span> Abs 255*Sin (<b>:</b><span class="var">Theta</span>+120)<br>
+	&nbsp; Make &quot;<span class="var">Blue</span> Abs 255*Sin (<b>:</b><span class="var">Theta</span>+240)<br>
+	&nbsp; Output (List <b>:</b><span class="var">Red</span> <b>:</b><span class="var">Green</span> <b>:</b><span class="var">Blue</span>)<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">RandGrid</span> <b>:</b><span class="var">Order</span></span><br>
+						&nbsp; <span class="com"># go to a random grid position</span><br>
+						&nbsp; SetPos <span class="pro">Gridd</span> Random <b>:</b><span class="var">Order</span> Random <b>:</b><span class="var">Order</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">DrawGrid</span> <b>:</b><span class="var">Order</span></span><br>
+						&nbsp; <span class="com"># draw M x N array of squares</span><br>
+						&nbsp; For (List &quot;<span class="var">M</span> 0 <b>:</b><span class="var">Order</span>-1) [<br>
+						&nbsp; &nbsp; For (List &quot;<span class="var">N</span> 0 <b>:</b><span class="var">Order</span>-1) [<br>
+						&nbsp; &nbsp; SetPos <span class="pro">Gridd</span> <b>:</b><span class="var">M</span> <b>:</b><span class="var">N</span><br>
+						&nbsp; &nbsp; <span class="com"># SetH 0 Left 270*((<b>:</b>M+<b>:</b>N-2)/((2*<b>:</b>Order)-2))</span><br>
+						&nbsp; &nbsp; <span class="pro">Square</span> <b>:</b><span class="var">Side</span>] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span> :<span class="var">Order</span></span><br>
+						&nbsp; <span class="com"># draw grid of squares</span><br>
+						&nbsp; <span class="pro">New</span> <span class="pro">Init</span> <b>:</b><span class="var">Order</span><br>
+						&nbsp; <span class="pro">DrawGrid</span> <b>:</b><span class="var">Order</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go 4</strong></span></li>
+						<li><a href="../../lgo/grid/grid_art.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/grid/grid_art.lgo">File</a></li>
+						<li><a href="../../pict/gall1/gridspav.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>Comment out the comment line in DrawGrid procedure for angled squares.</p>
+				<p>Using the above procedures, it is easy to generate more artwork.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Art</span> :<span class="var">Order</span></span><br>
+						&nbsp; <span class="com"># draw random array of colored squares</span><br>
+						&nbsp; <span class="pro">New Init</span> <b>:</b><span class="var">Order</span><br>
+						&nbsp; Repeat <b>:</b><span class="var">Total</span> [<br>
+						&nbsp; &nbsp; <span class="pro">RandGrid</span> <b>:</b><span class="var">Order</span><br>
+						&nbsp; &nbsp; SetPC <span class="pro">Hue2</span> Random 360 <span class="pro">Square</span> <b>:</b><span class="var">Side</span> Fill]<br>
+						<span class="toen">End</span></p>
+					<hr>
+					<p><span class="toen">To <span class="pro">Art</span> :<span class="var">Order</span></span><br>
+						&nbsp; <span class="com"># draw random lines</span><br>
+						&nbsp; <span class="pro">New Init</span> <b>:</b><span class="var">Order</span><br>
+						&nbsp; SetPC Purple SetPW 3 * Round <b>:</b><span class="var">CellSize</span>/20<br>
+						&nbsp; For (List &quot;<span class="var">M</span> 1 <b>:</b><span class="var">Order</span>-2) [<br>
+						&nbsp; &nbsp; For (List &quot;<span class="var">N</span> 1 <b>:</b><span class="var">Order</span>-2) [<br>
+						&nbsp; &nbsp; &nbsp; SetPos <span class="pro">Gridd</span> <b>:</b><span class="var">N</span> <b>:</b><span class="var">M</span><br>
+						&nbsp; &nbsp; &nbsp; SetH 90*Random 4<br>
+						&nbsp; &nbsp; &nbsp; PenDown Forward <b>:</b><span class="var">CellSize</span> PenUp] ]<br>
+						<span class="toen">End</span></p>
+					<hr>
+					<p><span class="toen">To <span class="pro">Art</span> :<span class="var">Order</span></span><br>
+						&nbsp; <span class="com"># draw grid, random filled squares</span><br>
+						&nbsp; <span class="pro">New Init</span> <b>:</b><span class="var">Order</span><br>
+						&nbsp; <span class="pro">Drawgrid</span> <b>:</b><span class="var">Order</span><br>
+						&nbsp; SetPC DarkRed<br>
+						&nbsp; Repeat <b>:</b><span class="var">Total</span> [<br>
+						&nbsp; &nbsp; <span class="pro">RandGrid</span> <b>:</b><span class="var">Order</span> Fill]<br>
+						<span class="toen">End</span></p>
+					<hr>
+					<p><span class="toen">To <span class="pro">Art</span> :<span class="var">Order</span></span><br>
+						&nbsp; <span class="com"># draw colour swatches</span><br>
+						&nbsp; <span class="pro">New Init</span> <b>:</b><span class="var">Order</span><br>
+						&nbsp; Make &quot;<span class="var">ColStep</span> 255/(<b>:</b><span class="var">Order</span>-1)<br>
+						&nbsp; For (List &quot;<span class="var">M</span> 0 <b>:</b><span class="var">Order</span>-1) [<br>
+						&nbsp; &nbsp; For (List &quot;<span class="var">N</span> 0 <b>:</b><span class="var">Order</span>-1) [<br>
+						&nbsp; &nbsp; &nbsp; SetPos <span class="pro">Gridd</span> <b>:</b><span class="var">M</span> <b>:</b><span class="var">N</span><br>
+						&nbsp; &nbsp; &nbsp; SetPC <span class="pro">PenCol</span> <b>:</b><span class="var">M</span> <b>:</b><span class="var">N</span><br>
+						&nbsp; &nbsp; &nbsp; <span class="pro">Square</span> <b>:</b><span class="var">Side</span> Fill] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">PenCol</span> :<span class="var">M</span> :<span class="var">N</span></span><br>
+						&nbsp; Make &quot;<span class="var">Red</span> Round <b>:</b><span class="var">N</span>*<b>:</b><span class="var">ColStep</span><br>
+						&nbsp; Make &quot;<span class="var">Gre</span> Round <b>:</b><span class="var">M</span>*<b>:</b><span class="var">ColStep</span><br>
+						&nbsp; Output (List <b>:</b><span class="var">Red</span> <b>:</b><span class="var">Gre</span> 0)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Art 4</strong></span></li>
+						<li><a href="../../lgo/grid/grid_art.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/grid/grid_art.lgo">File</a></li>
+						<li><a href="../../pict/gall1/gridsswa.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p><span class="button">Paste <strong>one</strong> <em>of the above into XLogo</em>.</span></p>
+				<p>Here are two methods of generating the same image. One uses lists 
+					and the other <strong>FindCol</strong> to fill in squares that are surrounded 
+					by other squares on all four sides.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Art</span> :<span class="var">Order</span></span><br>
+						&nbsp; <span class="pro">New Init</span> <b>:</b><span class="var">Order</span><br>
+						&nbsp; Make &quot;<span class="var">CellList</span> []<br>
+						&nbsp; Repeat <b>:</b><span class="var">Total</span> [Make 
+						&quot;<span class="var">RanSq</span> Random <b>:</b><span class="var">Total</span><br>
+						&nbsp; If Not Member? <b>:</b><span class="var">RanSq</span> <b>:</b><span class="var">CellList</span> [<br>
+						&nbsp; &nbsp; SetPos <span class="pro">Gridd</span> (Modulo <b>:</b><span class="var">RanSq</span> <b>:</b><span class="var">Order</span>) (Quotient <b>:</b><span class="var">RanSq</span><strong> :</strong><span class="var">Order</span>)<br>
+						&nbsp; &nbsp; <span class="pro">Square</span> <b>:</b><span class="var">Side</span> SetPC DarkRed Fill SetPC Green<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">CellList</span> Lput <b>:</b><span class="var">RanSq</span> <b>:</b><span class="var">CellList</span>]]<br>
+						&nbsp; SetPC Red<br>
+						&nbsp; For (List &quot;<span class="var">YY</span> 1 <b>:</b><span class="var">Order</span>-2) [<br>
+						&nbsp; &nbsp; For (List &quot;<span class="var">XX</span> 1 <b>:</b><span class="var">Order</span>-2) [<br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">Count</span><strong> :</strong><span class="var">XX</span> + <b>:</b><span class="var">Order</span>*<b>:</b><span class="var">YY</span><br>
+						&nbsp; &nbsp; &nbsp; If And And And And<br>
+						&nbsp; &nbsp; &nbsp; (Member? <b>:</b><span class="var">Count</span> <b>:</b><span class="var">CellList</span>)<br>
+						&nbsp; &nbsp; &nbsp; (Member? <b>:</b><span class="var">Count</span>+1 <b>:</b><span class="var">CellList</span>)<br>
+						&nbsp; &nbsp; &nbsp; (Member? <b>:</b><span class="var">Count</span>-1 <b>:</b><span class="var">CellList</span>)<br>
+						&nbsp; &nbsp; &nbsp; (Member? <b>:</b><span class="var">Count</span>+<b>:</b><span class="var">Order</span> <b>:</b><span class="var">CellList</span>)<br>
+						&nbsp; &nbsp; &nbsp; (Member? <b>:</b><span class="var">Count</span>-<b>:</b><span class="var">Order</span> <b>:</b><span class="var">CellList</span>)<br>
+						&nbsp; &nbsp; &nbsp; [SetPos <span class="pro">Gridd</span> (Modulo <b>:</b><span class="var">Count</span> <b>:</b><span class="var">Order</span>) (Quotient <b>:</b><span class="var">Count</span> <b>:</b><span class="var">Order</span>) Fill] ] ]<br>
+						<span class="toen">End</span></p>
+					<hr>
+					<p><span class="toen">To <span class="pro">Art</span> :<span class="var">Order</span></span><br>
+						&nbsp; <span class="pro">New Init</span> <b>:</b><span class="var">Order</span><br>
+						&nbsp; Repeat<strong> :</strong><span class="var">Total</span> [<br>
+						&nbsp; &nbsp; <span class="pro">RandGrid</span> <b>:</b><span class="var">Order</span><br>
+						&nbsp; &nbsp; <span class="pro">Square</span> <b>:</b><span class="var">Side</span> SetPC DarkRed Fill SetPC Green]<br>
+						&nbsp; SetPC Red<br>
+						&nbsp; &nbsp; For (List &quot;<span class="var">M</span> 1 <b>:</b><span class="var">Order</span>-2) [<br>
+						&nbsp; &nbsp; &nbsp; For (List &quot;<span class="var">N</span> 1 <b>:</b><span class="var">Order</span>-2) [<br>
+						&nbsp; &nbsp; &nbsp; SetPos <span class="pro">Gridd</span> <b>:</b><span class="var">M</span> <b>:</b><span class="var">N</span><br>
+						&nbsp; &nbsp; &nbsp; If <span class="pro">Check4</span> [PenDown Fill 
+						PenUp] ] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Check4</span></span><br>
+						&nbsp; <span class="com"># return true if square surrounded by 4 squares</span><br>
+						&nbsp; Make &quot;<span class="var">C</span> &quot;True<br>
+						&nbsp; If ((First FindColor Pos)=0) [Output &quot;False]<br>
+						&nbsp; Repeat 4 [<br>
+						&nbsp; &nbsp; Forward <b>:</b><span class="var">CellSize</span><br>
+						&nbsp; &nbsp; If ((First FindColor Pos)=0) [Make &quot;<span class="var">C</span> &quot;False Stop]<br>
+						&nbsp; &nbsp; Back <b>:</b><span class="var">CellSize</span> Right 90]<br>
+						&nbsp; Output <b>:</b><span class="var">C</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Art 4</strong></span></li>
+						<li><a href="../../lgo/grid/grid_art.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/grid/grid_art.lgo">File</a></li>
+						<li><a href="../../pict/gall1/grids.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p><span class="button">Paste <strong>one</strong> <em>of the above into XLogo</em>.</span></p>
+				<p>Enter <strong>Art 7</strong> or <strong>Art 13</strong> etc to run.<br>
+					For the first program, you can enter <strong>Pr :CellList</strong> to see a numeric list of every occupied cell.</p>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall1/grids.html"><img src="../../art/100g1/grid.gif" alt="Grid Art" width="100" height="100"></a><br>
+				Grid Art</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall1/gridscol.html"><img src="../../art/100g1/gridcol.gif" alt="Grid Colors" width="100" height="100"></a><br>
+				Grid Colors</p>
+			<p>&nbsp;</p>
+			<p><a href="../../pict/gall1/gridswall.html"><img src="../../art/100g1/walls.gif" alt="Grid Walls" width="100" height="100"></a><br>
+				Grid Walls</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

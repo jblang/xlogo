@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><!-- #BeginTemplate "/Templates/info3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Resource | Procedures_Math | html</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="info">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Maths</h2>
+			<p>- XLogo library of procedures</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<img src="../../art/img32/xlogo32.gif" alt="xlogo" width="32" height="32">
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>These procedures can be copied and pasted into the Editor window as 
+					usual. Most do not produce any graphics. To test type <strong>Test</strong>. 
+					The results will show in the History window.</p>
+				<p>Download library of <a href="../../lgo/lib/math_lib.lgo">math procedures</a>.</p>
+				<p><a name="d2b"></a><span class="subh">Decimal to Binary</span><br>
+					Return an 8 bit binary number.<br>
+					Used in <a href="../../prog/ca/caline.html">CALine</a> and <a href="../../prog/grid/hexagram.html">Hexagram</a>.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Dec2Bin.lbi" --><p><span class="toenl"><a href="promath.html#d2b">To <span class="pro">Dec2Bin</span> :<span class="var">Num</span></a></span><br>
+	&nbsp; <span class="com"># convert decimal number Num to an 8 item binary list</span><br>
+	&nbsp; If<strong> :</strong><span class="var">Num</span> &gt;255 [Print [Rule is too large!] Stop]<br>
+	&nbsp; LocalMake &quot;<span class="var">Bin</span> []<br>
+	&nbsp; For [<span class="var">C</span> 7 0 -1] [<br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Bin</span> LPut (Quotient<strong> :</strong><span class="var">Num</span> Power 2<strong> :</strong><span class="var">C</span>)<strong> :</strong><span class="var">Bin</span><br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Num</span><strong> :</strong><span class="var">Num</span> -((Power 2<strong> :</strong><span class="var">C</span>) *Last<strong> :</strong><span class="var">Bin</span>)]<br>
+	&nbsp; Output<strong> :</strong><span class="var">Bin</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Test</span> :<span class="var">Num</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Print (Sentence [Binary value of] <b>:</b><span class="var">Num</span> [is] <span class="var"><span class="pro">Dec2Bin</span></span> <b>:</b><span class="var">Num</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="dist"></a><span class="subh">DistanceBetween</span><br>
+					Return the distance between two points.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">DistanceBetween</span> :<span class="var">Point1</span> :<span class="var">Point2</span></span><br>
+						&nbsp; <span class="com"># return distance between two points</span><br>
+						&nbsp; LocalMake &quot;<span class="var">Hor</span> (First <b>:</b><span class="var">Point1</span>) 
+						-(First <b>:</b><span class="var">Point2</span>)<br>
+						&nbsp; LocalMake &quot;<span class="var">Ver</span> (Last <b>:</b><span class="var">Point1</span>) 
+						-(Last <b>:</b><span class="var">Point2</span>)<br>
+						&nbsp; Output SqRt ((Power <b>:</b><span class="var">Hor</span> 2) +(Power <b>:</b><span class="var">Ver</span> 2))<br>
+						<span class="toen">End</span><br>
+						<br>
+						<span class="toen">To<span class="pro"> Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">Point1</span> [1 1] Make &quot;<span class="var">Point2</span> [4 5]<br>
+						&nbsp; Print (Sentence [The distance between point (] <b>:</b><span class="var">Point1</span> [)<br>
+						&nbsp; and point (] <b>:</b><span class="var">Point2</span> [) is] <span class="pro">DistanceBetween</span> <b>:</b><span class="var">Point1</span><strong> :</strong><span class="var">Point2</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="even"></a><span class="subh">Even</span> (also see <a href="#odd">Odd</a>)<br>
+					Return True if :Num is even, else return False.<br>
+					Used in <a href="../../prog/illusion/bulge.html">Bulge</a>, <a href="../../prog/art/cloverart.html">CloverArt</a>, <a href="../../prog/illusion/grid.html">Grid</a> and <a href="../../prog/illusion/marbles.html">Marbles</a>.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Even.lbi" --><p><span class="toenl"><a href="promath.html#even">To <span class="pro">Even?</span> :<span class="var">Num</span></a></span><br>
+	&nbsp; <span class="com"># return 'true' if Num even, else return 'false</span>'<br>
+	&nbsp; If (Mod <b>:</b><span class="var">Num</span> 2)=0 [Output &quot;True] [Output &quot;False]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Test</span> :<span class="var">A</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; If <span class="pro">Even</span> <b>:</b><span class="var">A</span> [Print (Sentence <b>:</b><span class="var">A</span> [is 
+						even]) ] [Print (Sentence <b>:</b><span class="var">A</span> [is odd]) ]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="least"></a><span class="subh">Least</span> (also see <a href="#most">Most</a>)<br>
+					Return the lowest of two values.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Least</span> :<span class="var">I</span> :<span class="var">J</span></span><br>
+						&nbsp; <span class="com"># return lowest value</span><br>
+						&nbsp; If Before <b>:</b><span class="var">I</span> <b>:</b><span class="var">J</span> [Output <b>:</b><span class="var">I</span>] [Output <b>:</b><span class="var">J</span>]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">A</span> 12 Make &quot;<span class="var">B</span> 22<br>
+						&nbsp; Print (Sentence [The lowest value of] <b>:</b><span class="var">A</span> [and] <b>:</b><span class="var">B</span> [is] <span class="pro">Least</span> <b>:</b><span class="var">A</span> <b>:</b><span class="var">B</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="most"></a><span class="subh">Most</span> (also see <a href="#least">Least</a>)<br>
+					Return the highest of two values.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Most</span> :<span class="var">I</span> :<span class="var">J</span></span><br>
+						&nbsp; <span class="com"># return greatest value</span><br>
+						&nbsp; If Before <b>:</b><span class="var">I</span> <b>:</b><span class="var">J</span> [Output <b>:</b><span class="var">J</span>] [Output <b>:</b><span class="var">I</span>]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">A</span> 12 Make &quot;<span class="var">B</span> 22<br>
+						&nbsp; Print (Sentence [The highest value of] <b>:</b><span class="var">A</span> [and] <b>:</b><span class="var">B</span> [is] <span class="pro">Most</span> <b>:</b><span class="var">A</span> <b>:</b><span class="var">B</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="odd"></a><span class="subh">Odd</span> (also see <a href="#even">Even</a>)<br>
+					Return True if :Num is odd, else returns False.<br>
+					Used in <a href="../../prog/l-system/lsys2.html">LSystem</a>.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Odd.lbi" --><p><span class="toenl"><a href="promath.html#odd">To <span class="pro">Odd?</span> :<span class="var">Num</span></a></span><br>
+	&nbsp; <span class="com"># return 'true' if Num odd, else return 'false'</span><br>
+	&nbsp; If Not (Mod <b>:</b><span class="var">Num</span> 2) = 0 [Output &quot;True] [Output &quot;False]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Test</span> :<span class="var">A</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">A</span> 42<br>
+						&nbsp; If <span class="pro">Odd</span> <b>:</b><span class="var">A</span> [Print (Sentence <b>:</b><span class="var">A</span> [is 
+						even]) ] [Print (Sentence <b>:</b><span class="var">A</span> [is odd]) ]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="p2r"></a><span class="subh">Polar to Rectangular</span><br>
+					Return rectangular x y coordinates from polar r theta coordinates.<br>
+					<span class="fs10">Used in <a href="../../prog/polar/bfly.html">Butterfly</a>, <a href="../../prog/grid/elasgrid.html">ElasticGrid</a> and <a href="../../prog/polar/polartwist.html">PolarTwist</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_PtoR.lbi" --><p><span class="toenl"><a href="promath.html#p2r">To <span class="pro">PtoR</span> :<span class="var">RadDist</span> :<span class="var">Theta</span></a></span><br>
+	&nbsp; <span class="com"># convert polar to rectangular co-ordinates</span><br>
+	&nbsp; LocalMake &quot;<span class="var">X</span> <b>:</b><span class="var">RadDist</span> *Sin <b>:</b><span class="var">Theta</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Y</span> <b>:</b><span class="var">RadDist</span> *Cos <b>:</b><span class="var">Theta</span><br>
+	&nbsp; Output List <b>:</b><span class="var">X</span> <b>:</b><span class="var">Y</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">R</span> 42 Make &quot;<span class="var">Theta</span> 30<br>
+						&nbsp; Print (Sentence [X Y co-ordinates are:] <span class="pro">PtoR</span> <b>:</b><span class="var">R</span> <b>:</b><span class="var">Theta</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="r2p"></a><span class="subh">Rectangular to Polar</span><br>
+					Return polar 'r theta' coordinates from rectangular x y coordinates.<br>
+					<span class="fs10">Used in <a href="../../prog/grid/elasgrid.html">ElasticGrid</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_RtoP.lbi" --><p><span class="toenl"><a href="promath.html#r2p">To <span class="pro">RtoP</span> :<span class="var">X</span> :<span class="var">Y</span></a></span><br>
+	&nbsp; <span class="com"># convert rectangular to polar co-ordinates</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Dist</span> Sqrt ((Power <b>:</b><span class="var">X</span> 2) +(Power <b>:</b><span class="var">Y</span> 2))<br>
+	&nbsp; If<strong> :</strong><span class="var">X</span>&lt;0 [Output List <b>:</b><span class="var">Dist</span> 180 +ATan <b>:</b><span class="var">Y</span>/<b>:</b><span class="var">X</span>] [<br>
+	&nbsp; &nbsp; <span class="com"># else<strong> :</strong>X &gt;0</span><br>
+	&nbsp; &nbsp; If<strong> :</strong><span class="var">Y</span>&lt;0 [Output List<strong> :</strong><span class="var">Dist</span> 360 +ATan<strong> :</strong><span class="var">Y</span>/<b>:</b><span class="var">X</span>]<br>
+	&nbsp; &nbsp; [Output List<strong> :</strong><span class="var">Dist</span> ATan<strong> :</strong><span class="var">Y</span>/<b>:</b><span class="var">X</span>]]<br>
+	&nbsp; <span class="com"># else<strong> :</strong>X =0</span><br>
+	&nbsp; If<strong> :</strong><span class="var">Y</span>&lt;=0 [Output List<strong> :</strong><span class="var">Dist</span> 270] [Output List<strong> :</strong><span class="var">Dist</span> 90]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">X</span> 30 Make &quot;<span class="var">Y</span> 40<br>
+						&nbsp; Print (Sentence [r theta co-ordinates are:] <span class="pro">RtoP</span> <b>:</b><span class="var">X</span> <b>:</b><span class="var">Y</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="r2p2"></a><span class="subh">Rectangular to Polar 2</span><br>
+					Return polar 'r theta' coordinates from rectangular x y coordinates. 
+					Uses a second turtle and no ArcTangent function.<br>
+					<span class="fs10">Used in <a href="../../prog/grid/elasgrid.html">ElasticGrid</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_RtoP2.lbi" --><p><span class="toenl"><a href="promath.html#odd">To <span class="pro">RtoP</span> :<span class="var">X</span> :<span class="var">Y</span></a></span><br>
+	&nbsp; <span class="com"># use a second turtle to convert rectangular to polar co-ordinates</span><br>
+	&nbsp; SetTurtle 1 PenUp SetXY <b>:</b><span class="var">X</span> <b>:</b><span class="var">Y</span><br>
+	&nbsp; LocalMake &quot;<span class="var">RadDist</span> Sqrt ((Power <b>:</b><span class="var">X</span> 2)+(Power <b>:</b><span class="var">Y</span> 2))<br>
+	&nbsp; SetHeading Towards [0 0]<br>
+	&nbsp; LocalMake &quot;<span class="var">myHeading</span> Mod Int (Heading+180) 360 SetTurtle 0<br>
+	&nbsp; Output List <b>:</b><span class="var">RadDist</span> <b>:</b><span class="var">myHeading</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">X</span> 30 Make &quot;<span class="var">Y</span> 40<br>
+						&nbsp; Print (Sentence [r theta co-ordinates are:] <span class="pro">RtoP</span> <b>:</b><span class="var">X</span> <b>:</b><span class="var">Y</span>)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="root2"></a><span class="subh">Root2</span><br>
+					Return squareroot of 2.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Root2</span></span><br>
+						&nbsp; Output SqRt 2 &nbsp; &nbsp; <span class="com"># return sqrt of 2 (approx 1.414)</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="root3"></a><span class="subh">Root3</span><br>
+					Return squareroot of 3.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Root3</span></span><br>
+						&nbsp; Output SqRt 3 &nbsp; &nbsp; <span class="com"># return sqrt of 3 (approx 1.732)</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="sign"></a><span class="subh">Sign</span><br>
+					Return sign of number (+1 if positive or -1 if negative or zero). Not 
+					to be confused with Sine. By convention, Sign of zero is 1.<br>
+					<span class="fs10">Used in <a href="../../prog/dotplot/hop.html">Hop</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Sign.lbi" --><p><span class="toenl"><a href="promath.html#sign">To <span class="pro">Sign</span> :<span class="var">Num</span></a></span><br>
+	&nbsp; <span class="com"># return sign (-1 or 1) of number</span><br>
+	&nbsp; If <b>:</b><span class="var">Num</span> &lt; 0 [Output Minus 1] [Output 1]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		
+		<div id="leco">
+			<p class="contents"><a href="../../prog/top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuInfo.lbi" --><ul>
+	<li><a href="books.html"> 
+		<script type="text/javascript"> blob("Books");</script> Books</a></li>
+	<li><a href="bookslogo.html"> 
+		<script type="text/javascript"> blob("Books_Logo");</script> &nbsp; &nbsp; logo</a></li>
+	<li><a href="booksfractals.html"> 
+		<script type="text/javascript"> blob("Books_Fractals");</script> &nbsp; &nbsp; fractals</a></li>
+	<li><a href="booksgrap.html"> 
+		<script type="text/javascript"> blob("Books_Graphics");</script> &nbsp; &nbsp; graphics</a></li>
+	<li><a href="booksmath.html"> 
+		<script type="text/javascript"> blob("Books_Maths");</script> &nbsp; &nbsp; maths</a></li>
+	<li><a href="bookslife.html"> 
+		<script type="text/javascript"> blob("Books_Life");</script> &nbsp; &nbsp; life</a></li>
+	<li><a href="bookspuzz.html"> 
+		<script type="text/javascript"> blob("Books_Puzzle");</script> &nbsp; &nbsp; puzzles</a></li>
+	<li><a href="booksmathgen.html"> 
+		<script type="text/javascript"> blob("Books_MathsGeneral");</script> &nbsp; &nbsp; mathsgen</a></li>
+	<li><a href="colorsalt.html"> 
+		<script type="text/javascript"> blob("Colors")</script> Colors</a></li>
+	<li><a href="genart.html"> 
+		<script type="text/javascript"> blob("Generative Art")</script> Generative</a></li>
+	<li><a href="glossary.html"> 
+		<script type="text/javascript"> blob("Glossary")</script> Glossary</a></li>
+	<li><a href="prolib.html"> 
+		<script type="text/javascript"> blob("Procedures")</script> Procedures</a></li>
+	<li><a href="proarc.html"> 
+		<script type="text/javascript"> blob("Procedures_Arc");</script> &nbsp; &nbsp; arc</a></li>
+	<li><a href="procol.html"> 
+		<script type="text/javascript"> blob("Procedures_Color");</script> &nbsp; &nbsp; color</a></li>
+	<li><a href="prolist.html"> 
+		<script type="text/javascript"> blob("Procedures_List");</script> &nbsp; &nbsp; list</a></li>
+	<li><a href="promath.html"> 
+		<script type="text/javascript"> blob("Procedures_Math");</script> &nbsp; &nbsp; math</a></li>
+	<li><a href="prorecur.html"> 
+		<script type="text/javascript"> blob("Procedures_Recursive");</script> &nbsp; &nbsp; recursive</a></li>
+	<li><a href="proshape.html"> 
+		<script type="text/javascript"> blob("Procedures_Shape");</script> &nbsp; &nbsp; shape</a></li>
+	<li><a href="turts.html"> 
+		<script type="text/javascript"> blob("Turtles")</script> Turtles</a></li>
+	<li><a href="tuts.html"> 
+		<script type="text/javascript"> blob("Tutorials")</script> Tutorial</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><img src="../../art/img100/xlogo100.gif" alt="xlogo" width="100" height="100"><br>
+				XLogo</p>
+			<!-- #EndEditable -->
+			<p>&nbsp;</p><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate --></html>

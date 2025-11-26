@@ -1,0 +1,61 @@
+# Main Command: GoX
+# Dragon Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init :order
+  # make Size and Angle global values
+  Make "Size 11*Power (SqRt 2) (9-:Order)
+  Make "Angle 90
+end
+
+to display :order
+  # write header title and curve level
+  SetPC White
+  SetPos [-190 184] Label Sentence [Dragon Curve Order] :Order
+end
+
+to dragon :order :parity
+  If :Order < 1 [Forward :Size Stop]  # ie if = 0
+  Dragon :Order-1 1
+  Left :Parity*:Angle     # turn left or right :Angle degrees
+  Dragon :Order-1 Minus 1
+end
+
+to go :order
+  New
+  Init :Order Display :Order
+  SetPos [-108 0] SetPC Green PenDown
+  Right (45 *:Order)+90     # similar orientations of curves
+  Dragon :Order 1 
+end
+
+to gox
+  New Animation 
+  For [Order 0 11] [Wash     # comment out Wash for overlaid curves
+  Init :Order Display :Order
+    SetPos [-108 0] SetPC Green
+    # SetPC 1 + Modulo :Order 2     # red or green
+    PenDown Right (45 *:Order)+90     # similar orientations of curves
+    Dragon :Order 1
+    Refresh Wait 80 PenUp Home]
+end
+
+to init2 :order
+  # make Size and Angle global values
+  Make "Size 9*Power (SqRt 2) (9-:Order)
+  Make "Angle 90
+end
+
+to go4 :order
+  New Init2 :Order Display :Order
+  For [Turt 1 4] [
+    SetTurtle :Turt SetPC :Turt PenDown
+    Right (:Turt*90) + (45 *:Order)+45
+    Dragon :Order 1 Wait 40]
+end

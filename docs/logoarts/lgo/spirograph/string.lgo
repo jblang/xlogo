@@ -1,0 +1,48 @@
+# Main Command: Go
+# String by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init
+  Make "StepA Pick [0 2 3 4]
+  Make "StepB Pick [-3 -2 1 2 3 4]
+  Make "Offset 15*Random 9
+end
+
+to display :stepa :stepb :offset
+  SetPC White
+  SetXY Minus 196 186 Label (List "Loom :StepA :StepB :Offset)
+end
+
+to loom :stepa :stepb :offset
+  For [Angle 0 360 2] [
+    SetPC AngCol :Angle PenUp
+    SetXY 180*Sin :Angle 180*Cos :Angle PenDown  # circle start point
+    SetXY 180*Sin (:StepA*:Angle) 180*Cos (:Offset+(:StepB*:Angle))     # finish point
+    Wait 2]
+end
+
+to angcol :ang
+  # Output list of red, grn, blue 
+  Make "Red 127*(1+Cos :Ang)
+  Make "Grn 127*(1+Cos(120+:Ang))
+  Make "Blue 127*(1+Cos(240+:Ang)) 
+  Output ( List :Red :Grn :Blue ) 
+end
+
+to go
+  New Forever [
+  Init Display :StepA :StepB :Offset
+  Loom :StepA :StepB :Offset
+  Wait 300 PenUp Wash]
+end
+
+to gox :stepa :stepb :offset
+  New Display :StepA :StepB :Offset
+Loom :StepA :StepB :Offset
+end

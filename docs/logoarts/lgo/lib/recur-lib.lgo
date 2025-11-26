@@ -1,0 +1,33 @@
+# Recursive Library by Guy Walker
+# www.logoarts.co.uk
+
+to add :i :j
+  # return sum of two input numbers
+  If :I = 0 [Output :J] [Output Add :I-1 :J+1]
+end
+
+to factorial :n
+  # return factorial of N
+  If :N = 1 [Output 1] [Output :N * Factorial :N-1]
+end
+
+to fib :n
+  # return Nth Fibonacci number
+  If :N < 2 [Output :N] [Output (Fib :N-1) + Fib :N-2]
+end
+
+to hcf :i :j
+  # return highest common factor of two integers
+  LocalMake "Rem Modulo :I :J
+  If :Rem = 0 [Output :J] [Output HCF :J :Rem]
+End
+
+to lcm :i :j
+  # return lowest common multiple of two integers
+  Output :I*:J / HCF :I :J
+end
+
+to sum1ton :n
+  # return sum of integers 1 to N
+  If :N < 1 [Output 0] [Output :N+ Sum1toN :N-1]
+end

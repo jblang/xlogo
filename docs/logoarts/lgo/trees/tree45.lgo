@@ -1,0 +1,23 @@
+# Main Command: Go
+# Tree (45) by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to tree :order :size
+  If :Order < 0 [Forward :Size Stop]     # stop if order < 0
+  Left 90 Repeat 5 [Forward :Size Right 90]
+  Left 45 Tree :Order-1 :Size*Sin 45 
+  Right 90 Tree :Order-1 :Size*Cos 45 
+  Right 45 Forward :Size Left 90
+end
+
+to go
+  New
+  SetPos [-40 -160] Right 90 PenDown
+  Tree 5 75 
+end

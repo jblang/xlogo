@@ -1,0 +1,35 @@
+# Main Command: Go 4 3
+# Koch Square Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init
+  PenUp SetPos [-94 -94] PenDown
+end
+
+to koch :level :side
+  If :Level < 1 [Forward :Side Stop]
+  Koch :Level-1 :Side/3 Left 90
+  Koch :Level-1 :Side/3 Right 90
+  Koch :Level-1 :Side/3 Right 90 
+  Koch :Level-1 :Side/3 Left 90
+  Koch :Level-1 :Side/3
+end
+
+to kin :level :side
+  SetH 90 Repeat 4 [Koch :Level :Side Left 90]
+end
+
+to kout :level :side
+  SetH 0 Repeat 4 [Koch :Level :Side Right 90]
+end
+
+to go :levelin :levelout
+  New Init SetPC Gray KIn 0 189
+  SetPC Red KIn :LevelIn 189 SetPC Green KOut :LevelOut 189
+end

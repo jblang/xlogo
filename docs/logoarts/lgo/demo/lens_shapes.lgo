@@ -1,0 +1,33 @@
+# Main Command: Go
+# Lens Shapes by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to lens :angle :size
+  # lens shape drawn from centre (tp)
+  Make "Dist (:Size/2)/Tan :Angle/2
+  Repeat 2 [
+    Back :Dist Arch :Angle (:Size/2) / Sin :Angle/2
+    Forward :Dist Left 180]
+end
+
+to arch :angle :radius
+  # symmetrical arc drawn relative to turtle heading
+  Arc :Radius Heading-:Angle/2 Heading+:Angle/2
+end
+
+to go
+  New
+  For [Ang 150 10 -20] [    # 230 10 -20
+    Home Left 45
+    SetPC Green Lens :Ang 448    # 256
+    SetPC (List :Ang :Ang :Ang) Fill
+    Back 1.15 *:Ang Right 45 
+    SetPC White Label :Ang Wait 30]
+  SetPos [-190 182] Label [Lens Shapes]
+end

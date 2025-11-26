@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Art | Clover Art</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Eye</h2>
+			<p>- random sector shapes</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g9/eye32.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>A random combination of Clover Leaf and Clover Wave. Each resulting shape 
+					is placed in a grid with randomly chosen background and fill colors.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; <span class="com"># global values for each sector</span><br>
+						&nbsp; GlobalMake &quot;<span class="var">Angle</span> 10 +Random 110<br>
+						&nbsp; GlobalMake &quot;<span class="var">Rad1</span> 10 +Random 170<br>
+						&nbsp; GlobalMake &quot;<span class="var">Width</span> 130 -<b>:</b><span class="var">Angle</span><br>
+						&nbsp; GlobalMake &quot;<span class="var">Rad2</span> <b>:</b><span class="var">Rad1</span> +<b>:</b><span class="var">Width</span><br>
+						&nbsp; If <b>:</b><span class="var">Rad2</span> &gt;180 [Make &quot;<span class="var">Rad2</span> 200 -<b>:</b><span class="var">Width</span>]<br>
+						&nbsp; <span class="com"># Make Hue random color except black or white</span><br>
+						&nbsp; Make &quot;<span class="var">Hue</span> [0 0 0]<br>
+						&nbsp; While [Or <b>:</b><span class="var">Hue</span>=[0 0 0] <b>:</b><span class="var">Hue</span>=[255 255 255] ] [Make &quot;<span class="var">Hue</span> <span class="pro">RandRGB</span> 3]<br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_Sector.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#sector">To <span class="pro">Sector</span> :<span class="var">Angle</span> :<span class="var">Rad1</span> :<span class="var">Rad2</span></a></span><br>
+	&nbsp; <span class="com"># sector shape drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Offset</span> (<b>:</b><span class="var">Rad1</span>+<b>:</b><span class="var">Rad2</span>) /2 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+	&nbsp; <span class="pro">Arch</span> <b>:</b><span class="var">Angle</span> <b>:</b><span class="var">Rad1</span><br>
+	&nbsp; <span class="pro">Arch</span> <b>:</b><span class="var">Angle</span> <b>:</b><span class="var">Rad2</span> Left <b>:</b><span class="var">Angle</span>/2<br>
+	&nbsp; Forward <b>:</b><span class="var">Rad1</span> PenDown Forward (<b>:</b><span class="var">Rad2</span>-<b>:</b><span class="var">Rad1</span>)<br>
+	&nbsp; PenUp Back <b>:</b><span class="var">Rad2</span> Right <b>:</b><span class="var">Angle</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Rad1</span> PenDown Forward (<b>:</b><span class="var">Rad2</span>-<b>:</b><span class="var">Rad1</span>)<br>
+	&nbsp; PenUp Back <b>:</b><span class="var">Rad2</span> Left <b>:</b><span class="var">Angle</span>/2 &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_RandRGB.lbi" --><p><span class="toenl"><a href="../../ipt/info/procol.html#randrgb">To <span class="pro">RandRGB</span> :<span class="var">Ord</span></a></span><br>
+	&nbsp; <span class="com"># return random RGB color</span><br>
+	&nbsp; Output  (List <span class="pro">Val</span> <b>:</b><span class="var">Ord</span> <span class="pro">Val</span> <b>:</b><span class="var">Ord</span> <span class="pro">Val</span> <b>:</b><span class="var">Ord</span>)<br>
+	<span class="toenl">End</span><br>
+	<span class="toenl">To <span class="pro">Val</span> :<span class="var">Ord</span></span><br>
+	&nbsp; <span class="com"># return random value 0-255 in steps of 255/:Ord-1</span><br>
+	&nbsp; Output  Int (Random <b>:</b><span class="var">Ord</span>)*(255/(<b>:</b><span class="var">Ord</span>-1))<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Arch.lbi" --><p><span class="toenl"><a href="../../ipt/info/proarc.html#arch">To <span class="pro">Arch</span> :<span class="var">Angle</span> :<span class="var">Radius</span></a></span><br>
+	&nbsp; <span class="com"># symmetrical arc drawn relative to turtle heading</span><br>
+	&nbsp; Arc <b>:</b><span class="var">Radius</span> Heading-<b>:</b><span class="var">Angle</span>/2 
+	Heading+<b>:</b><span class="var">Angle</span>/2<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New </span>Repeat 24 [<br>
+						&nbsp; &nbsp; <span class="pro">Init</span> SetH Random 360 SetPC [9 9 9]<br>
+						&nbsp; &nbsp; <span class="pro">Sector</span> <b>:</b><span class="var">Angle</span> <b>:</b><span class="var">Rad1</span><b> :</b><span class="var">Rad2</span><br>
+						&nbsp; &nbsp; Forward <b>:</b><span class="var">Offset</span><br>
+						&nbsp; &nbsp; FillZone SetPC <b>:</b><span class="var">Hue</span> Fill<br>
+						&nbsp; &nbsp; Back <b>:</b><span class="var">Offset</span><br>
+						&nbsp; &nbsp; SetPC White <span class="pro">Sector</span> <b>:</b><span class="var">Angle</span> <b>:</b><span class="var">Rad1 </span><b>:</b><span class="var">Rad2</span>]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/art/eye.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/art/eye.lgo">File</a></li>
+						<li><a href="../../pict/gall9/eye.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall9/eye.html"><img src="../../art/100g9/eye.gif" alt="Eye" width="100" height="100"></a><br>
+				Eye</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

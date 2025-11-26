@@ -1,0 +1,38 @@
+# Scintillate
+
+The circles appear to scintillate. This illusion was created by Italian 
+vision scientists Baingio Pinna and Lothar Spillman in 2002. This code 
+is adapted from [Tiles](../grid/tile_a.md).
+
+```logo
+To New
+ # set default screen, pen and turtle values
+ ResetAll SetScreenSize [400 400] HideTurtle
+ SetSC Black SetPC Green SetPS 1 PenUp
+End
+To GridSq :Order :Side
+ # draw tile at each column x row position
+ LocalMake "Offset (1+:Order)/2
+ For (List "Col 1 :Order) [
+ For (List "Row 1 :Order) [
+ SetXY :Side*(:Col-:Offset) :Side*(:Row-:Offset)
+ Tile :Col :Row :Side] ]
+End
+To Tile :Col :Row :Side
+ # draw tile from centre
+ SetPC White SetPW 2
+ Burst 18 :Side/2.1
+ SetPC Gray Circle :Side/8 FillZone
+ SetPC Purple SetPW 4 Circle :Side/8
+End
+To Burst :Spokes :Radius
+ # star burst drawn from centre (tp)
+ Repeat :Spokes [
+ PenDown Forward :Radius
+ PenUp Back :Radius
+ Right 360/:Spokes Wait 2]
+End
+To Go :Order
+ New GridSq :Order 380 /:Order
+End
+```

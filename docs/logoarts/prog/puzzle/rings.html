@@ -1,0 +1,330 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Puzzle | Hungarian Rings</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Hungarian Rings</h2>
+			<p>- XLogo puzzle</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g5/rings.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>Three interlocking rotating rings each 
+					holding 24 colored balls.<br>
+					My first attempt at a XLogo game.</p>
+				<p><strong>Instructions</strong><br>
+					Shuffle the rings and attempt to return to initial position.</p>
+				<p><strong>Controls</strong><br>
+					Left / right cursor - rotate rings<br>
+					Up cursor - select ring<br>
+					Space - reset and restart game</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Ring1</span> [1 1 1 1 1 1 1 1 1 1 5 5 5 5 5 5 5 5 2 1 1 1 1 1]<br>
+						&nbsp; Make &quot;<span class="var">Ring2</span> [2 2 2 2 2 2 2 2 2 2 5 5 5 5 5 5 5 5 4 2 2 2 2 2]<br>
+						&nbsp; Make &quot;<span class="var">Ring3</span> [4 4 4 4 4 4 4 4 4 4 5 5 5 5 5 5 5 5 1 4 4 4 4 4]<br>
+						&nbsp; Make &quot;<span class="var">R1</span> <b>:</b><span class="var">Ring1</span> Make &quot;<span class="var">R2</span> <b>:</b><span class="var">Ring2</span> Make &quot;<span class="var">R3</span> <b>:</b><span class="var">Ring3</span><br>
+						&nbsp; Make &quot;<span class="var">S</span> &quot;<span class="var">S</span> Make &quot;<span class="var">CD</span> 12 &nbsp; <span class="com"># Attract mode delay</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Title</span></span><br>
+						&nbsp; SetPos List Minus 45 Minus 185<br>
+						&nbsp; SetPC White Label [Hungarian Rings]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">DrawBoard</span></span><br>
+						&nbsp; Repeat 3 [SetPW 61 SetPC [0 0 1] <span class="pro">Ring</span> RepCount Circle 111]<br>
+						&nbsp; Repeat 3 [SetPW 33 SetPC White <span class="pro">Ring</span> RepCount Circle 111]<br>
+						&nbsp; Repeat 3 [SetPW 31 SetPC Black <span class="pro">Ring</span> RepCount Circle 111]<br>
+						&nbsp; Refresh Wait 32<br>
+						&nbsp; Repeat 3 [SetPW 53 SetPC [0 0 1] <span class="pro">Ring</span> RepCount<br>
+						&nbsp; Forward 58 Dot Pos SetPW 31 SetPC [74 51 0] Dot Pos]<br>
+						&nbsp; SetPW 1 SetPC [74 51 0] Repeat 3 [<br>
+						&nbsp; &nbsp; <span class="pro">Light</span> RepCount Minus 1 <span class="pro">Light</span> RepCount 1]<br>
+						&nbsp; Home Fill<br>
+						&nbsp; Refresh Wait 32<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">ResetRings</span></span><br>
+						&nbsp; SetPC [74 51 0] C2S Home SetPC Orange PenDown Fill PenUp<br>
+						&nbsp; Refresh Wait 24<br>
+						&nbsp; Repeat 3 [Ring RepCount <span class="pro">DeleteRing</span>] Refresh Wait 24<br>
+						&nbsp; Repeat 3 [Ring RepCount <span class="pro">DrawBalls</span> Run [Thing Word &quot;Ring RepCount] &nbsp; &nbsp; Refresh Wait 24]<br>
+						&nbsp; Home SetPC [74 51 0] Fill Refresh Wait 24<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Start</span></span><br>
+						&nbsp; Make &quot;<span class="var">N</span> 3 Make &quot;<span class="var">NewN</span> 3 Make &quot;<span class="var">Step</span> 0 Make &quot;<span class="var">Dir</span> 0<br>
+						&nbsp; Make &quot;<span class="var">Att</span> &quot;False Make &quot;<span class="var">Reset</span> &quot;False<br>
+						&nbsp; CountDown <b>:</b><span class="var">CD</span> SetPC Orange <span class="pro">Light</span> <b>:</b><span class="var">N</span> 0 Refresh Wait 24<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">DeleteRing</span></span><br>
+						&nbsp; SetPC Black SetPW 26 Repeat 24 [<br>
+						&nbsp; Forward 111 Dot Pos Back 111 Right 15]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">DrawBalls</span> :<span class="var">Ring</span></span><br>
+						&nbsp; SetPW 24 Repeat 24 [<br>
+						&nbsp; SetPC Item RepCount<strong> :</strong><span class="var">Ring</span><br>
+						&nbsp; Forward 111 Dot Pos Back 111 Right 15]<br>
+						&nbsp; <span class="com">#drawspots</span><br>
+						&nbsp; Make &quot;<span class="var">myHeading</span> Heading<br>
+						&nbsp; SetH 315 Forward 6 SetH <b>:</b><span class="var">myHeading</span><br>
+						&nbsp; SetPW 6 SetPC White Repeat 24 [<br>
+						&nbsp; Forward 111 Dot Pos Back 111 Right 15]<br>
+						&nbsp; SetH 315 Back 6 SetH <b>:</b><span class="var">myHeading</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Ring</span> :<span class="var">N</span></span><br>
+						&nbsp; Home Left <b>:</b><span class="var">N</span>*120 Forward 64<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Light</span> :<span class="var">N</span> :<span class="var">Dir</span></span><br>
+						&nbsp; Ring <b>:</b><span class="var">N</span> Left <b>:</b><span class="var">Dir</span>*28 Forward 64 Fill Refresh<br>
+						&nbsp; Back 64 Right <b>:</b><span class="var">Dir</span>*28<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">UpdateRing</span> :<span class="var">N</span> :<span class="var">Dir</span></span><br>
+						&nbsp; Make &quot;<span class="var">A</span> Item <b>:</b><span class="var">N</span> [2 3 1]<br>
+						&nbsp; Make &quot;<span class="var">B</span> Item <b>:</b><span class="var">N</span> [3 1 2]<br>
+						&nbsp; Make &quot;ThisList Run [Thing Word &quot;Ring <b>:</b><span class="var">N</span>]<br>
+						&nbsp; Make Word &quot;<span class="var">Ring</span> <b>:</b><span class="var">A</span> SetItem Run [<br>
+						&nbsp; &nbsp; Thing Word &quot;<span class="var">Ring</span> <b>:</b><span class="var">A</span>] 7 Item (19+<b>:</b><span class="var">Dir</span>) <b>:</b><span class="var">ThisList</span><br>
+						&nbsp; Make Word &quot;<span class="var">Ring</span> <b>:</b><span class="var">A</span> SetItem Run [<br>
+						&nbsp; &nbsp; Thing Word &quot;<span class="var">Ring</span> <b>:</b><span class="var">A</span>] 15 Item (11+<b>:</b><span class="var">Dir</span>) <b>:</b><span class="var">ThisList</span><br>
+						&nbsp; Make Word &quot;<span class="var">Ring</span> <b>:</b><span class="var">B</span> SetItem Run [<br>
+						&nbsp; &nbsp; Thing Word &quot;<span class="var">Ring</span> <b>:</b><span class="var">B</span>] 11 Item (15+<b>:</b><span class="var">Dir</span>) <b>:</b><span class="var">ThisList</span><br>
+						&nbsp; Make Word &quot;<span class="var">Ring</span> <b>:</b><span class="var">B</span> SetItem Run [<br>
+						&nbsp; &nbsp; Thing Word &quot;<span class="var">Ring</span> <b>:</b><span class="var">B</span>] 19 Item (7+<b>:</b><span class="var">Dir</span>) <b>:</b><span class="var">ThisList</span><br>
+						&nbsp; If <b>:</b><span class="var">Dir</span> = 1<br>
+						&nbsp; &nbsp; [Make Word &quot;Ring <b>:</b><span class="var">N</span> ButFirst LPut Item 1 <b>:</b><span class="var">ThisList</span> <b>:</b><span class="var">ThisList</span> ]<br>
+						&nbsp; &nbsp; [Make Word &quot;Ring <b>:</b><span class="var">N</span> ButLast FPut Item 24 <b>:</b><span class="var">ThisList</span> <b>:</b><span class="var">ThisList</span>]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Shuffle</span></span><br>
+						&nbsp; While [Not Number? <b>:</b><span class="var">S</span>] [<br>
+						&nbsp; &nbsp; Read [<br>
+						&nbsp; &nbsp; Enter shuffle turns. Less than 5 easy, more than 20 hard.] &quot;<span class="var">S</span>]<br>
+						&nbsp; &nbsp; Wait 24 Home SetPC Orange Fill Refresh Wait 24<br>
+						&nbsp; &nbsp; &nbsp; Repeat <b>:</b><span class="var">S</span> [<br>
+						&nbsp; &nbsp; &nbsp; <span class="pro">Rand3</span><br>
+						&nbsp; &nbsp; &nbsp; Ring<strong> :</strong><span class="var">N</span> Make &quot;<span class="var">BallsList</span> Run [Thing Word &quot;Ring<strong> :</strong><span class="var">N</span>]<br>
+						&nbsp; &nbsp; &nbsp; Repeat Absolute<strong> :</strong><span class="var">Step</span> [Left<strong> :</strong><span class="var">Dir</span>*15 <span class="pro">UpdateRing</span><strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">Dir</span>]<br>
+						&nbsp; &nbsp; <span class="pro">DrawBalls</span><strong> :</strong><span class="var">BallsList</span> Refresh Wait 12] Make &quot;<span class="var">S</span> &quot;<span class="var">SS</span><br>
+						&nbsp; Home SetPC [74 51 0] Fill Refresh Wait 24<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New</span> Animation<br>
+						&nbsp; <span class="pro">Init</span> <span class="pro">Title</span> <span class="pro">DrawBoard</span> <span class="pro">ResetRings</span> <span class="pro">Start</span><br>
+						&nbsp; SetPC White <span class="pro">C2S</span><br>
+						&nbsp; Forever [If EndCountDown? [<span class="pro">AttractLoop</span>] [<span class="pro">GameLoop</span>] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">GameLoop</span></span><br>
+						&nbsp; If<strong> :</strong><span class="var">Step</span> = 0 [ReadKey Wait 4] [Turn<strong> :</strong><span class="var">N</span>]<br>
+						&nbsp; If<strong> :</strong><span class="var">Reset</span> [<br>
+						&nbsp; If Check [<span class="pro">AllOff</span> <span class="pro">Shuffle</span> <span class="pro">Start</span>] [<br>
+						&nbsp; Read [New Game? Y-yes N-no] &quot;<span class="var">R</span><br>
+						&nbsp; If Or<strong> :</strong><span class="var">R</span>=&quot;<span class="var">y</span><strong> :</strong><span class="var">R</span> = &quot;<span class="var">Y</span> [SetPC [74 51 0]<br>
+						&nbsp; Make &quot;<span class="var">Ring1</span><strong> :</strong><span class="var">R1</span> Make &quot;<span class="var">Ring2</span><strong> :</strong><span class="var">R2</span> Make &quot;<span class="var">Ring3</span><strong> :</strong><span class="var">R3</span><br>
+						&nbsp; <span class="pro">AllOff</span> <span class="pro">ResetRings</span> <span class="pro">Shuffle</span> <span class="pro">Start</span>] [Make &quot;<span class="var">Reset</span> &quot;<span class="var">False</span>] ] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">AttractLoop</span></span><br>
+						&nbsp; If<strong> :</strong><span class="var">Step</span> = 0 [<span class="pro">Attract</span>] [Turn<strong> :</strong><span class="var">N</span>]<br>
+						&nbsp; If<strong> :</strong><span class="var">Reset</span> [<br>
+						&nbsp; Make &quot;<span class="var">Ring1</span><strong> :</strong><span class="var">Ring1A</span> Make &quot;<span class="var">Ring2</span><strong> :</strong><span class="var">Ring2A</span> Make &quot;<span class="var">Ring3</span><strong> :</strong><span class="var">Ring3A</span><br>
+						&nbsp; <span class="pro">AllOff</span> <span class="pro">ResetRings</span> <span class="pro">Start</span>]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Turn</span> :<span class="var">N</span></span><br>
+						&nbsp; Make &quot;<span class="var">BallsList</span> Run [Thing Word &quot;Ring<strong> :</strong><span class="var">N</span>]<br>
+						&nbsp; If<strong> :</strong><span class="var">Step</span> &lt; 0 [Make &quot;<span class="var">Dir</span> Minus 1] [Make &quot;<span class="var">Dir</span> 1]<br>
+						&nbsp; SetPC Orange <span class="pro">Light</span><strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">Dir</span> SetPC [74 51 0] <span class="pro">Light</span><strong> :</strong><span class="var">N</span> Minus 1 *<strong> :</strong><span class="var">Dir</span><br>
+						&nbsp; <span class="pro">TurnRing</span><strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">Dir</span><br>
+						&nbsp; Make &quot;<span class="var">Step</span><strong> :</strong><span class="var">Step</span> -<strong> :</strong><span class="var">Dir</span><br>
+						&nbsp; If (<b>:</b><span class="var">Step</span> = 0) [<br>
+						&nbsp; SetPC [74 51 0] <span class="pro">Light</span><strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">Dir</span> If <span class="pro">Check</span> [<span class="pro">Win</span>] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">TurnRing</span> :<span class="var">N</span> :<span class="var">Dir</span></span><br>
+						&nbsp; Repeat 5 [<br>
+						&nbsp; &nbsp; <span class="pro">DeleteRing</span> Left<strong> :</strong><span class="var">Dir</span>*3 DrawBalls<strong> :</strong><span class="var">BallsList</span> Refresh<br>
+						&nbsp; &nbsp; ReadKey Wait 6]<br>
+						&nbsp; <span class="pro">UpdateRing</span><strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">Dir</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">ReadKey</span></span><br>
+						&nbsp; If Key? [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Char</span> ReadChar<br>
+						&nbsp; &nbsp; If EndCountDown? [<br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">Reset</span> &quot;True <span class="pro">CountDown</span><strong> :</strong><span class="var">CD</span>] [<br>
+						&nbsp; &nbsp; &nbsp; <span class="pro">CountDown</span><strong> :</strong><span class="var">CD</span><br>
+						&nbsp; &nbsp; &nbsp; If<strong> :</strong><span class="var">Char</span> = -37 [Make 
+						&quot;<span class="var">Step</span><strong> :</strong><span class="var">Step</span>+1]<br>
+						&nbsp; &nbsp; &nbsp; If<strong> :</strong><span class="var">Char</span> = -39 [Make 
+						&quot;<span class="var">Step</span><strong> :</strong><span class="var">Step</span>-1]<br>
+						&nbsp; &nbsp; &nbsp; If And<strong> :</strong><span class="var">Char</span> = -38<strong> :</strong><span class="var">Step</span> = 0 [<br>
+						&nbsp; &nbsp; &nbsp; SetPC [74 51 0] <span class="pro">Light</span><strong> :</strong><span class="var">N</span> 0 Make &quot;<span class="var">N</span> 1+Mod (<b>:</b><span class="var">N</span>-1)+1 3 <br>
+						&nbsp; &nbsp; &nbsp; SetPC Orange Light<strong> :</strong><span class="var">N</span> 0]<br>
+						&nbsp; &nbsp; &nbsp; If<strong> :</strong><span class="var">Char</span> = 32 [Make 
+						&quot;<span class="var">Reset</span> &quot;True] ] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Attract</span></span><br>
+						&nbsp; SetPC [74 51 0] <span class="pro">Light</span><strong> :</strong><span class="var">N</span> 0&nbsp; &nbsp; <span class="com"># turn off</span><br>
+						&nbsp; Wait 24 Refresh<br>
+						&nbsp; If<strong> :</strong><span class="var">Att</span> = &quot;False [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Ring1A</span><strong> :</strong><span class="var">Ring1</span> Make &quot;<span class="var">Ring2A</span><strong> :</strong><span class="var">Ring2</span> Make &quot;<span class="var">Ring3A</span><strong> :</strong><span class="var">Ring3</span><br>
+						&nbsp; &nbsp; SetPC White C2S Make &quot;<span class="var">Att</span> &quot;True]<br>
+						&nbsp; <span class="pro">Rand3</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">C2S</span></span><br>
+						&nbsp; Home SetPos List Minus 18 Minus 3 Label [space]<br>
+						&nbsp; SetPos List Minus 19 Minus 13 Label [to start] Refresh<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Rand3</span></span><br>
+						&nbsp; While [<b>:</b><span class="var">N</span> =<strong> :</strong><span class="var">NewN</span>] [Make &quot;<span class="var">NewN</span> (1+Random 3)] Make 
+						&quot;<span class="var">N</span><strong> :</strong><span class="var">NewN</span><br>
+						&nbsp; Make &quot;<span class="var">Dir</span> (2*Random 2)-1 &nbsp; &nbsp; <span class="com"># minus 1 (cw) or 1 (acw)</span><br>
+						&nbsp; Make &quot;<span class="var">Step</span><strong> :</strong><span class="var">Dir</span>*(1 + Random 8)<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">AllOff</span></span><br>
+						&nbsp; SetPC [74 51 0] For [<span class="var">N</span> 1 3] [ For [<span class="var">D</span> -1 1] [<span class="pro">Light</span><strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">D</span>] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Check</span></span><br>
+						&nbsp; If And And (<b>:</b><span class="var">R1</span> =<strong> :</strong><span class="var">Ring1</span>) (<b>:</b><span class="var">R2</span> =<strong> :</strong><span class="var">Ring2</span>) (<b>:</b><span class="var">R3</span> =<strong> :</strong><span class="var">Ring3</span>) [Output &quot;True]<br>
+						&nbsp; [Output &quot;False]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Win</span></span><br>
+						&nbsp; If Not (<b>:</b><span class="var">S</span> = &quot;<span class="var">S</span>) [<br>
+						&nbsp; &nbsp; <span class="pro">AllOff</span> Wait 24 Repeat 44 [Rand3 SetPC (1+Random 6) <span class="pro">Light</span><strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">Dir</span> &nbsp; &nbsp; Refresh Wait 4]<br>
+						&nbsp; Read [Well Done! Play Again? Y-yes N-no] &quot;<span class="var">R</span><br>
+						&nbsp; If Or<strong> :</strong><span class="var">R</span>=&quot;<span class="var">y</span><strong> :</strong><span class="var">R</span>=&quot;<span class="var">Y</span> [<br>
+						&nbsp; Make &quot;<span class="var">Ring1</span><strong> :</strong><span class="var">R1</span> Make &quot;<span class="var">Ring2</span><strong> :</strong><span class="var">R2</span> Make &quot;<span class="var">Ring3</span><strong> :</strong><span class="var">R3</span><br>
+						&nbsp; Make &quot;<span class="var">S</span> &quot;<span class="var">S</span> <span class="pro">AllOff</span> <span class="pro">ResetRings</span> <span class="pro">Start</span>] [<span class="pro">StopAll</span>] ]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/puzzle/hungarian_rings.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/puzzle/hungarian_rings.lgo">File</a></li>
+						<li><a href="../../pict/gall5/rings.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall5/rings.html"><img src="../../art/100g5/rings.gif" alt="Rings" width="100" height="100"></a><br>
+				Rings</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

@@ -1,0 +1,55 @@
+# Main Command: Go 5
+# Border by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to hook :side
+  Repeat 2 [Forward :Side Right 90] 
+  Forward 3*:Side Right 90
+end
+
+to edge :side
+  Repeat 2 [Hook :Side]
+end
+
+to incorner :side
+  Hook :Side
+end
+
+to join :side
+  Repeat 2 [Forward 3*:Side Right 90]
+end
+
+to insquare :side :block
+  If :Block<2 [Stop] 
+  Repeat 4 [
+    Repeat :Block-2 [
+      Edge :Side Join :Side] 
+    InCorner :Side Join :Side]
+end
+
+to outcorner :side
+  Repeat 3 [Hook :Side]
+end
+
+to outsquare :side :block
+  If :Block<2 [Stop] 
+  Repeat 4 [
+    Repeat :Block-2 [
+      Edge :Side Join :Side ] 
+    OutCorner :Side Join :Side]
+end
+
+to go :block
+  New Make "Side 380/((4*:Block)-1)
+  SetXY -190 190-5*:Side PenDown 
+  SetPC Brown OutSquare :Side :Block
+  PenUp Left 90 Back (4*:Side*:Block)-(6*:Side) 
+  Right 90 Back 2*:Side PenDown
+  SetPC Yellow InSquare :Side :Block-1
+end

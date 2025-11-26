@@ -1,0 +1,36 @@
+# Main Command: Go 160 220 5 3
+# Ring Wave by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To Init :Radius
+  # global values for each curve
+  GlobalMake "Steps 360
+  GlobalMake "StepAngle 1
+  GlobalMake "StepSize (2*Pi*:Radius)/(360/:StepAngle)
+End
+
+To Title :Titles
+  # label up to 4 titles
+  SetPC White Repeat Count :Titles [
+    Home Right (RepCount*90) -135 Forward 262 SetH 0
+    If X>0 [SetFontJustify [2 1]] [SetFontJustify [0 1]]
+    Label Item RepCount :Titles]
+End
+
+To Go :Offset :Radius :Amp :Order
+  New Title (List "RingWave [] List :Amp :Order List :Offset :Radius)
+  Init :Radius SetPC Green
+  PenUp SetXY 0 :Offset SetH 88 PenDown
+  Forward :StepSize/2
+  For (List "Angle 0 358) [
+    Right :StepAngle + :Amp * Cos (:Order*:Angle)
+    Forward :StepSize Wait 1]
+  Right :StepAngle + :Amp * Cos (:Order*359)
+  Forward :StepSize/2
+End

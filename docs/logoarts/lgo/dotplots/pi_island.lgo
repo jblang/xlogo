@@ -1,0 +1,54 @@
+# Main Command: Go
+# Pi_Island by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to pie :shots
+  Make "ShotsFired 0 DrawLand DrawSea
+  Repeat :Shots [
+    Fire SetPC White Display Refresh SetPC Black Display]
+  SetPC White Display
+end
+
+to drawland
+  Make "LandShots 0
+  SetPC Green Home Circle 180
+end
+
+to drawsea
+  Make "SeaShots 0
+  SetPC Magenta SetPos [-180 -180]
+  PenDown Repeat 4 [Forward 360 Right 90] PenUp
+end
+
+to fire
+  SetXY (Random 360)-180 (Random 360)-180
+  If (Distance [0 0]) < 180
+    [SetPC 3 Make "LandShots :LandShots+1]
+  If (Distance [0 0]) > 180
+    [SetPC 6 Make "SeaShots :SeaShots+1]
+  Make "ShotsFired :ShotsFired+1 
+  PenDown Forward 0 PenUp
+end
+
+to display
+  SetPos [-67 40]
+  Label Sentence [Shots Fired] :ShotsFired
+  SetPos [-80 20]
+  Label Sentence [Shots On Land] :LandShots
+  SetPos [-74 0]
+  Label Sentence [Shots In Sea] :SeaShots
+  Setpos [-80 -20]
+  Label Sentence [Calculated Pi] (Round (4*:LandShots/:ShotsFired)*100000) / 100000
+  Setpos [-52 -40]
+  Label Sentence [Actual Pi] 3.14159
+end
+
+to go
+  New Animation Pie 101
+end

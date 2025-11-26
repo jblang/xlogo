@@ -1,0 +1,46 @@
+# Main Command: go
+# Dice by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to cube :side
+  For [P 0 2] [
+    For [Q 0 1] [
+      GlobalMake "Col 3*:Q+:P+1    # series 1 2 3 4 5 6
+      Parasol :Side
+      Up 180] 
+    Up 90 Left 90]
+end
+
+to parasol :side
+  Forward :Side/2 Down 90
+  SetPC :Col Square3D :Side 
+  SetPC White Text3D :Col
+  Up 90 Back :Side/2
+end
+
+to square3d :side
+  # square (side x side) drawn from centre (tp)
+  Back :Side/2 Right 90 Back :Side/2 PenDown
+  PolyStart Repeat 4 [Forward :Side Left 90] PolyEnd
+  PenUp Forward :Side/2 Left 90 Forward :Side/2     # return to centre
+end
+
+to text3d :label
+  # label text 1 pixel above surface (tp)
+  Right 90 Back (LabelLength :Col) /2 Left 90 Back FontSize/1.8
+  Up 90 Forward 1 Down 90 TextStart Label :Col TextEnd Up 90 Back 1 Down 90
+  Forward FontSize/1.8 Right 90 Forward (LabelLength :Col) /2 Left 90    # return to centre
+end
+
+to go
+  New Perspective CS PenUp
+  HideTurtle SetSC Black SetFS 280 Left 12
+  Cube 300 Wait 30
+  Message [View3D?] View3D
+end

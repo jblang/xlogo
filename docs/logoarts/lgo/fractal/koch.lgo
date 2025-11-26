@@ -1,0 +1,42 @@
+# Main Command: GoX 3 2
+# Koch Snowflake Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init
+  PenUp SetPos [-160 -90] PenDown
+end
+
+to kout :level :side
+  SetH 30 Repeat 3 [Koch :Level :Side Right 120]
+end
+
+to kin :level :side
+  SetH 90 Repeat 3 [Koch :Level :Side Left 120]
+end
+
+to koch :level :side
+  If :Level < 1 [
+    Wait Integer (0.2*:Side)        # Comment out this line for no waits
+    Forward :Side Stop]
+  Koch :Level-1 :Side/3 Left 60
+  Koch :Level-1 :Side/3 Right 120
+  Koch :Level-1 :Side/3 Left 60
+  Koch :Level-1 :Side/3
+end
+
+to go :level
+  New Init 
+  KOut :Level 320  # change KOut to KIn for inside curves
+end
+
+to gox :levelin :levelout
+  New Init SetPC Gray KIn 0 320
+  SetPC Red KIn :LevelIn 320 
+  SetPC Green KOut :LevelOut 320
+end

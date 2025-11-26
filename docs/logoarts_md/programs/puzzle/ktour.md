@@ -1,0 +1,138 @@
+# Knights Tour
+![Knights Tour](../../art/400x400/ktour.png)
+
+A classic chess board puzzle is the Knights Tour. Starting with a knight on any square, complete a tour of the board visiting every square. The knight moves in its normal manner. It is all too easy to get trapped, usually in the boards corners.
+
+This program starts in a random square and then moves randomly to the next available square, until no more moves are possible.
+
+```logo
+To New
+ # set default screen, pen and turtle values
+ ResetAll SetScreenSize [400 400] HideTurtle
+ SetSC Black SetPC Green SetPS 1 PenUp
+End
+To Init
+ Make "Moves [1 2 2 1 -1 -2 -2 -1 1 2]
+ Make "Free [ ] Repeat 64 [Make "Free LPut 0 :Free]
+End
+To Title
+ # write header
+ SetPC White
+ SetPos [-190 180] Label [Knight's Tour]
+End
+To Gridd :Xc :Yc
+ # return X Y screen position
+ Make "X (38*:Xc) - 132
+ Make "Y (38*:Yc) - 132
+ Output List :X :Y
+End
+To DrawBoard
+ SetPC Brown Square 334 SetPC [96 57 19] Fill
+ SetPC Brown Square 310 SetPC [199 178 153] Fill
+ SetPC Brown Repeat 4 [
+ SetH (Repcount*90)-45 Forward 220 PenDown Forward 15 PenUp Home]
+ # label grid numbers
+ SetPC [64 64 64] Repeat 8 [
+ SetPos Gridd RepCount-1 Minus 1.25
+ Label Character 96+RepCount
+ SetPos Gridd 8.15 RepCount-1
+ Label RepCount]
+ # draw 64 alt colored squares
+ For (List "N 0 7) [
+ For (List "M 0 7) [
+ SetPos Gridd :M :N
+ SetPC Brown Square 32
+ If Even? (:M+:N) [SetPC [117 76 36] ] [SetPC [198 156 109] ] Fill ] ]
+End
+To Empty :X :Y
+ # Output True if Cell is empty and within board
+ If And And And (:X>-1) (:X<8) (:Y>-1) (:Y<8) [
+ If ( 0=Item (1+:X+8*:Y) :Free) [Output "True] ]
+ Output "False
+End
+To Step :Xc :Yc :Count
+ # move to next square and update 'free' list
+ SetPos Gridd :Xc :Yc PenUp
+ If :Count=0 [SetPC Green Square 32]
+ SetPC Black Label :Count
+ Make "Free Replace :Free (1+:Xc+8*:Yc) 1
+ Write (Word :Xc :Yc "\ )
+ Make "Poss NextPos :Xc :Yc
+ # choose a random next move
+ If 0<Count :Poss [
+ SetPC Red PenDown
+ Make "NextPos (Pick :Poss) Wait 20
+ Step First :NextPos Last :NextPos :Count+1]
+End
+To NextPos :Xc :Yc
+ # return list of possible next moves
+ Make "Poss [ ]
+ Repeat 8 [
+ Make "Xn :Xc + Item RepCount :Moves
+ Make "Yn :Yc + Item RepCount+2 :Moves
+ If Empty :Xn :Yn [
+ Make "Poss LPut List :Xn :Yn :Poss] ]
+ Output :Poss
+End
+To Even? :Num
+ # return 'true' if Num even, else return 'false'
+ If (Mod :Num 2)=0 [Output "True] [Output "False]
+End
+To Square :Side
+ # square (side x side) drawn from centre (tp)
+ Back :Side/2 Right 90 Back :Side/2 PenDown
+ Repeat 4 [
+ Forward :Side Left 90]
+ PenUp Forward :Side/2 Left 90 Forward :Side/2 # r2c
+End
+To Go
+ New Init Title
+ Home DrawBoard Wait 40
+ SetPW 2 Step Random 8 Random 8 0
+ SetPC Yellow Square 32
+End
+```
+
+A better method is to take into account the number of possible moves from each square and instead of a random pick, choose the next square with fewest available moves. This should remove squares with few outlets and increase the average length of the tour.  
+
+The gallery shows a closed tour found after 5 tries.
+
+```logo
+To NextPos :Xc :Yc
+ # return best list of possible next moves
+ Make "Poss [ ] Make "High 8
+ Repeat 8 [
+ Make "Xn :Xc + Item RepCount :Moves
+ Make "Yn :Yc + Item RepCount+2 :Moves
+ If Empty :Xn :Yn [
+ Make "PossNo 0
+ Repeat 8 [
+ Make "Xt :Xn + Item RepCount :Moves
+ Make "Yt :Yn + Item RepCount+2 :Moves
+ If Empty :Xt :Yt [
+ Make "f :PossNo + 1] ]
+ If :PossNo < :High [
+ Make "Poss [ ] Make "High :PossNo
+ Make "Poss LPut List :Xn :Yn :Poss ] [
+ If :PossNo = :High [ Make "Poss LPut List :Xn :Yn :Poss ] ] ] ]
+ Output :Poss
+End
+```
+
+
+Here is a textbook complete Knight's Tour. You can copy and paste the text window list into list "Tour to redraw any tour.
+
+```logo
+To GoX
+ New DrawBoard Title Wait 40 SetPW 2
+ Make "Tour [00 21 40 61 73 65 77 56 75 63 71 50 31 10 02 14 06 27 46 67 55 76 64 52 33 54 35 47 26 07 15 03 11 30 51 70 62 74 66 45 57 36 17 05 13 01 20 41 60 72 53 32 24 43 22 34 42 23 44 25 37 16 04 12 00]
+ Repeat Count :Tour [
+ Make "Cell Item RepCount :Tour
+ SetPC Red SetPos Gridd First :Cell Last :Cell
+ SetPC Black cLabel RepCount-1 PenDown Wait 20]
+ # return to first cell and border in yellow
+ SetPC Red Make "Cell Item 1 :Tour
+ SetPos Gridd First :Cell Last :Cell
+ SetPC Yellow PenUp Square 32
+End
+```

@@ -1,0 +1,269 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/info3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Resource | Procedures_Color | html</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="info">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Colors</h2>
+			<p>- XLogo library of procedures</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<img src="../../art/img32/xlogo32.gif" alt="xlogo" width="32" height="32">
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>These procedures output a new color. Use them to change the pen color 
+					eg. <strong>SetPC Light Blue.</strong></p>
+				<p>Download complete library of all <a href="../../lgo/lib/col_lib.lgo">color 
+					procedures</a>.</p>
+				<p><a name="aqua"></a><span class="subh">Aqua</span><br>
+					Return aqua color.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Aqua.lbi" --><p><span class="toenl"><a href="procol.html#aqua">To <span class="pro">Aqua</span></a></span><br>
+	&nbsp; Output [0 128 255] &nbsp; &nbsp; <span class="com"># return aqua rgb color</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="dark"></a><span class="subh">Dark</span> (also see <a href="#light">Light</a>)<br>
+					Set the pen color to half way between the current pen color and black.<br>
+					Also try a reduction value of 1.414 (Root2).
+					Note that 'Dark Dark' will exactly halve each rgb value.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Dark.lbi" --><p><span class="toenl"><a href="procol.html#dark">To <span class="pro">Dark</span> :<span class="var">Hue</span></a></span><br>
+	&nbsp; <span class="com"># output rgb list midway between :hue and black</span><br>
+	&nbsp; Repeat 3 [<br>
+	&nbsp; &nbsp; Make &quot;<span class="var">Hue</span> ButFirst LPut Int (First <b>:</b><span class="var">Hue</span>)/2 <b>:</b><span class="var">Hue</span>]<br>
+	&nbsp; Output <b>:</b><span class="var">Hue</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; SetPC Gray Print PenColor<br>
+						&nbsp; SetPC <span class="pro">Dark</span> Gray Print PenColor<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="hex"></a><span class="subh">Hex</span><br>
+					Return an RGB list of Hex value (must be contained in a list), where A=10, B=11, C=12, D=13, E=14 and F=15. Hex letters can be upper or lower case. Error if outside range.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">Hex</span> :<span class="var">Num</span></span><br>
+						&nbsp; <span class="com"># convert hexadecimal value to RGB list</span><br>
+						&nbsp; If Not (Count <b>:</b><span class="var">Num</span>)=1 [Print [Hex value must be single number!] StopAll]<br>
+						&nbsp; ForEach &quot;<span class="var">Hex</span> First <b>:</b><span class="var">Num</span> [<br>
+						&nbsp; &nbsp; If Not Number? <b>:</b><span class="var">Hex</span> [<br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">Hex</span> Unicode <b>:</b><span class="var">Hex</span><br>
+						&nbsp; &nbsp; &nbsp; If (<b>:</b><span class="var">Hex</span>&gt;96) [Make &quot;<span class="var">Hex</span> <b>:</b><span class="var">Hex</span>-87] &nbsp; &nbsp; <span class="com"># A to F</span><br>
+						&nbsp; &nbsp; &nbsp; If (<b>:</b><span class="var">Hex</span>&gt;64) [Make &quot;<span class="var">Hex</span> <b>:</b><span class="var">Hex</span>-55] &nbsp; &nbsp; <span class="com"># a to f</span><br>
+						&nbsp; &nbsp; &nbsp; If Or (<b>:</b><span class="var">Hex</span>&lt;10) (<b>:</b><span class="var">Hex</span>&gt;15) [Print [Hex value 0-9 and a-f only!] StopAll]]<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Num</span> LPut 17*<b>:</b><span class="var">Hex</span> <b>:</b><span class="var">Num</span>]<br>
+						&nbsp; Output ButFirst <b>:</b><span class="var">Num</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; Make &quot;<span class="var">Num</span> [a7F]<br>
+						&nbsp; SetPC <span class="pro">Hex</span> <b>:</b><span class="var">Num</span> <br>
+						&nbsp; Print (Sentence [RGB PenColor value of] <b>:</b><span class="var">Num</span> [is] PenColor)<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="hue"></a><span class="subh">Hue</span><br>
+					Return a color as an RGB list depending on an input angle. eg <strong>SetPC 
+					Hue 100</strong>. For blue, an angle of 220 can give a better color spread than 240. 
+					See resulting palette at <a href="../../prog/coding/rgb.html">RGB Colors</a>.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Hue1.lbi" --><p><span class="toenl"><a href="procol.html#hue">To <span class="pro">Hue</span> :<span class="var">Theta</span></a></span><br>
+	&nbsp; <span class="com"># Output RGB hue list from angle :Theta</span><br>
+	&nbsp; Make &quot;<span class="var">Red</span> Round 127.5*(1+Sin <b>:</b><span class="var">Theta</span>)<br>
+	&nbsp; Make &quot;<span class="var">Green</span> Round 127.5*(1+Sin (<b>:</b><span class="var">Theta</span>+120))<br>
+	&nbsp; Make &quot;<span class="var">Blue</span> Round 127.5*(1+Sin (<b>:</b><span class="var">Theta</span>+240))<br>
+	&nbsp; Output (List <b>:</b><span class="var">Red</span> <b>:</b><span class="var">Green</span> <b>:</b><span class="var">Blue</span>)<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="hue2"></a><span class="subh">Hue2</span><br>
+					Return a color as an RGB list depending on an input angle. eg <strong>SetPC 
+					Hue2 150</strong>. See resulting palette at <a href="../../prog/coding/rgb.html">RGB 
+					Colors</a>.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Hue2.lbi" --><p><span class="toenl"><a href="procol.html#hue2">To <span class="pro">Hue2</span> :<span class="var">Theta</span></a></span><br>
+	&nbsp; <span class="com"># Output RGB hue list from angle :Theta</span><br>
+	&nbsp; Make &quot;<span class="var">Red</span> Abs 255*Sin <b>:</b><span class="var">Theta</span><br>
+	&nbsp; Make &quot;<span class="var">Green</span> Abs 255*Sin (<b>:</b><span class="var">Theta</span>+120)<br>
+	&nbsp; Make &quot;<span class="var">Blue</span> Abs 255*Sin (<b>:</b><span class="var">Theta</span>+240)<br>
+	&nbsp; Output (List <b>:</b><span class="var">Red</span> <b>:</b><span class="var">Green</span> <b>:</b><span class="var">Blue</span>)<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="invert"></a><span class="subh">Invert Color</span><br>
+					Return inverted or negative color. Test by typing: <strong>SetSC Invert Red</strong></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_InvertPC.lbi" --><p><span class="toenl"><a href="procol.html#invert">To <span class="pro">Invert</span> <b>:</b><span class="var">Color</span></a></span><br>
+	&nbsp; <span class="com"># return invert or negative color</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Red</span> 128+(127-Item 1 <b>:</b><span class="var">Color</span>)<br>
+	&nbsp; LocalMake &quot;<span class="var">Green</span> 128+(127-Item 2 <b>:</b><span class="var">Color</span>)<br>
+	&nbsp; LocalMake &quot;<span class="var">Blue</span> 128+(127-Item 3 <b>:</b><span class="var">Color</span>)<br>
+	&nbsp; Output (List <b>:</b><span class="var">Red</span> <b>:</b><span class="var">Green</span> <b>:</b><span class="var">Blue</span>)<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="leaf"></a><span class="subh">Leaf</span><br>
+					Return leaf color.<br>
+					<span class="fs10">Used in <a href="../../prog/coding/colors.html">Swatch</a> and <a href="../../prog/recur/yinyang.html">YinYang</a>.</span></p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Leaf.lbi" --><p><span class="toenl"><a href="procol.html#leaf">To <span class="pro">Leaf</span></a></span><br>
+	&nbsp; Output [0 255 128] &nbsp; &nbsp; <span class="com"># return leaf rgb color</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="light"></a><span class="subh">Light</span> (also see <a href="#dark">Dark</a>)<br>
+					Set the pen color to half way between the current pen color and white.<br>
+					Also try a value of 1.414 (Root2).</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Light.lbi" --><p><span class="toenl"><a href="procol.html#light">To <span class="pro">Light</span> :<span class="var">Hue</span></a></span><br>
+	&nbsp; <span class="com"># output rgb list midway between :hue and white</span><br>
+	&nbsp; Repeat 3 [<br>
+	&nbsp; &nbsp; Make &quot;<span class="var">Hue</span> ButFirst LPut Int (255+(First <b>:</b><span class="var">Hue</span>))/2 <b>:</b><span class="var">Hue</span>]<br>
+	&nbsp; Output <b>:</b><span class="var">Hue</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Test</span></span><br>
+						&nbsp; <span class="com"># test procedure</span><br>
+						&nbsp; SetPC Gray Print PenColor<br>
+						&nbsp; SetPC <span class="pro">Light</span> Gray Print PenColor<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="lime"></a><span class="subh">Lime</span><br>
+					Return lime color.<br>
+				</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Lime.lbi" --><p><span class="toenl"><a href="procol.html#lime">To <span class="pro">Lime</span></a></span><br>
+	&nbsp; Output [128 255 0] &nbsp; &nbsp; <span class="com"># return lime rgb color</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="randhue"></a><span class="subh">RandHue</span><br>
+					Return random color from list of favourite eleven.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">RandHue</span></span><br>
+						&nbsp; <span class="com"># return a random color of 11 hues</span><br>
+						&nbsp; Output  Pick [<br>
+						&nbsp; &nbsp; [0 153 255] [0 170 0] [0 100 100] [0 255 170]<br>
+						&nbsp; &nbsp; [85 0 170] [127 63 63] [170 0 0] [170 85 255]<br>
+						&nbsp; &nbsp; [255 85 170] [255 100 0] [255 204 102] ]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<p><a name="randrgb"></a><span class="subh">RandRGB</span><br>
+					Return random color list. Each value between 0 and 255, in steps of 255/:Ord-1. So if :Ord=4, then step size is 85. This gives 4 possible values of 0, 85, 171 or 255.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_RandRGB.lbi" --><p><span class="toenl"><a href="procol.html#randrgb">To <span class="pro">RandRGB</span> :<span class="var">Ord</span></a></span><br>
+	&nbsp; <span class="com"># return random RGB color</span><br>
+	&nbsp; Output  (List <span class="pro">Val</span> <b>:</b><span class="var">Ord</span> <span class="pro">Val</span> <b>:</b><span class="var">Ord</span> <span class="pro">Val</span> <b>:</b><span class="var">Ord</span>)<br>
+	<span class="toenl">End</span><br>
+	<span class="toenl">To <span class="pro">Val</span> :<span class="var">Ord</span></span><br>
+	&nbsp; <span class="com"># return random value 0-255 in steps of 255/:Ord-1</span><br>
+	&nbsp; Output  Int (Random <b>:</b><span class="var">Ord</span>)*(255/(<b>:</b><span class="var">Ord</span>-1))<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<p><a name="rose"></a><span class="subh">Rose</span><br>
+					Return rose color.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_Rose.lbi" -->
+<p><span class="toenl"><a href="procol.html#rose">To <span class="pro">Rose</span></a></span><br>
+	&nbsp; Output [255 0 128] &nbsp; &nbsp; <span class="com"># return rose rgb color</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --></div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		
+		<div id="leco">
+			<p class="contents"><a href="../../prog/top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuInfo.lbi" --><ul>
+	<li><a href="books.html"> 
+		<script type="text/javascript"> blob("Books");</script> Books</a></li>
+	<li><a href="bookslogo.html"> 
+		<script type="text/javascript"> blob("Books_Logo");</script> &nbsp; &nbsp; logo</a></li>
+	<li><a href="booksfractals.html"> 
+		<script type="text/javascript"> blob("Books_Fractals");</script> &nbsp; &nbsp; fractals</a></li>
+	<li><a href="booksgrap.html"> 
+		<script type="text/javascript"> blob("Books_Graphics");</script> &nbsp; &nbsp; graphics</a></li>
+	<li><a href="booksmath.html"> 
+		<script type="text/javascript"> blob("Books_Maths");</script> &nbsp; &nbsp; maths</a></li>
+	<li><a href="bookslife.html"> 
+		<script type="text/javascript"> blob("Books_Life");</script> &nbsp; &nbsp; life</a></li>
+	<li><a href="bookspuzz.html"> 
+		<script type="text/javascript"> blob("Books_Puzzle");</script> &nbsp; &nbsp; puzzles</a></li>
+	<li><a href="booksmathgen.html"> 
+		<script type="text/javascript"> blob("Books_MathsGeneral");</script> &nbsp; &nbsp; mathsgen</a></li>
+	<li><a href="colorsalt.html"> 
+		<script type="text/javascript"> blob("Colors")</script> Colors</a></li>
+	<li><a href="genart.html"> 
+		<script type="text/javascript"> blob("Generative Art")</script> Generative</a></li>
+	<li><a href="glossary.html"> 
+		<script type="text/javascript"> blob("Glossary")</script> Glossary</a></li>
+	<li><a href="prolib.html"> 
+		<script type="text/javascript"> blob("Procedures")</script> Procedures</a></li>
+	<li><a href="proarc.html"> 
+		<script type="text/javascript"> blob("Procedures_Arc");</script> &nbsp; &nbsp; arc</a></li>
+	<li><a href="procol.html"> 
+		<script type="text/javascript"> blob("Procedures_Color");</script> &nbsp; &nbsp; color</a></li>
+	<li><a href="prolist.html"> 
+		<script type="text/javascript"> blob("Procedures_List");</script> &nbsp; &nbsp; list</a></li>
+	<li><a href="promath.html"> 
+		<script type="text/javascript"> blob("Procedures_Math");</script> &nbsp; &nbsp; math</a></li>
+	<li><a href="prorecur.html"> 
+		<script type="text/javascript"> blob("Procedures_Recursive");</script> &nbsp; &nbsp; recursive</a></li>
+	<li><a href="proshape.html"> 
+		<script type="text/javascript"> blob("Procedures_Shape");</script> &nbsp; &nbsp; shape</a></li>
+	<li><a href="turts.html"> 
+		<script type="text/javascript"> blob("Turtles")</script> Turtles</a></li>
+	<li><a href="tuts.html"> 
+		<script type="text/javascript"> blob("Tutorials")</script> Tutorial</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><img src="../../art/img100/xlogo100.gif" alt="xlogo" width="100" height="100"><br>
+				XLogo</p>
+			<!-- #EndEditable -->
+			<p>&nbsp;</p><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

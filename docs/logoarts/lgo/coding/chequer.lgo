@@ -1,0 +1,50 @@
+# Main Command: Go
+# RGB Chequer Grid by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To GridRect :OrderH :OrderV :Size
+  # draw tile at each column x row grid position
+  LocalMake "OffsetH (1+ :OrderH) /2
+  LocalMake "OffsetV (1+ :OrderV) /2
+  LocalMake "CellSizeH :Size /:OrderH
+  LocalMake "CellSizeV :Size /:OrderV
+  For (List "Col 1 :OrderH) [
+    For (List "Row 1 :OrderV) [
+      SetXY :CellSizeH*(:Col-:OffsetH) :CellSizeV*(:Row-:OffsetV)
+      Tile :Col :Row :CellSizeH :CellSizeV] ]
+End
+
+To Tile :Column :Row :SideH :SideV
+  # draw black or white filled rectangle and label (col row)
+  If Even (:Column+:Row) [SetPC Black] [SetPC White]
+  Rectangle :SideH-1 :SideV-1 Fill
+  SetPC Gray Label Word :Column :Row Wait 3
+End
+
+To Even :Num
+  # return True if Num even, else return False 
+  If (Mod :Num 2) =0 [Output "True] [Output "False]
+End
+
+To Rectangle :Wide :High
+  # rectangle (wide x high) drawn from centre (tp)
+  Back :High/2 Right 90 Back :Wide/2 PenDown
+  Repeat 2 [
+    Forward :Wide Left 90 Forward :High Left 90]
+  PenUp Forward :Wide/2 Left 90 Forward :High/2
+End
+
+To Go
+  New SetFontJustify [1 1]
+  Read [Enter horiz & vert order. Default (no entry) is 5 9] "Order
+  If :Order =" [Make "Order [5 9]]     # default value if no entry
+  Make "BoardSize 320 
+  SetPC Gray Rectangle :BoardSize+12 :BoardSize+12 Fill
+  GridRect First :Order Last :Order :BoardSize
+End

@@ -1,0 +1,24 @@
+# Main Command: Go 6
+# Universal_Sierpinski_Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to sier :order :size :frac :ang
+  Make "Angle :Ang*(Random :Order)   # choose random corner
+  SetX :Frac * ((First Pos) +:Size*Sin :Angle)
+  SetY :Frac * ((Last Pos) +:Size*Cos :Angle)
+  PenDown Forward 0 PenUp   # plot pixel
+end
+
+to go :order
+  New
+  Make "Size (:Order-2)*180
+  Make "Frac 1/(:Order-1)
+  Make "Ang 360/:Order
+  Repeat 10000 [Sier :Order :Size :Frac :Ang]    # repeat 10000 times
+end

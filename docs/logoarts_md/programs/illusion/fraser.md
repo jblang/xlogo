@@ -1,0 +1,44 @@
+# Fraser
+
+The vertical lines distort and appear twisted. Each is made of a series of light and dark paddle shapes.  
+
+Try other even Order values from 2 to 12...
+
+```logo
+To New
+ # set default screen, pen and turtle values
+ ResetAll SetScreenSize [400 400] HideTurtle
+ SetSC Black SetPC Green SetPS 1 PenUp
+End
+To GridSq :Order :Side
+ # draw tile at each column x row position
+ LocalMake "Offset (1+:Order)/2
+ For (List "Col 1 :Order) [
+ For (List "Row 1 :Order) [
+ SetXY :Side*(:Col-:Offset) :Side*(:Row-:Offset)
+ Tile :Col :Row :Side] ]
+End
+To Tile :Col :Row :Side
+ If (Or X<:Side-200 X>200-:Side Even? :Col) [Stop]
+ If Even? :Row [SetPC [153 204 255]] [SetPC [0 102 153]]
+ If (Mod :Col 4)=3 [Make "Parity 1] [Make "Parity Minus 1]
+ SetH :Parity*9
+ Paddle :Side :Parity Fill Wait Int :Side/10
+End
+To Paddle :Size :Parity
+ # draw flag shape, left or right handed
+ Left :Parity*90 Forward :Size/14 Right :Parity*90 PenDown Repeat 2 [
+ Forward 1.5*:Size Right :Parity*135 Forward 0.702*:Size Right :Parity*90
+ Forward 0.5*:Size Left :Parity*45 Forward 0.65*:Size] PenUp
+ Right :Parity*90 Forward :Size/14 Right :Parity*90 # r2c
+End
+To Even? :Num
+ # return 'true' if Num even, else return 'false'
+ If (Mod :Num 2)=0 [Output "True] [Output "False]
+End
+To Go :Order
+ New SetSC [204 153 153]
+ Make "Order 3+2*:Order
+ GridSq :Order Int 420/:Order
+End
+```

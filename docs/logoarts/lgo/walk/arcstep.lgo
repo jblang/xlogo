@@ -1,0 +1,33 @@
+# Main Command: Go
+# Arc Step by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to onstage?
+  # check turtle within window edges
+  If (Or X<-190 X>190 Y<-190 Y>190) [Output False] [Output True]
+end
+
+to rightarc :angle :radius
+  # arc drawn relative to turtle position
+  PenUp If :Angle <0
+    [Right 90 Back :Radius Right :Angle Arc :Radius Heading Heading-:Angle 
+      Forward :Radius Left 90]
+    [Left 90 Back :Radius Arc :Radius Heading Heading+:Angle 
+      Right :Angle Forward :Radius Right 90]
+  PenDown
+end
+
+to go
+  New 
+  Repeat 4 [
+    PenUp Home SetH RepCount*90 SetPC RepCount PenDown
+    While [OnStage?] [
+      Make "Parity Pick [-1 1]
+      RightArc :Parity*90 12 Wait 2] ]
+end 

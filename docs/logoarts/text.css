@@ -1,0 +1,694 @@
+/* CSS Document */
+
+body, div, p, img, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, textarea, th, td {
+	margin: 0;
+	padding: 0;
+}
+body {
+	background-color: #ccc;
+	background-image: url(art/bg.png);
+	background-attachment: fixed;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 12px;
+	color: #006;
+	text-align: center;   /*needed for IE*/
+}
+table {
+	margin: 0 auto;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	text-align: left;      /* needed for IE & sitemap */
+}
+td {
+	border: 0;
+}
+a {
+	outline: 0;
+}
+a:link {
+	color: blue;
+	/*text-decoration: none;*/
+}
+a:visited {
+	color: #9d11b3;
+	/*text-decoration: none;*/
+}
+a:hover, a:active, a:focus {
+	color: red;
+	text-decoration: underline;
+}
+
+/* whoever thought blue linked image borders were a good idea? */
+/*a:hover {color: red;}*/   /*hover trigger for old IE's*/
+
+a:link img, a:visited img {
+	border: 1px solid #000;
+	margin-top: 3px;
+}
+a:hover img, a:active img, a:focus img {
+	border: 1px solid red;
+}
+#pict #maco td a:link img {
+	margin-top: 9px;
+	margin-left: 9px;
+}
+p, ol, ul {
+	margin: 0.75em 0;
+	/*line-height: 1.25;*/
+}
+ol, ul {
+	margin-left: 36px;
+}
+#tank {
+	margin: 0 auto;
+	width: 726px;
+	text-align: left;
+}
+#head h1 {
+	font-size: 42px;
+	font-weight: bold;
+	margin-left: 42px;
+	display: inline;
+	color: #039;
+}
+#head p {
+	margin-left: 16px;
+	vertical-align: 10px;
+	font-size: 11px;
+	color: #003;
+	font-style: italic;
+	display: inline;
+}
+#head img {
+	margin: 12px 0px 0px 20px;
+	border: 1px solid #bbb;
+}
+#head a:hover img {
+	border: 1px solid red;
+}
+#band img {
+	float: right;
+}
+#tite {
+	float: right;
+	width: 607px;
+	height: 32px;
+}
+#tite h2 {
+	font-size: 24px;
+	font-weight: normal;
+	color: #036;
+	margin-left: 8px;
+	display: inline;
+}
+#tite p {
+	font-size: 16px;
+	color: #024;
+	display: inline;
+	margin-left: 8px;
+}
+#wrap {
+	float:left;
+	width:100%;
+}
+#leco {
+	float:left;
+	width:118px;
+	margin-left:-726px;
+	text-align: center;
+}
+#rico {
+	float:left;
+	width:118px;
+	margin-left:-118px;
+	text-align: center;
+	border-top: 1px solid #999;
+}
+#con3 {
+	clear:both;
+	width:100%;
+	background-image: url(art/bg3c.png);
+	margin-bottom: 10px;
+}
+#con2 {
+	clear:both;
+	width:100%;
+	background-image: url(art/bg2c.png);
+	margin-bottom: 10px;
+}
+#con1 {
+	clear:both;
+	width:100%;
+	background-image: url(art/bg1c.gif);
+	margin-bottom: 10px;
+}
+#con3 #maco {
+	float: left;
+	margin: 0 130px 12px 130px;
+}
+#con2 #maco {
+	float: left;
+	margin: 0 10px 12px 130px;
+}
+#foot {
+	clear:both;
+	width:100%;
+	text-align: center;
+}
+#foot p {
+	font-size: 10px;
+	margin: 0;
+	padding: 2px;
+}
+#home #foot {
+	border-bottom: 1px solid #996;
+}
+#prog #foot {
+	border-bottom: 1px solid #69c;
+}
+#pict #foot {
+	border-bottom: 1px solid #669;
+}
+#prim #foot {
+	border-bottom: 1px solid #696;
+}
+#info #foot {
+	border-bottom: 1px solid #966;
+}
+#home #foot, #home #tite {
+	background-color: #cc9;
+}
+#prog #foot, #prog #tite {
+	background-color: #9cf;
+}
+#pict #foot, #pict #tite {
+	background-color: #99c;
+}
+#prim #foot, #prim #tite {
+	background-color: #9c9;
+}
+#info #foot, #info #tite {
+	background-color: #c99;
+}
+#pict .lolo {
+	position: relative;
+	top: 360px;
+}
+#prog #maco img {
+	margin-top: 3px;
+}
+.subh {
+	font-size: 14px;
+	color: #036;
+	font-weight: bold;
+}
+.modify {
+	font-size: 9px;
+	color: #000;
+	font-style: italic;
+}
+.fs10 {
+	font-size: 10px;
+}
+.com {
+	color: #060;
+	font-style: italic;
+}
+.pro {
+	color: #36f;
+}
+.var {
+	color: #909;
+}
+.lib {
+	background-color: #ccc;
+}
+.red {
+	color: #f00;
+}
+.green {
+	color: #0f0;
+}
+.blue {
+	color: #00f;
+}
+.white {
+	color: #fff;
+}
+.toen {
+	font-weight: bold;
+}
+.toenl {
+	font-weight: bold;
+	background-color: #ccc;
+}
+.toenl a:link, .toenl a:visited {
+	color: #003;
+	text-decoration: none;
+}
+.toenl a:hover, .toenl a:active, .toenl a:focus {
+	color: red;
+	text-decoration: underline;
+}
+.sf {
+	color: red;
+}
+.uline {
+	text-decoration: underline;
+}
+#primtext a {
+	font-size: 11px;
+	text-decoration: none;
+	display: block;
+	padding: 2px 0;
+	color: #003;
+}
+#primtext a:visited {
+	color: #003;
+}
+#primtext a:hover {
+	background-color: #ffc;
+	text-decoration: none;
+}
+#maco table {
+	width: 100%;
+}
+table.gray td, table.gray th, table.gray0 td, table.gray0 th {
+	border: 1px solid #666;
+	padding: 4px;
+}
+table.gray th, table.gray0 th {
+	font-size: 14px;
+	color: #036;
+	font-weight: bold;
+	background-color: #ccc;
+	padding-left: 6px;
+}
+#prim table.gray th {
+	text-align: left;   /*needed for ie*/
+}
+table.gray td {
+	background-color: #ffc;
+}
+table.gray0 td {
+	/*background-color: none;*/
+}
+.blackbg {
+	background-color: #000;
+}
+#prim #maco table td {
+	padding: 6px;
+}
+#prim #maco table td table {
+	width: 100%;
+}
+#prim #maco table td table td {
+	border: 0px;
+	padding: 2px;
+}
+#prim #maco table td table.white td {
+	border: 1px solid #fff;
+	padding: 1px;
+}
+#info #maco table td {
+	padding: 6px;
+}
+.back, .lane {
+	margin: 36px 0px;
+}
+.lane img {
+	margin: 0px 6px;
+}
+.back a:link, .back a:visited {
+	text-decoration: none;
+}
+.back a:link img, .back a:visited img {
+	border: 1px solid #cc9;
+}
+.lane a:link img, .lane a:visited img {
+	border: 1px solid #9c9;
+}
+.back a:hover img, .lane a:hover img {
+	border: 1px solid red;
+	background-color: #ffc;
+	/*text-decoration: none;*/
+}
+h5 {
+	font-size: 18px;
+	font-weight: bold;
+	margin: 6px 0px;
+}  /* used in sitemap */
+h6 {
+	font-size: 14px;
+	font-weight: bold;
+	margin: 4px 0px;
+}  /* used in sitemap */
+.contents {
+	margin: 0px;
+	background-color: #c96;
+	border-top: 1px solid #963;
+	border-bottom: 1px solid #963;
+}
+.contents a {
+	text-decoration: none;
+	display: block;
+	padding: 3px;
+	color: #003;
+}
+.contents a:visited {
+	color: #005;
+}
+.contents a:hover {
+	color: red;
+	background-color: #ffc;
+	text-decoration: none;
+}
+.i400 {
+	width: 400px;
+	padding: 25px;
+	border: 2px solid #666;
+	margin: 24px 0px 6px 6px;
+	background-image: url(art/frames/wood.png);
+}
+.i400p {
+	width: 400px;
+	padding: 25px;
+	border: 2px solid #666;
+	margin: 24px 0px 6px 6px;
+	background-image: url(art/frames/rule.png);
+}
+.i404 {
+	width: 421px;
+	background-color: #000;
+	margin: 24px 0px 9px 18px;
+	border: 4px solid #000;
+}
+.i404 a img {
+	margin: 0px;
+}
+.codebox {
+	margin: 0px auto;
+	background-color: #9cf;
+	border: 1px solid #999;
+	margin-bottom: 36px;
+	width: 48px;
+}
+.codebox a {
+	text-align: center;
+	text-decoration: none;
+	display: block;
+	padding: 6px;
+	color: #005;
+}
+.codebox a:visited {
+	color: #005;
+}
+.codebox a:hover {
+	color: red;
+	background-color: #ffc;
+	text-decoration: none;
+}
+.codearea {
+	border: 1px solid #999;
+	background-color: #ffc;
+}
+.codearea p {
+	margin-left: 18px;
+	font-size: 11px;
+	line-height: 130%;   /*white-space: pre; font-family: Courier, monospace;*/
+}
+.set { /* underlined set */
+	display: block;
+	font-size: 10px;
+	text-align: center;
+	border: 1px solid #999;
+	border-top: 0px;
+	padding: 2px;
+	background-color: #9cc;
+	width: 500px;
+	margin: 0px auto;
+}
+.return { /* return to / select image / use arrows */
+	display: block;
+	margin: 36px auto;
+	font-size: 10px;
+	border: 1px solid #966;
+	padding: 2px;
+	background-color: #c99;
+	width: 86px;
+	color: #000;
+	font-weight: normal;/*margin-top: 32px; 	margin: 0 auto;*/
+}
+.random { /* random image */
+	display: block;
+	padding: 5px 0px;
+	background-color: #99c;
+	border-top: 1px solid #966;
+	border-bottom: 1px solid #669;
+}
+.xlogo { /* xlogo logo */
+	display: block;
+	margin: 36px auto;
+	border: 1px solid #999;
+	padding: 4px;
+	background-color: #cc9;
+	font-size: 10px;
+	width: 65px;
+}
+.pvcl { /* pvcl */
+	display: block;
+	margin: 36px auto;
+	border: 1px solid #999;
+	padding: 2px;
+	background-color: #ffc;
+	font-size: 10px;
+	width: 100px;
+}
+.goo { /* google */
+	display: block;
+	margin: 36px auto;
+	border: 1px solid #999;
+	padding: 4px 0px 4px 4px;
+	background-color: #fff;
+	font-size: 10px;
+	text-align: left;
+	width: 100px;
+}
+.goo a img { /* google */
+	margin-left: 12px;
+	border: 0px
+}
+.book { /* book image */
+	display: block;
+	margin-top: 36px;
+	border-top: 1px solid #666;
+	border-bottom: 1px solid #666;
+	padding: 2px;
+	background-color: #999;
+}
+.backg { /* bg column menu */
+	display: block;
+	border: 1px solid #699;
+	padding: 0px 4px 0px 12px;
+	background-color: #9cc;
+	width: 190px;
+	margin: 12px 0px 12px 12px;
+}
+.advice { /* advice */
+	background-color: #c99;
+	text-align: center;
+	font-style: italic;
+	padding: 1px;
+	border-bottom: 1px solid #666;
+}
+
+/* CSS lists */
+
+#head ul {
+	list-style-type: none;
+	text-align: right;
+	padding: 2px 8px 2px 0px;
+	margin: 0 0 0 87px;
+}
+#home #head ul {
+	border-bottom: 2px solid #996;
+}
+#prog #head ul {
+	border-bottom: 2px solid #69c;
+}
+#pict #head ul {
+	border-bottom: 2px solid #669;
+}
+#prim #head ul {
+	border-bottom: 2px solid #696;
+}
+#info #head ul {
+	border-bottom: 2px solid #966;
+}
+#head li {
+	display: inline;
+}
+#head li a {
+	padding: 2px 4px;
+	font-size: 11px;
+	color: #003;
+	text-decoration: none;
+}
+#head li.tab0 a {
+	background-color: #cc9;
+	border: 1px solid #996;
+	border-bottom: none;
+}
+#head li.tab1 a {
+	background-color: #9cf;
+	border: 1px solid #69c;
+	border-bottom: none;
+}
+#head li.tab2 a {
+	background-color: #99c;
+	border: 1px solid #669;
+	border-bottom: none;
+}
+#head li.tab3 a {
+	background-color: #9c9;
+	border: 1px solid #696;
+	border-bottom: none;
+}
+#head li.tab4 a {
+	background-color: #c99;
+	border: 1px solid #966;
+	border-bottom: none;
+}
+/* #tabs li.tab0 a {padding: 2px 4px; font-style: strong;} */
+
+#home #head li.tab0 a {
+	border: 2px solid #996;
+	border-bottom: none;
+	padding: 2px 5px 5px 5px;
+}
+#prog #head li.tab1 a {
+	border: 2px solid #69c;
+	border-bottom: none;
+	padding: 2px 5px 5px 5px;
+}
+#pict #head li.tab2 a {
+	border: 2px solid #669;
+	border-bottom: none;
+	padding: 2px 5px 5px 5px;
+}
+#prim #head li.tab3 a {
+	border: 2px solid #696;
+	border-bottom: none;
+	padding: 2px 5px 5px 5px;
+}
+#info #head li.tab4 a {
+	border: 2px solid #966;
+	border-bottom: none;
+	padding: 2px 5px 5px 5px;
+}
+/* #tabs li.tab1 a:hover, #tabs ul li.tab2 a:hover, #tabs ul li.tab3 a:hover, #tabs ul li.tab4 a:hover, #tabs ul li.tab0 a:hover */
+#head ul li a:hover {
+	background-color: #ffc;
+	color: #f00;
+}
+#leco ul {
+	margin: 12px auto;
+	margin-bottom: 30px;
+	width: 100px;
+	font-size: 11px;
+}
+#leco li {
+	text-align: left;
+	list-style-type: none;
+	border-top: 1px solid #eec;
+	border-bottom: 1px solid #663;    /* ie fix */
+}
+#leco li a {
+	display: block;
+	text-decoration: none;
+	color: #006;
+	padding: 2px 0px 3px 2px;
+}
+#leco li a:hover {
+	color: red;
+	background-color: #ffc;
+}
+#leco ul img {
+	margin: 0px;
+	border: none;
+	margin-left: 3px; 
+}
+#rico ul {/Users/guy/Desktop/text.css
+	width: 96px;
+	margin: 0px auto;
+	padding: 0px;
+	margin-top: 4px;
+	background-color: #ccc;
+	border-top: 1px solid #999;
+	list-style-type: none;
+}
+#rico li {
+	text-align: left;
+	border-bottom: 1px solid #999;
+	font-size: 11px;
+	font-weight: normal;
+}
+#rico li a {
+	display: block;
+	color: #003;
+	padding: 2px 0px 2px 6px;
+	text-decoration: none;
+}
+* html #rico li a {  /* make hover effect work in IE */
+	width: 96px;
+}
+#rico li a:visited {
+	color: #003;
+}
+#rico li a:hover {
+	color: red;
+	background-color: #ffc;
+}
+#rico li.current a {
+	color: red;
+}
+.button ul {  /* ul not needed */
+	list-style-type: none;
+	text-align: right;
+	margin: -2px 8px 12px 0px;
+}
+.button li {
+	display: inline;
+}
+.button li .go {
+	color: #005;
+	padding: 0px 8px 1px 2px;
+	/*text-align: center;*/
+	background-color: #c96;	
+	margin-right: 12px;
+}
+.button a {
+	color: #005;
+	padding: 0px 6px 0px 6px;
+	text-decoration: none;
+	border: 1px solid #999;
+	border-top: 0px;
+	/*text-align: center;*/
+	background-color: #9cc;
+}
+.button a:visited {
+	color: #005;
+}
+.button a:hover {
+	color: red;
+	background-color: #ffc;
+	text-decoration: none;
+}
+.button li .go img {
+	margin-top: 9px;
+	padding: 0px;
+	border: 3px solid #f00;
+	border: none;
+}

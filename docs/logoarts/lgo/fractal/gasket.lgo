@@ -1,0 +1,34 @@
+# Main Command: Go 4
+# Gasket by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to gasket :side :order
+  If :Order < 1 [Stop]  # ie if = 0
+  Repeat 4 [myShape :Side :Order Right 90]
+  myFill :Side :Order
+end
+
+to myshape :side :order
+  Gasket :Side/3 :Order-1
+  Forward :Side/3
+  Gasket :Side/3 :Order-1
+  Forward 2*:Side/3
+end
+
+to myfill :side :order
+  PenUp Right 45 Forward 0.7*:Side
+  SetPC :Order Fill
+  Back 0.7*:Side Left 45 PenDown SetPC [0 0 1]
+end
+
+to go :order
+  New
+  SetPos [-200 -200] SetPC [0 0 1] PenDown
+  Gasket 400 :Order
+end

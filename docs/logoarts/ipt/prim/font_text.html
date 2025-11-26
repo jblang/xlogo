@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prim2.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Primitive | Font Text | html</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prim">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Font &amp; Text</h2>
+			<p>- label &amp; print</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<img src="../../art/img32/simple.gif" alt="simple" width="32" height="32">
+	</div>
+	<!-- band-->
+	
+	<div id="con2">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>Use font to label in the draw zone.</p>
+				<table class="gray">
+					<tr>
+						<th>Primitive</th>
+						<th>Alt</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td width="130"><strong>Label &quot;</strong>abcd<br>
+							<strong><span class="uline">Set</span>FontName</strong> n<br>
+							<strong><span class="uline">Set</span>FontSize</strong> s<br>
+							<strong><span class="uline">Set</span>FontJustify</strong> [h v]</td>
+						<td width="40" valign="top"><br>
+							<strong>SetFN<br>
+							SetFS</strong></td>
+						<td>Turtle <strong>labels</strong> 'abcd' at current position and heading<strong>. 
+							*<br>
+							</strong>Set <strong>font name</strong> to number n.<br>
+							Set <strong>font size</strong> to s pixels.<br>
+							Set font justification. (h and v can be 0, 1 or 2).</td>
+					</tr>
+					<tr>
+						<td width="130"><strong>LabelLength &quot;</strong>abcd</td>
+						<td width="40">&nbsp;</td>
+						<td>Return length of label &quot;abcd, (pixels).</td>
+					</tr>
+				</table>
+				<p>Use text to print in the text zone.</p>
+				<table class="gray">
+					<tr>
+						<th>Primitive</th>
+						<th>Alt</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td><strong>Print &quot;</strong>abcd<br>
+							<strong>Write &quot;</strong>abcd<br>
+							<strong><span class="uline">Set</span>TextSize</strong> s<br>
+							<strong><span class="uline">Set</span>TextName</strong> n<br>
+							<strong><span class="uline">Set</span>TextColor</strong> c<br>
+							<strong><span class="uline">Set</span>Style [</strong>list<strong>]</strong></td>
+						<td><strong>Pr</strong><br>
+							<br>
+							<strong>SetTS<br>
+							SetTN<br>
+							SetTC<br>
+							SetSty</strong></td>
+						<td><strong>Print</strong> 'abcd' in text window on new line.<br>
+							<strong>Write</strong> 'abcd' in text window on same line.<br>
+							Set <strong>text size</strong> to s pixels.<br>
+							Set <strong>text name</strong> to number n.<br>
+							Set <strong>text color</strong> to c. (See <a href="color.html">Colors</a>)<br>
+							Set text to <strong>style</strong>(s) defined in list.</td>
+					</tr>
+					<tr>
+						<td><strong>ClearText</strong></td>
+						<td><strong>CT</strong></td>
+						<td><strong>Clear</strong> the <strong>text</strong> area.</td>
+					</tr>
+				</table><!-- #BeginLibraryItem "/Library/Set.lbi" --><p class="set"> Underlined<strong> <span class="uline">Set</span></strong> can be removed from a primitive name in order to return information.<br>
+	eg. <strong>SetHeading</strong> sets the heading of the turtle. <strong>Heading</strong> returns the heading of the turtle.</p>
+<!-- #EndLibraryItem --><p>* turtle position and heading remain unchanged.</p>
+				<p>SetFontJustify [h v]<br>
+					[2 0] [1 0] [0 0]<br>
+					[2 1] [1 1] [0 1]<br>
+					[2 2] [1 2] [0 2]<br>
+					So for instance use [1 1] for text horizontally and vertically centred on the turtles position.</p>
+				<p>See <a href="pers.html">perspective</a> for label text in 3d.</p>
+				<p class="subh">Note</p>
+				<ol>
+					<li> Setting the text size, name or color will only affect text that is 
+						printed or written in the text window. Error messages and command line 
+						history are unaffected.</li>
+					<li>Styles available are: none, bold, italic, strike, underline, superscript, 
+						and subscript.</li>
+					<li><strong>Print</strong> and <strong>Label</strong> can be contained 
+						in parenthesis. Eg <strong>(Print &quot;a &quot;b &quot;c)</strong> prints a b c.</li>
+					<li><strong>Label</strong>, <strong>Print</strong> and <strong>Write</strong> remove outer list brackets and initial quotes.<br>
+						Eg <strong>Print [hello]</strong> prints hello.</li>
+					<li>Spaces are ignored. Use \ to print a space. eg <strong>Label &quot;Hello\ 
+						World</strong> prints Hello World.<br>
+						Use <strong>\n</strong> to print on a new line. eg <strong>Print &quot;Hello\nWorld</strong></li>
+					<li><strong>Print First .123</strong> prints 0. The decimal point can 
+						never be printed on it's own.</li>
+					<li><strong>Print &quot;</strong> prints an empty line.</li>
+				</ol>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		
+		<div id="leco">
+			<div class="contents">
+				<a href="../../sitemap.html">Contents</a>
+			</div><!-- #BeginLibraryItem "/Library/MenuPrim.lbi" --><ul>
+	<li><a href="anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="axis_grid.html"> 
+		<script type="text/javascript"> blob("Axis Grid");</script> Axis / Grid</a></li>
+	<li><a href="basic.html"> 
+		<script type="text/javascript"> blob("Basic");</script> Basic</a></li>
+	<li><a href="boos.html"> 
+		<script type="text/javascript"> blob("Booleans");</script> Boolean</a></li>
+	<li><a href="color.html"> 
+		<script type="text/javascript"> blob("Color");</script> Color</a></li>
+	<li><a href="drawing.html"> 
+		<script type="text/javascript"> blob("Drawing");</script> Drawing</a></li>
+	<li><a href="files.html"> 
+		<script type="text/javascript"> blob("Files");</script> Files</a></li>
+	<li><a href="font_text.html"> 
+		<script type="text/javascript"> blob("Font Text");</script> Font / Text</a></li>
+	<li><a href="general.html"> 
+		<script type="text/javascript"> blob("General");</script> General</a></li>
+	<li><a href="gui.html"> 
+		<script type="text/javascript"> blob("GUI");</script> GUI</a></li>
+	<li><a href="lists.html"> 
+		<script type="text/javascript"> blob("Lists");</script> Lists</a></li>
+	<li><a href="loops.html"> 
+		<script type="text/javascript"> blob("Loops");</script> Loop</a></li>
+	<li><a href="maths.html"> 
+		<script type="text/javascript"> blob("Maths");</script> Math</a></li>
+	<li><a href="multip.html"> 
+		<script type="text/javascript"> blob("Multiple Turtles") </script> Multi Turtle</a></li>
+	<li><a href="network.html"> 
+		<script type="text/javascript"> blob("Network");</script> Network</a></li>
+	<li><a href="pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="prefs.html"> 
+		<script type="text/javascript"> blob("Preferences");</script> Preferences</a></li>
+	<li><a href="sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="symbols.html"> 
+		<script type="text/javascript"> blob("Symbols");</script> Symbols</a></li>
+	<li><a href="time_date.html"> 
+		<script type="text/javascript"> blob("Time Date");</script> Time / Date</a></li>
+	<li><a href="user.html"> 
+		<script type="text/javascript"> blob("User Input");</script> User Input</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con2 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

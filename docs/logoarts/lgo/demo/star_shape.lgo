@@ -1,0 +1,24 @@
+# Main Command: Go
+# Star by Guy Walker
+# www.logoarts.co.uk
+
+to star :n :size
+  # star shape drawn from centre (tp)
+  Make "Dist (:Size/2) *(Sin 180/:N)/Cos 180/:N
+  Forward :Size/2 Right 90+(360/:N) PenDown 
+  Repeat :N [
+    Forward :Dist Left 360/:N Forward :Dist Right 720/:N]
+  PenUp Left 90+(360/:N) Back :Size/2     # return to centre 
+end
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to go
+  New For [N 5 9] [
+     SetPC :N-4 SetPW 10-:N
+     Star :N 378 Wait 40]
+end

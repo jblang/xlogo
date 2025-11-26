@@ -1,0 +1,22 @@
+# Main Command: Go 5 3
+# Mesh by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to gridd :order :size :mesh
+  If :Order < 1 [PenDown Forward :Size PenUp Back :Size Stop]
+  Forward :Size/2
+  Repeat :Mesh [Gridd :Order-1 :Size/2 :Mesh Left 360/:Mesh]
+  Back :Size/2
+end
+
+to go :order :mesh
+  New Back 192
+  Make "Size 384
+  Gridd :Order :Size :Mesh
+end

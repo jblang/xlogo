@@ -1,0 +1,35 @@
+# Peano2 Curve
+![Peano2 Curve](../../art/400x400/g5_peano2.png)
+
+A second type of plane filling Peano curve. Order must be even to fill a square plane.
+
+```logo
+To New
+ # set default screen, pen and turtle values
+ ResetAll SetScreenSize [400 400] HideTurtle
+ SetSC Black SetPC Green SetPS 1 PenUp
+End
+To Init :Order
+ Make "Size 0 # make Size a global value
+ Make "X (( Round :Order/2)-1)
+ For (List "N 0 :X-1) [Make "Size :Size + Power 3 :N]
+ Make "Size 1+(3*:Size)
+ Make "Size 190/:Size
+End
+To Peano :Order :Parity
+ If :Order < 1 [Stop] # ie if = 0
+ Right :Parity*90
+ Peano :Order-1 Minus :Parity Forward :Size
+ Peano :Order-1 :Parity Forward :Size
+ Peano :Order-1 Minus :Parity
+ Left :Parity*90
+End
+To Go :Order
+ New Init :Order
+ SetPC Yellow SetPW 9-:Order
+ SetPos [-190 -190] PenDown
+ Peano :Order 1
+End
+```
+
+Type **Go order** for example **Go 6** to run.

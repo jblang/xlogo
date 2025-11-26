@@ -1,0 +1,49 @@
+# Main Command: Go
+# Dudeney by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to sqtri
+  PenUp SetXY 0 50 SetH -150 PenDown
+  Forward 80 Right 120 Forward 160
+  Right 120 Forward 119.28 Left 42.12 Forward 60 Right 90
+  Forward 104 Right 90 Forward 106 Right 90 Forward 53
+end
+
+to shape0
+  PenUp SetXY 0 50 SetH -42.12 PenDown
+  Forward 52 Right 90 Forward 45.5 Right 42.12
+  Forward 41 Right 120 Forward 80
+end
+
+to shape1
+  PenUp SetXY 0 50 SetH -150 -:OffSet PenDown
+  Forward 80 Right 120 Forward 80 Shape2
+  Right 180+:OffSet Forward 60.5 Right 90 Forward 52
+end
+
+to shape2
+  Left :OffSet Forward 80 Right 120 Forward 39 Shape3
+  Right 180 +:OffSet Forward 52 Right 90 Forward 46
+end
+
+to shape3
+  Left :OffSet Forward 80 Right 137.88 Forward 60 Right 90 Forward 52
+end
+
+to paint :angle
+  Make "OffSet 90*(1+Cos :Angle)
+  SetPC Gray SqTri SetPC Green Shape0 Shape1 
+  Refresh Wait 15 Wash
+end
+
+to go
+  New Animation While ["True] [
+  For [Angle 0 180 9] [Paint :Angle]
+  For [Angle 180 0 -9] [Paint :Angle]]
+end

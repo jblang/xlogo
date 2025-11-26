@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Puzzle | Knights Tour</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Knights Tour</h2>
+			<p>- chessboard puzzle</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g8/ktour32.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>A classic chess board puzzle is the Knights Tour. Starting with a knight on any square, complete a tour of the board visiting every square. The knight moves in its normal manner. It is all too easy to get trapped, usually in the boards corners.</p>
+				<p>This program starts in a random square and then moves randomly to the next available square, until no more moves are possible.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; Make &quot;<span class="var">Moves</span> [1 2 2 1 -1 -2 -2 -1 1 2]<br>
+						&nbsp; Make &quot;<span class="var">Free</span> [ ] Repeat 64 [Make &quot;<span class="var">Free</span> LPut 0 <b>:</b><span class="var">Free</span>]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Title</span></span><br>
+						&nbsp; <span class="com"># write header</span><br>
+						&nbsp; SetPC White<br>
+						&nbsp; SetPos [-190 180] Label [Knight's Tour]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Gridd</span> :<span class="var">Xc</span> :<span class="var">Yc</span></span><br>
+						&nbsp; <span class="com"># return X Y screen position</span><br>
+						&nbsp; Make &quot;<span class="var">X</span> (38*<b>:</b><span class="var">Xc</span>) - 132<br>
+						&nbsp; Make &quot;<span class="var">Y</span> (38*<b>:</b><span class="var">Yc</span>) - 132<br>
+						&nbsp; Output List <b>:</b><span class="var">X</span> <b>:</b><span class="var">Y</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">DrawBoard</span></span><br>
+						&nbsp; SetPC Brown <span class="pro">Square</span> 334 SetPC [96 57 19] Fill<br>
+						&nbsp; SetPC Brown <span class="pro">Square</span> 310 SetPC [199 178 153] Fill<br>
+						&nbsp; SetPC Brown Repeat 4 [<br>
+						&nbsp; SetH (Repcount*90)-45 Forward 220 PenDown Forward 15 PenUp Home]<br>
+						&nbsp; <span class="com"># label grid numbers</span><br>
+						&nbsp; SetPC [64 64 64] Repeat 8 [<br>
+						&nbsp; &nbsp; SetPos <span class="pro">Gridd</span> RepCount-1 Minus 1.25<br>
+						&nbsp; &nbsp; Label Character 96+RepCount<br>
+						&nbsp; &nbsp; SetPos <span class="pro">Gridd</span> 8.15 RepCount-1<br>
+						&nbsp; &nbsp; Label RepCount]<br>
+						&nbsp; <span class="com"># draw 64 alt colored squares</span><br>
+						&nbsp; For (List &quot;<span class="var">N</span> 0 7) [<br>
+						&nbsp; &nbsp; For (List &quot;<span class="var">M</span> 0 7) [<br>
+						&nbsp; &nbsp; SetPos <span class="pro">Gridd</span> <b>:</b><span class="var">M</span> <b>:</b><span class="var">N</span><br>
+						&nbsp; &nbsp; SetPC Brown <span class="pro">Square</span> 32<br>
+						&nbsp; &nbsp; If <span class="pro">Even?</span> (<b>:</b><span class="var">M</span>+<b>:</b><span class="var">N</span>) [SetPC [117 76 36] ] [SetPC [198 156 109] ] Fill ] ]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Empty</span> :<span class="var">X</span> :<span class="var">Y</span></span><br>
+						&nbsp; <span class="com"># Output True if Cell is empty and within board</span><br>
+						&nbsp; If And And And (<b>:</b><span class="var">X</span>&gt;-1) (<b>:</b><span class="var">X</span>&lt;8) (<b>:</b><span class="var">Y</span>&gt;-1) (<b>:</b><span class="var">Y</span>&lt;8) [<br>
+						&nbsp; &nbsp; If ( 0=Item (1+<b>:</b><span class="var">X</span>+8*<b>:</b><span class="var">Y</span>) <b>:</b><span class="var">Free</span>) [Output &quot;True] ]<br>
+						&nbsp; Output &quot;False<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Step</span> :<span class="var">Xc</span> :<span class="var">Yc</span> :<span class="var">Count</span></span><br>
+						&nbsp; <span class="com"># move to next square and update 'free' list</span><br>
+						&nbsp; SetPos <span class="pro">Gridd</span> <b>:</b><span class="var">Xc</span> <b>:</b><span class="var">Yc</span> PenUp<br>
+						&nbsp; If <b>:</b><span class="var">Count</span>=0 [SetPC Green <span class="pro">Square</span> 32]<br>
+						&nbsp; SetPC Black Label <b>:</b><span class="var">Count</span><br>
+						&nbsp; Make &quot;<span class="var">Free</span> Replace <b>:</b><span class="var">Free</span> (1+<b>:</b><span class="var">Xc</span>+8*<b>:</b><span class="var">Yc</span>) 1<br>
+						&nbsp; Write (Word <b>:</b><span class="var">Xc</span> <b>:</b><span class="var">Yc</span> &quot;\ )<br>
+						&nbsp; Make &quot;Poss <span class="pro">NextPos</span> <b>:</b><span class="var">Xc</span> <b>:</b><span class="var">Yc</span><br>
+						&nbsp; <span class="com"># choose a random next move</span><br>
+						&nbsp; If 0&lt;Count <b>:</b><span class="var">Poss</span> [<br>
+						&nbsp; &nbsp; SetPC Red PenDown<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">NextPos</span> (Pick <b>:</b><span class="var">Poss</span>) Wait 20<br>
+						&nbsp; &nbsp; Step First <b>:</b><span class="var">NextPos</span> Last <b>:</b><span class="var">NextPos</span> <b>:</b><span class="var">Count</span>+1]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">NextPos</span> :<span class="var">Xc</span> :<span class="var">Yc</span></span><br>
+						&nbsp; <span class="com"># return list of possible next moves</span><br>
+						&nbsp; Make &quot;<span class="var">Poss</span> [ ]<br>
+						&nbsp; Repeat 8 [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Xn</span> <b>:</b><span class="var">Xc</span> + Item RepCount <b>:</b><span class="var">Moves</span><br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Yn</span> <b>:</b><span class="var">Yc</span> + Item RepCount+2 <b>:</b><span class="var">Moves</span><br>
+						&nbsp; &nbsp; If Empty <b>:</b><span class="var">Xn</span> <b>:</b><span class="var">Yn</span> [<br>
+						&nbsp; &nbsp; Make &quot;Poss LPut List <b>:</b><span class="var">Xn</span> <b>:</b><span class="var">Yn</span><strong> :</strong><span class="var">Poss</span>] ]<br>
+						&nbsp; Output <b>:</b><span class="var">Poss</span><br>
+						<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_Even.lbi" --><p><span class="toenl"><a href="../../ipt/info/promath.html#even">To <span class="pro">Even?</span> :<span class="var">Num</span></a></span><br>
+	&nbsp; <span class="com"># return 'true' if Num even, else return 'false</span>'<br>
+	&nbsp; If (Mod <b>:</b><span class="var">Num</span> 2)=0 [Output &quot;True] [Output &quot;False]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Square.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#square">To <span class="pro">Square</span> :<span class="var">Side</span></a></span><br>
+	&nbsp; <span class="com"># square (side x side) drawn from centre (tp)</span><br>
+	&nbsp; Back <b>:</b><span class="var">Side</span>/2 Right 90 Back <b>:</b><span class="var">Side</span>/2 PenDown<br>
+	&nbsp; Repeat 4 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Side</span> Left 90]<br>
+	&nbsp; PenUp Forward <b>:</b><span class="var">Side</span>/2 Left 90 Forward <b>:</b><span class="var">Side</span>/2 &nbsp; &nbsp; <span class="com"># r2c</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New</span> <span class="pro">Init</span> <span class="pro">Title</span><br>
+						&nbsp; Home <span class="pro">DrawBoard</span> Wait 40<br>
+						&nbsp; SetPW 2 <span class="pro">Step</span> Random 8 Random 8 0<br>
+						&nbsp; SetPC Yellow <span class="pro">Square</span> 32<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/puzzle/knights_tour.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/puzzle/knights_tour.lgo">File</a></li>
+						<li><a href="../../pict/gall8/knight%27s_tour.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>A better method is to take into account the number of possible moves from each square and instead of a random pick, choose the next square with fewest available moves. This should remove squares with few outlets and increase the average length of the tour.<br>
+					The gallery shows a closed tour found after 5 tries.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">NextPos</span> :<span class="var">Xc</span> :<span class="var">Yc</span></span><br>
+						&nbsp; <span class="com"># return best list of possible next moves</span><br>
+						&nbsp; Make &quot;<span class="var">Poss</span> [ ] Make &quot;<span class="var">High</span> 8<br>
+						&nbsp; Repeat 8 [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Xn</span> <b>:</b><span class="var">Xc</span> + Item RepCount <b>:</b><span class="var">Moves</span><br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Yn</span> <b>:</b><span class="var">Yc</span> + Item RepCount+2 <b>:</b><span class="var">Moves</span><br>
+						&nbsp; &nbsp; If Empty <b>:</b><span class="var">Xn</span> <b>:</b><span class="var">Yn</span> [<br>
+						<br>
+						&nbsp; &nbsp; &nbsp; Make &quot;<span class="var">PossNo</span> 0<br>
+						&nbsp; &nbsp; &nbsp; Repeat 8 [<br>
+						&nbsp; &nbsp; &nbsp; &nbsp; Make &quot;Xt <b>:</b>Xn + Item RepCount <b>:</b><span class="var">Moves</span><br>
+						&nbsp; &nbsp; &nbsp; &nbsp; Make &quot;Yt <b>:</b>Yn + Item RepCount+2 <b>:</b><span class="var">Moves</span><br>
+						&nbsp; &nbsp; &nbsp; &nbsp; If Empty <b>:</b>Xt <b>:</b>Yt [<br>
+						&nbsp; &nbsp; &nbsp; &nbsp; Make &quot;<span class="var">f</span> <b>:</b><span class="var">PossNo</span> + 1] ]<br>
+						<br>
+						&nbsp; &nbsp; &nbsp; If :<span class="var">PossNo</span> &lt; <b>:</b>High [<br>
+						&nbsp; &nbsp; &nbsp; &nbsp; Make &quot;Poss [ ] Make &quot;High :<span class="var">PossNo</span><br>
+						&nbsp; &nbsp; &nbsp; &nbsp; Make &quot;Poss LPut List <b>:</b><span class="var">Xn</span> <b>:</b><span class="var">Yn</span> <b>:</b><span class="var">Poss</span> ] [<br>
+						&nbsp; &nbsp; &nbsp; &nbsp; If <b>:</b><span class="var">PossNo</span> = <b>:</b>High [ Make &quot;Poss LPut List <b>:</b><span class="var">Xn</span> <b>:</b><span class="var">Yn</span> <b>:</b><span class="var">Poss</span> ] ] ] ]<br>
+						&nbsp; Output <b>:</b><span class="var">Poss</span><br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<!--<li><a href="../../lgo/anim/chaos.jnlp">On-Line</a></li>--> 
+						<!--<li><a href="#">File</a></li>-->
+						
+						<li><a href="../../pict/gall8/ktour0.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>Here is a textbook complete Knight's Tour. You can copy and paste the text window list into list &quot;Tour to redraw any tour.</p>
+				<div class="codearea">
+					<p><span class="toen">To <span class="pro">GoX</span></span><br>
+						&nbsp; <span class="pro">New</span> <span class="pro">DrawBoard</span> <span class="pro">Title</span> Wait 40 SetPW 2<br>
+						&nbsp; Make &quot;<span class="var">Tour</span> [00 21 40 61 73 65 77 56 75 63 71 50 31 10 02 14 06 27 46 67 55 76 64 52 33 54 35 47 26 07 15 03 11 30 51 70 62 74 66 45 57 36 17 05 13 01 20 41 60 72 53 32 24 43 22 34 42 23 44 25 37 16 04 12 00]<br>
+						&nbsp; Repeat Count <b>:</b><span class="var">Tour</span> [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Cell</span> Item RepCount <b>:</b><span class="var">Tour</span><br>
+						&nbsp; &nbsp; SetPC Red SetPos <span class="pro">Gridd</span> First <b>:</b><span class="var">Cell</span> Last <b>:</b><span class="var">Cell</span><br>
+						&nbsp; &nbsp; SetPC Black <span class="pro">cLabel</span> RepCount-1 PenDown Wait 20]<br>
+						&nbsp; <span class="com"># return to first cell and border in yellow</span><br>
+						&nbsp; SetPC Red Make &quot;<span class="var">Cell</span> Item 1 <b>:</b><span class="var">Tour</span><br>
+						&nbsp; SetPos <span class="pro">Gridd</span> First <b>:</b><span class="var">Cell</span> Last <b>:</b><span class="var">Cell</span><br>
+						&nbsp; SetPC Yellow PenUp Square 32<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>GoX</strong></span></li>
+						<!--<li><a href="../../lgo/anim/chaos.jnlp">On-Line</a></li>--> 
+						<!--<li><a href="#">File</a></li>-->
+						
+						<li><a href="../../pict/gall8/ktour1.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall8/knight%27s_tour.html"><img src="../../art/100g8/ktour.gif" alt="Knights Tour" width="100" height="100"></a><br>
+				Knight's Tour</p>
+			<p>&nbsp;</p>
+			<p>Also see <img src="../../art/32p1/array32.gif" width="32" height="32"><br>
+				<a href="../pers/ktour.html">Knight's Tour 3D</a></p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

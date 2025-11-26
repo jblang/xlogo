@@ -1,0 +1,34 @@
+# Peano-Cesaro Curve
+![Peano-Cesaro Curve](../../art/400x400/peanocesaro.png)
+
+This animation shows the [Koch Cuve](../fractal/koch.md) with a series of angles from 0 (flat) to 90 degrees. At 60 degrees is 
+the classic Koch snowflake curve.
+
+```logo
+To New
+ # set default screen, pen and turtle values
+ ResetAll SetScreenSize [400 400] HideTurtle
+ SetSC Black SetPC Green SetPS 1 PenUp
+End
+To Koch :Level :Side
+ If :Level < 1 [Forward :Side Stop]
+ Koch :Level-1 :Side/:Ratio Left :Angle
+ Koch :Level-1 :Side/:Ratio Right 2*:Angle
+ Koch :Level-1 :Side/:Ratio Left :Angle
+ Koch :Level-1 :Side/:Ratio
+End
+To Go :Level
+ New Animation
+ For [Ang 0 84 3] [
+ Wash SetPC Yellow
+ # each curve uses a global angle and the resulting ratio of sides
+ GlobalMake "Angle :Ang
+ GlobalMake "Ratio 2*(1+Cos :Angle)
+ SetPos [-190 -190] SetH 90 PenDown
+ Repeat 4 [Koch :Level 380 Left 90]
+ PenUp Home SetPC [32 0 64] Fill Refresh Wait 4]
+End
+```
+
+Enter **go** and the **level** eg **go 
+3** to draw a first order Peano-Cesaro curve.

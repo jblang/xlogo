@@ -1,0 +1,55 @@
+# Main Command: Go 8
+# Chessboard by Guy Walker
+# www.logoarts.co.uk
+
+To New
+  # set default screen, pen and turtle values
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+End
+
+To GridSq :Order :Side
+  # draw tile at each column x row position
+  LocalMake "Offset (1+:Order)/2
+  For (List "Col 1 :Order) [
+    For (List "Row 1 :Order) [
+      SetXY :Side*(:Col-:Offset) :Side*(:Row-:Offset)
+      Tile :Col :Row :Side] ]
+End
+
+To Tile :Col :Row :Side
+  # draw black or white filled square and label (col row)
+  If Even (:Col+:Row) [SetPC Black] [SetPC White]
+  Square :Side-1 Fill
+  SetPC Gray Label Word :Col :Row Wait 4
+End
+
+To Even :Num
+  # return 'true' if Num even, else return 'false'
+  If (Mod :Num 2)=0 [Output "True] [Output "False]
+End
+
+To Square :Side
+  # square (side x side) drawn from centre (tp)
+  Back :Side/2 Right 90 Back :Side/2 PenDown
+  Repeat 4 [
+    Forward :Side Left 90]
+  PenUp Forward :Side/2 Left 90 Forward :Side/2     # r2c
+End
+
+To Go :Order
+  New SetFontJustify [1 1] Make "Board 320
+  SetPC Gray Square :Board+12 Fill
+  GridSq :Order Int :Board/:Order
+End
+
+# alternative tile
+
+To TileAlt :Col :Row :Side
+  # draw light or dark border square
+  SetH 0 If Even (:Col+:Row) [
+    Left 8 SetPC [0 0 64] Square 0.85*:Side Fill
+    SetPC [229 229 255] Square 0.75*:Side Fill] [    # else
+    Right 8 SetPC [229 229 255] Square 0.85*:Side Fill
+    SetPC [0 0 64] Square 0.75*:Side Fill]
+End

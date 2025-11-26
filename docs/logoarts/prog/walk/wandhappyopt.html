@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Walk | Wander Curves</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Wander Curves</h2>
+			<p>- fit to screen</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g4/wander.gif" alt="Gear" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>This produces the same patterens as <a href="wandhappy.html">Wanderer</a>. 
+					However, they are optimised (scaled) to fit the XLogo graphics window. 
+					Also drawn in color with information display.</p>
+				<p>Only the initial and step angles need defining. For example, enter <strong>Go 
+					25 57</strong>. The number of steps needed to return to the starting position 
+					is calculated by the procedure <span class="pro">Cycles</span>.<br>
+					You'll see the wander curve drawn in gray.<br>
+					If the trail doesn't return to its starting position after 720 steps, 
+					a trail of 720 steps is drawn. Usually, you'll see the trail is 
+					'linear', wandering off to infinity.</p>
+				<p>Then the trail is redrawn and the origin and line_length (LL) are calculated 
+					to fit the trail to the screen by the <span class="pro">Fit2Screen</span> procedure. This is identical to the procedure used in <a href="wandtangle.html">Tangle 
+					Curves</a>.</p>
+				<p>Then the screen is cleared. The <span class="pro">Display</span> procedure 
+					draws the final values of the variables used. Then the final curve is 
+					drawn using colored pens.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Cycles</span> :<span class="var">IA2</span> :<span class="var">SA</span> :<span class="var">LL</span></span><br>
+						&nbsp; Make &quot;A Pos<br>
+						&nbsp; PenDown Repeat 720 [<br>
+						&nbsp; Forward <b>:</b>LL Right <b>:</b>IA2 Make &quot;IA2 <b>:</b>IA2+<b>:</b>SA<br>
+						&nbsp; &nbsp; If (And (Round First Pos)=0 (Round Last Pos)=0 (Round Heading)=0)<br>
+						&nbsp; [Output RepCount] ]<br>
+						&nbsp; Output 720 &nbsp; &nbsp; <span class="com"># curve never closed</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Fit2Screen</span> :<span class="var">IA</span> :<span class="var">SA</span> :<span class="var">LL</span> :<span class="var">CY</span></span><br>
+						&nbsp; Make &quot;IA3 <b>:</b>IA<br>
+						&nbsp; PenUp Home<br>
+						&nbsp; Make &quot;<span class="var">Xmax</span> 0 Make 
+						&quot;<span class="var">Xmin</span> 0<br>
+						&nbsp; Make &quot;<span class="var">Ymax</span> 0 Make 
+						&quot;<span class="var">Ymin</span> 0<br>
+						&nbsp; Repeat <b>:</b>CY [Forward <b>:</b>LL Right <b>:</b>IA3 Make &quot;IA3 <b>:</b>IA3+<b>:</b>SA<br>
+						&nbsp; If X &gt; <b>:</b><span class="var">Xmax</span> [Make &quot;<span class="var">Xmax</span> X]<br>
+						&nbsp; If X &lt; <b>:</b><span class="var">Xmin</span> [Make &quot;<span class="var">Xmin</span> X]<br>
+						&nbsp; If Y &gt; <b>:</b><span class="var">Ymax</span> [Make &quot;<span class="var">Ymax</span> Y]<br>
+						&nbsp; If Y &lt; <b>:</b><span class="var">Ymin</span> [Make &quot;<span class="var">Ymin</span> Y] ]<br>
+						&nbsp; Make &quot;<span class="var">Xsize</span> <b>:</b><span class="var">Xmax</span> + Abs <b>:</b><span class="var">Xmin</span><br>
+						&nbsp; Make &quot;<span class="var">Ysize</span> <b>:</b><span class="var">Ymax</span> + Abs <b>:</b><span class="var">Ymin</span><br>
+						&nbsp; If <b>:</b><span class="var">Xsize</span>=<b>:</b><span class="var">Ysize</span> | <b>:</b><span class="var">Xsize</span>&gt;<b>:</b><span class="var">Ysize</span><br>
+						&nbsp; [Make &quot;<span class="var">Size</span> <b>:</b><span class="var">Xsize</span>] [Make &quot;<span class="var">Size</span> <b>:</b><span class="var">Ysize</span>]<br>
+						&nbsp; Make &quot;<span class="var">Scale</span> 360/<b>:</b><span class="var">Size</span><br>
+						&nbsp; Make &quot;<span class="var">LengthNew</span> <b>:</b><span class="var">LL</span>*<b>:</b><span class="var">Scale</span><br>
+						&nbsp; If ((Abs (<b>:</b><span class="var">LengthNew</span> - <b>:</b><span class="var">LL</span>))&gt;<b>:</b><span class="var">LL</span>/10) [<br>
+						&nbsp; Make &quot;<span class="var">LL</span> <b>:</b><span class="var">LengthNew</span> <span class="pro">Fit2Screen</span> <b>:</b><span class="var">IA</span> <b>:</b><span class="var">SA</span> <b>:</b><span class="var">LL</span> <b>:</b><span class="var">CY</span>]<br>
+						&nbsp; Make &quot;<span class="var">Xcent</span> Minus Round (<b>:</b><span class="var">Xmax</span> + <b>:</b><span class="var">Xmin</span>) / 2<br>
+						&nbsp; Make &quot;<span class="var">Ycent</span> Minus Round (<b>:</b><span class="var">Ymax</span> + <b>:</b><span class="var">Ymin</span>) / 2<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Display</span> :<span class="var">IA</span> :<span class="var">SA</span> :<span class="var">LineLength</span> :<span class="var">CY</span></span><br>
+						&nbsp; Home SetPC White<br>
+						&nbsp; SetPos [-192 184] Label [Happy Wanderer]<br>
+						&nbsp; SetPos [74 184] Label Sentence [Initial Angle] <b>:</b><span class="var">IA</span><br>
+						&nbsp; SetPos [94 168] Label Sentence [Step Angle] <b>:</b><span class="var">SA</span><br>
+						&nbsp; SetPos [-192 -176] Label Sentence [Steps] <b>:</b><span class="var">CY</span><br>
+						&nbsp; SetPos [-192 -190] Label Sentence [Line Length] Round <b>:</b><span class="var">LineLength</span><br>
+						&nbsp; SetPos [80 -190] Label List &quot;<span class="var">Centre</span> List <b>:</b><span class="var">Xcent</span> <b>:</b><span class="var">Ycent</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">AngCol</span></span><br>
+						&nbsp; Make &quot;<span class="var">Red</span> 255*Sin Heading/2<br>
+						&nbsp; Output ( List <b>:</b><span class="var">Red</span> 255 0 )<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span> :<span class="var">IA</span> :<span class="var">SA</span></span><br>
+						&nbsp; <span class="pro">New</span> SetPC Gray<br>
+						&nbsp; Make &quot;<span class="var">LL</span> 15 &nbsp; &nbsp; <span class="com"># default line length</span><br>
+						&nbsp; Make &quot;<span class="var">CY</span> <span class="pro">Cycles</span> <b>:</b><span class="var">IA</span> <b>:</b><span class="var">SA</span> <b>:</b><span class="var">LL</span><br>
+						&nbsp; <span class="pro">Fit2Screen</span> <b>:</b><span class="var">IA</span> <b>:</b><span class="var">SA</span> <b>:</b><span class="var">LL</span> <b>:</b><span class="var">CY</span><br>
+						&nbsp; <span class="pro">New</span> <span class="pro">Display</span> <b>:</b><span class="var">IA</span> <b>:</b><span class="var">SA</span> <b>:</b><span class="var">LengthNew</span> <b>:</b><span class="var">CY</span><br>
+						&nbsp; SetXY <b>:</b><span class="var">Xcent</span> <b>:</b><span class="var">Ycent</span> SetH 0 PenDown<br>
+						&nbsp; Circle 2 &nbsp; &nbsp; <span class="com"># circle starting position</span><br>
+						&nbsp; Repeat <b>:</b><span class="var">CY</span> [<br>
+						&nbsp; &nbsp; SetPC <span class="pro">AngCol</span> Forward <b>:</b><span class="var">LengthNew</span> Right <b>:</b><span class="var">IA</span><br>
+						&nbsp; Make &quot;<span class="var">IA</span> <b>:</b><span class="var">IA</span>+<b>:</b><span class="var">SA</span>]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go 5 33</strong></span></li>
+						<li><a href="../../lgo/walk/wanderer_opt.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/walk/wanderer_opt.lgo">File</a></li>
+						<li><a href="../../pict/gall4/wanderopt.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>Type <strong>go ia sa</strong> to run.</p>
+				<p>Do any whole number curves need more than 720 steps to complete?<br>
+					I don't know which IA SA values produce the 'best' curves. So far, 
+					many random geusses, but let me know any interesting curves 
+					you find and I'll add them to this list.</p>
+				<p>IA = 1 SA = 20, 21, 30, 51, 52<br>
+					IA = 5 SA = 33<br>
+					IA = 10 SA = 27, 80<br>
+					IA = 11 SA = 32, 53, 66, 80<br>
+					IA = 12 SA = 80<br>
+					IA = 21 SA = 20, 44<br>
+					IA = 22 SA = 21, 25<br>
+					IA = 25 SA = 27, 33, 51, 57, 63<br>
+					IA = 31 SA = 30, 32, 33, 39<br>
+					IA = 33 SA = 44<br>
+					IA = 34 SA = 70<br>
+					IA = 40 SA = 30<br>
+					IA = 41 SA = 3<br>
+					IA = 43 SA = 57<br>
+					IA = 73 SA = 100</p>
+				<p>Curves can be simplified. eg. Curve 65 44 is the same as curve 21 
+					44 etc.</p>
+				<p>Let me know if you find a longer line length than 75 used in 61 
+					30.</p>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall4/wanderopt.html"><img src="../../art/100g4/wander/415.gif" alt="Wander Curve" width="100" height="100"></a><br>
+				Wander Curve</p>
+			<p class="pvcl"> <span class="var">InitAng</span> Initial Ang<br>
+				<span class="var">StepAng</span> Step Ang<br>
+				<span class="var">Length</span> LineLength<br>
+				<span class="var">Steps</span> No of Steps</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

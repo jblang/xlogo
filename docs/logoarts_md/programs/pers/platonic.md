@@ -1,0 +1,66 @@
+# Platonic Solids
+
+There are just five regular solids, where every vertex is similar. The turtle draws each solid by moving along an edge and taking a random left or right turn at each vertex. This is repeated for 2.5 times the number of edges, so most, but often not all, the edges are drawn.
+
+```logo
+To New
+ # set default screen, pen and turtle values
+ ResetAll SetScreenSize [400 400] HideTurtle
+ SetSC Black SetPC Green SetPS 1 PenUp
+End
+To Data
+ # platonic solids data from web
+ Make "Names [Tetrahedron Cube Dodecahedron Octahedron Icosahedron]
+ Make "FAV [3 3 3 4 5] # faces around each vertex
+ Make "Edges [6 12 30 12 30] # number of edges
+ Make "CentAngs [109.47 70.53 41.82 90 63.43] # central angle
+End
+To Init :Solid
+ # global values for solid
+ Make "Size 250 # centre to vertex
+ Make "Rep 3 *(Item :Solid :Edges) # repeat proportional to edges
+ Make "CentA (Item :Solid :CentAngs) /2 # use half CentreAngle
+ Make "EdgeL 2 *:Size *Sin :CentA # Edge Length
+ Make "RotA 180-(360/ (Item :Solid :FAV) ) # Rotation Angle
+End
+To Title :Solid
+ # label title info 
+ Wrap SetFontJustify [2 0] # 2D mode
+ SetPC Item :Solid [1 2 3 5 6]
+ SetXY 180 Minus 112+15*:Solid
+ Label Item :Solid :Names
+End
+To Platonic :Solid
+ # draw platonic solid
+ Init :Solid Title :Solid
+ Perspective Home
+ LeftRoll Item :Solid [60 0 38 0 0 0] # superimpose vertices
+ Back :Size PenDown LineStart # centre to vertex
+ Repeat :Rep [
+ UpPitch (90-:CentA) Forward :EdgeL DownPitch (90+:CentA)
+ LeftRoll :RotA * Pick [-1 1] Wait 2]
+ LineEnd PenUp
+End
+To Go
+ New Perspective CS PenUp
+ HideTurtle SetSC Black SetPC White
+ Wrap SetPos [-190 180] Label [Platonic Solids]
+ Data ForEach "Solid (Ask2 [Tetra Cube Dodec Octa Ico]) [
+ Platonic :Solid Wait 30]
+ Message [View3D?] View3D
+End
+To Ask2 :Items
+ # return numerical list of user selected items, duplicates removed
+ LocalMake "Say [Select: _all] LocalMake "All []
+ Repeat Count :Items [
+ LocalMake "Say LPut (Word RepCount "_ Item RepCount :Items) :Say
+ LocalMake "All LPut RepCount :All] 
+ Read :Say "Input
+ If :Input = " [Print "all Output :All] # all if no entry
+ LocalMake "Selection []
+ ForEach "ItemNo :Input [
+ If Not Member :ItemNo :Selection [
+ LocalMake "Selection LPut :ItemNo :Selection] ]
+ Print :Selection Output :Selection
+End
+```

@@ -1,0 +1,19 @@
+# Main Command: Go
+# Langtons Ant by Guy Walker
+# www.logoarts.co.uk
+
+to new
+# set default screen, pen and turtle 
+ResetAll SetScreenSize [400 400] HideTurtle 
+SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to nextstep
+Left Integer 0.707*(Item 2 FindColor Pos) + 90
+Forward 0 PenUp Forward 6 PenDown
+end
+
+to go
+New SetPS 0 SetPW 4 PX
+Repeat 10700 [NextStep]
+end

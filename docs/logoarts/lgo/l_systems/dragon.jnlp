@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<jnlp spec="1.5+" codebase="http://cr31.co.uk/logoarts">
+
+<information>
+  <title>XLogo</title>
+  <vendor>xlogo.tuxfamily.org</vendor>
+  <homepage href="http://xlogo.tuxfamily.org"/>
+  <description>Logo Programming Language</description>
+  <offline-allowed/>
+</information>
+
+<security>
+  <all-permissions/>
+</security>
+
+<resources>
+  <j2se version="1.4+"/>
+  <jar href="xlogo.jar"/>
+</resources>
+
+<application-desc main-class="Lanceur">
+  <argument>-lang</argument>
+  <argument>en</argument>
+  <argument>-a</argument>
+  <argument>http://cr31.co.uk/logoarts/lgo/l_systems/dragon.lgo</argument>
+</application-desc>
+
+</jnlp>

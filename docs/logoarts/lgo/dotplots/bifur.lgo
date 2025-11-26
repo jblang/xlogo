@@ -1,0 +1,43 @@
+# Main Command: Go
+# Bifurication by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init
+  # change the start and end for magnified plots 
+  Make "Start 1 Make "End 4
+  Make "Step (:End-:Start)/360
+end
+
+to function :k :x
+Output :K*:X * (1-:X)
+end
+
+to display
+  # write header title and footer values
+  PenUp SetPC White SetH 0
+  SetPos [-190 182] Label [Bifurcation Diagram]
+  SetPos [-190 -190] Label ( List "k\ = :Start "to :End )
+end
+
+to go
+  New Init Display SetPC Green
+  Make "X 0.1 Make "K :Start
+  # first iterate to eliminate transients 
+  Repeat 128 [
+    Make "Xn Function :K :X
+    Make "X :Xn]
+  # actual iteration 
+  For (List "K :Start :End :Step) [
+    Repeat 64 [
+      Make "Xn Function :K :X
+      Make "X :Xn
+      # calculate horiz x
+      Make "Xh (360/(:End-:Start))*:K-180-((360/(:End-:Start))*:Start)
+      Dot List :Xh (360*:X)-180] ]
+end

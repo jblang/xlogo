@@ -1,0 +1,27 @@
+# Main Command: Go
+# Martin_Curve by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to martin
+  Repeat :Iters [
+    Make "Xnew :Y - Sin (:X*180/pi)
+    Make "Y :Angle - :X
+    Make "X :Xnew
+    Dot List (:X*:Scale)-:Offset (:Y*:Scale)-:Offset]
+end
+
+to go
+  New
+  Make "X 0 Make "Y 0
+  Make "Angle 3.14   # try 3.1415 or 3.141593
+  # Make "Scale 12 Make "Iters 8000 
+  Make "Scale 7 Make "Iters 20000
+  Make "Offset 1.8 * :Scale
+  Martin
+end

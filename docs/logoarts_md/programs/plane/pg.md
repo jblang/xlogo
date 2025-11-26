@@ -1,0 +1,60 @@
+# Peano Gosper Curve
+![Peano Gosper Curve](../../art/400x400/pg.png)
+
+This plane filling curve fills a hexagonal plane area It requires both a left and a right handed form.
+
+```logo
+To New
+ # set default screen, pen and turtle values
+ ResetAll SetScreenSize [400 400] HideTurtle
+ SetSC Black SetPC Green SetPS 1 PenUp
+End
+To Init
+ # make Size and Scale global values
+ GlobalMake "Size 330
+ GlobalMake "Scale Power 7 0.5
+ PenUp SetPos [-165 94] SetH 90 PenDown 
+End
+To Display :Order
+ # write header title, curve depth and info
+ SetPC White
+ SetPos [-190 180] Label [Peano Gosper Curve]
+ SetPos [126 180] Label List "Order: :Order
+End
+To PGR :Order :Size
+ If :Order <1 [Forward :Size Wait Int :Size/8 Stop]
+ Right 60 PGL :Order-1 :Size/:Scale
+ Left 60 PGR :Order-1 :Size/:Scale
+ PGR :Order-1 :Size/:Scale
+ Left 120 PGR :Order-1 :Size/:Scale
+ Left 60 PGL :Order-1 :Size/:Scale
+ Right 120 PGL :Order-1 :Size/:Scale
+ Right 60 PGR :Order-1 :Size/:Scale
+End
+To PGL :Order :Size
+ If :Order <1 [Forward :Size Wait Int :Size/8 Stop]
+ PGL :Order-1 :Size/:Scale
+ Left 60 PGR :Order-1 :Size/:Scale
+ Left 120 PGR :Order-1 :Size/:Scale
+ Right 60 PGL :Order-1 :Size/:Scale
+ Right 120 PGL :Order-1 :Size/:Scale
+ PGL :Order-1 :Size/:Scale
+ Right 60 PGR :Order-1 :Size/:Scale
+ Left 60
+End
+To Go :Order
+ New Display :Order Init
+ SetPC Green Right 19.1*:Order
+ PGR :Order :Size
+End
+To GoX
+ New Display "1-4 Init
+ For [Order 1 4] [
+ Right 19.1*:Order
+ SetPC Item :Order [1 3 5 6] SetPW 5-:Order
+ PGR :Order :Size
+ PenUp Left 19.1*:Order Back :Size PenDown Wait 60]
+End
+```
+
+For a particular curve, type **Go order** for example **Go 3** to run.

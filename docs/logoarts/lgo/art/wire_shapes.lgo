@@ -1,0 +1,83 @@
+# Main Command: Go
+# Wire Shapes by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+To Light :Hue
+  # output rgb list midway between :hue and white
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (255+(First :Hue))/2 :Hue]
+  Output :Hue
+End
+
+To Dark :Hue
+  # output rgb list midway between :hue and black
+  Repeat 3 [
+    Make "Hue ButFirst LPut Int (First :Hue)/2 :Hue]
+  Output :Hue
+End
+
+to arch :angle :radius
+  # symmetrical arc drawn relative to turtle heading
+  Arc :Radius Heading-:Angle/2 Heading+:Angle/2
+end
+
+to jump :side
+  # set turtle to random position & heading within square of size side
+  SetXY (Random :Side)-:Side/2 (Random :Side)-:Side/2
+  SetH Random 360
+end
+
+to wire1 :parity
+  # ring (tp) 
+  Arch 336 24
+end
+
+to wire2 :parity
+  # right or left hand 'S' shape (tp) 
+  Repeat 2 [
+    Forward 18 Right :Parity*40
+    Arch 280 18
+    Right :Parity*140 Forward 18]
+end
+
+to wire3 :parity
+  # right or left hand 'U' shape (tp) 
+  Arch 180 14
+  Left :Parity*90 Forward 14 Left :Parity*90
+  PenDown Forward 30 PenUp
+  Back 30 Left :Parity*90 Forward 28 Right :Parity*90
+  PenDown Forward 36 PenUp
+  Back 36 Right :Parity*90 Forward 14 Right :Parity*90
+end
+
+to wire4 :parity
+  # right or left hand eyelet (tp) 
+  Left :Parity*30 Arch 60 12 Right :Parity*30
+  Forward 24 Right :Parity*30 Arch 300 12
+  Back 22 PenDown Back 30 PenUp 
+  Forward 52 Left :Parity*30 Back 24
+end
+
+To Go
+  New SetPC Gray
+  Make "myShape 1+Random 4
+  Repeat 50 [
+    Make "myShape 1+Random 4    # comment out for single shape
+    Make "Parity Pick [-1 1]
+    Jump 300 SetH Random 360
+    SetPC Pick [1 2 4 13 14 15 16]    # comment out for monotone
+    Make "Color PenColor
+    SetPW 4 SetPC Dark :Color
+    Run Sentence Word "Wire :myShape :Parity
+    SetPW 2 SetPC :Color
+    Run Sentence Word "Wire :myShape :Parity
+    SetX X-1 SetY Y+1
+    SetPW 1 SetPC Light :Color
+    Run Sentence Word "Wire :myShape :Parity]
+End

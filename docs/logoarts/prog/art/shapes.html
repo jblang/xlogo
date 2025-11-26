@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Art | Random Shapes</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Random 
+				Shapes</h2>
+			<p>- XLogo</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --><img src="../../art/32g6/stars.gif" alt="" width="32" height="32"><!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>This fills the drawing area with random shapes, either stars, yin, lunes 
+					or leaves. They are drawn twice so that the FillZone primitive can fill 
+					the entire shape with a single color.<br>
+					The shapes were adapted from <a href="../../ipt/info/proshape.html">shapes 
+					procedures</a> to use a fixed size.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; <span class="com"># global values</span><br>
+						&nbsp; GlobalMake &quot;<span class="var">ShapeSize</span> 42 &nbsp; &nbsp; <span class="com"># size of each shape</span><br>
+						&nbsp; GlobalMake &quot;<span class="var">Total</span> 100 &nbsp; &nbsp; <span class="com"># total number of shapes drawn</span>						<br>
+						<span class="com">&nbsp; &nbsp; # add more shapes or hues to the following lists</span>						<br>
+						&nbsp; GlobalMake &quot;<span class="var">Shapes</span> <span class="pro">Ask</span> [Annulus Clover Heart Horseshoe Lune Star]<br>
+						&nbsp; GlobalMake &quot;<span class="var">Hues</span> [Red Green Yellow  Orange Pink <span class="pro">Aqua</span>]<br>
+					<span class="toen">End</span></p><!-- #BeginLibraryItem "/Library/proc/_Annulus.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#annulus">To <span class="pro">Annulus</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># annulus shape drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Offset</span> <b>:</b><span class="var">Size</span>/3 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+	&nbsp; Circle <b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; Circle <b>:</b><span class="var">Size</span>/4<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Clover.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#clover">To <span class="pro">Clover</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># clover shape drawn from centre (tp)</span><br>
+	&nbsp; Repeat 3 [<span class="var"></span><br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/3.74 <span class="pro">Arch</span> 300 0.23*<b>:</b><span class="var">Size</span><br>
+	&nbsp; &nbsp; Back <b>:</b><span class="var">Size</span>/3.74 Left 120]<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Heart.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#heart">To <span class="pro">Heart</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># heart shape drawn from centre (tp)</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span>/4 ForEach &quot;<span class="var">P</span> [1 -1] [ &nbsp; &nbsp; <span class="com"># parity</span><br>
+	&nbsp; &nbsp; Left <b>:</b><span class="var">P</span>*90 Forward <b>:</b><span class="var">Size</span>/4 Right <b>:</b><span class="var">P</span>*90<br>
+	&nbsp; &nbsp; <span class="pro">Arch</span> 180 <b>:</b><span class="var">Size</span>/4<span class="pro"> </span>Right <b>:</b><span class="var">P</span>*90 Back <b>:</b><span class="var">Size</span>/15 Right <b>:</b><span class="var">P</span>*33.5<br>
+	&nbsp; &nbsp; <span class="pro">Arch</span> 67 49*<b>:</b><span class="var">Size</span>/60<br>
+	&nbsp; &nbsp; Left <b>:</b><span class="var">P</span>*33.5 Forward 19*<b>:</b><span class="var">Size</span>/60 Left <b>:</b><span class="var">P</span>*90]<br>
+	&nbsp; Back <b>:</b><span class="var">Size</span>/4 &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Hshoe.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#hshoe">To <span class="pro">Horseshoe</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># horseshoe shape drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Offset</span> <b>:</b><span class="var">Size</span>/3 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+	&nbsp; <span class="pro">Arch</span> 180 <b>:</b><span class="var">Size</span>/2 <span class="pro">Arch</span> 180 <b>:</b><span class="var">Size</span>/4<br>
+	&nbsp; ForEach &quot;<span class="var">P</span> [1 -1] [ &nbsp; &nbsp; <span class="com"># parity</span><br>
+	&nbsp; &nbsp; Left <b>:</b><span class="var">P</span>*90 Back <b>:</b><span class="var">Size</span>/2 Left <b>:</b><span class="var">P</span>*12.75<br>
+	&nbsp; &nbsp; <span class="pro">Arch</span> 25.5 <b>:</b><span class="var">Size</span> <span class="pro">Arch</span> 25.5 0.75*<b>:</b><span class="var">Size</span> Left <b>:</b><span class="var">P</span>*12.75<br>
+	&nbsp; &nbsp; Forward 0.875*<b>:</b><span class="var">Size</span> Left <b>:</b><span class="var">P</span>*90<span class="pro"> Arch</span> 180 <b>:</b><span class="var">Size</span>/8<br>
+	&nbsp; &nbsp; Right <b>:</b><span class="var">P</span>*90 Back 0.875*<b>:</b><span class="var">Size</span> Right <b>:</b><span class="var">P</span>*25.5<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/2 Right <b>:</b><span class="var">P</span>*90]<span class="com"></span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Lune.lbi" --><p><span class="toenl"><a href="../../ipt/info/proshape.html#lune">To <span class="pro">Lune</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># lune shape drawn from centre (tp)</span><br>
+	&nbsp; Make &quot;<span class="var">Offset</span> <b>:</b><span class="var">Size</span>/3 &nbsp; &nbsp; <span class="com"># global offset fill</span><br>
+	&nbsp; <span class="pro">Arch</span> 240 <b>:</b><span class="var">Size</span>/2 Back <b>:</b><span class="var">Size</span>/2<br>
+	&nbsp; <span class="pro">Arch</span> 120 <b>:</b><span class="var">Size</span>/2 Forward <b>:</b><span class="var">Size</span>/2<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Star.lbi" --><p><span class="toenl"><a href="file:///Macintosh HD/Users/guy/My Sites/ipt/info/proshape.html#star">To <span class="pro">Star</span> :<span class="var">Size</span></a></span><br>
+	&nbsp; <span class="com"># 5 pointed star shape drawn from centre (tp)</span><br>
+	&nbsp; Forward <b>:</b><span class="var">Size</span>/2 Right 162 PenDown<br>
+	&nbsp; Repeat 5 [<br>
+	&nbsp; &nbsp; Forward <b>:</b><span class="var">Size</span>/2.76 Left 72 Forward <b>:</b><span class="var">Size</span>/2.76 Right 144]<br>
+	&nbsp; PenUp Left 162 Back <b>:</b><span class="var">Size</span>/2 &nbsp; &nbsp; <span class="com"># return to centre</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Aqua.lbi" --><p><span class="toenl"><a href="../../ipt/info/procol.html#aqua">To <span class="pro">Aqua</span></a></span><br>
+	&nbsp; Output [0 128 255] &nbsp; &nbsp; <span class="com"># return aqua rgb color</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Arch.lbi" --><p><span class="toenl"><a href="../../ipt/info/proarc.html#arch">To <span class="pro">Arch</span> :<span class="var">Angle</span> :<span class="var">Radius</span></a></span><br>
+	&nbsp; <span class="com"># symmetrical arc drawn relative to turtle heading</span><br>
+	&nbsp; Arc <b>:</b><span class="var">Radius</span> Heading-<b>:</b><span class="var">Angle</span>/2 
+	Heading+<b>:</b><span class="var">Angle</span>/2<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_rArc.lbi" --><p><span class="toenl"><a href="../../ipt/info/proarc.html#rarc">To <span class="pro">rArc</span> :<span class="var">Angle</span> :<span class="var">Radius</span></a></span><br>
+	&nbsp; <span class="com"># clockwise arc drawn relative to turtle heading</span><br>
+	&nbsp; Arc <b>:</b><span class="var">Radius</span> Heading <b>:</b><span class="var">Angle</span>+Heading Right <b>:</b><span class="var">Angle</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Jump.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#jump">To <span class="pro">Jump</span> :<span class="var">Side</span></a></span><br>
+	&nbsp; <span class="com"># set turtle to random position within square of size side</span><br>
+	&nbsp; SetXY (Random <b>:</b><span class="var">Side</span>) - <b>:</b><span class="var">Side</span>/2 (Random <b>:</b><span class="var">Side</span>) - <b>:</b><span class="var">Side</span>/2<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/proc/_Ask.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#ask">To <span class="pro">Ask</span> :<span class="var">Items</span></a></span><br>
+	&nbsp; <span class="com"># return list of user selected items</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Say</span> List &quot;Select: [_ all]<br>
+	&nbsp; Repeat Count <b>:</b><span class="var">Items</span> [<br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Say</span> LPut List RepCount (Item RepCount <b>:</b><span class="var">Items</span>) <b>:</b><span class="var">Say</span>]<br>
+	&nbsp; Read <b>:</b><span class="var">Say</span> &quot;<span class="var">Input</span><br>
+	&nbsp; If <b>:</b><span class="var">Input</span> = &quot; [Print &quot;all Output ButFirst ButFirst <b>:</b><span class="var">Say</span>] &nbsp; &nbsp; &nbsp; <span class="com"># all if no entry</span><br>
+	&nbsp; LocalMake &quot;<span class="var">Selection</span> []<br>
+	&nbsp; ForEach &quot;<span class="var">ItemNo</span> <b>:</b><span class="var">Input</span> [<br>
+	&nbsp; &nbsp; LocalMake &quot;<span class="var">Selection</span> LPut (Item <b>:</b><span class="var">ItemNo</span>+2 <b>:</b><span class="var">Say</span>) <b>:</b><span class="var">Selection</span>]<br>
+	&nbsp; Print  <b>:</b><span class="var">Selection</span> Output <b>:</b><span class="var">Selection</span><br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New Init</span><br>
+						&nbsp; Repeat <b>:</b><span class="var">Total</span> [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Shape</span> Pick <b>:</b><span class="var">Shapes</span><br>
+						&nbsp; &nbsp; Make &quot;<span class="var">Offset</span> 0						Make &quot;<span class="var">Size </span><b>:</b><span class="var">ShapeSize</span>						<br>
+&nbsp; &nbsp; If  <b>:</b><span class="var">Shape</span> =&quot;Star [Make &quot;<span class="var">Size</span> <b>:</b><span class="var">Size</span>/0.8]<br>
+						&nbsp; &nbsp; <span class="pro">Jump</span> 320 SetH Random 360<br>
+						&nbsp; &nbsp; SetPC [0 0 1] Run List <b>:</b><span class="var">Shape </span><b>:</b><span class="var">Size</span><br>
+						&nbsp; &nbsp; Forward <b>:</b><span class="var">Offset</span> FillZone Back <b>:</b><span class="var">Offset</span><br>
+						&nbsp; &nbsp; SetPC Run Pick <b>:</b><span class="var">Hues</span><br>
+						&nbsp; &nbsp; Forward <b>:</b><span class="var">Offset</span> Fill Back <b>:</b><span class="var">Offset</span><br>
+						&nbsp; &nbsp; SetPC Black Run List<strong> :</strong><span class="var">Shape </span><b>:</b><span class="var">Size</span>]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/art/shapes.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/art/shapes.lgo">File</a></li>
+						<li><a href="../../pict/gall6/shapes.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<p>Find more shapes in the <a href="../../ipt/info/proshape.html">shapes library</a>.<br>
+					Silver moon [187 187 187] and gold stars [255 204 0].<br>
+				</p>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall6/shapes.html"><img src="../../art/100g6/stars.gif" alt="Stars" width="100" height="100"></a><br>
+				Shapes</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

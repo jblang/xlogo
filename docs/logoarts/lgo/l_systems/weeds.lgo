@@ -1,0 +1,114 @@
+# Main Command: Go 4
+# Weeds by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to init
+  Make "Length 200 Make "Delta 0.65 Make "Angle 20
+  Make "Rule [ d s n n rule r s p rule r n rule ]
+end
+
+to display :depth
+  # write header title, curve depth and info 
+  SetPC White
+  SetPos [-190 184] Label "L-Curve
+  SetPos [-190 -192] Label List "Rule: :Rule
+  SetPos [130 184] Label List "Delta: :Delta
+  SetPos [130 170] Label List "Angle: :Angle
+  SetPos [130 156] Label List "Depth: :Depth
+end
+
+to generate :drawlist :rule :dep
+  Make "NewList [ ]
+  Repeat (Count :DrawList) [
+    Make "ThisItem Item RepCount :DrawList
+    If :ThisItem = "rule [
+      Repeat (Count :Rule) [
+      Make "ThisItem2 Item RepCount :Rule
+      Make "NewList LPut :ThisItem2 :NewList
+      If :ThisItem2 = "d [ Make "NewList LPut :Dep :NewList ] ] ]
+    [ Make "NewList LPut :ThisItem :NewList ] ]
+  Output :NewList
+end
+
+to d :dep
+  #SetPW :Depth - :Dep 
+  Make "Green Round 255/ (:Depth-:Dep )    # green depends on length
+  SetPC ( List 255 :Green 0 )    # red set to 255 and blue to 0
+  Forward :Length * Power :Delta :Dep SetPos Pos
+end
+
+to p
+  Right :Angle SetH Heading
+end
+
+to n
+  Left :Angle SetH Heading
+end
+
+to s
+  Make "Positions Lput List Position Heading :Positions
+end
+
+to r
+  Make "myPos Last :Positions
+  PenUp SetPos First :myPos 
+  SetH Last :myPos PenDown
+  Make "Positions ButLast :Positions
+end
+
+to rule
+  SetPC Red Forward 1    # 4 for fixed length weeds
+end
+
+to go :de
+  Make "Depth :De
+  New Init Display :Depth
+  Make "Positions [ ] 
+  Make "DrawList [rule]
+  Repeat :Depth-1 [ Make "DrawList Generate :DrawList :Rule RepCount]
+  #SetPC Orange SetPW :Depth-1 Dot Pos
+  SetPos [0 -170] 
+  PenDown Run :DrawList
+end
+
+to init1
+  Make "Length 100 Make "Delta 0.65 Make "Angle 25
+  Make "Rule [ d s p rule r d s n rule r p rule ]
+end
+
+to init2
+  Make "Length 220 Make "Delta 0.65 Make "Angle 90
+  Make "Rule [ d s p rule r s n rule r ]
+end
+
+to init3
+  Make "Length 200 Make "Delta 0.65 Make "Angle 45
+  Make "Rule [ d s p rule r s n rule r ]
+end
+
+to init4
+  Make "Length 200 Make "Delta 0.65 Make "Angle 25
+  Make "Rule [ d s p rule r s n rule r ]
+end
+
+to init5
+  Make "Length 200 Make "Delta 0.45 Make "Angle 25
+  Make "Rule [ d s n rule r d s p rule r rule ]
+end
+
+to init6
+  Make "Length 140 Make "Delta 0.45 Make "Angle 20
+  Make "Rule [ d s n n n rule r s p p p rule r d s n n rule r s p p rule r d rule ]
+end
+
+to init7
+  # For this fixed length weed, also change the rule procedure to 'Forward 4'.
+  Make "Length 0 Make "Delta 0 Make "Angle 25
+  Make "Rule [ rule s n rule r rule s p rule r rule ]
+end

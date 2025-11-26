@@ -1,0 +1,49 @@
+# Main Command: Go 5
+# Kite Tree by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle
+  ResetAll SetScreenSize [400 400] HideTurtle
+  SetSC Black SetPC Green SetPS 1 PenUp
+end
+
+to init
+  # make Angle and Scale global values
+  GlobalMake "Angle 54
+  GlobalMake "Scale 1.79
+end
+
+to tree :order :size
+  If :Order < 0 [Stop]     # ends recursion if order < 0
+  If :Order = 0 [DrawKite :Size] [Forward :Size]
+  Left 1.5*:Angle Tree :Order -1 :Size/:Scale
+  Right :Angle Tree :Order -1 :Size/:Scale
+  Right :Angle Tree :Order -1 :Size/:Scale
+  Right :Angle Tree :Order -1 :Size/:Scale
+  Left 1.5*:Angle Back :Size
+end
+
+to drawkite :size
+  Forward :Size/2 Make "Col PenColor
+  SetPC White Kite :Size FillZone SetPC :Col Fill
+  SetPC Black Kite :Size SetPC :Col 
+  Forward :Size/2
+end
+
+to kite :size
+  # kite shape drawn from centre (tp)
+  Back :Size/2 PenDown
+  Left 18.43 Forward :Size/1.26 Right 63.43
+  Forward :Size/2.82 Right 90 Forward :Size/2.82
+  Right 63.43 Forward :Size/1.26
+  PenUp Right 161.57 Forward :Size/2     # return to centre
+end
+
+to go :order
+  New Init
+    For (List "Ord 0 :Order) [
+    Home Back 192
+    SetPC Run Item :Ord+1 [DarkRed Brown DarkGreen Green Magenta Cyan]
+  Tree :Ord 175]
+end

@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<!-- #BeginTemplate "/Templates/prog3.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" -->
+<title>Programs | Animation | Tangram</title>
+<!-- #EndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../text.css" type="text/css">
+<script src="../../js.js" type="text/JavaScript"></script>
+<meta name="keywords" content="Logo, XLogo, turtle, graphics, computing, geometry, programming, coding, code, procedures, maths, floor, robot, TurtleTracks, art, patterns">
+<meta name="description" content="Logo turtle graphics computer programming using XLogo.">
+</head>
+
+<body id="prog">
+<div id="tank"><!-- #BeginLibraryItem "/Library/Header.lbi" --><div id="head">
+	<a href="http://www.cr31.co.uk"><img src="../../art/cr31.gif" width="85" height="30" alt="cr31"></a>
+	<h1>Logo&nbsp;Arts</h1>
+	<p>"merging the arts of programming and graphics"</p>
+	<ul>
+		<li class="tab1"><a href="../../ipt/top/prog.html">Programs</a></li>
+		<li class="tab2"><a href="../../ipt/top/pict.html">Galleries</a></li>
+		<li class="tab3"><a href="../../ipt/top/prim.html">Primitives</a></li>
+		<li class="tab4"><a href="../../ipt/top/info.html">Resources</a></li>
+		<li class="tab0"><a href="../../index.html">H</a></li>
+	</ul>
+</div>
+<!-- head --><!-- #EndLibraryItem --><div id="band">
+		<div id="tite">
+			<!-- #BeginEditable "title" -->
+			<h2>Tangram</h2>
+			<p>- Chinese pictures</p>
+			<!-- #EndEditable -->
+		</div>
+		<!-- tite--> 
+		<!-- #BeginEditable "shelf" --> <img src="../../art/32g4/tangram.gif" alt="" width="32" height="32"> <!-- #EndEditable -->
+	</div>
+	<!-- band-->
+	
+	<div id="con3">
+		<div id="wrap">
+			<div id="maco">
+				<!-- #BeginEditable "contents" -->
+				<p>The Chinese tangram 
+					consisits of 7 pieces, five triangles, a parrellogram and a square. 
+					They easily form a square and a host of other shapes. These were usually 
+					supplied in silouhette form, as a puzzle you had to recreate the shapes.</p>
+				<p>This programs draws the seven tangram pieces as they transform from 
+					one shape to another. The pieces are drawn from the centre to allow 
+					for rotation.</p>
+				<div class="codearea"><!-- #BeginLibraryItem "/Library/proc/_New.lbi" --><p><span class="toenl"><a href="../../ipt/info/prolib.html#new">To <span class="pro">New</span></a></span><br>
+	&nbsp; <span class="com"># set default screen, pen and turtle values</span><br>
+	&nbsp; ResetAll SetScreenSize [400 400] HideTurtle<br>
+	&nbsp; SetSC Black SetPC Green SetPS 1 PenUp<br>
+	<span class="toenl">End</span></p>
+<!-- #EndLibraryItem --><p><span class="toen">To <span class="pro">Init</span></span><br>
+						&nbsp; <span class="com"># Global lists, 7 tan pieces and picture list</span><br>
+						&nbsp; Make &quot;<span class="var">Tans</span> [[<span class="pro">Tri1</span> 24] [<span class="pro">Tri2</span> 24] [<span class="pro">Tri2</span> 17] [<span class="pro">Squ</span>] [<span class="pro">Par</span>] [<span class="pro">Tri1</span> 12] [<span class="pro">Tri2</span> 12]]<br>
+						&nbsp; Make &quot;<span class="var">Pics</span> [[<span class="pro">Start</span>] [<span class="pro">Running_Man</span>]]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Display</span></span><br>
+						&nbsp; <span class="com"># write header title and name</span><br>
+						&nbsp; SetPC White SetH 0<br>
+						&nbsp; SetPos [-190 184] Label Sentence [Tangram] <b>:</b><span class="var">EndName</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Slide</span></span><br>
+						&nbsp; For [Step 0 64] [Wash<br>
+						&nbsp; For [N 1 7] [<br>
+						&nbsp; &nbsp; Make &quot;<span class="var">DD</span> <b>:</b><span class="var">Step</span> / Minus 64<br>
+						&nbsp; &nbsp; SetX <span class="pro">Delta</span><strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">DD</span> 1<br>
+						&nbsp; &nbsp; SetY <span class="pro">Delta</span><strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">DD</span> 2<br>
+						&nbsp; &nbsp; SetH <span class="pro">Delta</span><strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">DD</span> 3<br>
+						&nbsp; &nbsp; Run Item<strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">Tans</span>]<br>
+						&nbsp; &nbsp; Refresh]<br>
+						&nbsp; <span class="pro">Display</span> Refresh Wait 120<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Delta</span> :<span class="var">N</span> :<span class="var">DD</span> :<span class="var">M</span></span><br>
+						&nbsp; Make &quot;Differ (Item<strong> :</strong><span class="var">M</span> <span class="var">Item</span><strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">Start</span>) - (Item<strong> :</strong><span class="var">M</span> Item<strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">End</span>)<br>
+						&nbsp; Output (Item<strong> :</strong><span class="var">M</span> Item<strong> :</strong><span class="var">N</span><strong> :</strong><span class="var">Start</span>) + (<b>:</b><span class="var">DD</span>*<b>:</b><span class="var">Differ</span>)<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Go</span></span><br>
+						&nbsp; <span class="pro">New</span> Animation <span class="pro">Init</span><br>
+						&nbsp; Make &quot;<span class="var">Start</span> Run (Item 1<strong> :</strong><span class="var">Pics</span>) &nbsp; &nbsp; <span class="com"># Global list</span><br>
+						&nbsp; Make &quot;<span class="var">EndName</span> Item 2<strong> :</strong><span class="var">Pics</span><br>
+						&nbsp; Make &quot;<span class="var">End</span> Run (<b>:</b><span class="var">EndName</span>) &nbsp; &nbsp; <span class="com"># Global list</span><br>
+						&nbsp; <span class="pro">Slide</span><br>
+						&nbsp; Make &quot;<span class="var">Start</span><strong> :</strong><span class="var">End</span><br>
+						&nbsp; Make &quot;<span class="var">EndName</span> Item 1<strong> :</strong><span class="var">Pics</span><br>
+						&nbsp; Make &quot;<span class="var">End</span> Run (<b>:</b><span class="var">EndName</span>) &nbsp; &nbsp; <span class="com"># Update global lists</span><br>
+						&nbsp; <span class="pro">Slide</span><br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tri1</span> :<span class="var">Side</span></span><br>
+						&nbsp; Make &quot;<span class="var">Slant</span> <b>:</b><span class="var">Side</span>*SqRt 2<br>
+						&nbsp; Right 45 Back 1.33*<b>:</b><span class="var">Slant</span> Left 45<br>
+						&nbsp; SetPC Sentence [0 0]<strong> :</strong><span class="var">Side</span> * 5 PenDown<br>
+						&nbsp; Forward 4*<b>:</b><span class="var">Side</span> Right 135 Forward 4*<b>:</b><span class="var">Slant</span><br>
+						&nbsp; Right 135 Forward 4*<b>:</b><span class="var">Side</span> PenUp<br>
+						&nbsp; Right 135 Forward 1.33*<b>:</b><span class="var">Slant</span> PenDown FillZone PenUp<br>
+						&nbsp; Back 1.33*<b>:</b><span class="var">Slant</span> Left 45<br>
+						&nbsp; SetPC White PenDown<br>
+						&nbsp; Forward 4*<b>:</b><span class="var">Side</span> Right 135 Forward 4*<b>:</b><span class="var">Slant</span><br>
+						&nbsp; Right 135 Forward 4*<b>:</b><span class="var">Side</span> PenUp<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Tri2</span> :<span class="var">Side</span></span><br>
+						&nbsp; Make &quot;<span class="var">Slant</span><strong> :</strong><span class="var">Side</span>*SqRt 2<br>
+						&nbsp; Right 45 Back 1.33*<b>:</b><span class="var">Slant</span> Left 45<br>
+						&nbsp; SetPC Sentence<strong> :</strong><span class="var">Side</span> * 5 [0 0] PenDown<br>
+						&nbsp; Forward 4*<b>:</b><span class="var">Side</span> Right 135 Forward 4*<b>:</b><span class="var">Slant</span><br>
+						&nbsp; Right 135 Forward 4*<b>:</b><span class="var">Side</span> PenUp<br>
+						&nbsp; Right 135 Forward 1.33*<b>:</b><span class="var">Slant</span> Pd FillZone PenUp<br>
+						&nbsp; Back 1.33*<b>:</b><span class="var">Slant</span> Left 45<br>
+						&nbsp; SetPC White PenDown<br>
+						&nbsp; Forward 4*<b>:</b><span class="var">Side</span> Right 135 Forward 4*<b>:</b><span class="var">Slant</span><br>
+						&nbsp; Right 135 Forward 4*<b>:</b><span class="var">Side</span> PenUp<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Squ</span></span><br>
+						&nbsp; Back 34 Left 45<br>
+						&nbsp; SetPC [0 108 0] PenDown<br>
+						&nbsp; Repeat 4 [Forward 48 Right 90] PenUp<br>
+						&nbsp; Right 45 Forward 34 Pd FillZone Pu<br>
+						&nbsp; Back 34 Left 45 SetPC White PenDown<br>
+						&nbsp; Repeat 4 [Forward 48 Right 90] PenUp<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Par</span></span><br>
+						&nbsp; Back 24 Left 90<br>
+						&nbsp; SetPC DarkGreen PenDown<br>
+						&nbsp; Repeat 2 [Forward 48 rt 135 Forward 68 rt 45] PenUp<br>
+						&nbsp; Right 90 Forward 24 Pd FillZone Pu<br>
+						&nbsp; Back 24 Left 90 SetPC White PenDown<br>
+						&nbsp; Repeat 2 [Forward 48 Right 135 Forward 68 Right 45] PenUp<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Start</span></span><br>
+						&nbsp; Output [[-45 0 -135] [0 46 -45] [46 -46 -90] [0 -34 0]<br>
+						&nbsp; &nbsp; [52 17 -45] [-34 -57 135] [24 0 45]]<br>
+						<span class="toen">End</span></p>
+					<p><span class="toen">To <span class="pro">Running_Man</span></span><br>
+						&nbsp; Output [[20 -67 0] [0 22 -180] [-30 -90 45] [0 90 20]<br>
+						&nbsp; &nbsp; [58 4 -90] [0 -135 225] [95 -90 180]]<br>
+						<span class="toen">End</span></p>
+				</div>
+				<div class="button">
+					<ul>
+						<li><span class="go"><img src="../../art/play.gif" alt="go" width="14" height="14" align="absbottom"> Main Command: <strong>Go</strong></span></li>
+						<li><a href="../../lgo/anim/tangram.jnlp">On-Line</a></li>
+						<li><a href="../../lgo/anim/tangram.lgo">File</a></li>
+						<li><a href="../../pict/gall4/tang.html">Gallery</a></li>
+						<li><a href="../../ipt/top/inst.html">?</a></li>
+					</ul>
+				</div>
+				<!-- #EndEditable -->
+			</div>
+			<!-- maco -->
+		</div>
+		<!-- wrap -->
+		<div id="leco">
+			<p class="contents"><a href="../top/all.html">Contents</a></p><!-- #BeginLibraryItem "/Library/MenuProg.lbi" --><ul>
+	<li><a href="../top/anim.html"> 
+		<script type="text/javascript"> blob("Animation");</script> Animation</a></li>
+	<li><a href="../top/art.html"> 
+		<script type="text/javascript"> blob("Art");</script> Art</a></li>
+	<li><a href="../top/ca.html"> 
+		<script type="text/javascript"> blob("Cellular Automata");</script> Cellular Auto</a></li>
+	<li><a href="../top/coding.html"> 
+		<script type="text/javascript"> blob("Coding");</script> Coding</a></li>
+	<li><a href="../top/demo.html"> 
+		<script type="text/javascript"> blob("Demo");</script> Demo</a></li>
+	<li><a href="../top/dotplots.html"> 
+		<script type="text/javascript"> blob("Dot Plot");</script> Dot Plot</a></li>
+	<li><a href="../top/fractals.html"> 
+		<script type="text/javascript"> blob("Fractal");</script> Fractal</a></li>
+	<li><a href="../top/grids.html"> 
+		<script type="text/javascript"> blob("Grid");</script> Grid</a></li>
+	<li><a href="../top/illusion.html"> 
+		<script type="text/javascript"> blob("Illusion");</script> Illusion</a></li>
+	<li><a href="../top/l_systems.html"> 
+		<script type="text/javascript"> blob("L-System");</script> L-System</a></li>
+	<li><a href="../top/multi.html"> 
+		<script type="text/javascript"> blob("Multi Turtle");</script> Multi Turtle</a></li>
+	<li><a href="../top/oneline.html"> 
+		<script type="text/javascript"> blob("One Liners");</script> One Line</a></li>
+	<li><a href="../top/pers.html"> 
+		<script type="text/javascript"> blob("Perspective");</script> Perspective</a></li>
+	<li><a href="../top/plane.html"> 
+		<script type="text/javascript"> blob("Plane Filling");</script> Plane Filling</a></li>
+	<li><a href="../top/polar.html"> 
+		<script type="text/javascript"> blob("Polar Curve");</script> Polar</a></li>
+	<li><a href="../top/puzzle.html"> 
+		<script type="text/javascript"> blob("Puzzle");</script> Puzzle</a></li>
+	<li><a href="../top/recur.html"> 
+		<script type="text/javascript"> blob("Recursion");</script> Recursion</a></li>
+	<li><a href="../top/sound.html"> 
+		<script type="text/javascript"> blob("Sound");</script> Sound</a></li>
+	<li><a href="../top/spirals.html"> 
+		<script type="text/javascript"> blob("Spiral");</script> Spiral</a></li>
+	<li><a href="../top/spirograph.html"> 
+		<script type="text/javascript"> blob("Spirograph");</script> Spirograph</a></li>
+	<li><a href="../top/trees.html"> 
+		<script type="text/javascript"> blob("Tree");</script> Trees</a></li>
+	<li><a href="../top/walks.html"> 
+		<script type="text/javascript"> blob("Walk");</script> Walks</a></li>
+</ul>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/Turtle.lbi" --><p><img src="../../art/img32/logoicon.gif" width="32" height="32" alt="Turtle"></p>
+<!-- #EndLibraryItem --></div>
+		<!-- leco -->
+		
+		<div id="rico">
+			<!-- #BeginEditable "image" -->
+			<p><a href="../../pict/gall4/tang.html"><img src="../../art/100g4/tang.gif" alt="Tangram" width="100" height="100"></a><br>
+				Tangram</p>
+			<p class="book">Book Info<br>
+				<a href="../../ipt/info/bookspuzz.html"><img src="../../art/books/t.jpg" alt="Tangrams" width="100" height="166"></a><br>
+				Pages many</p>
+			<!-- #EndEditable --><!-- #BeginLibraryItem "/Library/PVC.lbi" --><p class="pvcl">
+	<span class="pro">Procedures blue</span><br>
+	<span class="var">Variables pink</span><br>
+	<span class="com">Comments green</span><br>
+	<span class="lib">Library gray</span></p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/LogoLogo.lbi" --><div class="lolo">
+	<script type="text/javascript">
+		<!--
+		document.write(str);
+		//-->
+	</script>
+</div>
+<!-- lolo --><!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/XLogo.lbi" --><p class="xlogo"><a href="http://xlogo.tuxfamily.org/en/index-en.html"><img src="../../art/xlogo.gif" width="64" height="64" alt="xLogo"></a><br>
+	Visit <a href="http://xlogo.tuxfamily.org/en/index-en.html">XLogo</a><br>
+	web site</p>
+<!-- #EndLibraryItem --><!-- #BeginLibraryItem "/Library/RandomImage.lbi" --><div class="random">
+	<script type="text/javascript">
+		<!--
+		document.write(randstr);
+		//-->
+	</script>
+</div>
+<!-- #EndLibraryItem --></div>
+		<!-- rico --><!-- #BeginLibraryItem "/Library/Footer.lbi" --><div id="foot">
+	<p>&nbsp;</p>
+</div>
+<!-- foot --><!-- #EndLibraryItem --></div>
+	<!-- con3 -->
+</div>
+<!-- tank -->
+</body>
+<!-- #EndTemplate -->
+</html>

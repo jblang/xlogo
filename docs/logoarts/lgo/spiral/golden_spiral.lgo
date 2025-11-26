@@ -1,0 +1,40 @@
+# Main Command: Go
+# Golden Spiral by Guy Walker
+# www.logoarts.co.uk
+
+to new
+  # set default screen, pen and turtle 
+  ResetAll SetScreenSize [400 400] HideTurtle 
+  SetSC Black SetPC Green SetPS 1 PenUp 
+end
+
+to section :side
+  If :Side < 2 [Stop]     # stop when side too short
+  SetPC Green Square :Side     # comment out for curve only
+  SetPC Red Curve :Side     # comment out for squares only
+  Section :Side*0.618     # do again with smaller side
+end
+
+to square :side
+  Repeat 4 [Forward :Side Right 90]
+end
+
+to curve :side
+  Make "Step :Side*0.0524     # heading correction pi/60
+  Right 1.5
+  Repeat 30 [Forward :Step Right 3 Wait 4]     # 90 degree arc in 30 steps
+  Left 1.5
+end
+
+to lines
+  SetPC [0 0 128]     # draw crossed lines in blue
+  PenUp SetPos [-185 88]
+  PenDown SetPos [184 -140]
+  PenUp SetPos [184 88]
+  PenDown SetPos [43 -140] Wait 30
+end
+
+to go
+  New Lines SetPos [-185 -140]
+  Section 228     # begin with square of side 228
+end
